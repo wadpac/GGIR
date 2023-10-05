@@ -98,7 +98,7 @@ new chapter under menu. Make sure to follow the coding and structure of the rest
 
 #### Committing the changes to the master branch
 
-The last step would be committing and pushin your changes to github and making a
+The last step would be committing and pushing your changes to github and making a
 pull request as with any other contribution to the package. Note that, running the 
 `pkgdown::build_site()` function will edit the files within the docs folder, and 
 probably add some new files. This only applies when editing information from the 
