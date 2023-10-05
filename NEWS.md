@@ -8,6 +8,12 @@
 
 - Part 1: Improved recognition of ActiGraph csv that occassionally confused for Axivity csv #918
 
+- Part 1: Added argument rmc.scalefactor.acc to be used by read.myacc.csv #887
+
+- Vignette: Expanded with paragraph on minimum recording duration #835
+
+- Part 4: More informative error message when advanced sleep log has duplicate or missing dates #925
+
 - Fix recently introduced bug where GGIR environment was not exported to cluster in GGIR part 1, 2, 3, and 5 #910
 
 - Part 2: strategy = 3 and strategy = 5 now can interact with hrs.del.start and hrs.del.end #905

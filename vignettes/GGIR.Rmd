@@ -2006,6 +2006,35 @@ can access [this](https://github.com/Maylor8/RadarPlotGenerator) github reposito
 which provides the R code and detailed instructions on how to make the radar 
 plots using your own data.
 
+
+## Minimum recording duration
+
+GGIR has been designed to process multi-day recordings. The minimum recording duration
+considered by GGIR depends on the type of analysis:
+
+**Running part 1 and 2**
+
+- File size; At least 2MB, where 2MB can be adjusted with argument minimumFileSize. 
+This should not be changed unless you have good reason to believe that a smaller 
+file size is also acceptable.
+
+- Recording duration: At least two long epoch windows 
+(default 60 minutes) in g.readaccfile. The size of this epoch can be altered with
+the second and third value of vector argument `windowsizes`, where the third should not
+be smaller than the second. For example, in short lasting lab-experiments you may
+find it easier to set this to `windowsizes = c(5, 600, 600)` as non-wear detection is
+usually not necessary in lab studies.
+
+**Running part 3 and 4**
+
+- At least one night of data is expected, where a night is expected to have at least the timestamp 
+for midnight. If midnight is not found the sleep detection is skipped.
+
+**Running part 5**
+
+- Ideally two valid consecutive nights and the waking hours in between.
+
+
 # Other Resources
 
 -   The [GGIR package manual](https://CRAN.R-project.org/package=GGIR)

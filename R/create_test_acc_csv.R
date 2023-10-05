@@ -1,5 +1,5 @@
 create_test_acc_csv = function(sf = 3, Nmin = 2000, storagelocation = c(),
-                               starts_at_midnight = FALSE) {
+                               start_time = NULL, starts_at_midnight = FALSE) {
   # function to create a test Actigraph csv file needed for testing GGIR
   # adds variation in angle to enable autocalibration
   # adds some activity periods
@@ -25,7 +25,9 @@ create_test_acc_csv = function(sf = 3, Nmin = 2000, storagelocation = c(),
   
   generate_repeated_timestamp_blocks = function(first_onset, block_duration, period_length, sf, max_timestamp) {
     # Generate a series of timestamp blocks: the first one at first_onset, then one more each period. 
-    
+    if (max_timestamp <= first_onset) {
+      return(c())
+    }
     block_onsets = seq(first_onset + 1, max_timestamp, by = period_length) # one block onset for each period
     block_timestamps = rep(block_onsets, each = block_duration)
     block_timestamps = block_timestamps + rep(0:(block_duration - 1), times = length(block_onsets))
@@ -47,11 +49,17 @@ create_test_acc_csv = function(sf = 3, Nmin = 2000, storagelocation = c(),
   #==================================
   
   if (length(storagelocation) == 0) storagelocation = getwd()
-  if (Nmin < 1000) Nmin = 1000 # only make this file for tests with at least 1k minutes of data
-  if (starts_at_midnight) {
-    start_time = "00:00:00"
+  if (Nmin < 720) Nmin = 720 # only make this file for tests with at least 12 hours of data
+  if (length(start_time) == 0 || start_time == "") {
+    if (starts_at_midnight) {
+      start_time = "00:00:00"
+    } else {
+      start_time = "08:55:30"
+    }
   } else {
-    start_time = "08:55:30"
+    if (is.na(as.POSIXct(start_time, format = "%H:%M:%S"))) {
+      stop(paste0("start_time \"", start_time, "\" not in the right format, should be \"%H:%M:%S\", ex. \"08:55:30\""))
+    }
   }
   header = c(paste0("------------ Data File Created By ActiGraph GT3X+ ActiLife v6.13.3 Firmware v1.8.0 date format M/d/yyyy at ",sf," Hz  Filter Normal -----------"),
              "Serial Number: MOS2D12345678",

@@ -34,7 +34,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   n_ws_perhour = 3600/ws
   #check that matrices match
   if (((nrow(metalong)/(n_ws2_perday)*10) - (nrow(metashort)/n_ws3_perday) * 10) > 1) {
-    print("Matrices 'metalong' and 'metashort' are not compatible")
+    warning("Matrices 'metalong' and 'metashort' are not compatible", call. = FALSE)
   }
   tmi = which(colnames(metalong) == "timestamp")
   time = as.character(as.matrix(metalong[,tmi]))

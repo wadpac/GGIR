@@ -18,7 +18,8 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                           rmc.check4timegaps = FALSE,
                           rmc.col.wear = c(),
                           rmc.doresample=FALSE,
-                          interpolationType=1,
+                          rmc.scalefactor.acc = 1,
+                          interpolationType = 1,
                           PreviousLastValue = c(0, 0, 1),
                           PreviousLastTime = NULL,
                           epochsize = NULL,
@@ -185,7 +186,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   # Convert timestamps
   if (length(rmc.col.time) > 0) {
     if (rmc.unit.time == "POSIX") {
-      P$timestamp = as.POSIXlt(format(P$timestamp), origin = rmc.origin, tz = configtz, format = rmc.format.time)
+      P$timestamp = as.POSIXct(format(P$timestamp), origin = rmc.origin, tz = configtz, format = rmc.format.time)
       checkdec = function(x) {
         # function to check whether timestamp has decimal places
         return(length(unlist(strsplit(as.character(x), "[.]|[,]"))) == 1)
@@ -263,7 +264,6 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
       stop("\nExtraction of timestamps unsuccesful, check timestamp format arguments")
     }
   }
-  
   if (configtz != desiredtz) {
     P$timestamp = as.POSIXct(as.numeric(P$timestamp),
                                  tz = desiredtz, origin = "1970-01-01")
@@ -274,6 +274,11 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     P$accx = P$accx * 1000
     P$accy = P$accy * 1000
     P$accz = P$accz * 1000
+  }
+  if (rmc.scalefactor.acc != 1) {
+    P$accx = P$accx * rmc.scalefactor.acc
+    P$accy = P$accy * rmc.scalefactor.acc
+    P$accz = P$accz * rmc.scalefactor.acc
   }
   # If acceleration is stored in bit values then convert to gravitational unit
   if (length(rmc.bitrate) > 0 & length(rmc.dynamic_range) > 0 & rmc.unit.acc == "bit") {
