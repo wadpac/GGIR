@@ -29,47 +29,47 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   getbrand = function(filename = c(), datafile = c()) {
     sf = c(); isitageneactive = c(); mon = c(); dformat = c() #generating empty variables
     extension = unlist(strsplit(filename,"[.]"))[2]
-
-    switch (extension,
-      "bin" = { dformat = FORMAT$BIN },
-      "cwa" = ,
-      "CWA" = { mon = MONITOR$AXIVITY
-                dformat = FORMAT$CWA
-      },
-      "gt3x" = { mon = MONITOR$ACTIGRAPH
-                 dformat = FORMAT$GT3X
-      },
-      "GT3X" = { mon = MONITOR$ACTIGRAPH
-                 dformat = FORMAT$GT3X
-                 if (file.access(datafile, 2) == 0) { # test for write access to file
-                   # rename file to be lower case gt3x extension
-                   file.rename(from = datafile, to = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile))
-                   datafile = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile)
-                   warning("\nWe have renamed the GT3X file to gt3x because GGIR dependency read.gt3x cannot handle uper case extension")
-                 } else {
-                   stop("\nGGIR needs to change the file extension from GT3X to gt3x, but it does not seem to have write permission to the file.")
-                 }
-      },
-      "csv" = { dformat = FORMAT$CSV
-                testheader = read.csv(datafile, nrow = 1, skip = 0, header = FALSE)
-                
-                if (grepl("ActiGraph", testheader[1], fixed=TRUE)) {
-                  mon = MONITOR$ACTIGRAPH
-                } else {
-                  testcsv = read.csv(datafile, nrow = 10, skip = 10)
-                  testcsvtopline = read.csv(datafile, nrow = 2,skip = 1)
-
-                  if (ncol(testcsv) == 2 && ncol(testcsvtopline) < 4) {
-                    mon = MONITOR$GENEACTIV
-                  } else if (ncol(testcsv) >= 4 && ncol(testcsvtopline) >= 4) {
-                    mon = MONITOR$AXIVITY
-                  } else {
-                    stop(paste0("\nError processing ", filename, ": unrecognised csv file format.\n"))
-                  }
-                }
-      },
-      "wav" = { stop(paste0("\nError processing ", filename, ": Axivity .wav file format is no longer supported.\n")) },
-      { stop(paste0("\nError processing ", filename, ": unrecognised file format.\n")) }
+    
+    switch(extension,
+            "bin" = { dformat = FORMAT$BIN },
+            "cwa" = ,
+            "CWA" = { mon = MONITOR$AXIVITY
+            dformat = FORMAT$CWA
+            },
+            "gt3x" = { mon = MONITOR$ACTIGRAPH
+            dformat = FORMAT$GT3X
+            },
+            "GT3X" = { mon = MONITOR$ACTIGRAPH
+            dformat = FORMAT$GT3X
+            if (file.access(datafile, 2) == 0) { # test for write access to file
+              # rename file to be lower case gt3x extension
+              file.rename(from = datafile, to = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile))
+              datafile = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile)
+              warning("\nWe have renamed the GT3X file to gt3x because GGIR dependency read.gt3x cannot handle uper case extension")
+            } else {
+              stop("\nGGIR needs to change the file extension from GT3X to gt3x, but it does not seem to have write permission to the file.")
+            }
+            },
+            "csv" = { dformat = FORMAT$CSV
+            testheader = read.csv(datafile, nrow = 1, skip = 0, header = FALSE)
+            
+            if (grepl("ActiGraph", testheader[1], fixed=TRUE)) {
+              mon = MONITOR$ACTIGRAPH
+            } else {
+              testcsv = read.csv(datafile, nrow = 10, skip = 10)
+              testcsvtopline = read.csv(datafile, nrow = 2,skip = 1)
+              
+              if (ncol(testcsv) == 2 && ncol(testcsvtopline) < 4) {
+                mon = MONITOR$GENEACTIV
+              } else if (ncol(testcsv) >= 4 && ncol(testcsvtopline) >= 4) {
+                mon = MONITOR$AXIVITY
+              } else {
+                stop(paste0("\nError processing ", filename, ": unrecognised csv file format.\n"))
+              }
+            }
+            },
+            "wav" = { stop(paste0("\nError processing ", filename, ": Axivity .wav file format is no longer supported.\n")) },
+            { stop(paste0("\nError processing ", filename, ": unrecognised file format.\n")) }
     )
     
     if (ismovisens(datafile)) {
@@ -108,7 +108,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
             if (length(sf_r) > 0 && !is.na(sf_r)) {
               if (sf_r != sf && abs(sf_r - sf) > 5) { # use pageheader sample frequency if it is not the same as header sample frequency
                 sf = sf_r
-                print(paste("sample frequency used from page header: ", sf, " Hz", sep = ""))
+                warning(paste0("sample frequency used from page header: ", sf, " Hz"))
               }
             }
           }
@@ -168,7 +168,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   fornames = c("bin", "csv", "wav", "cwa", "csv", "gt3x") #format names
   
   if (length(filename) == 0) {
-    print("no files to analyse")
+    warning("no files to analyse", call. = FALSE)
   }
   
   if (length(params_rawdata[["rmc.firstrow.acc"]]) == 0) {
@@ -205,9 +205,11 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
                                     rmc.headername.recordingid = params_rawdata[["rmc.headername.sn"]],
                                     rmc.header.structure = params_rawdata[["rmc.header.structure"]],
                                     rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]],
+                                    rmc.scalefactor.acc = params_rawdata[["rmc.scalefactor.acc"]],
                                     desiredtz = desiredtz,
                                     configtz = configtz)
     if (Pusercsvformat$header == "no header" || is.null(Pusercsvformat$header$sample_rate)) {
+      
       sf = params_rawdata[["rmc.sf"]]
       if (is.null(sf)) {
         stop("\nFile header doesn't specify sample rate. Please provide rmc.sf value to process ", datafile)

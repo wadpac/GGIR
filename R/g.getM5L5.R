@@ -2,11 +2,12 @@ g.getM5L5 = function(varnum, epochSize, t0_LFMF, t1_LFMF, M5L5res, winhr,
                      qM5L5  = c(), iglevels = c(), MX.ig.min.dur = 10) {
   #diurnal pattern features extracted only meaningful if more than 16 hours
   meanVarnum = mean(varnum)
-  do.M5L5 = meanVarnum > 0 # & length(varnum) > 1440*(60/epochSize)
-  if (length(do.M5L5) == 0 | is.na(do.M5L5) == TRUE) do.M5L5 = FALSE
+  do.M5L5 = meanVarnum > 0 # & length(varnum) > 1440*(60/ws3)
+  nwindow_f = (t1_LFMF-winhr) - t0_LFMF #number of windows for L5M5 analyses
+  if (length(do.M5L5) == 0 | is.na(do.M5L5) == TRUE | nwindow_f < 1) do.M5L5 = FALSE
+  
   if (do.M5L5 == TRUE) { # only do the analysis if varnum has values other than zero
     reso = M5L5res #resolution
-    nwindow_f = (t1_LFMF - winhr) - t0_LFMF #number of windows for L5M5 analyses
     nwindow_f = nwindow_f * (60/reso)
     DAYrunav5 = matrix(NA,nwindow_f,1)
     first_hri = (t0_LFMF*(60/reso))
