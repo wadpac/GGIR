@@ -115,5 +115,22 @@ aggregateEvent = function(metric_name, epochsize,
       ds_names[fi] = varnameevent; fi = fi + 1
     }
   }
+  # # Event based MXLX
+  # TO DO:
+  # - pass on winhr
+  # - pass on params_247[["M5L5res"]]
+  # - calculate variables below
+  # - add these to output data.frame
+  # - re-use new MXLX function to replace MXLX functionality elsewhere in GGIR
+  
+  # Code:
+  # tseg = c(1, length(varnum) / (60 * (60 / ws3)) + (winhr_value - (params_247[["M5L5res"]] / 60)))
+  # MXLX(Y = cadence, X = winhr_value,
+  #      epochSize = ws3, tseg = tseg, resolutionMin = params_247[["M5L5res"]])
+  
+  # Describe for MX and LX:
+  # cadence in the form of mean, percentiles and timing.
+  # Acceleration for the window in the form of mean, percentiles.
+  
   invisible(list(ds_names = ds_names, daysummary = daysummary, fi = fi))
 }
