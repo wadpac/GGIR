@@ -158,7 +158,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
       atik = which(atestlist == max(atestlist))[1]
       ignore_until_hours = (atik - 1) / (3600/ws2)
       params_cleaning[["hrs.del.start"]] = ignore_until_hours + params_cleaning[["hrs.del.start"]]
-      ignore_from_hours = atik / (3600/ws2)
+      ignore_from_hours = (atik - 1) / (3600/ws2)
       params_cleaning[["maxdur"]] = ((ignore_from_hours/24) + params_cleaning[["ndayswindow"]]) - (params_cleaning[["hrs.del.end"]]/24)
       if (params_cleaning[["maxdur"]] > NDAYS) params_cleaning[["maxdur"]] = NDAYS
       # now calculate r4
@@ -193,7 +193,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
       atik = 1 # intitialise atik as 1, which will be used in case ndayswindow is longer than recording days
       if (!is.null(atestlist)) atik = which(atestlist == max(atestlist))[1]
       #ignore everything before the first ndayswindow midnight plus hrs.del.start
-      ignore_until = (midnightsi[atik]) + (params_cleaning[["hrs.del.start"]]*(3600/ws2)) - 1 # minus 1 for not including the last long epoch
+      ignore_until = (midnightsi[atik]) + (params_cleaning[["hrs.del.start"]]*(3600/ws2)) - 1 # minus 1 for not ignoring the first epoch in ndayswindow
       if (ignore_until > 0) r4[1:ignore_until] = 1 #-1 because first midnight 00:00 itself contributes to the first full day
       #ignore everything after the last midnight plus hrs.del.end
       ignore_from = midnightsi[atik + params_cleaning[["ndayswindow"]]] - (params_cleaning[["hrs.del.end"]]*(3600/ws2))

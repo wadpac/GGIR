@@ -51,13 +51,19 @@ test_that("chainof5parts", {
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
+  load("output_test/meta/basic/meta_123A_testaccfile.csv.RData")
   expect_equal(nrow(IMP$metashort), 11280)
-  expect_equal(rle(IMP$rout$r4)$lengths[1], 11)
-  expect_equal(rle(IMP$rout$r4)$lengths[3], 12)
+  expect_equal(rle(IMP$rout$r4)$lengths[1], 10)
+  expect_equal(rle(IMP$rout$r4)$lengths[3], 13)
   expect_equal(round(mean(IMP$metashort$ENMO), digits = 5), 0.00802, tolerance = 3)
   expect_equal(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 3), 1)
   expect_equal(SUM$summary$`N valid WEdays`, 1)
   expect_equal(SUM$summary$`N valid WKdays`, 2)
+  # check the ndayswindow included is 24 hours exactly 
+  # ndayswindow = 1 with windowsizes = c(15, 3600, 3600)
+  first_epoch_in_protocol = rle(IMP$rout$r4)$lengths[1] + 1
+  last_epoch_in_protocol = max(which(IMP$rout$r4 == 0))
+  expect_equal(last_epoch_in_protocol - first_epoch_in_protocol + 1,  24)
   
   # part 2 with strategy = 3 and hrs.del.start = 6 and hrs.del.end = 6
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
@@ -69,8 +75,13 @@ test_that("chainof5parts", {
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_equal(nrow(IMP$metashort), 11280)
-  expect_equal(rle(IMP$rout$r4)$lengths[1], 17) # removed 6 hours from the ndayswindow at the beginning
-  expect_equal(rle(IMP$rout$r4)$lengths[3], 18) # removed 6 hours from the ndayswindow at the end
+  expect_equal(rle(IMP$rout$r4)$lengths[1], 16) # removed 6 hours from the ndayswindow at the beginning
+  expect_equal(rle(IMP$rout$r4)$lengths[3], 19) # removed 6 hours from the ndayswindow at the end
+  # check the ndayswindow included is 12 hours exactly (24 minus hrs.del.start/end)
+  # ndayswindow = 1 with windowsizes = c(15, 3600, 3600)
+  first_epoch_in_protocol = rle(IMP$rout$r4)$lengths[1] + 1
+  last_epoch_in_protocol = max(which(IMP$rout$r4 == 0))
+  expect_equal(last_epoch_in_protocol - first_epoch_in_protocol + 1,  12)
   
   # part 2 with strategy = 5
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
@@ -88,6 +99,11 @@ test_that("chainof5parts", {
   expect_equal(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 3), 1)
   expect_equal(SUM$summary$`N valid WEdays`, 1)
   expect_equal(SUM$summary$`N valid WKdays`, 2)
+  # check the ndayswindow included is 24 hours exactly
+  # ndayswindow = 1 with windowsizes = c(15, 3600, 3600)
+  first_epoch_in_protocol = rle(IMP$rout$r4)$lengths[1] + 1
+  last_epoch_in_protocol = max(which(IMP$rout$r4 == 0))
+  expect_equal(last_epoch_in_protocol - first_epoch_in_protocol + 1,  24)
   
   # part 2 with strategy = 5 and hrs.del.start = 6 and hrs.del.end = 6
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
@@ -101,7 +117,11 @@ test_that("chainof5parts", {
   expect_equal(nrow(IMP$metashort), 11280)
   expect_equal(rle(IMP$rout$r4)$lengths[1], 21) # removed 6 hours from the ndayswindow at the beginning
   expect_equal(rle(IMP$rout$r4)$lengths[3], 14) # removed 6 hours from the ndayswindow at the end
-
+  # check the ndayswindow included is 12 hours exactly (24 minus hrs.del.start/end)
+  # ndayswindow = 1 with windowsizes = c(15, 3600, 3600)
+  first_epoch_in_protocol = rle(IMP$rout$r4)$lengths[1] + 1
+  last_epoch_in_protocol = max(which(IMP$rout$r4 == 0))
+  expect_equal(last_epoch_in_protocol - first_epoch_in_protocol + 1,  12)
   
   # part 2 with strategy = 2 and iglevels = 1
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
