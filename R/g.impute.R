@@ -154,24 +154,27 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
           atestlist[ati] = 0
         }
       }
-      # atik is the index where the most active ndayswindow starts
+      # atik is the ws2 index where the most active ndayswindow starts
       atik = which(atestlist == max(atestlist))[1]
-      params_cleaning[["hrs.del.start"]] = (atik * n_ws_perhour) + params_cleaning[["hrs.del.start"]]
-      params_cleaning[["maxdur"]] = ((atik/n_ws_perday) + params_cleaning[["ndayswindow"]]) - (params_cleaning[["hrs.del.end"]]/n_ws_perday)
+      ignore_until_hours = (atik - 1) / (3600/ws2)
+      params_cleaning[["hrs.del.start"]] = ignore_until_hours + params_cleaning[["hrs.del.start"]]
+      ignore_from_hours = atik / (3600/ws2)
+      params_cleaning[["maxdur"]] = ((ignore_from_hours/24) + params_cleaning[["ndayswindow"]]) - (params_cleaning[["hrs.del.end"]]/24)
       if (params_cleaning[["maxdur"]] > NDAYS) params_cleaning[["maxdur"]] = NDAYS
       # now calculate r4
       if (params_cleaning[["hrs.del.start"]] > 0) {
         r4[1:(params_cleaning[["hrs.del.start"]]*(3600/ws2))] = 1
       }
-      if (params_cleaning[["hrs.del.end"]] > 0) {
-        if (length(r4) > params_cleaning[["hrs.del.end"]]*(3600/ws2)) {
-          r4[((length(r4) + 1) - (params_cleaning[["hrs.del.end"]]*(3600/ws2))):length(r4)] = 1
-        } else {
-          r4[1:length(r4)] = 1
-        }
-      }
+      # if (params_cleaning[["hrs.del.end"]] > 0) {
+      #   if (length(r4) > params_cleaning[["hrs.del.end"]]*(3600/ws2)) {
+      #     r4[((length(r4) + 1) - (params_cleaning[["hrs.del.end"]]*(3600/ws2))):length(r4)] = 1
+      #   } else {
+      #     r4[1:length(r4)] = 1
+      #   }
+      # }
       if (params_cleaning[["maxdur"]] > 0 & (length(r4) > ((params_cleaning[["maxdur"]]*n_ws2_perday) + 1))) {
-        r4[((params_cleaning[["maxdur"]]*n_ws2_perday) + 1):length(r4)] = 1
+        ignore_from = (params_cleaning[["maxdur"]]*n_ws2_perday) + 1
+        r4[ignore_from:length(r4)] = 1
       }
       if (LD < 1440) {
         r4 = r4[1:floor(LD/(ws2/60))]
@@ -189,10 +192,9 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
       # atik is the index where the most active ndayswindow starts
       atik = 1 # intitialise atik as 1, which will be used in case ndayswindow is longer than recording days
       if (!is.null(atestlist)) atik = which(atestlist == max(atestlist))[1]
-      if (firstmidnighti != 1) { #ignore everything before the first midnight plus hrs.del.start
-        ignore_until = (midnightsi[atik] - 1) + (params_cleaning[["hrs.del.start"]]*(3600/ws2))
-        r4[1:ignore_until] = 1 #-1 because first midnight 00:00 itself contributes to the first full day
-      }
+      #ignore everything before the first ndayswindow midnight plus hrs.del.start
+      ignore_until = (midnightsi[atik]) + (params_cleaning[["hrs.del.start"]]*(3600/ws2)) - 1 # minus 1 for not including the last long epoch
+      if (ignore_until > 0) r4[1:ignore_until] = 1 #-1 because first midnight 00:00 itself contributes to the first full day
       #ignore everything after the last midnight plus hrs.del.end
       ignore_from = midnightsi[atik + params_cleaning[["ndayswindow"]]] - (params_cleaning[["hrs.del.end"]]*(3600/ws2))
       # if ndayswindow is higher than number of midnights, use last midnight
