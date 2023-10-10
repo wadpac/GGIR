@@ -1,20 +1,14 @@
 part6PairwiseAggregation = function(outputdir = NULL, desiredtz = "", verbose = TRUE) {
   #----------------------------------------------------------
   # declare internal functions only used in this function:
-  remove_invalid = function(wx, valpair) {
-    # ignore wake-up times that are not surrounded by valid data
+  remove_invalid = function(wx, N) {
     # wx are indices for wakeup times
-    # valpaid is a Boolean vector to indicate for each 
-    # time point whether there was valid data
-    wx_remove = NULL # wx_remove is a vector with wake up indices to remove
-    if (length(wx) > 0) {
-      for (k in 1:length(wx)) {
-        if (wx[k] > length(valpair) - 15) {
-          # Do not consider wake if it is within 15 minutes fron the end of the recording
-          wx_remove = c(wx_remove, wx[k])
-        }
-      }
-      wx = wx[which(wx %in% wx_remove == FALSE)]
+    # N is length of time serieses
+    valid = which(wx <= N - 15)
+    if (length(valid) > 0) {
+      wx = wx[valid]
+    } else {
+      wx = NULL
     }
     return(wx)
   }
@@ -94,9 +88,9 @@ part6PairwiseAggregation = function(outputdir = NULL, desiredtz = "", verbose = 
           index_wake1 = which(dataForPair[, paste0("wakeup.",m1)] == 1)
           index_wake2 = which(dataForPair[, paste0("wakeup.",m2)] == 1)
           index_onsetpair = rowSums(dataForPair[, paste0("onset.", c(m1, m2))])
-          # ignore wake-up times that are not surrounded by valid data
-          index_wake1 = remove_invalid(wx = index_wake1, valpair = dataForPair[,validpaircol])
-          index_wake2 = remove_invalid(wx = index_wake2, valpair = dataForPair[,validpaircol])
+          # ignore wake-up times that are  within 15 minutes before the end of the recording
+          index_wake1 = remove_invalid(wx = index_wake1, N = length(dataForPair[,validpaircol]))
+          index_wake2 = remove_invalid(wx = index_wake2, N = length(dataForPair[,validpaircol]))
           # pair nearest times
           N = length(index_wake1)
           do.pair.sum = FALSE
