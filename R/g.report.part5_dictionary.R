@@ -142,8 +142,9 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
           if ("WD" %in% elements) agg = "- weekdays average"
           if ("WE" %in% elements) agg = "- weekend days average"
         } else {
+          browser()
           # adapt definition of valid days to part 5 reports
-          def = gsub("part 2, 4 and 5", "part 5", def)
+          def = gsub("part 2, 4, and 5", "part 5", def)
         }
         def = paste(def, agg)
       }
