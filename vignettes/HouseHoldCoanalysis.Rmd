@@ -1,0 +1,131 @@
+---
+title: "Household Co-Analysis"
+output:
+   html_document:
+    toc : true
+    number_sections: true
+    toc_depth: 3
+    toc_float: true #by turning this on, the table of contents moves to the left of the page.
+urlcolor: blue
+vignette: >
+  %\VignetteIndexEntry{Household Co-Analysis}
+  \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}
+knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
+```
+
+See also complementary vignettes on:
+[General introduction to GGIR](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html), [Day segment analyses](https://CRAN.R-project.org/package=GGIR/vignettes/TutorialDaySegmentAnalyses.html), [GGIR parameters](https://CRAN.R-project.org/package=GGIR/vignettes/GGIRParameters.html), [Embedding external functions (pdf)](https://CRAN.R-project.org/package=GGIR/vignettes/ExternalFunction.pdf), and [Reading ad-hoc csv file formats](https://CRAN.R-project.org/package=GGIR/vignettes/readmyacccsv.html).
+
+
+# Introduction
+
+Household Co-analysis is the analysis of how sleep and physical activity relate
+between members of the same household.
+
+
+## Preparing accelerometer file names
+
+The household co-analysis require that households and family member can be recognised.
+To do this the code looks at the file names, where it assumes the following logic:
+
+`StudyNumber-HouseholdID-MemberID_anyotherinformation.bin`
+
+This example is for a .bin file, but the same applies to .cwa or .csv files.
+
+For example:
+
+`001-002-001_12345-2023.bin`
+`001-002-002_23456-2023.bin`
+`001-002-M_23456-2023.bin`
+
+will be recognised as household `002` with member `001`, `002`, and `M`.
+
+## Configuring GGIR
+
+Set the second value of argument `windowsizes` to 60. This ensures that light and 
+temperature, if available, are aggregated per minutes.
+
+Set argument `part5_agg2_60seconds` to TRUE. This ensures that GGIR part 5 stores
+the time series at 1 minute resolution.
+
+Run GGIR with part 1 to 6, with `mode = 1:6`.
+
+Set `part6HCA = TRUE` to tell GGIR to perform Household Co-Analysis.
+
+Set `part6_threshold_combi` to "30_100_400" where 30, 100 and 400 need to correspond
+to the accelerometer threshold combination that is used in part 5 that you want to use
+in part 6.
+
+Set `timewindow = WW` to run part 5 analysis based on waking-up to waking-up windows.
+
+Other GGIR arguments can be set according to your own needs.
+
+# Algorithm
+
+In GGIR part 1, 2, 3, 4, and 5 each recording is processed individually without
+considering relations between recordings. Next, part 6 is subdivided in alligning
+the time series produced by part 1 and 5 per household, and the pairwise analysis of the data.
+
+## Align individuals
+
+Household members with only one member are ignored.
+Next, per household and per household member the code loads and merges the time
+series produced by GGIR part 1 and part 5. Days, defined from waking-up to
+waking-up, are removed if they have less than 20% valid data during waking hours,
+the sleep period time window, or the day as a whole. Next, time series are completed
+with indicates of valid household member pairs for each time points.
+
+Finally, we store:
+- The aligned time series per household in separate csv files in the GGIR
+output directory (`.../results/part6HouseholdCoAnalysis/alignedTimeseries`)
+- A pdf with plots of the aligned time series to facilitate visual inspection of
+the data completeness per household.
+
+**TO DO: Insert example time series visualisation**
+**TO DO: Insert example time series file dictionary**
+
+## Pairwise analysis
+
+Per household we identify all possible member pairs and loop over these pairs.
+
+Per member pair the code identify wake-up time pairs. Here, wake-up times that occur 
+within the last 15 minutes of the time series are ignored as we need at least some 
+recording time to quantify behaviour after waking up.
+
+Per wake-up pair we assess who woke up first and second, the time difference, and
+the corresponding calendar dates of waking up.
+
+Next, the code quantifies:
+- Activity of person who first woke up during minute before second person woke up
+- Activity of second person to wake up before they woke up
+- LUX of person who first woke up during tminute before second person woke up
+- LUX of second person to wake up before they woke up.
+
+Describe matching waking hours between pairs:
+- Correlation between continuous acceleration values (ENMO metric)
+- Derive binary class of inactivity/active (ENMO metric, and threshold < 50)
+- ICC based on binary scores (irr package, model=twoway, type=agreement, unit=single)
+- Cohen’s Kappa (psych package)
+- Similarity in binary scores (calculation in line with Sleep Regularity Index)
+
+Describe noon-noon window with a stronger focus on sleep:
+-	Describe binary class of sleep/wakefulness (note: does not attempt to classify daytime naps) 
+-	ICC based on binary scores (irr package, model=twoway, type=agreement, unit=single)
+-	Cohen’s Kappa (psych package)
+-	Similarity in binary scores (calculation in line with Sleep Regularity Index)
+
+Describe wakefulness dynamics during the SPT prior to wakeup
+-	Look up indices of spt prior to wakeup where both individuals where in SPT.
+-	Assess fraction of data valid
+-	Identify wake up times during the night
+
+For each wake-up time:
+-	Assess whether both persons woke up at the same time, other person wake up within 5 minutes, or other person does not wake up within 5 minutes.
+-	Store output to csv one row per unique household pair, with columns to clarify who the household members are in the pair and from which household they are.
+
+**TO DO: Insert data dictionary or integrate data dictionary in overview above**
+**TO DO: Insert example of output file**
