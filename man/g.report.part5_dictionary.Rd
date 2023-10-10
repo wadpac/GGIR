@@ -10,7 +10,7 @@
   for direct use by package user.
 }
 \usage{
-g.report.part5_dictionary(metadatadir, sep_reports = ",", verbose = TRUE)
+g.report.part5_dictionary(metadatadir, sep_reports = ",")
 }
 \arguments{
   \item{metadatadir}{
@@ -23,9 +23,6 @@ g.report.part5_dictionary(metadatadir, sep_reports = ",", verbose = TRUE)
     Character (default = ",").
     Value used as sep argument in \link[utils]{write.csv} for writing 
     csv files containing the GGIR reports.}
-  \item{verbose}{
-    See details in \link{GGIR}.
-  }
 }
 \value{
   Function does not produce data, but only writes data dictionaries for the

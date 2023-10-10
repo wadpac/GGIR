@@ -1,4 +1,4 @@
-g.report.part5_dictionary = function(metadatadir, sep_reports = ",", verbose = TRUE) {
+g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
   # identify individual reports
   reports = dir(file.path(metadatadir, "results"), full.names = TRUE, 
                 pattern = "^part5.*\\.csv$")
@@ -136,11 +136,14 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",", verbose = T
       # only for personsummary - aggregation method
       if (grepl("personsummary", reports[ri])) {
         agg = NULL
-        if (!(cnames[coli] %in% c("Nvaliddays_WD", "Nvaliddays_WE"))) {
+        if (!(cnames[coli] %in% c("Nvaliddays", "Nvaliddays_WD", "Nvaliddays_WE"))) {
           if ("pla" %in% elements) agg = "- plain average"
           if ("wei" %in% elements) agg = "- weighted average"
           if ("WD" %in% elements) agg = "- weekdays average"
           if ("WE" %in% elements) agg = "- weekend days average"
+        } else {
+          # adapt definition of valid days to part 5 reports
+          def = gsub("part 2, 4 and 5", "part 5", def)
         }
         def = paste(def, agg)
       }
