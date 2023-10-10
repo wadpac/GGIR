@@ -19,6 +19,8 @@ baseDictionary = list(
   Nvaliddays = "Number of valid days based on the cleaning parameters for part 2, 4, and 5",
   Nvaliddays_WD = "Number of valid weekdays based on the cleaning parameters for part 2, 4, and 5",
   Nvaliddays_WE = "Number of valid weekend days based on the cleaning parameters for part 2, 4, and 5",
+  Nvaliddays_AL10F_WD = "Number of valid weekdays with at least 10 fragments (fragmentation analysis)",
+  Nvaliddays_AL10F_WE = "Number of valid weekend days with at least 10 fragments (fragmentation analysis)",
   
   # sleep info in part 4 and part 5 -------
   daysleeper = "Night classified as daysleeper (i.e., wake-up time after noon)",

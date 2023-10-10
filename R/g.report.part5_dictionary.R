@@ -1,4 +1,27 @@
 g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
+  # internal function to get class ------------------------------------------
+  getclass = function(x) {
+    if (length(x) == 0) return(NULL)
+    class = NULL
+    if (grepl("2", x)) x = unlist(strsplit(x, "2"))
+    for (i in 1:length(x)) {
+      if (x[i] == "IN") class[i] = "inactivity"
+      if (x[i] == "LIG" | x[i] == "LIPA") class[i] = "light physical activity"
+      if (x[i] == "MOD") class[i] = "moderate physical activity"
+      if (x[i] == "VIG") class[i] = "vigorous physical activity"
+      if (x[i] == "MVPA") class[i] = "moderate-to-vigorous physical activity"
+      if (x[i] == "PA") class[i] = "physical activity"
+      if (x[i] == "sleep") class[i] = "sleep"
+      if (x[i] == "nonwear") class[i] = "non-wear time"
+      if (x[i] == "mostactive60min") class = "the most active 60 minutes of the day are accumulated"
+      if (x[i] == "mostactive30min") class = "the most active 30 minutes of the day are accumulated"
+    }
+    if (length(class) == 2) class = paste(class[1], "to", class[2])
+    return(class)
+  }
+  # -------------------------------------------------------------------------
+  # main script -------------------------------------------------------------
+  # -------------------------------------------------------------------------
   # identify individual reports
   reports = dir(file.path(metadatadir, "results"), full.names = TRUE, 
                 pattern = "^part5.*\\.csv$")
@@ -16,7 +39,7 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
       what = window = class = unit = NULL
       # get variable names from baseDictionary
       nam = gsub("_pla|_wei|_WD|_WE", "", cnames[coli])
-      if (cnames[coli] %in% c("Nvaliddays_WD", "Nvaliddays_WE")) nam = cnames[coli]
+      if (grepl("Nvaliddays", cnames[coli])) nam = cnames[coli]
       if (nam %in% names(baseDictionary)) {
         what = baseDictionary[[nam]]
       }
@@ -35,6 +58,33 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
           what = "Number of blocks"
         } else if ("quantile" %in% elements) {
           what = "Acceleration above which (percentile)"
+        } 
+        # fragmentation metrics
+        if ("FRAG" %in% elements) {
+          what_bu = tolower(what)
+          what = "Fragmentation analysis:"
+          if ("TP" %in% elements) {
+            what = paste(what, "transition probability (%)")
+          } else if ("Nfrag" %in% elements) {
+            what = paste(what, "number of fragments")
+          } else if ("NFragPM" %in% elements) {
+            what = paste(what, "number of fragments per minute")
+          } else if ("mean" %in% elements) {
+            what = paste(what, "mean duration in the")
+          } else if ("Gini" %in% elements) {
+            what = paste(what, "Gini inequality index as calculated in the ineq R package")
+          } else if ("CoV" %in% elements) {
+            what = paste(what, "Coefficient of variance as proposed in https://shorturl.at/nsDU9")
+          } else if ("alpha" %in% elements) {
+            what = paste(what, "Alpha power law exponent metric as proposed in https://shorturl.at/gwzB8")
+          } else if ("x0" %in% elements) {
+            what = paste(what, "x0.5 power law exponent metric as proposed in https://shorturl.at/gwzB8")
+          } else if ("W0" %in% elements) {
+            what = paste(what, "W0.5 power law exponent metric as proposed in https://shorturl.at/gwzB8")
+          } else if ("SD" %in% elements) {
+            what = paste(what, "standard deviation in the")
+          }
+          what = paste(what, what_bu)
         }
         # WINDOW -----------------------------------------------------------
         if ("day" %in% elements & "spt" %in% elements) {
@@ -45,30 +95,17 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
           window = "during the sleep period time"
         }
         # CLASS ------------------------------------------------------------
-        if ("IN" %in% elements) {
-          class = "inactivity"
-        } else if ("LIG" %in% elements) {
-          class = "light physical activity"
-        } else if ("MOD" %in% elements) {
-          class = "moderate physical activity"
-        } else if ("VIG" %in% elements) {
-          class = "vigorous physical activity"
-        } else if ("MVPA" %in% elements) {
-          class = "moderate-to-vigorous physical activity"
-        } else if ("sleep" %in% elements) {
-          class = "sleep"
-          if ("efficiency" %in% elements) {
-            class = "Sleep efficiency"
-            unit = "(%)"
-          }
-        } else if ("nonwear" %in% elements) {
-          class = "non-wear time"
-        } else if ("mostactive60min" %in% elements) {
-          class = "the most active 60 minutes of the day are accumulated"
-        } else if ("mostactive30min" %in% elements) {
-          class = "the most active 30 minutes of the day are accumulated"
+        classes = c("IN", "LIG", "LIPA", "MOD", "VIG", "MVPA", "PA", 
+                    "sleep", "nonwear", "mostactive60min", "mostactive30min",
+                    "IN2PA", "PA2IN", "IN2LIPA", "IN2MVPA", "sleep2wake", "wake2sleep")
+        x = elements[which(elements %in% classes)]
+        class = getclass(x)
+        # sleep efficiency (overwrite prev classification as sleep)
+        if ("sleep" %in% elements & "efficiency" %in% elements) {
+          class = "Sleep efficiency"
+          unit = "(%)"
         }
-        # wakefulness after sleep onset
+        # wakefulness after sleep onset (overwrite prev classification of intensity)
         if ("wake" %in% elements) class = paste("awake", class)
         # bouts
         if ("bts" %in% elements & !("Nbouts" %in% elements)) {
@@ -91,11 +128,17 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
           minboutdur = min(boutdurs)
           class = paste("unbouted", class, paste0("(",0,"-",minboutdur, " min)"))
         }
-        # mostactive30/60min
-        
+        # intensity gradient
+        if ("ig" %in% elements) {
+          if ("gradient" %in% elements) class = "Intensity gradient"
+          if ("rsquared" %in% elements) class = paste("R-squared from the log-log time to intensity regression to calculate the intensity gradient")
+          if ("intercept" %in% elements) class = paste("Intercept from the log-log time to intensity regression to calculate the intensity gradient")
+        }
         # connector (in)
         if (!is.null(class)) {
-          if (class != "Sleep efficiency" & substr(class, 1, 8) != "the most") class = paste("in", class)
+          if (class != "Sleep efficiency" 
+              & substr(class, 1, 8) != "the most"
+              & !("ig" %in% elements)) class = paste("in", class)
         }
         # UNITS -------------------------------------------------------------------
         if ("min" %in% elements) {
@@ -148,7 +191,7 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
       # only for personsummary - aggregation method
       if (grepl("personsummary", reports[ri])) {
         agg = NULL
-        if (!(cnames[coli] %in% c("Nvaliddays", "Nvaliddays_WD", "Nvaliddays_WE"))) {
+        if (!grepl("Nvaliddays", cnames[coli])) {
           if ("pla" %in% elements) agg = "- plain average"
           if ("wei" %in% elements) agg = "- weighted average"
           if ("WD" %in% elements) agg = "- weekdays average"
