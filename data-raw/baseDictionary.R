@@ -20,10 +20,6 @@ baseDictionary = list(
   Nvaliddays_WD = "Number of valid weekdays based on the cleaning parameters for part 2, 4, and 5",
   Nvaliddays_WE = "Number of valid weekend days based on the cleaning parameters for part 2, 4, and 5",
   
-  # acceleration distribution in part 2 and part 5 ------
-  quantile_mostactive60min_mg = "Acceleration above which (percentile) the most active 60 minutes of the day are accumulated (mili-g units)",
-  quantile_mostactive30min_mg = "Acceleration above which (percentile) the most active 30 minutes of the day are accumulated (mili-g units)",
-  
   # sleep info in part 4 and part 5 -------
   daysleeper = "Night classified as daysleeper (i.e., wake-up time after noon)",
   cleaningcode = "Cleaning code for the sleep period time classification (0=no problem; 1=no sleeplog; 2=insufficient valid data; 3=no acc data available; 4=no nights; 5=guider-defined SPT; 6=SPT not found)",

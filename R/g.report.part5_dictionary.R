@@ -15,8 +15,10 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
       # definitions will be a combination of what, window, class, unit
       what = window = class = unit = NULL
       # get variable names from baseDictionary
-      if (cnames[coli] %in% names(baseDictionary)) {
-        what = baseDictionary[[cnames[coli]]]
+      nam = gsub("_pla|_wei|_WD|_WE", "", cnames[coli])
+      if (cnames[coli] %in% c("Nvaliddays_WD", "Nvaliddays_WE")) nam = cnames[coli]
+      if (nam %in% names(baseDictionary)) {
+        what = baseDictionary[[nam]]
       }
       # if the variable is not in baseDictionary, extract definition:
       if (is.null(what)) {
@@ -31,6 +33,8 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
           what = "Number of bouts"
         } else if ("Nblocks" %in% elements) {
           what = "Number of blocks"
+        } else if ("quantile" %in% elements) {
+          what = "Acceleration above which (percentile)"
         }
         # WINDOW -----------------------------------------------------------
         if ("day" %in% elements & "spt" %in% elements) {
@@ -59,7 +63,12 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
           }
         } else if ("nonwear" %in% elements) {
           class = "non-wear time"
-        } 
+        } else if ("mostactive60min" %in% elements) {
+          class = "the most active 60 minutes of the day are accumulated"
+        } else if ("mostactive30min" %in% elements) {
+          class = "the most active 30 minutes of the day are accumulated"
+        }
+        # wakefulness after sleep onset
         if ("wake" %in% elements) class = paste("awake", class)
         # bouts
         if ("bts" %in% elements & !("Nbouts" %in% elements)) {
@@ -82,8 +91,11 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
           minboutdur = min(boutdurs)
           class = paste("unbouted", class, paste0("(",0,"-",minboutdur, " min)"))
         }
+        # mostactive30/60min
+        
+        # connector (in)
         if (!is.null(class)) {
-          if (class != "Sleep efficiency") class = paste("in", class)
+          if (class != "Sleep efficiency" & substr(class, 1, 8) != "the most") class = paste("in", class)
         }
         # UNITS -------------------------------------------------------------------
         if ("min" %in% elements) {
@@ -142,7 +154,6 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
           if ("WD" %in% elements) agg = "- weekdays average"
           if ("WE" %in% elements) agg = "- weekend days average"
         } else {
-          browser()
           # adapt definition of valid days to part 5 reports
           def = gsub("part 2, 4, and 5", "part 5", def)
         }
