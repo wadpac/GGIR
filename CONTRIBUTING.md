@@ -76,8 +76,36 @@ The folder vignettes in the GGIR repository contains the .Rmd files. The .Rmd fi
 that do not start with the word 'chapter' are used for the traditional package vignettes
 as hosted by CRAN. Use these files to edit an existing vignette, or use the structure
 of any of the vignettes to build up a new one. All .Rmd files which name 
-starts with the word 'chapter' are ignored. These chapter-vignetes are used only for
+starts with the word 'chapter' are ignored. These chapter-vignettes are used only for
 the github.io website (see [next section](#github.io-website)).
+
+**To create a new vignette for CRAN**
+
+To create a new package vignette for CRAN, please use `usethis::use_vignette()` and
+make sure the name of the vignette file does not start by "chapter". For example,
+if you want to create a new vignette on sleep for CRAN, you may do the following:
+
+```
+usethis::use_vignette(name = "sleep", 
+                      title = "How to analyse your sleep data in GGIR")
+```
+This would create a new "sleep.Rmd" file within the vignettes folder in the GGIR
+repository. Then you can edit this file to build up the vignette.
+
+**To remove a vignette from CRAN**
+
+There are two ways to remove a vignette from CRAN:
+
+1. Removing the Rmd file corresponding to the vignette in the vignettes folder,
+note that the file and the information will be lost.
+2. Adding the path to the vignette in the .Rbuildignore file available in the
+GGIR repository. For example, to remove the GGIRParameters vignette from CRAN, you
+can add:
+
+```
+^vignettes/GGIRParameters.Rmd
+
+```
 
 #### github.io website
 
@@ -87,16 +115,39 @@ root directory, as well as with the chapter vignettes discussed above.
 
 **To edit information in an existing chapter**
 
-1. Open the vignette corresponding to the chapter you wish to edit (see the _pkgdown.yml) file for the chapter and its vignette path (href).
+1. Open the vignette corresponding to the chapter you wish to edit (see the _pkgdown.yml) 
+file for the chapter and its vignette path (href).
 2. Make your changes in the vignette.
 3. Run the `pkgdown::build_site()` function.
 
 **To add a new chapter**
 
-1. Create a new html vignette with the new chapter information.
+1. Create a Rmd file for the vignette via `usethis::use_vignette()` and make sure the 
+name of the vignette starts by "chapter", for example: 
+
+```
+usethis::use_vignette(name = "chapterSleep", 
+                      title = "10. How to analyse your sleep data in GGIR")
+```
+
 2. Open the [_pkgdown.yml](_pkgdown.yml) file and fill up the name and reference of the
 new chapter under menu. Make sure to follow the coding and structure of the rest of chapters.
 3. Run the `pkgdown::build_site()` function.
+
+**To remove a chapter**
+
+1. Remove the lines corresponding to the chapter in the [_pkgdown.yml](_pkgdown.yml) file
+in line 42 onwards.
+2. Optionally you may remove the Rmd file corresponding to the chapter, but only by doing the
+step 1, the chapter will not appear in the github.io website.
+3. Run the `pkgdown::build_site()` function.
+
+**To edit the name of a chapter**
+
+Chapter names are defined twice, in the [_pkgdown.yml](_pkgdown.yml) file and in the
+vignette file itself. You need to make sure both titles match as the first will be 
+used in the drop-down list in the github.io website and the other in the specific
+page for the chapter. 
 
 #### Adding the changes to the master branch
 
