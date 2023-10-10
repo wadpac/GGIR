@@ -12,6 +12,7 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
       if (x[i] == "MVPA") class[i] = "moderate-to-vigorous physical activity"
       if (x[i] == "PA") class[i] = "physical activity"
       if (x[i] == "sleep") class[i] = "sleep"
+      if (x[i] == "wake") class[i] = "awake"
       if (x[i] == "nonwear") class[i] = "non-wear time"
       if (x[i] == "mostactive60min") class = "the most active 60 minutes of the day are accumulated"
       if (x[i] == "mostactive30min") class = "the most active 30 minutes of the day are accumulated"
@@ -58,7 +59,30 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
           what = "Number of blocks"
         } else if ("quantile" %in% elements) {
           what = "Acceleration above which (percentile)"
-        } 
+        } else if ("LUX" %in% elements) {
+          if ("min" %in% elements) {
+            # time in lux ranges
+            what = "Time accumulated with LUX"
+            numbers = suppressWarnings(as.numeric(elements))
+            numbers = numbers[!is.na(numbers)]
+            if (any(numbers == Inf) | length(numbers) == 1) {
+              thresholds = paste("above", numbers[1])
+            } else if (length(numbers) == 2) {
+              thresholds = paste("between", numbers[1], "and", numbers[2])
+            } else {
+              thresholds = ""
+            }
+            what = paste(what, thresholds, "Luxes")
+            unit = "(min)"
+          } else if ("mean" %in% elements) {
+            what = "Mean LUX value"
+            if ("mvpa" %in% elements) what = paste(what, "in moderate-to-vigorous physical activity time")
+            unit = "(luxes)"
+          } else if ("max" %in% elements) {
+            what = "Maximum LUX value"
+            unit = "(luxes)"
+          }
+        }
         # fragmentation metrics
         if ("FRAG" %in% elements) {
           what_bu = tolower(what)
@@ -159,7 +183,8 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
             } else {
               unit = "(hours from previous midnight)"
             }
-          } else if (substr(elements[1], 1, 1) == "L" | substr(elements[1], 1, 1) == "M") {
+          } else if ((substr(elements[1], 1, 1) == "L" | substr(elements[1], 1, 1) == "M")
+                     & elements[1] != "LUX") {
             # LX and MX metrics
             # what
             if (grepl("TIME", elements[1])) {
