@@ -47,7 +47,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       
       stop("\nDirectory specified by argument datadir does not exist")
     }
-    if (datadir == outputdir || grepl(paste(datadir, '/', sep =''), outputdir)) {
+    if (datadir == outputdir || grepl(paste(datadir, '/', sep = ''), outputdir)) {
       stop(paste0('\nError: The file path specified by argument outputdir should ',
                   'NOT equal or be a subdirectory of the path specified by argument datadir'))
     }
@@ -410,6 +410,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      week_weekend_aggregate.part5 = params_output[["week_weekend_aggregate.part5"]],
                      LUX_day_segments = params_247[["LUX_day_segments"]],
                      verbose = verbose, sep_reports = params_output[["sep_reports"]])
+      g.report.part5_dictionary(metadatadir = metadatadir, sep_reports = params_output[["sep_reports"]])
     } else {
       if (verbose == TRUE) cat("\nSkipped because no milestone data available")
     }

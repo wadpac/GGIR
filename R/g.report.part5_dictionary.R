@@ -39,7 +39,7 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
       what = window = class = unit = NULL
       # get variable names from baseDictionary
       nam = gsub("_pla|_wei|_WD|_WE", "", cnames[coli])
-      if (grepl("Nvaliddays", cnames[coli])) nam = cnames[coli]
+      if (grepl("Nvalid", cnames[coli])) nam = cnames[coli]
       if (nam %in% names(baseDictionary)) {
         what = baseDictionary[[nam]]
       }
@@ -171,13 +171,19 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
             } else if (grepl("VALUE", elements[1])) {
               what = "Mean acceleration"
               unit = "(mili-g units)"
+            } else if ("peakLUX" %in% elements) {
+              if ("mean" %in% elements) {
+                what = "Mean peak Lux"
+              } else if ("max" %in% elements) {
+                what = "Max peak Lux"
+              }
             }
             # class
             X = as.numeric(gsub("\\D", "", elements))[1]
             if (substr(elements[1], 1, 1) == "L") {
-              class = paste("the", X, "consecutive hours with the lowest activity")
+              class = paste("during the", X, "consecutive hours with the lowest activity")
             } else if (substr(elements[1], 1, 1) == "M") {
-              class = paste("the", X, "consecutive hours with the highest activity")
+              class = paste("during the", X, "consecutive hours with the highest activity")
             }
           } else if ("daytype" %in% elements) {
             what = "WD = weekday; WE = weekend day"
@@ -191,7 +197,7 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
       # only for personsummary - aggregation method
       if (grepl("personsummary", reports[ri])) {
         agg = NULL
-        if (!grepl("Nvaliddays", cnames[coli])) {
+        if (!grepl("Nvalid", cnames[coli])) {
           if ("pla" %in% elements) agg = "- plain average"
           if ("wei" %in% elements) agg = "- weighted average"
           if ("WD" %in% elements) agg = "- weekdays average"

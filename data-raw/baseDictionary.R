@@ -11,6 +11,7 @@ baseDictionary = list(
   # day/dates/windows -----
   weekday = "Day of the week (full name)",
   window_number = "Window number in the recording",
+  window = "Window start and end names in segment analysis",
   night_number = "Night number in the recording",
   start_end_window = "Start and end time for the window (hh:mm:ss-hh:mm:ss)",
   daytype = "WD = weekday; WE = weekend day",
@@ -21,6 +22,9 @@ baseDictionary = list(
   Nvaliddays_WE = "Number of valid weekend days based on the cleaning parameters for part 2, 4, and 5",
   Nvaliddays_AL10F_WD = "Number of valid weekdays with at least 10 fragments (fragmentation analysis)",
   Nvaliddays_AL10F_WE = "Number of valid weekend days with at least 10 fragments (fragmentation analysis)",
+  Nvalidsegments = "Number of valid segments in the recording based on segmentWEARcrit.part5 and segmentDAYSPTcrit.part5",
+  Nvalidsegments_WD = "Number of valid segments in the weekdays based on segmentWEARcrit.part5 and segmentDAYSPTcrit.part5 in the recording",
+  Nvalidsegments_WE = "Number of valid segments in the weekend days based on segmentWEARcrit.part5 and segmentDAYSPTcrit.part5 in the recording",
   
   # sleep info in part 4 and part 5 -------
   daysleeper = "Night classified as daysleeper (i.e., wake-up time after noon)",
