@@ -48,6 +48,7 @@ test_that("cosinorAnalyses provides expected output", {
   expect_equal(coef60$coefext$params$UpMesor, 19.52358, tolerance = 0.01)
   expect_equal(coef60$coefext$params$DownMesor, 16.47642, tolerance  = 0.01)
   expect_equal(coef60$coefext$params$MESOR, 3.622534, tolerance  = 0.01)
+  expect_equal(coef60$coefext$params$R2, 0.8976208, tolerance  = 0.01)
   
   # IV IS
   expect_equal(coef60$IVIS$InterdailyStability, 0.9945789, tolerance  = 0.01)
