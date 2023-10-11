@@ -49,7 +49,7 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
   # This code extract them the time series (ts) object create in g.part5
   # Note that this means that for MM windows there can be multiple or no wake or onsets
   date = as.Date(ts$time[segStart + 1])
-  if (add_one_day_to_next_date == TRUE & timewindowi == "WW") { # see below for explanation
+  if (add_one_day_to_next_date == TRUE & timewindowi %in% c("WW", "OO")) { # see below for explanation
     date = date + 1
     add_one_day_to_next_date = FALSE
   }
@@ -69,6 +69,12 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
   skiponset = onsetwaketiming$skiponset; skipwake = onsetwaketiming$skipwake
   if (wake < 24 & timewindowi == "WW") {
     # waking up before midnight means that next WW window
+    # will start a day before the day we refer to when discussing it's SPT
+    # So, for next window we have to do date = date + 1
+    add_one_day_to_next_date = TRUE
+  }
+  if (onset < 24 & timewindowi == "OO") {
+    # onset before midnight means that next OO window
     # will start a day before the day we refer to when discussing it's SPT
     # So, for next window we have to do date = date + 1
     add_one_day_to_next_date = TRUE
@@ -440,7 +446,7 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
         }
       }
       fi = fi + Nluxt
-      if (timewindowi == "WW") {
+      if (timewindowi %in% c("WW", "OO")) {
         # LUX per segment of the day
         luxperseg = g.part5.lux_persegment(ts, sse,
                                            LUX_day_segments = params_247[["LUX_day_segments"]],
@@ -487,7 +493,6 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
                   columnIndex = fi)
   timeList = list(ts = ts,
                   epochSize = ws3new)
-  
   invisible(list(
     indexlog = indexlog,
     ds_names = ds_names,
