@@ -5,10 +5,11 @@ g.getM5L5 = function(varnum, ws3, t0_LFMF, t1_LFMF, M5L5res, winhr,
   # placed in g.analyse because it is not related to M5L5 analyse (23-7-2019)
   meanVarnum = mean(varnum)
   do.M5L5 = meanVarnum > 0 # & length(varnum) > 1440*(60/ws3)
-  if (length(do.M5L5) == 0 | is.na(do.M5L5) == TRUE) do.M5L5 = FALSE
+  nwindow_f = (t1_LFMF-winhr) - t0_LFMF #number of windows for L5M5 analyses
+  if (length(do.M5L5) == 0 | is.na(do.M5L5) == TRUE | nwindow_f < 1) do.M5L5 = FALSE
+  
   if (do.M5L5 == TRUE) { # only do the analysis if varnum has values other than zero
     reso = M5L5res #resolution
-    nwindow_f = (t1_LFMF-winhr) - t0_LFMF #number of windows for L5M5 analyses
     nwindow_f = nwindow_f * (60/reso)
     DAYrunav5 = matrix(NA,nwindow_f,1)
     first_hri = (t0_LFMF*(60/reso))

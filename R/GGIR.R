@@ -69,11 +69,16 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     f0 = 1
   }
   if ((is.null(f1) || f1 < 1) && 1 %in% mode) {  # What file to end with?
+    # Do not modify f1 here when not attempting to process GGIR part 1
+    # we only expect datadir to exist when running part 1
     if (filelist == FALSE) {
       f1 <- length(dir(datadir, recursive = TRUE, ignore.case = TRUE, pattern = "[.](csv|bin|Rda|wa|cw|gt3)")) # modified by JH
     } else {
       f1 = length(datadir) #modified
     }
+  }
+  if (is.null(f1)) {
+    f1 = 0
   }
   # Establish which parts need to be processed:
   dopart1 = dopart2 = dopart3 = dopart4 = dopart5 = dopart6 = FALSE
@@ -177,36 +182,37 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       stop("If you want to derive circadian rhythm indicators, please install package: ActCR.", call. = FALSE)
     }
   }
-
-  checkFormat = TRUE
-  if (all(dir.exists(datadir)) == TRUE) {
-    rawaccfiles = dir(datadir, full.names = TRUE)[f0:f1]
-  } else if (all(file.exists(datadir))) {
-    rawaccfiles = datadir[f0:f1]
-  } else {
-    checkFormat = FALSE
-  }
-
-  if (checkFormat == TRUE) {
-    is_GGIRread_installed = is.element('GGIRread', installed.packages()[,1])
-    is_read.gt3x_installed = is.element('read.gt3x', installed.packages()[,1])
-    # skip this check if GGIRread and read.gt3x are both available
-    if (is_GGIRread_installed == FALSE | is_read.gt3x_installed == FALSE) {
-      getExt = function(x) {
-        tmp = unlist(strsplit(x, "[.]"))
-        return(tmp[length(tmp)])
-      }
-      rawaccfiles_formats = unique(unlist(lapply(rawaccfiles, FUN = getExt)))
-      # axivity (cwa, wav), geneactive (bin), genea (bin):
-      if (any(grepl("cwa|wav|bin", rawaccfiles_formats))) {
-        if (is_GGIRread_installed == FALSE) {
-          stop("If you are working with axivity, geneactiv, or genea files, please install package: GGIRread.", call. = FALSE)
+  if (1 %in% mode) {
+    checkFormat = TRUE
+    if (all(dir.exists(datadir)) == TRUE) {
+      rawaccfiles = dir(datadir, full.names = TRUE)[f0:f1]
+    } else if (all(file.exists(datadir))) {
+      rawaccfiles = datadir[f0:f1]
+    } else {
+      checkFormat = FALSE
+    }
+    
+    if (checkFormat == TRUE) {
+      is_GGIRread_installed = is.element('GGIRread', installed.packages()[,1])
+      is_read.gt3x_installed = is.element('read.gt3x', installed.packages()[,1])
+      # skip this check if GGIRread and read.gt3x are both available
+      if (is_GGIRread_installed == FALSE | is_read.gt3x_installed == FALSE) {
+        getExt = function(x) {
+          tmp = unlist(strsplit(x, "[.]"))
+          return(tmp[length(tmp)])
         }
-      }
-      # actigraph (gt3x)
-      if (any(grepl("gt3x", rawaccfiles_formats))) {
-        if (is_read.gt3x_installed == FALSE) {
-          stop(paste0("If you are working with actigraph files, please install package: read.gt3x.", call. = FALSE))
+        rawaccfiles_formats = unique(unlist(lapply(rawaccfiles, FUN = getExt)))
+        # axivity (cwa, wav), geneactive (bin), genea (bin):
+        if (any(grepl("cwa|wav|bin", rawaccfiles_formats))) {
+          if (is_GGIRread_installed == FALSE) {
+            stop("If you are working with axivity, geneactiv, or genea files, please install package: GGIRread.", call. = FALSE)
+          }
+        }
+        # actigraph (gt3x)
+        if (any(grepl("gt3x", rawaccfiles_formats))) {
+          if (is_read.gt3x_installed == FALSE) {
+            stop(paste0("If you are working with actigraph files, please install package: read.gt3x.", call. = FALSE))
+          }
         }
       }
     }
@@ -369,7 +375,9 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       # if (N.files.ms2.out < f1) f1 = N.files.ms2.out
       if (length(f0) == 0) f0 = 1
       if (f1 == 0) f1 = N.files.ms2.out
-      if (length(params_247[["qwindow"]]) > 2 | is.character(params_247[["qwindow"]])) {
+      if (length(params_247[["qwindow"]]) > 2 |
+          is.character(params_247[["qwindow"]]) |
+        (length(params_247[["qwindow"]]) == 2 & !all(c(0, 24) %in% params_247[["qwindow"]]))) {
         store.long = TRUE
       } else {
         store.long = FALSE
