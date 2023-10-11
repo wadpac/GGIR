@@ -3,16 +3,16 @@
 - Part 2: Arguments hrs.del.start and hrs.del.end when combined with strategy = 3 and strategy = 5 now count
 relative to start and end of the most active time window as identified.  #905
 
+- Part 2: Move cosinor analysis code to its own function in order to ease re-using it in both part 2 and part 6.
+
+- Part2: Expand cosinor analysis with R2
+
 
 # CHANGES IN GGIR VERSION 2.10-4
 
 - Part 4: Now better able to handle nights without sustained inactivity bouts (rest) #911
 
 - Part 5: Function g.fragmentation code cleaned up, TP formulas revised following feedback Ian Danilevicz, and code now also produces sleep fragmentation #817
-
-- Part 2: Move cosinor analysis code to its own function in order to ease re-using it in both part 2 and part 6.
-
-- Part2: Expand cosinor analysis with R2
 
 - Part 1: Fixed issue #914 relating to specifying timezone for processing ad-hoc csv format raw data.
 
