@@ -127,9 +127,21 @@ g.plot = function(IMP, M, I, durplot) {
   }
   
   MEND = length(timeline)
-  ticks = seq(0, nrow(M$metalong) + n_ws2_perday, by = n_ws2_perday)
+  mnights = grep("00:00:00", M$metalong$timestamp)
+  noons = grep("12:00:00", M$metalong$timestamp)
+  if (length(mnights) > 0 & length(noons) > 0) {
+    ticks = sort(c(mnights, noons))
+    if (mnights[1] < noons[1]) {
+      tick_labels = rep(c("00", "12"), length.out = length(ticks))
+    } else if (noons[1] < mnights[1]) {
+      tick_labels = rep(c("12", "00"), length.out = length(ticks))
+    }
+  } else {
+    ticks = seq(0, nrow(M$metalong) + n_ws2_perday, by = n_ws2_perday)
+    tick_labels = 1:length(ticks)
+  }
   # creating plot functions to avoid duplicated code
-  plot_acc = function(timeline, Acceleration, durplot, ticks, metricName) {
+  plot_acc = function(timeline, Acceleration, durplot, ticks, metricName, tick_labels) {
     if (metricName %in% c("ZCX", "ZCY", "ZCX") == TRUE | 
         length(grep(pattern = "count", x = metricName, ignore.case = TRUE)) > 0) {
       # Metric is not on a G scale
@@ -153,11 +165,11 @@ g.plot = function(IMP, M, I, durplot) {
       YLIM = c(0, 0.6)
       YTICKS = c(0, 0.2, 0.4, 0.6)
     }
-    plot(timeline, Acceleration, type = "l", xlab = "Day (24 hour blocks relative to start of recording)",
+    plot(timeline, Acceleration, type = "l", xlab = "Time (Hours)",
          ylab = ylabel,
          bty = "l", lwd = 0.1, xlim = c(0, durplot), ylim = YLIM, axes = FALSE, cex.lab = 0.8)
     axis(side = 2, at = YTICKS)
-    axis(side = 1, at = ticks, labels = 0:(length(ticks) - 1))
+    axis(side = 1, at = ticks, labels = tick_labels)
   }
   
   plot_nonwear = function(timeline, M, durplot, ticks) {
@@ -171,7 +183,7 @@ g.plot = function(IMP, M, I, durplot) {
   if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA)) {
     # Recordings with temperature
     par(fig = c(0,1,0,0.65), new = T)
-    plot_acc(timeline, Acceleration, durplot, ticks, metricName)
+    plot_acc(timeline, Acceleration, durplot, ticks, metricName, tick_labels)
     
     par(fig = c(0, 1, 0.45, 0.80), new = T)
     plot_nonwear(timeline, M, durplot, ticks)
@@ -187,7 +199,7 @@ g.plot = function(IMP, M, I, durplot) {
   } else {
     # Recordings without temperature
     par(fig = c(0, 1, 0, 0.80), new = T)
-    plot_acc(timeline, Acceleration, durplot, ticks, metricName)
+    plot_acc(timeline, Acceleration, durplot, ticks, metricName, tick_labels)
 
     par(fig = c(0, 1, 0.60, 0.95), new = T)
     plot_nonwear(timeline, M, durplot, ticks)
