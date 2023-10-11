@@ -397,6 +397,15 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                   "fraction of the day between zero and one, please change."), 
            call. = FALSE)
     }
+    if (length(params_cleaning[["segmentDAYSPTcrit.part5"]]) != 2) {
+      stop("\nArgument segmentDAYSPTcrit.part5 is expected to be a numeric vector of length 2", call. = FALSE)
+    }
+    if (sum(params_cleaning[["segmentDAYSPTcrit.part5"]]) == 0 |
+        0 %in% params_cleaning[["segmentDAYSPTcrit.part5"]] == FALSE) {
+      stop(paste0("\nArgument segmentDAYSPTcrit.part5 needs to include one zero",
+                  " and cannot include two zeros as this would cause biased",
+                  " behavioural estimates"), call. = FALSE)
+    }
   }
   
   

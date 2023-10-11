@@ -9,6 +9,10 @@
 - Part 2: Arguments hrs.del.start and hrs.del.end when combined with strategy = 3 and strategy = 5 now count
 relative to start and end of the most active time window as identified.  #905
 
+- Part 5: Change default for segmentDAYSPTcrit.part5 from c(0,0) to c(0, 0.75) and now
+prohibiting the use of c(0, 0) as it gives biased estimates. We knew this but clearly some user
+used the default without attempting to understand the argument. #940
+
 # CHANGES IN GGIR VERSION 2.10-4
 
 - Part 4: Now better able to handle nights without sustained inactivity bouts (rest) #911
