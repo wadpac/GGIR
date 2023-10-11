@@ -10,16 +10,16 @@ get_starttime_weekday_meantemp_truncdata = function(temp.available, monc, dforma
     use.temp = FALSE
   }
   meantemp = c()
-  if (monc == 2 | (monc == 4 & dformat == 4) | monc == 5 | (monc == 0 & use.temp == TRUE)) {
-    if (monc == 2) {
+  if (monc == MONITOR$GENEACTIV || (monc == MONITOR$AXIVITY && dformat == FORMAT$CWA) || monc == MONITOR$MOVISENS || (monc == MONITOR$AD_HOC && use.temp == TRUE)) {
+    if (monc == MONITOR$GENEACTIV) {
       if ("temperature" %in% colnames(data)) {
         tempcolumn = which(colnames(data) == "temperature") #GGIRread
       } else {
         tempcolumn = 7
       }
     }
-    if (monc == 4 | monc == 0) tempcolumn = 5
-    if (monc == 5) tempcolumn = 4
+    if (monc == MONITOR$AXIVITY || monc == MONITOR$AD_HOC) tempcolumn = 5
+    if (monc == MONITOR$MOVISENS) tempcolumn = 4
     meantemp = mean(as.numeric(data[, tempcolumn]), na.rm = TRUE)
     if (is.na(meantemp) == T) { #mean(as.numeric(data[1:10,7]))
       warning("temperature is NA", call. = FALSE)
@@ -48,7 +48,7 @@ get_starttime_weekday_meantemp_truncdata = function(temp.available, monc, dforma
     timezone = attr(unclass(as.POSIXlt(starttime[1])), which = "tzone")
     starttimebefore = as.POSIXlt(starttime)
     # assuming that timestamps is good, but that timezone might be lost in conversion from string to POSIXct
-    if (dformat == 1) { #not sure whether this is required for csv-format (2)
+    if (dformat == FORMAT$BIN) { #not sure whether this is required for csv-format (2)
       if (length(which(timezone == "GMT")) > 0) {
         if (length(desiredtz) == 0) {
           warning("desiredtz not specified, local timezoneused as default", call. = FALSE)
@@ -65,16 +65,16 @@ get_starttime_weekday_meantemp_truncdata = function(temp.available, monc, dforma
     wdayname = weekdays[wday]
     #======================================================
     #assess how much data to delete till next 15 minute period
-    temp = unlist(strsplit(format(starttime)," "))
-    if (length(temp) > 1) {
-      starttime2 = as.numeric(unlist(strsplit(temp[2],":")))
-    } else if (length(temp) == 1 & !grepl("T", temp)) {
-      starttime2 = as.numeric(unlist(strsplit(temp[2],":")))
+    tmp = unlist(strsplit(format(starttime)," "))
+    if (length(tmp) > 1) {
+      starttime2 = as.numeric(unlist(strsplit(tmp[2],":")))
+    } else if (length(tmp) == 1 && !grepl("T", tmp)) {
+      starttime2 = as.numeric(unlist(strsplit(tmp[2],":")))
     } else {
       # first get char to POSIX
-      temp = iso8601chartime2POSIX(starttime, tz = desiredtz)
-      temp = unlist(strsplit(format(temp)," ")) # to keep it consistent with what we had
-      starttime2 = as.numeric(unlist(strsplit(format(temp[2]),":")))
+      tmp = iso8601chartime2POSIX(starttime, tz = desiredtz)
+      tmp = unlist(strsplit(format(tmp)," ")) # to keep it consistent with what we had
+      starttime2 = as.numeric(unlist(strsplit(format(tmp[2]),":")))
     }
     if (length(which(is.na(starttime2) ==  TRUE)) > 0 |
         length(starttime2) == 0) {
@@ -109,7 +109,7 @@ get_starttime_weekday_meantemp_truncdata = function(temp.available, monc, dforma
         remem2add24 = TRUE #remember to add 24 hours because this is now the wrong day
       }
     }
-    starttime3 = paste0(temp[1], " ", start_hr, ":", newmin, ":", newsec)
+    starttime3 = paste0(tmp[1], " ", start_hr, ":", newmin, ":", newsec)
     #create timestamp from string (now desiredtz is added)
     if (length(desiredtz) == 0) {
       warning("desiredtz not specified, local timezone used as default", call. = FALSE)

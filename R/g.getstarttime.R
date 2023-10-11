@@ -1,32 +1,10 @@
 g.getstarttime = function(datafile, P, header, mon, dformat, desiredtz, configtz = NULL) {
   #get input variables (relevant when read.myacc.csv is used)
   #------------------------------------------------------------
-  if (mon == MONITOR$GENEA && dformat == FORMAT$BIN) {
-    starttime = P$timestamps2[1]
-  } else if (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) {
+  if (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) {
     starttime = P$data[1,1]
     starttime = as.POSIXlt(starttime, tz = desiredtz, origin = "1970-01-01")
     starttime = POSIXtime2iso8601(starttime, tz = desiredtz)
-  } else if (dformat == FORMAT$WAV) {
-    starttime = c()
-    #It seems that Axivity does not store timestamp in a consistent position
-    # therefore, we need to search for it in the data:
-    starttime = format(header[which(rownames(header) == "ICMTzTime"),1])
-    rn = rownames(header)
-    vl = header$value
-    if (length(starttime) == 0) {
-      if (length(which(rn == "Start")) > 0) {
-        starttime = format(header$value[which(rn == "Start")])
-        #in one of the files starttime is hidden in rowname
-        if (length(starttime) == 0) starttime = rownames(header)[2]
-      }
-      #in one of the files start variable name is hidden in the values
-      if (length(which(vl == "Start")) > 0) {
-        starttime = header$value[2]
-      }
-    }
-    if (length(starttime) == 0) starttime = P$timestamp # initially used, but apparently its is corrupted sometimes, so I am now using ICMTzTime
-    if (length(P$timestamp) == 0) starttime = format(P$hvalues[which(P$hnames == "Start")])
   } else if (mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) {
     starttime = as.POSIXlt(P$data.out$time[1], tz = desiredtz, origin = "1970-01-01")
     starttime = POSIXtime2iso8601(starttime, tz = desiredtz)
