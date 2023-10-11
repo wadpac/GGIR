@@ -77,7 +77,9 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
       qqq = c(NA, NA)
       if (length(qqq_backup) > 1) {
         # if there is remaining time after previous day...
-        # and if this is less than 24 hours (necessary if sleep is ignored for last night
+        # but only do this if there is less than 24 hours
+        # this is necessary if sleep is ignored for last night as
+        # that would include the entire last day
         if (Nts - qqq_backup[2] < 24 * (60 / epochSize) * 60) {
           qqq = c(qqq_backup[2] + 1, Nts)
         }
