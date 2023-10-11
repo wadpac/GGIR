@@ -30,7 +30,8 @@
                           rmc.header.structure = c(),
                           rmc.check4timegaps = FALSE,
                           rmc.col.wear = c(),
-                          rmc.doresample=FALSE,
+                          rmc.doresample = FALSE,
+                          rmc.scalefactor.acc = 1,
                           interpolationType=1, 
                           PreviousLastValue = c(0, 0, 1),
                           PreviousLastTime = NULL,
@@ -147,6 +148,11 @@
   \item{rmc.doresample}{
     Boolean to indicate whether to resample the data based on the available timestamps and extracted 
    sample rate from the file header
+  }
+  \item{rmc.scalefactor.acc}{
+    Numeric value (default 1) to scale the acceleration signals via multiplication.
+    For example, if data is provided in m/s2 then by setting this to 1/9.81
+    we would derive gravitational units.
   }
   \item{interpolationType}{
     Integer to indicate type of interpolation to be used when resampling time series (mainly relevant for Axivity sensors), 1=linear, 2=nearest neighbour.

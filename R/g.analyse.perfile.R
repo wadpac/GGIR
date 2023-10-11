@@ -156,15 +156,16 @@ g.analyse.perfile = function(I, C, metrics_nav,
       filesummary[vi]  = c(cosinor_coef$timeOffsetHours)
       s_names[vi] = c("cosinor_timeOffsetHours")
       vi = vi + 1
-      try(expr = {filesummary[vi:(vi + 4)]  = as.numeric(c(cosinor_coef$coef$params$mes,
+      try(expr = {filesummary[vi:(vi + 5)]  = as.numeric(c(cosinor_coef$coef$params$mes,
                                                            cosinor_coef$coef$params$amp,
                                                            cosinor_coef$coef$params$acr,
                                                            cosinor_coef$coef$params$acrotime,
-                                                           cosinor_coef$coef$params$ndays))}, silent = TRUE)
-      s_names[vi:(vi + 4)] = c("cosinor_mes", "cosinor_amp", "cosinor_acrophase",
-                               "cosinor_acrotime", "cosinor_ndays")
-      vi = vi + 5
-      try(expr = {filesummary[vi:(vi + 9)]  = c(cosinor_coef$coefext$params$minimum,
+                                                           cosinor_coef$coef$params$ndays,
+                                                           cosinor_coef$coef$params$R2))}, silent = TRUE)
+      s_names[vi:(vi + 5)] = c("cosinor_mes", "cosinor_amp", "cosinor_acrophase",
+                               "cosinor_acrotime", "cosinor_ndays", "cosinor_R2")
+      vi = vi + 6
+      try(expr = {filesummary[vi:(vi + 10)]  = c(cosinor_coef$coefext$params$minimum,
                                                 cosinor_coef$coefext$params$amp,
                                                 cosinor_coef$coefext$params$alpha,
                                                 cosinor_coef$coefext$params$beta,
@@ -173,16 +174,19 @@ g.analyse.perfile = function(I, C, metrics_nav,
                                                 cosinor_coef$coefext$params$DownMesor,
                                                 cosinor_coef$coefext$params$MESOR,
                                                 cosinor_coef$coefext$params$ndays,
-                                                cosinor_coef$coefext$params$F_pseudo)}, silent = TRUE)
-      s_names[vi:(vi + 9)] = c("cosinorExt_minimum", "cosinorExt_amp", "cosinorExt_alpha",
+                                                cosinor_coef$coefext$params$F_pseudo,
+                                                cosinor_coef$coefext$params$R2)}, silent = TRUE)
+      s_names[vi:(vi + 10)] = c("cosinorExt_minimum", "cosinorExt_amp", "cosinorExt_alpha",
                                "cosinorExt_beta", "cosinorExt_acrotime", "cosinorExt_UpMesor",
                                "cosinorExt_DownMesor", "cosinorExt_MESOR",
-                               "cosinorExt_ndays", "cosinorExt_F_pseudo")
-      vi = vi + 10
+                               "cosinorExt_ndays", "cosinorExt_F_pseudo", "cosinorExt_R2")
+      vi = vi + 11
       filesummary[vi:(vi + 1)]  = c(cosinor_coef$IVIS$InterdailyStability,
                                     cosinor_coef$IVIS$IntradailyVariability)
       s_names[vi:(vi + 1)] = c("cosinorIS", "cosinorIV")
       vi = vi + 2
+    } else {
+      vi = vi + 20
     }
     
     # Variables per metric - summarise with stratification to weekdays and weekend days

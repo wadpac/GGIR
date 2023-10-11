@@ -312,7 +312,7 @@ for that.
     -   If `strategy` is set to value 1, then check out arguments
         `hrs.del.start` and `hrs.del.end`.
     -   If `strategy` is set to value 3 or 5, then check out arguments
-        `ndayswindow`.
+        `ndayswindow`, `hrs.del.start` and `hrs.del.end`.
 -   `maxdur` - maximum number of days you expect in a data file based on
     the study protocol.
 -   `desiredtz` - time zone of the experiment.
@@ -734,9 +734,9 @@ Part 2 generates the following output:
 | `_M VPA_E5S_B1M80_T100`        | MVPA calculated based on 5 second epoch setting bout duration 1 Minute and inclusion criterion of more than 80 percent. This is only done for metric ENMO at the moment, and only if mvpa threshold is not left blank     |
 | `_ENMO_mg`         | ENMO or other metric was first calculated per day and then average according to AD, WD, WWE, WWD           |
 | data exclusion strategy        | A log of the decision made when calling g.impute: value=1 mean ignore specific hours; value=2 mean ignore all data before the first midnight and after the last midnight |
-| n hours ignored at start of meas (if strategy=1)        | number of hours ignored at the start of the measurement (if strategy = 1) A log of decision made in part2.R       |
-| n hours ignored at end of meas (if strategy=1)          | number of hours ignored at the end of the measurement (if strategy = 1). A log of decision made in part2.R         |
-| n hours ignored at end of meas (if strategy=1)          | number of days of measurement after which all data is ignored (if strategy = 1) A log of decision made in part2.R    |
+| n hours ignored at start of meas (if strategy=1, 3 or 5)        | number of hours ignored at the start of the measurement (if strategy = 1) or at the start of the `ndayswindow` (if strategy = 3 or 5) A log of decision made in part2.R       |
+| n hours ignored at end of meas (if strategy=1, 3 or 5)          | number of hours ignored at the end of the measurement (if strategy = 1) or at the end of the `ndayswindow` (if strategy = 3 or 5). A log of decision made in part2.R         |
+| n hours ignored at end of meas (if strategy = 1, 3 or 5)          | number of days of measurement after which all data is ignored (if strategy = 1, 3 or 5) A log of decision made in part2.R    |
 | epoch size to which acceleration was averaged (seconds) | A log of decision made in part1.R     |
 | pdffilenumb        | Indicator of in which pdf-file the plot was stored  |
 | pdfpagecount       | Indicator of in which pdf-page the plot was stored|
@@ -775,6 +775,12 @@ Part 4 generates the following output:
 
 -   part4_nightsummary_sleep_cleaned.csv
 -   QC/part4_nightsummary_sleep_full.csv
+
+The latter with '_full' in the name is intended to aid
+clarifying why some nights (if any) are excluded from the cleaned summary report.
+Although, nights where the accelerometer was not worn at all are excluded from this. So,
+if you have a 30 day recording where the accelerometer was not worn from day 7 onward then
+you will not find the last 22 nights in either csv-report.
 
 The csv. files contain the variables as shown below.
 
@@ -1837,7 +1843,7 @@ also the intensity gradient. If argument `winhr` is a vector then
 descriptive values for LX and MX are derived per value in `winhr`.
 Within GGIR part 2 MXLX is calculated per calendar day and, if argument
 `qwindow` is specified, per segment of the day. Within GGIR part 5 MXLX
-is calculated per window, and if used in combination with the GENEActiv
+is calculated per window, and if used in combination with the GENEActiv or Axivity
 accelerometer brand LUX estimates per LX and MX are included.
 
 The MX metric describe here should not be confused by the MX metrics as proposed
@@ -2005,6 +2011,56 @@ the radar plots of these MX metrics as first described by
 can access [this](https://github.com/Maylor8/RadarPlotGenerator) github repository
 which provides the R code and detailed instructions on how to make the radar 
 plots using your own data.
+
+
+## Minimum recording duration
+
+GGIR has been designed to process multi-day recordings. The minimum recording duration
+considered by GGIR depends on the type of analysis:
+
+**Running part 1 and 2**
+
+- File size; At least 2MB, where 2MB can be adjusted with argument minimumFileSize. 
+This should not be changed unless you have good reason to believe that a smaller 
+file size is also acceptable.
+
+- Recording duration: At least two long epoch windows 
+(default 60 minutes) in g.readaccfile. The size of this epoch can be altered with
+the second and third value of vector argument `windowsizes`, where the third should not
+be smaller than the second. For example, in short lasting lab-experiments you may
+find it easier to set this to `windowsizes = c(5, 600, 600)` as non-wear detection is
+usually not necessary in lab studies.
+
+**Running part 3 and 4**
+
+- At least one night of data is expected, where a night is expected to have at least the timestamp 
+for midnight. If midnight is not found the sleep detection is skipped.
+
+**Running part 5**
+
+- Ideally two valid consecutive nights and the waking hours in between.
+
+
+## LUX sensor data processing
+
+Although GGIR focuses on accelerometer data a few brands come with LUX data.
+
+In part 1 GGIR calculates the peak lux per long epoch at a default resolution of 15 minutes,
+which can be modified with argument windowsizes. Peak light offers a more reliable 
+estimate of light exposure per time window compared with taking the average. Further,
+LUX is used in the auto-calibration.
+
+In GGIR part 2 we visualise the LUX values in the qc plot. In part 3 and 4 LUX is 
+not used for sleep classification because relation between light exposure and sleep is weak.
+
+In part 5 we calculate the mean and maximum of the peak LUX per epoch across all
+waking hours of the day. Here, the mean (peak per epoch) LUX would then indicate
+average light exposure per time segment, while max peak would indicate the maximum
+light exposure per day. Further, we calculate the max and mean peak LUX per most 
+active consecutive X hour of the day. This is intended to offer an alternative to LUX
+exposure during waking hours which relies on correct sleep classification. LUX
+exposure during M10 may be seen as an alternative if you are unsure whether you 
+can trust the sleep classification in your data set.
 
 # Other Resources
 

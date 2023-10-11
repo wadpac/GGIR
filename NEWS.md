@@ -1,3 +1,12 @@
+# CHANGES IN GGIR VERSION 2.10-5
+
+- Part 2: Move cosinor analysis code to its own function in order to ease re-using it in both part 2 and part 6.
+
+- Part2: Expand cosinor analysis with R2
+
+- Part 2: Arguments hrs.del.start and hrs.del.end when combined with strategy = 3 and strategy = 5 now count
+relative to start and end of the most active time window as identified.  #905
+
 # CHANGES IN GGIR VERSION 2.10-4
 
 - Part 4: Now better able to handle nights without sustained inactivity bouts (rest) #911
@@ -7,6 +16,12 @@
 - Part 1: Fixed issue #914 relating to specifying timezone for processing ad-hoc csv format raw data.
 
 - Part 1: Improved recognition of ActiGraph csv that occassionally confused for Axivity csv #918
+
+- Part 1: Added argument rmc.scalefactor.acc to be used by read.myacc.csv #887
+
+- Vignette: Expanded with paragraph on minimum recording duration #835
+
+- Part 4: More informative error message when advanced sleep log has duplicate or missing dates #925
 
 - Fix recently introduced bug where GGIR environment was not exported to cluster in GGIR part 1, 2, 3, and 5 #910
 
