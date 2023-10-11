@@ -1252,7 +1252,6 @@ GGIR(mode = 1:5,
         over which L5M5 needs to be calculated. Now this is done with argument qwindow.}
 
       \item{cosinor}{
-        Argument depricated after version 1.5-24.
         Boolean (default = FALSE). Whether to apply the cosinor analysis from the ActCR package.}
 
     }

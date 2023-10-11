@@ -139,7 +139,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                                 stringsAsFactors = FALSE)
     
     # Find columns filled with missing values
-    cut = which(sapply(outputfinal, function(x) all(x == "")) == TRUE) 
+    cut = which(sapply(outputfinal, function(x) all(x == "")) == TRUE)
     if (length(cut) > 0) {
       outputfinal = outputfinal[,-cut]
     }
@@ -210,10 +210,8 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 CN = colnames(outputfinal)
                 outputfinal2 = outputfinal
                 colnames(outputfinal2) = CN
-                delcol = which(colnames(outputfinal2) == "TRLi" |
-                                 colnames(outputfinal2) == "TRMi" |
-                                 colnames(outputfinal2) == "TRVi" |
-                                 colnames(outputfinal2) == "sleepparam")
+                delcol = grep(pattern = "window|TRLi|TRMi|TRVi|sleepparam",
+                              x = colnames(outputfinal2))
                 if (uwi[j] != "Segments") {
                   delcol = c(delcol, which(colnames(outputfinal2) == "window"))
                 }
@@ -250,10 +248,10 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                                               window = "MM") {
                   # function to take both the weighted (by weekday/weekendday) and plain average of all numeric variables
                   # df: input data.frame (OF3 outside this function)
-                  ignorevar = c("daysleeper", "cleaningcode", "night_number",
-                                "sleeplog_used", "ID", "acc_available", "window_number",
-                                "window", "boutcriter.mvpa", "boutcriter.lig",
-                                "boutcriter.in", "bout.metric")
+                  
+                  ignorevar = c("daysleeper", "cleaningcode", "night_number", "sleeplog_used",
+                                "ID", "acc_available", "window_number",
+                                "boutcriter.mvpa", "boutcriter.lig", "boutcriter.in", "bout.metric") # skip cosinor variables
                   for (ee in 1:ncol(df)) { # make sure that numeric columns have class numeric
                     nr = nrow(df)
                     if (nr > 30) nr = 30
@@ -344,8 +342,8 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                     # missing columns, add these:
                     NLUXseg = length(LUX_day_segments)
                     if (length(weeksegment) > 0) {
-                      LUX_segment_vars_expected = paste0("LUX_", LUXmetrics, "_", 
-                                                         LUX_day_segments[1:(NLUXseg - 1)], 
+                      LUX_segment_vars_expected = paste0("LUX_", LUXmetrics, "_",
+                                                         LUX_day_segments[1:(NLUXseg - 1)],
                                                          "-", LUX_day_segments[2:(NLUXseg)],
                                                          "hr_day_", weeksegment)
                     } else {
@@ -459,6 +457,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 # Calculate, weighted and plain mean of all variables
                 # add column to define what are weekenddays and weekdays as needed for function agg_plainNweighted
                 # before processing OF3, first identify which days have enough monitor wear time
+                
                 validdaysi = getValidDayIndices(x = OF3, window = uwi[j],
                                                 params_cleaning = params_cleaning)
                 if (length(validdaysi) > 0) { # do not attempt to aggregate if there are no valid days
@@ -466,8 +465,10 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   OF4 = agg_plainNweighted(df = OF3[validdaysi,], filename = "filename", 
                                            daytype = "daytype", window = uwi[j])
                   # calculate additional variables
-                  columns2keep = c("filename","night_number","daysleeper","cleaningcode","sleeplog_used","guider",
-                                   "acc_available","nonwear_perc_day","nonwear_perc_spt","daytype","dur_day_min",
+                  columns2keep = c("filename", "night_number", "daysleeper",
+                                   "cleaningcode","sleeplog_used","guider",
+                                   "acc_available", "nonwear_perc_day", "nonwear_perc_spt",
+                                   "daytype", "dur_day_min",
                                    "dur_spt_min")
                   if (uwi[j] == "Segments") {
                     columns2keep = c(columns2keep, "window")
@@ -627,7 +628,6 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 }
               }
             }
-            
           }
         }
       }
