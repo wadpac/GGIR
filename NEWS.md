@@ -1,4 +1,6 @@
-# CHANGES IN GGIR VERSION 2.10-5
+# CHANGES IN GGIR VERSION 3.0-0
+
+- Part 1 and 2: Change default value for nonwear_approach to 2023
 
 - Part 2: Move cosinor analysis code to its own function in order to ease re-using it in both part 2 and part 6.
 

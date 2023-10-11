@@ -857,7 +857,7 @@ GGIR(mode = 1:5,
       }
 
       \item{nonwear_approach}{
-        Character (default = "2013").
+        Character (default = "2023").
         Whether to use the traditional version of the non-wear detection algorithm 
         (nonwear_approach = "2013") or the new version (nonwear_approach = "2023"). 
         The 2013 version would use the longsize window (windowsizes[3], one hour 
