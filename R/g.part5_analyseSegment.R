@@ -48,7 +48,7 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
   # The following is to avoid issue with merging sleep variables from part 4
   # This code extract them the time series (ts) object create in g.part5
   # Note that this means that for MM windows there can be multiple or no wake or onsets
-  date = as.Date(ts$time[segStart + 1])
+  date = as.Date(ts$time[segStart + 1], tz = params_general[["desiredtz"]])
   if (add_one_day_to_next_date == TRUE & timewindowi %in% c("WW", "OO")) { # see below for explanation
     date = date + 1
     add_one_day_to_next_date = FALSE
@@ -73,9 +73,9 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     # So, for next window we have to do date = date + 1
     add_one_day_to_next_date = TRUE
   }
-  if (onset < 24 & timewindowi == "OO") {
-    # onset before midnight means that next OO window
-    # will start a day before the day we refer to when discussing it's SPT
+  if (onset > 24 & timewindowi == "OO") {
+    # onset after midnight means that next OO window
+    # will start a day after the day we refer to when discussing it's SPT
     # So, for next window we have to do date = date + 1
     add_one_day_to_next_date = TRUE
   }
@@ -427,11 +427,15 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     # LIGHT, IF AVAILABLE
     if ("lightpeak" %in% colnames(ts) & length(params_247[["LUX_day_segments"]]) > 0) {
       # mean LUX
-      dsummary[si,fi] =  round(max(ts$lightpeak[sse[ts$diur[sse] == 0]], na.rm = TRUE), digits = 1)
-      dsummary[si,fi + 1] = round(mean(ts$lightpeak[sse[ts$diur[sse] == 0]], na.rm = TRUE), digits = 1)
-      dsummary[si,fi + 2] = round(mean(ts$lightpeak[sse[ts$diur[sse] == 1]], na.rm = TRUE), digits = 1)
-      dsummary[si,fi + 3] = round(mean(ts$lightpeak[sse[ts$diur[sse] == 0 & ts$ACC[sse] > TRMi]], na.rm = TRUE),
-                                  digits = 1)
+      if (length(which(ts$diur[sse] == 0)) > 0 & length(which(ts$diur[sse] == 1)) > 0) {
+        dsummary[si,fi] =  round(max(ts$lightpeak[sse[ts$diur[sse] == 0]], na.rm = TRUE), digits = 1)
+        dsummary[si,fi + 1] = round(mean(ts$lightpeak[sse[ts$diur[sse] == 0]], na.rm = TRUE), digits = 1)
+        dsummary[si,fi + 2] = round(mean(ts$lightpeak[sse[ts$diur[sse] == 1]], na.rm = TRUE), digits = 1)
+        dsummary[si,fi + 3] = round(mean(ts$lightpeak[sse[ts$diur[sse] == 0 & ts$ACC[sse] > TRMi]], na.rm = TRUE),
+                                    digits = 1)
+      } else {
+        dsummary[si,fi:(fi + 3)] = NA
+      }
       ds_names[fi:(fi + 3)] = c("LUX_max_day", "LUX_mean_day", "LUX_mean_spt", "LUX_mean_day_mvpa"); fi = fi + 4
       # time in LUX ranges
       Nluxt = length(params_247[["LUXthresholds"]])

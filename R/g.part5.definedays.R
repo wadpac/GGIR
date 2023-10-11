@@ -74,14 +74,13 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
         }
       }
     } else {
+      qqq = c(NA, NA)
       if (length(qqq_backup) > 1) {
         # if there is remaining time after previous day...
-        if (Nts > qqq_backup[2]) {
+        # and if this is less than 24 hours (necessary if sleep is ignored for last night
+        if (Nts - qqq_backup[2] < 24 * (60 / epochSize) * 60) {
           qqq = c(qqq_backup[2] + 1, Nts)
         }
-      } else {
-        # else, do not analyse this day
-        qqq = c(NA, NA)
       }
     }
     # in MM, also define segments of the day based on qwindow
@@ -154,7 +153,6 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
       segments = list(qqq)
       start = format(ts$time[qqq[1]], "%H:%M:%S")
       end = format(ts$time[qqq[2]], "%H:%M:%S")
-      if (timewindowi == "OO") browser()
       names(segments) = paste(start, end, sep = "-")
       segments_names = timewindowi
     }

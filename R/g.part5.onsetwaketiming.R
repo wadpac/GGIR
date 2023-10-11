@@ -4,10 +4,10 @@ g.part5.onsetwaketiming = function(qqq, ts, min, sec, hour, timewindowi) {
   # Onset index
   if (timewindowi == "OO") {
     # For OO onset is by definition the start and end of the window
-    onseti = qqq[2] + 1
+    onseti = qqq[1] + 1
   } else {
     # For WW and MM onset needs to be search in the window
-    onseti = c(qqq[1]:qqq[2])[which(diff(ts$diur[qqq[1]:(qqq[2] - 1)]) == 1) + 1]
+    onseti = c(qqq[1]:qqq[2])[which(diff(ts$diur[qqq[1]:(qqq[2] - 1)]) == 1)] + 1
     if (length(onseti) > 1) {
       onseti = onseti[length(onseti)] # in the case if MM use last onset
     }
