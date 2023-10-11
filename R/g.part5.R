@@ -276,7 +276,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             # Add first waking up time, if it is missing:
             ts = g.part5.addfirstwake(ts, summarysleep = summarysleep_tmp2, nightsi, sleeplog, ID,
                                       Nepochsinhour, SPTE_end)
-            # Convert time column regardless of whether it is aggregated to secure standard time format
+            # Convert time column from iso8601 to POSIX regardless of whether it is aggregated
+            # to ensure the format is consistent
             ts$time = iso8601chartime2POSIX(ts$time,tz = params_general[["desiredtz"]])
             if (params_general[["part5_agg2_60seconds"]] == TRUE) { # Optionally aggregate to 1 minute epoch:
               ts$time_num = floor(as.numeric(ts$time) / 60) * 60

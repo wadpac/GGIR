@@ -69,13 +69,13 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
   skiponset = onsetwaketiming$skiponset; skipwake = onsetwaketiming$skipwake
   if (wake < 24 & timewindowi == "WW") {
     # waking up before midnight means that next WW window
-    # will start a day before the day we refer to when discussing it's SPT
+    # will start a day before the date we refer to when discussing it's SPT
     # So, for next window we have to do date = date + 1
     add_one_day_to_next_date = TRUE
   }
   if (onset > 24 & timewindowi == "OO") {
     # onset after midnight means that next OO window
-    # will start a day after the day we refer to when discussing it's SPT
+    # will start a date after the date we refer to when discussing it;s SPT
     # So, for next window we have to do date = date + 1
     add_one_day_to_next_date = TRUE
   }
