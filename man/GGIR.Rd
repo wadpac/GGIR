@@ -1159,7 +1159,11 @@ GGIR(mode = 1:5,
         no need to have a column with the date followed by a column with the next 
         date. If times in the activity diary are not multiple of the short window 
         size (epoch length), the next epoch is considered (e.g., with epoch of 5 
-        seconds, 8:00:02 will be redefined as 8:00:05 in the activity log).}
+        seconds, 8:00:02 will be redefined as 8:00:05 in the activity log).
+        When using the qwindow functionality in combination with GGIR part 5 then
+        make sure to check that arguments \code{segmentWEARcrit.part5} and 
+        \code{segmentDAYSPTcrit.part5} are specfied to your research needs.
+        }
 
       \item{qwindow_dateformat}{
         Character (default = "%d-%m-%Y").
