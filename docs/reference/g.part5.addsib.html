@@ -14,7 +14,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.9-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.10-3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,31 +88,29 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">g.part5.addsib</span><span class="op">(</span><span class="va">ts</span>,<span class="va">ws3</span>, <span class="va">Nts</span>, <span class="va">S2</span>, <span class="va">desiredtz</span>, <span class="va">j</span>, <span class="va">nightsi</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">g.part5.addsib</span><span class="op">(</span><span class="va">ts</span>, <span class="va">epochSize</span>, <span class="va">part3_output</span>, <span class="va">desiredtz</span>,</span>
+<span>              <span class="va">sibDefinition</span>, <span class="va">nightsi</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>ts</dt>
-<dd><p></p></dd>
+<dd><p>Data.frame object as passed on from <a href="g.part5.html">g.part5</a></p></dd>
 
-  <dt>ws3</dt>
-<dd><p></p></dd>
+  <dt>epochSize</dt>
+<dd><p>Short epoch size in seconds</p></dd>
 
-  <dt>Nts</dt>
-<dd><p></p></dd>
-
-  <dt>S2</dt>
-<dd><p></p></dd>
+  <dt>part3_output</dt>
+<dd><p>Segment of part 3 output relevant for current sleep definition</p></dd>
 
   <dt>desiredtz</dt>
-<dd><p></p></dd>
+<dd><p>see <a href="GGIR.html">GGIR</a></p></dd>
 
-  <dt>j</dt>
-<dd><p></p></dd>
+  <dt>sibDefinition</dt>
+<dd><p>Character to indicate definition of sib (sustained inactivity bout)</p></dd>
 
   <dt>nightsi</dt>
-<dd><p></p></dd>
+<dd><p>Vector with indices for the midnights</p></dd>
 
 </dl></div>
     <div class="section level2">
