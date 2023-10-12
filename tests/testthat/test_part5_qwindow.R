@@ -6,10 +6,9 @@ test_that("g.part5.definedays considers qwindow to generate segments", {
   # set windows
   timestamp = seq.POSIXt(from = as.POSIXct("2022-01-01 00:00:00"), 
                          to = as.POSIXct("2022-01-04 23:59:00"), by = 60)
-  timestamp = POSIXtime2iso8601(timestamp, tz = "")
   ts = data.frame(timestamp = timestamp,
                   ACC = 0)
-  nightsi = grep("00:00:00", ts$timestamp)
+  nightsi = grep("00:00:00", format(ts$timestamp))
   qwindow = c(7, 18)
   
   definedays = g.part5.definedays(nightsi = nightsi, wi = 1, indjump = 1, 

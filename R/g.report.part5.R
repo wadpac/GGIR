@@ -210,7 +210,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 CN = colnames(outputfinal)
                 outputfinal2 = outputfinal
                 colnames(outputfinal2) = CN
-                delcol = grep(pattern = "window|TRLi|TRMi|TRVi|sleepparam",
+                delcol = grep(pattern = "TRLi|TRMi|TRVi|sleepparam",
                               x = colnames(outputfinal2))
                 if (uwi[j] != "Segments") {
                   delcol = c(delcol, which(colnames(outputfinal2) == "window"))
