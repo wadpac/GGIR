@@ -400,11 +400,11 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     if (length(params_cleaning[["segmentDAYSPTcrit.part5"]]) != 2) {
       stop("\nArgument segmentDAYSPTcrit.part5 is expected to be a numeric vector of length 2", call. = FALSE)
     }
-    if (sum(params_cleaning[["segmentDAYSPTcrit.part5"]]) == 0 |
+    if (sum(params_cleaning[["segmentDAYSPTcrit.part5"]]) < 0.5 |
         0 %in% params_cleaning[["segmentDAYSPTcrit.part5"]] == FALSE) {
       stop(paste0("\nArgument segmentDAYSPTcrit.part5 needs to include one zero",
-                  " and cannot include two zeros as this would cause biased",
-                  " behavioural estimates"), call. = FALSE)
+                  " and one value of at least 0.5 as mixing incomplete windows with complete windows",
+                  " biases the estimates"), call. = FALSE)
     }
   }
   

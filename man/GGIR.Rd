@@ -831,18 +831,26 @@ GGIR(mode = 1:5,
         0.3 indicates that at least 30 percent of the time should be valid.}
         
       \item{segmentDAYSPTcrit.part5}{
-        Numeric vector or length 2 (default = c(0, 0.75)).
+        Numeric vector or length 2 (default = c(0, 0.9)).
         Inclusion criteria for the proportion of the segment that should be 
         classified as day (awake) and spt (sleep period time) to be considered 
         valid. One of the two numbers should be 0, and the other defines the 
-        proportion of the segment that should be classified as day or spt. Setting
-        both to zero would be problematic and not allowed as that would introduce
-        bias in PA or sleep estimate. The default setting would focus on waking hour
-        segments and includes all segments that overlap for at least 75 percent 
+        proportion of the segment that should be classified as day or spt, respectively.
+        The default setting would focus on waking hour
+        segments and includes all segments that overlap for at least 90 percent 
         with waking hours. In order to shift focus to the SPT you could use
-        c(0.75, 0) which ensures that all segments that overlap for at least
-        75 percent with the SPT are included.}
-
+        c(0.9, 0) which ensures that all segments that overlap for at least
+        90 percent with the SPT are included.
+        Setting both to zero would be problematic and is not allowed as that would introduce
+        bias in behavioural estimates for the following reason: A complete segment
+        would be averaged with an incomplete segments (someone going to bed or waking up
+        in the middle of a segment) by which it is no longer clear whether the person
+        is less active or sleeps more during that segment. Similarly it is not
+        clear whether the person has more wakefulness during SPT for a segment or
+        woke up or went to bed during the segment. Therefore, a 
+        minimum value of 0.5 is required but any value closer to 1
+        would be better.
+      }
       \item{includedaycrit}{
         Numeric (default = 16).
         Minimum required number of valid hours in day specific analysis

@@ -99,7 +99,7 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                            excludelast.part4 = FALSE, max_calendar_days = 0,
                            nonWearEdgeCorrection = TRUE, nonwear_approach = "2023",
                            segmentWEARcrit.part5 = 0.5,
-                           segmentDAYSPTcrit.part5 = c(0, 0.75))
+                           segmentDAYSPTcrit.part5 = c(0, 0.9))
   }
   if ("output" %in% group) {
     params_output = list(epochvalues2csv = FALSE, save_ms5rawlevels = FALSE,
