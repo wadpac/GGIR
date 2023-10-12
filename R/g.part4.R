@@ -62,11 +62,15 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   # initialize output variable names
   colnamesnightsummary = c("ID", "night", "sleeponset", "wakeup", "SptDuration", "sleepparam", "guider_onset",
                            "guider_wakeup", "guider_SptDuration", "error_onset", "error_wake", "error_dur", "fraction_night_invalid",
-                           "SleepDurationInSpt", "WASO", "duration_sib_wakinghours", "number_sib_sleepperiod", "number_of_awakenings",
-                           "number_sib_wakinghours", "duration_sib_wakinghours_atleast15min", "sleeponset_ts", "wakeup_ts", "guider_onset_ts",
-                           "guider_wakeup_ts", "sleeplatency", "sleepefficiency", "page", "daysleeper", "weekday", "calendar_date",
+                           "SleepDurationInSpt", "WASO", "duration_sib_wakinghours",
+                           "number_sib_sleepperiod", "number_of_awakenings",
+                           "number_sib_wakinghours", "duration_sib_wakinghours_atleast15min",
+                           "sleeponset_ts", "wakeup_ts", "guider_onset_ts",  "guider_wakeup_ts",
+                           "sleeplatency", "sleepefficiency", "page", "daysleeper", "weekday", "calendar_date",
                            "filename", "cleaningcode", "sleeplog_used", "sleeplog_ID", "acc_available", "guider", "SleepRegularityIndex", "SriFractionValid",
-                           "longitudinal_axis")
+                           "longitudinal_axis") #
+  
+  
   if (params_output[["storefolderstructure"]] == TRUE) {
     colnamesnightsummary = c(colnamesnightsummary, "filename_dir", "foldername")
   }
@@ -344,10 +348,10 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           # initialize dataframe to hold sleep period overview:
           spocum = data.frame(nb = numeric(0), start = numeric(0),  end = numeric(0),
                               dur = numeric(0), def = character(0))
-
+          
           spocumi = 1  # counter for sleep periods
           # continue now with the specific data of the night
-
+          
           guider.df2 = guider.df[which(guider.df$night == j), ]
           # ================================================================================ get
           # sleeplog (or HDCZA or L5+/-6hr algorithm) onset and waking time and assess whether it
@@ -457,6 +461,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
               } else {
                 acc_available = TRUE
               }
+              
               if (nrow(sleepdet) == 0) next
               ki = which(sleepdet$definition == k)
               if (length(ki) == 0) next
@@ -681,13 +686,13 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   }
                   delta_t1 = diff(as.numeric(spocum.t$end))
                   spocum.t$dur = correct01010pattern(spocum.t$dur)
-
+                  
                   #----------------------------
                   nightsummary[sumi, 1] = accid
                   nightsummary[sumi, 2] = j  #night
                   # remove double rows
                   spocum.t = spocum.t[!duplicated(spocum.t), ]
-
+                  
                   #------------------------------------
                   # ACCELEROMETER
                   if (length(which(as.numeric(spocum.t$dur) == 1)) > 0) {
@@ -868,6 +873,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                     spocum.t.dur_sibd = 0
                     spocum.t.dur_sibd_atleast15min = 0
                   }
+                  
                   nightsummary[sumi, 14] = spocum.t.dur.noc  #total nocturnalsleep /accumulated sleep duration
                   nightsummary[sumi, 15] = nightsummary[sumi, 5] - spocum.t.dur.noc  #WASO
                   nightsummary[sumi, 16] = spocum.t.dur_sibd  #total sib (sustained inactivty bout) duration during wakinghours
@@ -1043,11 +1049,10 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
         if (length(nnights.list) == 0) {
           # if there were no nights to analyse
           nightsummary[sumi, 1:2] = c(accid, 0)
-          nightsummary[sumi, 3:30] = NA
+          nightsummary[sumi, c(3:30, 34, 36:39)] = NA
           nightsummary[sumi, 31] = fnames[i]
           nightsummary[sumi, 32] = 4  #cleaningcode = 4 (no nights of accelerometer available)
-          nightsummary[sumi, c(33,35)] = c(FALSE, TRUE)  #sleeplog_used acc_available
-          nightsummary[sumi, 36:39] = NA
+          nightsummary[sumi, c(33, 35)] = c(FALSE, TRUE)  #sleeplog_used acc_available
           if (params_output[["storefolderstructure"]] == TRUE) {
             nightsummary[sumi, 40:41] = c(ffd[i], ffp[i])  #full filename structure and use the lowest foldername as foldername name
           }

@@ -789,12 +789,15 @@ GGIR(mode = 1:5,
         strategy = 1 means select data based on \code{hrs.del.start} and \code{hrs.del.end}.
         strategy = 2 makes that only the data between the first
         midnight and the last midnight is used.
-        strategy = 3 only selects the most active X days in the file where X is
-        specified by argument \code{ndayswindow}, where the days are a series of 24-h blocks
-        starting any time in the day.
+        strategy = 3 selects the most active X days in the file where X is
+        specified by argument \code{ndayswindow}, where the days are a series 
+        of 24-h blocks starting any time in the day (X hours at the begining and end
+        of this period can be deleted with arguments \code{hrs.del.start} and \code{hrs.del.end})
         strategy = 4 to only use the data after the first midnight.
         strategy = 5 is similar to \code{strategy = 3}, but it selects X complete
-        calendar days where X is specified by argument \code{ndayswindow}.}
+        calendar days where X is specified by argument \code{ndayswindow} 
+        (X hours at the begining and end of this period can be deleted with 
+        arguments \code{hrs.del.start} and \code{hrs.del.end}).}
 
       \item{hrs.del.start}{
         Numeric (default = 0).
@@ -1249,7 +1252,6 @@ GGIR(mode = 1:5,
         over which L5M5 needs to be calculated. Now this is done with argument qwindow.}
 
       \item{cosinor}{
-        Argument depricated after version 1.5-24.
         Boolean (default = FALSE). Whether to apply the cosinor analysis from the ActCR package.}
 
     }
