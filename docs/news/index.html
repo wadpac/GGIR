@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.9-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.10-3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,8 +76,52 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.10-4" id="changes-in-ggir-version-210-4">CHANGES IN GGIR VERSION 2.10-4<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-210-4"></a></h2>
+<ul><li><p>Part 4: Now better able to handle nights without sustained inactivity bouts (rest) <a href="https://github.com/wadpac/GGIR/issues/911" class="external-link">#911</a></p></li>
+<li><p>Part 5: Function g.fragmentation code cleaned up, TP formulas revised following feedback Ian Danilevicz, and code now also produces sleep fragmentation <a href="https://github.com/wadpac/GGIR/issues/817" class="external-link">#817</a></p></li>
+<li><p>Part 1: Fixed issue <a href="https://github.com/wadpac/GGIR/issues/914" class="external-link">#914</a> relating to specifying timezone for processing ad-hoc csv format raw data.</p></li>
+<li><p>Part 1: Improved recognition of ActiGraph csv that occassionally confused for Axivity csv <a href="https://github.com/wadpac/GGIR/issues/918" class="external-link">#918</a></p></li>
+<li><p>Fix recently introduced bug where GGIR environment was not exported to cluster in GGIR part 1, 2, 3, and 5 <a href="https://github.com/wadpac/GGIR/issues/910" class="external-link">#910</a></p></li>
+<li><p>Add contributing guidelines for github.io documentation <a href="https://github.com/wadpac/GGIR/issues/923" class="external-link">#923</a></p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.10-3" id="changes-in-ggir-version-210-3">CHANGES IN GGIR VERSION 2.10-3<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-210-3"></a></h2>
+<ul><li><p>Part 1: Fixed minor bug in ismovisens that failed when datadir started with “./” <a href="https://github.com/wadpac/GGIR/issues/897" class="external-link">#897</a></p></li>
+<li><p>Part 5: Now able to assess overlap between self-reported naps and nonwear with sustained inactivity bouts in order to facilitate research on nap detection. Fixes <a href="https://github.com/wadpac/GGIR/issues/687" class="external-link">#687</a></p></li>
+<li><p>Part 5: Time series now also exported if recording only includes one night, even though this is not sufficient for the main part 5 analyses. <a href="https://github.com/wadpac/GGIR/issues/894" class="external-link">#894</a> Further, the time series now also come with lightpeak (LUX).</p></li>
+<li><p>Visualreport: Bug fixed extracting the numeric value of the days to exclude in g.plot5 <a href="https://github.com/wadpac/GGIR/issues/879" class="external-link">#879</a></p></li>
+<li><p>Part 1: Fixed minor bug to keep calibration data in the data quality report after re-running parts 1 and 2 with overwrite = TRUE and backup.cal.coef = “retrieve” <a href="https://github.com/wadpac/GGIR/issues/896" class="external-link">#896</a></p></li>
+<li><p>Part 5: Fix minor bug by which GGIR skipped the last day if measurement finishes before midnight and timewindow = MM <a href="https://github.com/wadpac/GGIR/issues/891" class="external-link">#891</a></p></li>
+<li><p>Part 4: Added parameter sleepefficiency.metric to decide if in-bed time (denominator) should be guider_spt or acc_spt + latency <a href="https://github.com/wadpac/GGIR/issues/811" class="external-link">#811</a></p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.10-2" id="changes-in-ggir-version-210-2">CHANGES IN GGIR VERSION 2.10-2<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-210-2"></a></h2>
+<ul><li><p>Part 1: Revision to readability of code (credits: Lena Kushleyeva)</p></li>
+<li><p>Part 1: Improved handling of corrupted .gt3x files <a href="https://github.com/wadpac/GGIR/issues/873" class="external-link">#873</a></p></li>
+<li><p>Part 1 + 2: Bug fixed in logging file health of Axivity data</p></li>
+<li><p>Part 2: Addresses confusing error message for some users <a href="https://github.com/wadpac/GGIR/issues/888" class="external-link">#888</a></p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.10-1" id="changes-in-ggir-version-210-1">CHANGES IN GGIR VERSION 2.10-1<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-210-1"></a></h2><p class="text-muted">CRAN release: 2023-08-10</p>
+<ul><li><p>Part 1 + 2: File health log captured by dependency GGIRread::readAxivity and incorporated in data_quality_report <a href="https://github.com/wadpac/GGIR/issues/866" class="external-link">#866</a></p></li>
+<li><p>Part 1: Fix ID extraction for externally generated epoch files <a href="https://github.com/wadpac/GGIR/issues/869" class="external-link">#869</a></p></li>
+<li><p>Sleep log: Argument nnigths is now deprecated and number of nights are detected automatically in sleep logs <a href="https://github.com/wadpac/GGIR/issues/856" class="external-link">#856</a></p></li>
+<li><p>Sleep log: Minor fixed related to misplaced parenthesis in g.loadlog and automatic extension of sleeplog matrix if needed to avoid error <a href="https://github.com/wadpac/GGIR/issues/867" class="external-link">#867</a></p></li>
+<li><p>General: When recording starts after midnight and before 4am, then the wake time for this first day is now derived in parts 3-4 and used in part 5 <a href="https://github.com/wadpac/GGIR/issues/859" class="external-link">#859</a></p></li>
+<li><p>Part 1: Fix major bug to .gt3x data autocalibration (only ActiGraph), where autocalibration was done but not applied to the data <a href="https://github.com/wadpac/GGIR/issues/864" class="external-link">#864</a></p></li>
+<li><p>Refactored code for functions g.analyse.perfile and various functions which name starts with “g.part5”</p></li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.9-6" id="changes-in-ggir-version-29-6">CHANGES IN GGIR VERSION 2.9-6<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-29-6"></a></h2>
-<ul><li>Config file: Fix minor bug by ignoring the local function getExt from the config file <a href="https://github.com/wadpac/GGIR/issues/846" class="external-link">#846</a></li>
+<ul><li><p>Part 1: Fix .gt3x file serial number and firmware extraction <a href="https://github.com/wadpac/GGIR/issues/850" class="external-link">#850</a></p></li>
+<li><p>Part 5: Now able to segment days based on qwindow <a href="https://github.com/wadpac/GGIR/issues/815" class="external-link">#815</a></p></li>
+<li><p>Part 5: Fix minor bug related to the definition of the MM window (it was biased by 1 epoch) <a href="https://github.com/wadpac/GGIR/issues/838" class="external-link">#838</a></p></li>
+<li><p>Part 5: Now g.part5.lux_persegment is able to handle timestamp in iso8601 format <a href="https://github.com/wadpac/GGIR/issues/848" class="external-link">#848</a></p></li>
+<li><p>Part 5: Fix minor bug by which GGIR skipped the last day if measurement starts at midnight and timewindow = MM <a href="https://github.com/wadpac/GGIR/issues/852" class="external-link">#852</a></p></li>
+<li><p>Activity log: Fix minor bug that appeared when seconds in the activity log are not compatible with the epoch length used in GGIR <a href="https://github.com/wadpac/GGIR/issues/844" class="external-link">#844</a></p></li>
+<li><p>Config file: Fix minor bug by ignoring the local function getExt from the config file <a href="https://github.com/wadpac/GGIR/issues/846" class="external-link">#846</a></p></li>
+<li><p>Update authors’ information in DESCRIPTION and CITATION files</p></li>
+<li><p>Added structure for github.io documentation page</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.9-5" id="changes-in-ggir-version-29-5">CHANGES IN GGIR VERSION 2.9-5<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-29-5"></a></h2>
@@ -184,10 +228,10 @@
 <h2 class="pkg-version" data-toc-text="2.8-2" id="changes-in-ggir-version-28-2">CHANGES IN GGIR VERSION 2.8-2<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-28-2"></a></h2><p class="text-muted">CRAN release: 2022-10-06</p>
 <ul><li><p>Timestamp conversion functions tidied up <a href="https://github.com/wadpac/GGIR/issues/661" class="external-link">#661</a>.</p></li>
 <li><p>Part 1: Deprecate brondcounts due to issues in activityCounts package</p></li>
-<li><p>Part 5: Fix <a href="https://github.com/wadpac/GGIR/issues/655" class="external-link">#655</a> (unable to handle when M5HOUR falls on midnight exactly).</p></li>
+<li><p>Part 5: Fixes <a href="https://github.com/wadpac/GGIR/issues/655" class="external-link">#655</a> (unable to handle when M5HOUR falls on midnight exactly).</p></li>
 <li><p>Part 5: Additional updates that I missed in 2.8-1 in POSIXlt to character conversion to be compatible with R-devel update svn revision r82904 (2022-09-24 19:32:52)</p></li>
-<li><p>Part5: Fix <a href="https://github.com/wadpac/GGIR/issues/655" class="external-link">#655</a> (unable to handle when M5HOUR falls on midnight exactly).</p></li>
-<li><p>Reports: Fix <a href="https://github.com/wadpac/GGIR/issues/672" class="external-link">#672</a> (improved speed of reports generation).</p></li>
+<li><p>Part5: Fixes <a href="https://github.com/wadpac/GGIR/issues/655" class="external-link">#655</a> (unable to handle when M5HOUR falls on midnight exactly).</p></li>
+<li><p>Reports: Fixes <a href="https://github.com/wadpac/GGIR/issues/672" class="external-link">#672</a> (improved speed of reports generation).</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.8-1" id="changes-in-ggir-version-28-1">CHANGES IN GGIR VERSION 2.8-1<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-28-1"></a></h2><p class="text-muted">CRAN release: 2022-10-01</p>
@@ -298,7 +342,7 @@
 <ul><li><p>Part2: Non-user facing arguments and object named BodyLocation replaced by sensor.location to be consistent with the term used in part 3.</p></li>
 <li><p>Minor documentation updates to cover brondcounts and to reflect that bout.metric is no longer 4 by default</p></li>
 <li><p>Minor change to parallel processing so that GGIR does not create a cluster larger than the number of files to process. Fixes <a href="https://github.com/wadpac/GGIR/issues/535" class="external-link">#535</a></p></li>
-<li><p>Part 4: Fix bug <a href="https://github.com/wadpac/GGIR/issues/531" class="external-link">#531</a> re. sleeplog being ignored if first night is missing</p></li>
+<li><p>Part 4: Fixes bug <a href="https://github.com/wadpac/GGIR/issues/531" class="external-link">#531</a> re. sleeplog being ignored if first night is missing</p></li>
 <li><p>Part 4: Now relies more on ID extraction in part 1-3 and only attempts to extract ID from filename if that fails. Previously it extracted the ID twice.</p></li>
 <li><p>General: Speeded-up implementation of rounding decimal places as introduced in release 2.6-1</p></li>
 </ul></div>
@@ -318,7 +362,7 @@
 <li><p>Part 2: Fixed bug <a href="https://github.com/wadpac/GGIR/issues/516" class="external-link">#516</a> regarding passing on of dateformat.</p></li>
 <li><p>Part 4: Fixed bug introduced in 2.6-0 relating to sleeplog guider being assined even when no sleeplog used.</p></li>
 <li><p>Part 5: Improved handling of missing sleep estimate for first night.</p></li>
-<li><p>General: Fix bug introduced in 2.6-0 relating to storage of configuration file on comma-separated machines</p></li>
+<li><p>General: Fixes bug introduced in 2.6-0 relating to storage of configuration file on comma-separated machines</p></li>
 <li><p>General: GGIR reports are now saved with a maximum of 3 decimal places for numeric variables.</p></li>
 </ul></div>
     <div class="section level2">
@@ -359,8 +403,8 @@
 <ul><li><p>Part 3: Now makes sure that HASPT is skipped when user configures def.noc.sleep as a set time window. This feature that probaly few people use nowadays broke with the 2.5-0 release.</p></li>
 <li><p>g.shell.GGIR: Now gives warning when user supplies double arguments.</p></li>
 <li><p>Part 4: Now warns when none of the IDs in the sleeplog could be matched with accelerometer data.</p></li>
-<li><p>Part 1: read.myacc.csv fix bug with argument rmc.check4timegaps</p></li>
-<li><p>Part 3: Fix <a href="https://github.com/wadpac/GGIR/issues/472" class="external-link">#472</a> SRI calculation not possible when complete absence of sleep in recording</p></li>
+<li><p>Part 1: read.myacc.csv fixes bug with argument rmc.check4timegaps</p></li>
+<li><p>Part 3: Fixes <a href="https://github.com/wadpac/GGIR/issues/472" class="external-link">#472</a> SRI calculation not possible when complete absence of sleep in recording</p></li>
 <li><p>Part 5: Experimental nap detection added to report and time series, currently only model for 3.5 year olds available.</p></li>
 </ul></div>
     <div class="section level2">
@@ -457,7 +501,7 @@
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.2-1" id="changes-in-ggir-version-22-1">CHANGES IN GGIR VERSION 2.2-1<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-22-1"></a></h2>
-<ul><li><p>Part 3 Fix bug introduced in 2.2-0 for recordings without sustained inactivity bouts</p></li>
+<ul><li><p>Part 3 Fixes bug introduced in 2.2-0 for recordings without sustained inactivity bouts</p></li>
 <li><p>Transitioned from Travis+Appveyor CI to GitHub Actions</p></li>
 <li><p>Part 5 fixed issue with expected max number of files to process</p></li>
 <li><p>Enabled console display of GGIR version number when running g.shell.shell under Windows</p></li>
@@ -478,9 +522,9 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.1-2" id="changes-in-ggir-version-21-2">CHANGES IN GGIR VERSION 2.1-2<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-21-2"></a></h2>
 <ul><li><p>Part 5 bug fixed with day name and date allocation for daysleepers for MM report</p></li>
-<li><p>Fix bug part 4 and 5 with missing nights which are not accounted for when assessing max night number.</p></li>
-<li><p>Fix bug part 3 introduced in version 2.1-0 re. SPT detection for daysleepers.</p></li>
-<li><p>Fix redefinition of the time windows (with “MM”) in part 5 to include all recording days when the measurement starts with multiple non-wear days.</p></li>
+<li><p>Fixes bug part 4 and 5 with missing nights which are not accounted for when assessing max night number.</p></li>
+<li><p>Fixes bug part 3 introduced in version 2.1-0 re. SPT detection for daysleepers.</p></li>
+<li><p>Fixes redefinition of the time windows (with “MM”) in part 5 to include all recording days when the measurement starts with multiple non-wear days.</p></li>
 <li><p>GGIR version now displayed in console when running GGIR</p></li>
 <li><p>Bout metric 5 added to enable not allowing for gaps in bouts.</p></li>
 </ul></div>
@@ -565,7 +609,7 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.10-7" id="changes-in-ggir-version-110-7">CHANGES IN GGIR VERSION 1.10-7<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-110-7"></a></h2><p class="text-muted">CRAN release: 2019-10-06</p>
 <ul><li><p>Fixed functionality to supply calibration coefficients file to backup.cal.coef.</p></li>
-<li><p>Fix OSx flavor not being released on CRAN in previous version.</p></li>
+<li><p>Fixes OSx flavor not being released on CRAN in previous version.</p></li>
 <li><p>Upgrades to foreach loop to ease package maintenance</p></li>
 <li><p>Documentation part4 expanded to clarify difference between full and cleaned report.</p></li>
 <li><p>Non-wear detection now possible at 1 minute resolution, previously 5 minute.</p></li>
@@ -708,7 +752,7 @@
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.5-17" id="changes-in-ggir-version-15-17">CHANGES IN GGIR VERSION 1.5-17<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-15-17"></a></h2><p class="text-muted">CRAN release: 2018-02-19</p>
-<ul><li>SPT-window detection now updated with a constrained threshold to make it more robust against between accelerometer brand differences. This is the approach used for our PSG in <a href="https://www.biorxiv.org/content/early/2018/02/01/257972" class="external-link uri">https://www.biorxiv.org/content/early/2018/02/01/257972</a>
+<ul><li>SPT-window detection now updated with a constrained threshold to make it more robust against between accelerometer brand differences. This is the approach used for our PSG in <a href="https://www.biorxiv.org/content/10.1101/257972v1" class="external-link uri">https://www.biorxiv.org/content/10.1101/257972v1</a>
 </li>
 </ul></div>
     <div class="section level2">

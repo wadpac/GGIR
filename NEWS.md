@@ -1,3 +1,12 @@
+# CHANGES IN GGIR VERSION 2.10-5
+
+- Part 2: Move cosinor analysis code to its own function in order to ease re-using it in both part 2 and part 6.
+
+- Part2: Expand cosinor analysis with R2
+
+- Part 2: Arguments hrs.del.start and hrs.del.end when combined with strategy = 3 and strategy = 5 now count
+relative to start and end of the most active time window as identified.  #905
+
 # CHANGES IN GGIR VERSION 2.10-4
 
 - Part 4: Now better able to handle nights without sustained inactivity bouts (rest) #911
@@ -15,6 +24,8 @@
 - Part 4: More informative error message when advanced sleep log has duplicate or missing dates #925
 
 - Fix recently introduced bug where GGIR environment was not exported to cluster in GGIR part 1, 2, 3, and 5 #910
+
+- Add contributing guidelines for github.io documentation #923
 
 # CHANGES IN GGIR VERSION 2.10-3
 

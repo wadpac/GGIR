@@ -35,7 +35,7 @@ export(g.analyse, g.calibrate,
        check_params, extract_params,
        g.imputeTimegaps, g.part5.classifyNaps,
        tidyup_df, cosinorAnalyses,
-       detect_nonwear_clipping,
+       detect_nonwear_clipping, applyCosinorAnalyses,
        ShellDoc2Vignette, parametersVignette,
        correctOlderMilestoneData,
        convertEpochData, appendRecords, extractID,
@@ -53,7 +53,7 @@ importFrom("utils", "read.csv", "sessionInfo", "write.csv",
 importFrom("stats", "aggregate.data.frame", "weighted.mean",
            "rnorm","median","aggregate","C", "lm.wfit",
            "quantile", "sd","coef", "lm", "embed", "na.pass",
-            "residuals", "fitted")
+            "residuals", "fitted", "cor")
 import(data.table)
 importFrom("methods", "is")
 importFrom("utils", "available.packages", "packageVersion", "help", "read.table")

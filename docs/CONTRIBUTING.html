@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.9-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.10-3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,7 +105,7 @@
 <li>if needed, fork the repository to your own Github profile and create your own feature branch off of the latest master commit. While working on your feature branch, make sure to stay up to date with the master branch by pulling in changes, possibly from the ‘upstream’ repository (follow the instructions <a href="https://help.github.com/articles/configuring-a-remote-for-a-fork/" class="external-link">here</a> and <a href="https://help.github.com/articles/syncing-a-fork/" class="external-link">here</a>);</li>
 <li>make sure the existing tests still work by running the test suite from RStudio;</li>
 <li>add your own tests (if necessary);</li>
-<li>update or expand the documentation;</li>
+<li>update or expand the documentation, see <a href="#package-documentation">package documentation guidelines</a>;</li>
 <li>make sure the release notes in <code>inst/NEWS.Rd</code> are updated;</li>
 <li>add your name to the contributors lists in the <code>DESCRIPTION</code> and <code>CITATION.cff</code> files;</li>
 <li>push your feature branch to (your fork of) the GGIR repository on GitHub;</li>
@@ -119,6 +119,56 @@
 <li>Keep loops to a minimum.</li>
 <li>Don’t make lines too long.</li>
 </ul><p>If you are a first time contributor, don’t worry about coding style too much. We will help you get things in shape.</p>
+</div>
+<div class="section level3">
+<h3 id="package-documentation">Package documentation<a class="anchor" aria-label="anchor" href="#package-documentation"></a></h3>
+<p>We currently have three sources for documenting the package:</p>
+<ul><li>The reference manual, including package basic information and the functions documentation files.</li>
+<li>The package vignettes.</li>
+<li>The github.io website (built with the <code>pkgdown</code> package).</li>
+</ul><div class="section level4">
+<h4 id="reference-manual">Reference manual<a class="anchor" aria-label="anchor" href="#reference-manual"></a></h4>
+<p>The reference manual gets the information from the .Rd documents within the man folder in the package repository. Therefore, updating the information in those files will automatically update the reference manual. Note that most of the GGIR functions are not intended for direct interaction with the user, as such, the documentation of most arguments is centralized in the details section of man/GGIR.Rd. If you for example want to add an extra parameter to <code>params_247</code> then this should be documented there. Further, you should not forget to include the new argument in functions  and .</p>
+</div>
+<div class="section level4">
+<h4 id="package-vignettes">Package vignettes<a class="anchor" aria-label="anchor" href="#package-vignettes"></a></h4>
+<p>The folder vignettes in the GGIR repository contains the .Rmd files. The .Rmd files that do not start with the word ‘chapter’ are used for the traditional package vignettes as hosted by CRAN. Use these files to edit an existing vignette, or use the structure of any of the vignettes to build up a new one. All .Rmd files which name starts with the word ‘chapter’ are ignored. These chapter-vignettes are used only for the github.io website (see <a href="#github.io-website">next section</a>).</p>
+<p><strong>To create a new vignette for CRAN</strong></p>
+<p>To create a new package vignette for CRAN, please use <code><a href="https://usethis.r-lib.org/reference/use_vignette.html" class="external-link">usethis::use_vignette()</a></code> and make sure the name of the vignette file does not start by “chapter”. For example, if you want to create a new vignette on sleep for CRAN, you may do the following:</p>
+<pre><code><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_vignette.html" class="external-link">use_vignette</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"sleep"</span>, </span>
+<span>                      title <span class="op">=</span> <span class="st">"How to analyse your sleep data in GGIR"</span><span class="op">)</span></span></code></pre>
+<p>This would create a new “sleep.Rmd” file within the vignettes folder in the GGIR repository. Then you can edit this file to build up the vignette.</p>
+<p><strong>To remove a vignette from CRAN</strong></p>
+<p>There are two ways to remove a vignette from CRAN:</p>
+<ol style="list-style-type: decimal"><li>Removing the Rmd file corresponding to the vignette in the vignettes folder, note that the file and the information will be lost.</li>
+<li>Adding the path to the vignette in the .Rbuildignore file available in the GGIR repository. For example, to remove the GGIRParameters vignette from CRAN, you can add:</li>
+</ol><pre><code>^vignettes/GGIRParameters.Rmd
+</code></pre>
+</div>
+<div class="section level4">
+<h4 id="githubio-website">github.io website<a class="anchor" aria-label="anchor" href="#githubio-website"></a></h4>
+<p>For updating or adding information to the github.io website, we need to use <a href="_pkgdown.yml">the pkgdown configuration file</a> that can be found in the repositories root directory, as well as with the chapter vignettes discussed above.</p>
+<p><strong>To edit information in an existing chapter</strong></p>
+<ol style="list-style-type: decimal"><li>Open the vignette corresponding to the chapter you wish to edit (see the _pkgdown.yml) file for the chapter and its vignette path (href).</li>
+<li>Make your changes in the vignette.</li>
+<li>Run the <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code> function.</li>
+</ol><p><strong>To add a new chapter</strong></p>
+<ol style="list-style-type: decimal"><li>Create a Rmd file for the vignette via <code><a href="https://usethis.r-lib.org/reference/use_vignette.html" class="external-link">usethis::use_vignette()</a></code> and make sure the name of the vignette starts by “chapter”, for example:</li>
+</ol><pre><code><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_vignette.html" class="external-link">use_vignette</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"chapterSleep"</span>, </span>
+<span>                      title <span class="op">=</span> <span class="st">"10. How to analyse your sleep data in GGIR"</span><span class="op">)</span></span></code></pre>
+<ol start="2" style="list-style-type: decimal"><li>Open the <a href="_pkgdown.yml">_pkgdown.yml</a> file and fill up the name and reference of the new chapter under menu. Make sure to follow the coding and structure of the rest of chapters.</li>
+<li>Run the <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code> function.</li>
+</ol><p><strong>To remove a chapter</strong></p>
+<ol style="list-style-type: decimal"><li>Remove the lines corresponding to the chapter in the <a href="_pkgdown.yml">_pkgdown.yml</a> file in line 42 onwards.</li>
+<li>Optionally you may remove the Rmd file corresponding to the chapter, but only by doing the step 1, the chapter will not appear in the github.io website.</li>
+<li>Run the <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code> function.</li>
+</ol><p><strong>To edit the name of a chapter</strong></p>
+<p>Chapter names are defined</p>
+</div>
+<div class="section level4">
+<h4 id="adding-the-changes-to-the-master-branch">Adding the changes to the master branch<a class="anchor" aria-label="anchor" href="#adding-the-changes-to-the-master-branch"></a></h4>
+<p>The last step would be committing and pushing your changes to github and making a pull request as with any other contribution to the package. Note that, running the <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code> function will edit the files within the docs folder, and probably add some new files. This only applies when editing information from the github.io website. It is important that these changes to the files in the docs folder are also part of the pull requests, as otherwise the website would not be updated.</p>
+</div>
 </div>
 </div>
 <div class="section level2">
