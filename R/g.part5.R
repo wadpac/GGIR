@@ -276,8 +276,11 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             # Add first waking up time, if it is missing:
             ts = g.part5.addfirstwake(ts, summarysleep = summarysleep_tmp2, nightsi, sleeplog, ID,
                                       Nepochsinhour, SPTE_end)
+            # Convert time column from iso8601 to POSIX regardless of whether it is aggregated
+            # to ensure the format is consistent
+            ts$time = iso8601chartime2POSIX(ts$time,tz = params_general[["desiredtz"]])
             if (params_general[["part5_agg2_60seconds"]] == TRUE) { # Optionally aggregate to 1 minute epoch:
-              ts$time_num = floor(as.numeric(iso8601chartime2POSIX(ts$time,tz = params_general[["desiredtz"]])) / 60) * 60
+              ts$time_num = floor(as.numeric(ts$time) / 60) * 60
               
               # only include angle if angle is present
               angleColName = ifelse("angle" %in% names(ts), yes = "angle", no = NULL)
@@ -410,6 +413,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                   #-------------------------------
                   # ignore all nights in 'inights' before the first waking up and after the last waking up
                   FM = which(diff(ts$diur) == -1)
+                  SO = which(diff(ts$diur) == 1)
                   # now 0.5+6+0.5 midnights and 7 days
                   for (timewindowi in params_output[["timewindow"]]) {
                     nightsi = nightsi_bu
@@ -418,6 +422,11 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                       if (length(FM) > 0) {
                         # ignore first and last midnight because we did not do sleep detection on it
                         nightsi = nightsi[nightsi > FM[1] & nightsi < FM[length(FM)]]
+                      }
+                    } else if (timewindowi == "OO") {
+                      if (length(SO) > 0) {
+                        # ignore data before the first sleep onset and after the last sleep onset
+                        nightsi = nightsi[nightsi > SO[1] & nightsi < SO[length(SO)]]
                       }
                     } else {
                       # if first night is missing then nights needs to align with diur
@@ -428,8 +437,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     }
                     if (timewindowi == "MM") {
                       Nwindows = length(nightsi) + 1
-                    } else {
+                    } else if (timewindowi == "WW") {
                       Nwindows = length(which(diff(ts$diur) == -1))
+                    } else if (timewindowi == "OO") {
+                      Nwindows = length(which(diff(ts$diur) == 1))
                     }
                     indjump = 1
                     qqq_backup = c()
@@ -442,7 +453,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     }
                     for (wi in 1:Nwindows) { #loop through 7 windows (+1 to include the data after last awakening)
                       # Define indices of start and end of the day window (e.g. midnight-midnight, or waking-up or wakingup
-                      
                       defdays = g.part5.definedays(nightsi, wi, indjump,
                                                    nightsi_bu, epochSize = ws3new, qqq_backup, ts, 
                                                    timewindowi, Nwindows, qwindow = params_247[["qwindow"]],

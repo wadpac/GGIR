@@ -27,7 +27,7 @@ The physical activity research field has used so called cut-points to segment
 accelerometer time series based on level of intensity. In this vignette we have 
 compiled a list of published cut-points with instructions on how to use them with GGIR.
 As newer cut-points are frequently published the list below may not be up to date.
-**Please let us know you if know of any cut-points we missed!**
+**Please let us know if you are aware of any published cut-points that we missed!**
 
 ## Cut-points expressed in gravitational units (this vignette)
 

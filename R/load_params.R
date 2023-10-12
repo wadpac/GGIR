@@ -97,9 +97,9 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                            includenightcrit = 16, #<= to cleaning
                            excludefirst.part4 = FALSE, # => to cleaning
                            excludelast.part4 = FALSE, max_calendar_days = 0,
-                           nonWearEdgeCorrection = TRUE, nonwear_approach = "2013",
+                           nonWearEdgeCorrection = TRUE, nonwear_approach = "2023",
                            segmentWEARcrit.part5 = 0.5,
-                           segmentDAYSPTcrit.part5 = c(0,0))
+                           segmentDAYSPTcrit.part5 = c(0.9, 0))
   }
   if ("output" %in% group) {
     params_output = list(epochvalues2csv = FALSE, save_ms5rawlevels = FALSE,
