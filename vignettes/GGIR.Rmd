@@ -482,8 +482,8 @@ For an explanation on how time use analysis is performed see section
         Here, the full 25 minutes would count towards the duration of
         the MVPA bout.
 -   `timewindow` to specify whether days should be defined from midnight
-    to midnight `"MM"`, from waking-up to waking-up `"WW"`, or both
-    `c("MM","WW")`.
+    to midnight `"MM"`, from waking-up to waking-up `"WW"`, from sleep onset
+    to sleep onset `"OO"`, or any combination of them.
 -   Configure durations of bouts: `boutdur.mvpa`, `boutdur.in`, and
     `boutdur.lig`. Note that this can be a vector of multiple values
     indicating the minimum and maximum duration of subsequent bout
@@ -1618,7 +1618,7 @@ correspond to the date of analysis.
 | SleepPeriodTime      | Is 1 if SPT is detected, 0 if not. Note that this refers to the combined usage of guider and detected sustained inactivity bouts (rest periods).|
 | invalidepoch         | Is 1 if epoch was detect as invalid (e.g. non-wear), 0 if not.       |
 | guider   | Is 1 if guider method detect epoch as SPT (e.g. sleeplog, HDCZA), 0 if not. You will not find here which guider is used, for this see other GGIR output.    |
-| window   | Numeric indicator of the analysis window in the recording. If timewindow = "MM" then these correspond to calendar days, if timewindow = "WW" then these correspond to which wakingup-wakingup window in the recording. So, in a recording of one week you may find window numbers 1, 2, 3, 4, 5 and 6.|
+| window   | Numeric indicator of the analysis window in the recording. If timewindow = "MM" then these correspond to calendar days, if timewindow = "WW" then these correspond to which wakingup-wakingup window in the recording, if timewindow = "OO" then these correspond to which sleeponset-sleeponset window in the recording. So, in a recording of one week you may find window numbers 1, 2, 3, 4, 5 and 6.|
 | class_id | The behavioural class codes are documented in the exported csv file meta/ms5outraw/behaviouralcodes.csv. Class codes above class 8 will be analysis specific, because it depends on the number time variants of the bouts used. For example, if you look at MVPA lasting 1-10, 10-20, 30-40 then all of them will have their own class_id. |
 | invalid_fullwindow   | Fraction of the window (see above) that represents invalid data. I added this to make it easier to filter the timeseries based on whether days are valid or not.         |
 | invalid_sleepperiod  | Fraction of SPT within the current window that represents invalid data.          |

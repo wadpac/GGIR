@@ -2,22 +2,23 @@ g.part5.onsetwaketiming = function(qqq, ts, min, sec, hour, timewindowi) {
   onset = wake = 0
   skiponset = TRUE; skipwake = TRUE
   # Onset index
-  if (timewindowi == "WW") {
-    onseti = c(qqq[1]:qqq[2])[which(diff(ts$diur[qqq[1]:(qqq[2]-1)]) == 1)+1]
-    if (length(onseti) > 1) {
-      onseti = onseti[length(onseti)] # in the case if MM use last onset
-    }
+  if (timewindowi == "OO") {
+    # For OO onset is by definition the start and end of the window
+    onseti = qqq[1] + 1
   } else {
-    onseti = c(qqq[1]:qqq[2])[which(diff(ts$diur[qqq[1]:(qqq[2]-1)]) == 1)+1]
+    # For WW and MM onset needs to be search in the window
+    onseti = c(qqq[1]:qqq[2])[which(diff(ts$diur[qqq[1]:(qqq[2] - 1)]) == 1)] + 1
     if (length(onseti) > 1) {
       onseti = onseti[length(onseti)] # in the case if MM use last onset
     }
   }
   # Wake index
   if (timewindowi == "WW") {
-    wakei = qqq[2]+1
+    # For WW wake is by definition the start and end of the window
+    wakei = qqq[2] + 1
   } else {
-    wakei = c(qqq[1]:qqq[2])[which(diff(ts$diur[qqq[1]:(qqq[2]-1)]) == -1)+1]
+    # For OO and MM wake needs to be search in the window
+    wakei = c(qqq[1]:qqq[2])[which(diff(ts$diur[qqq[1]:(qqq[2] - 1)]) == -1) + 1]
     if (length(wakei) > 1) wakei = wakei[1] # in the case if MM use first wake-up time
   }
   # Onset time
