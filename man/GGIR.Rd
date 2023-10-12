@@ -1296,7 +1296,7 @@ GGIR(mode = 1:5,
         Character (default = c("MM", "WW")).
         In \link{g.part5}: Timewindow over which summary statistics are derived.
         Value can be "MM" (midnight to midnight), "WW" (waking time to waking time),
-        or both c("MM","WW").}
+        "OO" (sleep onset to sleep onset), or any combination of them.}
 
       \item{save_ms5rawlevels}{
         Boolean (default = FALSE).

@@ -14,6 +14,9 @@ prohibiting the use of c(0, 0) as it gives biased estimates. We knew this, but s
 started using the default without attempting to understand it, by which it seems necessary
 to force a sensible selection. #940
 
+- Part 5: Added optioned "OO" to argument timewindow, which defines windows from
+sleep Onset to sleep Onset #931
+
 # CHANGES IN GGIR VERSION 2.10-4
 
 - Part 4: Now better able to handle nights without sustained inactivity bouts (rest) #911
