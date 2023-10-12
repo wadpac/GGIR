@@ -7,6 +7,9 @@
 - Part 2: Arguments hrs.del.start and hrs.del.end when combined with strategy = 3 and strategy = 5 now count
 relative to start and end of the most active time window as identified.  #905
 
+- Part 5: Added optioned "OO" to argument timewindow, which defines windows from
+sleep Onset to sleep Onset #931
+
 # CHANGES IN GGIR VERSION 2.10-4
 
 - Part 4: Now better able to handle nights without sustained inactivity bouts (rest) #911
@@ -24,8 +27,6 @@ relative to start and end of the most active time window as identified.  #905
 - Part 4: More informative error message when advanced sleep log has duplicate or missing dates #925
 
 - Fix recently introduced bug where GGIR environment was not exported to cluster in GGIR part 1, 2, 3, and 5 #910
-
-- Part 5: Implemented sleep onset to sleep onset timewindow ("OO") #931
 
 # CHANGES IN GGIR VERSION 2.10-3
 
