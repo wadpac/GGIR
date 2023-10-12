@@ -775,11 +775,11 @@ The data_quality_report.csv is stored in subfolder folder results/QC.
 |--------------------------|----------------------------------------------|
 | filename                 | file name                                    |
 | file.corrupt	           | Is file corrupt? TRUE or FALSE (mainly tested for GENEActiv bin files) |
-| file.too.short	         | File to short for processing? TRUE or FALSE |
+| file.too.short	         | File too short for processing? ([definition](#Minimum_recording_duration)) TRUE or FALSE |
 | use.temperature	| Temperature used for auto-calibration? TRUE or FALSE |
-| scale.x	| Auto-calibration scaling coefficient for x-axis (same for y and z axis, not show here) |
-| offset.x	| Auto-calibration offset coefficient for x-axis (same for y and z axis, not show here) |
-| temperature.offset.x | Auto-calibration temperature offset coefficient for x-axis (same for y and z axis, not show here) |
+| scale.x	| Auto-calibration scaling coefficient for x-axis (same for y and z axis, not shown here) |
+| offset.x	| Auto-calibration offset coefficient for x-axis (same for y and z axis, not shown here) |
+| temperature.offset.x | Auto-calibration temperature offset coefficient for x-axis (same for y and z axis, not shown here) |
 | cal.error.start	| Calibration error prior to auto-calibration |
 | cal.error.end		| Calibration error after auto-calibration |
 | n.10sec.windows	| Number of 10 second epochs used as sphere data in auto-calibration |
@@ -2050,14 +2050,14 @@ which provides the R code and detailed instructions on how to make the radar
 plots using your own data.
 
 
-## Minimum recording duration
+## Minimum recording duration {#Minimum_recording_duration}
 
 GGIR has been designed to process multi-day recordings. The minimum recording duration
 considered by GGIR depends on the type of analysis:
 
 **Running part 1 and 2**
 
-- File size; At least 2MB, where 2MB can be adjusted with argument minimumFileSize. 
+- File size; At least 2MB, where 2MB can be adjusted with argument minimumFileSizeMB. 
 This should not be changed unless you have good reason to believe that a smaller 
 file size is also acceptable.
 

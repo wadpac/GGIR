@@ -831,7 +831,7 @@ GGIR(mode = 1:5,
         0.3 indicates that at least 30 percent of the time should be valid.}
         
       \item{segmentDAYSPTcrit.part5}{
-        Numeric vector or length 2 (default = c(0, 0.9)).
+        Numeric vector or length 2 (default = c(0.9, 0)).
         Inclusion criteria for the proportion of the segment that should be 
         classified as day (awake) and spt (sleep period time) to be considered 
         valid. One of the two numbers should be 0, and the other defines the 
@@ -839,7 +839,7 @@ GGIR(mode = 1:5,
         The default setting would focus on waking hour
         segments and includes all segments that overlap for at least 90 percent 
         with waking hours. In order to shift focus to the SPT you could use
-        c(0.9, 0) which ensures that all segments that overlap for at least
+        c(0, 0.9) which ensures that all segments that overlap for at least
         90 percent with the SPT are included.
         Setting both to zero would be problematic and is not allowed as that would introduce
         bias in behavioural estimates for the following reason: A complete segment
