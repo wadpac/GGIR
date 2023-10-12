@@ -18,7 +18,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.9-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.10-3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -621,6 +621,13 @@
         but when interacting with GGIR or <a href="g.part1.html">g.part1</a> rmc.noise is used.</p></dd>
 
 
+      <dt>frequency_tol</dt>
+<dd><p>Number (default = 0.1) as passed on to readAxivity from the GGIRread package.
+        Represents the frequency tolerance as fraction between 0 and 1. When the relative bias
+        per data block is larger than this fraction then the data block will be imputed
+        by lack of movement with gravitational oriationed guessed from most recent
+        valid data block. Only applicable to Axivity .cwa data.</p></dd>
+
     
 </dl><p></p>
 </div>
@@ -1202,9 +1209,7 @@
 
       <dt>nnights</dt>
 <dd><p>Numeric (default = NULL).
-        Number of nights for which sleep log information should be available.
-        It assumes that this is constant within a study. If sleep log information
-        is missing for certain nights then leave these blank.</p></dd>
+        This argument has been deprecated.</p></dd>
 
 
       <dt>loglocation</dt>
@@ -1315,6 +1320,20 @@
         e.g., <code>possible_nap_dur = c(15, 240)</code>. Currently
         used in the context of an explorative nap classification algortihm that
         was trained in 3.5 year olds.</p></dd>
+
+        
+      <dt>sleepefficiency.metric</dt>
+<dd><p>Numeric (default = 1).
+        If 1 (default), sleep efficiency is calculated as detected nocturnal sleep time divided by
+        log-derived duration in sleep period time (considering user-reported sleep onset and
+        wake times). If 2, sleep efficiency is calculated as detected nocturnal
+        sleep time divided by detected duration in sleep period time plus sleep latency (where
+        sleep latency refers to the difference between log-derived sleep onset and 
+        accelerometer-detected sleep onset).</p></dd>
+
+        
+      <dt>possible_nap_edge_acc</dt>
+<dd><p>Minimum acceleration before or after the SIB for the nap to be considered.</p></dd>
 
     
 </dl><p></p>
@@ -1527,7 +1546,11 @@
       <dt>do.sibreport</dt>
 <dd><p>Boolean (default = FALSE).
         In <a href="g.part4.html">g.part4</a>: To indicate whether to generate report for the sustained 
-        inactivity bouts (SIB).</p></dd>
+        inactivity bouts (SIB). If set to TRUE and when an advanced sleep diary is
+        available in part 4 then part 5 will use this to generate summary statistics
+        on the overlap between self-reported nonwear and napping with SIB. Here,
+        SIB cna be filter based on argument possible_nap_edge_acc and the first value
+        of possible_nap_dur</p></dd>
 
 
       <dt>do.visual</dt>
@@ -1697,7 +1720,6 @@
 <span class="r-in"><span>       colid <span class="op">=</span> <span class="fl">1</span>,</span></span>
 <span class="r-in"><span>       coln1 <span class="op">=</span> <span class="fl">2</span>,</span></span>
 <span class="r-in"><span>       do.visual <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>       nnights <span class="op">=</span> <span class="fl">9</span>,</span></span>
 <span class="r-in"><span>       <span class="co">#-------------------------------</span></span></span>
 <span class="r-in"><span>       <span class="co"># Part 5 parameters:</span></span></span>
 <span class="r-in"><span>       <span class="co">#-------------------------------</span></span></span>

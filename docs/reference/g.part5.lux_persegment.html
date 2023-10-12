@@ -14,7 +14,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.9-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.10-3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,22 +88,25 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">g.part5.lux_persegment</span><span class="op">(</span><span class="va">ts</span>, <span class="va">sse</span>, <span class="va">LUX_day_segments</span>, <span class="va">ws3new</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">g.part5.lux_persegment</span><span class="op">(</span><span class="va">ts</span>, <span class="va">sse</span>, <span class="va">LUX_day_segments</span>, <span class="va">epochSize</span>, desiredtz <span class="op">=</span> <span class="st">""</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>ts</dt>
-<dd><p></p></dd>
+<dd><p>Data.frame with time series</p></dd>
 
   <dt>sse</dt>
-<dd><p></p></dd>
+<dd><p>Indices corresponding to the current time window (e.g. MM or WW)</p></dd>
 
   <dt>LUX_day_segments</dt>
-<dd><p></p></dd>
+<dd><p>See <a href="GGIR.html">GGIR</a></p></dd>
 
-  <dt>ws3new</dt>
-<dd><p></p></dd>
+  <dt>epochSize</dt>
+<dd><p>Numeric epoch size in seconds</p></dd>
+
+  <dt>desiredtz</dt>
+<dd><p>See <a href="GGIR.html">GGIR</a></p></dd>
 
 </dl></div>
     <div class="section level2">
