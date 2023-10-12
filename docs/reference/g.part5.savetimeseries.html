@@ -12,7 +12,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.9-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.10-3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,24 +86,26 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">g.part5.savetimeseries</span><span class="op">(</span><span class="va">ts</span>, <span class="va">LEVELS</span>, <span class="va">desiredtz</span>, <span class="va">rawlevels_fname</span>,</span>
-<span>  save_ms5raw_format<span class="op">=</span><span class="st">"csv"</span>,</span>
-<span>  save_ms5raw_without_invalid<span class="op">=</span><span class="cn">TRUE</span>,</span>
-<span>  DaCleanFile<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>, includedaycrit.part5<span class="op">=</span><span class="fl">2</span><span class="op">/</span><span class="fl">3</span>, ID<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>, sep_reports <span class="op">=</span> <span class="st">","</span><span class="op">)</span></span></code></pre></div>
+<span>                              save_ms5raw_format <span class="op">=</span> <span class="st">"csv"</span>,</span>
+<span>                              save_ms5raw_without_invalid <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                              DaCleanFile <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                              includedaycrit.part5 <span class="op">=</span> <span class="fl">2</span><span class="op">/</span><span class="fl">3</span>,</span>
+<span>                              ID <span class="op">=</span> <span class="cn">NULL</span>, sep_reports <span class="op">=</span> <span class="st">","</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>ts</dt>
-<dd><p></p></dd>
+<dd><p>Data.frame with time series</p></dd>
 
   <dt>LEVELS</dt>
-<dd><p></p></dd>
+<dd><p>As produced as one of the objects in the output of <a href="identify_levels.html">identify_levels</a></p></dd>
 
   <dt>desiredtz</dt>
-<dd><p>See <a href="g.getmeta.html">g.getmeta</a>.</p></dd>
+<dd><p>See <a href="GGIR.html">GGIR</a>.</p></dd>
 
   <dt>rawlevels_fname</dt>
-<dd><p></p></dd>
+<dd><p>Path to the file where the output should be stored</p></dd>
 
   <dt>save_ms5raw_format</dt>
 <dd><p>See <a href="g.part5.html">g.part5</a></p></dd>
@@ -113,22 +115,22 @@
 
   <dt>DaCleanFile</dt>
 <dd><p>Content of data_cleaning_file as documented in <a href="g.report.part5.html">g.report.part5</a>.
-  Only used in this function if save_ms5rawlevels is TRUE,  and it 
-  only affects the time 
-  series files stored.</p></dd>
+    Only used in this function if save_ms5rawlevels is TRUE,  and it 
+    only affects the time 
+    series files stored.</p></dd>
 
   <dt>includedaycrit.part5</dt>
 <dd><p>See <a href="g.report.part5.html">g.report.part5</a>. Only used in this function if
-  save_ms5rawlevels is TRUE,  and it only affects the time 
-  series files stored.</p></dd>
+    save_ms5rawlevels is TRUE,  and it only affects the time 
+    series files stored.</p></dd>
 
   <dt>ID</dt>
 <dd><p>If data_cleaning_file is used then this argument specifies
-  which participant ID the data correspond with.</p></dd>
+    which participant ID the data correspond with.</p></dd>
 
   <dt>sep_reports</dt>
 <dd><p>Character (default = ","). Value used as sep argument in <a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a>
-  for writing csv files with the GGIR reports.</p></dd>
+    for writing csv files with the GGIR reports.</p></dd>
 
 </dl></div>
     <div class="section level2">
