@@ -236,6 +236,9 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
       def = gsub("\\s+", " ", def) # this removes extra spaces
       def = gsub("^ ", "", def) # this removes leading spaces
       
+      # if window and class have not been identified, then return blank definition
+      if (is.null(what) & is.null(class)) def = NA
+      
       # store definition
       dictionary[coli, "Definition"] = def
     }
