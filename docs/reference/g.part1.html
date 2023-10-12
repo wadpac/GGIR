@@ -32,7 +32,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.9-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.10-3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -115,8 +115,8 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">g.part1</span><span class="op">(</span>datadir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>, outputdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>, f0 <span class="op">=</span> <span class="fl">1</span>, f1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>          studyname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>, myfun <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>, params_metrics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>, params_rawdata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">g.part1</span><span class="op">(</span>datadir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>, metadatadir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>, f0 <span class="op">=</span> <span class="fl">1</span>, f1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>          myfun <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>, params_metrics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>, params_rawdata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>          params_cleaning <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>, params_general <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -127,7 +127,7 @@
     "C:/mydata", or list of accelerometer filenames and directories, e.g. 
     c("C:/mydata/myfile1.bin", "C:/mydata/myfile2.bin").</p></dd>
 
-  <dt>outputdir</dt>
+  <dt>metadatadir</dt>
 <dd><p>Directory where the output needs to be stored. Note that this 
     function will attempt to create folders in this directory and uses
     those folder to keep output.</p></dd>
@@ -138,11 +138,6 @@
 
   <dt>f1</dt>
 <dd><p>File index to finish with (defaults to number of files available, i.e., f1 = 0)</p></dd>
-
-  <dt>studyname</dt>
-<dd><p>If the datadir is a folder, then the study will be given the name of the
-    data directory. If datadir is a list of filenames then the studyname as specified
-    by this input argument will be used as name for the study</p></dd>
 
   <dt>myfun</dt>
 <dd><p>External function object to be applied to raw data.

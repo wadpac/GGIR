@@ -12,7 +12,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.9-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.10-3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,148 +85,54 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">g.analyse.perfile</span><span class="op">(</span><span class="va">ID</span>, <span class="va">fname</span>, <span class="va">deviceSerialNumber</span>,</span>
-<span>  <span class="va">sensor.location</span>, <span class="va">startt</span>, <span class="va">I</span>, <span class="va">LC2</span>, <span class="va">LD</span>, <span class="va">dcomplscore</span>,</span>
-<span>  <span class="va">LMp</span>, <span class="va">LWp</span>, <span class="va">C</span>, <span class="va">lookat</span>, <span class="va">AveAccAve24hr</span>, </span>
-<span>  <span class="va">colnames_to_lookat</span>, <span class="va">QUAN</span>,  <span class="va">ML5AD</span>,</span>
-<span>  <span class="va">ML5AD_names</span>, <span class="va">igfullr</span>, <span class="va">igfullr_names</span>,</span>
-<span>  <span class="va">daysummary</span>, <span class="va">ds_names</span>, <span class="va">includedaycrit</span>, <span class="va">strategy</span>, <span class="va">hrs.del.start</span>,</span>
-<span>  <span class="va">hrs.del.end</span>, <span class="va">maxdur</span>, <span class="va">windowsizes</span>, <span class="va">idloc</span>, <span class="va">snloc</span>, <span class="va">wdayname</span>, <span class="va">doquan</span>,</span>
-<span>  <span class="va">qlevels_names</span>, <span class="va">doiglevels</span>, <span class="va">tooshort</span>, <span class="va">InterdailyStability</span>, </span>
-<span>  <span class="va">IntradailyVariability</span>,</span>
-<span>  <span class="va">IVIS_windowsize_minutes</span>, <span class="va">qwindow</span>, <span class="va">longitudinal_axis_id</span>, <span class="va">cosinor_coef</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">g.analyse.perfile</span><span class="op">(</span><span class="va">I</span>, <span class="va">C</span>, <span class="va">metrics_nav</span>,</span>
+<span>                 <span class="va">AveAccAve24hr</span>, <span class="va">doquan</span>, <span class="va">doiglevels</span>, <span class="va">tooshort</span>,</span>
+<span>                 <span class="va">params_247</span>, <span class="va">params_cleaning</span>, <span class="va">params_general</span>,</span>
+<span>                 <span class="va">output_avday</span>, <span class="va">output_perday</span>,</span>
+<span>                 <span class="va">dataqual_summary</span>, <span class="va">file_summary</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>ID</dt>
-<dd><p>Person Identification number, this can be numeric or character</p></dd>
-
-<dt>fname</dt>
-<dd><p>see <a href="g.analyse.perday.html">g.analyse.perday</a></p></dd>
-
-<dt>deviceSerialNumber</dt>
-<dd><p>As produced by <a href="g.extractheadervars.html">g.extractheadervars</a></p></dd>
-
-<dt>sensor.location</dt>
-<dd><p>as produced by <a href="g.extractheadervars.html">g.extractheadervars</a></p></dd>
-
-<dt>startt</dt>
-<dd><p>First timestamp in metalong</p></dd>
-
-<dt>I</dt>
+    <dl><dt>I</dt>
 <dd><p>output <a href="g.inspectfile.html">g.inspectfile</a></p></dd>
 
-<dt>LC2</dt>
-<dd><p>see <a href="g.impute.html">g.impute</a></p></dd>
-
-<dt>LD</dt>
-<dd><p>length data in minutes</p></dd>
-
-<dt>dcomplscore</dt>
-<dd><p>see <a href="g.impute.html">g.impute</a></p></dd>
-
-<dt>LMp</dt>
-<dd><p>length measurement based on study protocol (minutes)</p></dd>
-
-<dt>LWp</dt>
-<dd><p>length of sensor worn based on study protocol (minutes)</p></dd>
-
-<dt>C</dt>
+  <dt>C</dt>
 <dd><p>output <a href="g.calibrate.html">g.calibrate</a></p></dd>
 
-<dt>lookat</dt>
-<dd><p>indices of metashort column to analyse</p></dd>
+  <dt>metrics_nav</dt>
+<dd><p>List with three objects to help navigate the acceleration metrics</p></dd>
 
-<dt>AveAccAve24hr</dt>
+  <dt>AveAccAve24hr</dt>
 <dd><p>Average acceleration in an average 24 hour cycle</p></dd>
 
-<dt>colnames_to_lookat</dt>
-<dd><p>Names of columns to look at, corresponding 
-to argurment lookat</p></dd>
-
-<dt>QUAN</dt>
-<dd><p>Results quantile analysis on the average day produced by <a href="g.analyse.avday.html">g.analyse.avday</a></p></dd>
-
-<dt>ML5AD</dt>
-<dd><p>Results ML5 analyses on the average day produced by <a href="g.analyse.avday.html">g.analyse.avday</a></p></dd>
-
-<dt>ML5AD_names</dt>
-<dd><p>Columns names corresponding to ML5AD</p></dd>
-
-<dt>igfullr</dt>
-<dd><p>Results intensity gradient (ig) analysis on
-the average day produced by <a href="g.analyse.avday.html">g.analyse.avday</a></p></dd>
-
-<dt>igfullr_names</dt>
-<dd><p>Columns names corresponding to igfullr</p></dd>
-
-<dt>daysummary</dt>
-<dd><p>object produced by <a href="g.analyse.perday.html">g.analyse.perday</a></p></dd>
-
-<dt>ds_names</dt>
-<dd><p>column names corresponding to daysummary</p></dd>
-
-<dt>includedaycrit</dt>
-<dd><p>see <a href="g.analyse.html">g.analyse</a></p></dd>
-
-<dt>strategy</dt>
-<dd><p>see <a href="g.analyse.html">g.analyse</a></p></dd>
-
-<dt>hrs.del.start</dt>
-<dd><p>see <a href="g.analyse.html">g.analyse</a></p></dd>
-
-<dt>hrs.del.end</dt>
-<dd><p>see <a href="g.analyse.html">g.analyse</a></p></dd>
-
-<dt>maxdur</dt>
-<dd><p>see <a href="g.analyse.html">g.analyse</a></p></dd>
-
-<dt>windowsizes</dt>
-<dd><p>see <a href="g.getmeta.html">g.getmeta</a></p></dd>
-
-<dt>idloc</dt>
-<dd><p>see <a href="g.analyse.html">g.analyse</a></p></dd>
-
-<dt>snloc</dt>
-<dd><p>see <a href="g.analyse.html">g.analyse</a></p></dd>
-
-<dt>wdayname</dt>
-<dd><p>character with weekdayname</p></dd>
-
-<dt>doquan</dt>
+  <dt>doquan</dt>
 <dd><p>Boolean whether quantile analysis should be done</p></dd>
 
-<dt>qlevels_names</dt>
-<dd><p>object produced by <a href="g.analyse.avday.html">g.analyse.avday</a></p></dd>
-
-<dt>doiglevels</dt>
+  <dt>doiglevels</dt>
 <dd><p>Boolean to indicate whether iglevels should be calculated</p></dd>
 
-<dt>tooshort</dt>
+  <dt>tooshort</dt>
 <dd><p>0 (file not too short) or 1 (file too short)</p></dd>
 
-<dt>InterdailyStability</dt>
-<dd><p>see <a href="g.IVIS.html">g.IVIS</a></p></dd>
+  <dt>params_247</dt>
+<dd><p>see <a href="GGIR.html">GGIR</a></p></dd>
 
-<dt>IntradailyVariability</dt>
-<dd><p>see <a href="g.IVIS.html">g.IVIS</a></p></dd>
+  <dt>params_cleaning</dt>
+<dd><p>see <a href="GGIR.html">GGIR</a></p></dd>
 
-<dt>IVIS_windowsize_minutes</dt>
-<dd><p>see <a href="g.IVIS.html">g.IVIS</a></p></dd>
+  <dt>params_general</dt>
+<dd><p>see <a href="GGIR.html">GGIR</a></p></dd>
 
-<dt>qwindow</dt>
-<dd><p>see <a href="g.analyse.html">g.analyse</a></p></dd>
+  <dt>output_avday</dt>
+<dd><p>Output from g.analyse.avday</p></dd>
 
-<dt>longitudinal_axis_id</dt>
-<dd><p>Index of axis for which the angle correlates most 
-  strongly across 24 hoursas calculated inside g.analyse. For hip worn 
-  accelerometer this helps to check which axis was the veritcal axis. 
-  The estimate may not be informative for other attachment locations.</p></dd>
+  <dt>output_perday</dt>
+<dd><p>Output from g.analyse.perday</p></dd>
 
-<dt>cosinor_coef</dt>
-<dd><p>output from cosinorAnlayses passed on to be included in
-  file summary</p></dd>
+  <dt>dataqual_summary</dt>
+<dd><p>Data.frame with data quality summary indicators
+  produced in <a href="g.analyse.html">g.analyse</a></p></dd>
 
 </dl></div>
     <div class="section level2">

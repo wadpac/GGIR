@@ -199,6 +199,9 @@
     <loc>/reference/g.part5.addsib.html</loc>
   </url>
   <url>
+    <loc>/reference/g.part5.analyseRest.html</loc>
+  </url>
+  <url>
     <loc>/reference/g.part5.classifyNaps.html</loc>
   </url>
   <url>
@@ -224,6 +227,12 @@
   </url>
   <url>
     <loc>/reference/g.part5.wakesleepwindows.html</loc>
+  </url>
+  <url>
+    <loc>/reference/g.part5_analyseSegment.html</loc>
+  </url>
+  <url>
+    <loc>/reference/g.part5_initialise_ts.html</loc>
   </url>
   <url>
     <loc>/reference/g.plot.html</loc>

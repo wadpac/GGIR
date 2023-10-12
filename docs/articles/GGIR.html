@@ -29,7 +29,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.9-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.10-3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -478,8 +478,7 @@ specific individuals, see also section <a href="#Data_cleaning_file">Data cleani
 <li>If you want the sleep analysis to be guided by a sleeplog (diary)
 then check out arguments <code>loglocation</code> which specifies the
 location of the spreadsheet (csv) with sleep log information. Further,
-use arguments <code>colid</code>, <code>coln1</code>,
-<code>nnights</code>, and <code>sleeplogsep</code> to specify the
+use arguments <code>colid</code> and <code>coln1</code> to specify the
 details of your sleep log structure.</li>
 </ul>
 <p>GGIR facilitates two possible sleeplog file structures:</p>
@@ -629,8 +628,8 @@ calendar date.</li>
 <li>You can add columns relating to self-reported napping time and
 nonwear time. These are not used for the sleep analysis in g.part3 and
 g.part4, but used in g.part5 to facilitate napping analysis, see
-argument <code>do.sibreport</code>. Multiple naps and multiple nonwear
-periods can be entered per day.</li>
+argument <code>do.sibreport</code> and the paragraph on naps. Multiple
+naps and multiple nonwear periods can be entered per day.</li>
 <li>Leave cells for missing values blank.</li>
 <li>Column names are critical for the advanced sleeplog format: Date
 columns are recognised by GGIR as any column name with the word “date”
@@ -1491,7 +1490,9 @@ data. If either of these applies set argument
 <tr class="even">
 <td>sleepefficiency</td>
 <td>Sleep efficiency, calculated as: SleepDurationInSpt /
-guider_inbedDuration</td>
+guider_inbedDuration or SleepDurationInSpt / (Spt + latency) as defined
+with <code>relyonguider_SleepEfficiency</code>
+</td>
 </tr>
 <tr class="odd">
 <td>sleeplatency</td>
@@ -1549,10 +1550,12 @@ meaning may not be obvious:</p>
 </tr>
 <tr class="odd">
 <td>sleep_efficiency</td>
-<td>Accelerometer detrive sleep efficiency within the sleep period time
+<td>Accelerometer derived sleep efficiency within the sleep period time
 calculated as the ratio between acc_SleepDurationInSpt and
-acc_SptDuration (denominator). Only available at person level, because
-at night level the user can calculate this from existing variables.</td>
+guider_SptDuration (denominator) or acc_SleepDurationInSpt and
+acc_SptDuration + latency (denominator), as defined with
+relyonguider_SleepEfficiency. Only available at person level, because at
+night level the user can calculate this from existing variables.</td>
 </tr>
 <tr class="even">
 <td>n_nights_acc</td>
@@ -1787,7 +1790,32 @@ documentation (pdf)</a>. |<br>
 nap_totalduration | Total nap duration, only calculated when argument
 do.sibreport = TRUE, currently optimised for 3.5-year old. See function
 documentation for function <code>g.part5.classifyNaps</code> in the <a href="https:/CRAN.R-project.org/package=GGIR/GGIR.pdf">GGIR function
-documentation (pdf)</a>. |</div>
+documentation (pdf)</a>. |<br>
+sibreport_n_items | Only created if <code>do.sibreport = TRUE</code>.
+Number of items in the sibreport |<br>
+sibreport_n_items_day | Only created if
+<code>do.sibreport = TRUE</code>. Number of items in the sibreport for
+this specific day |<br>
+nbouts_day_X | Only created if <code>do.sibreport = TRUE</code>. Number
+of bouts in a day of X where X can be sib (sustained inactivity bout),
+srnap (self-reported nap) or srnonw (self-reported nonwear) |<br>
+noverl_X | Only created if <code>do.sibreport = TRUE</code>. Number of
+overlapping bouts in a day of X where X can be sib_srnap, sib_srnonw,
+srnap_sib, or srnonw_sib |<br>
+frag_mean_dur_X_day | Only created if <code>do.sibreport = TRUE</code>.
+Mean duration of X per day, where X can be sib, srnap or srnonw |<br>
+dur_day_X_min | Only created if <code>do.sibreport = TRUE</code>. Total
+duration in minutes of X per day, where X can be sib, srnap or srnonw
+|<br>
+mdur_X_overl_Y | Only created if <code>do.sibreport = TRUE</code>. Mean
+duration of the overlap between X and Y, which are combinations of sib,
+srnap or srnonw |<br>
+tdur_X_overl_Y | Only created if <code>do.sibreport = TRUE</code>. Total
+duration in minutes of the overlap between X and Y, which are
+combinations of sib, srnap or srnonw |<br>
+perc_X_overl_Y | Only created if <code>do.sibreport = TRUE</code>.
+Percentage of overlap between X and Y, which are combinations of sib,
+srnap or srnonw |</div>
 <p><strong>Special note if you are working on compositional data
 analysis:</strong></p>
 <p>The duration of all <code>dur_</code> variables that have
@@ -1932,7 +1960,7 @@ in the published paper.</p>
 Trenell MI, White T, Wareham NJ, Brage S. Autocalibration of
 accelerometer data for free-living physical activity assessment using
 local gravity and temperature: an evaluation on four continents. J Appl
-Physiol (1985). 2014 Oct 1;117(7):738-44. PMID: 25103964 <a href="https://journals.physiology.org/doi/full/10.1152/japplphysiol.00421.2014" class="external-link">link</a>
+Physiol (1985). 2014 Oct 1;117(7):738-44. PMID: 25103964 <a href="https://doi.org/10.1152/japplphysiol.00421.2014" class="external-link">link</a>
 </li>
 </ul>
 <p>Key decisions to be made:</p>
@@ -2603,12 +2631,13 @@ the day numbers to be excluded should be listed in a column
 <h4 id="fragmentation-metrics">Fragmentation metrics<a class="anchor" aria-label="anchor" href="#fragmentation-metrics"></a>
 </h4>
 <p>When setting input argument as <code>frag.metrics="all"</code> GGIR
-part 5 will perform daytime behavioural fragmentation analysis. Do this
-in combination with argument <code>part5_agg2_60seconds=TRUE</code> as
-that will aggregate the time series to 1 minute resolution as is common
-in behavioural fragmentation literature.</p>
-<p>In GGIR, a fragment is a defined as a sequence of epochs that belong
-to one of the four categories:</p>
+part 5 will perform behavioural fragmentation analysis for daytime and
+(separately) for spt. Do this in combination with argument
+<code>part5_agg2_60seconds=TRUE</code> as that will aggregate the time
+series to 1 minute resolution as is common in behavioural fragmentation
+literature.</p>
+<p>In GGIR, a fragment for daytime is a defined as a sequence of epochs
+that belong to one of the four categories:</p>
 <ol style="list-style-type: decimal">
 <li>Inactivity</li>
 <li>Light Physical Activity (LIPA)</li>
@@ -2617,14 +2646,19 @@ to one of the four categories:</p>
 </ol>
 <p>Each of these categories represents the combination of bouted and
 unbouted time in the respective categories. Inactivity and physical
-activity add up to a full day, as well as inactivity, LIPA and MVPA. The
-fragmentation metrics are applied in function
+activity add up to a full day (outside SPT), as well as inactivity, LIPA
+and MVPA. The fragmentation metrics are applied in function
 <code>g.fragmentation</code>.</p>
+<p>A fragment of SPT is defined as a sequence of epochs that belong to
+one of the four categories: 1. Estimated sleep 2. Estimated wakefulness
+3. Inactivity 4. Physical activity (can be either LIPA or MVPA)</p>
+<p>Note that from the metrics below only fragmentation metrics TP and
+NFrag are calculated for the SPT fragments.</p>
 <p><strong>Literature about these metrics:</strong></p>
 <ul>
 <li>Coefficient of Variance (<code>CoV</code>) is calculated according
-to <a href="https://www.archives-pmr.org/article/S0003-9993(14)01063-6/fulltext" class="external-link">Blikman
-et al. 2014</a>.</li>
+to <a href="https://doi.org/10.1016/j.apmr.2014.08.023" class="external-link">Blikman et al.
+2014</a>.</li>
 <li>Transition probability (<code>TP</code>) from Inactivity (IN) to
 Physical activity (IN2PA) and from Physical activity to inactivity
 (PA2IN) are calculated as 1 divided by the mean fragment duration. The
@@ -2681,8 +2715,9 @@ fragment, but for blocks we distinguish every behavioural class, which
 includes the subcategories such as bouted and unbouted behaviour. This
 means that variables <code>Nblock_day_total_IN</code> and
 <code>Nblock_day_total_LIG</code> are identical to
-<code>Nfrag_IN_day</code> and <code>Nfrag_LIPA_day</code>,
-respectively.</p>
+<code>Nfrag_IN_day</code> and <code>Nfrag_LIPA_day</code>, respectively.
+In contrast, for fragments we may group LIPA and MVPA together when
+refering to the fragmentation of PA.</p>
 <p><strong>Differences with R package ActFrag:</strong></p>
 <p>The fragmentation functionality is loosely inspired on the great work
 done by Dr. Junrui Di and colleages in R package ActFrag, as described
@@ -2691,7 +2726,7 @@ et al. 2017</a>.</p>
 <p>However, we made a couple of a different decisions that may affect
 comparability:</p>
 <ul>
-<li>GGIR derives fragmentation metrics for day. This allows us to avoid
+<li>GGIR derives fragmentation metrics per day. This allows us to avoid
 the issue of gaps between days that need to be dealt with. Further, it
 allows us to test for behavioural differences between days of the week.
 It is well known that human behaviour can be driven by weekly rhythms,
@@ -2699,6 +2734,8 @@ e.g. work days versus weekend. Estimating fragmentation per day of the
 week allows us to study and account for such possible variation. As with
 all other GGIR variables we also report recording level aggregates of
 the daily estimates.</li>
+<li>Transition probability is according to <a href="https://doi.org/10.5665/sleep.1400" class="external-link">Lim et al. 2011</a>
+</li>
 <li>Power law alpha exponent metrics were calculated according to <a href="https://www.sciencedirect.com/science/article/abs/pii/S096663620900602X?via%3Dihub" class="external-link">Chastin
 et al. 2010</a> using the theoretical minimum fragment duration instead
 of the observed minimum fragment duration.</li>
@@ -2993,7 +3030,7 @@ also cite:</p>
 <ol start="4" style="list-style-type: decimal">
 <li>van Hees VT, Fang Z, et al. Auto-calibration of accelerometer data
 for free-living physical activity assessment using local gravity and
-temperature: an evaluation on four continents. J Appl Physiol 2014. <a href="https://journals.physiology.org/doi/full/10.1152/japplphysiol.00421.2014" class="external-link">link</a>
+temperature: an evaluation on four continents. J Appl Physiol 2014. <a href="https://doi.org/10.1152/japplphysiol.00421.2014" class="external-link">link</a>
 </li>
 </ol>
 <p>If you used the <strong>sleep detection</strong> then also cite:</p>
