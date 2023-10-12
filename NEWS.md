@@ -7,6 +7,8 @@
 - Part 2: Arguments hrs.del.start and hrs.del.end when combined with strategy = 3 and strategy = 5 now count
 relative to start and end of the most active time window as identified.  #905
 
+- Part 5: New function to provide definition of the variable names in part 5 reports #938
+
 # CHANGES IN GGIR VERSION 2.10-4
 
 - Part 4: Now better able to handle nights without sustained inactivity bouts (rest) #911
