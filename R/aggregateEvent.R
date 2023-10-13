@@ -36,7 +36,7 @@ aggregateEvent = function(metric_name, epochsize,
   # per acceleration level
   cn_vari = colnames(vari)
   acc.metrics = cn_vari[cn_vari %in% c("timestamp", "anglex", "angley", "anglez", metric_name) == FALSE]
-
+  
   for (ami in 1:length(acc.metrics)) {
     vari[, acc.metrics[ami]] = as.numeric(vari[, acc.metrics[ami]])
     for (ti in 1:length(acc.thresholds)) {
@@ -56,7 +56,7 @@ aggregateEvent = function(metric_name, epochsize,
         daysummary[di, fi] = 0
       }
       ds_names[fi] = varnameevent; fi = fi + 1
-
+      
       # cadence per acceleration level
       varnameevent = paste0("ExtFunEvent_mn_cad_acc", 
                             acc_level_name, anwi_nameindices[anwi_index])
@@ -117,45 +117,47 @@ aggregateEvent = function(metric_name, epochsize,
       ds_names[fi] = varnameevent; fi = fi + 1
     }
   }
-  # Event based MXLX
-  tseg = c((anwi_t0[anwi_index] - 1) / (3600 / epochsize), anwi_t1[anwi_index] / (3600 / epochsize))
-  for (winhr_value in params_247[["winhr"]]) {
-    MXLXout = MXLX(Y = cadence, X = winhr_value, epochSize = epochsize,
-         tseg = tseg,
-         resolutionMin = params_247[["M5L5res"]],
-         shift = tseg[1]) # we apply shift because cadence is also shifted
-    # Describe for MX and LX:
-    LXMXwindow_name = anwi_nameindices[anwi_index]
-    for (WX in c("L", "M")) {
-      if (!all(is.na(MXLXout[, grep("M", names(MXLXout))]))) {
-        i0 = MXLXout[, grep(paste0("start_", WX, winhr_value), names(MXLXout))]
-        i1 = MXLXout[, grep(paste0("end_", WX, winhr_value), names(MXLXout))]
-        WXi = i0:i1
-        # # Code used to help check that MXLX makes sense with real study data
-        # x11()
-        # plot(cadence, type = "l")
-        # lines(WXi, cadence[WXi], type = "l", col = "red")
-        
-        # Timing
-        daysummary[di, fi] = MXLXout[, which(names(MXLXout) == paste0(WX, winhr_value, "hr"))]
-        ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value,  "hr_cad", LXMXwindow_name); fi = fi + 1
-        # cadence in the form of mean, percentiles.
-        daysummary[di, fi] = mean(cadence[WXi])
-        ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_meancad", LXMXwindow_name); fi = fi + 1
-        if (length(params_247[["qlevels"]]) > 0) {
-          for (qle in params_247[["qlevels"]]) {
-            daysummary[di, fi] = quantile(x = cadence[WXi], probs = qle)
-            ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_q", qle*100, "cad", LXMXwindow_name); fi = fi + 1
-          }
-        }
-        for (ami in 1:length(acc.metrics)) {
-          # Acceleration in the form of mean, percentiles.
-          daysummary[di, fi] = mean(vari[WXi, acc.metrics[ami]]) * 1000
-          ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_mean_",  acc.metrics[ami], "_mg", LXMXwindow_name); fi = fi + 1
+  if (length(params_247[["winhr"]]) > 0) { 
+    # Event based MXLX
+    tseg = c((anwi_t0[anwi_index] - 1) / (3600 / epochsize), anwi_t1[anwi_index] / (3600 / epochsize))
+    for (winhr_value in params_247[["winhr"]]) {
+      MXLXout = MXLX(Y = cadence, X = winhr_value, epochSize = epochsize,
+                     tseg = tseg,
+                     resolutionMin = params_247[["M5L5res"]],
+                     shift = tseg[1]) # we apply shift because cadence is also shifted
+      # Describe for MX and LX:
+      LXMXwindow_name = anwi_nameindices[anwi_index]
+      for (WX in c("L", "M")) {
+        if (!all(is.na(MXLXout[, grep("M", names(MXLXout))]))) {
+          i0 = MXLXout[, grep(paste0("start_", WX, winhr_value), names(MXLXout))]
+          i1 = MXLXout[, grep(paste0("end_", WX, winhr_value), names(MXLXout))]
+          WXi = i0:i1
+          # # Code used to help check that MXLX makes sense with real study data
+          # x11()
+          # plot(cadence, type = "l")
+          # lines(WXi, cadence[WXi], type = "l", col = "red")
+          
+          # Timing
+          daysummary[di, fi] = MXLXout[, which(names(MXLXout) == paste0(WX, winhr_value, "hr"))]
+          ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value,  "hr_cad", LXMXwindow_name); fi = fi + 1
+          # cadence in the form of mean, percentiles.
+          daysummary[di, fi] = mean(cadence[WXi])
+          ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_meancad", LXMXwindow_name); fi = fi + 1
           if (length(params_247[["qlevels"]]) > 0) {
             for (qle in params_247[["qlevels"]]) {
               daysummary[di, fi] = quantile(x = cadence[WXi], probs = qle)
-              ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_q", qle*100, "acc", LXMXwindow_name); fi = fi + 1
+              ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_q", qle*100, "cad", LXMXwindow_name); fi = fi + 1
+            }
+          }
+          for (ami in 1:length(acc.metrics)) {
+            # Acceleration in the form of mean, percentiles.
+            daysummary[di, fi] = mean(vari[WXi, acc.metrics[ami]]) * 1000
+            ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_mean_",  acc.metrics[ami], "_mg", LXMXwindow_name); fi = fi + 1
+            if (length(params_247[["qlevels"]]) > 0) {
+              for (qle in params_247[["qlevels"]]) {
+                daysummary[di, fi] = quantile(x = cadence[WXi], probs = qle)
+                ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_q", qle*100, "acc", LXMXwindow_name); fi = fi + 1
+              }
             }
           }
         }
