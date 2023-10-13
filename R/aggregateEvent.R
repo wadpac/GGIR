@@ -1,8 +1,10 @@
 aggregateEvent = function(metric_name, epochsize,
                           daysummary,  ds_names, fi, di,
-                          vari, segmentInfo, myfun = NULL) {
+                          vari, segmentInfo, myfun = NULL, params_247) {
   anwi_nameindices = segmentInfo$anwi_nameindices
   anwi_index = segmentInfo$anwi_index
+  anwi_t0 = segmentInfo$anwi_t0
+  anwi_t1 = segmentInfo$anwi_t1
   if ("ilevels" %in% names(myfun) == FALSE) myfun$ilevels = c(0, 80)
   if ("clevels" %in% names(myfun) == FALSE) myfun$clevels = c(0, 30)
   if ("qlevels" %in% names(myfun) == FALSE) myfun$qlevels = c(0.25, 0.5, 0.75)
@@ -115,22 +117,50 @@ aggregateEvent = function(metric_name, epochsize,
       ds_names[fi] = varnameevent; fi = fi + 1
     }
   }
-  # # Event based MXLX
-  # TO DO:
-  # - pass on winhr
-  # - pass on params_247[["M5L5res"]]
-  # - calculate variables below
-  # - add these to output data.frame
-  # - re-use new MXLX function to replace MXLX functionality elsewhere in GGIR
-  
-  # Code:
-  # tseg = c(1, length(varnum) / (60 * (60 / ws3)) + (winhr_value - (params_247[["M5L5res"]] / 60)))
-  # MXLX(Y = cadence, X = winhr_value,
-  #      epochSize = ws3, tseg = tseg, resolutionMin = params_247[["M5L5res"]])
-  
-  # Describe for MX and LX:
-  # cadence in the form of mean, percentiles and timing.
-  # Acceleration for the window in the form of mean, percentiles.
-  
+  # Event based MXLX
+  tseg = c((anwi_t0[anwi_index] - 1) / (3600 / epochsize), anwi_t1[anwi_index] / (3600 / epochsize))
+  for (winhr_value in params_247[["winhr"]]) {
+    MXLXout = MXLX(Y = cadence, X = winhr_value, epochSize = epochsize,
+         tseg = tseg,
+         resolutionMin = params_247[["M5L5res"]],
+         shift = tseg[1]) # we apply shift because cadence is also shifted
+    # Describe for MX and LX:
+    LXMXwindow_name = anwi_nameindices[anwi_index]
+    for (WX in c("L", "M")) {
+      if (!all(is.na(MXLXout[, grep("M", names(MXLXout))]))) {
+        i0 = MXLXout[, grep(paste0("start_", WX, winhr_value), names(MXLXout))]
+        i1 = MXLXout[, grep(paste0("end_", WX, winhr_value), names(MXLXout))]
+        WXi = i0:i1
+        # # Code used to help check that MXLX makes sense with real study data
+        # x11()
+        # plot(cadence, type = "l")
+        # lines(WXi, cadence[WXi], type = "l", col = "red")
+        
+        # Timing
+        daysummary[di, fi] = MXLXout[, which(names(MXLXout) == paste0(WX, winhr_value, "hr"))]
+        ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value,  "hr_cad", LXMXwindow_name); fi = fi + 1
+        # cadence in the form of mean, percentiles.
+        daysummary[di, fi] = mean(cadence[WXi])
+        ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_meancad", LXMXwindow_name); fi = fi + 1
+        if (length(params_247[["qlevels"]]) > 0) {
+          for (qle in params_247[["qlevels"]]) {
+            daysummary[di, fi] = quantile(x = cadence[WXi], probs = qle)
+            ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_q", qle*100, "cad", LXMXwindow_name); fi = fi + 1
+          }
+        }
+        for (ami in 1:length(acc.metrics)) {
+          # Acceleration in the form of mean, percentiles.
+          daysummary[di, fi] = mean(vari[WXi, acc.metrics[ami]]) * 1000
+          ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_mean_",  acc.metrics[ami], "_mg", LXMXwindow_name); fi = fi + 1
+          if (length(params_247[["qlevels"]]) > 0) {
+            for (qle in params_247[["qlevels"]]) {
+              daysummary[di, fi] = quantile(x = cadence[WXi], probs = qle)
+              ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_q", qle*100, "acc", LXMXwindow_name); fi = fi + 1
+            }
+          }
+        }
+      }
+    }
+  }
   invisible(list(ds_names = ds_names, daysummary = daysummary, fi = fi))
 }

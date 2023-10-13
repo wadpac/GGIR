@@ -30,12 +30,13 @@ test_that("Events from external function are correctly aggregated", {
   # run function  
   segmentInfo = list(anwi_nameindices = anwi_nameindices,
                      anwi_index = anwi_index)
+  params_247 = load_params("247")$params_247
   eventAgg = aggregateEvent(metric_name = "step_count",
                             epochsize = ws3,
                             daysummary = daysummary,
                             ds_names = ds_names,
                             fi = fi, di = di, vari = metashort,
-                            segmentInfo = segmentInfo, myfun)
+                            segmentInfo = segmentInfo, myfun, params_247)
   
   daysummary = as.data.frame(eventAgg$daysummary)
   names(daysummary)[1:length(eventAgg$ds_names)] = eventAgg$ds_names

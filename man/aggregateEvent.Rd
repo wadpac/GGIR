@@ -8,7 +8,8 @@
 }
 \usage{
    aggregateEvent(metric_name, epochsize, daysummary, ds_names,
-                          fi, di, vari, segmentInfo, myfun = NULL)
+                          fi, di, vari, segmentInfo, myfun = NULL,
+                          params_247)
 }
 \arguments{
   \item{metric_name}{
@@ -37,6 +38,9 @@
     segment to analyse segment name and segment number.
   }
   \item{myfun}{
+    See \link{GGIR}
+  }
+  \item{params_247}{
     See \link{GGIR}
   }
 }

@@ -1,4 +1,4 @@
-MXLX = function(Y = NULL, X = 5, epochSize = 1, tseg = c(0, 24), resolutionMin = 10) {
+MXLX = function(Y = NULL, X = 5, epochSize = 1, tseg = c(0, 24), resolutionMin = 10, shift = 0) {
   # Y 24 hours of data
   # tseg is vector of length 2 with the start and end time as hour in the day
   # X is the window size in hours to look for
@@ -15,7 +15,7 @@ MXLX = function(Y = NULL, X = 5, epochSize = 1, tseg = c(0, 24), resolutionMin =
   nsh = 60 / resolutionMin # number of steps per hour
   nes = (resolutionMin * 60) / epochSize # number of epochs per step
   if (do.MXLX == TRUE) { # only do the analysis if Y has values other than zero
-    Y = Y[(((tseg[1] * 3600)/epochSize) + 1):((tseg[2] * 3600)/epochSize)]
+    Y = Y[((((tseg[1] - shift) * 3600)/epochSize) + 1):(((tseg[2] - shift) * 3600)/epochSize)]
     Nwindows = Nwindows * nsh
     rollingMean = matrix(NA, Nwindows, 1)
     for (hri in 1:Nwindows) { #e.g.9am-9pm
@@ -35,8 +35,8 @@ MXLX = function(Y = NULL, X = 5, epochSize = 1, tseg = c(0, 24), resolutionMin =
     maxV = max(rollingMean[valid], na.rm = T)
     LXhr = ((which(rollingMean == minV & is.na(rollingMean) == F) - 1) / nsh) + tseg[1]
     MXhr = ((which(rollingMean == maxV & is.na(rollingMean) == F) - 1) / nsh) + tseg[1]
-    LXvalue = minV * 1000
-    MXvalue = maxV * 1000
+    LXvalue = minV
+    MXvalue = maxV
     #-------------------------------------
     if (length(LXvalue) > 1) { LXvalue = sort(LXvalue)[ceiling(length(LXvalue)/2)] }
     if (length(LXhr) > 1) { LXhr = sort(LXhr)[ceiling(length(LXhr)/2)] }
@@ -45,9 +45,9 @@ MXLX = function(Y = NULL, X = 5, epochSize = 1, tseg = c(0, 24), resolutionMin =
     
     
     #Note it is + 1 because first epoch is one and not zero:
-    LXstart = (LXhr * (3600 / epochSize)) + 1
+    LXstart = ((LXhr - shift) * (3600 / epochSize)) + 1
     LXend = LXstart + (X * (3600 / epochSize)) - 1
-    MXstart = (MXhr * (3600 / epochSize)) + 1 
+    MXstart = ((MXhr - shift) * (3600 / epochSize)) + 1 
     MXend = MXstart + (X * (3600 / epochSize)) - 1
     
     MXLX = data.frame(LXhr = LXhr[1],
@@ -66,8 +66,8 @@ MXLX = function(Y = NULL, X = 5, epochSize = 1, tseg = c(0, 24), resolutionMin =
                       MXindex0 = NA,
                       MXindex1 = NA, stringsAsFactors = TRUE)
   }
-  MXLXnames = c(paste0("L", X, "hr"), paste0("L", X), paste0("L", X, "_start"),  paste0("L", X, "_end"),
-           paste0("M", X, "hr"), paste0("M", X),  paste0("M", X, "_start"),  paste0("M", X, "_end"))
+  MXLXnames = c(paste0("L", X, "hr"), paste0("L", X), paste0("start_L", X),  paste0("end_L", X),
+           paste0("M", X, "hr"), paste0("M", X),  paste0("start_M", X),  paste0("end_M", X))
   names(MXLX) = MXLXnames
   return(MXLX)
 }
