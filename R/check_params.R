@@ -402,12 +402,16 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     }
     if (sum(params_cleaning[["segmentDAYSPTcrit.part5"]]) < 0.5 |
         0 %in% params_cleaning[["segmentDAYSPTcrit.part5"]] == FALSE) {
-      stop(paste0("\nArgument segmentDAYSPTcrit.part5 needs to include one zero",
-                  " and one value of at least 0.5 as mixing incomplete windows with complete windows",
-                  " biases the estimates"), call. = FALSE)
+      
+      stop(paste0("\nIf you used argument segmentDAYSPTcrit.part5 then make sure",
+                  " it includes one zero",
+                  " and one value of at least 0.5, see documentation for",
+                  " argument segmentDAYSPTcrit.part5. If you do not use",
+                  " argument segmentDAYSPTcrit.part5",
+                  " then delete it from your config.csv file (in your output folder)",
+                  " or delete the config.csv file itself."), call. = FALSE)
     }
   }
-  
   
   invisible(list(params_sleep = params_sleep,
                  params_metrics = params_metrics,
