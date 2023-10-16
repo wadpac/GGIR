@@ -58,15 +58,21 @@ detect_nonwear_clipping = function(data = c(), windowsizes = c(5, 900, 3600), sf
       }
       for (jj in  1:3) {
         # Clipping
-        CW[h, jj] = length(which(abs(data[(1 + cliphoc1):cliphoc2, jj]) > clipthres))
-        if (length(which(abs(data[(1 + cliphoc1):cliphoc2,jj]) > clipthres * 1.5)) > 0) {
-          CW[h, jj] = window2 # If there is a a value that is more than 150% the dynamic range then ignore entire block.
+        aboveThreshold = which(abs(data[(1 + cliphoc1):cliphoc2, jj]) > clipthres)
+        CW[h, jj] = length(aboveThreshold)
+        if (length(aboveThreshold) > 0) {
+          if (length(which(abs(data[c((1 + cliphoc1):cliphoc2)[aboveThreshold],jj]) > clipthres * 1.5)) > 0) {
+            CW[h, jj] = window2 # If there is a a value that is more than 150% the dynamic range then ignore entire block.
+          }
         }
         # Non-wear
         #hoc1 & hoc2 = edges of windows
         #window is bigger& window2 is smaller one
-        # (1 + hoc1):hoc2
-        indices = seq((1 + hoc1), hoc2, by = ceiling(sf / 5))
+        if (nonwear_approach == "2013") {
+          indices = (1 + hoc1):hoc2
+        } else if (nonwear_approach == "2023") {
+          indices = seq((1 + hoc1), hoc2, by = ceiling(sf / 5))
+        }
         maxwacc = max(data[indices, jj], na.rm = TRUE)
         minwacc = min(data[indices, jj], na.rm = TRUE)
         absrange = abs(maxwacc - minwacc)
