@@ -105,7 +105,7 @@ Also of interest may be the brief [free R introduction tutorial](https://www.acc
 **Change log**
 
 Our log of main changes to GGIR over time can be found
-[here](https://cran.r-project.org/package=GGIR/news.html).
+[here](https://cran.r-project.org/package=GGIR/news/news.html).
 
 # Setting up your work environment
 
@@ -1015,8 +1015,8 @@ vigorous activity:
 | `Gini_dur`  | Gini index|
 | `CoV_dur`   | Coefficient of Variation           |
 | alpha       | Power law exponent    |
-| `x0.5`      | Derived from power law exponent alpha, see [Chastin et al. 201 0](https://www.sciencedirect.com/science/article/abs/pii/S096663620900602X?via%3Dihub)        |
-| `W0.5`      | Derived from power law exponent alpha, see [Chastin et al. 201 0](https://www.sciencedirect.com/science/article/abs/pii/S096663620900602X?via%3Dihub)        |
+| `x0.5`      | Derived from power law exponent alpha, see [Chastin et al. 201 0](https://doi.org/10.1016/j.gaitpost.2009.09.002)        |
+| `W0.5`      | Derived from power law exponent alpha, see [Chastin et al. 201 0](https://doi.org/10.1016/j.gaitpost.2009.09.002)        |
 | nap_count   | Total number of naps, only calculated when argument do.sibreport = TRUE, currently optimised for 3.5-year olds. See function documentation for function `g.part5.classifyNaps` in the [GGIR function documentation (pdf)](https:/CRAN.R-project.org/package=GGIR/GGIR.pdf). |
 | nap_totalduration       | Total nap duration, only calculated when argument do.sibreport = TRUE, currently optimised for 3.5-year old. See function documentation for function `g.part5.classifyNaps` in the [GGIR function documentation (pdf)](https:/CRAN.R-project.org/package=GGIR/GGIR.pdf).    |
 | sibreport_n_items	| Only created if `do.sibreport = TRUE`. Number of items in the sibreport |
@@ -1749,7 +1749,7 @@ calculated for the SPT fragments.
     package, and with it's argument `corr` set to TRUE.
 -   Power law exponent metrics: Alpha, x0.5, and W0.5 are calculated
     according to [Chastin et al.
-    2010](https://www.sciencedirect.com/science/article/abs/pii/S096663620900602X?via%3Dihub).
+    2010](https://doi.org/10.1016/j.gaitpost.2009.09.002).
 -   Number of fragment per minutes (`NFragPM`) is calculated identical
     to metric `fragmentation` in [Chastin et al.
     2012](https://academic.oup.com/ageing/article/41/1/111/46538), but
@@ -1818,7 +1818,7 @@ comparability:
     to [Lim et al. 2011](https://doi.org/10.5665/sleep.1400)
 -   Power law alpha exponent metrics were calculated according to
     [Chastin et al.
-    2010](https://www.sciencedirect.com/science/article/abs/pii/S096663620900602X?via%3Dihub)
+    2010](https://doi.org/10.1016/j.gaitpost.2009.09.002)
     using the theoretical minimum fragment duration instead of the
     observed minimum fragment duration.
 
