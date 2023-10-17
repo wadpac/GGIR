@@ -15,7 +15,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     params_cleaning = params$params_cleaning
     rm(params)
   }
-
+  
   windowsizes = M$windowsizes #default: c(5,900,3600)
   metashort = M$metashort
   metalong = M$metalong
@@ -114,14 +114,14 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
         rowID = rowID[1]
         warning(paste0("The ID ", ID, " appears twice in the study dates log"), call. = FALSE)
       }
-      firstDate = as.Date(studyDates[rowID, 2], format = params_cleaning[["study_dates_dateformat"]])
-      lastDate = as.Date(studyDates[rowID, 3], format = params_cleaning[["study_dates_dateformat"]])
+      firstmidnight = as.Date(studyDates[rowID, 2], format = params_cleaning[["study_dates_dateformat"]])
+      lastmidnight = as.Date(studyDates[rowID, 3], format = params_cleaning[["study_dates_dateformat"]])
       # find the dates in metalong
-      firstDatei = midnightsi[grep(firstDate, midnights)]
-      lastDatei = midnightsi[grep(lastDate, midnights) + 1] # plus 1 to include the reported date in log
+      firstmidnighti = midnightsi[grep(firstmidnight, midnights)]
+      lastmidnighti = midnightsi[grep(lastmidnight, midnights) + 1] # plus 1 to include the reported date in log
       # trim data
-      r4[1:(firstDatei - 1)] = 1
-      r4[lastDatei:nrow(r4)] = 1
+      r4[1:(firstmidnighti - 1)] = 1
+      r4[lastmidnighti:nrow(r4)] = 1
       # cut out r4 to apply strategies only on the trimmed portion of data
       # after application of strategies, r4 would reset to the original length
       r4_bu = r4
@@ -154,13 +154,21 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     endtimei = length(r4)
   } else if (params_cleaning[["strategy"]] == 2) { #midnight to midnight strategy
     starttime = firstmidnight
-    endtime = lastmidnight
-    starttimei = firstmidnighti
-    endtimei = lastmidnighti
-    if (firstmidnighti != 1) { #ignore everything before the first midnight
-      r4[1:(firstmidnighti - 1)] = 1 #-1 because first midnight 00:00 itself contributes to the first full day
-    }
-    r4[(lastmidnighti):length(r4)] = 1  #ignore everything after the last midnight
+    endtime = lastmidnight  
+    # only apply strategy 2 if study dates log is not used for trimming the data,
+    # otherwise the data already start and finishes at midnight
+    if (firstmidnight == dmidn$firstmidnight & 
+        lastmidnight == dmidn$lastmidnight) {
+        starttimei = firstmidnighti
+        endtimei = lastmidnighti
+        if (firstmidnighti != 1) { #ignore everything before the first midnight
+          r4[1:(firstmidnighti - 1)] = 1 #-1 because first midnight 00:00 itself contributes to the first full day
+        }
+        r4[(lastmidnighti):length(r4)] = 1  #ignore everything after the last midnight
+      } else {
+        starttimei = 1
+        endtimei = length(r4)
+      }
   } else if (params_cleaning[["strategy"]] %in% c(3, 5)) { #select X most active days
     #==========================================
     # Look out for X most active days and use this to define window of interest
@@ -221,6 +229,9 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     } else if (params_cleaning[["strategy"]] == 5) {
       # Select the most active calendar days
       atestlist = c()
+      # readjust midnightsi if study dates log used for trimming the data
+      midnights2keep = which(midnightsi >= firstmidnighti & midnightsi < lastmidnighti)
+      midnightsi = midnightsi[midnights2keep]
       for (ati in 1:length(midnightsi)) {
         p0 = ((midnightsi[ati] * ws2/ws3) - ws2/ws3) + 1
         p1 = ((midnightsi[ati + params_cleaning[["ndayswindow"]]] * ws2/ws3) - ws2/ws3)
@@ -233,9 +244,19 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
       if (!is.null(atestlist)) atik = which(atestlist == max(atestlist))[1]
       #ignore everything before the first ndayswindow midnight plus hrs.del.start
       ignore_until = (midnightsi[atik]) + (params_cleaning[["hrs.del.start"]]*(3600/ws2)) - 1 # minus 1 for not ignoring the first epoch in ndayswindow
-      if (ignore_until > 0) r4[1:ignore_until] = 1 #-1 because first midnight 00:00 itself contributes to the first full day
+      if (ignore_until > 0) {
+        if (firstmidnighti != dmidn$firstmidnighti |
+            lastmidnighti != dmidn$lastmidnighti) {
+          ignore_until = ignore_until - firstmidnighti
+        }
+        r4[1:ignore_until] = 1 
+      }
       #ignore everything after the last midnight plus hrs.del.end
       ignore_from = midnightsi[atik + params_cleaning[["ndayswindow"]]] - (params_cleaning[["hrs.del.end"]]*(3600/ws2))
+      if (firstmidnighti != dmidn$firstmidnighti |
+          lastmidnighti != dmidn$lastmidnighti) {
+        ignore_from = ignore_from - firstmidnighti
+      }
       # if ndayswindow is higher than number of midnights, use last midnight
       if (is.na(ignore_from)) ignore_from = midnightsi[length(midnightsi)] - (params_cleaning[["hrs.del.end"]]*(3600/ws2))
       r4[ignore_from:length(r4)] = 1
@@ -245,9 +266,19 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     
   } else if (params_cleaning[["strategy"]] == 4) { #from first midnight to end of recording
     starttime = firstmidnight
-    starttimei = firstmidnighti
-    if (firstmidnighti != 1) { #ignore everything before the first midnight
-      r4[1:(firstmidnighti - 1)] = 1 #-1 because first midnight 00:00 itself contributes to the first full day
+    endtime = lastmidnight  
+    # only apply strategy 4 if study dates log is not used for trimming the data,
+    # otherwise the data already start and finishes at midnight
+    if (firstmidnight == dmidn$firstmidnight & 
+        lastmidnight == dmidn$lastmidnight) {
+      starttimei = firstmidnighti
+      endtimei = lastmidnighti
+      if (firstmidnighti != 1) { #ignore everything before the first midnight
+        r4[1:(firstmidnighti - 1)] = 1 # -1 because first midnight 00:00 itself contributes to the first full day
+      }
+    } else {
+      starttimei = 1
+      endtimei = length(r4)
     }
   }
   # Mask data based on maxdur
@@ -256,7 +287,13 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   }
   # Mask data based on max_calendar_days
   if (params_cleaning[["max_calendar_days"]] > 0) {
-    dates = as.Date(iso8601chartime2POSIX(M$metalong$timestamp,tz = desiredtz))
+    # get dates that are part of the study protocol
+    if (firstmidnight != dmidn$firstmidnight | 
+        lastmidnight != dmidn$lastmidnight) {
+      dates = as.Date(iso8601chartime2POSIX(M$metalong$timestamp[firstmidnighti:(lastmidnighti - 1)], tz = desiredtz))
+    } else {
+      dates = as.Date(iso8601chartime2POSIX(M$metalong$timestamp, tz = desiredtz))
+    }
     if (params_cleaning[["max_calendar_days"]] < length(unique(dates))) {
       lastDateToInclude = sort(unique(dates))[params_cleaning[["max_calendar_days"]]]
       r4[which(dates > lastDateToInclude)] = 1
