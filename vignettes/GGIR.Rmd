@@ -352,6 +352,11 @@ for that.
     over larger periods of time but accelerometers only allow for a few weeks of 
     data collection. GGIR will never append or alter the raw input file, this operation
     is preformed on the derived data.
+-   `study_dates_file` - if specified trims the recorded data to the first and 
+    last date in which the study took place. This is relevant for studies that started
+    the recording several days before the accelerometers were actually worn by
+    participants. This is used on the top of strategy, so that it may be combined
+    with the strategies in GGIR.
 
 ### Key arguments related to sleep analysis {#key-arguments-related-to-sleep-analysis}
 
