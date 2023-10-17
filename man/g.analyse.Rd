@@ -17,7 +17,7 @@
 \usage{
   g.analyse(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                       params_general = c(), params_cleaning = c(),
-                      quantiletype = 7, myfun = c(), ...)
+                      quantiletype = 7, myfun = c(), ID, ...)
 }
 \arguments{
   \item{I}{
@@ -50,6 +50,9 @@
   }
   \item{myfun}{
     External function object to be applied to raw data, see \link{g.getmeta}.
+  }
+  \item{ID}{
+    ID extracted in g.part2.
   }
   \item{...}{
      Any argument used in the previous version of g.analyse, which will now

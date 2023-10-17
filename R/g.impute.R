@@ -1,5 +1,6 @@
 g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
-                    dayborder = 0, TimeSegments2Zero = c(), acc.metric = "ENMO", ...) {
+                    dayborder = 0, TimeSegments2Zero = c(), acc.metric = "ENMO", 
+                    ID, ...) {
   
   #get input variables
   input = list(...)
@@ -106,7 +107,31 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
                            logPath = params_cleaning[["study_dates_file"]],
                            logtype = "study dates log")
     # identify first and last study dates
-    
+    rowID = which(studyDates[, 1] == ID)
+    if (length(rowID) > 0) {
+      if (length(rowID) > 1) {
+        # this is in the unlikely event that an ID appears twice in the log
+        rowID = rowID[1]
+        warning(paste0("The ID ", ID, " appears twice in the study dates log"), call. = FALSE)
+      }
+      firstDate = as.Date(studyDates[rowID, 2], format = params_cleaning[["study_dates_dateformat"]])
+      lastDate = as.Date(studyDates[rowID, 3], format = params_cleaning[["study_dates_dateformat"]])
+      # find the dates in metalong
+      firstDatei = midnightsi[grep(firstDate, midnights)]
+      lastDatei = midnightsi[grep(lastDate, midnights) + 1] # plus 1 to include the reported date in log
+      # trim data
+      r4[1:(firstDatei - 1)] = 1
+      r4[lastDatei:nrow(r4)] = 1
+      # cut out r4 to apply strategies only on the trimmed portion of data
+      # after application of strategies, r4 would reset to the original length
+      r4_bu = r4
+      r4 = as.matrix(r4[which(r4[,1] == 0),])
+    } else if (length(rowID) == 0) {
+      r4_bu = r4
+      warning(paste0("The ID ", ID, " does not appear  in the study dates log ",
+                     "the full recording has been considered within the study ",
+                     "protocol selection"), call. = FALSE)
+    }
   }
   #===================================================================
   # Select data based on strategy
@@ -237,6 +262,10 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
       r4[which(dates > lastDateToInclude)] = 1
     }
   }
+  #===================================================================
+  # if data selected based on study dates log, recover the original length of r4
+  r4_bu[which(r4_bu == 0),] = r4
+  r4 = r4_bu
   #========================================================================================
   # Impute ws3 second data based on ws2 minute estimates of non-wear time
   r5 = r1 + r2 + r3 + r4

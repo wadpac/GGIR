@@ -1,6 +1,6 @@
 g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                       params_general = c(), params_cleaning = c(),
-                      quantiletype = 7, myfun = c(), ...) {
+                      quantiletype = 7, myfun = c(), ID, ...) {
   
   #get input variables
   input = list(...)
@@ -67,7 +67,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   }
   #----------------------
   # Extract ID centrally
-  ID = extractID(hvars = hvars, idloc = idloc, fname = I$filename)
+  # ID = extractID(hvars = hvars, idloc = idloc, fname = I$filename)
   
   #--------------------------------------------------------------
   # Extract qwindow if an activity log is provided:
