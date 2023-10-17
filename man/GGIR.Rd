@@ -782,6 +782,25 @@ GGIR(mode = 1:5,
       \item{minimum_MM_length.part5}{
         Numeric (default = 23).
         Minimum length in hours of a MM day to be included in the cleaned \link{g.part4} results.}
+        
+      \item{study_dates_file}{
+        Character (default = c()).
+        Full path to csv file containing the first and last date of the study.
+        Expected format of the activity diary is: First column headers followed 
+        by one row per recording. There should be three columns: first column is 
+        recording ID, which needs to match with the ID GGIR extracts from the 
+        accelerometer file; second column should contain the first date of the 
+        study; and third column the last date of the study. Date columns should be
+        by default in format "23-04-2017", or in the date format  specified by 
+        argument \code{study_dates_dateformat} (below). If not specified (default), 
+        then GGIR would use the first and last day of the recording as beginning 
+        and end of the study. Note that these dates are used on top of the 
+        \code{strategy} selected.}
+        
+      \item{study_dates_dateformat}{
+        Character (default = "%d-%m-%Y").
+        To specify the date format used in the \code{study_dates_file} as used 
+        by \link[base]{strptime}.}
 
       \item{strategy}{
         Numeric (default = 1).

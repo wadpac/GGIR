@@ -95,6 +95,20 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   lastmidnight = dmidn$lastmidnight;    lastmidnighti = dmidn$lastmidnighti
   midnights = dmidn$midnights;          midnightsi = dmidn$midnightsi
   #===================================================================
+  # Trim data based on study_dates_file
+  if (!is.null(params_cleaning[["study_dates_file"]])) {
+    # Read content of study dates file 
+    studyDates = data.table::fread(file = params_cleaning[["study_dates_file"]], data.table = FALSE)
+    # Check ID and date formats
+    studyDates = check_log(log = studyDates, 
+                           dateformat = params_cleaning[["study_dates_dateformat"]], 
+                           colid = 1, datecols = 2:3, 
+                           logPath = params_cleaning[["study_dates_file"]],
+                           logtype = "study dates log")
+    # identify first and last study dates
+    
+  }
+  #===================================================================
   # Select data based on strategy
   if (params_cleaning[["strategy"]] == 1) { 	#protocol based data selection
     if (params_cleaning[["hrs.del.start"]] > 0) {
