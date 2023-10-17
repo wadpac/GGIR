@@ -801,8 +801,12 @@ GGIR(mode = 1:5,
         Character (default = "%d-%m-%Y").
         To specify the date format used in the \code{study_dates_file} as used 
         by \link[base]{strptime}.}
-
+        
       \item{strategy}{
+        Numeric (default = 1).
+        See \code{data_masking_strategy} below.}
+        
+      \item{data_masking_strategy}{
         Numeric (default = 1).
         How to deal with knowledge about study protocol.
         strategy = 1 means select data based on \code{hrs.del.start} and \code{hrs.del.end}.

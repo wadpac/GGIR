@@ -88,7 +88,8 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
   }
   if ("cleaning" %in% group) {
     params_cleaning = list(includedaycrit = 16, ndayswindow = 7,
-                           strategy = 1, maxdur = 0,
+                           strategy = 1, data_masking_strategy = 1,
+                           maxdur = 0,
                            hrs.del.start = 0, hrs.del.end = 0,
                            includedaycrit.part5 = 2/3, excludefirstlast.part5 = FALSE,
                            TimeSegments2ZeroFile = c(), do.imp = TRUE,

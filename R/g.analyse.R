@@ -34,7 +34,11 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   
   fname = I$filename
   averageday = IMP$averageday
-  strategy = IMP$strategy
+  if (is.null(IMP$data_masking_strategy)) {
+    data_masking_strategy = IMP$strategy
+  } else {
+    data_masking_strategy = IMP$data_masking_strategy
+  }
   hrs.del.start = IMP$hrs.del.start
   hrs.del.end = IMP$hrs.del.end
   maxdur = IMP$maxdur
@@ -144,7 +148,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   midnights = dmidn$midnights;          midnightsi = dmidn$midnightsi
   starttimei = 1
   endtimei = nrow(M$metalong)
-  if (strategy == 2) {
+  if (data_masking_strategy == 2) {
     starttimei = firstmidnighti
     endtimei = lastmidnighti - 1
   }
@@ -230,8 +234,8 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                                      myfun = myfun, desiredtz = desiredtz,
                                      params_247 = params_247, params_phyact = params_phyact)
   }
-  #metashort is shortened from midgnight to midnight if requested (strategy 2)
-  if (strategy == 2) {
+  #metashort is shortened from midgnight to midnight if requested (data_masking_strategy 2)
+  if (data_masking_strategy == 2) {
     if (starttimei == 1) {
       metashort = as.matrix(metashort[starttimei:(endtimei*(ws2/ws3)),])
     } else {
@@ -250,7 +254,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   lookat = lookattmp[which(lookattmp > 1)] #]c(2:ncol(metashort[,lookattmp]))
   colnames_to_lookat = colnames(metashort)[lookat]
   AveAccAve24hr = matrix(NA,length(lookat),1)
-  if (length(which(r5 == 0)) > 0) { #to catch strategy 2 with only 1 midnight and other cases where there is no valid data
+  if (length(which(r5 == 0)) > 0) { #to catch data_masking_strategy 2 with only 1 midnight and other cases where there is no valid data
     for (h in 1:length(lookat)) {
       average24h = matrix(0,n_ws3_perday,1)
       average24hc = matrix(0,n_ws3_perday,1)

@@ -136,8 +136,8 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     study_dates_log_used = TRUE
   }
   #===================================================================
-  # Select data based on strategy
-  if (params_cleaning[["strategy"]] == 1) { 	#protocol based data selection
+  # Select data based on data_masking_strategy
+  if (params_cleaning[["data_masking_strategy"]] == 1) { 	#protocol based data selection
     if (params_cleaning[["hrs.del.start"]] > 0) {
       r4[1:(params_cleaning[["hrs.del.start"]]*(3600/ws2))] = 1
     }
@@ -154,10 +154,10 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     }
     starttimei = 1
     endtimei = length(r4)
-  } else if (params_cleaning[["strategy"]] == 2) { #midnight to midnight strategy
+  } else if (params_cleaning[["data_masking_strategy"]] == 2) { #midnight to midnight data_masking_strategy
     starttime = firstmidnight
     endtime = lastmidnight  
-    # only apply strategy 2 if study dates log is not used for trimming the data,
+    # only apply data_masking_strategy 2 if study dates log is not used for trimming the data,
     # otherwise the data already start and finishes at midnight
     if (study_dates_log_used == FALSE) {
         starttimei = firstmidnighti
@@ -170,7 +170,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
         starttimei = 1
         endtimei = length(r4)
       }
-  } else if (params_cleaning[["strategy"]] %in% c(3, 5)) { #select X most active days
+  } else if (params_cleaning[["data_masking_strategy"]] %in% c(3, 5)) { #select X most active days
     #==========================================
     # Look out for X most active days and use this to define window of interest
     if (acc.metric %in% colnames(M$metashort)) {
@@ -183,7 +183,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     r2tempe = rep(r2, each = (ws2/ws3))
     r1tempe = rep(r1, each = (ws2/ws3))
     atest[which(r2tempe == 1 | r1tempe == 1)] = 0
-    if (params_cleaning[["strategy"]] == 3) {
+    if (params_cleaning[["data_masking_strategy"]] == 3) {
       # Select the most active 24-h blocks by a rolling window of windowsizes[3]
       NDAYS = length(atest) / n_ws3_perday
       # rolling window in ws3
@@ -227,7 +227,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
       if (LD < 1440) {
         r4 = r4[1:floor(LD/(ws2/60))]
       }
-    } else if (params_cleaning[["strategy"]] == 5) {
+    } else if (params_cleaning[["data_masking_strategy"]] == 5) {
       # Select the most active calendar days
       atestlist = c()
       # readjust midnightsi if study dates log used for trimming the data
@@ -262,10 +262,10 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     }
     starttimei = 1
     endtimei = length(r4)
-  } else if (params_cleaning[["strategy"]] == 4) { #from first midnight to end of recording
+  } else if (params_cleaning[["data_masking_strategy"]] == 4) { #from first midnight to end of recording
     starttime = firstmidnight
     endtime = lastmidnight  
-    # only apply strategy 4 if study dates log is not used for trimming the data,
+    # only apply data_masking_strategy 4 if study dates log is not used for trimming the data,
     # otherwise the data already start and finishes at midnight
     if (study_dates_log_used == FALSE) {
       starttimei = firstmidnighti
@@ -368,7 +368,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   metashort[,2:ncol(metashort)] = round(metashort[,2:ncol(metashort)], digits = n_decimal_places)
   rout = data.frame(r1 = r1, r2 = r2, r3 = r3, r4 = r4, r5 = r5, stringsAsFactors = TRUE)
   invisible(list(metashort = metashort, rout = rout, r5long = r5long, dcomplscore = dcomplscore,
-                 averageday = averageday, windowsizes = windowsizes, strategy = params_cleaning[["strategy"]],
+                 averageday = averageday, windowsizes = windowsizes, data_masking_strategy = params_cleaning[["data_masking_strategy"]],
                  LC = LC, LC2 = LC2, hrs.del.start = params_cleaning[["hrs.del.start"]], hrs.del.end = params_cleaning[["hrs.del.end"]],
                  maxdur = params_cleaning[["maxdur"]]))
 }
