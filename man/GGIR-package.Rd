@@ -45,7 +45,7 @@
   #impute meta-data:
   IMP = g.impute(M = data.getmeta, I = data.inspectfile)
   #analyse and produce summary:
-  A = g.analyse(I = data.inspectfile, C = data.calibrate, M = data.getmeta, IMP)
+  A = g.analyse(I = data.inspectfile, C = data.calibrate, M = data.getmeta, IMP, ID = "01wk0")
   #plot data
   g.plot(IMP, M = data.getmeta, I = data.inspectfile, durplot=4)
 }
