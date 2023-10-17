@@ -38,13 +38,15 @@
 }
 \value{
   List with items:
-  item{LEVELS}{}
-  item{OLEVELS}{}
-  item{Lnames}{}
-  item{bc.mvpa}{}
-  item{bc.lig}{}
-  item{bc.in}{}
-  item{ts}{}
+  \itemize{
+    \item LEVELS
+    \item OLEVELS
+    \item Lnames
+    \item bc.mvpa
+    \item bc.lig
+    \item bc.in
+    \item ts
+  }
 }
 \examples{
   \dontrun{

@@ -831,12 +831,26 @@ GGIR(mode = 1:5,
         0.3 indicates that at least 30 percent of the time should be valid.}
         
       \item{segmentDAYSPTcrit.part5}{
-        Numeric vector or length 2 (default = c(0, 0)).
+        Numeric vector or length 2 (default = c(0.9, 0)).
         Inclusion criteria for the proportion of the segment that should be 
         classified as day (awake) and spt (sleep period time) to be considered 
-        valid. Usually, one of the two numbers is 0, and the other defines the 
-        proportion of the segment that should be classified as day or spt.}
-
+        valid. One of the two numbers should be 0, and the other defines the 
+        proportion of the segment that should be classified as day or spt, respectively.
+        The default setting would focus on waking hour
+        segments and includes all segments that overlap for at least 90 percent 
+        with waking hours. In order to shift focus to the SPT you could use
+        c(0, 0.9) which ensures that all segments that overlap for at least
+        90 percent with the SPT are included.
+        Setting both to zero would be problematic and is not allowed as that would introduce
+        bias in behavioural estimates for the following reason: A complete segment
+        would be averaged with an incomplete segments (someone going to bed or waking up
+        in the middle of a segment) by which it is no longer clear whether the person
+        is less active or sleeps more during that segment. Similarly it is not
+        clear whether the person has more wakefulness during SPT for a segment or
+        woke up or went to bed during the segment. Therefore, a 
+        minimum value of 0.5 is required but any value closer to 1
+        would be better.
+      }
       \item{includedaycrit}{
         Numeric (default = 16).
         Minimum required number of valid hours in day specific analysis
@@ -857,7 +871,7 @@ GGIR(mode = 1:5,
       }
 
       \item{nonwear_approach}{
-        Character (default = "2013").
+        Character (default = "2023").
         Whether to use the traditional version of the non-wear detection algorithm 
         (nonwear_approach = "2013") or the new version (nonwear_approach = "2023"). 
         The 2013 version would use the longsize window (windowsizes[3], one hour 
@@ -1153,7 +1167,11 @@ GGIR(mode = 1:5,
         no need to have a column with the date followed by a column with the next 
         date. If times in the activity diary are not multiple of the short window 
         size (epoch length), the next epoch is considered (e.g., with epoch of 5 
-        seconds, 8:00:02 will be redefined as 8:00:05 in the activity log).}
+        seconds, 8:00:02 will be redefined as 8:00:05 in the activity log).
+        When using the qwindow functionality in combination with GGIR part 5 then
+        make sure to check that arguments \code{segmentWEARcrit.part5} and 
+        \code{segmentDAYSPTcrit.part5} are specfied to your research needs.
+        }
 
       \item{qwindow_dateformat}{
         Character (default = "%d-%m-%Y").
@@ -1278,7 +1296,7 @@ GGIR(mode = 1:5,
         Character (default = c("MM", "WW")).
         In \link{g.part5}: Timewindow over which summary statistics are derived.
         Value can be "MM" (midnight to midnight), "WW" (waking time to waking time),
-        or both c("MM","WW").}
+        "OO" (sleep onset to sleep onset), or any combination of them.}
 
       \item{save_ms5rawlevels}{
         Boolean (default = FALSE).

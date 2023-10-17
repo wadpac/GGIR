@@ -12,7 +12,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.9-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.10-3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,47 +86,44 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">g.part5.definedays</span><span class="op">(</span><span class="va">nightsi</span>, <span class="va">wi</span>, <span class="va">indjump</span>, <span class="va">nightsi_bu</span>, </span>
-<span>                     <span class="va">ws3new</span>, qqq_backup<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">ts</span>, <span class="va">Nts</span>, </span>
+<span>                     <span class="va">epochSize</span>, qqq_backup <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">ts</span>,</span>
 <span>                     <span class="va">timewindowi</span>, <span class="va">Nwindows</span>, <span class="va">qwindow</span>, ID <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>nightsi</dt>
-<dd><p></p></dd>
+<dd><p>Vector with indices for the midnights</p></dd>
 
   <dt>wi</dt>
-<dd><p></p></dd>
+<dd><p>Numeric to indicate window number</p></dd>
 
   <dt>indjump</dt>
-<dd><p></p></dd>
+<dd><p>Number of indices to jump</p></dd>
 
   <dt>nightsi_bu</dt>
-<dd><p></p></dd>
+<dd><p>See argument <code>nightsi</code> this is a backup of this object</p></dd>
 
-  <dt>ws3new</dt>
-<dd><p></p></dd>
+  <dt>epochSize</dt>
+<dd><p>Numeric epoch size in seconds</p></dd>
 
   <dt>qqq_backup</dt>
-<dd><p></p></dd>
+<dd><p>Backup of qqq object, which holds the start and end indices of a window</p></dd>
 
   <dt>ts</dt>
-<dd><p></p></dd>
-
-  <dt>Nts</dt>
-<dd><p></p></dd>
+<dd><p>Data.frame with time series</p></dd>
 
   <dt>timewindowi</dt>
-<dd><p></p></dd>
+<dd><p>Timewindow definition either "MM" or "WW"</p></dd>
 
   <dt>Nwindows</dt>
-<dd><p></p></dd>
+<dd><p>Number of windows in the data</p></dd>
 
   <dt>qwindow</dt>
-<dd><p></p></dd>
+<dd><p>qwindow argument</p></dd>
 
   <dt>ID</dt>
-<dd><p></p></dd>
+<dd><p>ID of participant</p></dd>
 
 </dl></div>
     <div class="section level2">

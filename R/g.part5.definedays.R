@@ -74,20 +74,22 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
         }
       }
     } else {
+      qqq = c(NA, NA)
       if (length(qqq_backup) > 1) {
-        # if there is remaining time after previous day...
-        if (Nts > qqq_backup[2]) {
+        # If there is remaining time after previous day...
+        # but only do this if there is less than 24 hours.
+        # This is necessary if sleep is ignored for last night.
+        # In that case the last two calendar days should be ignored
+        # as no sleep onset will be available.
+        if (Nts - qqq_backup[2] < 24 * (60 / epochSize) * 60) {
           qqq = c(qqq_backup[2] + 1, Nts)
         }
-      } else {
-        # else, do not analyse this day
-        qqq = c(NA, NA)
       }
     }
     # in MM, also define segments of the day based on qwindow
     if (!is.na(qqq[1]) & !is.na(qqq[2])) {
       fullQqq = qqq[1]:qqq[2]
-      lastepoch = substr(ts$time[qqq[2]], 12, 19)
+      lastepoch = format(ts$time[qqq[2]],  "%H:%M:%S")
       qnames = NULL
       if (is.data.frame(qwindow)) {
         date_of_interest = substr(ts$time[qqq[1]], 1, 10)
@@ -137,13 +139,14 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
       }
       names(segments) = segments_timing
     }
-  } else if (timewindowi == "WW") {
-    if (wi <= (Nwindows - 1)) { # all full wake to wake days
-      qqq[1] = which(diff(ts$diur) == -1)[wi] + 1
-      qqq[2] = which(diff(ts$diur) == -1)[wi + 1]
+  } else if (timewindowi == "WW" || timewindowi == "OO") {
+    windowEdge = ifelse(timewindowi == "WW", yes = -1, no = 1)
+    if (wi <= (Nwindows - 1)) { # all full windows
+      qqq[1] = which(diff(ts$diur) == windowEdge)[wi] + 1
+      qqq[2] = which(diff(ts$diur) == windowEdge)[wi + 1]
     } else {
-      # time after last reliable waking up (this can be more than 24 hours)
-      # ignore this day, because if the night was ignored for sleep analysis
+      # time after last reliable waking up or onset (this can be more than 24 hours)
+      # ignore this window, because if the night was ignored for sleep analysis
       # then the description of the day in part 5 including that night is
       # not informative.
       qqq = c(NA, NA)
@@ -151,11 +154,12 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
     # build up segments
     if (!is.na(qqq[1]) & !is.na(qqq[2])) {
       segments = list(qqq)
-      start = substr(ts$time[qqq[1]], 12, 19)
-      end = substr(ts$time[qqq[2]], 12, 19)
+      start = format(ts$time[qqq[1]], "%H:%M:%S")
+      end = format(ts$time[qqq[2]], "%H:%M:%S")
       names(segments) = paste(start, end, sep = "-")
-      segments_names = "WW"
+      segments_names = timewindowi
     }
+    
   }
   return(invisible(list(qqq = qqq, qqq_backup = qqq_backup, 
                         segments = segments, segments_names = segments_names)))

@@ -34,51 +34,51 @@ accounted for before the data enters the function.
 }
 \value{
 List with Character object showing how decimals are separated
-\item{TP_PA2IN}{Transition probability physical activity to inactivity}
-\item{TP_IN2PA}{Transition probability physical inactivity to activity}
-\item{Nfrag_IN2LIPA}{Number of inacitivty fragments succeeded by LIPA
-(light physical activity)}
-\item{TP_IN2LIPA}{Transition probability physical inactivity to LIPA}
-\item{Nfrag_IN2MVPA}{Number of inacitivty fragments succeeded by MVPA
-(moderate or vigorous physical activity)}
-\item{TP_IN2MVPA}{Transition probability physical inactivity to MVPA}
-\item{Nfrag_MVPA}{Number of MVPA fragments}
-\item{Nfrag_LIPA}{Number of LIPA fragments}
-\item{mean_dur_MVPA}{mean MVPA fragment duration}
-\item{mean_dur_LIPA}{mean LIPA fragment duration}
-\item{Nfrag_IN}{Number of inactivity fragments}
-\item{Nfrag_PA}{Number of activity fragments}
-\item{mean_dur_IN}{mean duration inactivity fragments}
-\item{mean_dur_PA}{mean duration activity fragments}
-\item{Gini_dur_IN}{Gini index corresponding to inactivity fragment durations}
-\item{Gini_dur_PA}{Gini index corresponding to activity fragment durations}
-\item{CoV_dur_IN}{Coefficient of Variance corresponding to inactivity fragment durations}
-\item{CoV_dur_PA}{Coefficient of Variance corresponding to activity fragment durations}
-\item{alpha_dur_IN}{Alpha of the fitted power distribution through inactivity fragment durations}
-\item{alpha_dur_PA}{Alpha of the fitted power distribution through activity fragment durations}
-\item{x0.5_dur_IN}{x0.5 corresponding to alpha_dur_IN}
-\item{x0.5_dur_PA}{x0.5 corresponding to alpha_dur_PA}
-\item{W0.5_dur_IN}{W0.5 corresponding to alpha_dur_IN}
-\item{W0.5_dur_PA}{W0.5 corresponding to alpha_dur_PA}
-\item{NFragPM_IN}{Number of IN fragments per minutes in IN}
-\item{NFragPM_PA}{Number of PA fragments per minutes in PA}
-\item{SD_dur_IN}{Standard deviation in the duration of inactivity fragments}
-\item{SD_dur_PA}{Standard deviation in the duration of physical activity fragments}
-
+  \item{TP_PA2IN}{Transition probability physical activity to inactivity}.
+  \item{TP_IN2PA}{Transition probability physical inactivity to activity}
+  \item{Nfrag_IN2LIPA}{Number of inacitivty fragments succeeded by LIPA
+  (light physical activity)}
+  \item{TP_IN2LIPA}{Transition probability physical inactivity to LIPA}
+  \item{Nfrag_IN2MVPA}{Number of inacitivty fragments succeeded by MVPA
+  (moderate or vigorous physical activity)}
+  \item{TP_IN2MVPA}{Transition probability physical inactivity to MVPA}
+  \item{Nfrag_MVPA}{Number of MVPA fragments}
+  \item{Nfrag_LIPA}{Number of LIPA fragments}
+  \item{mean_dur_MVPA}{mean MVPA fragment duration}
+  \item{mean_dur_LIPA}{mean LIPA fragment duration}
+  \item{Nfrag_IN}{Number of inactivity fragments}
+  \item{Nfrag_PA}{Number of activity fragments}
+  \item{mean_dur_IN}{mean duration inactivity fragments}
+  \item{mean_dur_PA}{mean duration activity fragments}
+  \item{Gini_dur_IN}{Gini index corresponding to inactivity fragment durations}
+  \item{Gini_dur_PA}{Gini index corresponding to activity fragment durations}
+  \item{CoV_dur_IN}{Coefficient of Variance corresponding to inactivity fragment durations}
+  \item{CoV_dur_PA}{Coefficient of Variance corresponding to activity fragment durations}
+  \item{alpha_dur_IN}{Alpha of the fitted power distribution through inactivity fragment durations}
+  \item{alpha_dur_PA}{Alpha of the fitted power distribution through activity fragment durations}
+  \item{x0.5_dur_IN}{x0.5 corresponding to alpha_dur_IN}
+  \item{x0.5_dur_PA}{x0.5 corresponding to alpha_dur_PA}
+  \item{W0.5_dur_IN}{W0.5 corresponding to alpha_dur_IN}
+  \item{W0.5_dur_PA}{W0.5 corresponding to alpha_dur_PA}
+  \item{NFragPM_IN}{Number of IN fragments per minutes in IN}
+  \item{NFragPM_PA}{Number of PA fragments per minutes in PA}
+  \item{SD_dur_IN}{Standard deviation in the duration of inactivity fragments}
+  \item{SD_dur_PA}{Standard deviation in the duration of physical activity fragments}
 }
 \details{
-See package vignette for description of fragmentation metrics.
-In short, abbreviation "TP" refers to transition probality metrics,
-abbreviation "CoV" refers to Coefficient of Variance, and
-metric "NFragPM" refers to the Number of fragments per minute.
-
-Regarding the Lnames argument. The class names included in this are categorised
-as follows:
-\itemize{
-  \item{Inactive - if name includes the character strings "day_IN_unbt" or "day_IN_bts".}
-  \item{LIPA - If name includes the character strings "day_LIG_unbt" or "day_LIG_bts".}
-  \item{MVPA - If name includes the character strings "day_MOD_unbt", "day_VIG_unbt", or "day_MVPA_bts"}
-}
+  See package vignette for description of fragmentation metrics.
+  In short, abbreviation "TP" refers to transition probality metrics,
+  abbreviation "CoV" refers to Coefficient of Variance, and
+  metric "NFragPM" refers to the Number of fragments per minute.
+  
+  Regarding the Lnames argument. The class names included in this are categorised
+  as follows:
+  \itemize{
+    \item Inactive, if name includes the character strings "day_IN_unbt" or "day_IN_bts"
+    \item LIPA, if name includes the character strings "day_LIG_unbt" or "day_LIG_bts"
+    \item MVPA, if name includes the character strings "day_MOD_unbt", "day_VIG_unbt", 
+    or "day_MVPA_bts"
+  }
 }
 \examples{
 \dontrun{

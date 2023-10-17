@@ -18,7 +18,7 @@ auto-calibration functionality."><meta name="twitter:card" content="summary_larg
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.9-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.10-3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,7 +94,8 @@ auto-calibration functionality.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">create_test_acc_csv</span><span class="op">(</span>sf<span class="op">=</span><span class="fl">3</span>,Nmin<span class="op">=</span><span class="fl">2000</span>,storagelocation<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">create_test_acc_csv</span><span class="op">(</span>sf<span class="op">=</span><span class="fl">3</span>,Nmin<span class="op">=</span><span class="fl">2000</span>,storagelocation<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>                      starts_at_midnight <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -109,6 +110,10 @@ auto-calibration functionality.</p>
 <dd><p>Location where the test file named testfile.csv will be stored
     If no value is provided then the function uses the current 
     working directory</p></dd>
+
+  <dt>starts_at_midnight</dt>
+<dd><p>Boolean indicating whether the recording should start at 
+    midnight.</p></dd>
 
 </dl></div>
     <div class="section level2">

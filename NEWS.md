@@ -1,4 +1,10 @@
-# CHANGES IN GGIR VERSION 2.10-5
+# CHANGES IN GGIR VERSION 3.0-1
+
+- Part 5: New function to provide definition of the variable names in part 5 reports #938
+
+# CHANGES IN GGIR VERSION 3.0-0
+
+- Part 1 and 2: Change default value for nonwear_approach to "2023" which labels the entire window as nonwear if conditions are met. This instead of only the middle 15 minutes as is the case for "2013" setting. Further, setting "2023" now uses a 5 Hertz version of the signals for non-wear detection, for clipping detection the code uses the original signal.
 
 - Part 2: Move cosinor analysis code to its own function in order to ease re-using it in both part 2 and part 6.
 
@@ -7,7 +13,9 @@
 - Part 2: Arguments hrs.del.start and hrs.del.end when combined with strategy = 3 and strategy = 5 now count
 relative to start and end of the most active time window as identified.  #905
 
-- Part 5: New function to provide definition of the variable names in part 5 reports #938
+- Part 5: Change default for segmentDAYSPTcrit.part5 from c(0,0) to c(0, 0.9) and now prohibiting the use of c(0, 0) as it gives biased estimates. We knew this, but some users started using the default without attempting to understand it, by which it seems necessary to force a sensible default. #940
+
+- Part 5: Added optioned "OO" to argument timewindow, which defines windows from sleep Onset to sleep Onset #931
 
 # CHANGES IN GGIR VERSION 2.10-4
 
@@ -26,6 +34,8 @@ relative to start and end of the most active time window as identified.  #905
 - Part 4: More informative error message when advanced sleep log has duplicate or missing dates #925
 
 - Fix recently introduced bug where GGIR environment was not exported to cluster in GGIR part 1, 2, 3, and 5 #910
+
+- Add contributing guidelines for github.io documentation #923
 
 # CHANGES IN GGIR VERSION 2.10-3
 

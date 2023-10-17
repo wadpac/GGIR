@@ -3,27 +3,27 @@ context("detect_nonwear_clipping")
 test_that("detects non wear time", {
   skip_on_cran()
   
+  
   # This will produce a 2-day long acc file with a 2-hour block of nonwear
   # starting at the 5th minute of every day
   Ndays = 2
-  create_test_acc_csv(Nmin = Ndays*1440)
+  sf = 3
+  create_test_acc_csv(Nmin = Ndays * 1440, sf = sf)
   
   data = as.matrix(read.csv("123A_testaccfile.csv", skip = 10))
 
   # 2013 algorithm ------
   # clipthres to 1.7 to test the clipping detection
   NWCW = detect_nonwear_clipping(data = data, nonwear_approach = "2013", 
-                                 sf = 3, clipthres = 1.7)
+                                 sf = sf, clipthres = 1.7)
   CW = NWCW$CWav; NW = NWCW$NWav
   NW_rle_2013 = rle(NW)
   CW = sum(NWCW$CWav > 0)
-  
+
   # 2023 algorithm ------
-  NWCW = detect_nonwear_clipping(data = data, nonwear_approach = "2023", sf = 3)
+  NWCW = detect_nonwear_clipping(data = data, nonwear_approach = "2023", sf = sf)
   NW = NWCW$NWav
   NW_rle_2023 = rle(NW)
-  
-  
   # tests ----------------
   # Does it find the 2 periods of nonwear?
   expect_equal(sum(NW_rle_2013$values == 3), 2)

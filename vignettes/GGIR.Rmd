@@ -105,7 +105,7 @@ Also of interest may be the brief [free R introduction tutorial](https://www.acc
 **Change log**
 
 Our log of main changes to GGIR over time can be found
-[here](https://cran.r-project.org/package=GGIR/news.html).
+[here](https://cran.r-project.org/package=GGIR/news/news.html).
 
 # Setting up your work environment
 
@@ -482,8 +482,8 @@ For an explanation on how time use analysis is performed see section
         Here, the full 25 minutes would count towards the duration of
         the MVPA bout.
 -   `timewindow` to specify whether days should be defined from midnight
-    to midnight `"MM"`, from waking-up to waking-up `"WW"`, or both
-    `c("MM","WW")`.
+    to midnight `"MM"`, from waking-up to waking-up `"WW"`, from sleep onset
+    to sleep onset `"OO"`, or any combination of them.
 -   Configure durations of bouts: `boutdur.mvpa`, `boutdur.in`, and
     `boutdur.lig`. Note that this can be a vector of multiple values
     indicating the minimum and maximum duration of subsequent bout
@@ -767,6 +767,44 @@ in summary.csv
 | ig\_intercept_ENMO_0-24hr | Intercept from intensity gradient analysis proposed by [Rowlands et al. 2018](https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx) based on metric ENMO for the time segment 0 to 24 hours |
 | ig\_rsquared_ENMO_0-24hr  | r squared from intensity gradient analysis proposed by [Rowlands et al. 2018](https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx) based on metric ENMO for the time segment 0 to 24 hours |
 
+### Data_quality_report
+
+The data_quality_report.csv is stored in subfolder folder results/QC.
+
+| (Part of) variable name  | Description                                  |
+|--------------------------|----------------------------------------------|
+| filename                 | file name                                    |
+| file.corrupt	           | Is file corrupt? TRUE or FALSE (mainly tested for GENEActiv bin files) |
+| file.too.short	         | File too short for processing? ([definition](#Minimum_recording_duration)) TRUE or FALSE |
+| use.temperature	| Temperature used for auto-calibration? TRUE or FALSE |
+| scale.x	| Auto-calibration scaling coefficient for x-axis (same for y and z axis, not shown here) |
+| offset.x	| Auto-calibration offset coefficient for x-axis (same for y and z axis, not shown here) |
+| temperature.offset.x | Auto-calibration temperature offset coefficient for x-axis (same for y and z axis, not shown here) |
+| cal.error.start	| Calibration error prior to auto-calibration |
+| cal.error.end		| Calibration error after auto-calibration |
+| n.10sec.windows	| Number of 10 second epochs used as sphere data in auto-calibration |
+| n.hours.considered | Number of hours of data considered for auto-calibration |
+| QCmessage	| Character QC message at the end of the auto-calibration |
+| mean.temp	|  Mean temperature in sphere data |
+| device.serial.number	| Device serial number |
+| NFilePagesSkipped	| (Only for Axivity .cwa format) Number of data blocks skipped |
+| filehealth_totimp_min | (Only for Axivity .cwa format) Total number of minutes of data imputed |
+| filehealth_checksumfail_min	| (Only for Axivity .cwa format) Total number of minutes of data where the checksum failed |
+| filehealth_niblockid_min |  (Only for Axivity .cwa format) Total number of minutes of data with non-incremental block ids |
+| filehealth_fbias0510_min | (Only for Axivity .cwa format) Total number of minutes with a sampling frequency bias between 5 and 10% |
+| filehealth_fbias1020_min | (Only for Axivity .cwa format) Total number of minutes with a sampling frequency bias between 10 and 20% |
+| filehealth_fbias2030_min |  (Only for Axivity .cwa format) Total number of minutes with a sampling frequency bias between 20 and 30% |
+| filehealth_fbias30_min | (Only for Axivity .cwa format) Total number of minutes with a sampling frequency bias higher than 30% |
+| filehealth_totimp_N | (Only for Axivity .cwa format) Total number of data blocks that were imputed |
+| filehealth_checksumfail_N	| (Only for Axivity .cwa format)  Total number of blocks where the checksum failed  |
+| filehealth_niblockid_N | (Only for Axivity .cwa format) Total number of data blocks with non-incremental block ids  |
+| filehealth_fbias0510_N | (Only for Axivity .cwa format) Total number of data blocks with a sampling frequency bias between 5 and 10% |
+| filehealth_fbias1020_N | (Only for Axivity .cwa format) Total number of data blocks with a sampling frequency bias between 10 and 20%|
+| filehealth_fbias2030_N | (Only for Axivity .cwa format) Total number of data blocks with a sampling frequency bias between 20 and 30% |
+| filehealth_fbias30_N | (Only for Axivity .cwa format) Total number of data blocks with a sampling frequency bias higher than 30% |
+
+
+
 ## Output part 4 {.tabset}
 
 Part 4 generates the following output:
@@ -822,7 +860,6 @@ The csv. files contain the variables as shown below.
 | SleepRegularityIndex       | The Sleep Regularity Index as proposed by [Phillips et al. 2017](https://www.nature.com/articles/s41598-017-03171-4), but calculated per day-pair to enable user to study patterns across days     |
 | SriFractionValid           | Fraction of the 24 hour period that was valid in both current as well as in matching timestamps for the next calendar day. See GGIR function manual for details           |
 | nonwear_perc_spt           | Non-wear percentage during the spt hours of this day. This is a copy of the nonwear_perc_spt calculated in [part 5](#output5), only included in part 4 reports if part 5 has been run with timewindow = WW      |
-
 
 
 #### Non-default variables in part 4 csv report
@@ -978,8 +1015,8 @@ vigorous activity:
 | `Gini_dur`  | Gini index|
 | `CoV_dur`   | Coefficient of Variation           |
 | alpha       | Power law exponent    |
-| `x0.5`      | Derived from power law exponent alpha, see [Chastin et al. 201 0](https://www.sciencedirect.com/science/article/abs/pii/S096663620900602X?via%3Dihub)        |
-| `W0.5`      | Derived from power law exponent alpha, see [Chastin et al. 201 0](https://www.sciencedirect.com/science/article/abs/pii/S096663620900602X?via%3Dihub)        |
+| `x0.5`      | Derived from power law exponent alpha, see [Chastin et al. 201 0](https://doi.org/10.1016/j.gaitpost.2009.09.002)        |
+| `W0.5`      | Derived from power law exponent alpha, see [Chastin et al. 201 0](https://doi.org/10.1016/j.gaitpost.2009.09.002)        |
 | nap_count   | Total number of naps, only calculated when argument do.sibreport = TRUE, currently optimised for 3.5-year olds. See function documentation for function `g.part5.classifyNaps` in the [GGIR function documentation (pdf)](https:/CRAN.R-project.org/package=GGIR/GGIR.pdf). |
 | nap_totalduration       | Total nap duration, only calculated when argument do.sibreport = TRUE, currently optimised for 3.5-year old. See function documentation for function `g.part5.classifyNaps` in the [GGIR function documentation (pdf)](https:/CRAN.R-project.org/package=GGIR/GGIR.pdf).    |
 | sibreport_n_items	| Only created if `do.sibreport = TRUE`. Number of items in the sibreport |
@@ -1618,7 +1655,7 @@ correspond to the date of analysis.
 | SleepPeriodTime      | Is 1 if SPT is detected, 0 if not. Note that this refers to the combined usage of guider and detected sustained inactivity bouts (rest periods).|
 | invalidepoch         | Is 1 if epoch was detect as invalid (e.g. non-wear), 0 if not.       |
 | guider   | Is 1 if guider method detect epoch as SPT (e.g. sleeplog, HDCZA), 0 if not. You will not find here which guider is used, for this see other GGIR output.    |
-| window   | Numeric indicator of the analysis window in the recording. If timewindow = "MM" then these correspond to calendar days, if timewindow = "WW" then these correspond to which wakingup-wakingup window in the recording. So, in a recording of one week you may find window numbers 1, 2, 3, 4, 5 and 6.|
+| window   | Numeric indicator of the analysis window in the recording. If timewindow = "MM" then these correspond to calendar days, if timewindow = "WW" then these correspond to which wakingup-wakingup window in the recording, if timewindow = "OO" then these correspond to which sleeponset-sleeponset window in the recording. So, in a recording of one week you may find window numbers 1, 2, 3, 4, 5 and 6.|
 | class_id | The behavioural class codes are documented in the exported csv file meta/ms5outraw/behaviouralcodes.csv. Class codes above class 8 will be analysis specific, because it depends on the number time variants of the bouts used. For example, if you look at MVPA lasting 1-10, 10-20, 30-40 then all of them will have their own class_id. |
 | invalid_fullwindow   | Fraction of the window (see above) that represents invalid data. I added this to make it easier to filter the timeseries based on whether days are valid or not.         |
 | invalid_sleepperiod  | Fraction of SPT within the current window that represents invalid data.          |
@@ -1712,7 +1749,7 @@ calculated for the SPT fragments.
     package, and with it's argument `corr` set to TRUE.
 -   Power law exponent metrics: Alpha, x0.5, and W0.5 are calculated
     according to [Chastin et al.
-    2010](https://www.sciencedirect.com/science/article/abs/pii/S096663620900602X?via%3Dihub).
+    2010](https://doi.org/10.1016/j.gaitpost.2009.09.002).
 -   Number of fragment per minutes (`NFragPM`) is calculated identical
     to metric `fragmentation` in [Chastin et al.
     2012](https://academic.oup.com/ageing/article/41/1/111/46538), but
@@ -1781,7 +1818,7 @@ comparability:
     to [Lim et al. 2011](https://doi.org/10.5665/sleep.1400)
 -   Power law alpha exponent metrics were calculated according to
     [Chastin et al.
-    2010](https://www.sciencedirect.com/science/article/abs/pii/S096663620900602X?via%3Dihub)
+    2010](https://doi.org/10.1016/j.gaitpost.2009.09.002)
     using the theoretical minimum fragment duration instead of the
     observed minimum fragment duration.
 
@@ -2013,14 +2050,14 @@ which provides the R code and detailed instructions on how to make the radar
 plots using your own data.
 
 
-## Minimum recording duration
+## Minimum recording duration {#Minimum_recording_duration}
 
 GGIR has been designed to process multi-day recordings. The minimum recording duration
 considered by GGIR depends on the type of analysis:
 
 **Running part 1 and 2**
 
-- File size; At least 2MB, where 2MB can be adjusted with argument minimumFileSize. 
+- File size; At least 2MB, where 2MB can be adjusted with argument minimumFileSizeMB. 
 This should not be changed unless you have good reason to believe that a smaller 
 file size is also acceptable.
 
