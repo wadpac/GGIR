@@ -8,12 +8,12 @@
   
 }
 \usage{
-  g.conv.actlog(log, dateformat, colid = 1, datecols = c(), 
-                logPath, logtype)	
+  check_log(log, dateformat, colid = 1, datecols = c(), 
+            logPath, logtype)	
 }
 \arguments{
   \item{log}{
-    Data frame with the log as read by \link{data.table::fread}.
+    Data frame with the log as read by \code{data.table::fread}.
   }
   \item{dateformat}{
     Character specifying the expected date format used in the log.
