@@ -85,11 +85,11 @@
     scale = c(1, 1, 1), tempoffset = c(0, 0, 0))
   }
   #impute meta-data:
-  IMP = g.impute(M = data.getmeta, I = data.inspectfile)
+  IMP = g.impute(M = data.getmeta, I = data.inspectfile, ID = "01wk0")
   
   #analyse and produce summary:
   A = g.analyse(I = data.inspectfile, C = data.calibrate,
-  M = data.getmeta, IMP)
+  M = data.getmeta, IMP, ID = "01wk0")
 }
 \keyword{internal}
 \author{
