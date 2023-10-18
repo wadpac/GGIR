@@ -202,7 +202,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
           QC = QC[, colnames(QCout)] # reorder to match order of QCout
         } else if (n1 < n2) {
           newcolnames = colnames(QC)[which(colnames(QC) %in% colnames(QCout) == FALSE)]
-          newcols = (n2 + 1):(n1 +  length(newcolnames))
+          newcols = (n1 + 1):(n1 +  length(newcolnames))
           QCout = cbind(QCout, matrix(" ", 1, n2 - n1))
           colnames(QCout)[newcols] = newcolnames
           QCout = QCout[, colnames(QC)] # reorder to match order of QC
