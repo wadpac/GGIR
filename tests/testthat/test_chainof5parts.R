@@ -14,6 +14,11 @@ test_that("chainof5parts", {
   do.parallel = FALSE
   if (file.exists(dn))  unlink(dn, recursive = TRUE)
   minimumFileSizeMB = 0
+  # create study dates file
+  studydates = data.frame(ID = "123A",
+                          start = "23/06/2016",
+                          end = "24/06/2016")
+  write.csv(studydates, "study_dates_file.csv", row.names = FALSE)
   #--------------------------------------------
   # isfilelist
   expect_true(isfilelist("file1.bin"))
@@ -68,7 +73,7 @@ test_that("chainof5parts", {
   # part 2 with data_masking_strategy = 3 and hrs.del.start = 6 and hrs.del.end = 6
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           idloc = 2, desiredtz = desiredtz, ndayswindow = 1,
-          data_masking_strategy = 3, overwrite = TRUE, hrs.del.start = 6, hrs.del.end = 6,
+          strategy = 3, overwrite = TRUE, hrs.del.start = 6, hrs.del.end = 6,
           maxdur = Ndays, includedaycrit = 0, do.parallel = do.parallel, myfun = c(),
           verbose = FALSE)
   dirname = "output_test/meta/ms2.out/"
@@ -86,7 +91,7 @@ test_that("chainof5parts", {
   # part 2 with data_masking_strategy = 5
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           idloc = 2, desiredtz = desiredtz, ndayswindow = 1,
-          data_masking_strategy = 5, overwrite = TRUE, hrs.del.start = 0, hrs.del.end = 0,
+          strategy = 5, overwrite = TRUE, hrs.del.start = 0, hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0, do.parallel = do.parallel, myfun = c(),
           verbose = FALSE)
   dirname = "output_test/meta/ms2.out/"
@@ -136,6 +141,9 @@ test_that("chainof5parts", {
   expect_equal(mean(IMP$metashort$ENMO), 0.029, tolerance = 3)
   expect_equal(as.numeric(SUM$summary$meas_dur_def_proto_day), 1, tolerance = 2)
   expect_equal(as.numeric(SUM$daysummary$`L16_ig_gradient_ENMO_mg_0-24hr`[1]), -1.12, tolerance = 2)
+  
+  # part 2
+  
   # part 2 with data_masking_strategy = 1
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           idloc = 2, desiredtz = desiredtz,
