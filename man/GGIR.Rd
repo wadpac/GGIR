@@ -795,7 +795,7 @@ GGIR(mode = 1:5,
         argument \code{study_dates_dateformat} (below). If not specified (default), 
         then GGIR would use the first and last day of the recording as beginning 
         and end of the study. Note that these dates are used on top of the 
-        \code{strategy} selected.}
+        \code{data_masking_strategy} selected.}
         
       \item{study_dates_dateformat}{
         Character (default = "%d-%m-%Y").
@@ -809,15 +809,15 @@ GGIR(mode = 1:5,
       \item{data_masking_strategy}{
         Numeric (default = 1).
         How to deal with knowledge about study protocol.
-        strategy = 1 means select data based on \code{hrs.del.start} and \code{hrs.del.end}.
-        strategy = 2 makes that only the data between the first
+        data_masking_strategy = 1 means select data based on \code{hrs.del.start} and \code{hrs.del.end}.
+        data_masking_strategy = 2 makes that only the data between the first
         midnight and the last midnight is used.
-        strategy = 3 selects the most active X days in the file where X is
+        data_masking_strategy = 3 selects the most active X days in the file where X is
         specified by argument \code{ndayswindow}, where the days are a series 
         of 24-h blocks starting any time in the day (X hours at the begining and end
         of this period can be deleted with arguments \code{hrs.del.start} and \code{hrs.del.end})
-        strategy = 4 to only use the data after the first midnight.
-        strategy = 5 is similar to \code{strategy = 3}, but it selects X complete
+        data_masking_strategy = 4 to only use the data after the first midnight.
+        data_masking_strategy = 5 is similar to \code{data_masking_strategy = 3}, but it selects X complete
         calendar days where X is specified by argument \code{ndayswindow} 
         (X hours at the begining and end of this period can be deleted with 
         arguments \code{hrs.del.start} and \code{hrs.del.end}).}
@@ -825,12 +825,12 @@ GGIR(mode = 1:5,
       \item{hrs.del.start}{
         Numeric (default = 0).
         How many HOURS after start of experiment did wearing
-        of monitor start? Used in GGIR \link{g.part2} when \code{strategy = 1}.}
+        of monitor start? Used in GGIR \link{g.part2} when \code{data_masking_strategy = 1}.}
 
       \item{hrs.del.end}{
         Numeric (default = 0).
         How many HOURS before the end of the experiment did
-        wearing of monitor definitely end? Used in GGIR \link{g.part2} when \code{strategy = 1}.}
+        wearing of monitor definitely end? Used in GGIR \link{g.part2} when \code{data_masking_strategy = 1}.}
 
       \item{maxdur}{
         Numeric (default = 0).
@@ -839,9 +839,9 @@ GGIR(mode = 1:5,
 
       \item{ndayswindow}{
         Numeric (default = 7).
-        If \code{strategy} is set to 3 or 5, then this is the size of the window as a
-        number of days. For strategy 3 value can be fractional, e.g. 7.5,
-        while for strategy 5 it needs to be an integer.}
+        If \code{data_masking_strategy} is set to 3 or 5, then this is the size of the window as a
+        number of days. For data_masking_strategy 3 value can be fractional, e.g. 7.5,
+        while for data_masking_strategy 5 it needs to be an integer.}
 
       \item{includedaycrit.part5}{
         Numeric (default = 2/3).
@@ -1454,7 +1454,7 @@ GGIR(mode = 1:5,
        #-------------------------------
        # Part 2 parameters:
        #-------------------------------
-       strategy = 1,
+       data_masking_strategy = 1,
        ndayswindow = 7,
        hrs.del.start = 1,
        hrs.del.end = 1,
