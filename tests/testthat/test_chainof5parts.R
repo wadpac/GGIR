@@ -14,11 +14,6 @@ test_that("chainof5parts", {
   do.parallel = FALSE
   if (file.exists(dn))  unlink(dn, recursive = TRUE)
   minimumFileSizeMB = 0
-  # create study dates file
-  studydates = data.frame(ID = "123A",
-                          start = "23/06/2016",
-                          end = "24/06/2016")
-  write.csv(studydates, "study_dates_file.csv", row.names = FALSE)
   #--------------------------------------------
   # isfilelist
   expect_true(isfilelist("file1.bin"))

@@ -19,7 +19,9 @@ check_log = function(log, dateformat, colid = 1, datecols = c(),
   }
   # Check dates
   # extract example date value
-  datecols = grep(pattern = "date|Date|DATE",  x = colnames(log), value = FALSE)
+  if (is.null(datecols)) {
+    datecols = grep(pattern = "date|Date|DATE",  x = colnames(log), value = FALSE)
+  }
   if (length(datecols) > 0) {
     exampledates = unlist(log[,datecols])
     exampledates = exampledates[which(!is.na(exampledates))]

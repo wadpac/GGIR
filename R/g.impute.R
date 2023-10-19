@@ -115,25 +115,49 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
         rowID = rowID[1]
         warning(paste0("The ID ", ID, " appears twice in the study dates log"), call. = FALSE)
       }
+      # expected first and last midnight
       firstmidnight = as.Date(studyDates[rowID, 2], format = params_cleaning[["study_dates_dateformat"]])
       lastmidnight = as.Date(studyDates[rowID, 3], format = params_cleaning[["study_dates_dateformat"]])
       # find the dates in metalong
       firstmidnighti = midnightsi[grep(firstmidnight, midnights)]
       lastmidnighti = midnightsi[grep(lastmidnight, midnights) + 1] # plus 1 to include the reported date in log
-      # trim data
-      r4[1:(firstmidnighti - 1)] = 1
-      r4[lastmidnighti:nrow(r4)] = 1
+      # trim data at the beginning
+      if (length(firstmidnighti) > 0) {
+        r4[1:(firstmidnighti - 1)] = 1
+        study_dates_log_used = TRUE
+      } else {
+        # if midnight timestamp for the date is not available, 
+        # do not trim the data and recover the firstmidnight value
+        firstmidnighti = dmidn$firstmidnighti
+        firstmidnight = dmidn$firstmidnight
+        warning(paste0("The start date provided in the study dates file for ID = ", 
+                       ID, "is not within the dates available in the recording. ",
+                       "The data was not trimmed at the beginning of the recording."), call. = FALSE)
+      }
+      # trim data at the end
+      if (length(lastmidnighti) > 0 & !is.na(lastmidnighti)) {
+        r4[lastmidnighti:nrow(r4)] = 1
+        study_dates_log_used = TRUE
+      } else {
+        # if midnight timestamp for the date is not available, 
+        # do not trim the data and recover the lastmidnight value
+        lastmidnighti = dmidn$lastmidnighti
+        lastmidnight = dmidn$lastmidnight
+        warning(paste0("The end date provided in the study dates file for ID = ", 
+                       ID, "is not within the dates available in the recording. ",
+                       "The data was not trimmed at the end of the recording."), call. = FALSE)
+      }
       # cut out r4 to apply strategies only on the trimmed portion of data
       # after application of strategies, r4 would reset to the original length
-      r4_bu = r4
-      r4 = as.matrix(r4[which(r4[,1] == 0),])
+      if (study_dates_log_used == TRUE) {
+        r4_bu = r4 # backup copy of r4 before cutting it to be imputed later on
+        r4 = as.matrix(r4[which(r4[,1] == 0),])
+      }
     } else if (length(rowID) == 0) {
-      r4_bu = r4
       warning(paste0("The ID ", ID, " does not appear  in the study dates log ",
                      "the full recording has been considered within the study ",
                      "protocol selection"), call. = FALSE)
     }
-    study_dates_log_used = TRUE
   }
   #===================================================================
   # Select data based on data_masking_strategy
@@ -160,16 +184,16 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     # only apply data_masking_strategy 2 if study dates log is not used for trimming the data,
     # otherwise the data already start and finishes at midnight
     if (study_dates_log_used == FALSE) {
-        starttimei = firstmidnighti
-        endtimei = lastmidnighti
-        if (firstmidnighti != 1) { #ignore everything before the first midnight
-          r4[1:(firstmidnighti - 1)] = 1 #-1 because first midnight 00:00 itself contributes to the first full day
-        }
-        r4[(lastmidnighti):length(r4)] = 1  #ignore everything after the last midnight
-      } else {
-        starttimei = 1
-        endtimei = length(r4)
+      starttimei = firstmidnighti
+      endtimei = lastmidnighti
+      if (firstmidnighti != 1) { #ignore everything before the first midnight
+        r4[1:(firstmidnighti - 1)] = 1 #-1 because first midnight 00:00 itself contributes to the first full day
       }
+      r4[(lastmidnighti):length(r4)] = 1  #ignore everything after the last midnight
+    } else {
+      starttimei = 1
+      endtimei = length(r4)
+    }
   } else if (params_cleaning[["data_masking_strategy"]] %in% c(3, 5)) { #select X most active days
     #==========================================
     # Look out for X most active days and use this to define window of interest
@@ -231,8 +255,10 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
       # Select the most active calendar days
       atestlist = c()
       # readjust midnightsi if study dates log used for trimming the data
-      midnights2keep = which(midnightsi >= firstmidnighti & midnightsi <= lastmidnighti)
-      midnightsi = midnightsi[midnights2keep]
+      if (study_dates_log_used == TRUE) {
+        midnights2keep = which(midnightsi >= firstmidnighti & midnightsi <= lastmidnighti)
+        midnightsi = midnightsi[midnights2keep]
+      }
       for (ati in 1:length(midnightsi)) {
         p0 = ((midnightsi[ati] * ws2/ws3) - ws2/ws3) + 1
         p1 = ((midnightsi[ati + params_cleaning[["ndayswindow"]]] * ws2/ws3) - ws2/ws3)
@@ -247,18 +273,21 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
       ignore_until = (midnightsi[atik]) + (params_cleaning[["hrs.del.start"]]*(3600/ws2)) - 1 # minus 1 for not ignoring the first epoch in ndayswindow
       if (ignore_until > 0) {
         if (study_dates_log_used == TRUE) {
-          ignore_until = ignore_until - firstmidnighti
+          ignore_until = ignore_until - firstmidnighti + 1
         }
         r4[1:ignore_until] = 1 
       }
       #ignore everything after the last midnight plus hrs.del.end
       ignore_from = midnightsi[atik + params_cleaning[["ndayswindow"]]] - (params_cleaning[["hrs.del.end"]]*(3600/ws2))
       if (study_dates_log_used == TRUE) {
-        ignore_from = ignore_from - firstmidnighti
+        ignore_from = ignore_from - firstmidnighti + 1
+        if (ignore_from >= length(r4)) ignore_from = length(r4)
       }
       # if ndayswindow is higher than number of midnights, use last midnight
       if (is.na(ignore_from)) ignore_from = midnightsi[length(midnightsi)] - (params_cleaning[["hrs.del.end"]]*(3600/ws2))
-      r4[ignore_from:length(r4)] = 1
+      # if ignore_from == length(r4) it means that recording ends at midnight 
+      # and the code should not ignore anything at the end of the recording
+      if (ignore_from < length(r4)) r4[ignore_from:length(r4)] = 1
     }
     starttimei = 1
     endtimei = length(r4)
