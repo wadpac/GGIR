@@ -320,6 +320,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                                PreviousLastValue = PreviousLastValue,
                                PreviousLastTime = PreviousLastTime,
                                epochsize = c(ws3, ws2))
+          QClog = rbind(QClog, P$QClog)
+          P = P$P 
           PreviousLastValue = as.numeric(P[nrow(P), c("X", "Y", "Z")])
           PreviousLastTime = as.POSIXct(P[nrow(P), "time"])
         }
