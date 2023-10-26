@@ -22,11 +22,13 @@ getfolderstructure(datadir=c(),referencefnames=c())
   }
 }
 \value{
-List with items:
-item{fullfilenames}{vector with all full paths to the folders 
-  including the name of the file itself}
-item{foldername}{vector with only the names of the folder in which each
-file is stroed (so only the most distal folder in the folder tree)}
+  List with items:
+  \itemize{
+    \item fullfilenames: vector with all full paths to the folders including the
+    name of the file itself
+    \item foldername: vector with only the names of the folder in which each file
+    is stroed (so only the most distal folder in the folder tree).
+  }
 }
 \keyword{internal}
 \examples{

@@ -153,8 +153,6 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   }
 
   if (length(myfun) != 0) { # Run check on myfun object, if provided
-    warning("\nAre you using GGIR as online service to others? If yes, then make sure you prohibit the",
-            " user from specifying argument myfun as this poses a security risk.", call. = FALSE)
     check_myfun(myfun, params_general[["windowsizes"]])
   }
 

@@ -7,6 +7,13 @@ prepareNewRelease = function(version = c()) {
   # The function is not part of the package on CRAN, because it's name is
   # listed in the .RBuildignore file.
   # Argument version: a character specifying the expected version number, e.g. "1.8-1"
+  
+  dirman = dir(paste0(getwd(), "/man"), full.names = TRUE)
+  for (di in dirman) {
+    tools::checkRd(Rd = di, listOK = FALSE)
+  }
+  
+  
   date = unlist(strsplit(as.character(Sys.time())," "))[1]
   dateReversed = unlist(strsplit(date,"-"))
   dateReversed = paste0(dateReversed[3],"-",dateReversed[2],"-",dateReversed[1])
