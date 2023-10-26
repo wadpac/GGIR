@@ -282,6 +282,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     if (params_247[["part6HCA"]] == TRUE) {
       # Add RData because part 6 will need it
       params_247[["save_ms5raw_format"]] = unique(c(params_247[["save_ms5raw_format"]], "RData"))
+      params_247[["save_ms5rawlevels"]] = TRUE
     }
   }
   if (!is.null(params_general[["expand_tail_max_hours"]])) {
