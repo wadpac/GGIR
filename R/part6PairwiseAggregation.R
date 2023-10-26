@@ -43,7 +43,6 @@ part6PairwiseAggregation = function(outputdir = NULL, desiredtz = "", verbose = 
   #----------------------------------------------------------
   
   if (verbose == TRUE) {
-    # cat("\n===================================")
     cat("\n  Aggregate per pair:")
   }
   path_hh_ts = paste0(outputdir, "/part6HouseholdCoAnalysis/alignedTimeseries")

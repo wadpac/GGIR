@@ -1,13 +1,9 @@
 part6AlignIndividuals = function(GGIR_ts_dir = NULL, outputdir = NULL,
                                  path_ggirms = NULL, desiredtz = "", verbose = TRUE) {
   if (verbose == TRUE) {
-    # cat("\n===================================")
     cat("\n  Align individuals:")
   }
-  # TO DO:
-  # Insert additional information about time spent with second houdeshold
-  
-  
+
   #======================================================================
   # identify houdesholds and IDs based on filenames and put these in table
   path_timeseries = GGIR_ts_dir
@@ -31,14 +27,13 @@ part6AlignIndividuals = function(GGIR_ts_dir = NULL, outputdir = NULL,
     fileOverview$houshold_size[rowi] = S[i] 
   }
   
-  # remove all houdesholds with less than two individuals:
+  # remove all households with less than two individuals:
   fileOverview = fileOverview[which(fileOverview$houshold_size > 1),]
   uHID = unique(fileOverview$HID)
   
   pdf(file = paste0(path_results, "/timeseriesPlot.pdf"))
   #======================================================================
-  # Loop over houdesholds and IDs to check and merge the data
-  
+  # Loop over households and IDs to check and merge the data
   
   mdat = NULL
   # Loop over houdeshold IDS
@@ -97,20 +92,15 @@ part6AlignIndividuals = function(GGIR_ts_dir = NULL, outputdir = NULL,
         D$wakeup = 0
         D$wakeup[which(diff(D$SleepPeriodTime) < 0)] = 1
         
-        # if (D$SleepPeriodTime[1] == 0) D$wakeup[1] = 1
         if (length(which(is.na(D$ACC) == FALSE)) > 0) {
           D$MID = uMID[p]
           D$HID = uHID[h]
-          # Only use individual if there is valid data
           if (length(out) == 0) {
             out = D
           } else {
             out = rbind(out, D)
           }
         }
-      } else {
-        # Note: I turned off this warning as it is just missing data
-        # warning(paste0("Skipped: ", uMID[p], " skipped: no data in time series file"))
       }
       rm(mdat, M)
     }
@@ -166,8 +156,6 @@ part6AlignIndividuals = function(GGIR_ts_dir = NULL, outputdir = NULL,
       }
       legend("topright", legend = colnames,
              col = colorsM[1:length(colnames)], lty = 1, cex = 0.6, bg = "white", ncol = 3)
-      
-      # colors = rev(colors)
       LTY = rep(1, Npairs)
       
       for (vn in 1:Npairs) {
