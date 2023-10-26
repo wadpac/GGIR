@@ -2,14 +2,17 @@
 title: "Household Co-Analysis"
 output:
   html_document:
-    toc: yes
-    number_sections: yes
+    toc: true
+    number_sections: true
     toc_depth: 3
-    toc_float: yes
+    toc_float: true
 urlcolor: blue
-vignette: "%\\VignetteIndexEntry{Household Co-Analysis} \\usepackage[utf8]{inputenc}
-  %\\VignetteEngine{knitr::rmarkdown}\n"
+vignette: >
+    %\VignetteIndexEntry{Household Co-Analysis}
+    \usepackage[utf8]{inputenc}
+    %\VignetteEngine{knitr::rmarkdown}
 ---
+
 
 ```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}
 knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
