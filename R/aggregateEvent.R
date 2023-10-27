@@ -143,8 +143,8 @@ aggregateEvent = function(metric_name, epochsize,
           # cadence in the form of mean, percentiles.
           daysummary[di, fi] = mean(cadence[WXi])
           ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_meancad", LXMXwindow_name); fi = fi + 1
-          if (length(params_247[["qlevels"]]) > 0) {
-            for (qle in params_247[["qlevels"]]) {
+          if (length(params_247[["qM5L5"]]) > 0) {
+            for (qle in params_247[["qM5L5"]]) {
               daysummary[di, fi] = quantile(x = cadence[WXi], probs = qle)
               ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_q", qle*100, "cad", LXMXwindow_name); fi = fi + 1
             }
@@ -153,9 +153,9 @@ aggregateEvent = function(metric_name, epochsize,
             # Acceleration in the form of mean, percentiles.
             daysummary[di, fi] = mean(vari[WXi, acc.metrics[ami]]) * 1000
             ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_mean_",  acc.metrics[ami], "_mg", LXMXwindow_name); fi = fi + 1
-            if (length(params_247[["qlevels"]]) > 0) {
-              for (qle in params_247[["qlevels"]]) {
-                daysummary[di, fi] = quantile(x = cadence[WXi], probs = qle)
+            if (length(params_247[["qM5L5"]]) > 0) {
+              for (qle in params_247[["qM5L5"]]) {
+                daysummary[di, fi] = quantile(x = vari[WXi, acc.metrics[ami]], probs = qle)
                 ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_q", qle*100, "acc", LXMXwindow_name); fi = fi + 1
               }
             }

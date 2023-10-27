@@ -15,7 +15,7 @@ test_that("Events from external function are correctly aggregated", {
   # varnum = metashort$step_count[anwindices]
   ws3 = 5
   anwi_nameindices = "_1234hrs"
-  daysummary = matrix("", 1, 25)
+  daysummary = matrix("", 1, 23)
   fi = 1
   di = 1
   ds_names = ""
@@ -40,6 +40,9 @@ test_that("Events from external function are correctly aggregated", {
   
   daysummary = as.data.frame(eventAgg$daysummary)
   names(daysummary)[1:length(eventAgg$ds_names)] = eventAgg$ds_names
+  
+  # Dimensions
+  expect_equal(ncol(daysummary), 23)
   
   # total steps
   expect_equal(daysummary$ExtFunEvent_tot_step_count_1234hrs, "180")
@@ -81,4 +84,34 @@ test_that("Events from external function are correctly aggregated", {
   expect_equal(daysummary$`ExtFunEvent_dur_cad0-30spm_1234hrs`, "2")
   expect_equal(daysummary$`ExtFunEvent_dur_cad30-50spm_1234hrs`, "0")
   expect_equal(daysummary$ExtFunEvent_dur_cadatleast50spm_1234hrs, "3")
+  
+  # MX
+  # First create longer time series
+  ENMO = seq(1/12, 1440, by = 1/12)
+  step_count = rep(5, 1440 * 12)
+  
+  set.seed(123)
+  steps = rnorm(n = length(which(ENMO > 40)), mean = 2, sd = 1)
+  step_count[which(ENMO > 40)] = abs(steps)
+  metashort = data.frame(ENMO = ENMO,
+                         step_count = step_count)
+  params_247[["winhr"]] = 2
+  segmentInfo = list(anwi_nameindices = anwi_nameindices,
+                     anwi_index = anwi_index,
+                     anwi_t0 = 1,
+                     anwi_t1 = 12 * 60 * 5)
+  eventAgg = aggregateEvent(metric_name = "step_count",
+                            epochsize = ws3,
+                            daysummary = daysummary,
+                            ds_names = ds_names,
+                            fi = fi, di = di, vari = metashort,
+                            segmentInfo = segmentInfo, myfun, params_247)
+  daysummary = as.data.frame(eventAgg$daysummary)
+  names(daysummary)[1:length(eventAgg$ds_names)] = eventAgg$ds_names
+  expect_equal(daysummary$ExtFunEvent_L2hr_cad_1234hrs, 2.5, tolerance = 0.01)
+  expect_equal(daysummary$ExtFunEvent_L2_cad_meancad_1234hrs, 24.17291, tolerance = 0.001)
+  expect_equal(daysummary$ExtFunEvent_L2_cad_mean_ENMO_mg_1234hrs, 210041.7, tolerance = 0.05)
+  expect_equal(daysummary$ExtFunEvent_M2hr_cad_1234hrs, 0)
+  expect_equal(daysummary$ExtFunEvent_M2_cad_meancad_1234hrs, 36.26251, tolerance = 0.05)
+  expect_equal(daysummary$ExtFunEvent_M2_cad_mean_ENMO_mg_1234hrs, 60041.67, tolerance = 0.01)
 })
