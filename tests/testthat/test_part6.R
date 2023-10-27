@@ -2,12 +2,7 @@ library(GGIR)
 context("g.part6")
 
 test_that("Part 6 with household co-analysis", {
-  
-  # dirR = dir("D:/Code/GGIR/R", full.names = TRUE)
-  # for (i in dirR) source(i)
-  # library(testthat)
 
-  
   # Create test files for household co-analysis
   metadatadir = "./output_testpart6"
   part6_threshold_combi = "40_120_400"
