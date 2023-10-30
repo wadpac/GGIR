@@ -788,14 +788,14 @@ The data_quality_report.csv is stored in subfolder folder results/QC.
 | mean.temp	|  Mean temperature in sphere data |
 | device.serial.number	| Device serial number |
 | NFilePagesSkipped	| (Only for Axivity .cwa format) Number of data blocks skipped |
-| filehealth_totimp_min | (Only for Axivity .cwa format) Total number of minutes of data imputed |
+| filehealth_totimp_min | Total number of minutes of data imputed |
 | filehealth_checksumfail_min	| (Only for Axivity .cwa format) Total number of minutes of data where the checksum failed |
 | filehealth_niblockid_min |  (Only for Axivity .cwa format) Total number of minutes of data with non-incremental block ids |
 | filehealth_fbias0510_min | (Only for Axivity .cwa format) Total number of minutes with a sampling frequency bias between 5 and 10% |
 | filehealth_fbias1020_min | (Only for Axivity .cwa format) Total number of minutes with a sampling frequency bias between 10 and 20% |
 | filehealth_fbias2030_min |  (Only for Axivity .cwa format) Total number of minutes with a sampling frequency bias between 20 and 30% |
 | filehealth_fbias30_min | (Only for Axivity .cwa format) Total number of minutes with a sampling frequency bias higher than 30% |
-| filehealth_totimp_N | (Only for Axivity .cwa format) Total number of data blocks that were imputed |
+| filehealth_totimp_N | Total number of data blocks that were imputed |
 | filehealth_checksumfail_N	| (Only for Axivity .cwa format)  Total number of blocks where the checksum failed  |
 | filehealth_niblockid_N | (Only for Axivity .cwa format) Total number of data blocks with non-incremental block ids  |
 | filehealth_fbias0510_N | (Only for Axivity .cwa format) Total number of data blocks with a sampling frequency bias between 5 and 10% |
