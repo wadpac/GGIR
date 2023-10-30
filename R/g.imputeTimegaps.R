@@ -191,7 +191,7 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
     x = x[, grep(pattern = "timestamp", x = colnames(x), invert = TRUE)]
   }
   # QClog
-  start = as.numeric(as.POSIXct(x[1,1]))
+  start = as.numeric(as.POSIXct(x[1,1], origin = "1970-1-1"))
   end = start + nrow(x)
   if (is.null(GapsLength)) GapsLength = 0
   if (is.null(NumberOfGaps)) NumberOfGaps = 0
