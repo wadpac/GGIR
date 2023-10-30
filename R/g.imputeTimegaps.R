@@ -104,7 +104,7 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
     if (NumberOfGaps > 0) {
       x$gap = 1
       x$gap[gapsi] = round(deltatime[gapsi] * sf)   # as.integer was problematic many decimals close to wholenumbers (but not whole numbers) resulting in 1 row less than expected
-      GapsLength = sum(x$gap[gapsi])
+      GapsLength = sum(x$gap[gapsi]) - NumberOfGaps # - numberOfGaps because x$gap == 1 means no gap
       #  normalisation to 1 G 
       normalise = which(x$gap > 1)
       for (i_normalise in normalise) {
@@ -192,11 +192,12 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
   }
   # QClog
   start = as.numeric(as.POSIXct(x[1,1]))
-  end = as.numeric(as.POSIXct(x[nrow(x),1]))
+  end = start + nrow(x)
   if (is.null(GapsLength)) GapsLength = 0
+  if (is.null(NumberOfGaps)) NumberOfGaps = 0
   QClog = data.frame(start = start, end = end,
                      blockLengthSeconds = (end - start) / sf,
-                     timegaps_n = NumberOfGaps, timegaps_length = GapsLength)
+                     timegaps_n = NumberOfGaps, timegaps_s = GapsLength/sf)
   # return data and QClog
   return(list(P = x, QClog = QClog))
 }
