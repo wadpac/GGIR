@@ -193,6 +193,7 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
   # QClog
   start = as.numeric(as.POSIXct(x[1,1]))
   end = as.numeric(as.POSIXct(x[nrow(x),1]))
+  if (is.null(GapsLength)) GapsLength = 0
   QClog = data.frame(start = start, end = end,
                      blockLengthSeconds = (end - start) / sf,
                      timegaps_n = NumberOfGaps, timegaps_length = GapsLength)
