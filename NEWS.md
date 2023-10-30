@@ -2,8 +2,9 @@
 
 - Part 2: Bug fix in csv report generation when appending part 2 milestone data with differing number of columns #951
 
-- Part 1: Bug fix in gt3x data reading by avoiding duplication of seconds when appending
-chunks of data #952
+- Part 1: Bug fix in gt3x data reading by avoiding duplication of seconds when appending chunks of data #952
+
+- Part 1 + 2: Log information regarding number of time gaps and total time imputed with function g.imputeTimeGaps #571
 
 # CHANGES IN GGIR VERSION 3.0-0
 
