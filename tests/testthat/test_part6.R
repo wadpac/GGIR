@@ -79,11 +79,11 @@ test_that("Part 6 with household co-analysis", {
   expect_true(file.exists(path_to_ms6))
   
   load(path_to_ms6)
-  expect_equal(ncol(output), 20)
-  expect_equal(output$cosinor_mes, 2.451769, tolerance = 0.00001)
-  expect_equal(output$cosinorExt_minimum, 1.288636, tolerance = 0.00001)
-  expect_equal(output$cosinorExt_MESOR, 2.164644, tolerance = 0.00001)
-  expect_equal(sum(output), 320.5916, tolerance = 0.0001)
+  expect_equal(ncol(output_part6), 24)
+  expect_equal(output_part6$cosinor_mes, 2.451769, tolerance = 0.00001)
+  expect_equal(output_part6$cosinorExt_minimum, 1.288636, tolerance = 0.00001)
+  expect_equal(output_part6$cosinorExt_MESOR, 2.164644, tolerance = 0.00001)
+  expect_equal(sum(output_part6[4:24]), 327.5437, tolerance = 0.0001)
   
   # Remove test files
   if (file.exists(metadatadir))  unlink(metadatadir, recursive = TRUE)

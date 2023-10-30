@@ -114,12 +114,11 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                            params_phyact[["part6_threshold_combi"]], "/", fnames.ms5raw[i]))
         mdat$time = mdat$timestamp # duplicate column because cosinor function expect columntime
       } else {
-        mdat = data.table::fread(file = paste0(metadatadir, "/meta/ms5.outraw/",
-                                               params_phyact[["part6_threshold_combi"]],  "/", fnames.ms5raw[i]))
-        stop("THIS PART OF THE FUNCTIONALITY HAS NOT BEEN COMPLETED YET")
+        mdat = data.table::fread(file = paste0(metadatadir, "/meta/ms5.outraw/", 
+                                               params_phyact[["part6_threshold_combi"]],  "/", fnames.ms5raw[i]), data.table = FALSE)
       }
-      nfeatures = 20
-      summary = matrix(NA, nfeatures)
+      nfeatures = 50
+      summary = matrix(NA, nfeatures, 1)
       s_names = rep("", nfeatures)
       fi = 1
       epochSize = diff(mdat$timenum[1:2])
@@ -173,22 +172,36 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       } else {
         nightsi = which(sec == 0 & min == (params_general[["dayborder"]] - floor(params_general[["dayborder"]])) * 60 & hour == floor(params_general[["dayborder"]])) #shift the definition of midnight if required
       }
-      Nts = nrow(ts)
+      ts = ts[which(ts$window != 0), ]
+      summary[fi] = unlist(strsplit(fnames.ms5raw[i], "_"))[1]
+      s_names[fi] = "ID"
+      fi = fi + 1
+      starttime = as.POSIXlt(ts$time[1], tz = params_general[["desiredtz"]])
+      summary[fi] = format(starttime)
+      s_names[fi] = "starttime"
+      fi = fi + 1
       
-      backup_cosinor = NULL
+      summary[fi] = gsub(pattern = "[.]RData|[.]csv", replacement = "", x = fnames.ms5raw[i])
+      s_names[fi] = "filename"
+      fi = fi + 1
+      summary[fi] = length(which(ts$invalidepoch == 0)) / ((3600 * 24) / epochSize)
+      s_names[fi] = "N_valid_days"
+      fi = fi + 1
+      
+      colnames(ts)[which(colnames(ts) == "timenum")] = "time"
+      # ts$time = as.POSIXct(ts$timenum, tz = params_general[["desiredtz"]])
       if (params_247[["cosinor"]] == TRUE) {
         # avoid computing same parameter twice because this part of the code is
         # not dependent on the lig, mod, vig thresholds
-        acc4cos = ts[which(ts$window != 0), c("time", "ACC")]
+        acc4cos = ts[, c("time", "ACC")]
         acc4cos$ACC  = acc4cos$ACC / 1000 # convert to mg because that is what applyCosinorAnalyses expects
         cosinor_coef = applyCosinorAnalyses(ts = acc4cos,
-                                            qcheck = ts$nonwear[which(ts$window != 0)],
+                                            qcheck = ts$invalidepoch,
                                             midnightsi = nightsi,
                                             epochsizes = rep(epochSize, 2))
         rm(acc4cos)
-        backup_cosinor = cosinor_coef
       } else {
-        cosinor_coef = backup_cosinor
+        cosinor_coef = NULL
       }
       if (length(cosinor_coef) > 0) {
         # assign same value to all rows to ease creating reports
@@ -231,19 +244,23 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         cosinor_coef = c()
         fi = fi + 20
       }
-      
       #=============================================
       # Store results in milestone data
-      output = data.frame(t(summary),stringsAsFactors = FALSE)
-      names(output) = s_names
-      if (length(output) > 0) {
-        save(output, file = paste(metadatadir,
-                                  ms6.out, "/", fnames.ms5raw[i], sep = ""))
+      summary = summary[1:(fi - 1),]
+      s_names = s_names[1:(fi - 1)]
+      output_part6 = data.frame(t(summary), stringsAsFactors = FALSE)
+      names(output_part6) = s_names
+      output_part6[, 4:ncol(output_part6)] = as.numeric(output_part6[, 4:ncol(output_part6)])
+      if (length(output_part6) > 0) {
+        save(output_part6, file = paste0(metadatadir,
+                                  ms6.out, "/", gsub(pattern = "[.]csv",
+                                                     replacement = "",
+                                                     x = fnames.ms5raw[i])))
       }
-      rm(output, summary)
+      rm(output_part6, summary)
     }
-    # Function has no output because ideally all relevant output
-    # is store in milestone data by now
+    # Function has no output_part6 because ideally all relevant output_part6
+    # is stored in milestone data by now
   }
   
   if (params_247[["part6CR"]] == TRUE) {

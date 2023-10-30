@@ -422,6 +422,20 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       if (verbose == TRUE) cat("\nSkipped because no milestone data available")
     }
   }
+  if (length(which(do.report == 6)) > 0) {
+    N.files.ms6.out = length(dir(paste0(metadatadir, "/meta/ms6.out")))
+    if (verbose == TRUE) print_console_header("Report part 6")
+    if (N.files.ms6.out > 0) {
+      if (N.files.ms6.out < f0) f0 = 1
+      if (N.files.ms6.out < f1) f1 = N.files.ms6.out
+      if (f1 == 0) f1 = N.files.ms6.out
+      g.report.part6(metadatadir = metadatadir, f0 = f0, f1 = f1,
+                     params_cleaning = params_cleaning,
+                     verbose = verbose, sep_reports = params_output[["sep_reports"]])
+    } else {
+      if (verbose == TRUE) cat("\nSkipped because no milestone data available")
+    }
+  }
   if (params_output[["visualreport"]] == TRUE) {
     # g.plot uses metadata from part 1, 3, and 4
     files.basic = gsub("^meta_", "", dir(paste0(metadatadir, "/meta/basic"))) # without "meta_" to ease matching to data in ms3.out and ms4.out
