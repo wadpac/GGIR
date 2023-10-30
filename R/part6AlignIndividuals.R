@@ -60,7 +60,7 @@ part6AlignIndividuals = function(GGIR_ts_dir = NULL, outputdir = NULL,
         if (length(msfile) > 0) {
           load(msfile)
           if (all(c("lightmean", "lightpeak", "temperaturemean") %in% colnames(M$metalong))) {
-            M$metalong$timestamp = as.POSIXct(M$metalong$timestamp, format = "%Y-%m-%dT%H:%M:%S%z", tz = desiredtz)
+            M$metalong$timestamp = as.POSIXct(M$metalong$timestamp, format = "%Y-%m-%dT%H:%M:%S%z", tz = desiredtz, origin = "1970-1-1")
             M$metalong$timenum = as.numeric(M$metalong$timestamp)
             
             epochSizeMetalong = mean(abs(diff(M$metalong$timenum[1:3])))
@@ -69,7 +69,7 @@ part6AlignIndividuals = function(GGIR_ts_dir = NULL, outputdir = NULL,
                           M$metalong = M$metalong[rep(1:nrow(M$metalong), each = epochSizeMetalong / epochSizeMS5), ]
               newTimenum = seq(M$metalong$timenum[1], M$metalong$timenum[nrow(M$metalong)] + epochSizeMetalong, by = epochSizeMS5)
               M$metalong$timenum = newTimenum[1:nrow(M$metalong)]
-              M$metalong$timestamp = as.POSIXct(M$metalong$timenum, tz = desiredtz)
+              M$metalong$timestamp = as.POSIXct(M$metalong$timenum, origin = "1970-1-1", tz = desiredtz)
             }
             if ("lightpeak" %in% colnames(D)) D = D[, -which(colnames(D) == "lightpeak")]
             D = merge(D, M$metalong[,c("lightmean", "lightpeak", "temperaturemean", "timenum")], by = "timenum")
