@@ -58,9 +58,9 @@ test_that("timegaps are correctly imputed", {
   expect_equal(x2_imputed_QClog$timegaps_n, 4)
   expect_equal(x3_imputed_QClog$timegaps_n, 4)
   
-  expect_equal(x1_imputed_QClog$timegaps_s, length(zeros)/sf)
-  expect_equal(x2_imputed_QClog$timegaps_s, length(zeros)/sf)
-  expect_equal(x3_imputed_QClog$timegaps_s, length(zeros)/sf)
+  expect_equal(x1_imputed_QClog$timegaps_min, length(zeros)/sf/60)
+  expect_equal(x2_imputed_QClog$timegaps_min, length(zeros)/sf/60)
+  expect_equal(x3_imputed_QClog$timegaps_min, length(zeros)/sf/60)
   
   # TEST IMPUTATION WHEN FIRST ROW IS NOT CONSECUTIVE TO PREVIOUS CHUNK ----
   # Format 4: with timestamp & with timegaps (no zeroes, incomplete dataset)

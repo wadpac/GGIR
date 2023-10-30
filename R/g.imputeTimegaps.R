@@ -195,9 +195,11 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
   end = start + nrow(x)
   if (is.null(GapsLength)) GapsLength = 0
   if (is.null(NumberOfGaps)) NumberOfGaps = 0
-  QClog = data.frame(start = start, end = end,
+  imputed = NumberOfGaps > 0
+  QClog = data.frame(imputed = imputed, 
+                     start = start, end = end,
                      blockLengthSeconds = (end - start) / sf,
-                     timegaps_n = NumberOfGaps, timegaps_s = GapsLength/sf)
+                     timegaps_n = NumberOfGaps, timegaps_min = GapsLength/sf/60)
   # return data and QClog
   return(list(P = x, QClog = QClog))
 }
