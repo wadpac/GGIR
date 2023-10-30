@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.0-1
+
+- Part 2: Bug fix in csv report generation when appending part 2 milestone data with differing number of columns #951
+
 # CHANGES IN GGIR VERSION 3.0-0
 
 - Part 1 and 2: Change default value for nonwear_approach to "2023" which labels the entire window as nonwear if conditions are met. This instead of only the middle 15 minutes as is the case for "2013" setting. Further, setting "2023" now uses a 5 Hertz version of the signals for non-wear detection, for clipping detection the code uses the original signal.
