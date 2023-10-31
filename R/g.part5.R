@@ -584,7 +584,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                            save_ms5raw_without_invalid = params_output[["save_ms5raw_without_invalid"]],
                                            DaCleanFile = DaCleanFile,
                                            includedaycrit.part5 = params_cleaning[["includedaycrit.part5"]], ID = ID,
-                                           sep_reports = params_output[["sep_reports"]])
+                                           sep_reports = params_output[["sep_reports"]],
+                                           params_247 = params_247)
                   }
                 }
               }

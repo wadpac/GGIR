@@ -13,7 +13,8 @@
                               save_ms5raw_without_invalid = TRUE,
                               DaCleanFile = NULL,
                               includedaycrit.part5 = 2/3,
-                              ID = NULL, sep_reports = ",")
+                              ID = NULL, sep_reports = ",",
+                              params_247 = NULL)
 }
 \arguments{
   \item{ts}{
@@ -52,6 +53,9 @@
   \item{sep_reports}{
     Character (default = ","). Value used as sep argument in \link[utils]{write.csv}
     for writing csv files with the GGIR reports.
+  }
+  \item{params_247}{
+    See \link{GGIR}
   }
 }
 \value{
