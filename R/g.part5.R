@@ -551,7 +551,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                       di = di + 1
                     }
                   }
-                  if (params_output[["save_ms5rawlevels"]] == TRUE) {
+                  if (params_output[["save_ms5rawlevels"]] == TRUE || params_247[["part6HCA"]] == TRUE || params_247[["part6CR"]] == TRUE) {
                     legendfile = paste0(metadatadir,ms5.outraw,"/behavioralcodes",as.Date(Sys.time()),".csv")
                     if (file.exists(legendfile) == FALSE) {
                       legendtable = data.frame(class_name = Lnames, class_id = 0:(length(Lnames) - 1), stringsAsFactors = FALSE)
@@ -561,7 +561,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     # I moved this bit of code to the end, because we want guider to be included (VvH April 2020)
                     rawlevels_fname =  paste0(metadatadir, ms5.outraw, "/", TRLi, "_", TRMi, "_", TRVi, "/",
                                               gsub(pattern = "[.]|rdata|csv|cwa|gt3x|bin",
-                                                   replacement = "", x = tolower(fnames.ms3[i])),
+                                                   replacement = "", x = fnames.ms3[i], ignore.case = TRUE),
                                               "_", sibDef, ".", params_output[["save_ms5raw_format"]])
                     # save time series to csv files
                     if (params_output[["do.sibreport"]] == TRUE & length(params_sleep[["nap_model"]]) > 0) {

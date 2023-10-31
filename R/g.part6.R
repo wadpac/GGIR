@@ -50,11 +50,11 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
     tmp = unlist(strsplit(basename(x), "\\."))
     return(tmp[length(tmp)])
   }
-  EXT = tolower(unlist(lapply(fnames.ms5raw, FUN = getExt)))
+  EXT = unlist(lapply(fnames.ms5raw, FUN = getExt))
   uniqueEXT = unique(EXT)
   if (length(uniqueEXT) == 2) {
-    fnames.ms5raw = fnames.ms5raw[which(EXT == "rdata")]
-    EXT = EXT[which(EXT == "rdata")]
+    fnames.ms5raw = fnames.ms5raw[which(EXT == "RData")]
+    EXT = EXT[which(EXT == "RData")]
   }
   EXT = EXT[1]
   # Identify existing part 6 milestone data
@@ -109,7 +109,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
     
     if (skip == 0) {
       # Load time series:
-      if (EXT == "rdata") {
+      if (EXT == "RData") {
         load(file = paste0(metadatadir, "/meta/ms5.outraw/",
                            params_phyact[["part6_threshold_combi"]], "/", fnames.ms5raw[i]))
         mdat$time = mdat$timestamp # duplicate column because cosinor function expect columntime
@@ -251,14 +251,16 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       # Store results in milestone data
       summary = summary[1:(fi - 1),]
       s_names = s_names[1:(fi - 1)]
+      summary = summary[which(s_names != "")]
+      s_names = s_names[which(s_names != "")]
       output_part6 = data.frame(t(summary), stringsAsFactors = FALSE)
       names(output_part6) = s_names
       output_part6[, 4:ncol(output_part6)] = as.numeric(output_part6[, 4:ncol(output_part6)])
       if (length(output_part6) > 0) {
         save(output_part6, file = paste0(metadatadir,
-                                         ms6.out, "/", gsub(pattern = "[.]csv",
+                                         ms6.out, "/", gsub(pattern = "[.]csv|[.]RData",
                                                             replacement = "",
-                                                            x = fnames.ms5raw[i])))
+                                                            x = fnames.ms5raw[i]), ".RData"))
       }
       rm(output_part6, summary)
     }

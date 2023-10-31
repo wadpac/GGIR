@@ -82,7 +82,7 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
       # save to csv file
       data.table::fwrite(mdat, rawlevels_fname, row.names = F, sep = sep_reports)
     }
-    if ("RData" %in% save_ms5raw_format) {
+    if ("RData" %in% save_ms5raw_format || params_247[["part6HCA"]] == TRUE || params_247[["part6CR"]] == TRUE) {
       # only doing this for RData output, because it would affect file size too much in csv,
       # remember that this function can create many files: sample sizes times all combinations of thresholds.
       mdat$timestamp = as.POSIXct(mdat$timenum, origin = "1970-01-01",tz = desiredtz) 

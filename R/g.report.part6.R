@@ -58,7 +58,7 @@ g.report.part6 = function(metadatadir = c(), f0 = c(), f1 = c(),
     #-------------------------------------------------------------
     # store all summaries in csv files
     outputfinal_clean = tidyup_df(outputfinal)
-    data.table::fwrite(outputfinal_clean, paste0(metadatadir, "/results/part6_personsummary.csv"), 
+    data.table::fwrite(outputfinal_clean, paste0(metadatadir, "/results/part6_summary.csv"), 
                                            row.names = FALSE, na = "", sep = sep_reports)
     rm(outputfinal)
   }
