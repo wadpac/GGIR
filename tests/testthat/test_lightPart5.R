@@ -57,7 +57,7 @@ test_that("lux_per_segment is correctly calculated", {
   # dayborder and ws3 = 60
   p5raw_fn = paste(getwd(), "output_test", "meta", 
                    "ms5.outraw", "40_100_400",
-                   "123a_testaccfile_T5A5.RData",
+                   "123A_testaccfile_T5A5.RData",
                    sep = .Platform$file.sep)
   expect_true(file.exists(p5raw_fn))
   mdat = c()
