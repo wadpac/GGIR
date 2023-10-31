@@ -180,9 +180,11 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       summary[fi] = format(starttime)
       s_names[fi] = "starttime"
       fi = fi + 1
-      
       summary[fi] = gsub(pattern = "[.]RData|[.]csv", replacement = "", x = fnames.ms5raw[i])
       s_names[fi] = "filename"
+      fi = fi + 1
+      summary[fi] = nrow(ts) / ((3600 * 24) / epochSize)
+      s_names[fi] = "N_days"
       fi = fi + 1
       summary[fi] = length(which(ts$invalidepoch == 0)) / ((3600 * 24) / epochSize)
       s_names[fi] = "N_valid_days"
