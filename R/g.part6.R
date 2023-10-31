@@ -190,19 +190,22 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       
       colnames(ts)[which(colnames(ts) == "timenum")] = "time"
       # ts$time = as.POSIXct(ts$timenum, tz = params_general[["desiredtz"]])
-      if (params_247[["cosinor"]] == TRUE) {
-        # avoid computing same parameter twice because this part of the code is
-        # not dependent on the lig, mod, vig thresholds
-        acc4cos = ts[, c("time", "ACC")]
-        acc4cos$ACC  = acc4cos$ACC / 1000 # convert to mg because that is what applyCosinorAnalyses expects
-        cosinor_coef = applyCosinorAnalyses(ts = acc4cos,
-                                            qcheck = ts$invalidepoch,
-                                            midnightsi = nightsi,
-                                            epochsizes = rep(epochSize, 2))
-        rm(acc4cos)
-      } else {
-        cosinor_coef = NULL
-      }
+      
+      # We always run cosinor in this part, regardless of whether cosinor is set to FALSE or TRUE
+      # if (params_247[["cosinor"]] == TRUE) {
+      
+      # avoid computing same parameter twice because this part of the code is
+      # not dependent on the lig, mod, vig thresholds
+      acc4cos = ts[, c("time", "ACC")]
+      acc4cos$ACC  = acc4cos$ACC / 1000 # convert to mg because that is what applyCosinorAnalyses expects
+      cosinor_coef = applyCosinorAnalyses(ts = acc4cos,
+                                          qcheck = ts$invalidepoch,
+                                          midnightsi = nightsi,
+                                          epochsizes = rep(epochSize, 2))
+      rm(acc4cos)
+      # } else {
+      #   cosinor_coef = NULL
+      # }
       if (length(cosinor_coef) > 0) {
         # assign same value to all rows to ease creating reports
         summary[fi] = cosinor_coef$timeOffsetHours
@@ -253,9 +256,9 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       output_part6[, 4:ncol(output_part6)] = as.numeric(output_part6[, 4:ncol(output_part6)])
       if (length(output_part6) > 0) {
         save(output_part6, file = paste0(metadatadir,
-                                  ms6.out, "/", gsub(pattern = "[.]csv",
-                                                     replacement = "",
-                                                     x = fnames.ms5raw[i])))
+                                         ms6.out, "/", gsub(pattern = "[.]csv",
+                                                            replacement = "",
+                                                            x = fnames.ms5raw[i])))
       }
       rm(output_part6, summary)
     }
