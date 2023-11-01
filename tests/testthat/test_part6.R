@@ -63,12 +63,13 @@ test_that("Part 6 with household co-analysis", {
   expect_equal(sum(PC$day_Kappa_active), 5.091)
   
   
-  # Run Circadian rhythm analysis  
+  # Run Circadian rhythm analysis with default window
   params_247[["part6HCA"]] = FALSE
   params_general[["do.parallel"]] = FALSE
   params_general[["overwrite"]] = TRUE
   params_247[["cosinor"]] = TRUE
   params_247[["part6CR"]] = TRUE
+  params_247[["part6Window"]] = c("start", "end")
   g.part6(metadatadir = metadatadir,
           params_general = params_general,
           params_phyact = params_phyact,
@@ -80,10 +81,31 @@ test_that("Part 6 with household co-analysis", {
   
   load(path_to_ms6)
   expect_equal(ncol(output_part6), 25)
+  expect_equal(output_part6$starttime, "2022-06-02 03:00:00")
   expect_equal(output_part6$cosinor_mes, 2.451769, tolerance = 0.00001)
   expect_equal(output_part6$cosinorExt_minimum, 1.288636, tolerance = 0.00001)
   expect_equal(output_part6$cosinorExt_MESOR, 2.164644, tolerance = 0.00001)
   expect_equal(sum(output_part6[5:25]), 327.5437, tolerance = 0.0001)
+  
+  
+  # Run Circadian rhythm analysis with non-default window
+  params_247[["part6Window"]] = c("W2", "W-1") # second wake till last wake
+  g.part6(metadatadir = metadatadir,
+          params_general = params_general,
+          params_phyact = params_phyact,
+          params_247 = params_247,
+          verbose = FALSE)
+  path_to_ms6 = paste0(metadatadir, "/meta/ms6.out/800-900-001_left wrist.RData")
+  
+  expect_true(file.exists(path_to_ms6))
+  
+  load(path_to_ms6)
+  expect_equal(ncol(output_part6), 25)
+  expect_equal(output_part6$starttime, "2022-06-03 01:41:00")
+  expect_equal(output_part6$cosinor_mes, 2.448485, tolerance = 0.00001)
+  expect_equal(output_part6$cosinorExt_minimum, 0, tolerance = 0.00001)
+  expect_equal(output_part6$cosinorExt_MESOR, 1.6977, tolerance = 0.00001)
+  expect_equal(sum(output_part6[5:25]), 154.1642, tolerance = 0.0001)
   
   # Remove test files
   if (file.exists(metadatadir))  unlink(metadatadir, recursive = TRUE)
