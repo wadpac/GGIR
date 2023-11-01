@@ -131,48 +131,56 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         } else if (x == "end") {
           y = nrow(ts) # simply the end of the time series
         } else if (substr(x, start = 1, stop = 1) == "W") {
-          n = as.numeric(substr(x, start = 2, stop = 5))
-          if (n > 0) { # nth Wakeup after the start
-            y = wakeuptimes[n]
-          } else if (n < 0) { # nth Wakeup before the end
-            y = wakeuptimes[length(wakeuptimes) - n]
+          ni = as.numeric(substr(x, start = 2, stop = 5))
+          if (ni > 0) { # nth Wakeup after the start
+            y = wakeuptimes[ni]
+          } else if (ni < 0) { # nth Wakeup before the end
+            y = wakeuptimes[length(wakeuptimes) + ni] # + because it already is -
           }
         } else if (substr(x, start = 1, stop = 1) == "O") {
-          n = as.numeric(substr(x, start = 2, stop = 5))
-          if (n > 0) { # nth Onset after the start
-            y = onsettimes[n]
-          } else if (n < 0) { # nth Onset before the end
-            y = onsettimes[length(wakeuptimes) - n]
+          ni = as.numeric(substr(x, start = 2, stop = 5))
+          if (ni > 0) { # nth Onset after the start
+            y = onsettimes[ni]
+          } else if (ni < 0) { # nth Onset before the end
+            y = onsettimes[length(wakeuptimes) + ni] # + because it already is -
           }
         } else if (substr(x, start = 1, stop = 1) == "H") {
-          n = as.numeric(substr(x, start = 2, stop = 5))
-          if (n > 0) { # nth Hour after the start
-            y = round((n * 3600) / epochSize)
-          } else if (n < 0) { # nth Hour before the end
-            y = nrow(ts) - round((n * 3600) / epochSize)
+          ni = as.numeric(substr(x, start = 2, stop = 5))
+          if (ni > 0) { # nth Hour after the start
+            y = round((ni * 3600) / epochSize)
+          } else if (ni < 0) { # nth Hour before the end
+            y = nrow(ts) - round((ni * 3600) / epochSize)
           }
         }
         return(y)
       }
       t0 = getIndex(params_247[["part6Window"]][1], ts = mdat, wakeuptimes, onsettimes, epochSize)
       t1 = getIndex(params_247[["part6Window"]][2], ts = mdat, wakeuptimes, onsettimes, epochSize)
-      
-      ts = mdat[t0:t1, ]
-      rm(mdat)
-      
-      # Following code needed for cosinor analysis?
-      
-      # extract nightsi again
-      tempp = unclass(as.POSIXlt(ts$time, tz = params_general[["desiredtz"]]))
-      sec = tempp$sec
-      min = tempp$min
-      hour = tempp$hour
-      if (params_general[["dayborder"]] == 0) {
-        nightsi = which(sec == 0 & min == 0 & hour == 0)
+      if (length(t1) == 1 && length(t0) == 1 && !is.na(t1) && !is.na(t0) && t1 > t0) {
+        do.cr = TRUE
       } else {
-        nightsi = which(sec == 0 & min == (params_general[["dayborder"]] - floor(params_general[["dayborder"]])) * 60 & hour == floor(params_general[["dayborder"]])) #shift the definition of midnight if required
+        do.cr = FALSE
       }
-      ts = ts[which(ts$window != 0), ]
+      
+      if (do.cr == TRUE) {
+        ts = mdat[t0:t1, ]
+        rm(mdat)
+        # extract nightsi again
+        tempp = unclass(as.POSIXlt(ts$time, tz = params_general[["desiredtz"]]))
+        sec = tempp$sec
+        min = tempp$min
+        hour = tempp$hour
+        if (params_general[["dayborder"]] == 0) {
+          nightsi = which(sec == 0 & min == 0 & hour == 0)
+        } else {
+          nightsi = which(sec == 0 & min == (params_general[["dayborder"]] - floor(params_general[["dayborder"]])) * 60 & hour == floor(params_general[["dayborder"]])) #shift the definition of midnight if required
+        }
+        ts = ts[which(ts$window != 0), ]
+      } else {
+        ts = mdat[1,]
+      }
+      
+      # Include basic information in the summary
       summary[fi] = unlist(strsplit(fnames.ms5raw[i], "_"))[1]
       s_names[fi] = "ID"
       fi = fi + 1
@@ -183,33 +191,31 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       summary[fi] = gsub(pattern = "[.]RData|[.]csv", replacement = "", x = fnames.ms5raw[i])
       s_names[fi] = "filename"
       fi = fi + 1
-      summary[fi] = nrow(ts) / ((3600 * 24) / epochSize)
+      summary[fi] = ifelse(test = nrow(ts) == 1,
+                           yes = 0,
+                           no = nrow(ts) / ((3600 * 24) / epochSize))
       s_names[fi] = "N_days"
       fi = fi + 1
-      summary[fi] = length(which(ts$invalidepoch == 0)) / ((3600 * 24) / epochSize)
+      summary[fi] = ifelse(test = nrow(ts) == 1,
+                           yes = 0,
+                           no = length(which(ts$invalidepoch == 0)) / ((3600 * 24) / epochSize))
       s_names[fi] = "N_valid_days"
       fi = fi + 1
       
-      colnames(ts)[which(colnames(ts) == "timenum")] = "time"
-      # ts$time = as.POSIXct(ts$timenum, tz = params_general[["desiredtz"]])
-      
-      # We always run cosinor in this part, regardless of whether cosinor is set to FALSE or TRUE
-      # if (params_247[["cosinor"]] == TRUE) {
-      
-      # avoid computing same parameter twice because this part of the code is
-      # not dependent on the lig, mod, vig thresholds
-      acc4cos = ts[, c("time", "ACC")]
-      acc4cos$ACC  = acc4cos$ACC / 1000 # convert to mg because that is what applyCosinorAnalyses expects
-      cosinor_coef = applyCosinorAnalyses(ts = acc4cos,
-                                          qcheck = ts$invalidepoch,
-                                          midnightsi = nightsi,
-                                          epochsizes = rep(epochSize, 2))
-      rm(acc4cos)
-      # } else {
-      #   cosinor_coef = NULL
-      # }
+      # Cosinor analysis
+      if (do.cr == TRUE) {
+        colnames(ts)[which(colnames(ts) == "timenum")] = "time"
+        acc4cos = ts[, c("time", "ACC")]
+        acc4cos$ACC  = acc4cos$ACC / 1000 # convert to mg because that is what applyCosinorAnalyses expects
+        cosinor_coef = applyCosinorAnalyses(ts = acc4cos,
+                                            qcheck = ts$invalidepoch,
+                                            midnightsi = nightsi,
+                                            epochsizes = rep(epochSize, 2))
+        rm(acc4cos)
+      } else {
+        cosinor_coef = NULL
+      }
       if (length(cosinor_coef) > 0) {
-        # assign same value to all rows to ease creating reports
         summary[fi] = cosinor_coef$timeOffsetHours
         s_names[fi] = "cosinor_timeOffsetHours"
         fi = fi + 1
