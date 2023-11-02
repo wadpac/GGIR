@@ -127,9 +127,9 @@ part6PairwiseAggregation = function(outputdir = NULL, desiredtz = "", verbose = 
           }
           # Initialise wakeup variables
           pairsum[, c("wakeup_date1", "wakeup_date2",
-                      "wakeup_acc_1_before_2", "wakeup_acc_2_before_2",
+                      "wakeup_acc_1_before_2_mg", "wakeup_acc_2_before_2_mg",
                       "wakeup_lux_1_before_2", "wakeup_lux_2_before_2",
-                      "wakeup_secondMID", "wakeup_deltatime")] = NA
+                      "wakeup_secondMID", "wakeup_deltatime_min")] = NA
           if (do.pair.sum == TRUE) {
             pairsum$wakeup_date1 = as.Date(pairsum$wakeup_date1)
             pairsum$wakeup_date2 = as.Date(pairsum$wakeup_date2)
@@ -161,7 +161,7 @@ part6PairwiseAggregation = function(outputdir = NULL, desiredtz = "", verbose = 
               secondawake = ifelse(test = pairsum$wakeup_firstMID[h] == pairsum$MID1[h], yes = pairsum$MID2[h], no = pairsum$MID1[h])
               pairsum$wakeup_secondMID[h] = secondawake
               # Assess delta time of waking up
-              pairsum$wakeup_deltatime[h] = difftime(time1 = dataForPair$time_POSIX[pairsum$index_wake2[h]], time2 = dataForPair$time_POSIX[pairsum$index_wake1[h]], units = "mins")
+              pairsum$wakeup_deltatime_min[h] = difftime(time1 = dataForPair$time_POSIX[pairsum$index_wake2[h]], time2 = dataForPair$time_POSIX[pairsum$index_wake1[h]], units = "mins")
               # Extract dates of waking up
               pairsum$wakeup_date1[h] = as.Date(dataForPair$time_POSIX[pairsum$index_wake1[h]])
               pairsum$wakeup_date2[h] = as.Date(dataForPair$time_POSIX[pairsum$index_wake2[h]])
@@ -173,10 +173,10 @@ part6PairwiseAggregation = function(outputdir = NULL, desiredtz = "", verbose = 
               if (pairsum$wakeup_firstMID[h] != "equal") {
                 index_last_wakeup = max(pairsum[h,c("index_wake1", "index_wake2")])
                 # Activity of person who first woke up during minute before second person wake up
-                pairsum$wakeup_acc_1_before_2[h] = mean(dataForPair[(index_last_wakeup - 3):index_last_wakeup,
+                pairsum$wakeup_acc_1_before_2_mg[h] = mean(dataForPair[(index_last_wakeup - 3):index_last_wakeup,
                                                                     paste0("ACC.", pairsum$wakeup_firstMID[h])])
                 # Activity of second person to wake up before they woke up
-                pairsum$wakeup_acc_2_before_2[h] = mean(dataForPair[(index_last_wakeup - 3):index_last_wakeup, 
+                pairsum$wakeup_acc_2_before_2_mg[h] = mean(dataForPair[(index_last_wakeup - 3):index_last_wakeup, 
                                                                     paste0("ACC.", secondawake)])
                 # LUX of person who first woke up during minute before second person wake up
                 pairsum$wakeup_lux_1_before_2[h] = max(dataForPair[(index_last_wakeup - 3):index_last_wakeup, 
@@ -185,8 +185,8 @@ part6PairwiseAggregation = function(outputdir = NULL, desiredtz = "", verbose = 
                 pairsum$wakeup_lux_2_before_2[h] = max(dataForPair[(index_last_wakeup - 3):index_last_wakeup, 
                                                                    paste0("lightpeak.", secondawake)])
               } else if (pairsum$wakeup_firstMID[h] == "equal") {
-                pairsum$wakeup_acc_1_before_2[h] = NA
-                pairsum$wakeup_acc_2_before_2[h] = NA
+                pairsum$wakeup_acc_1_before_2_mg[h] = NA
+                pairsum$wakeup_acc_2_before_2_mg[h] = NA
                 pairsum$wakeup_lux_1_before_2[h] = NA
                 pairsum$wakeup_lux_2_before_2[h] = NA
               }
@@ -300,7 +300,7 @@ part6PairwiseAggregation = function(outputdir = NULL, desiredtz = "", verbose = 
             # reorder columns
             colorder = c("HID", "Npairs", "PID", "MID1", "MID2", "event", "wakeup_time1", 
                          "wakeup_time2", "wakeup_date1", "wakeup_date2", "wakeup_firstMID", "wakeup_secondMID", 
-                         "wakeup_deltatime", "wakeup_acc_1_before_2", "wakeup_acc_2_before_2",
+                         "wakeup_deltatime_min", "wakeup_acc_1_before_2_mg", "wakeup_acc_2_before_2_mg",
                          "wakeup_lux_1_before_2", "wakeup_lux_2_before_2", grep(pattern = "sptPattern", x = names(pairsum), value = TRUE))
             pairsum = pairsum[, c(colorder, sort(colnames(pairsum)[which(colnames(pairsum) %in% colorder == FALSE)]))]
           } else {

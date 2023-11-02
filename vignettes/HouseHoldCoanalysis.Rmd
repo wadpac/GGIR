@@ -225,11 +225,11 @@ date2	| Date person 2 wakes up
 index_wake1	| Index in the time series when person 1 woke up (probably not relevant for end-user)
 index_wake2	| Index in the time series when person 2 woke up (probably not relevant for end-user)
 firstawake | Who of the two individuals woke up first? If equal then value will be "equal"
-acc_wake1_before_wake2 | Mean acceleration of the person who wakes up first during the four minutes before the second person wakes up
-acc_wake2_before_wake2 | Mean activity of second person to wake up before they woke up
-lux_wake1_before_wake2 | Peak LUX of the person who wakes up first during the four minutes before the second person wakes up
-lux_wake2_before_wake2 | Peak LUX of second person to wake up before they woke up
-deltatime	| Difference in wake up time
+wakeup_acc_wake1_before_wake2_mg | Mean acceleration (m*g*) of the person who wakes up first during the four minutes before the second person wakes up
+wakeup_acc_wake2_before_wake2_mg | Mean acceleration (m*g*) of second person to wake up before they woke up
+wakeup_lux_wake1_before_wake2 | Peak LUX of the person who wakes up first during the four minutes before the second person wakes up
+wakeup_lux_wake2_before_wake2 | Peak LUX of second person to wake up before they woke up
+wakeup_deltatime_min	| Difference in wake up time in minutes
 r_acceleration	| Pearson correlation in continuous acceleration values
 ICC_sleep	| ICC (from R package irr) calculated based on binary scores of sleep (excluding WASO)
 ICC_sleep_Fvalue	| Fvalue for ICC_sleep

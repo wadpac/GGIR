@@ -33,6 +33,10 @@ test_that("Part 6 with household co-analysis", {
   params_general[["desiredtz"]] = "America/Curacao"
   params_phyact = load_params(topic = "phyact")$params_phyact
   params_phyact[["part6_threshold_combi"]] = part6_threshold_combi
+  thresholds = as.numeric(unlist(strsplit(part6_threshold_combi, "_")))
+  params_phyact[["threshold.lig"]] = thresholds[1]
+  params_phyact[["threshold.mod"]] = thresholds[2] 
+  params_phyact[["threshold.vig"]] = thresholds[3]
   params_247 = load_params(topic = "247")$params_247
   params_247[["part6HCA"]] = TRUE
   g.part6(metadatadir = metadatadir,
@@ -58,7 +62,7 @@ test_that("Part 6 with household co-analysis", {
   expect_equal(nrow(PC), 18)
   expect_equal(ncol(PC), 41)
   expect_equal(PC$Npairs, rep(3, 18))
-  expect_equal(sum(PC$wakeup_acc_1_before_2), 171.863)
+  expect_equal(sum(PC$wakeup_acc_1_before_2_mg), 171.863)
   expect_equal(PC$wakeup_time1[c(1, 8, 16)], c("01:35:00", "02:58:00", "03:39:00"))
   expect_equal(sum(PC$day_Kappa_active), 5.091)
   
