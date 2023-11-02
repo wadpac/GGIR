@@ -57,7 +57,6 @@ the time series at 1 minute resolution.
 to the accelerometer threshold combination that is used in part 5 that you want to use
 in part 6. GGIR part 5 facilitates multiple threshold combinations but in part 6 you
 need to select one.
-- `timewindow = WW` to run part 5 analysis based on waking-up to waking-up windows.
 
 Other GGIR arguments can be set according to your own needs. For an example:
 
@@ -87,7 +86,6 @@ GGIR(mode = 1:5,
      save_ms5rawlevels = TRUE, # Not necessary because GGIR will set this to TRUE when part6HCA is TRUE.
      save_ms5raw_without_invalid = FALSE, # <= Needed for household co-analysis
      part5_agg2_60seconds = TRUE,
-     timewindow = "WW",
      visualreport = FALSE) 
      
 ```
