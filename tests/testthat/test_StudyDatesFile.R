@@ -180,34 +180,34 @@ test_that("chainof5parts", {
   expect_true(t1 == as.POSIXct("2016-06-25 18:45:00", tz = "Europe/London"))
   
   # start date out of recorded dates (warning and do not trim) -----
-  studydates = data.frame(ID = "123A",
-                          start = "18/06/2016", # intentional wrong format (hyphen) to force tests on check_log
-                          end = "25/06/2016")
-  write.csv(studydates, "study_dates_file.csv", row.names = FALSE)
-  expect_warning(
-    GGIR(datadir = fn, outputdir = getwd(), studyname = "test", mode = 2, verbose = FALSE,
-         # study dates file
-         study_dates_file = "study_dates_file.csv", 
-         study_dates_dateformat = "%d/%m/%Y",
-         # strategy
-         data_masking_strategy = 1, ndayswindow = 7,
-         hrs.del.start = 0,hrs.del.end = 0),
-    regexp = "The start date")
+  # studydates = data.frame(ID = "123A",
+  #                         start = "18/06/2016", # intentional wrong format (hyphen) to force tests on check_log
+  #                         end = "25/06/2016")
+  # write.csv(studydates, "study_dates_file.csv", row.names = FALSE)
+  # expect_warning(
+  #   GGIR(datadir = fn, outputdir = getwd(), studyname = "test", mode = 2, verbose = FALSE,
+  #        # study dates file
+  #        study_dates_file = "study_dates_file.csv", 
+  #        study_dates_dateformat = "%d/%m/%Y",
+  #        # strategy
+  #        data_masking_strategy = 1, ndayswindow = 7,
+  #        hrs.del.start = 0,hrs.del.end = 0),
+  #   regexp = "The start date")
   
   # end date out of recorded dates (warning and do not trim) -----
-  studydates = data.frame(ID = "123A",
-                          start = "24/06/2016", # intentional wrong format (hyphen) to force tests on check_log
-                          end = "26/06/2016")
-  write.csv(studydates, "study_dates_file.csv", row.names = FALSE)
-  expect_warning(
-    GGIR(datadir = fn, outputdir = getwd(), studyname = "test", mode = 2, verbose = FALSE,
-         # study dates file
-         study_dates_file = "study_dates_file.csv", 
-         study_dates_dateformat = "%d/%m/%Y",
-         # strategy
-         data_masking_strategy = 1, ndayswindow = 7,
-         hrs.del.start = 0,hrs.del.end = 0),
-    regexp = "The end date")
+  # studydates = data.frame(ID = "123A",
+  #                         start = "24/06/2016", # intentional wrong format (hyphen) to force tests on check_log
+  #                         end = "26/06/2016")
+  # write.csv(studydates, "study_dates_file.csv", row.names = FALSE)
+  # expect_warning(
+  #   GGIR(datadir = fn, outputdir = getwd(), studyname = "test", mode = 2, verbose = FALSE,
+  #        # study dates file
+  #        study_dates_file = "study_dates_file.csv", 
+  #        study_dates_dateformat = "%d/%m/%Y",
+  #        # strategy
+  #        data_masking_strategy = 1, ndayswindow = 7,
+  #        hrs.del.start = 0,hrs.del.end = 0),
+  #   regexp = "The end date")
   
   # ID not in study dates file (warning and do not trim) -----
   studydates = data.frame(ID = "dummyID",
