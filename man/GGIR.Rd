@@ -1289,7 +1289,10 @@ GGIR(mode = 1:5,
         the start and the end of the time series to be used for circadian rhythm analysis.
         Alternative values are: "Wx", "Ox", "Hx", where "x" is a number to indicat
         the xth wakeup, onset or hour of the recording. Negative values for "x"
-        are also possible and will count relative to the end of the recording.
+        are also possible and will count relative to the end of the recording. For example,
+        c("W1", "W-1") goes from the first till the last wakeup, c("H5", "H-5") 
+        ignores the first and last 5 hours, and c("O2", "W10") goes from the second
+        onset till the 10th wakeup time.
       }
     }
   }
