@@ -785,7 +785,8 @@ GGIR(mode = 1:5,
         
       \item{study_dates_file}{
         Character (default = c()).
-        Full path to csv file containing the first and last date of the study.
+        Full path to csv file containing the first and last date of the expected 
+        wear period for every study participant (dates are provided per individual).
         Expected format of the activity diary is: First column headers followed 
         by one row per recording. There should be three columns: first column is 
         recording ID, which needs to match with the ID GGIR extracts from the 
