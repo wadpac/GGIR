@@ -1,3 +1,6 @@
+
+# baseDictionary ----------------------------------------------------------
+
 # baseDictionary contains variable names that are exported always with the same
 # name and, preferably, they can be used in reports from more than one GGIR part
 # (e.g., ID definition can be reused in reports from part 2, 4, and 5)
@@ -53,5 +56,16 @@ baseDictionary = list(
   boutdur.lig = "Duration/s of light physical activity bouts (min)",
   boutdur.mvpa = "Duration/s of moderate-to-vigorous physical activity bouts (min)")
 
+# Future work - code to generate internal data below ----------------------
 
-usethis::use_data(baseDictionary, internal = TRUE, overwrite = TRUE)
+
+
+
+
+
+# Store internal data -----------------------------------------------------
+
+# make sure to include the names of the objects to be stored in sysdata.rda
+usethis::use_data(baseDictionary, 
+                  internal = TRUE, overwrite = TRUE)
+
