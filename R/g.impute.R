@@ -130,9 +130,9 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
         # do not trim the data and recover the firstmidnight value
         firstmidnighti = dmidn$firstmidnighti
         firstmidnight = dmidn$firstmidnight
-        warning(paste0("The start date provided in the study dates file for ID = ", 
-                       ID, "is not within the dates available in the recording. ",
-                       "The data was not trimmed at the beginning of the recording."), call. = FALSE)
+        # warning(paste0("The start date provided in the study dates file for ID = ", 
+        #                ID, "is not within the dates available in the recording. ",
+        #                "The data was not trimmed at the beginning of the recording."), call. = FALSE)
       }
       # trim data at the end
       if (length(lastmidnighti) > 0 & !is.na(lastmidnighti)) {
@@ -143,9 +143,9 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
         # do not trim the data and recover the lastmidnight value
         lastmidnighti = dmidn$lastmidnighti
         lastmidnight = dmidn$lastmidnight
-        warning(paste0("The end date provided in the study dates file for ID = ", 
-                       ID, "is not within the dates available in the recording. ",
-                       "The data was not trimmed at the end of the recording."), call. = FALSE)
+        # warning(paste0("The end date provided in the study dates file for ID = ", 
+        #                ID, "is not within the dates available in the recording. ",
+        #                "The data was not trimmed at the end of the recording."), call. = FALSE)
       }
       # cut out r4 to apply strategies only on the trimmed portion of data
       # after application of strategies, r4 would reset to the original length
