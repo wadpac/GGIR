@@ -243,7 +243,7 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
       dictionary[coli, "Definition"] = def
     }
     # write csv reports with data dictionaries
-    directory = file.path(metadatadir, "results", "data dictionary/")
+    directory = file.path(metadatadir, "results", "variableDictionary/")
     if (!dir.exists(directory)) dir.create(directory)
     fn = gsub("part5_", "part5_dictionary_", basename(reports[ri]))
     data.table::fwrite(dictionary, file = file.path(directory, fn), 
