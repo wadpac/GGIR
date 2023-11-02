@@ -25,9 +25,8 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y", epochSize = 5) 
   actlog = data.table::fread(file = qwindow, data.table = FALSE)
   
   # check ID and date cols in actlog
-  datecols = grep(pattern = "date|Date|DATE",  x = colnames(actlog), value = FALSE)
   actlog = check_log(actlog, dateformat = qwindow_dateformat,
-                     colid = 1, datecols = datecols, 
+                     colid = 1, datecols = NULL, 
                      logPath = qwindow, logtype = "activity log")
   
   # find dates
