@@ -11,3 +11,4 @@ RELEASE_CYCLE.md
 ^docs$
 ^pkgdown$
 ^vignettes/chapter*.Rmd
+^data-raw$
