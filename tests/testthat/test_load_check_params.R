@@ -14,7 +14,10 @@ test_that("load_params can load parameters", {
   expect_equal(length(params$params_metrics), 41)
   expect_equal(length(params$params_rawdata), 38)
   expect_equal(length(params$params_247), 23)
-  expect_equal(length(params$params_cleaning), 21)
+  expect_equal(length(params$params_cleaning), 24)
+  expect_equal(length(params$params_phyact), 14)
+  expect_equal(length(params$params_247), 23)
+  expect_equal(length(params$params_cleaning), 24)
   expect_equal(length(params$params_phyact), 14)
   expect_equal(length(params$params_output), 19)
   expect_equal(length(params$params_general), 17)
@@ -113,26 +116,26 @@ test_that("load_params can load parameters", {
                  regexp = "Auto-updating sleepwindowType to SPT")
   params_sleep = params$params_sleep
   
-  # if strategy != 1, hrs.del.start and hrs.del.end != 0 do not make sense
-  params_cleaning$strategy = 2
+  # if data_masking_strategy != 1, hrs.del.start and hrs.del.end != 0 do not make sense
+  params_cleaning$data_masking_strategy = 2
   params_cleaning$hrs.del.start = 1
   expect_warning(check_params(params_cleaning = params_cleaning),
                  regexp = "Setting argument hrs.del.start")
   params_cleaning = params$params_cleaning
-  params_cleaning$strategy = 2
+  params_cleaning$data_masking_strategy = 2
   params_cleaning$hrs.del.end = 1
   expect_warning(check_params(params_cleaning = params_cleaning),
                  regexp = "Setting argument hrs.del.end")
   params_cleaning = params$params_cleaning
   
-  # if strategy != c(3,5), ndayswindow != 7 does not make sense
+  # if data_masking_strategy != c(3,5), ndayswindow != 7 does not make sense
   params_cleaning$ndayswindow = 14
   expect_warning(check_params(params_cleaning = params_cleaning),
                  regexp = "Setting argument ndayswindow in combination")
   params_cleaning = params$params_cleaning
   
-  # if strategy == 5, ndayswindow should be integer
-  params_cleaning$strategy = 5
+  # if data_masking_strategy == 5, ndayswindow should be integer
+  params_cleaning$data_masking_strategy = 5
   params_cleaning$ndayswindow = 7.5
   check = expect_warning(check_params(params_cleaning = params_cleaning),
                          regexp = "Argument ndayswindow has been rounded")

@@ -1,5 +1,9 @@
 # CHANGES IN GGIR VERSION 3.0-1
 
+- Part 2: Added possibility to csv file with date-oriented definition of study protocol #943
+
+- Part 5: New function to provide definition of the variable names in part 5 reports #938
+
 - Part 2: Bug fix in csv report generation when appending part 2 milestone data with differing number of columns #951
 
 - Part 6: Added as a new part

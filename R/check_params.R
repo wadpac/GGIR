@@ -97,7 +97,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     
   }
   if (length(params_cleaning) > 0) {
-    numeric_params = c("includedaycrit", "ndayswindow", "strategy", "maxdur", "hrs.del.start",
+    numeric_params = c("includedaycrit", "ndayswindow", "data_masking_strategy", "maxdur", "hrs.del.start",
                        "hrs.del.end", "includedaycrit.part5", "minimum_MM_length.part5",
                        "includenightcrit", "max_calendar_days")
     boolean_params = c("excludefirstlast.part5", "do.imp", "excludefirstlast",
@@ -213,24 +213,29 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   
   if (length(params_cleaning) > 0) {
-    if (params_cleaning[["strategy"]] %in% c(2, 4) & params_cleaning[["hrs.del.start"]] != 0) {
-      warning(paste0("\nSetting argument hrs.del.start in combination with strategy = ",
-                     params_cleaning[["strategy"]]," is not meaningful, because this is only used when straytegy = 1"), call. = FALSE)
+    # overwrite data_masking_strategy with strategy in case the latter is used
+    if (params_cleaning[["strategy"]] != params_cleaning[["data_masking_strategy"]]
+        & params_cleaning[["strategy"]] != 1) {
+      params_cleaning[["data_masking_strategy"]] = params_cleaning[["strategy"]]
     }
-    if (params_cleaning[["strategy"]] %in% c(2, 4) & params_cleaning[["hrs.del.end"]] != 0) {
-      warning(paste0("\nSetting argument hrs.del.end in combination with strategy = ",
-                     params_cleaning[["strategy"]]," is not meaningful, because this is only used when straytegy = 1"), call. = FALSE)
+    if (params_cleaning[["data_masking_strategy"]] %in% c(2, 4) & params_cleaning[["hrs.del.start"]] != 0) {
+      warning(paste0("\nSetting argument hrs.del.start in combination with data_masking_strategy = ",
+                     params_cleaning[["data_masking_strategy"]]," is not meaningful, because this is only used when straytegy = 1"), call. = FALSE)
     }
-    if (!(params_cleaning[["strategy"]] %in% c(3, 5)) & params_cleaning[["ndayswindow"]] != 7) {
-      warning(paste0("\nSetting argument ndayswindow in combination with strategy = ",
-                     params_cleaning[["strategy"]]," is not meaningful, because this is only used when strategy = 3 or strategy = 5"), call. = FALSE)
+    if (params_cleaning[["data_masking_strategy"]] %in% c(2, 4) & params_cleaning[["hrs.del.end"]] != 0) {
+      warning(paste0("\nSetting argument hrs.del.end in combination with data_masking_strategy = ",
+                     params_cleaning[["data_masking_strategy"]]," is not meaningful, because this is only used when straytegy = 1"), call. = FALSE)
     }
-    if (params_cleaning[["strategy"]] == 5 &
+    if (!(params_cleaning[["data_masking_strategy"]] %in% c(3, 5)) & params_cleaning[["ndayswindow"]] != 7) {
+      warning(paste0("\nSetting argument ndayswindow in combination with data_masking_strategy = ",
+                     params_cleaning[["data_masking_strategy"]]," is not meaningful, because this is only used when data_masking_strategy = 3 or data_masking_strategy = 5"), call. = FALSE)
+    }
+    if (params_cleaning[["data_masking_strategy"]] == 5 &
         params_cleaning[["ndayswindow"]] != round(params_cleaning[["ndayswindow"]])) {
       newValue = round(params_cleaning[["ndayswindow"]])
       warning(paste0("\nArgument ndayswindow has been rounded from ",
                      params_cleaning[["ndayswindow"]], " to ", newValue, " days",
-                     "because when strategy == 5 we expect an integer value", call. = FALSE))
+                     "because when data_masking_strategy == 5 we expect an integer value", call. = FALSE))
       params_cleaning[["ndayswindow"]] = newValue
     }
     if (length(params_cleaning[["data_cleaning_file"]]) > 0) {
