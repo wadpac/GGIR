@@ -332,7 +332,10 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   }
   if (dopart6 == TRUE) {
     if (verbose == TRUE) print_console_header("Part 6")
-    if (f1 == 0) f1 = length(dir(paste0(metadatadir, "/meta/ms5.outraw")))
+    if (f1 == 0) {
+      f1 = length(dir(paste0(metadatadir, "/meta/ms5.outraw/", 
+                             params_phyact[["part6_threshold_combi"]])))
+    }
     g.part6(datadir = datadir, metadatadir = metadatadir, f0 = f0, f1 = f1,
             params_general = params_general, params_phyact = params_phyact,
             params_247 = params_247,
