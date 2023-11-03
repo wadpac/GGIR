@@ -40,7 +40,7 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
                             Definition = NA)
     # get definitions
     for (coli in 1:length(cnames)) {
-      # definitions will be a combination of what, window, class, unit
+      # definitions will be a combination of what, window, when (only for LUX segments), class, unit
       what = window = class = unit = NULL
       # get variable names from baseDictionary
       nam = gsub("_pla|_wei|_WD|_WE", "", cnames[coli])
@@ -60,15 +60,19 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
         } else if ("Nbouts" %in% elements) {
           what = "Number of bouts"
         } else if ("Nblocks" %in% elements) {
-          what = "Number of blocks"
+          what = "Number of blocks (defined as consecutive series of epochs with the same behavioural class)"
         } else if ("quantile" %in% elements) {
           what = "Acceleration above which (percentile)"
         } else if ("LUX" %in% elements) {
-          if ("min" %in% elements) {
+          if ("min" %in% elements | "above1000" %in% elements) {
             # time in lux ranges
             what = "Time accumulated with LUX"
-            numbers = suppressWarnings(as.numeric(elements))
-            numbers = numbers[!is.na(numbers)]
+            if ("above1000" %in% elements) {
+              numbers = 1000
+            } else {
+              numbers = suppressWarnings(as.numeric(elements))
+              numbers = numbers[!is.na(numbers)]
+            }
             if (any(numbers == Inf) | length(numbers) == 1) {
               thresholds = paste("above", numbers[1])
             } else if (length(numbers) == 2) {
@@ -76,8 +80,8 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
             } else {
               thresholds = ""
             }
-            what = paste(what, thresholds, "Luxes")
-            unit = "(min)"
+            what = paste(what, thresholds, "luxes")
+            unit = "(minutes)"
           } else if ("mean" %in% elements) {
             what = "Mean LUX value"
             if ("mvpa" %in% elements) what = paste(what, "in moderate-to-vigorous physical activity time")
@@ -85,6 +89,22 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
           } else if ("max" %in% elements) {
             what = "Maximum LUX value"
             unit = "(luxes)"
+          } else if ("timeawake" %in% elements) {
+            what = "Time classified as awake"
+            unit = "(minutes)"
+          } else if ("imputed" %in% elements) {
+            what = "Time in which the LUX has been imputed"
+            unit = "(minutes)"
+          } else if ("ignored" %in% elements) {
+            what = "Time in which the LUX has been ignored"
+            unit = "(minutes)"
+          }
+          # lux segments
+          if (any(grepl("hr", elements))) {
+            t1 = elements[grep("hr", elements)]; t1 = gsub("hr", ":00", t1)
+            t0 = elements[grep("hr", elements) - 1]
+            if (nchar(t0) == 1) t0 = paste0(t0, ":00")
+            what = paste(what, "in the segment from", t0, "to", t1)
           }
         }
         # fragmentation metrics
@@ -172,7 +192,7 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
         if ("min" %in% elements) {
           unit = "(minutes)"
         } else if ("mg" %in% elements) {
-          unit = "(mili-g units)"
+          unit = "(mili-gravity units)"
         } else if ("perc" %in% elements) {
           unit = "(%)"
         }
@@ -199,7 +219,7 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
               }
             } else if (grepl("VALUE", elements[1])) {
               what = "Mean acceleration"
-              unit = "(mili-g units)"
+              unit = "(mili-gravity units)"
             } else if ("peakLUX" %in% elements) {
               if ("mean" %in% elements) {
                 what = "Mean peak Lux"
@@ -210,9 +230,9 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
             # class
             X = as.numeric(gsub("\\D", "", elements))[1]
             if (substr(elements[1], 1, 1) == "L") {
-              class = paste("during the", X, "consecutive hours with the lowest activity")
+              class = paste("during the", X, "consecutive hours with the lowest acceleration")
             } else if (substr(elements[1], 1, 1) == "M") {
-              class = paste("during the", X, "consecutive hours with the highest activity")
+              class = paste("during the", X, "consecutive hours with the highest acceleration")
             }
           } else if ("daytype" %in% elements) {
             what = "WD = weekday; WE = weekend day"
