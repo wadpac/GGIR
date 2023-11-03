@@ -253,6 +253,15 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         fi = fi + 2
       } else {
         cosinor_coef = c()
+        s_names[fi:(fi + 19)] = c("cosinor_timeOffsetHours", "cosinor_mes", 
+                                  "cosinor_amp", "cosinor_acrophase",
+                                  "cosinor_acrotime", "cosinor_ndays", "cosinor_R2", 
+                                  "cosinorExt_minimum", "cosinorExt_amp", 
+                                  "cosinorExt_alpha", "cosinorExt_beta", 
+                                  "cosinorExt_acrotime", "cosinorExt_UpMesor",
+                                  "cosinorExt_DownMesor", "cosinorExt_MESOR",
+                                  "cosinorExt_ndays", "cosinorExt_F_pseudo", 
+                                  "cosinorExt_R2", "cosinorIS", "cosinorIV")
         fi = fi + 20
       }
       #=============================================
