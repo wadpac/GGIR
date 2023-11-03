@@ -42,10 +42,10 @@ test_that("chainof5parts", {
   expect_that(I$dformc, equals(2))
   expect_equal(C$npoints, 7494, tolerance = 5)
   #-------------------------
-  # part 2 with strategy = 3
+  # part 2 with data_masking_strategy = 3
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           idloc = 2, desiredtz = desiredtz, ndayswindow = 1,
-          strategy = 3, overwrite = TRUE, hrs.del.start = 0, hrs.del.end = 0,
+          data_masking_strategy = 3, overwrite = TRUE, hrs.del.start = 0, hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0, do.parallel = do.parallel, myfun = c(),
           verbose = FALSE)
   dirname = "output_test/meta/ms2.out/"
@@ -65,7 +65,7 @@ test_that("chainof5parts", {
   last_epoch_in_protocol = max(which(IMP$rout$r4 == 0))
   expect_equal(last_epoch_in_protocol - first_epoch_in_protocol + 1,  24)
   
-  # part 2 with strategy = 3 and hrs.del.start = 6 and hrs.del.end = 6
+  # part 2 with data_masking_strategy = 3 and hrs.del.start = 6 and hrs.del.end = 6
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           idloc = 2, desiredtz = desiredtz, ndayswindow = 1,
           strategy = 3, overwrite = TRUE, hrs.del.start = 6, hrs.del.end = 6,
@@ -83,7 +83,7 @@ test_that("chainof5parts", {
   last_epoch_in_protocol = max(which(IMP$rout$r4 == 0))
   expect_equal(last_epoch_in_protocol - first_epoch_in_protocol + 1,  12)
   
-  # part 2 with strategy = 5
+  # part 2 with data_masking_strategy = 5
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           idloc = 2, desiredtz = desiredtz, ndayswindow = 1,
           strategy = 5, overwrite = TRUE, hrs.del.start = 0, hrs.del.end = 0,
@@ -105,10 +105,10 @@ test_that("chainof5parts", {
   last_epoch_in_protocol = max(which(IMP$rout$r4 == 0))
   expect_equal(last_epoch_in_protocol - first_epoch_in_protocol + 1,  24)
   
-  # part 2 with strategy = 5 and hrs.del.start = 6 and hrs.del.end = 6
+  # part 2 with data_masking_strategy = 5 and hrs.del.start = 6 and hrs.del.end = 6
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           idloc = 2, desiredtz = desiredtz, ndayswindow = 1,
-          strategy = 5, overwrite = TRUE, hrs.del.start = 6, hrs.del.end = 6,
+          data_masking_strategy = 5, overwrite = TRUE, hrs.del.start = 6, hrs.del.end = 6,
           maxdur = Ndays, includedaycrit = 0, do.parallel = do.parallel, myfun = c(),
           verbose = FALSE)
   dirname = "output_test/meta/ms2.out/"
@@ -123,10 +123,10 @@ test_that("chainof5parts", {
   last_epoch_in_protocol = max(which(IMP$rout$r4 == 0))
   expect_equal(last_epoch_in_protocol - first_epoch_in_protocol + 1,  12)
   
-  # part 2 with strategy = 2 and iglevels = 1
+  # part 2 with data_masking_strategy = 2 and iglevels = 1
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           idloc = 2, desiredtz = desiredtz,
-          strategy = 2,overwrite = TRUE, hrs.del.start = 0,hrs.del.end = 0,
+          data_masking_strategy = 2,overwrite = TRUE, hrs.del.start = 0,hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0, do.imp = FALSE, epochvalues2csv = TRUE, iglevels = TRUE,
           do.parallel = do.parallel, myfun = c(), winhr = 16, MX.ig.min.dur = 14, verbose = FALSE)
   dirname = "output_test/meta/ms2.out/"
@@ -136,10 +136,13 @@ test_that("chainof5parts", {
   expect_equal(mean(IMP$metashort$ENMO), 0.029, tolerance = 3)
   expect_equal(as.numeric(SUM$summary$meas_dur_def_proto_day), 1, tolerance = 2)
   expect_equal(as.numeric(SUM$daysummary$`L16_ig_gradient_ENMO_mg_0-24hr`[1]), -1.12, tolerance = 2)
-  # part 2 with strategy = 1
+  
+  # part 2
+  
+  # part 2 with data_masking_strategy = 1
   g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           idloc = 2, desiredtz = desiredtz,
-          strategy = 1,overwrite = TRUE, hrs.del.start = 0,hrs.del.end = 0,
+          data_masking_strategy = 1,overwrite = TRUE, hrs.del.start = 0,hrs.del.end = 0,
           maxdur = Ndays, includedaycrit = 0, qM5L5 = c(0.2,0.4), winhr = c(3,10),
           do.parallel = do.parallel, myfun = c(), qlevels = c(0.5, 0.9),
           cosinor = TRUE, verbose = FALSE)
@@ -196,7 +199,7 @@ test_that("chainof5parts", {
   #--------------------------------------------
   #part 5
   g.part5(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1, desiredtz = desiredtz,
-          strategy = 1, maxdur = Ndays, hrs.del.start = 0, hrs.del.end = 0,
+          data_masking_strategy = 1, maxdur = Ndays, hrs.del.start = 0, hrs.del.end = 0,
           loglocation = sleeplog_fn,
           overwrite = TRUE, excludefirstlast = FALSE, do.parallel = do.parallel,
           frag.metrics = "all", save_ms5rawlevels = TRUE,

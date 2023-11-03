@@ -88,7 +88,8 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
   }
   if ("cleaning" %in% group) {
     params_cleaning = list(includedaycrit = 16, ndayswindow = 7,
-                           strategy = 1, maxdur = 0,
+                           strategy = 1, data_masking_strategy = 1,
+                           maxdur = 0,
                            hrs.del.start = 0, hrs.del.end = 0,
                            includedaycrit.part5 = 2/3, excludefirstlast.part5 = FALSE,
                            TimeSegments2ZeroFile = c(), do.imp = TRUE,
@@ -99,7 +100,8 @@ load_params = function(group = c("sleep", "metrics", "rawdata",
                            excludelast.part4 = FALSE, max_calendar_days = 0,
                            nonWearEdgeCorrection = TRUE, nonwear_approach = "2023",
                            segmentWEARcrit.part5 = 0.5,
-                           segmentDAYSPTcrit.part5 = c(0.9, 0))
+                           segmentDAYSPTcrit.part5 = c(0.9, 0),
+                           study_dates_file = c(), study_dates_dateformat = "%d-%m-%Y")
   }
   if ("output" %in% group) {
     params_output = list(epochvalues2csv = FALSE, save_ms5rawlevels = FALSE,

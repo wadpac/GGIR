@@ -17,7 +17,7 @@
 \usage{
   g.analyse(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                       params_general = c(), params_cleaning = c(),
-                      quantiletype = 7, myfun = c(), ...)
+                      quantiletype = 7, myfun = c(), ID, ...)
 }
 \arguments{
   \item{I}{
@@ -51,6 +51,9 @@
   \item{myfun}{
     External function object to be applied to raw data, see \link{g.getmeta}.
   }
+  \item{ID}{
+    ID extracted in g.part2.
+  }
   \item{...}{
      Any argument used in the previous version of g.analyse, which will now
      be used to overrule the arguments specified with the parameter objects.
@@ -82,11 +85,11 @@
     scale = c(1, 1, 1), tempoffset = c(0, 0, 0))
   }
   #impute meta-data:
-  IMP = g.impute(M = data.getmeta, I = data.inspectfile)
+  IMP = g.impute(M = data.getmeta, I = data.inspectfile, ID = "01wk0")
   
   #analyse and produce summary:
   A = g.analyse(I = data.inspectfile, C = data.calibrate,
-  M = data.getmeta, IMP)
+  M = data.getmeta, IMP, ID = "01wk0")
 }
 \keyword{internal}
 \author{
