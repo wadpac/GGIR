@@ -26,6 +26,10 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
   # identify individual reports
   reports = dir(file.path(metadatadir, "results"), full.names = TRUE, 
                 pattern = "^part5.*\\.csv$")
+  # Select one daysummary, personsummary, and Segment report as variables are the same across configurations
+  ds = grep("^part5_daysummary", basename(reports))[1]
+  ps = grep("^part5_personsummary", basename(reports))[1]
+  reports = reports[c(ds, ps)]
   # read col names of each report and derive definitions
   for (ri in 1:length(reports)) {
     # read report
@@ -246,6 +250,8 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
     directory = file.path(metadatadir, "results", "variableDictionary/")
     if (!dir.exists(directory)) dir.create(directory)
     fn = gsub("part5_", "part5_dictionary_", basename(reports[ri]))
+    fn = unlist(strsplit(fn, "_MM|_WW|_OO"))[1]
+    fn = paste0(fn, ".csv")
     data.table::fwrite(dictionary, file = file.path(directory, fn), 
                        row.names = FALSE, na = "", sep = sep_reports)
   }
