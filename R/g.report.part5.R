@@ -599,7 +599,9 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                               | nom == "acc_available"
                               | nom == "guider" | nom == "L5TIME" | nom == "M5TIME"
                               | nom == "L10TIME" | nom == "M10TIME"
-                              | nom == "acc_available" | nom == "daytype")
+                              | nom == "acc_available" | nom == "daytype"
+                              | nom %in% paste0("sleeplog_used_", c("pla", "wei", "WD", "WE"))
+                              | nom %in% paste0("window_number_", c("pla", "wei", "WD", "WE")))
                   names(OF4)[which(names(OF4) == "weekday")] = "startday"
                   OF4 = OF4[,-cut]
                   for (col4 in 1:ncol(OF4)) {
