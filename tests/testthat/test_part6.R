@@ -45,9 +45,10 @@ test_that("Part 6 with household co-analysis", {
           params_247 = params_247, verbose = FALSE)
   
   # Check aligned time series output file
-  path_to_ts = paste0(metadatadir, "/results/part6HouseholdCoAnalysis/alignedTimeseries/timeseries_HID_900.csv")
+  path_to_ts = paste0(metadatadir, "/results/part6HouseholdCoAnalysis/alignedTimeseries/timeseries_HID_900.RData")
   expect_true(file.exists(path_to_ts))
-  TS = read.csv(path_to_ts)
+  load(path_to_ts)
+  TS = alignedTimeseries
   expect_equal(nrow(TS), 10032)
   expect_equal(ncol(TS), 43)
   expect_equal(sum(TS$ACC.001[1000:1200]), 840.91)

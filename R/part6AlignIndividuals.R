@@ -3,7 +3,6 @@ part6AlignIndividuals = function(GGIR_ts_dir = NULL, outputdir = NULL,
   if (verbose == TRUE) {
     cat("\n  Align individuals:")
   }
-
   #======================================================================
   # identify houdesholds and IDs based on filenames and put these in table
   path_timeseries = GGIR_ts_dir
@@ -60,16 +59,19 @@ part6AlignIndividuals = function(GGIR_ts_dir = NULL, outputdir = NULL,
         if (length(msfile) > 0) {
           load(msfile)
           if (all(c("lightmean", "lightpeak", "temperaturemean") %in% colnames(M$metalong))) {
-            M$metalong$timestamp = as.POSIXct(M$metalong$timestamp, format = "%Y-%m-%dT%H:%M:%S%z", tz = desiredtz, origin = "1970-1-1")
+            M$metalong$timestamp = as.POSIXct(M$metalong$timestamp,
+                                              format = "%Y-%m-%dT%H:%M:%S%z", tz = desiredtz, origin = "1970-1-1")
             M$metalong$timenum = as.numeric(M$metalong$timestamp)
             
             epochSizeMetalong = mean(abs(diff(M$metalong$timenum[1:3])))
             epochSizeMS5 = mean(abs(diff(D$timenum[1:3])))
             if (epochSizeMetalong > epochSizeMS5) { # If long epoch size in part 1 was larger than 60 seconds 
-                          M$metalong = M$metalong[rep(1:nrow(M$metalong), each = epochSizeMetalong / epochSizeMS5), ]
+                          M$metalong = M$metalong[rep(1:nrow(M$metalong),
+                                                      each = epochSizeMetalong / epochSizeMS5), ]
               newTimenum = seq(M$metalong$timenum[1], M$metalong$timenum[nrow(M$metalong)] + epochSizeMetalong, by = epochSizeMS5)
               M$metalong$timenum = newTimenum[1:nrow(M$metalong)]
-              M$metalong$timestamp = as.POSIXct(M$metalong$timenum, origin = "1970-1-1", tz = desiredtz)
+              M$metalong$timestamp = as.POSIXct(M$metalong$timenum,
+                                                origin = "1970-1-1", tz = desiredtz)
             }
             if ("lightpeak" %in% colnames(D)) D = D[, -which(colnames(D) == "lightpeak")]
             D = merge(D, M$metalong[,c("lightmean", "lightpeak", "temperaturemean", "timenum")], by = "timenum")
@@ -112,28 +114,34 @@ part6AlignIndividuals = function(GGIR_ts_dir = NULL, outputdir = NULL,
       out = out[order(out$timenum),]
       
       # reshape to be in wide format to ease doing pairwise comparisons
-      out2 = reshape(out,
+      alignedTimeseries = reshape(out,
                      idvar = c("timenum", "HID"),
                      timevar = "MID",
                      direction = "wide")
       colnames = paste0("ACC.", uMID)
       
-      out2$time_POSIX = as.POSIXct(out2$timenum, tz = "America/Halifax", origin = "1970-01-01")
+      alignedTimeseries$time_POSIX = as.POSIXct(alignedTimeseries$timenum,
+                                                tz = "America/Halifax", origin = "1970-01-01")
       
       # Add indicator of valid number of family members per time point
-      out2$N_valid_hhmembers = rowSums(out2[,grep(pattern = "validepoch", x = names(out2), value = FALSE)], na.rm = TRUE)
+      alignedTimeseries$N_valid_hhmembers = rowSums(alignedTimeseries[,grep(pattern = "validepoch",
+                                                                            x = names(alignedTimeseries), value = FALSE)],
+                                                    na.rm = TRUE)
       # Add indicator of valid data for a pair of family members per time point
       varn_remember = c()
       Nmembers = length(uMID)
       for (pa1 in 1:Nmembers) {
         for (pa2 in 1:Nmembers) {
           if (pa1 != pa2 & pa2 > pa1) {
-            col1 = grep(pattern = paste0("validepoch.", uMID[pa1]), x = names(out2), value = FALSE)
-            col2 = grep(pattern = paste0("validepoch.", uMID[pa2]), x = names(out2), value = FALSE)
-            validpair = ifelse(test = rowSums(out2[, c(col1, col2)], na.rm = TRUE) == 2, yes = TRUE, no = FALSE)
-            out2$new = validpair
+            col1 = grep(pattern = paste0("validepoch.", uMID[pa1]),
+                        x = names(alignedTimeseries), value = FALSE)
+            col2 = grep(pattern = paste0("validepoch.", uMID[pa2]),
+                        x = names(alignedTimeseries), value = FALSE)
+            validpair = ifelse(test = rowSums(alignedTimeseries[, c(col1, col2)], na.rm = TRUE) == 2,
+                               yes = TRUE, no = FALSE)
+            alignedTimeseries$new = validpair
             varname = paste0("validpair_",uMID[pa1],"_", uMID[pa2])
-            colnames(out2)[which(colnames(out2) == "new")] = varname
+            colnames(alignedTimeseries)[which(colnames(alignedTimeseries) == "new")] = varname
             varn_remember = c(varn_remember, varname)
           }
         }
@@ -149,10 +157,10 @@ part6AlignIndividuals = function(GGIR_ts_dir = NULL, outputdir = NULL,
       colorsP = currentColorPalette[(Nmembers + 1):(Nmembers + Npairs)]
       
       par(mfrow = c(2,1))
-      plot(out2$time_POSIX, out2[, colnames[1]], type = "l", col = colorsM[1],
+      plot(alignedTimeseries$time_POSIX, alignedTimeseries[, colnames[1]], type = "l", col = colorsM[1],
            main = paste0("Houshold ", uHID[h]), xlab = "", ylab = "ACC", bty = "l")
       for (jj in 2:length(colnames)) {
-        lines(out2$timenum, out2[, colnames[jj]], type = "l", col = colorsM[jj])
+        lines(alignedTimeseries$timenum, alignedTimeseries[, colnames[jj]], type = "l", col = colorsM[jj])
       }
       legend("topright", legend = colnames,
              col = colorsM[1:length(colnames)], lty = 1, cex = 0.6, bg = "white", ncol = 3)
@@ -160,27 +168,39 @@ part6AlignIndividuals = function(GGIR_ts_dir = NULL, outputdir = NULL,
       
       for (vn in 1:Npairs) {
         if (vn == 1) {
-          plot(out2$time_POSIX, out2[,varn_remember[vn]] - 0.05 + (vn/50), type = "l",
+          plot(alignedTimeseries$time_POSIX, alignedTimeseries[,varn_remember[vn]] - 0.05 + (vn/50), type = "l",
                col = colorsP[vn], ylim = c(0, 1.5),
                xlab = "", ylab = "Valid pair", bty = "l",
                axes = FALSE, lty = LTY[vn], lwd = 1.3)
         } else {
-          lines(out2$time_POSIX, out2[,varn_remember[vn]] - 0.05 + (vn/50), type = "l",
+          lines(alignedTimeseries$time_POSIX, alignedTimeseries[,varn_remember[vn]] - 0.05 + (vn/50), type = "l",
                 col = colorsP[vn], lty = LTY[vn], lwd = 1.3)
         }
       }
       axis(side = 2, at = c(0, 1), labels = c("FALSE", "TRUE"))
       legend("topright", legend = gsub(pattern = "valid", replacement = "", x = varn_remember),
              col = colorsP[1:Npairs], lty = LTY[1:Npairs], cex = 0.6, bg = "white", ncol = 3)
-      for (i in 1:ncol(out2)) {
-        NA_NaN = which(is.na(out2[, i]))
-        out2[NA_NaN, i] = ""
+      for (i in 1:ncol(alignedTimeseries)) {
+        NA_NaN = which(is.na(alignedTimeseries[, i]))
+        alignedTimeseries[NA_NaN, i] = ""
       }
       rm(currentColorPalette)
+
+      # Convert character to appropriate data format
+      numericColumns = grep(pattern = "onset|wake|valid_hhmembers|epoch|temperature|light|class|SleepPeriod|ACC|window|guider", x = colnames(alignedTimeseries))
+      for (jj in numericColumns) {
+        alignedTimeseries[,jj] = as.numeric(alignedTimeseries[ ,jj])
+      }
+      boolColumns = grep(pattern = "validpair", x = colnames(alignedTimeseries))
+      for (jj in boolColumns) {
+        alignedTimeseries[,jj] = as.logical(alignedTimeseries[ ,jj])
+      }
       # Store data
-      write.csv(x = out2, file = paste0(path_results, "/alignedTimeseries/timeseries_HID_",uHID[h],".csv"), row.names = FALSE)
+      save(alignedTimeseries,file = paste0(path_results, "/alignedTimeseries/timeseries_HID_", uHID[h], ".RData"))
+      # write.csv(x = alignedTimeseries,
+      #           file = paste0(path_results, "/alignedTimeseries/timeseries_HID_",uHID[h],".csv"),
+      #           row.names = FALSE)
     }
-    
   }
   dev.off()
 }

@@ -57,15 +57,15 @@ part6PairwiseAggregation = function(outputdir = NULL, desiredtz = "", verbose = 
   if (length(fns) > 0) {
     for (i in 1:length(fns)) {
       # load entire data for household
-      D = read.csv(file = fns[i])
-      uHID = unique(D$HID)
+      load(file = fns[i])
+      uHID = unique(alignedTimeseries$HID)
       if (verbose == TRUE) cat(paste0("\n    Household: ", uHID))
       #unique member IDs
-      uMID = gsub(pattern = "ACC.", replacement = "", x = grep(pattern = "ACC", x = colnames(D), value = TRUE))
+      uMID = gsub(pattern = "ACC.", replacement = "", x = grep(pattern = "ACC", x = colnames(alignedTimeseries), value = TRUE))
       #unique pair IDs
-      uPID = gsub(pattern = "validpair_", replacement = "", x = grep(pattern = "validpair", x = colnames(D), value = TRUE))
-      D$time_POSIX = as.POSIXct(D$timenum, tz = desiredtz, origin = "1970-01-01")
-      D$date = as.character(as.Date(D$time_POSIX))
+      uPID = gsub(pattern = "validpair_", replacement = "", x = grep(pattern = "validpair", x = colnames(alignedTimeseries), value = TRUE))
+      alignedTimeseries$time_POSIX = as.POSIXct(alignedTimeseries$timenum, tz = desiredtz, origin = "1970-01-01")
+      alignedTimeseries$date = as.character(as.Date(alignedTimeseries$time_POSIX))
       Npairs = length(uPID)
       pairsum_final = NULL
       if (length(uPID) > 0) {
@@ -76,7 +76,7 @@ part6PairwiseAggregation = function(outputdir = NULL, desiredtz = "", verbose = 
           m1 = pp[1]    
           m2 = pp[2]
           # simplify D to only columns of interest
-          dataForPair = D[, grep(pattern = paste0("time|date|HID|",m1,"|",m2), x = colnames(D)), ] #guider|window|valid
+          dataForPair = alignedTimeseries[, grep(pattern = paste0("time|date|HID|",m1,"|",m2), x = colnames(alignedTimeseries)), ] #guider|window|valid
           validpaircol = grep(pattern = uPID[j], x = colnames(dataForPair)) # column index where the indicator of valid/invalid can be found
           invalidepochs = which(dataForPair[,validpaircol] == FALSE)
           # Turn all data invalid
