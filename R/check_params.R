@@ -270,6 +270,18 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                                                        params_phyact[["threshold.vig"]], sep = "_")
     }
   }
+  # params output 
+  if (length(params_output) > 0) {
+    if (!all(params_output[["save_ms5raw_format"]] %in% c("RData", "csv"))) {
+      formats2keep = which(params_output[["save_ms5raw_format"]] %in% c("RData", "csv"))
+      if (length(formats2keep) > 0) {
+        params_output[["save_ms5raw_format"]] = params_output[["save_ms5raw_format"]][formats2keep]
+      } else {
+        params_output[["save_ms5raw_format"]] = "csv"# specify as csv if user does not clearly specify format
+      }
+    }
+  }
+  # params 247
   if (length(params_247) > 0) {
     if (length(params_247[["iglevels"]]) > 0) {
       if (length(params_247[["iglevels"]]) == 1) {
@@ -291,6 +303,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         params_247[["LUX_day_segments"]] = c(params_247[["LUX_day_segments"]], 24)
       }
     }
+    # params 247 & params output
     if (params_247[["part6HCA"]] == TRUE) {
       # Add RData because part 6 will need it
       params_output[["save_ms5raw_format"]] = unique(c(params_output[["save_ms5raw_format"]], "RData"))
