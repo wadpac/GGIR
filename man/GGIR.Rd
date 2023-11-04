@@ -16,7 +16,7 @@ GGIR(mode = 1:5,
      outputdir = c(),
      studyname = c(),
      f0 = 1, f1 = 0,
-     do.report = c(2, 4, 5),
+     do.report = c(2, 4, 5, 6),
      configfile = c(),
      myfun = c(),
      verbose = TRUE, ...)
@@ -56,8 +56,8 @@ GGIR(mode = 1:5,
     File index to finish with (defaults to number of files available).
   }
   \item{do.report}{
-    Numeric (default = c(2, 4, 5)).
-    For which parts to generate a summary spreadsheet: 2, 4, and/or 5. Default is c(2, 4, 5).
+    Numeric (default = c(2, 4, 5, 6)).
+    For which parts to generate a summary spreadsheet: 2, 4, 5, and/or 6. Default is c(2, 4, 5, 6).
     A report will be generated based on the available milestone data. When creating
     milestone data with multiple machines it is advisable to turn the report
     generation off when generating the milestone data, value = c(),
