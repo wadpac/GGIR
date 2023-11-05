@@ -201,5 +201,5 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
                      blockLengthSeconds = (end - start) / sf,
                      timegaps_n = NumberOfGaps, timegaps_min = GapsLength/sf/60)
   # return data and QClog
-  return(list(P = x, QClog = QClog))
+  return(list(x = x, QClog = QClog))
 }
