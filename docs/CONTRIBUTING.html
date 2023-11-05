@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.10-3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,7 +107,7 @@
 <li>add your own tests (if necessary);</li>
 <li>update or expand the documentation, see <a href="#package-documentation">package documentation guidelines</a>;</li>
 <li>make sure the release notes in <code>inst/NEWS.Rd</code> are updated;</li>
-<li>add your name to the contributors lists in the <code>DESCRIPTION</code> and <code>CITATION.cff</code> files;</li>
+<li>add your name to the contributors lists in the <code>DESCRIPTION</code> file;</li>
 <li>push your feature branch to (your fork of) the GGIR repository on GitHub;</li>
 <li>create the pull request, e.g. following the instructions <a href="https://help.github.com/articles/creating-a-pull-request/" class="external-link">here</a>. The pull request template includes a checklist with the above items.</li>
 </ol><p>In case you feel like you’ve made a valuable contribution, but you don’t know how to write or run tests for it, or how to generate the documentation: don’t let this discourage you from making the pull request; we can help you! Just go ahead and submit the pull request, but keep in mind that you might be asked to append additional commits to your pull request.</p>
@@ -163,7 +163,7 @@
 <li>Optionally you may remove the Rmd file corresponding to the chapter, but only by doing the step 1, the chapter will not appear in the github.io website.</li>
 <li>Run the <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code> function.</li>
 </ol><p><strong>To edit the name of a chapter</strong></p>
-<p>Chapter names are defined</p>
+<p>Chapter names are defined twice, in the <a href="_pkgdown.yml">_pkgdown.yml</a> file and in the vignette file itself. You need to make sure both titles match as the first will be used in the drop-down list in the github.io website and the other in the specific page for the chapter.</p>
 </div>
 <div class="section level4">
 <h4 id="adding-the-changes-to-the-master-branch">Adding the changes to the master branch<a class="anchor" aria-label="anchor" href="#adding-the-changes-to-the-master-branch"></a></h4>

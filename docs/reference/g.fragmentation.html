@@ -14,7 +14,7 @@ accounted for before the data enters the function."><meta name="twitter:card" co
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.10-3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -120,102 +120,102 @@ accounted for before the data enters the function.</p>
 <p>List with Character object showing how decimals are separated</p>
 <dl><dt>TP_PA2IN</dt>
 <dd><p>Transition probability physical activity to inactivity</p></dd>
-
-<dt>TP_IN2PA</dt>
+</dl><p>.</p>
+<dl><dt>TP_IN2PA</dt>
 <dd><p>Transition probability physical inactivity to activity</p></dd>
 
-<dt>Nfrag_IN2LIPA</dt>
+  <dt>Nfrag_IN2LIPA</dt>
 <dd><p>Number of inacitivty fragments succeeded by LIPA
-(light physical activity)</p></dd>
+  (light physical activity)</p></dd>
 
-<dt>TP_IN2LIPA</dt>
+  <dt>TP_IN2LIPA</dt>
 <dd><p>Transition probability physical inactivity to LIPA</p></dd>
 
-<dt>Nfrag_IN2MVPA</dt>
+  <dt>Nfrag_IN2MVPA</dt>
 <dd><p>Number of inacitivty fragments succeeded by MVPA
-(moderate or vigorous physical activity)</p></dd>
+  (moderate or vigorous physical activity)</p></dd>
 
-<dt>TP_IN2MVPA</dt>
+  <dt>TP_IN2MVPA</dt>
 <dd><p>Transition probability physical inactivity to MVPA</p></dd>
 
-<dt>Nfrag_MVPA</dt>
+  <dt>Nfrag_MVPA</dt>
 <dd><p>Number of MVPA fragments</p></dd>
 
-<dt>Nfrag_LIPA</dt>
+  <dt>Nfrag_LIPA</dt>
 <dd><p>Number of LIPA fragments</p></dd>
 
-<dt>mean_dur_MVPA</dt>
+  <dt>mean_dur_MVPA</dt>
 <dd><p>mean MVPA fragment duration</p></dd>
 
-<dt>mean_dur_LIPA</dt>
+  <dt>mean_dur_LIPA</dt>
 <dd><p>mean LIPA fragment duration</p></dd>
 
-<dt>Nfrag_IN</dt>
+  <dt>Nfrag_IN</dt>
 <dd><p>Number of inactivity fragments</p></dd>
 
-<dt>Nfrag_PA</dt>
+  <dt>Nfrag_PA</dt>
 <dd><p>Number of activity fragments</p></dd>
 
-<dt>mean_dur_IN</dt>
+  <dt>mean_dur_IN</dt>
 <dd><p>mean duration inactivity fragments</p></dd>
 
-<dt>mean_dur_PA</dt>
+  <dt>mean_dur_PA</dt>
 <dd><p>mean duration activity fragments</p></dd>
 
-<dt>Gini_dur_IN</dt>
+  <dt>Gini_dur_IN</dt>
 <dd><p>Gini index corresponding to inactivity fragment durations</p></dd>
 
-<dt>Gini_dur_PA</dt>
+  <dt>Gini_dur_PA</dt>
 <dd><p>Gini index corresponding to activity fragment durations</p></dd>
 
-<dt>CoV_dur_IN</dt>
+  <dt>CoV_dur_IN</dt>
 <dd><p>Coefficient of Variance corresponding to inactivity fragment durations</p></dd>
 
-<dt>CoV_dur_PA</dt>
+  <dt>CoV_dur_PA</dt>
 <dd><p>Coefficient of Variance corresponding to activity fragment durations</p></dd>
 
-<dt>alpha_dur_IN</dt>
+  <dt>alpha_dur_IN</dt>
 <dd><p>Alpha of the fitted power distribution through inactivity fragment durations</p></dd>
 
-<dt>alpha_dur_PA</dt>
+  <dt>alpha_dur_PA</dt>
 <dd><p>Alpha of the fitted power distribution through activity fragment durations</p></dd>
 
-<dt>x0.5_dur_IN</dt>
+  <dt>x0.5_dur_IN</dt>
 <dd><p>x0.5 corresponding to alpha_dur_IN</p></dd>
 
-<dt>x0.5_dur_PA</dt>
+  <dt>x0.5_dur_PA</dt>
 <dd><p>x0.5 corresponding to alpha_dur_PA</p></dd>
 
-<dt>W0.5_dur_IN</dt>
+  <dt>W0.5_dur_IN</dt>
 <dd><p>W0.5 corresponding to alpha_dur_IN</p></dd>
 
-<dt>W0.5_dur_PA</dt>
+  <dt>W0.5_dur_PA</dt>
 <dd><p>W0.5 corresponding to alpha_dur_PA</p></dd>
 
-<dt>NFragPM_IN</dt>
+  <dt>NFragPM_IN</dt>
 <dd><p>Number of IN fragments per minutes in IN</p></dd>
 
-<dt>NFragPM_PA</dt>
+  <dt>NFragPM_PA</dt>
 <dd><p>Number of PA fragments per minutes in PA</p></dd>
 
-<dt>SD_dur_IN</dt>
+  <dt>SD_dur_IN</dt>
 <dd><p>Standard deviation in the duration of inactivity fragments</p></dd>
 
-<dt>SD_dur_PA</dt>
+  <dt>SD_dur_PA</dt>
 <dd><p>Standard deviation in the duration of physical activity fragments</p></dd>
-
 
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>See package vignette for description of fragmentation metrics.
-In short, abbreviation "TP" refers to transition probality metrics,
-abbreviation "CoV" refers to Coefficient of Variance, and
-metric "NFragPM" refers to the Number of fragments per minute.</p>
+  In short, abbreviation "TP" refers to transition probality metrics,
+  abbreviation "CoV" refers to Coefficient of Variance, and
+  metric "NFragPM" refers to the Number of fragments per minute.</p>  
 <p>Regarding the Lnames argument. The class names included in this are categorised
-as follows:</p><ul><li><p>Inactive - if name includes the character strings "day_IN_unbt" or "day_IN_bts".</p></li>
-<li><p>LIPA - If name includes the character strings "day_LIG_unbt" or "day_LIG_bts".</p></li>
-<li><p>MVPA - If name includes the character strings "day_MOD_unbt", "day_VIG_unbt", or "day_MVPA_bts"</p></li>
+  as follows:</p><ul><li><p>Inactive, if name includes the character strings "day_IN_unbt" or "day_IN_bts"</p></li>
+<li><p>LIPA, if name includes the character strings "day_LIG_unbt" or "day_LIG_bts"</p></li>
+<li><p>MVPA, if name includes the character strings "day_MOD_unbt", "day_VIG_unbt", 
+    or "day_MVPA_bts"</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>

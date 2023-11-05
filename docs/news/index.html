@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.10-3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,13 +76,34 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.0-1" id="changes-in-ggir-version-30-1">CHANGES IN GGIR VERSION 3.0-1<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-30-1"></a></h2>
+<ul><li><p>Part 2: Added possibility to csv file with date-oriented definition of study protocol <a href="https://github.com/wadpac/GGIR/issues/943" class="external-link">#943</a></p></li>
+<li><p>Part 5: New function to provide definition of the variable names in part 5 reports <a href="https://github.com/wadpac/GGIR/issues/938" class="external-link">#938</a></p></li>
+<li><p>Part 2: Bug fix in csv report generation when appending part 2 milestone data with differing number of columns <a href="https://github.com/wadpac/GGIR/issues/951" class="external-link">#951</a></p></li>
+<li><p>Part 1: Bug fix in gt3x data reading by avoiding duplication of seconds when appending chunks of data <a href="https://github.com/wadpac/GGIR/issues/952" class="external-link">#952</a></p></li>
+<li><p>Part 1 + 2: Log information regarding number of time gaps and total time imputed with function g.imputeTimeGaps <a href="https://github.com/wadpac/GGIR/issues/571" class="external-link">#571</a></p></li>
+<li><p>Part 6: Added as a new part with for now only Household co-analysis and Cosinor analysis</p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.0-0" id="changes-in-ggir-version-30-0">CHANGES IN GGIR VERSION 3.0-0<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-30-0"></a></h2><p class="text-muted">CRAN release: 2023-10-16</p>
+<ul><li><p>Part 1 and 2: Change default value for nonwear_approach to “2023” which labels the entire window as nonwear if conditions are met. This instead of only the middle 15 minutes as is the case for “2013” setting. Further, setting “2023” now uses a 5 Hertz version of the signals for non-wear detection, for clipping detection the code uses the original signal.</p></li>
+<li><p>Part 2: Move cosinor analysis code to its own function in order to ease re-using it in both part 2 and part 6.</p></li>
+<li><p>Part2: Expand cosinor analysis with R2</p></li>
+<li><p>Part 2: Arguments hrs.del.start and hrs.del.end when combined with strategy = 3 and strategy = 5 now count relative to start and end of the most active time window as identified. <a href="https://github.com/wadpac/GGIR/issues/905" class="external-link">#905</a></p></li>
+<li><p>Part 5: Change default for segmentDAYSPTcrit.part5 from c(0,0) to c(0, 0.9) and now prohibiting the use of c(0, 0) as it gives biased estimates. We knew this, but some users started using the default without attempting to understand it, by which it seems necessary to force a sensible default. <a href="https://github.com/wadpac/GGIR/issues/940" class="external-link">#940</a></p></li>
+<li><p>Add contributing guidelines for github.io documentation <a href="https://github.com/wadpac/GGIR/issues/923" class="external-link">#923</a></p></li>
+<li><p>Part 5: Added optioned “OO” to argument timewindow, which defines windows from sleep Onset to sleep Onset <a href="https://github.com/wadpac/GGIR/issues/931" class="external-link">#931</a></p></li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.10-4" id="changes-in-ggir-version-210-4">CHANGES IN GGIR VERSION 2.10-4<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-210-4"></a></h2>
 <ul><li><p>Part 4: Now better able to handle nights without sustained inactivity bouts (rest) <a href="https://github.com/wadpac/GGIR/issues/911" class="external-link">#911</a></p></li>
 <li><p>Part 5: Function g.fragmentation code cleaned up, TP formulas revised following feedback Ian Danilevicz, and code now also produces sleep fragmentation <a href="https://github.com/wadpac/GGIR/issues/817" class="external-link">#817</a></p></li>
 <li><p>Part 1: Fixed issue <a href="https://github.com/wadpac/GGIR/issues/914" class="external-link">#914</a> relating to specifying timezone for processing ad-hoc csv format raw data.</p></li>
 <li><p>Part 1: Improved recognition of ActiGraph csv that occassionally confused for Axivity csv <a href="https://github.com/wadpac/GGIR/issues/918" class="external-link">#918</a></p></li>
+<li><p>Part 1: Added argument rmc.scalefactor.acc to be used by read.myacc.csv <a href="https://github.com/wadpac/GGIR/issues/887" class="external-link">#887</a></p></li>
+<li><p>Vignette: Expanded with paragraph on minimum recording duration <a href="https://github.com/wadpac/GGIR/issues/835" class="external-link">#835</a></p></li>
+<li><p>Part 4: More informative error message when advanced sleep log has duplicate or missing dates <a href="https://github.com/wadpac/GGIR/issues/925" class="external-link">#925</a></p></li>
 <li><p>Fix recently introduced bug where GGIR environment was not exported to cluster in GGIR part 1, 2, 3, and 5 <a href="https://github.com/wadpac/GGIR/issues/910" class="external-link">#910</a></p></li>
-<li><p>Add contributing guidelines for github.io documentation <a href="https://github.com/wadpac/GGIR/issues/923" class="external-link">#923</a></p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.10-3" id="changes-in-ggir-version-210-3">CHANGES IN GGIR VERSION 2.10-3<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-210-3"></a></h2>

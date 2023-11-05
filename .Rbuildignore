@@ -12,3 +12,4 @@ RELEASE_CYCLE.md
 ^pkgdown$
 ^vignettes/chapter*.Rmd
 ^dev-functions$
+.zenodo.json

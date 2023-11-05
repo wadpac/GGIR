@@ -1,0 +1,24 @@
+{
+  "creators": [
+    {
+      "affiliation": "Accelting",
+      "name": "van Hees, Vincent",
+      "orcid": "0000-0003-0182-9008"
+    },
+    {
+      "affiliation": "University of Granada",
+      "name": "Migueles, Jairo H.",
+      "orcid": "0000-0003-0366-6935"
+    }
+  ],
+  "description": "Converts raw data from wearables into insightful reports for researchers investigating human daily physical activity and sleep.",
+  "keywords": [
+    "sleep research",
+    "accelerometer",
+    "physical activity research"
+  ],
+  "license": {
+    "id": "Apache-2.0"
+  },
+  "title": "GGIR"
+}

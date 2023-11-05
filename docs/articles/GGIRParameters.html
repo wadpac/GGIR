@@ -29,7 +29,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.10-3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -108,7 +108,7 @@
 
     
     
-<p><img src="../../../R%20pkgs/GGIR/articles/GGIR-MASTERLOGO-RGB.png" width="60%" style="border: 0; padding:20px"></p>
+<p><img src="GGIR-MASTERLOGO-RGB.png" width="60%" style="border: 0; padding:20px"></p>
 <p>See also complementary vignettes on: <a href="https://cran.r-project.org/package=GGIR/vignettes/GGIR.html" class="external-link">General
 introduction to GGIR</a>, <a href="https://CRAN.R-project.org/package=GGIR/vignettes/CutPoints.html" class="external-link">Cut-points</a>,
 <a href="https://CRAN.R-project.org/package=GGIR/vignettes/TutorialDaySegmentAnalyses.html" class="external-link">Day
@@ -1102,13 +1102,13 @@ of files available).</p>
 <div class="section level4">
 <h4 class="unnumbered" id="do-report">do.report<a class="anchor" aria-label="anchor" href="#do-report"></a>
 </h4>
-<p>Numeric (default = c(2, 4, 5)). For which parts to generate a summary
-spreadsheet: 2, 4, and/or 5. Default is c(2, 4, 5). A report will be
-generated based on the available milestone data. When creating milestone
-data with multiple machines it is advisable to turn the report
-generation off when generating the milestone data, value = c(), and then
-to merge the milestone data and turn report generation back on while
-setting overwrite to FALSE.</p>
+<p>Numeric (default = c(2, 4, 5, 6)). For which parts to generate a
+summary spreadsheet: 2, 4, 5, and/or 6. Default is c(2, 4, 5, 6). A
+report will be generated based on the available milestone data. When
+creating milestone data with multiple machines it is advisable to turn
+the report generation off when generating the milestone data, value =
+c(), and then to merge the milestone data and turn report generation
+back on while setting overwrite to FALSE.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="configfile">configfile<a class="anchor" aria-label="anchor" href="#configfile"></a>
@@ -1585,6 +1585,13 @@ the data block will be imputed by lack of movement with gravitational
 oriationed guessed from most recent valid data block. Only applicable to
 Axivity .cwa data.</p>
 </div>
+<div class="section level4">
+<h4 class="unnumbered" id="rmc-scalefactor-acc">rmc.scalefactor.acc<a class="anchor" aria-label="anchor" href="#rmc-scalefactor-acc"></a>
+</h4>
+<p>Numeric value (default 1) to scale the acceleration signals via
+multiplication. For example, if data is provided in m/s2 then by setting
+this to 1/9.81 we would derive gravitational units.</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="metrics-parameters">Metrics Parameters<a class="anchor" aria-label="anchor" href="#metrics-parameters"></a>
@@ -1882,23 +1889,33 @@ average day).</p>
 <div class="section level4">
 <h4 class="unnumbered" id="ndayswindow">ndayswindow<a class="anchor" aria-label="anchor" href="#ndayswindow"></a>
 </h4>
-<p>Numeric (default = 7). If strategy is set to 3 or 5, then this is the
-size of the window as a number of days. For strategy 3 value can be
-fractional, e.g. 7.5, while for strategy 5 it needs to be an
-integer.</p>
+<p>Numeric (default = 7). If data_masking_strategy is set to 3 or 5,
+then this is the size of the window as a number of days. For
+data_masking_strategy 3 value can be fractional, e.g. 7.5, while for
+data_masking_strategy 5 it needs to be an integer.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="strategy">strategy<a class="anchor" aria-label="anchor" href="#strategy"></a>
 </h4>
+<p>Numeric (default = 1). See data_masking_strategy below.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="data_masking_strategy">data_masking_strategy<a class="anchor" aria-label="anchor" href="#data_masking_strategy"></a>
+</h4>
 <p>Numeric (default = 1). How to deal with knowledge about study
-protocol. strategy = 1 means select data based on hrs.del.start and
-hrs.del.end. strategy = 2 makes that only the data between the first
-midnight and the last midnight is used. strategy = 3 only selects the
-most active X days in the file where X is specified by argument
-ndayswindow, where the days are a series of 24-h blocks starting any
-time in the day. strategy = 4 to only use the data after the first
-midnight. strategy = 5 is similar to strategy = 3, but it selects X
-complete calendar days where X is specified by argument ndayswindow.</p>
+protocol. data_masking_strategy = 1 means select data based on
+hrs.del.start and hrs.del.end. data_masking_strategy = 2 makes that only
+the data between the first midnight and the last midnight is used.
+data_masking_strategy = 3 selects the most active X days in the file
+where X is specified by argument ndayswindow, where the days are a
+series of 24-h blocks starting any time in the day (X hours at the
+begining and end of this period can be deleted with arguments
+hrs.del.start and hrs.del.end) data_masking_strategy = 4 to only use the
+data after the first midnight. data_masking_strategy = 5 is similar to
+data_masking_strategy = 3, but it selects X complete calendar days where
+X is specified by argument ndayswindow (X hours at the begining and end
+of this period can be deleted with arguments hrs.del.start and
+hrs.del.end).</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="maxdur">maxdur<a class="anchor" aria-label="anchor" href="#maxdur"></a>
@@ -1910,14 +1927,15 @@ experiment definitely stop? (set to zero if unknown).</p>
 <h4 class="unnumbered" id="hrs-del-start">hrs.del.start<a class="anchor" aria-label="anchor" href="#hrs-del-start"></a>
 </h4>
 <p>Numeric (default = 0). How many HOURS after start of experiment did
-wearing of monitor start? Used in GGIR g.part2 when strategy = 1.</p>
+wearing of monitor start? Used in GGIR g.part2 when
+data_masking_strategy = 1.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="hrs-del-end">hrs.del.end<a class="anchor" aria-label="anchor" href="#hrs-del-end"></a>
 </h4>
 <p>Numeric (default = 0). How many HOURS before the end of the
 experiment did wearing of monitor definitely end? Used in GGIR g.part2
-when strategy = 1.</p>
+when data_masking_strategy = 1.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="includedaycrit-part5">includedaycrit.part5<a class="anchor" aria-label="anchor" href="#includedaycrit-part5"></a>
@@ -2009,7 +2027,7 @@ exercise lab data typically lasting less than a day.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="nonwear_approach">nonwear_approach<a class="anchor" aria-label="anchor" href="#nonwear_approach"></a>
 </h4>
-<p>Character (default = “2013”). Whether to use the traditional version
+<p>Character (default = “2023”). Whether to use the traditional version
 of the non-wear detection algorithm (nonwear_approach = “2013”) or the
 new version (nonwear_approach = “2023”). The 2013 version would use the
 longsize window (windowsizes[3], one hour as default) to check the
@@ -2031,11 +2049,47 @@ time should be valid.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="segmentdaysptcrit-part5">segmentDAYSPTcrit.part5<a class="anchor" aria-label="anchor" href="#segmentdaysptcrit-part5"></a>
 </h4>
-<p>Numeric vector or length 2 (default = c(0, 0)). Inclusion criteria
+<p>Numeric vector or length 2 (default = c(0.9, 0)). Inclusion criteria
 for the proportion of the segment that should be classified as day
-(awake) and spt (sleep period time) to be considered valid. Usually, one
-of the two numbers is 0, and the other defines the proportion of the
-segment that should be classified as day or spt.</p>
+(awake) and spt (sleep period time) to be considered valid. One of the
+two numbers should be 0, and the other defines the proportion of the
+segment that should be classified as day or spt, respectively. The
+default setting would focus on waking hour segments and includes all
+segments that overlap for at least 90 percent with waking hours. In
+order to shift focus to the SPT you could use c(0, 0.9) which ensures
+that all segments that overlap for at least 90 percent with the SPT are
+included. Setting both to zero would be problematic and is not allowed
+as that would introduce bias in behavioural estimates for the following
+reason: A complete segment would be averaged with an incomplete segments
+(someone going to bed or waking up in the middle of a segment) by which
+it is no longer clear whether the person is less active or sleeps more
+during that segment. Similarly it is not clear whether the person has
+more wakefulness during SPT for a segment or woke up or went to bed
+during the segment. Therefore, a minimum value of 0.5 is required but
+any value closer to 1 would be better.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="study_dates_file">study_dates_file<a class="anchor" aria-label="anchor" href="#study_dates_file"></a>
+</h4>
+<p>Character (default = c()). Full path to csv file containing the first
+and last date of the expected wear period for every study participant
+(dates are provided per individual). Expected format of the activity
+diary is: First column headers followed by one row per recording. There
+should be three columns: first column is recording ID, which needs to
+match with the ID GGIR extracts from the accelerometer file; second
+column should contain the first date of the study; and third column the
+last date of the study. Date columns should be by default in format
+“23-04-2017”, or in the date format specified by argument
+study_dates_dateformat (below). If not specified (default), then GGIR
+would use the first and last day of the recording as beginning and end
+of the study. Note that these dates are used on top of the
+data_masking_strategy selected.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="study_dates_dateformat">study_dates_dateformat<a class="anchor" aria-label="anchor" href="#study_dates_dateformat"></a>
+</h4>
+<p>Character (default = “%d-%m-%Y”). To specify the date format used in
+the study_dates_file as used by [base]strptime.</p>
 </div>
 </div>
 <div class="section level3">
@@ -2197,12 +2251,12 @@ trained with hip data in 3-3.5 olds trained with parent diary data.</p>
 <h4 class="unnumbered" id="sleepefficiency-metric">sleepefficiency.metric<a class="anchor" aria-label="anchor" href="#sleepefficiency-metric"></a>
 </h4>
 <p>Numeric (default = 1). If 1 (default), sleep efficiency is calculated
-as detected nocturnal sleep time divided by log-derived duration in
-sleep period time (considering user-reported sleep onset and wake
-times). If 2, sleep efficiency is calculated as detected nocturnal sleep
-time divided by detected duration in sleep period time plus sleep
-latency (where sleep latency refers to the difference between
-log-derived sleep onset and accelerometer-detected sleep onset).</p>
+as detected sleep time during the SPT window divided by log-derived time
+in bed. If 2, sleep efficiency is calculated as detected sleep time
+during the SPT window divided by detected duration in sleep period time
+plus sleep latency (where sleep latency refers to the difference between
+time in bed and sleep onset). sleepefficiency.metric is only considered
+when argument sleepwindowType = “TimeInBed”</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="possible_nap_edge_acc">possible_nap_edge_acc<a class="anchor" aria-label="anchor" href="#possible_nap_edge_acc"></a>
@@ -2333,6 +2387,12 @@ data.</p>
 metrics with “all”. See package vignette for description of
 fragmentation metrics.</p>
 </div>
+<div class="section level4">
+<h4 class="unnumbered" id="part6_threshold_combi">part6_threshold_combi<a class="anchor" aria-label="anchor" href="#part6_threshold_combi"></a>
+</h4>
+<p>Character (default = “40_100_120”) to indicate the threshold
+combination derived in part 5 to be used for part 6</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="parameters">24/7 Parameters<a class="anchor" aria-label="anchor" href="#parameters"></a>
@@ -2365,7 +2425,10 @@ with no activiy log data can be skipped, no need to have a column with
 the date followed by a column with the next date. If times in the
 activity diary are not multiple of the short window size (epoch length),
 the next epoch is considered (e.g., with epoch of 5 seconds, 8:00:02
-will be redefined as 8:00:05 in the activity log).</p>
+will be redefined as 8:00:05 in the activity log). When using the
+qwindow functionality in combination with GGIR part 5 then make sure to
+check that arguments segmentWEARcrit.part5 and segmentDAYSPTcrit.part5
+are specfied to your research needs.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="qlevels">qlevels<a class="anchor" aria-label="anchor" href="#qlevels"></a>
@@ -2498,8 +2561,34 @@ needs to be calculated. Now this is done with argument qwindow.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="cosinor">cosinor<a class="anchor" aria-label="anchor" href="#cosinor"></a>
 </h4>
-<p>Argument depricated after version 1.5-24. Boolean (default = FALSE).
-Whether to apply the cosinor analysis from the ActCR package.</p>
+<p>Boolean (default = FALSE). Whether to apply the cosinor analysis from
+the ActCR package.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="part6cr">part6CR<a class="anchor" aria-label="anchor" href="#part6cr"></a>
+</h4>
+<p>Boolean (default = FALSE) to indicate whether circadian rhythm
+analysis should be run by part 6.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="part6hca">part6HCA<a class="anchor" aria-label="anchor" href="#part6hca"></a>
+</h4>
+<p>Boolean (default = FALSE) to indicate whether Household Co Analysis
+should be run by part 6.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="part6window">part6Window<a class="anchor" aria-label="anchor" href="#part6window"></a>
+</h4>
+<p>Character vector with length two (default = c(“start”, “end”)) to
+indicate the start and the end of the time series to be used for
+circadian rhythm analysis in part 6. In other words, this parameters is
+not used for Household co-analysis. Alternative values are: “Wx”, “Ox”,
+“Hx”, where “x” is a number to indicat the xth wakeup, onset or hour of
+the recording. Negative values for “x” are also possible and will count
+relative to the end of the recording. For example, c(“W1”, “W-1”) goes
+from the first till the last wakeup, c(“H5”, “H-5”) ignores the first
+and last 5 hours, and c(“O2”, “W10”) goes from the second onset till the
+10th wakeup time.</p>
 </div>
 </div>
 <div class="section level3">
@@ -2544,7 +2633,8 @@ accelerometer data.</p>
 </h4>
 <p>Character (default = c(“MM”, “WW”)). In g.part5: Timewindow over
 which summary statistics are derived. Value can be “MM” (midnight to
-midnight), “WW” (waking time to waking time), or both c(“MM”,“WW”).</p>
+midnight), “WW” (waking time to waking time), “OO” (sleep onset to sleep
+onset), or any combination of them.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="viewingwindow">viewingwindow<a class="anchor" aria-label="anchor" href="#viewingwindow"></a>
@@ -2653,7 +2743,7 @@ g.part2.</p>
 visualreport = TRUE only show the windows with sufficiently valid data
 according to includedaycrit when viewingwindow = 1 or includenightcrit
 when viewingwindow = 2</p>
-<p><img src="../../../R%20pkgs/GGIR/articles/GGIR-MASTERLOGO-RGB.png" width="60%" style="border: 0; padding:20px"></p>
+<p><img src="GGIR-MASTERLOGO-RGB.png" width="60%" style="border: 0; padding:20px"></p>
 </div>
 </div>
 </div>

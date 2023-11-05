@@ -16,7 +16,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.10-3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -111,7 +111,8 @@
 <span>                          rmc.header.structure <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>                          rmc.check4timegaps <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                          rmc.col.wear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>                          rmc.doresample<span class="op">=</span><span class="cn">FALSE</span>,</span>
+<span>                          rmc.doresample <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>                          rmc.scalefactor.acc <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>                          interpolationType<span class="op">=</span><span class="fl">1</span>, </span>
 <span>                          PreviousLastValue <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>                          PreviousLastTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -230,6 +231,11 @@
   <dt>rmc.doresample</dt>
 <dd><p>Boolean to indicate whether to resample the data based on the available timestamps and extracted 
    sample rate from the file header</p></dd>
+
+  <dt>rmc.scalefactor.acc</dt>
+<dd><p>Numeric value (default 1) to scale the acceleration signals via multiplication.
+    For example, if data is provided in m/s2 then by setting this to 1/9.81
+    we would derive gravitational units.</p></dd>
 
   <dt>interpolationType</dt>
 <dd><p>Integer to indicate type of interpolation to be used when resampling time series (mainly relevant for Axivity sensors), 1=linear, 2=nearest neighbour.</p></dd>
