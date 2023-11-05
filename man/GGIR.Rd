@@ -16,7 +16,7 @@ GGIR(mode = 1:5,
      outputdir = c(),
      studyname = c(),
      f0 = 1, f1 = 0,
-     do.report = c(2, 4, 5),
+     do.report = c(2, 4, 5, 6),
      configfile = c(),
      myfun = c(),
      verbose = TRUE, ...)
@@ -56,8 +56,8 @@ GGIR(mode = 1:5,
     File index to finish with (defaults to number of files available).
   }
   \item{do.report}{
-    Numeric (default = c(2, 4, 5)).
-    For which parts to generate a summary spreadsheet: 2, 4, and/or 5. Default is c(2, 4, 5).
+    Numeric (default = c(2, 4, 5, 6)).
+    For which parts to generate a summary spreadsheet: 2, 4, 5, and/or 6. Default is c(2, 4, 5, 6).
     A report will be generated based on the available milestone data. When creating
     milestone data with multiple machines it is advisable to turn the report
     generation off when generating the milestone data, value = c(),
@@ -1310,7 +1310,8 @@ GGIR(mode = 1:5,
       }
       \item{part6Window}{
         Character vector with length two (default = c("start", "end")) to indicate
-        the start and the end of the time series to be used for circadian rhythm analysis.
+        the start and the end of the time series to be used for circadian rhythm analysis
+        in part 6. In other words, this parameters is not used for Household co-analysis.
         Alternative values are: "Wx", "Ox", "Hx", where "x" is a number to indicat
         the xth wakeup, onset or hour of the recording. Negative values for "x"
         are also possible and will count relative to the end of the recording. For example,

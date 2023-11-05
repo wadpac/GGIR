@@ -87,9 +87,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   params_phyact[["boutdur.mvpa"]] = sort(params_phyact[["boutdur.mvpa"]],decreasing = TRUE)
   params_phyact[["boutdur.lig"]] = sort(params_phyact[["boutdur.lig"]],decreasing = TRUE)
   params_phyact[["boutdur.in"]] = sort(params_phyact[["boutdur.in"]],decreasing = TRUE)
-  if (params_output[["save_ms5raw_format"]] != "RData" & params_output[["save_ms5raw_format"]] != "csv") {
-    params_output[["save_ms5raw_format"]] = "csv"# specify as csv if user does not clearly specify format
-  }
   #--------------------------------
   # get full file path and folder name if requested by end-user and keep this for storage in output
   if (params_output[["storefolderstructure"]] == TRUE) {
