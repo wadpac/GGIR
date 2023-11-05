@@ -23,66 +23,16 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y", epochSize = 5) 
   
   # Read content of activity diary file
   actlog = data.table::fread(file = qwindow, data.table = FALSE)
-  # assume ID to be in first column
-  actlog = actlog[which(actlog[,1] != ""),] # ignore rows for which there is no id
   
-  # replace cells with only a dot by empty character
-  # the documentation clearly states that no dots should be used
-  # to indeicate missing value, but this is just in case users still forget about it
-  for (jn in 1:ncol(actlog)) {
-    dotcells = which(actlog[,jn] == ".")
-    if (length(dotcells) > 0) {
-      # is.na(actlog_vec[dotcells]) = TRUE
-      actlog[dotcells, jn] = ""
-    }
-  }
-  # extract example date value
-  datecols = grep(pattern = "date|Date|DATE",  x = colnames(actlog), value = FALSE)
-  if (length(datecols) > 0) {
-    exampledates = unlist(actlog[,datecols])
-    exampledates = exampledates[which(!is.na(exampledates))]
-    
-    e1 = strsplit(exampledates, split = "/|-")
-    e1 = e1[lengths(e1) > 0L]
-    date_consistency_check = t(as.data.frame(e1))
-    numrange = apply(X = date_consistency_check, MARGIN = 2, FUN = function(x) diff(range(sapply(x, nchar))))
-    if (any(numrange > 1)) {
-      stop(paste0("\nDifferent date formats were encountered in your activity ",
-                  "log: ",qwindow,". ",
-                  "Please note that this may not be visible when you open the activity log",
-                  " in MS Excel, but it should be visible in a plain text editor. ",
-                  "To resolve this update the format for all date cells in the ",
-                  "activity log to be consistent and in line with the value of argument",
-                  " qwindow_dateformat, which is currently: ", qwindow_dateformat), call. = FALSE)
-    }
-  } else {
-    exampledates = c()
-  }
-  
-  Nhyphen = length(grep(pattern = "-", x = actlog[, datecols]))
-  Ndash = length(grep(pattern = "/", x = actlog[, datecols]))
-  if (Nhyphen > 0 & Ndash > 0) {
-    warning(paste0("\nYou may be mixing slash and hyphen separated dates ",
-                   "inside the same activity diary, which could lead to errors. ",
-                   "Please fix."),
-            call. = FALSE)
-  }
-  # Replace / by - if that is what is expected dateformat
-  if (Ndash > 0 & length(grep(pattern = "/", x = qwindow_dateformat)) == 0) {
-    for (rc in 1:ncol(actlog)) {
-      actlog[, rc] = gsub(pattern = "/", replacement = "-", x = actlog[, rc])
-    }
-  }
-  # Replace - by / if that is what is expected dateformat
-  if (Nhyphen > 0 & length(grep(pattern = "-", x = qwindow_dateformat)) == 0) {
-    for (rc in 1:ncol(actlog)) {
-      actlog[, rc] = gsub(pattern = "-", replacement = "/", x = actlog[, rc])
-    }
-  }
+  # check ID and date cols in actlog
+  actlog = check_log(actlog, dateformat = qwindow_dateformat,
+                     colid = 1, datecols = NULL, 
+                     logPath = qwindow, logtype = "activity log")
   
   # find dates
   actlog_vec = unlist(actlog) # turn into vector
   actlog_vec = sapply(actlog_vec, function(x) !all(is.na(as.Date(as.character(x),format=qwindow_dateformat))))
+  exampledates = unlist(actlog)[which(actlog_vec == TRUE)]
   Ndates = length(which(actlog_vec == TRUE))
   dim(actlog_vec) = c(nrow(actlog),ncol(actlog))
   # create new qwindow object to archive all extracted information

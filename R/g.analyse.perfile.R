@@ -271,7 +271,7 @@ g.analyse.perfile = function(I, C, metrics_nav,
       }
       vi = vi + 6 + ((dtwtel * sp) - 1)
     }
-    filesummary[vi] = params_cleaning[["strategy"]]
+    filesummary[vi] = params_cleaning[["data_masking_strategy"]]
     filesummary[(vi + 1)] = params_cleaning[["hrs.del.start"]]
     filesummary[(vi + 2)] = params_cleaning[["hrs.del.end"]]
     filesummary[(vi + 3)] = params_cleaning[["maxdur"]]
@@ -287,9 +287,9 @@ g.analyse.perfile = function(I, C, metrics_nav,
     s_names[vi:(vi + 6)] = as.character(c(paste0("data exclusion stategy (value=1, ignore specific hours;",
                                                  " value=2, ignore all data before the first midnight and",
                                                  " after the last midnight)"),
-                                          "n hours ignored at start of meas (if strategy=1)",
-                                          "n hours ignored at end of meas (if strategy=1)",
-                                          "n days of measurement after which all data is ignored (if strategy=1)",
+                                          "n hours ignored at start of meas (if data_masking_strategy=1)",
+                                          "n hours ignored at end of meas (if data_masking_strategy=1)",
+                                          "n days of measurement after which all data is ignored (if data_masking_strategy=1)",
                                           "epoch size to which acceleration was averaged (seconds)",
                                           "if_hip_long_axis_id", "GGIR version"))
     vi = vi + 6

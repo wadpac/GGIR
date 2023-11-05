@@ -40,7 +40,7 @@ export(g.analyse, g.calibrate,
        correctOlderMilestoneData,
        convertEpochData, appendRecords, extractID,
        g.part5_analyseSegment, g.part5_initialise_ts,
-       g.part5.analyseRest)
+       g.part5.analyseRest, check_log, g.report.part5_dictionary)
 
 importFrom("grDevices", "colors", "dev.off", "pdf","rainbow","rgb")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
