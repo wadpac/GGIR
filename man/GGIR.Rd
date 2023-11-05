@@ -1310,7 +1310,8 @@ GGIR(mode = 1:5,
       }
       \item{part6Window}{
         Character vector with length two (default = c("start", "end")) to indicate
-        the start and the end of the time series to be used for circadian rhythm analysis.
+        the start and the end of the time series to be used for circadian rhythm analysis
+        in part 6. In other words, this parameters is not used for Household co-analysis.
         Alternative values are: "Wx", "Ox", "Hx", where "x" is a number to indicat
         the xth wakeup, onset or hour of the recording. Negative values for "x"
         are also possible and will count relative to the end of the recording. For example,
