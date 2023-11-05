@@ -1152,12 +1152,12 @@ GGIR(mode = 1:5,
         
       \item{sleepefficiency.metric}{
         Numeric (default = 1).
-        If 1 (default), sleep efficiency is calculated as detected nocturnal sleep time divided by
-        log-derived duration in sleep period time (considering user-reported sleep onset and
-        wake times). If 2, sleep efficiency is calculated as detected nocturnal
-        sleep time divided by detected duration in sleep period time plus sleep latency (where
-        sleep latency refers to the difference between log-derived sleep onset and 
-        accelerometer-detected sleep onset).}
+        If 1 (default), sleep efficiency is calculated as detected sleep time during
+        the SPT window divided by log-derived time in bed. If 2, sleep efficiency is
+        calculated as detected sleep time during the SPT window divided by detected
+        duration in sleep period time plus sleep latency (where sleep latency refers
+        to the difference between time in bed and sleep onset). sleepefficiency.metric is only considered
+        when argument \code{sleepwindowType = "TimeInBed"}}
         
       \item{possible_nap_edge_acc}{
         Minimum acceleration before or after the SIB for the nap to be considered.

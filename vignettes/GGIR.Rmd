@@ -879,7 +879,7 @@ data. If either of these applies set argument `sleepwindowType` to
 | guider_guider_inbedStart  | Time of getting in bed   |
 | guider_guider_inbedEnd    | Time of getting out of bed|
 | guider_inbedDuration      | Time in Bed: guider_inbedEnd - guider_inbedStart  |
-| sleepefficiency           | Sleep efficiency, calculated as: SleepDurationInSpt / guider_inbedDuration or SleepDurationInSpt / (Spt + latency) as defined with  `relyonguider_SleepEfficiency`|
+| sleepefficiency           | Sleep efficiency, calculated by one of two metrics as controlled by argument `sleepefficiency.metric`: SleepDurationInSpt / guider_inbedDuration (default) or SleepDurationInSpt / (SptDuration + latency) |
 | sleeplatency  | Sleep latency, calculated as: sleeponset - guider_inbedStart   |
 
 ### Person level summaries
