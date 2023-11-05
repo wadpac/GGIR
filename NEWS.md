@@ -1,16 +1,16 @@
 # CHANGES IN GGIR VERSION 3.0-1
 
-- Part 2: Added possibility to csv file with date-oriented definition of study protocol #943
+- Part 2: Added option to provide a csv file with start and end dates when accelerometer is expected to be worn #943
 
-- Part 5: New function to provide definition of the variable names in part 5 reports #938
+- Part 5: Now stores dictionary for variable names in part 5 reports #938
 
 - Part 2: Bug fix in csv report generation when appending part 2 milestone data with differing number of columns #951
 
-- Part 1: Bug fix in gt3x data reading by avoiding duplication of seconds when appending chunks of data #952
+- Part 1: Bug fix in gt3x data reading by avoiding duplication of first second when appending chunks of data #952
 
-- Part 1 + 2: Log information regarding number of time gaps and total time imputed with function g.imputeTimeGaps #571
+- Part 1 + 2: Log information regarding number of time gaps and total time imputed with function g.imputeTimeGaps for ad-hoc csv and ActiGraph data in line with previously added similar functionality for Axivity cwa #571
 
-- Part 6: Added as a new part with for now only Household co-analysis and Cosinor analysis
+- Part 6: Added new part 6 with for now only Household co-analysis and Cosinor analysis.
 
 # CHANGES IN GGIR VERSION 3.0-0
 
