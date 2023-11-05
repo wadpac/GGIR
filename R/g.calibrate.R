@@ -160,7 +160,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
       zeros = which(data[,1] == 0 & data[,2] == 0 & data[,3] == 0)
       if ((mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) || length(zeros) > 0) {
         data = g.imputeTimegaps(x = as.data.frame(data), xyzCol = 1:3, timeCol = c(), sf = sf, impute = FALSE)
-        data = as.matrix(data)
+        data = as.matrix(data$x)
       }
       LD = nrow(data)
       #store data that could not be used for this block, but will be added to next block

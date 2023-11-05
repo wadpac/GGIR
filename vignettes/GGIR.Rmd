@@ -792,21 +792,21 @@ The data_quality_report.csv is stored in subfolder folder results/QC.
 | QCmessage	| Character QC message at the end of the auto-calibration |
 | mean.temp	|  Mean temperature in sphere data |
 | device.serial.number	| Device serial number |
-| NFilePagesSkipped	| (Only for Axivity .cwa format) Number of data blocks skipped |
-| filehealth_totimp_min | (Only for Axivity .cwa format) Total number of minutes of data imputed |
-| filehealth_checksumfail_min	| (Only for Axivity .cwa format) Total number of minutes of data where the checksum failed |
-| filehealth_niblockid_min |  (Only for Axivity .cwa format) Total number of minutes of data with non-incremental block ids |
+| NFilePagesSkipped	| (Only for Axivity .cwa format) Number of raw data blocks skipped |
+| filehealth_totimp_min | (Only for Axivity .cwa, ActiGraph gt3x, and ad-hoc csv format) Total number of minutes of raw data imputed |
+| filehealth_checksumfail_min	| (Only for Axivity .cwa format) Total number of minutes of raw data where the checksum failed |
+| filehealth_niblockid_min |  (Only for Axivity .cwa format) Total number of minutes of raw data with non-incremental block ids |
 | filehealth_fbias0510_min | (Only for Axivity .cwa format) Total number of minutes with a sampling frequency bias between 5 and 10% |
 | filehealth_fbias1020_min | (Only for Axivity .cwa format) Total number of minutes with a sampling frequency bias between 10 and 20% |
 | filehealth_fbias2030_min |  (Only for Axivity .cwa format) Total number of minutes with a sampling frequency bias between 20 and 30% |
 | filehealth_fbias30_min | (Only for Axivity .cwa format) Total number of minutes with a sampling frequency bias higher than 30% |
-| filehealth_totimp_N | (Only for Axivity .cwa format) Total number of data blocks that were imputed |
+| filehealth_totimp_N | (Only for Axivity .cwa, ActiGraph gt3x, and ad-hoc csv format) Total number of data blocks that were imputed |
 | filehealth_checksumfail_N	| (Only for Axivity .cwa format)  Total number of blocks where the checksum failed  |
-| filehealth_niblockid_N | (Only for Axivity .cwa format) Total number of data blocks with non-incremental block ids  |
-| filehealth_fbias0510_N | (Only for Axivity .cwa format) Total number of data blocks with a sampling frequency bias between 5 and 10% |
-| filehealth_fbias1020_N | (Only for Axivity .cwa format) Total number of data blocks with a sampling frequency bias between 10 and 20%|
-| filehealth_fbias2030_N | (Only for Axivity .cwa format) Total number of data blocks with a sampling frequency bias between 20 and 30% |
-| filehealth_fbias30_N | (Only for Axivity .cwa format) Total number of data blocks with a sampling frequency bias higher than 30% |
+| filehealth_niblockid_N | (Only for Axivity .cwa format) Total number of raw data blocks with non-incremental block ids  |
+| filehealth_fbias0510_N | (Only for Axivity .cwa format) Total number of raw data blocks with a sampling frequency bias between 5 and 10% |
+| filehealth_fbias1020_N | (Only for Axivity .cwa format) Total number of raw data blocks with a sampling frequency bias between 10 and 20%|
+| filehealth_fbias2030_N | (Only for Axivity .cwa format) Total number of raw data blocks with a sampling frequency bias between 20 and 30% |
+| filehealth_fbias30_N | (Only for Axivity .cwa format) Total number of raw data blocks with a sampling frequency bias higher than 30% |
 
 
 
@@ -974,11 +974,7 @@ vigorous activity:
 | `ACC_`      | (average) acceleration according to default metric specific by acc.metric|
 | `_spt_wake_`| Wakefulness within the Sleep period time window.|
 | `_spt_sleep_`           | Sleep within the Sleep period time window.     |
-| `_IN_`      | Inactivity. Note that we use the term inactivity instead
-        of sedentary behaviour for the lowest intensity level of behaviour. The reason
-        for this is that GGIR does not attempt to classifying the activity type 
-        sitting at the moment, by which we feel that using the term sedentary
-        behaviour would fail to communicate that.|
+| `_IN_`      | Inactivity. Note that we use the term inactivity instead of sedentary behaviour for the lowest intensity level of behaviour. The reason for this is that GGIR does not attempt to classifying the activity type sitting at the moment, by which we feel that using the term sedentary behaviour would fail to communicate that.|
 | `_LIG_`     | Light activity        |
 | `_MOD_`     | Moderate activity     |
 | `_VIG_`     | Vigorous activity     |

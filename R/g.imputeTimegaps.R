@@ -7,6 +7,8 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
   }
   # dummy variables to control the process
   remove_time_at_end = dummyTime = FirstRowZeros = imputelast = FALSE
+  # initialize numberofgaps and GapsLength
+  NumberOfGaps = GapsLength = NULL
   # add temporary timecolumn to enable timegap imputation where there are zeros
   if (length(timeCol) == 1) {
     if (!(timeCol %in% colnames(x))) dummyTime = TRUE
@@ -102,6 +104,7 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
     if (NumberOfGaps > 0) {
       x$gap = 1
       x$gap[gapsi] = round(deltatime[gapsi] * sf)   # as.integer was problematic many decimals close to wholenumbers (but not whole numbers) resulting in 1 row less than expected
+      GapsLength = sum(x$gap[gapsi]) - NumberOfGaps # - numberOfGaps because x$gap == 1 means no gap
       #  normalisation to 1 G 
       normalise = which(x$gap > 1)
       for (i_normalise in normalise) {
@@ -183,8 +186,20 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
   if (remove_time_at_end == TRUE) {
     x = x[, grep(pattern = "time", x = colnames(x), invert = TRUE)]
   }
+  # keep only timestamp column
   if (all(c("time", "timestamp") %in% colnames(x))) {
     x = x[, grep(pattern = "timestamp", x = colnames(x), invert = TRUE)]
   }
-  return(x)
+  # QClog
+  start = as.numeric(as.POSIXct(x[1,1], origin = "1970-1-1"))
+  end = start + nrow(x)
+  if (is.null(GapsLength)) GapsLength = 0
+  if (is.null(NumberOfGaps)) NumberOfGaps = 0
+  imputed = NumberOfGaps > 0
+  QClog = data.frame(imputed = imputed, 
+                     start = start, end = end,
+                     blockLengthSeconds = (end - start) / sf,
+                     timegaps_n = NumberOfGaps, timegaps_min = GapsLength/sf/60)
+  # return data and QClog
+  return(list(x = x, QClog = QClog))
 }
