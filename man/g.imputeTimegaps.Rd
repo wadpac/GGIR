@@ -44,7 +44,7 @@
 }
 \value{
   List including:
-  - P, data.frame based on input x with timegaps imputed (as default) or with 
+  - x, data.frame based on input x with timegaps imputed (as default) or with 
   recordings with 0 values in the three axes removed (if impute = FALSE)
   - QClog, data.frame with information on the number of time gaps found and the 
   total time imputed in minutes
