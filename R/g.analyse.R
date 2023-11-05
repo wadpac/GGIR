@@ -316,7 +316,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
     }
     
     # checksum
-    if ("checksums_pass" %in% colnames(M$QClog)) {
+    if ("checksum_pass" %in% colnames(M$QClog)) {
       chsum_failed = which(M$QClog$checksum_pass == FALSE)
       file_summary$Dur_chsum_failed = QCsummarise(M$QClog, chsum_failed)
       file_summary$Nblocks_chsum_failed = length(chsum_failed)
