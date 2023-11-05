@@ -79,8 +79,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "IVIS.activity.metric", "IVIS_acc_threshold",
                        "qM5L5", "MX.ig.min.dur", "M5L5res", "winhr", "LUXthresholds", "LUX_cal_constant",
                        "LUX_cal_exponent", "LUX_day_segments", "window.summary.size", "L5M5window")
-    boolean_params = "cosinor"
-    character_params = c("qwindow_dateformat")
+    boolean_params = c("cosinor", "part6CR", "part6HCA")
+    character_params = c("qwindow_dateformat", "part6Window")
     check_class("247", params = params_247, parnames = numeric_params, parclass = "numeric")
     check_class("247", params = params_247, parnames = boolean_params, parclass = "boolean")
     check_class("247", params = params_247, parnames = character_params, parclass = "character")
@@ -90,9 +90,11 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "boutcriter.in", "boutcriter.lig", "boutcriter.mvpa",
                        "threshold.lig", "threshold.mod", "threshold.vig", "boutdur.mvpa",
                        "boutdur.in", "boutdur.lig")
+    character_params = c("frag.metrics", "part6_threshold_combi")
     check_class("phyact", params = params_phyact, parnames = numeric_params, parclass = "numeric")
     # check_class("phyact", params = params_phyact, parnames = boolean_params, parclass = "boolean")
-    check_class("phyact", params = params_phyact, parnames = "frag.metrics", parclass = "character")
+    check_class("phyact", params = params_phyact, parnames = character_params, parclass = "character")
+    
   }
   if (length(params_cleaning) > 0) {
     numeric_params = c("includedaycrit", "ndayswindow", "data_masking_strategy", "maxdur", "hrs.del.start",
@@ -241,6 +243,13 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_cleaning[["data_cleaning_file"]] = gsub(pattern = "\\\\",
                                                      replacement = "/", x = params_cleaning[["data_cleaning_file"]])
     }
+    if (params_cleaning[["includedaycrit.part5"]] < 0) {
+      warning("\nNegative value of includedaycrit.part5 is not allowed, please change.")
+    } else if (params_cleaning[["includedaycrit.part5"]]  > 24) {
+      warning(paste0("\nIncorrect value of includedaycrit.part5, this should be",
+                     " a fraction of the day between zero and one or the number ",
+                     "of hours in a day."))
+    }
   }
   if (length(params_phyact) > 0) {
     if (length(params_phyact[["bout.metric"]]) > 0 |
@@ -253,7 +262,26 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_phyact[["mvpadur"]] = c(1,5,10)
       warning("\nmvpadur needs to be a vector with length three, value now reset to default c(1, 5, 10)", call. = FALSE)
     }
+    if (length(params_phyact[["threshold.lig"]]) == 1 &&
+        length(params_phyact[["threshold.mod"]]) == 1 &&
+        length(params_phyact[["threshold.vig"]]) == 1) {
+      params_phyact[["part6_threshold_combi"]] = paste(params_phyact[["threshold.lig"]],
+                                                       params_phyact[["threshold.mod"]],
+                                                       params_phyact[["threshold.vig"]], sep = "_")
+    }
   }
+  # params output 
+  if (length(params_output) > 0) {
+    if (!all(params_output[["save_ms5raw_format"]] %in% c("RData", "csv"))) {
+      formats2keep = which(params_output[["save_ms5raw_format"]] %in% c("RData", "csv"))
+      if (length(formats2keep) > 0) {
+        params_output[["save_ms5raw_format"]] = params_output[["save_ms5raw_format"]][formats2keep]
+      } else {
+        params_output[["save_ms5raw_format"]] = "csv"# specify as csv if user does not clearly specify format
+      }
+    }
+  }
+  # params 247
   if (length(params_247) > 0) {
     if (length(params_247[["iglevels"]]) > 0) {
       if (length(params_247[["iglevels"]]) == 1) {
@@ -274,6 +302,13 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       if (params_247[["LUX_day_segments"]][length(params_247[["LUX_day_segments"]])] != 24) {
         params_247[["LUX_day_segments"]] = c(params_247[["LUX_day_segments"]], 24)
       }
+    }
+    # params 247 & params output
+    if (params_247[["part6HCA"]] == TRUE) {
+      # Add RData because part 6 will need it
+      params_output[["save_ms5raw_format"]] = unique(c(params_output[["save_ms5raw_format"]], "RData"))
+      params_output[["save_ms5rawlevels"]] = TRUE
+      params_output[["save_ms5raw_without_invalid"]] = FALSE
     }
   }
   if (!is.null(params_general[["expand_tail_max_hours"]])) {
