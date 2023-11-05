@@ -16,7 +16,7 @@ GGIR(mode = 1:5,
      outputdir = c(),
      studyname = c(),
      f0 = 1, f1 = 0,
-     do.report = c(2, 4, 5),
+     do.report = c(2, 4, 5, 6),
      configfile = c(),
      myfun = c(),
      verbose = TRUE, ...)
@@ -56,8 +56,8 @@ GGIR(mode = 1:5,
     File index to finish with (defaults to number of files available).
   }
   \item{do.report}{
-    Numeric (default = c(2, 4, 5)).
-    For which parts to generate a summary spreadsheet: 2, 4, and/or 5. Default is c(2, 4, 5).
+    Numeric (default = c(2, 4, 5, 6)).
+    For which parts to generate a summary spreadsheet: 2, 4, 5, and/or 6. Default is c(2, 4, 5, 6).
     A report will be generated based on the available milestone data. When creating
     milestone data with multiple machines it is advisable to turn the report
     generation off when generating the milestone data, value = c(),
@@ -1007,6 +1007,11 @@ GGIR(mode = 1:5,
         Fragmentation metric to exract. Can be "mean", "TP", "Gini",
         "power", or "CoV", "NFragPM", or all the above metrics with "all".
         See package vignette for description of fragmentation metrics.}
+
+      \item{part6_threshold_combi}{
+        Character (default = "40_100_120") to indicate the threshold combination derived in
+        part 5 to be used for part 6
+      }
     }
   }
 
@@ -1295,7 +1300,25 @@ GGIR(mode = 1:5,
 
       \item{cosinor}{
         Boolean (default = FALSE). Whether to apply the cosinor analysis from the ActCR package.}
-
+        
+      \item{part6CR}{
+        Boolean (default = FALSE) to indicate whether circadian rhythm analysis should be run by part 6.
+      }
+      \item{part6HCA}{
+        Boolean (default = FALSE) to indicate whether Household Co Analysis should 
+        be run by part 6.
+      }
+      \item{part6Window}{
+        Character vector with length two (default = c("start", "end")) to indicate
+        the start and the end of the time series to be used for circadian rhythm analysis
+        in part 6. In other words, this parameters is not used for Household co-analysis.
+        Alternative values are: "Wx", "Ox", "Hx", where "x" is a number to indicat
+        the xth wakeup, onset or hour of the recording. Negative values for "x"
+        are also possible and will count relative to the end of the recording. For example,
+        c("W1", "W-1") goes from the first till the last wakeup, c("H5", "H-5") 
+        ignores the first and last 5 hours, and c("O2", "W10") goes from the second
+        onset till the 10th wakeup time.
+      }
     }
   }
 

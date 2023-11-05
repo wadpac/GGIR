@@ -241,8 +241,12 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           df = as.data.frame(df, check.names = FALSE)
           return(df)
         }
-        SUM$summary = char2num_df(SUM$summary)
-        SUM$daysummary = char2num_df(SUM$daysummary)
+        # Only apply this to column that are not ID because ID can be number
+        # combined with letter E, which would then resolve to numeric
+        noID = which(colnames(SUM$summary) != "ID")
+        SUM$summary[noID] = char2num_df(SUM$summary[noID])
+        noIDday = which(colnames(SUM$daysummary) != "ID")
+        SUM$daysummary[noIDday] = char2num_df(SUM$daysummary[noIDday])
         # save milestone data
         save(SUM, IMP, tail_expansion_log, file = paste0(metadatadir, ms2.out, "/", RDname)) #IMP is needed for g.plot in g.report.part2
       }
