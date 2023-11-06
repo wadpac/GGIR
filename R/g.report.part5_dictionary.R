@@ -30,6 +30,7 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
   ds = grep("^part5_daysummary", basename(reports))[1]
   ps = grep("^part5_personsummary", basename(reports))[1]
   reports = reports[c(ds, ps)]
+  if (!exists("baseDictionary")) return()
   # read col names of each report and derive definitions
   for (ri in 1:length(reports)) {
     # read report
