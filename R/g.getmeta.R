@@ -268,7 +268,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       
       if (mon == MONITOR$GENEACTIV  && dformat == FORMAT$BIN) {
         data = P$data.out
-      } else if (dformat == FORMAT$CSV) { #csv Actigraph
+      } else if (dformat == FORMAT$CSV) { #csv (Actigraph or ad-hoc csv format)
         if (params_rawdata[["imputeTimegaps"]] == TRUE) {
           P = as.data.frame(P)
           if (ncol(P) == 3) {
