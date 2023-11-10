@@ -164,7 +164,9 @@ GGIR(mode = 1:5,
         If experiments took place in a different timezone, then use this
         argument for the timezone in which the experiments took place and
         argument \code{configtz} to specify where the device was configured.
-        See also https://en.wikipedia.org/wiki/Zone.tab}
+        Use the "TZ identifier" as specified at
+        \href{https://en.wikipedia.org/wiki/Zone.tab}{https://en.wikipedia.org/wiki/Zone.tab}
+        to set desiredtz, e.g., "Europe/London".}
 
       \item{configtz}{
         Character (default = "", i.e., system timezone).
@@ -172,7 +174,9 @@ GGIR(mode = 1:5,
         and ad-hoc csv file format at the moment.
         Timezone in which the accelerometer was configured. Only use this argument
         if the timezone of configuration and timezone in which recording took
-        place are different. See also https://en.wikipedia.org/wiki/Zone.tab}
+        place are different. Use the "TZ identifier" as specified at
+        \href{https://en.wikipedia.org/wiki/Zone.tab}{https://en.wikipedia.org/wiki/Zone.tab}
+        to set configtz, e.g., "Europe/London".}
 
       \item{sensor.location}{
         Character (default = "wrist").
