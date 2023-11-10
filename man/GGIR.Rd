@@ -1352,7 +1352,11 @@ GGIR(mode = 1:5,
       \item{save_ms5rawlevels}{
         Boolean (default = FALSE).
         In \link{g.part5}: Whether to save the time series classification (levels)
-        as csv or RData files (as defined by \code{save_ms5raw_format}).}
+        as csv or RData files (as defined by \code{save_ms5raw_format}). Note that 
+        time stamps will be stored in the column \code{timenum} in UTC format (i.e., 
+        seconds from 1970-01-01). To convert timenum to time stamp format, you 
+        need to specify your desired time zone, e.g., 
+        \code{as.POSIXct(mdat$timenum, tz = "Europe/London")}.}
 
       \item{save_ms5raw_format}{
         Character (default = "csv").
