@@ -13,9 +13,10 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
   if (dir.exists(datadir) == FALSE) {
     stop("\nWhen working with external data, argument datadir is expected to be a directory")
   }
-  fnames_csv = dir(datadir,full.names = TRUE,pattern = "[.]csv")
-  fnames_awd = dir(datadir,full.names = TRUE,pattern = "[.]awd|[.]AWD")
-  if (length(fnames_csv) > 0 & length(fnames_awd) > 0) {
+  fnames_csv = dir(datadir, full.names = TRUE,pattern = "[.]csv")
+  fnames_awd = dir(datadir, full.names = TRUE,pattern = "[.]awd|[.]AWD")
+  fnames_xls = dir(datadir, full.names = TRUE,pattern = "[.]xls")
+  if (length(which(c(length(fnames_csv), length(fnames_awd), length(fnames_xls)) != 0)) > 1) {
     stop("Do not mix csv and awd files in the same data directory")
   } else {
     if (length(fnames_awd) > 0) {
@@ -23,13 +24,19 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         stop("Specified dataFormat does not match the data")
       }
       fnames = fnames_awd
-    } else {
+    } else if (length(fnames_csv) > 0) {
       if (params_general[["dataFormat"]] == "actiwatch_awd") {
         stop("Specified dataFormat does not match the data")
       }
       fnames = fnames_csv
+    } else if (length(fnames_xls) > 0) {
+      if (params_general[["dataFormat"]] != "sensewear_xls") {
+        stop("Specified dataFormat does not match the data")
+      }
+      fnames = fnames_xls
     }
   }
+  
   #-------------
   # Create output folder, normally with raw data g.part1 would do this:
   if (!file.exists(metadatadir)) {
@@ -67,6 +74,13 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
     monn = "actiwatch"
     monc = 99
     dformc = 99
+    dformn = "epochdata"
+    sf = 100 # <= EXTRACT FROM FILE?
+  } else if (params_general[["dataFormat"]] == "sensewear_xls") {
+    deviceName = "Actiwatch"
+    monn = "sensewear"
+    monc = 98
+    dformc = 98
     dformn = "epochdata"
     sf = 100 # <= EXTRACT FROM FILE?
   }
@@ -170,6 +184,20 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         # extract date/timestamp from fileheader
         timestamp = unlist(strsplit(header," - "))[2]
         timestamp_POSIX = as.POSIXlt(timestamp, tz = tz)
+      } else if (params_general[["dataFormat"]] == "sensewear_xls") {
+        # read data
+        D = as.data.frame(readxl::read_excel(path = fnames[i], col_types = "text"))
+        timestamp_POSIX = openxlsx::convertToDateTime(as.numeric(D$`Time (GMT-04:00)`), tz = tz)
+        
+        D = D[, c("METs", "Step Counter", "Sleep")]
+        colnames(D) = c("METs", "StepCounter", "Sleep")
+        D$METs = as.numeric(D$METs)
+        D$StepCounter = as.numeric(D$StepCounter)
+        D$Sleep = as.numeric(D$Sleep)
+        epochSize = difftime(timestamp_POSIX[2], timestamp_POSIX[1], 
+                             units = "secs")
+        epSizeShort = as.numeric(epochSize)
+        timestamp_POSIX = timestamp_POSIX[1]
       } else if (params_general[["dataFormat"]] == "actigraph_csv") {
         # check if file was exported with header:
         header_test = FALSE
@@ -180,12 +208,10 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
           df = data.frame(variable = tolower(variable), value = tmp[length(tmp)])
           return(df)
         }
-        
         AGh = NULL
         for (hh in header[2:9,1]) {
           AGh = rbind(AGh, splitHeader(hh))
         }
-        
         if (any(grepl("serialnumber", AGh$variable))) header_test = TRUE
         
         # rows to skip:
@@ -287,7 +313,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
             format = params_general[["extEpochData_timeformat"]]
             timestamp_POSIX = as.POSIXlt(timestamp, tz = tz, format = format)
             if (all(is.na(timestamp_POSIX))) {
-              stop(paste0("\nTimestamps are not available in hte file, neither it has
+              stop(paste0("\nTimestamps are not available in the file, neither it has
                           a header to extract the timestamps from. Therefore, the file
                           cannot be processed.\n"))
             }
@@ -468,15 +494,14 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                                             tz = tz)
       time_longEp_8601 = POSIXtime2iso8601(x = as.POSIXlt(time_longEp_num, tz = tz, origin = "1970-01-01"),
                                            tz = tz)
-      if (params_general[["dataFormat"]] != "actigraph_csv") {
+      if (params_general[["dataFormat"]] %in% c("actigraph_csv", "sensewear_xls") == FALSE) {
         M$metashort = data.frame(timestamp = time_shortEp_8601,
                                  accmetric = D[1:length(time_shortEp_8601),1],stringsAsFactors = FALSE)
-      } else if (params_general[["dataFormat"]] == "actigraph_csv") {
+      } else {
         M$metashort = as.data.frame(cbind(time_shortEp_8601,
                                           D[1:length(time_shortEp_8601), ]))
         colnames(M$metashort) = c("timestamp", colnames(D))
       }
-      
       if (length(which(is.na(M$metashort$ZCY) == TRUE)) > 0) {
         # impute missing data by zero
         # if it is a lot then this will be detected as non-wear
@@ -493,10 +518,11 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         imp = unlist(D[, 1])
       } else if (params_general[["dataFormat"]] == "actigraph_csv") {
         imp = unlist(D[, 1])
+      } else if (params_general[["dataFormat"]] == "sensewear_xls") {
+        imp = unlist(D[, 1])
       }
       navalues = which(is.na(imp) == TRUE)
       if (length(navalues) > 0) imp[navalues] = 1
-      
       
       if (params_general[["dataFormat"]] == "ukbiobank_csv") {
         # Take long epoch mean of UK Biobank based invalid data indicater per 5 seconds
@@ -505,7 +531,8 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                              by = ((60/epSizeShort) * (epSizeLong/60)))]) / ((60/epSizeShort) * (epSizeLong/60)) # rolling mean
         imp4 = round(imp3 * 3) # create three level nonwear score from it, not really necessary for GGIR, but helps to retain some of the information
       } else if (length(grep(pattern = "actiwatch", x = params_general[["dataFormat"]], ignore.case = TRUE)) > 0 |
-                 params_general[["dataFormat"]] == "actigraph_csv") {
+                 params_general[["dataFormat"]] == "actigraph_csv" |
+                 params_general[["dataFormat"]] == "sensewear_xls") {
         # Using rolling 60 minute sum to indicate whether it is nonwear
         imp2 = zoo::rollapply(imp, width = (1*3600) / epSizeShort, FUN = sum, fill = 0)
         imp4 = imp2
@@ -530,7 +557,6 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
       # update weekday name and number based on actual data
       M$wdayname = weekdays(x = starttime, abbreviate = FALSE)
       M$wday = as.POSIXlt(starttime)$wday + 1
-      
       # Save these files as new meta-file
       filefoldername = NA
       save(M, C, I, filename_dir, filefoldername,
