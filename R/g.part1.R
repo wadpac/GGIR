@@ -29,7 +29,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
     fnamesfull = dir(datadir, recursive = TRUE, pattern = "acc.bin", full.names = TRUE)
     fnames = dir(datadir, recursive = FALSE)
   }
-  filesizes = file.info(fnamesfull)$size # in bytes
+  filesizes = file.size(fnamesfull) # in bytes
   bigEnough = which(filesizes/1e6 > params_rawdata[["minimumFileSizeMB"]])
   fnamesfull = fnamesfull[bigEnough]
   fnames = fnames[bigEnough]
