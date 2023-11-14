@@ -164,7 +164,9 @@ GGIR(mode = 1:5,
         If experiments took place in a different timezone, then use this
         argument for the timezone in which the experiments took place and
         argument \code{configtz} to specify where the device was configured.
-        See also https://en.wikipedia.org/wiki/Zone.tab}
+        Use the "TZ identifier" as specified at
+        \href{https://en.wikipedia.org/wiki/Zone.tab}{https://en.wikipedia.org/wiki/Zone.tab}
+        to set desiredtz, e.g., "Europe/London".}
 
       \item{configtz}{
         Character (default = "", i.e., system timezone).
@@ -172,7 +174,9 @@ GGIR(mode = 1:5,
         and ad-hoc csv file format at the moment.
         Timezone in which the accelerometer was configured. Only use this argument
         if the timezone of configuration and timezone in which recording took
-        place are different. See also https://en.wikipedia.org/wiki/Zone.tab}
+        place are different. Use the "TZ identifier" as specified at
+        \href{https://en.wikipedia.org/wiki/Zone.tab}{https://en.wikipedia.org/wiki/Zone.tab}
+        to set configtz, e.g., "Europe/London".}
 
       \item{sensor.location}{
         Character (default = "wrist").
@@ -1348,7 +1352,11 @@ GGIR(mode = 1:5,
       \item{save_ms5rawlevels}{
         Boolean (default = FALSE).
         In \link{g.part5}: Whether to save the time series classification (levels)
-        as csv or RData files (as defined by \code{save_ms5raw_format}).}
+        as csv or RData files (as defined by \code{save_ms5raw_format}). Note that 
+        time stamps will be stored in the column \code{timenum} in UTC format (i.e., 
+        seconds from 1970-01-01). To convert timenum to time stamp format, you 
+        need to specify your desired time zone, e.g., 
+        \code{as.POSIXct(mdat$timenum, tz = "Europe/London")}.}
 
       \item{save_ms5raw_format}{
         Character (default = "csv").
