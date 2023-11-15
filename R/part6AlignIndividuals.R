@@ -49,7 +49,7 @@ part6AlignIndividuals = function(GGIR_ts_dir = NULL, outputdir = NULL,
       D = mdat
       if (nrow(D) > 0) { # check if file is not empty
         # Identify corresponding GGIR part 1 milestone data
-        pat1 = unlist(strsplit(x = uFilename[p], split = "[.]csv"))[1]
+        pat1 = unlist(strsplit(x = uFilename[p], split = "[.]RData"))[1]
         pat2 = unlist(strsplit(x = pat1, split = "_"))
         pat2 = paste0(pat2[1:(length(pat2) - 1)], collapse = "_")
         ptrn = paste0("meta_",pat2)
