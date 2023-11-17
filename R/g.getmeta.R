@@ -201,11 +201,11 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     }
     QClog = NULL
     if (temp.available == FALSE) {
-      metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 4) #generating output matrix for 15 minutes summaries
-    } else if (temp.available == TRUE && mon != MONITOR$MOVISENS) {
-      metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 7) #generating output matrix for 15 minutes summaries
-    } else if (temp.available == TRUE && mon == MONITOR$MOVISENS) {
       metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 5) #generating output matrix for 15 minutes summaries
+    } else if (temp.available == TRUE && mon != MONITOR$MOVISENS) {
+      metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 8) #generating output matrix for 15 minutes summaries
+    } else if (temp.available == TRUE && mon == MONITOR$MOVISENS) {
+      metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 6) #generating output matrix for 15 minutes summaries
     }
     #===============================================
     # Read file
@@ -363,12 +363,12 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       if (mon == MONITOR$ACTIGRAPH || mon == MONITOR$VERISENSE ||
           (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) ||
           (mon == MONITOR$AD_HOC && use.temp == FALSE)) {
-        metricnames_long = c("timestamp","nonwearscore","clippingscore","en")
+        metricnames_long = c("timestamp","nonwearscore","clippingscore", "maxautocor", "en")
       } else if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) ||
                  (mon == MONITOR$AD_HOC & use.temp == TRUE)) {
-        metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","temperaturemean","EN")
+        metricnames_long = c("timestamp","nonwearscore","clippingscore", "maxautocor", "lightmean","lightpeak","temperaturemean","EN")
       } else if (mon == MONITOR$MOVISENS) {
-        metricnames_long = c("timestamp","nonwearscore","clippingscore","temperaturemean","EN")
+        metricnames_long = c("timestamp","nonwearscore","clippingscore", "maxautocor", "temperaturemean","EN")
       }
       rm(SWMT)
       if (exists("P")) rm(P); gc()
@@ -604,11 +604,12 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                                        clipthres = clipthres, sdcriter = sdcriter, racriter = racriter,
                                        nonwear_approach = params_cleaning[["nonwear_approach"]],
                                        params_rawdata = params_rawdata)
-        NWav = NWCW$NWav; CWav = NWCW$CWav; nmin = NWCW$nmin
+        NWav = NWCW$NWav; CWav = NWCW$CWav; nmin = NWCW$nmin; ACFav = NWCW$ACFav;
         # metalong
         col_mli = 2
         metalong[count2:((count2 - 1) + length(NWav)),col_mli] = NWav; col_mli = col_mli + 1
         metalong[(count2):((count2 - 1) + length(NWav)),col_mli] = CWav; col_mli = col_mli + 1
+        metalong[(count2):((count2 - 1) + length(NWav)),col_mli] = ACFav; col_mli = col_mli + 1
         if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) || 
             mon == MONITOR$MOVISENS) { # going from sample to ws2
           if (mon == MONITOR$GENEACTIV || mon == MONITOR$AXIVITY) {
