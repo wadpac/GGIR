@@ -106,8 +106,12 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       M$metashort = correctOlderMilestoneData(M$metashort)
       M$metalong = correctOlderMilestoneData(M$metalong)
       # extract ID centrally to be used in GGIR
-      hvars = g.extractheadervars(I)
-      ID = extractID(hvars = hvars, idloc = params_general[["idloc"]], fname = I$filename)
+      if (is.null(I$sf)) {
+        M$filecorrupt = TRUE
+      } else {
+        hvars = g.extractheadervars(I)
+        ID = extractID(hvars = hvars, idloc = params_general[["idloc"]], fname = I$filename)
+      }
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
         #-----------------------
         # If required by user, ignore specific timewindows for imputation and set them to zeroinstead:

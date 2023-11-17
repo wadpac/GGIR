@@ -1,3 +1,9 @@
+# CHANGES IN GGIR VERSION 3.0-2
+
+- Part 2: Fix bug that caused part 2 to struggle with corrupt ActiGraph .gt3x files #972
+
+- Documentation: Expanded documentation on desiredtz, configtz, and time stamp format in part 5 time series #966
+
 # CHANGES IN GGIR VERSION 3.0-1
 
 - Part 2: Added option to provide a csv file with start and end dates when accelerometer is expected to be worn #943

@@ -1653,6 +1653,8 @@ correspond to the date of analysis.
 
 | Column name          | Description        |
 |------------------------|-----------------------------------------------|
+| timenum      | Time stamp in UTC time format (i.e., seconds since 1970-01-01). To convert timenum to time stamp format, you need to specify your desired time zone, e.g., `as.POSIXct(mdat$timenum, tz = "Europe/London")`.|
+| ACC      | Average acceleration metric selected by `acc.metric`, default = "ENMO".|
 | SleepPeriodTime      | Is 1 if SPT is detected, 0 if not. Note that this refers to the combined usage of guider and detected sustained inactivity bouts (rest periods).|
 | invalidepoch         | Is 1 if epoch was detect as invalid (e.g. non-wear), 0 if not.       |
 | guider   | Is 1 if guider method detect epoch as SPT (e.g. sleeplog, HDCZA), 0 if not. You will not find here which guider is used, for this see other GGIR output.    |
@@ -1661,6 +1663,7 @@ correspond to the date of analysis.
 | invalid_fullwindow   | Fraction of the window (see above) that represents invalid data. I added this to make it easier to filter the timeseries based on whether days are valid or not.         |
 | invalid_sleepperiod  | Fraction of SPT within the current window that represents invalid data.          |
 | invalid_wakinghours  | Fraction of SPT within the current window that represents invalid data.          |
+| timestamp      | Time stamp derived from converting the column timenum, only available if `save_ms5raw_format = TRUE`.|
 
 To familiarize yourself with how the variables it can be helpful to plot
 them yourself.
