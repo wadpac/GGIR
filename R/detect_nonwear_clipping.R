@@ -87,9 +87,12 @@ detect_nonwear_clipping = function(data = c(), windowsizes = c(5, 900, 3600), sf
       }
       # Autocorrelation:
       ASD = sd(data[(1 + cliphoc1):cliphoc2, jj], na.rm = TRUE)
-      if (ASD < 0.03) {
-        dd = acf(x = data[indicesACF, jj], max.lag = 2 * sf, plot = FALSE, lag.max = 2 * sf)
-        ACF[h, jj] = max(dd$acf[(0.5 * sf):(2 * sf)])
+      if (ASD < 0.02) {
+        # look for correlation with lag in between 10 and 2.4 seconds
+        # to detect breating rates of 6 and 25 breaths per minute (60/6 = 10, 60/25 = 2.4)
+        # note that this is now a 10 Hertz signal, therefore * 10
+        dd = acf(x = data[indicesACF, jj], plot = FALSE, lag.max = 10 * 10)
+        ACF[h, jj] = max(dd$acf[(2.4 * 10):(10 * 10)])
       } else {
         ACF[h, jj] = 0
       }
