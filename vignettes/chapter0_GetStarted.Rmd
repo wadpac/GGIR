@@ -1,0 +1,136 @@
+---
+title: "Get started: the GGIR R package"
+output:
+   html_document:
+    toc : true
+    number_sections: true
+    toc_depth: 3
+    toc_float: true #by turning this on, the table of contents moves to the left of the page.
+urlcolor: blue
+vignette: >
+  %\VignetteIndexEntry{Get started: the GGIR R package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# What is GGIR?
+
+[GGIR](https://CRAN.R-project.org/package=GGIR) is an R-package to
+process multi-day raw accelerometer data for physical activity and sleep
+research. The term ***raw*** refers to data being expressed in
+m/s<sup>2</sup> or gravitational acceleration as opposed to the previous
+generation accelerometers which stored data in accelerometer brand
+specific units. The signal processing includes automatic calibration,
+detection of sustained abnormally high values, detection of non-wear and
+calculation of average magnitude of dynamic acceleration based on a
+variety of metrics. Next, GGIR uses this information to describe the
+data per recording, per day of measurement, and (optionally) per segment
+of a day of measurement, including estimates of physical activity,
+inactivity and sleep. We published an overview paper of GGIR in 2019
+[link](https://doi.org/10.1123/jmpb.2018-0063).
+
+This vignette provides a general introduction on how to use GGIR and
+interpret the output, additionally you can find a [introduction
+video](https://youtu.be/RuFBCAqFJ2M) and a
+[mini-tutorial](https://youtu.be/S8YPTrYNWdU) on YouTube. If you want to
+use your own algorithms for raw data then GGIR facilitates this with
+it's external function embedding feature, documented in a separate
+vignette: [Embedding external functions in
+GGIR](https://CRAN.R-project.org/package=GGIR). GGIR is increasingly
+being used by research groups across the world. A non-exhaustive
+overview of academic publications related to GGIR can be found
+[here](https://github.com/wadpac/GGIR/wiki/Publication-list). R package
+GGIR would not have been possible without the support of the
+contributors listed in the author list at
+[GGIR](https://CRAN.R-project.org/package=GGIR), with specific code
+contributions over time since April 2016 (when GGIR development moved to
+GitHub) shown
+[here](https://github.com/wadpac/GGIR/graphs/contributors).
+
+**Cite GGIR:**
+
+When you use GGIR in publications do not forget to cite it properly as
+that makes your research more reproducible and it gives credit to it's
+developers. See paragraph on [Citing GGIR](#CitingGGIR) for details.
+
+## Contributing, Support, and Keeping up to date
+
+**How to contribute to the code?**
+
+The development version of GGIR can be found on
+[github](https://github.com/wadpac/GGIR), which is also where you will
+find
+[guidance](https://github.com/wadpac/GGIR/blob/master/CONTRIBUTING.md)
+on how to contribute.
+
+**How can I get service and support?**
+
+GGIR is open source software and does not come with service or support
+guarantees. However, as user-community you can help each other via the
+[GGIR google
+group](https://groups.google.com/forum/#!forum/RpackageGGIR) or the
+[GitHub issue tracker](https://github.com/wadpac/GGIR/issues). Please
+use these public platform rather than private e-mails such that other
+users can learn from the conversations.
+
+If you need dedicated support with the use of GGIR or need someone to
+adapt GGIR to your needs then Vincent van Hees is available as
+[independent consultant](https://www.accelting.com/).
+
+**Training in R essentials and GGIR** We offer frequent online GGIR training courses. Check our dedicated training
+[website](https://www.accelting.com/ggir-training/) with more details and
+the option to book your training. Do you have questions about the
+training or the booking process? Do not hesitate to contact us via:
+[training\@accelting.com](mailto:training@accelting.com){.email}.
+
+Also of interest may be the brief [free R introduction tutorial](https://www.accelting.com/updates/short-r-tutorial/).
+
+
+**Change log**
+
+Our log of main changes to GGIR over time can be found
+[here](https://cran.r-project.org/package=GGIR/news/news.html).
+
+# Setting up your work environment
+
+## Install R and RStudio
+
+[Download and install R](https://cran.r-project.org/)
+
+[Download and install
+RStudio](https://posit.co/products/open-source/rstudio/)
+
+Install GGIR with its dependencies from CRAN. You can do this with one
+command from the console command line:
+
+```{R,eval=FALSE}
+install.packages("GGIR", dependencies = TRUE)
+```
+
+Alternatively, to install the latest development version with the latest
+bug fixes use instead:
+
+```{R,eval=FALSE}
+install.packages("remotes")
+remotes::install_github("wadpac/GGIR")
+```
+
+Additionally, in some use-cases you will need to install one or multiple 
+additional packages:
+
+-   If you are working with Axivity, GENEActiv, or GENEA files, install
+    the GGIRread package with `install.packages("GGIRread")`
+-   If you are working with ActiGraph gt3x files, install
+    the read.gt3x package with `install.packages("read.gt3x")`
+-   If you want to derive Neishabouricounts (with `do.neishabouricounts = TRUE`),
+    install the actilifecounts package with `install.packages("actilifecounts")`
+-   If you want to derive circadian rhythm indicators using the [Cosinor analysis and Extended Cosinor analysis] 
+    (with `cosinor = TRUE`), install the ActCR package with `install.packages("ActCR")`
