@@ -15,3 +15,14 @@ knitr::opts_chunk$set(
 ```
 
 ## Work in progress
+
+
+<img src="GGIR-MASTERLOGO-RGB.png">
+
+
+![](GGIR-MASTERLOGO-RGB.png)
+
+
+```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}
+knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
+```

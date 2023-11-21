@@ -39,7 +39,7 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item">
-  <a class="nav-link" href="../articles/chapterInProgress.html">Get Started</a>
+  <a class="nav-link" href="../articles/chapter0_GetStarted.html">Get Started</a>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
@@ -108,7 +108,7 @@
 
     
     
-<p><img src="GGIR-MASTERLOGO-RGB.png" width="60%" style="border: 0; padding:20px"></p>
+<p><img src="../../../R%20pkgs/GGIR/articles/GGIR-MASTERLOGO-RGB.png" width="60%" style="border: 0; padding:20px"></p>
 <p>You are now in the main GGIR vignette. See also the complementary
 vignettes on: <a href="https://CRAN.R-project.org/package=GGIR/vignettes/CutPoints.html" class="external-link">Cut-points</a>,
 <a href="https://CRAN.R-project.org/package=GGIR/vignettes/TutorialDaySegmentAnalyses.html" class="external-link">Day
@@ -874,7 +874,7 @@ rhythm research - Pdfs with on each page a low resolution plot of the
 data per file and quality indicators - R objects with milestone data -
 Pdfs with a visual summary of the physical activity and sleep patterns
 as identified (see example below)</p>
-<p><img src="reportexample.jpg" width="700px"></p>
+<p><img src="../../../R%20pkgs/GGIR/articles/reportexample.jpg" width="700px"></p>
 <div class="section level3">
 <h3 class="tabset" id="output-part-2">Output part 2<a class="anchor" aria-label="anchor" href="#output-part-2"></a>
 </h3>
@@ -1809,7 +1809,7 @@ Hees et al PLoSONE 2015. We had over 25 thousand nights of data, and
 this visualisation allowed us to quickly zoom in on the most problematic
 nights to investigate possible mistakes in GGIR or mistakes in data
 entry.</p>
-<p><img src="example_dovisual.jpg" width="700px"></p>
+<p><img src="../../../R%20pkgs/GGIR/articles/example_dovisual.jpg" width="700px"></p>
 </div>
 </div>
 <div class="section level3">
@@ -2407,7 +2407,7 @@ non-wear time. Period C is detected as wear-time and borders to non-wear
 periods B and D. If the length of C is less than six hours and C divided
 by the sum of B and D is less than 0.3 then the first criteria is met
 and block C is turned into a non-wear period.</p>
-<p><img src="nonwearimage.jpg" width="400px"></p>
+<p><img src="../../../R%20pkgs/GGIR/articles/nonwearimage.jpg" width="400px"></p>
 </div>
 <div class="section level4">
 <h4 id="beginning-and-ending-of-the-recording">Beginning and ending of the recording<a class="anchor" aria-label="anchor" href="#beginning-and-ending-of-the-recording"></a>
@@ -2883,6 +2883,18 @@ columns:</strong></p>
 </tr></thead>
 <tbody>
 <tr class="odd">
+<td>timenum</td>
+<td>Time stamp in UTC time format (i.e., seconds since 1970-01-01). To
+convert timenum to time stamp format, you need to specify your desired
+time zone, e.g.,
+<code>as.POSIXct(mdat$timenum, tz = "Europe/London")</code>.</td>
+</tr>
+<tr class="even">
+<td>ACC</td>
+<td>Average acceleration metric selected by <code>acc.metric</code>,
+default = “ENMO”.</td>
+</tr>
+<tr class="odd">
 <td>SleepPeriodTime</td>
 <td>Is 1 if SPT is detected, 0 if not. Note that this refers to the
 combined usage of guider and detected sustained inactivity bouts (rest
@@ -2930,6 +2942,11 @@ data.</td>
 <td>invalid_wakinghours</td>
 <td>Fraction of SPT within the current window that represents invalid
 data.</td>
+</tr>
+<tr class="odd">
+<td>timestamp</td>
+<td>Time stamp derived from converting the column timenum, only
+available if <code>save_ms5raw_format = TRUE</code>.</td>
 </tr>
 </tbody>
 </table>
@@ -3459,7 +3476,7 @@ circadian and sleep/wake timing. Scientific Reports. 2017 June 12 <a href="https
 <p>The copyright of the GGIR logo lies with Accelting (Almere, The
 Netherlands), please contact <a href="mailto:v.vanhees@acceleting.com" class="email">v.vanhees@acceleting.com</a> to ask for permission to use
 this logo.</p>
-<p><img src="GGIR-MASTERLOGO-RGB.png" width="60%" style="border: 0; padding:20px"></p>
+<p><img src="../../../R%20pkgs/GGIR/articles/GGIR-MASTERLOGO-RGB.png" width="60%" style="border: 0; padding:20px"></p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

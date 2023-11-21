@@ -27,7 +27,7 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item">
-  <a class="nav-link" href="../articles/chapterInProgress.html">Get Started</a>
+  <a class="nav-link" href="../articles/chapter0_GetStarted.html">Get Started</a>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
@@ -254,7 +254,9 @@
         If experiments took place in a different timezone, then use this
         argument for the timezone in which the experiments took place and
         argument <code>configtz</code> to specify where the device was configured.
-        See also https://en.wikipedia.org/wiki/Zone.tab</p></dd>
+        Use the "TZ identifier" as specified at
+        <a href="https://en.wikipedia.org/wiki/Zone.tab" class="external-link">https://en.wikipedia.org/wiki/Zone.tab</a>
+        to set desiredtz, e.g., "Europe/London".</p></dd>
 
 
       <dt>configtz</dt>
@@ -263,7 +265,9 @@
         and ad-hoc csv file format at the moment.
         Timezone in which the accelerometer was configured. Only use this argument
         if the timezone of configuration and timezone in which recording took
-        place are different. See also https://en.wikipedia.org/wiki/Zone.tab</p></dd>
+        place are different. Use the "TZ identifier" as specified at
+        <a href="https://en.wikipedia.org/wiki/Zone.tab" class="external-link">https://en.wikipedia.org/wiki/Zone.tab</a>
+        to set configtz, e.g., "Europe/London".</p></dd>
 
 
       <dt>sensor.location</dt>
@@ -1597,7 +1601,11 @@
       <dt>save_ms5rawlevels</dt>
 <dd><p>Boolean (default = FALSE).
         In <a href="g.part5.html">g.part5</a>: Whether to save the time series classification (levels)
-        as csv or RData files (as defined by <code>save_ms5raw_format</code>).</p></dd>
+        as csv or RData files (as defined by <code>save_ms5raw_format</code>). Note that 
+        time stamps will be stored in the column <code>timenum</code> in UTC format (i.e., 
+        seconds from 1970-01-01). To convert timenum to time stamp format, you 
+        need to specify your desired time zone, e.g., 
+        <code>as.POSIXct(mdat$timenum, tz = "Europe/London")</code>.</p></dd>
 
 
       <dt>save_ms5raw_format</dt>

@@ -39,7 +39,7 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item">
-  <a class="nav-link" href="../articles/chapterInProgress.html">Get Started</a>
+  <a class="nav-link" href="../articles/chapter0_GetStarted.html">Get Started</a>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
@@ -108,7 +108,7 @@
 
     
     
-<p><img src="GGIR-MASTERLOGO-RGB.png" width="60%" style="border: 0; padding:20px"></p>
+<p><img src="../../../R%20pkgs/GGIR/articles/GGIR-MASTERLOGO-RGB.png" width="60%" style="border: 0; padding:20px"></p>
 <p>See also complementary vignettes on: <a href="https://cran.r-project.org/package=GGIR/vignettes/GGIR.html" class="external-link">General
 introduction to GGIR</a>, <a href="https://CRAN.R-project.org/package=GGIR/vignettes/CutPoints.html" class="external-link">Cut-points</a>,
 <a href="https://CRAN.R-project.org/package=GGIR/vignettes/TutorialDaySegmentAnalyses.html" class="external-link">Day
@@ -1190,7 +1190,9 @@ non-wear periods are assessed by non-overlapping windows.</p>
 device was configured and experiments took place. If experiments took
 place in a different timezone, then use this argument for the timezone
 in which the experiments took place and argument configtz to specify
-where the device was configured. See also <a href="https://en.wikipedia.org/wiki/Zone.tab" class="external-link uri">https://en.wikipedia.org/wiki/Zone.tab</a></p>
+where the device was configured. Use the”TZ identifier” as specified at
+://en.wikipedia.org/wiki/Zone.tabhttps://en.wikipedia.org/wiki/Zone.tab
+to set desiredtz, e.g., “Europe/London”.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="configtz">configtz<a class="anchor" aria-label="anchor" href="#configtz"></a>
@@ -1199,7 +1201,10 @@ where the device was configured. See also <a href="https://en.wikipedia.org/wiki
 functional for GENEActiv .bin, AX3 cwa, ActiGraph .gt3x, and ad-hoc csv
 file format at the moment. Timezone in which the accelerometer was
 configured. Only use this argument if the timezone of configuration and
-timezone in which recording took place are different. See also <a href="https://en.wikipedia.org/wiki/Zone.tab" class="external-link uri">https://en.wikipedia.org/wiki/Zone.tab</a></p>
+timezone in which recording took place are different. Use the”TZ
+identifier” as specified at
+://en.wikipedia.org/wiki/Zone.tabhttps://en.wikipedia.org/wiki/Zone.tab
+to set configtz, e.g., “Europe/London”.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="idloc">idloc<a class="anchor" aria-label="anchor" href="#idloc"></a>
@@ -2606,7 +2611,10 @@ possible.</p>
 </h4>
 <p>Boolean (default = FALSE). In g.part5: Whether to save the time
 series classification (levels) as csv or RData files (as defined by
-save_ms5raw_format).</p>
+save_ms5raw_format). Note that time stamps will be stored in the column
+timenum in UTC format (i.e., seconds from 1970-01-01). To convert
+timenum to time stamp format, you need to specify your desired time
+zone, e.g., as.POSIXct(mdat$timenum, tz = “Europe/London”).</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="save_ms5raw_format">save_ms5raw_format<a class="anchor" aria-label="anchor" href="#save_ms5raw_format"></a>
@@ -2743,7 +2751,7 @@ g.part2.</p>
 visualreport = TRUE only show the windows with sufficiently valid data
 according to includedaycrit when viewingwindow = 1 or includenightcrit
 when viewingwindow = 2</p>
-<p><img src="GGIR-MASTERLOGO-RGB.png" width="60%" style="border: 0; padding:20px"></p>
+<p><img src="../../../R%20pkgs/GGIR/articles/GGIR-MASTERLOGO-RGB.png" width="60%" style="border: 0; padding:20px"></p>
 </div>
 </div>
 </div>
