@@ -215,16 +215,26 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
           colnames = TRUE
         }
         
+        Dtest = data.table::fread(input = fnames[i],
+                              header = colnames,
+                              data.table = FALSE,
+                              skip = skip, nrows = 1)
+        if (length(grep(pattern = "time|date", x = Dtest[1, 1], ignore.case = TRUE)) > 0) {
+          skip = skip + 1
+        }
         # read data
         D = data.table::fread(input = fnames[i],
                               header = colnames,
                               data.table = FALSE,
                               skip = skip)
         
+        # ignore time and date column if present
+        D = D[, grep(pattern = "time|date", x = Dtest[1, ], ignore.case = TRUE, invert = TRUE), drop = FALSE]
+        D = D[, grep(pattern = "time|date", x = colnames(Dtest), ignore.case = TRUE, invert = TRUE), drop = FALSE]
         # Identify time and acceleration columns 
         acccol = vmcol = NA
         if (colnames == TRUE) {
-          acccol = grep("axis", colnames(D), ignore.case = TRUE)
+          acccol = grep("axis|activity", colnames(D), ignore.case = TRUE)
           vmcol = grep("vector magnitude|vm", colnames(D), ignore.case = TRUE)
         } else {
           # Then assume 
@@ -239,14 +249,17 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
           }
         }
         # D colnames and formatting
-        colnames(D)[acccol] = c("NeishabouriCount_y", "NeishabouriCount_x", "NeishabouriCount_z")
-        colnames(D)[vmcol] = c("NeishabouriCount_vm")
+        if (is.na(acccol[1]) == FALSE) { 
+          colnames(D)[acccol] = c("NeishabouriCount_y", "NeishabouriCount_x", "NeishabouriCount_z")
+        }
+        if (is.na(vmcol[1]) == FALSE) { 
+          colnames(D)[vmcol] = c("NeishabouriCount_vm")
+        }
         keep = c(acccol, vmcol)[!is.na(c(acccol, vmcol))]
-        D = D[, keep]
+        D = D[, keep, drop = FALSE]
         if (ncol(D) == 3 & is.na(vmcol)) {
           D$NeishabouriCount_vm = sqrt(D[,1]^2 + D[,2]^2 + D[,3]^2)
         }
-        
         # extract information from header
         
         if (header_test == TRUE) {
@@ -255,8 +268,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
           I$header[nrow(I$header) + 1, 1] = NA
           I$header$value[nrow(I$header)] = as.character(I$deviceSerialNumber)
           row.names(I$header)[nrow(I$header)] = "Serial Number:"
-          
-          epochSize = AGh$value[grep(pattern = "epochperiod", x = AGh$variable)]
+          epochSize = AGh$value[grep(pattern = "epochperiod|cycleperiod", x = AGh$variable)]
           epSizeShort = sum(as.numeric(unlist(strsplit(epochSize, ":"))) * c(3600, 60, 1))
           
           # extract date/timestamp from fileheader
