@@ -2,7 +2,10 @@ pandoc: 3.1.1
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
+  chapter0_Contributing: chapter0_Contributing.html
   chapter0_GetStarted: chapter0_GetStarted.html
+  chapter0_Installation: chapter0_Installation.html
+  chapter0_Support: chapter0_Support.html
   chapterInProgress: chapterInProgress.html
   CutPoints: CutPoints.html
   ExternalFunction: ExternalFunction.html
@@ -11,5 +14,5 @@ articles:
   HouseHoldCoanalysis: HouseHoldCoanalysis.html
   readmyacccsv: readmyacccsv.html
   TutorialDaySegmentAnalyses: TutorialDaySegmentAnalyses.html
-last_built: 2023-11-21T21:20Z
+last_built: 2023-11-22T13:29Z
 

@@ -41,6 +41,12 @@
 <li class="nav-item">
   <a class="nav-link" href="articles/chapter0_GetStarted.html">Get Started</a>
 </li>
+<li class="nav-item">
+  <a class="nav-link" href="articles/chapter0_Installation.html">Installation</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="articles/chapter0_Contributing.html">Contributing</a>
+</li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
@@ -60,6 +66,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-0-0/">Version 3.0-0</a>
     <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-9-0/">Version 2.9-0</a>
     <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-8-0/">Version 2.8-0</a>
     <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-7-1/">Version 2.7-1</a>
@@ -68,6 +75,9 @@
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="news/index.html">Changelog</a>
   </div>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="articles/chapter0_Support.html">Need help?</a>
 </li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
@@ -96,21 +106,12 @@
 <div class="row">
   <main id="main" class="col-md-9"><p><img src="articles/GGIR-MASTERLOGO-RGB.png"></p>
 <p><img src="https://github.com/wadpac/GGIR/workflows/R-CMD-check/badge.svg" alt="GitHub Actions R-CMD-check"><a href="https://app.codecov.io/gh/wadpac/GGIR" class="external-link"><img src="https://codecov.io/gh/wadpac/GGIR/branch/master/graph/badge.svg" alt="codecov"></a> <a href="https://cran.r-project.org/package=GGIR" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/last-month/GGIR"></a></p>
+<p><a href="https://CRAN.R-project.org/package=GGIR" class="external-link"><strong>GGIR</strong></a> is an R-package to process multi-day raw accelerometer data for physical activity and sleep research. The term <strong><em>raw</em></strong> refers to data being expressed in m/s<sup>2</sup> or gravitational acceleration as opposed to the previous generation accelerometers which stored data in accelerometer brand specific units. The signal processing includes automatic calibration, detection of sustained abnormally high values, detection of non-wear and calculation of average magnitude of dynamic acceleration based on a variety of metrics. Next, GGIR uses this information to describe the data per recording, per day of measurement, and (optionally) per segment of a day of measurement, including estimates of physical activity, inactivity and sleep. We published an overview paper of GGIR in 2019 <a href="https://doi.org/10.1123/jmpb.2018-0063" class="external-link">link</a>.</p>
 <div class="section level2">
-<h2 id="getting-started">Getting started:<a class="anchor" aria-label="anchor" href="#getting-started"></a>
+<h2 id="images-usaged">Images usaged<a class="anchor" aria-label="anchor" href="#images-usaged"></a>
 </h2>
-<p>The package <a href="https://CRAN.R-project.org/package=GGIR/vignettes/GGIR.html" class="external-link">vignette</a> and <a href="https://youtu.be/S8YPTrYNWdU" class="external-link">this</a> short tutorial video provide an introduction to GGIR, including: How it can be installed, Key software features, and where to get help.</p>
-</div>
-<div class="section level2">
-<h2 id="contribution-guidelines">Contribution guidelines:<a class="anchor" aria-label="anchor" href="#contribution-guidelines"></a>
-</h2>
-<p>We always welcome contributions to the package. If you want to contribute to the development of GGIR, have a look at the <a href="https://github.com/wadpac/GGIR/blob/master/CONTRIBUTING.md" class="external-link">contribution guidelines</a>.</p>
-<div class="section level3">
-<h3 id="images-usaged">Images usaged<a class="anchor" aria-label="anchor" href="#images-usaged"></a>
-</h3>
 <p>The copyright of the GGIR logo as contained in the file vignettes/GGIR-MASTERLOGO-RGB.png lies with Accelting (Almere, The Netherlands), please contact <a href="mailto:v.vanhees@accelting.com" class="email">v.vanhees@accelting.com</a> to ask for permission to use this logo.</p>
 <p>All other images in this repository are released under the Creative Commons Attribution 4.0 International (CC BY 4.0) license.</p>
-</div>
 </div>
 
   </main><aside class="col-md-3"><div class="links">

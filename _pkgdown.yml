@@ -32,6 +32,15 @@ navbar:
     intro:
       text: Get Started
       href: articles/chapter0_GetStarted.html
+    installation:
+      text: Installation
+      href: articles/chapter0_Installation.html
+    contributing:
+      text: Contributing
+      href: articles/chapter0_Contributing.html
+    help:
+      text: Need help?
+      href: articles/chapter0_Support.html
     twitter:
       icon: fa-twitter
       href: https://twitter.com/RpackageGGIR
@@ -61,11 +70,13 @@ navbar:
           href: articles/chapterInProgress.html
   
   structure:
-    left:  [intro, articles, news]
+    left:  [intro, installation, contributing, articles, news, help]
     right: [search, github, twitter]
 
 news:
   releases:
+  - text: "Version 3.0-0"
+    href: https://www.accelting.com/updates/ggir-release-3-0-0/
   - text: "Version 2.9-0"
     href: https://www.accelting.com/updates/ggir-release-2-9-0/
   - text: "Version 2.8-0"
