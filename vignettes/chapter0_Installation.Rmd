@@ -39,6 +39,7 @@ You can do this with one command from the console command line:
 
 ```{R,eval=FALSE}
 install.packages("GGIR", dependencies = TRUE)
+library(GGIR)
 ```
 
 Alternatively, you can install the latest development version, which might include
@@ -47,6 +48,7 @@ additional bug fixes and functionalities. To get the development version, please
 ```{R,eval=FALSE}
 install.packages("remotes")
 remotes::install_github("wadpac/GGIR")
+library(GGIR)
 ```
 
 ## Other packages you may need
