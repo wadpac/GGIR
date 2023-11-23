@@ -112,7 +112,11 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
       }
     }
     if (acc.metric %in% colnames(IMP$metashort) == FALSE) {
-      warning("Argument acc.metric is set to ",acc.metric," but not found in GGIR part 1 output data")
+      if ("ExtAct" %in% colnames(IMP$metashort) == TRUE) {
+        acc.metric = "ExtAct"
+      } else {
+        warning("Argument acc.metric is set to ",acc.metric," but not found in GGIR part 1 output data")
+      }
     }
     ACC = as.numeric(as.matrix(IMP$metashort[,which(colnames(IMP$metashort) == acc.metric)]))
     night = rep(0, length(ACC))
@@ -149,8 +153,17 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
     # to emphasize that we know that this is not actually neurological sleep
     getSleepFromExternalFunction = FALSE
     if (length(myfun) != 0) {
-      if ("wake_sleep" %in% myfun$colnames & myfun$outputtype == "character") {
+      if ("wake_sleep" %in% myfun$colnames) {
+        if (myfun$outputtype[which(myfun$colnames == "wake_sleep")] == "character") {
+          getSleepFromExternalFunction = TRUE
+          sleepColName = "wake_sleep"
+          sleepColType = "character"
+        }
+      }
+      if ("ExtSleep" %in% myfun$colnames) {
         getSleepFromExternalFunction = TRUE
+        sleepColName = "ExtSleep"
+        sleepColType = "numeric"
       }
     }
     if (getSleepFromExternalFunction == FALSE) {
@@ -166,7 +179,11 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
       # So, the assumption is that the external function provides a 
       # character "Sleep" when it detects sleep
       sleep = matrix(0, nD, 1)
-      sleep[which(M$metashort$wake_sleep == "Sleep")] = 1 
+      if (sleepColType == "character") {
+        sleep[which(M$metashort[, sleepColName] == "Sleep")] = 1 
+      } else {
+        sleep[which(M$metashort[, sleepColName] == 1)] = 1 
+      }
     }
     #-------------------------------------------------------------------
     # detect midnights
