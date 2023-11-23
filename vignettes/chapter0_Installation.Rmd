@@ -16,34 +16,42 @@ editor_options:
     wrap: 72
 ---
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-GGIR is an open-source R package, therefore first you need to make sure to instal R, and usually you would like to interact with R through RStudio, the most used IDE for using R.
+GGIR, as an open-source R package, requires an initial step of
+installing R on your system. Additionally, for a more user-friendly and
+interactive experience with R, it is recommended to use RStudio, which
+stands as the most widely utilized integrated development environment
+(IDE) for R.
 
 ## Install R and RStudio
 
-We encourage to update R and RStudio to the latest available, or at least to a version no older than 1 year. Please, follow the instructions in the dedicated websites to install R and RStudio. 
+We strongly recommend ensuring that both R and RStudio are up-to-date,
+ideally with the latest versions available. It is advisable to install
+versions no older than one year to guarantee compatibility with the
+latest packages and enhancements. That said, GGIR works with any R
+version ≥ 3.5.
 
-- [Download and install R](https://cran.r-project.org/)
+-   [Download and install R](https://cran.r-project.org/)
 
-- [Download and install
-RStudio](https://posit.co/products/open-source/rstudio/)
+-   [Download and install
+    RStudio](https://posit.co/products/open-source/rstudio/)
 
 ## Install GGIR
 
-Install the latest released version of GGIR with its dependencies from CRAN. 
-You can do this with one command from the console command line:
+Install the latest released version of GGIR with its dependencies from
+CRAN. You can do this with one command from the console command line:
 
 ```{R,eval=FALSE}
 install.packages("GGIR", dependencies = TRUE)
 library(GGIR)
 ```
 
-Alternatively, you can install the latest development version, which might include
-additional bug fixes and functionalities. To get the development version, please use:
+Alternatively, you can install the latest development version, which
+might include additional bug fixes and functionalities. To get the
+development version, please use:
 
 ```{R,eval=FALSE}
 install.packages("remotes")
@@ -53,15 +61,17 @@ library(GGIR)
 
 ## Other packages you may need
 
-Additionally, in some use-cases you will need to install one or multiple 
-additional packages. Note these packages are not installed by default, so
-please follow the instructions if:
+Additionally, in some use-cases you will need to install one or multiple
+additional packages. Note these packages are not installed by default,
+so please follow the instructions if:
 
--   You are working with Axivity or GENEActiv files, install
-    the GGIRread package with `install.packages("GGIRread")`
--   You are working with ActiGraph gt3x files, install
-    the read.gt3x package with `install.packages("read.gt3x")`
--   You want to derive Neishabouricounts (with `do.neishabouricounts = TRUE`),
-    install the actilifecounts package with `install.packages("actilifecounts")`
--   You want to derive circadian rhythm indicators using the [Cosinor analysis and Extended Cosinor analysis] 
-    (with `cosinor = TRUE`), install the ActCR package with `install.packages("ActCR")`
+-   You are working with Axivity or GENEActiv files, install the
+    GGIRread package with `install.packages("GGIRread")`
+-   You are working with ActiGraph gt3x files, install the read.gt3x
+    package with `install.packages("read.gt3x")`
+-   You want to derive Neishabouricounts (with
+    `do.neishabouricounts = TRUE`), install the actilifecounts package
+    with `install.packages("actilifecounts")`
+-   You want to derive circadian rhythm indicators using the [Cosinor
+    analysis and Extended Cosinor analysis] (with `cosinor = TRUE`),
+    install the ActCR package with `install.packages("ActCR")`

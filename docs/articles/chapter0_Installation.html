@@ -118,15 +118,19 @@
 
     
     
-<p>GGIR is an open-source R package, therefore first you need to make
-sure to instal R, and usually you would like to interact with R through
-RStudio, the most used IDE for using R.</p>
+<p>GGIR, as an open-source R package, requires an initial step of
+installing R on your system. Additionally, for a more user-friendly and
+interactive experience with R, it is recommended to use RStudio, which
+stands as the most widely utilized integrated development environment
+(IDE) for R.</p>
 <div class="section level2">
 <h2 id="install-r-and-rstudio">Install R and RStudio<a class="anchor" aria-label="anchor" href="#install-r-and-rstudio"></a>
 </h2>
-<p>We encourage to update R and RStudio to the latest available, or at
-least to a version no older than 1 year. Please, follow the instructions
-in the dedicated websites to install R and RStudio.</p>
+<p>We strongly recommend ensuring that both R and RStudio are
+up-to-date, ideally with the latest versions available. It is advisable
+to install versions no older than one year to guarantee compatibility
+with the latest packages and enhancements. That said, GGIR works with
+any R version ≥ 3.5.</p>
 <ul>
 <li><p><a href="https://cran.r-project.org/" class="external-link">Download and install
 R</a></p></li>
@@ -141,13 +145,15 @@ and install RStudio</a></p></li>
 from CRAN. You can do this with one command from the console command
 line:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"GGIR"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"GGIR"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wadpac/GGIR/" class="external-link">GGIR</a></span><span class="op">)</span></span></code></pre></div>
 <p>Alternatively, you can install the latest development version, which
 might include additional bug fixes and functionalities. To get the
 development version, please use:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"wadpac/GGIR"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"wadpac/GGIR"</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wadpac/GGIR/" class="external-link">GGIR</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="other-packages-you-may-need">Other packages you may need<a class="anchor" aria-label="anchor" href="#other-packages-you-may-need"></a>
