@@ -127,8 +127,8 @@ test_that("External epoch data is correctly converted", {
   load(paste0(QCbasis, "/meta_sensewear.xls.RData"))
   expect_equal(nrow(M$metashort), 60)
   expect_equal(ncol(M$metashort), 4)
-  expect_true(all(c("timestamp", "METs", "StepCounter", 
-                    "Sleep") %in% colnames(M$metashort)))
+  expect_true(all(c("timestamp", "ExtAct", "ExtStep",
+                    "ExtSleep") %in% colnames(M$metashort)))
   
   # Tidy up by deleting output folder
   if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)

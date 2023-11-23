@@ -191,7 +191,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         D = D[, c("METs", "Step Counter", "Sleep")]
         colnames(D) = c("ExtAct", "ExtStep", "ExtSleep")
         D$ExtAct = as.numeric(D$ExtAct)
-        D$ExtStep = as.numeric(D$StepCounter)
+        D$ExtStep = as.numeric(D$ExtStep)
         D$ExtSleep = as.numeric(D$ExtSleep)
         epochSize = difftime(timestamp_POSIX[2], timestamp_POSIX[1], 
                              units = "secs")
