@@ -9,6 +9,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
   tz = params_general[["desiredtz"]]
   epSizeShort = params_general[["windowsizes"]][1]
   epSizeLong = params_general[["windowsizes"]][2]
+  myfun = NULL
   # Identify input data file extensions
   if (dir.exists(datadir) == FALSE) {
     stop("\nWhen working with external data, argument datadir is expected to be a directory")
@@ -76,7 +77,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
     dformn = "epochdata"
     sf = 100 # <= EXTRACT FROM FILE?
   } else if (params_general[["dataFormat"]] == "sensewear_xls") {
-    deviceName = "Actiwatch"
+    deviceName = "Sensewear"
     monn = "sensewear"
     monc = 98
     dformc = 98
@@ -548,6 +549,20 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
       if (length(imp4) < LML) {
         imp4 = c(imp4, rep(0, LML - length(imp4)))
       }
+      if (params_general[["dataFormat"]] == "sensewear_xls") {
+        # Create myfun object, this to trigger outcome type specific analysis
+        myfun = list(FUN = NA,
+                     parameters = NA, 
+                     expected_sample_rate = NA, 
+                     expected_unit = "g", 
+                     colnames = c("ExtAct", "ExtStep", "ExtSleep"),
+                     outputres = epSizeShort,
+                     minlength = NA,
+                     outputtype = c("numeric", "numeric", "numeric"),
+                     aggfunction = NA,
+                     timestamp = F, 
+                     reporttype = c("scalar", "event", "type"))
+      }
       # create data.frame for metalong, note that light and temperature are just set at zero
       M$metalong = data.frame(timestamp = time_longEp_8601,nonwearscore = imp4, #rep(0,LML)
                               clippingscore = rep(0,LML), lightmean = rep(0,LML),
@@ -558,7 +573,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
       M$wday = as.POSIXlt(starttime)$wday + 1
       # Save these files as new meta-file
       filefoldername = NA
-      save(M, C, I, filename_dir, filefoldername,
+      save(M, C, I, myfun, filename_dir, filefoldername,
            file = outputFileName)
       Sys.setlocale("LC_TIME", Syslocale) # set language to English
     }

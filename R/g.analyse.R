@@ -172,7 +172,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
     cat("One day in this measurement is longer or shorter than 24 hours (probably related to day saving time)")
   }
   #-------------------------------------
-  # Detect orientation (at the moment only desighned for hip with accelerometer):
+  # Detect orientation (at the moment only designed for hip with accelerometer):
   # assess which angle per axis is most strongly 24 hour correlated:
   # for hip worn devices this will be the vertical axis
   longitudinal_axis_id = ""
