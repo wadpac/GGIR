@@ -19,23 +19,3 @@ knitr::opts_chunk$set(
 
 <img src="GGIR-MASTERLOGO-RGB.png">
 
-
-![](GGIR-MASTERLOGO-RGB.png)
-
-
-```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}
-knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
-```
-
-
-<img src="https://www.dropbox.com/scl/fi/18j8f9vtdcy1s2npies16/GGIR-MASTERLOGO-RGB.png?rlkey=hc4j72t78av8l01llxwbjd91q&dl=0">
-
-
-![](https://www.dropbox.com/scl/fi/18j8f9vtdcy1s2npies16/GGIR-MASTERLOGO-RGB.png?rlkey=hc4j72t78av8l01llxwbjd91q&dl=0)
-
-
-```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}
-knitr::include_graphics("https://www.dropbox.com/scl/fi/18j8f9vtdcy1s2npies16/GGIR-MASTERLOGO-RGB.png?rlkey=hc4j72t78av8l01llxwbjd91q&dl=0")
-```
-
-
