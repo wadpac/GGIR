@@ -38,11 +38,11 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../articles/chapter0_GetStarted.html">Get Started</a>
-</li>
 <li class="active nav-item">
   <a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../articles/chapter0_GetStarted.html">Get Started</a>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../articles/chapter0_Contributing.html">Contributing</a>
@@ -118,56 +118,60 @@
 
     
     
+<p>GGIR is an open-source R package, therefore first you need to make
+sure to instal R, and usually you would like to interact with R through
+RStudio, the most used IDE for using R.</p>
 <div class="section level2">
 <h2 id="install-r-and-rstudio">Install R and RStudio<a class="anchor" aria-label="anchor" href="#install-r-and-rstudio"></a>
 </h2>
-<p><a href="https://cran.r-project.org/" class="external-link">Download and install R</a></p>
-<p><a href="https://posit.co/products/open-source/rstudio/" class="external-link">Download and
-install RStudio</a></p>
+<p>We encourage to update R and RStudio to the latest available, or at
+least to a version no older than 1 year. Please, follow the instructions
+in the dedicated websites to install R and RStudio.</p>
+<ul>
+<li><p><a href="https://cran.r-project.org/" class="external-link">Download and install
+R</a></p></li>
+<li><p><a href="https://posit.co/products/open-source/rstudio/" class="external-link">Download
+and install RStudio</a></p></li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="install-ggir">Install GGIR<a class="anchor" aria-label="anchor" href="#install-ggir"></a>
 </h2>
-<div class="section level3">
-<h3 id="from-cran">From CRAN<a class="anchor" aria-label="anchor" href="#from-cran"></a>
-</h3>
-<p>Install GGIR with its dependencies from CRAN. You can do this with
-one command from the console command line:</p>
+<p>Install the latest released version of GGIR with its dependencies
+from CRAN. You can do this with one command from the console command
+line:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"GGIR"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="from-cran-development-version">From CRAN: development version<a class="anchor" aria-label="anchor" href="#from-cran-development-version"></a>
-</h3>
-<p>Alternatively, to install the latest development version with the
-latest bug fixes use instead:</p>
+<p>Alternatively, you can install the latest development version, which
+might include additional bug fixes and functionalities. To get the
+development version, please use:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"wadpac/GGIR"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="other-packages-you-may-need">Other packages you may need<a class="anchor" aria-label="anchor" href="#other-packages-you-may-need"></a>
-</h3>
+<div class="section level2">
+<h2 id="other-packages-you-may-need">Other packages you may need<a class="anchor" aria-label="anchor" href="#other-packages-you-may-need"></a>
+</h2>
 <p>Additionally, in some use-cases you will need to install one or
-multiple additional packages:</p>
+multiple additional packages. Note these packages are not installed by
+default, so please follow the instructions if:</p>
 <ul>
-<li>If you are working with Axivity, GENEActiv, or GENEA files, install
-the GGIRread package with <code>install.packages("GGIRread")</code>
+<li>You are working with Axivity or GENEActiv files, install the
+GGIRread package with <code>install.packages("GGIRread")</code>
 </li>
-<li>If you are working with ActiGraph gt3x files, install the read.gt3x
+<li>You are working with ActiGraph gt3x files, install the read.gt3x
 package with <code>install.packages("read.gt3x")</code>
 </li>
-<li>If you want to derive Neishabouricounts (with
+<li>You want to derive Neishabouricounts (with
 <code>do.neishabouricounts = TRUE</code>), install the actilifecounts
 package with <code>install.packages("actilifecounts")</code>
 </li>
-<li>If you want to derive circadian rhythm indicators using the [Cosinor
+<li>You want to derive circadian rhythm indicators using the [Cosinor
 analysis and Extended Cosinor analysis] (with
 <code>cosinor = TRUE</code>), install the ActCR package with
 <code>install.packages("ActCR")</code>
 </li>
 </ul>
-</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

@@ -70,7 +70,7 @@ navbar:
           href: articles/chapterInProgress.html
   
   structure:
-    left:  [intro, installation, contributing, articles, news, help]
+    left:  [installation, intro, contributing, articles, news, help]
     right: [search, github, twitter]
 
 news:

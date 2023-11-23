@@ -21,28 +21,28 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Install R and RStudio
+GGIR is an open-source R package, therefore first you need to make sure to instal R, and usually you would like to interact with R through RStudio, the most used IDE for using R.
 
-[Download and install R](https://cran.r-project.org/)
+## Install R and RStudio
 
-[Download and install
+We encourage to update R and RStudio to the latest available, or at least to a version no older than 1 year. Please, follow the instructions in the dedicated websites to install R and RStudio. 
+
+- [Download and install R](https://cran.r-project.org/)
+
+- [Download and install
 RStudio](https://posit.co/products/open-source/rstudio/)
 
-# Install GGIR
+## Install GGIR
 
-## From CRAN
-
-Install GGIR with its dependencies from CRAN. You can do this with one
-command from the console command line:
+Install the latest released version of GGIR with its dependencies from CRAN. 
+You can do this with one command from the console command line:
 
 ```{R,eval=FALSE}
 install.packages("GGIR", dependencies = TRUE)
 ```
 
-## From CRAN: development version
-
-Alternatively, to install the latest development version with the latest
-bug fixes use instead:
+Alternatively, you can install the latest development version, which might include
+additional bug fixes and functionalities. To get the development version, please use:
 
 ```{R,eval=FALSE}
 install.packages("remotes")
@@ -52,13 +52,14 @@ remotes::install_github("wadpac/GGIR")
 ## Other packages you may need
 
 Additionally, in some use-cases you will need to install one or multiple 
-additional packages:
+additional packages. Note these packages are not installed by default, so
+please follow the instructions if:
 
--   If you are working with Axivity, GENEActiv, or GENEA files, install
+-   You are working with Axivity or GENEActiv files, install
     the GGIRread package with `install.packages("GGIRread")`
--   If you are working with ActiGraph gt3x files, install
+-   You are working with ActiGraph gt3x files, install
     the read.gt3x package with `install.packages("read.gt3x")`
--   If you want to derive Neishabouricounts (with `do.neishabouricounts = TRUE`),
+-   You want to derive Neishabouricounts (with `do.neishabouricounts = TRUE`),
     install the actilifecounts package with `install.packages("actilifecounts")`
--   If you want to derive circadian rhythm indicators using the [Cosinor analysis and Extended Cosinor analysis] 
+-   You want to derive circadian rhythm indicators using the [Cosinor analysis and Extended Cosinor analysis] 
     (with `cosinor = TRUE`), install the ActCR package with `install.packages("ActCR")`
