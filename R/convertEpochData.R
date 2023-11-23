@@ -36,7 +36,6 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
       fnames = fnames_xls
     }
   }
-  
   #-------------
   # Create output folder, normally with raw data g.part1 would do this:
   if (!file.exists(metadatadir)) {
@@ -190,10 +189,10 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         timestamp_POSIX = openxlsx::convertToDateTime(as.numeric(D$`Time (GMT-04:00)`), tz = tz)
         
         D = D[, c("METs", "Step Counter", "Sleep")]
-        colnames(D) = c("METs", "StepCounter", "Sleep")
-        D$METs = as.numeric(D$METs)
-        D$StepCounter = as.numeric(D$StepCounter)
-        D$Sleep = as.numeric(D$Sleep)
+        colnames(D) = c("ExtAct", "ExtStep", "ExtSleep")
+        D$ExtAct = as.numeric(D$ExtAct)
+        D$ExtStep = as.numeric(D$StepCounter)
+        D$ExtSleep = as.numeric(D$ExtSleep)
         epochSize = difftime(timestamp_POSIX[2], timestamp_POSIX[1], 
                              units = "secs")
         epSizeShort = as.numeric(epochSize)
