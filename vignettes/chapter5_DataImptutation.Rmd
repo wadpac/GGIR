@@ -1,0 +1,29 @@
+---
+title: "5. How GGIR Deals with Invalid Data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{5. How GGIR Deals with Invalid Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Work in progress...
+
+## What is considered invalid data?
+
+## Imputation of invalid data in GGIR
+
+### Same time on different days of the recording
+
+### By zero on on user-defined time windows (TimeSegments2ZeroFile)
+
+## Key arguments
+
+## Related output

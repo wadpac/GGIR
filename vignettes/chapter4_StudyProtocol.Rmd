@@ -1,0 +1,25 @@
+---
+title: "4. Accounting for Study Protocol"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{4. Accounting for Study Protocol}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Work in progress...
+
+## Selecting/Masking the data
+
+## How to select the data of interest in GGIR
+
+## Key arguments
+
+## Related output

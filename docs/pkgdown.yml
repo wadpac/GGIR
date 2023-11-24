@@ -2,11 +2,21 @@ pandoc: 3.1.1
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
-  chapter0_Contributing: chapter0_Contributing.html
   chapter0_GetStarted: chapter0_GetStarted.html
   chapter0_Installation: chapter0_Installation.html
   chapter0_Support: chapter0_Support.html
+  chapter10_HouseholdCoanalysis: chapter10_HouseholdCoanalysis.html
+  chapter1_Pipeline: chapter1_Pipeline.html
+  chapter2_QualityAssessment: chapter2_QualityAssessment.html
+  chapter3_AccMetrics: chapter3_AccMetrics.html
+  chapter4_StudyProtocol: chapter4_StudyProtocol.html
+  chapter5_DataImptutation: chapter5_DataImptutation.html
+  chapter6_SleepAnalysis: chapter6_SleepAnalysis.html
+  chapter7_24hTimeUseAnalysis: chapter7_24hTimeUseAnalysis.html
+  chapter8_PhysicalBehavioursAnalysis: chapter8_PhysicalBehavioursAnalysis.html
+  chapter9_CircadianRhythms: chapter9_CircadianRhythms.html
   chapterInProgress: chapterInProgress.html
+  copy-of-GGIR: copy-of-GGIR.html
   CutPoints: CutPoints.html
   ExternalFunction: ExternalFunction.html
   GGIR: GGIR.html
@@ -14,5 +24,5 @@ articles:
   HouseHoldCoanalysis: HouseHoldCoanalysis.html
   readmyacccsv: readmyacccsv.html
   TutorialDaySegmentAnalyses: TutorialDaySegmentAnalyses.html
-last_built: 2023-11-24T10:17Z
+last_built: 2023-11-24T12:24Z
 
