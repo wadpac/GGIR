@@ -24,8 +24,8 @@
 <li class="nav-item">
   <a class="nav-link" href="articles/chapter0_GetStarted.html">Get Started</a>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="articles/chapter0_Contributing.html">Contributing</a>
+<li class="active nav-item">
+  <a class="nav-link" href="CONTRIBUTING.html">Contributing</a>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
@@ -87,7 +87,7 @@
 
 <div id="contributing-guidelines" class="section level1">
 
-<p>We welcome any kind of contribution to our software, from simple comment or question to a full fledged <a href="https://help.github.com/articles/about-pull-requests/" class="external-link">pull request</a>. Please read and follow our <a href="CODE_OF_CONDUCT.html">Code of Conduct</a>.</p>
+<p>GGIR welcomes any kind of contribution to the software, from simple comment or question to a full fledged <a href="https://help.github.com/articles/about-pull-requests/" class="external-link">pull request</a>. Please read and follow our <a href="CODE_OF_CONDUCT.html">Code of Conduct</a>.</p>
 <p>A contribution can be one of the following cases:</p>
 <ol style="list-style-type: decimal"><li>
 <a href="#questions">you have a question</a>;</li>
@@ -97,29 +97,32 @@
 <a href="#changes-or-additions">you want to make some kind of change to the code base</a> (e.g. to fix a bug, to add a new feature, to update documentation);</li>
 <li>
 <a href="#new-release">you want to make a new release of the code base</a>.</li>
-</ol><p>The sections below outline the steps in each case.</p>
-<div class="section level2">
+<li><a href="#optimize-functionalities">you want to help evaluate and optimize an algorithm or functionality of GGIR</a></li>
+</ol><div class="section level2">
 <h2 id="questions">Questions<a class="anchor" aria-label="anchor" href="#questions"></a></h2>
-<ol style="list-style-type: decimal"><li>use the search functionality <a href="https://groups.google.com/g/RpackageGGIR" class="external-link">here</a> to see if someone already experienced the same issue;</li>
+<p>The <a href="https://groups.google.com/forum/#!forum/RpackageGGIR" class="external-link">GGIR google group</a> offers an open platform in which GGIR users can collaborate and support each other. If you have a question related to the use of GGIR:</p>
+<ol style="list-style-type: decimal"><li>Use the search functionality <a href="https://groups.google.com/g/RpackageGGIR" class="external-link">here</a> to see if someone already experienced the same issue;</li>
 <li>if your search did not yield any relevant results, start a new conversation.</li>
 </ol></div>
 <div class="section level2">
 <h2 id="bugs">Bugs<a class="anchor" aria-label="anchor" href="#bugs"></a></h2>
-<ol style="list-style-type: decimal"><li>use the search functionality <a href="https://github.com/wadpac/GGIR/issues" class="external-link">here</a> to see if someone already filed the same issue;</li>
-<li>if your issue search did not yield any relevant results, make a new issue, and choose the Bug report type. This includes a checklist to make sure you provide enough information to the rest of the community to understand the cause and context of the problem.</li>
+<p>If you think you have found a bug in the GGIR code, then the <a href="https://github.com/wadpac/GGIR/issues" class="external-link">issue tracker</a> of the GGIR repository on GitHub might be of help. If you want to report a bug:</p>
+<ol style="list-style-type: decimal"><li>Use the search functionality <a href="https://github.com/wadpac/GGIR/issues" class="external-link">here</a> to see if someone already filed the same issue;</li>
+<li>If your issue search did not yield any relevant results, make a new issue, and choose the Bug report type. This includes a checklist to make sure you provide enough information to the rest of the community to understand the cause and context of the problem.</li>
 </ol></div>
 <div class="section level2">
 <h2 id="changes-or-additions">Changes or additions<a class="anchor" aria-label="anchor" href="#changes-or-additions"></a></h2>
-<ol style="list-style-type: decimal"><li>(<strong>important</strong>) announce your plan to the rest of the community <em>before you start working</em>. This announcement should be in the form of a (new) issue. Choose the Feature request type, which includes a checklist of things to consider to get the discussion going;</li>
-<li>(<strong>important</strong>) wait until some kind of consensus is reached about your idea being a good idea;</li>
-<li>if needed, fork the repository to your own Github profile and create your own feature branch off of the latest master commit. While working on your feature branch, make sure to stay up to date with the master branch by pulling in changes, possibly from the ‘upstream’ repository (follow the instructions <a href="https://help.github.com/articles/configuring-a-remote-for-a-fork/" class="external-link">here</a> and <a href="https://help.github.com/articles/syncing-a-fork/" class="external-link">here</a>);</li>
-<li>make sure the existing tests still work by running the test suite from RStudio;</li>
-<li>add your own tests (if necessary);</li>
-<li>update or expand the documentation, see <a href="#package-documentation">package documentation guidelines</a>;</li>
-<li>make sure the release notes in <code>inst/NEWS.Rd</code> are updated;</li>
-<li>add your name to the contributors lists in the <code>DESCRIPTION</code> file;</li>
-<li>push your feature branch to (your fork of) the GGIR repository on GitHub;</li>
-<li>create the pull request, e.g. following the instructions <a href="https://help.github.com/articles/creating-a-pull-request/" class="external-link">here</a>. The pull request template includes a checklist with the above items.</li>
+<p>If you found something you would like to change in the GGIR code, please follow the next steps:</p>
+<ol style="list-style-type: decimal"><li>(<strong>Important</strong>) announce your plan to the rest of the community <em>before you start working</em>. This announcement should be in the form of a (new) issue. Choose the Feature request type, which includes a checklist of things to consider to get the discussion going;</li>
+<li>(<strong>Important</strong>) wait until some kind of consensus is reached about your idea being a good idea;</li>
+<li>If needed, fork the repository to your own Github profile and create your own feature branch off of the latest master commit. While working on your feature branch, make sure to stay up to date with the master branch by pulling in changes, possibly from the ‘upstream’ repository (follow the instructions <a href="https://help.github.com/articles/configuring-a-remote-for-a-fork/" class="external-link">here</a> and <a href="https://help.github.com/articles/syncing-a-fork/" class="external-link">here</a>);</li>
+<li>Make sure the existing tests still work by running the test suite from RStudio;</li>
+<li>Add your own tests (if necessary);</li>
+<li>Update or expand the documentation, see <a href="#package-documentation">package documentation guidelines</a>;</li>
+<li>Make sure the release notes in <code>inst/NEWS.Rd</code> are updated;</li>
+<li>Add your name to the contributors lists in the <code>DESCRIPTION</code> file;</li>
+<li>Push your feature branch to (your fork of) the GGIR repository on GitHub;</li>
+<li>Create the pull request, e.g. following the instructions <a href="https://help.github.com/articles/creating-a-pull-request/" class="external-link">here</a>. The pull request template includes a checklist with the above items.</li>
 </ol><p>In case you feel like you’ve made a valuable contribution, but you don’t know how to write or run tests for it, or how to generate the documentation: don’t let this discourage you from making the pull request; we can help you! Just go ahead and submit the pull request, but keep in mind that you might be asked to append additional commits to your pull request.</p>
 <div class="section level3">
 <h3 id="coding-style">Coding style<a class="anchor" aria-label="anchor" href="#coding-style"></a></h3>
@@ -138,7 +141,7 @@
 <li>The github.io website (built with the <code>pkgdown</code> package).</li>
 </ul><div class="section level4">
 <h4 id="reference-manual">Reference manual<a class="anchor" aria-label="anchor" href="#reference-manual"></a></h4>
-<p>The reference manual gets the information from the .Rd documents within the man folder in the package repository. Therefore, updating the information in those files will automatically update the reference manual. Note that most of the GGIR functions are not intended for direct interaction with the user, as such, the documentation of most arguments is centralized in the details section of man/GGIR.Rd. If you for example want to add an extra parameter to <code>params_247</code> then this should be documented there. Further, you should not forget to include the new argument in functions  and .</p>
+<p>The reference manual gets the information from the .Rd documents within the man folder in the package repository. Therefore, updating the information in those files will automatically update the reference manual. Note that most of the GGIR functions are not intended for direct interaction with the user, as such, the documentation of most arguments is centralized in the details section of man/GGIR.Rd. If you for example want to add an extra parameter to <code>params_247</code> then this should be documented there. Further, you should not forget to include the new argument in functions <code>load_params</code> and <code>check_params</code>.</p>
 </div>
 <div class="section level4">
 <h4 id="package-vignettes">Package vignettes<a class="anchor" aria-label="anchor" href="#package-vignettes"></a></h4>
@@ -152,11 +155,10 @@
 <p>There are two ways to remove a vignette from CRAN:</p>
 <ol style="list-style-type: decimal"><li>Removing the Rmd file corresponding to the vignette in the vignettes folder, note that the file and the information will be lost.</li>
 <li>Adding the path to the vignette in the .Rbuildignore file available in the GGIR repository. For example, to remove the GGIRParameters vignette from CRAN, you can add:</li>
-</ol><pre><code>^vignettes/GGIRParameters.Rmd
-</code></pre>
+</ol><pre><code>^vignettes/GGIRParameters.Rmd</code></pre>
 </div>
 <div class="section level4">
-<h4 id="githubio-website">github.io website<a class="anchor" aria-label="anchor" href="#githubio-website"></a></h4>
+<h4 id="github-io-website">github.io website<a class="anchor" aria-label="anchor" href="#github-io-website"></a></h4>
 <p>For updating or adding information to the github.io website, we need to use <a href="_pkgdown.yml">the pkgdown configuration file</a> that can be found in the repositories root directory, as well as with the chapter vignettes discussed above.</p>
 <p><strong>To edit information in an existing chapter</strong></p>
 <ol style="list-style-type: decimal"><li>Open the vignette corresponding to the chapter you wish to edit (see the _pkgdown.yml) file for the chapter and its vignette path (href).</li>
@@ -181,6 +183,16 @@
 </div>
 </div>
 </div>
+<div class="section level2">
+<h2 id="optimize-functionality">Optimization of functionalities<a class="anchor" aria-label="anchor" href="#optimize-functionality"></a></h2>
+<p>You might not have the coding skills to contribute to the code base of GGIR, and still your contribution could be very important for us. Doing research on algorithms or functionalities of GGIR is crucial to support its development. We welcome contributions on any aspect in this regard, and here we enumerated some ideas or research opportunities:</p>
+<ol style="list-style-type: decimal"><li>Help improve the imputation methods for epoch-level data, especially for categorical outcomes (e.g., classification of physical activity intensities or sleep/rest status).</li>
+<li>Evaluate and optimize any algorithm used by GGIR, for example:
+<ul><li>The HorAngle algorithm for sleep period time definition.</li>
+<li>The sleep detection in children and preschoolers.</li>
+<li>The implementation of old sleep algorithms (e.g., Sadeh or Cole-Kripke) on data collected with modern devices.</li>
+</ul></li>
+</ol></div>
 <div class="section level2">
 <h2 id="new-release">New release<a class="anchor" aria-label="anchor" href="#new-release"></a></h2>
 <p>GGIR follows the <a href="RELEASE_CYCLE.html">release cycle process described in this document</a>.</p>
