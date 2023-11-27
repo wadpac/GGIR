@@ -7,9 +7,9 @@ create_part1_meta = function(desired_outputdir = "output_test",
     dir.create("output_test/results/QC", recursive = TRUE)
   }
   # part 1 metadata
-  C = GGIR::data.calibrate
-  I = GGIR::data.inspectfile
-  M = GGIR::data.getmeta
+  C = GGIR:::data.calibrate
+  I = GGIR:::data.inspectfile
+  M = GGIR:::data.getmeta
   # extend M$metashort
   from = as.POSIXct(M$metashort$timestamp[1], tz = "Europe/London")
   timestamp = seq.POSIXt(from = from, to = from + Ndays*24*60*60, by = windowsizes[1])
