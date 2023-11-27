@@ -56,9 +56,18 @@ baseDictionary = list(
   boutdur.lig = "Duration/s of light physical activity bouts (min)",
   boutdur.mvpa = "Duration/s of moderate-to-vigorous physical activity bouts (min)")
 
+# part 1 metadata for 4 days
+# p1meta = list()
+# create_test_acc_csv(Nmin = 1440*4)
+# GGIR(mode = 1, datadir = "123A_testaccfile.csv", 
+#      outputdir = "./", studyname = "test", verbose = FALSE)
+# load("output_test/meta/basic/meta_123A_testaccfile.csv.RData")
+# p1meta = list(M = M, C = C, I = I, 
+#               filefoldername = "123A_testaccfile.csv",
+#               filename_dir = "123A_testaccfile.csv",
+#               tail_expansion_log = NULL)
+
 # Future work - code to generate internal data below ----------------------
-
-
 
 
 
@@ -66,6 +75,6 @@ baseDictionary = list(
 # Store internal data -----------------------------------------------------
 
 # make sure to include the names of the objects to be stored in sysdata.rda
-usethis::use_data(baseDictionary, 
+usethis::use_data(baseDictionary, #p1meta,
                   internal = TRUE, overwrite = TRUE)
 

@@ -6,31 +6,54 @@ test_that("lux_per_segment is correctly calculated", {
   # This test also covers: dayborder != 0 and part5_agg2_60seconds = TRUE
   
   # test data -----
-  create_test_acc_csv(Nmin=1440*2)
-  fn = "123A_testaccfile.csv"
+  t0 = Sys.time()
+  # create_test_acc_csv(Nmin=1440*2)
+  # fn = "123A_testaccfile.csv"
   dn = "output_test"
   if (file.exists(dn)) unlink(dn, recursive = TRUE)
+  dir.create("output_test/meta/basic", recursive = TRUE)
+  dir.create("output_test/results/QC", recursive = TRUE)
   
-  # run part 1
-  GGIR(mode = 1, datadir = fn, outputdir = getwd(), studyname = "test",
-       do.report = c(), dayborder = 23, verbose = FALSE, nonwear_approach = "2013")
-  
+  # part 1 metadata
+  C = GGIR::data.calibrate
+  I = GGIR::data.inspectfile
+  M = GGIR::data.getmeta
+  # extend M$metashort
+  from = as.POSIXct(M$metashort$timestamp[1], tz = "Europe/London")
+  timestamp = seq.POSIXt(from = from, to = from + 4*24*60*60, by = 5)
+  anglez = rep(M$metashort$angle, length.out = length(timestamp))
+  enmo = rep(M$metashort$ENMO, length.out = length(timestamp))
+  M$metashort = data.frame(timestamp = POSIXtime2iso8601(timestamp, tz = "Europe/London"),
+                         anglez = anglez, ENMO = enmo)
+  # extend M$metalong
+  timestamp = seq.POSIXt(from = from, to = from + 4*24*60*60, by = 900)
+  nonwearscore = rep(M$metalong$nonwearscore, length.out = length(timestamp))
+  clippingscore = rep(M$metalong$clippingscore, length.out = length(timestamp))
+  lightmean = rep(M$metalong$lightmean, length.out = length(timestamp))
+  lightpeak = rep(M$metalong$lightpeak, length.out = length(timestamp))
+  temperaturemean = rep(M$metalong$temperaturemean, length.out = length(timestamp))
+  EN = rep(M$metalong$EN, length.out = length(timestamp))
+  M$metalong = data.frame(timestamp = POSIXtime2iso8601(timestamp, tz = "Europe/London"),
+                        nonwearscore = nonwearscore, clippingscore = clippingscore,
+                        lightmean = lightmean, lightpeak, lightpeak, 
+                        temperaturemean = temperaturemean, EN = EN)
+  filefoldername = "123A_testaccfile.csv"
+  filename_dir = "123A_testaccfile.csv"
+  tail_expansion_log = NULL
   # add lightmean and lightpeak to metalong
-  meta_fn = paste(getwd(), "output_test", "meta", "basic", 
-                  "meta_123A_testaccfile.csv.RData", sep = .Platform$file.sep)
-  load(meta_fn)
   set.seed(400)
-  M$metalong$lightmean = rnorm(n = nrow(M$metalong),mean=1000,sd=2000)
+  M$metalong$lightmean = rnorm(n = nrow(M$metalong), mean = 1000, sd = 2000)
   M$metalong$lightmean[which(M$metalong$lightmean < 0)] = 0
   M$metalong$lightmean = M$metalong$lightmean / 1000
   M$metalong$lightpeak = M$metalong$lightmean + 0.2
-  
+  # save part 1 metadata
+  meta_fn = paste(getwd(), "output_test", "meta", "basic", 
+                  "meta_123A_testaccfile.csv.RData", sep = .Platform$file.sep)
   save(C, I, M, filefoldername, filename_dir, tail_expansion_log,
        file = meta_fn)
-  
   # now run parts 2:5
-  GGIR(mode = 2:5, datadir = fn, outputdir = getwd(), studyname = "test",
-       overwrite = FALSE, do.report = c(2, 4, 5), verbose = FALSE,
+  GGIR(mode = 2:5, datadir = "test", outputdir = getwd(), studyname = "test",
+       overwrite = FALSE, do.report = c(2, 4, 5), verbose = TRUE,
        LUXthresholds = c(0, 500, 1000), 
        LUX_cal_constant = 1, 
        LUX_cal_exponent = 0.2, 
@@ -67,7 +90,7 @@ test_that("lux_per_segment is correctly calculated", {
   expect_equal(diff(mdat[(pm11 - 1):pm11, "window"]), 1) #dayborder = 23 (change in window at 23:00)
   
   outfolder = paste(getwd(), "output_test", sep = .Platform$file.sep)
-  if (file.exists(outfolder))  unlink(outfolder, recursive = TRUE)
-  if (file.exists(dn)) unlink(dn, recursive = TRUE)
-  
+  # if (file.exists(outfolder))  unlink(outfolder, recursive = TRUE)
+  # if (file.exists(dn)) unlink(dn, recursive = TRUE)
+  print(Sys.time() - t0)
 })
