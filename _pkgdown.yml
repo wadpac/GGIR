@@ -49,25 +49,25 @@ navbar:
       text: Articles
       menu:
         - text: 1. The GGIR pipeline
-          href: articles/chapter1_Pipeline.html
+          href: articles/chapterInProgress.html
         - text: 2. Inspecting the Data Quality
-          href: articles/chapter2_QualityAssessment.html
+          href: articles/chapterInProgress.html
         - text: 3. From Raw Data to Acceleration Metrics
-          href: articles/chapter3_AccMetrics.html
+          href: articles/chapterInProgress.html
         - text: 4. Accounting for Study Protocol
-          href: articles/chapter4_StudyProtocol.html
+          href: articles/chapterInProgress.html
         - text: 5. How GGIR Deals with Invalid Data
-          href: articles/chapter5_DataImptutation.html
+          href: articles/chapterInProgress.html
         - text: 6. Sleep Analysis
-          href: articles/chapter6_SleepAnalysis.html
+          href: articles/chapterInProgress.html
         - text: 7. The 24-hour time use analysis
-          href: articles/chapter7_24hTimeUseAnalysis.html
+          href: articles/chapterInProgress.html
         - text: 8. Physical Behaviours Analysis
-          href: articles/chapter8_PhysicalBehavioursAnalysis.html
+          href: articles/chapterInProgress.html
         - text: 9. Circadian Rhythms
-          href: articles/chapter9_CircadianRhythms.html
+          href: articles/chapterInProgress.html
         - text: 10. Household Co-Analysis
-          href: articles/chapter10_HouseholdCoanalysis.html
+          href: articles/chapterInProgress.html
   
   structure:
     left:  [installation, intro, contributing, articles, news, help]

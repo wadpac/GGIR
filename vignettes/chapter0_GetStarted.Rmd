@@ -20,10 +20,10 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-This section will help you understand whether GGIR can assist in analyzing your 
-accelerometer data. Additionally, it guides you through the process of 
-configuring your work environment to initiate the use of GGIR with your own 
-accelerometer data.
+This section will help you understand whether GGIR can assist in
+analyzing your accelerometer data. Additionally, it guides you through
+the process of configuring your work environment to initiate the use of
+GGIR with your own accelerometer data.
 
 ## Is GGIR for you?
 

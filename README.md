@@ -22,15 +22,15 @@ functional meaning.
 
 The term ***raw*** refers to data being expressed in m/s<sup>2</sup> or
 gravitational acceleration, as opposed to the previous generation
-accelerometers which stored data in brand-specific units. Recently, GGIR has 
-expanded the functionality to also provide support for analysing these 
-brand-specific units (usually referred to as activity counts) derived from 
-older devices. 
+accelerometers which stored data in brand-specific units. Recently, GGIR
+has expanded the functionality to also provide support for analysing
+these brand-specific units (usually referred to as activity counts)
+derived from older devices.
 
-Although GGIR is mainly designed to be applied over ***multi-day recordings***, 
-it can also be used on shorter recordings with only a few hours of data, yet
-most of the functionalities available in the package are only applied when the 
-recordings last several days.
+Although GGIR is mainly designed to be applied over ***multi-day
+recordings***, it can also be used on shorter recordings with only a few
+hours of data, yet most of the functionalities available in the package
+are only applied when the recordings last several days.
 
 The signal processing pipeline includes automatic calibration, detection
 of sustained abnormally high values, detection of non-wear, and
@@ -47,7 +47,8 @@ estimates per file.
 ## Citing GGIR
 
 We published an overview paper of GGIR in 2019
-[link](https://doi.org/10.1123/jmpb.2018-0063) which tried to describe most of the functionalities available in the package at that time.
+[link](https://doi.org/10.1123/jmpb.2018-0063) which tried to describe
+most of the functionalities available in the package at that time.
 
 A correct citation of research software is important to make your
 research reproducible and to acknowledge the effort that goes into the
