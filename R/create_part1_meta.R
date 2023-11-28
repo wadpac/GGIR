@@ -10,7 +10,7 @@ create_part1_meta = function(desired_outputdir = "output_test",
     dir.create("output_test/meta/basic", recursive = TRUE)
     dir.create("output_test/results/QC", recursive = TRUE)
   }
-  data(data.calibrate); data(data.inspectfile); data(data.getmeta)
+  utils::data(data.calibrate); utils::data(data.inspectfile); utils::data(data.getmeta)
   M = data.getmeta; C = data.calibrate; I = data.inspectfile
   # extend M$metashort
   from = as.POSIXct(M$metashort$timestamp[1])
