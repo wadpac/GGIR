@@ -14,11 +14,11 @@ create_part1_meta = function(desired_outputdir = "output_test",
   M = data.getmeta; C = data.calibrate; I = data.inspectfile
   print(head(M$metashort))
   # extend M$metashort
-  from = as.POSIXct(M$metashort$timestamp[1], tz = "Europe/London")
+  from = as.POSIXct(M$metashort$timestamp[1], tz = "")
   timestamp = seq.POSIXt(from = from, to = from + Ndays*24*60*60, by = windowsizes[1])
   anglez = rep(M$metashort$angle, length.out = length(timestamp))
   enmo = rep(M$metashort$ENMO, length.out = length(timestamp))
-  M$metashort = data.frame(timestamp = POSIXtime2iso8601(timestamp, tz = "Europe/London"),
+  M$metashort = data.frame(timestamp = POSIXtime2iso8601(timestamp, tz = ""),
                            anglez = anglez, ENMO = enmo)
   # extend M$metalong
   timestamp = seq.POSIXt(from = from, to = from + Ndays*24*60*60, by = windowsizes[2])
@@ -28,7 +28,7 @@ create_part1_meta = function(desired_outputdir = "output_test",
   lightpeak = rep(M$metalong$lightpeak, length.out = length(timestamp))
   temperaturemean = rep(M$metalong$temperaturemean, length.out = length(timestamp))
   EN = rep(M$metalong$EN, length.out = length(timestamp))
-  M$metalong = data.frame(timestamp = POSIXtime2iso8601(timestamp, tz = "Europe/London"),
+  M$metalong = data.frame(timestamp = POSIXtime2iso8601(timestamp, tz = ""),
                           nonwearscore = nonwearscore, clippingscore = clippingscore,
                           lightmean = lightmean, lightpeak, lightpeak, 
                           temperaturemean = temperaturemean, EN = EN)

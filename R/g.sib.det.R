@@ -317,7 +317,6 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
             SPTE_end[sptei] = (spt_estimate$SPTE_end / (3600 / ws3)) + 12 + daysleep_offset
             SPTE_start[sptei] = (spt_estimate$SPTE_start / (3600 / ws3)) + 12 + daysleep_offset
           }
-          print(head(tmpTIME))
           SPTE_end[sptei] = dstime_handling_check(tmpTIME = tmpTIME, spt_estimate = spt_estimate,
                                               tz = desiredtz, calc_SPTE_end = SPTE_end[sptei],
                                               calc_SPTE_start = SPTE_start[sptei])
