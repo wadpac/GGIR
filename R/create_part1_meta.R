@@ -11,9 +11,9 @@ create_part1_meta = function(desired_outputdir = "output_test",
     dir.create("output_test/results/QC", recursive = TRUE)
   }
   # part 1 metadata
-  C = data(data.calibrate)
-  I = data(data.inspectfile)
-  M = data(data.getmeta)
+  C = utils::data("data.calibrate")
+  I = utils::data("data.inspectfile")
+  M = utils::data("data.getmeta")
   # extend M$metashort
   from = as.POSIXct(M$metashort$timestamp[1], tz = "Europe/London")
   timestamp = seq.POSIXt(from = from, to = from + Ndays*24*60*60, by = windowsizes[1])
