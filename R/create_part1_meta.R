@@ -1,4 +1,5 @@
 create_part1_meta = function(desired_outputdir = "output_test",
+                             M, C, I,
                              Ndays = 2, windowsizes = c(5, 900, 3600),
                              lux = FALSE) {
   # function to create output folder structure and fill it with part 1
@@ -11,9 +12,9 @@ create_part1_meta = function(desired_outputdir = "output_test",
     dir.create("output_test/results/QC", recursive = TRUE)
   }
   # part 1 metadata
-  C = utils::data("data.calibrate")
-  I = utils::data("data.inspectfile")
-  M = utils::data("data.getmeta")
+  data.calibrate = data.inspectfile = data.getmeta = NULL
+  data("data.calibrate"); data("data.inspectfile"); data("data.getmeta")
+  M = data.getmeta; C = data.calibrate; I = data.inspectfile
   # extend M$metashort
   from = as.POSIXct(M$metashort$timestamp[1], tz = "Europe/London")
   timestamp = seq.POSIXt(from = from, to = from + Ndays*24*60*60, by = windowsizes[1])
@@ -33,6 +34,7 @@ create_part1_meta = function(desired_outputdir = "output_test",
                           nonwearscore = nonwearscore, clippingscore = clippingscore,
                           lightmean = lightmean, lightpeak, lightpeak, 
                           temperaturemean = temperaturemean, EN = EN)
+  # other info
   filefoldername = "123A_testaccfile.csv"
   filename_dir = "123A_testaccfile.csv"
   tail_expansion_log = NULL
