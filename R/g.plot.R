@@ -35,7 +35,7 @@ g.plot = function(IMP, M, I, durplot) {
       x0 = c()
       x1 = c()
     }
-    invisible(list(x0=x0,x1=x1))
+    invisible(list(x0 = x0, x1 = x1))
   }
   
   #create coordinates for rectangles non-wear
@@ -51,7 +51,7 @@ g.plot = function(IMP, M, I, durplot) {
   
   # start plot with empty canvas
   plot.new()	
-  par(fig = c(0, 1, 0, 1), new = T, mar = c(5, 4, 3, 0))
+  par(fig = c(0, 1, 0, 1), new = T, mar = c(6, 4, 3, 0))
   plot(seq(0, durplot), seq(0, durplot), col = "white", type = "l", axes = F, 
        xlab = "", ylab = "", main = paste0("device brand: ", monn, " | filename: ", fname), cex.main = 0.6)#dummy plot
   # lim = par("usr")
@@ -129,13 +129,18 @@ g.plot = function(IMP, M, I, durplot) {
   MEND = length(timeline)
   mnights = grep("00:00:00", M$metalong$timestamp)
   noons = grep("12:00:00", M$metalong$timestamp)
+  names(mnights) = rep("midnight", length(mnights))
+  names(noons) = rep("noon", length(noons))
   if (length(mnights) > 0 & length(noons) > 0) {
+    # axis 1: midnight, noon labels
     ticks = sort(c(mnights, noons))
-    if (mnights[1] < noons[1]) {
-      tick_labels = rep(c("00", "12"), length.out = length(ticks))
-    } else if (noons[1] < mnights[1]) {
-      tick_labels = rep(c("12", "00"), length.out = length(ticks))
+    tick_labels = names(ticks)
+    # axis 2: day counting (including one extra day at the beginning and end)
+    if (length(noons) > 1) {
+      ticks2 = c(mnights[1] - max(diff(mnights)), mnights, max(mnights) + max(diff(mnights)))
+      tick2_labels = paste0("d", 1:length(noons))
     }
+    
   } else {
     ticks = seq(0, nrow(M$metalong) + n_ws2_perday, by = n_ws2_perday)
     tick_labels = 1:length(ticks)
@@ -161,17 +166,26 @@ g.plot = function(IMP, M, I, durplot) {
       YTICKS = round(c(0, YLIM[2] * 0.3, YLIM[2] * 0.65, YLIM[2] * 0.95))
       YTICKS = unique(round(YTICKS/10) * 10) # round to nearest ten and remove possible duplicates
     } else {
-      ylabel = expression(paste("Acceleration (", italic("g"), ")"))
+      ylabel = expression(paste("Acceleration (m", italic("g"), ")"))
       YLIM = c(0, 0.6)
       YTICKS = c(0, 0.2, 0.4, 0.6)
     }
-    plot(timeline, Acceleration, type = "l", xlab = "Time (Hours)",
-         ylab = ylabel,
-         bty = "l", lwd = 0.1, xlim = c(0, durplot), ylim = YLIM, axes = FALSE, cex.lab = 0.8)
-    axis(side = 2, at = YTICKS)
-    axis(side = 1, at = ticks, labels = tick_labels)
+    plot(timeline, Acceleration, type = "l", bty = "l",
+         lwd = 0.1, axes = FALSE, cex.lab = 0.8,
+         xlab = "", ylab = ylabel,  xlim = c(0, durplot), 
+         ylim = YLIM, )
+    axis(side = 2, at = YTICKS, las = 1, cex.axis = 0.8)
+    axis(side = 1, at = ticks, labels = tick_labels, las = 3, cex.axis = 0.8)
+    abline(v = noons, lwd = 0.5, col = "grey", lty = 2)
+    abline(v = mnights, lwd = 0.5, lty = 3)
+    lines(timeline, Acceleration, lwd = 1)
+    # axis 2 (day counting)
+    if (length(noons) > 1) { # only if more than 1 day
+      axis(side = 1, at = noons, labels = tick2_labels, 
+           cex.axis = 0.8, font = 2, line = 3.2, tick = FALSE)
+      axis(side = 1, at = ticks2, labels = NA, line = 4.2)
+    }
   }
-  
   plot_nonwear = function(timeline, M, durplot, ticks) {
     plot(timeline, M$metalong$nonwearscore, type = "s",
          xlab = "", ylab = "Non-wear score", axes = F,
