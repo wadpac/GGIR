@@ -12,6 +12,7 @@ create_part1_meta = function(desired_outputdir = "output_test",
   }
   data(data.calibrate); data(data.inspectfile); data(data.getmeta)
   M = data.getmeta; C = data.calibrate; I = data.inspectfile
+  print(head(M$metashort))
   # extend M$metashort
   from = as.POSIXct(M$metashort$timestamp[1], tz = "Europe/London")
   timestamp = seq.POSIXt(from = from, to = from + Ndays*24*60*60, by = windowsizes[1])
