@@ -1,5 +1,4 @@
 create_part1_meta = function(desired_outputdir = "output_test",
-                             M, C, I,
                              Ndays = 2, windowsizes = c(5, 900, 3600),
                              lux = FALSE) {
   # function to create output folder structure and fill it with part 1
@@ -11,9 +10,7 @@ create_part1_meta = function(desired_outputdir = "output_test",
     dir.create("output_test/meta/basic", recursive = TRUE)
     dir.create("output_test/results/QC", recursive = TRUE)
   }
-  # part 1 metadata
-  data.calibrate = data.inspectfile = data.getmeta = NULL
-  data("data.calibrate"); data("data.inspectfile"); data("data.getmeta")
+  data(data.calibrate); data(data.inspectfile); data(data.getmeta)
   M = data.getmeta; C = data.calibrate; I = data.inspectfile
   # extend M$metashort
   from = as.POSIXct(M$metashort$timestamp[1], tz = "Europe/London")
