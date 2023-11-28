@@ -60,4 +60,5 @@ importFrom("stats", "aggregate.data.frame", "weighted.mean",
             "residuals", "fitted", "reshape", "cor")
 import(data.table)
 importFrom("methods", "is")
-importFrom("utils", "available.packages", "packageVersion", "help", "read.table")
+importFrom("utils", "available.packages", "packageVersion", "help", "read.table",
+           "data")
