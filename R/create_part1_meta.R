@@ -10,8 +10,8 @@ create_part1_meta = function(desired_outputdir = "output_test",
     dir.create("output_test/meta/basic", recursive = TRUE)
     dir.create("output_test/results/QC", recursive = TRUE)
   }
-  utils::data(data.calibrate); utils::data(data.inspectfile); utils::data(data.getmeta)
-  M = data.getmeta; C = data.calibrate; I = data.inspectfile
+  # utils::data(data.calibrate); utils::data(data.inspectfile); utils::data(data.getmeta)
+  M = GGIR::data.getmeta; C = GGIR::data.calibrate; I = GGIR::data.inspectfile
   # extend M$metashort
   from = as.POSIXct(M$metashort$timestamp[1])
   timestamp = seq.POSIXt(from = from, to = (from + Ndays*24*60*60) - 1, by = windowsizes[1])
