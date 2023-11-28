@@ -1,6 +1,10 @@
 create_part1_meta = function(desired_outputdir = "output_test",
                              Ndays = 2, windowsizes = c(5, 900, 3600),
                              lux = FALSE) {
+  # function to create output folder structure and fill it with part 1
+  # milestone data. These data come from the objects in the data folder,
+  # and it is repeated to fill in the desired duration as defined with Ndays.
+  # ========================================
   # folder structure
   if (!dir.exists(desired_outputdir)) {
     dir.create("output_test/meta/basic", recursive = TRUE)
