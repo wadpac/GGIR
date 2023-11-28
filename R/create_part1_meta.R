@@ -12,16 +12,15 @@ create_part1_meta = function(desired_outputdir = "output_test",
   }
   data(data.calibrate); data(data.inspectfile); data(data.getmeta)
   M = data.getmeta; C = data.calibrate; I = data.inspectfile
-  print(head(M$metashort))
   # extend M$metashort
-  from = as.POSIXct(M$metashort$timestamp[1], tz = "")
-  timestamp = seq.POSIXt(from = from, to = from + Ndays*24*60*60, by = windowsizes[1])
+  from = as.POSIXct(M$metashort$timestamp[1])
+  timestamp = seq.POSIXt(from = from, to = (from + Ndays*24*60*60) - 1, by = windowsizes[1])
   anglez = rep(M$metashort$angle, length.out = length(timestamp))
   enmo = rep(M$metashort$ENMO, length.out = length(timestamp))
   M$metashort = data.frame(timestamp = POSIXtime2iso8601(timestamp, tz = ""),
                            anglez = anglez, ENMO = enmo)
   # extend M$metalong
-  timestamp = seq.POSIXt(from = from, to = from + Ndays*24*60*60, by = windowsizes[2])
+  timestamp = seq.POSIXt(from = from, to = (from + Ndays*24*60*60) - 1, by = windowsizes[2])
   nonwearscore = rep(M$metalong$nonwearscore, length.out = length(timestamp))
   clippingscore = rep(M$metalong$clippingscore, length.out = length(timestamp))
   lightmean = rep(M$metalong$lightmean, length.out = length(timestamp))
