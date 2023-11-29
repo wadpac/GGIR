@@ -215,16 +215,30 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
           colnames = TRUE
         }
         
+        Dtest = data.table::fread(input = fnames[i],
+                              header = colnames,
+                              data.table = FALSE,
+                              skip = skip, nrows = 1)
+        if (length(grep(pattern = "time|date", x = Dtest[1, 1], ignore.case = TRUE)) > 0) {
+          skip = skip + 1
+        }
         # read data
         D = data.table::fread(input = fnames[i],
                               header = colnames,
                               data.table = FALSE,
                               skip = skip)
         
+        # ignore time and date column if present
+        D = D[, grep(pattern = "time|date", x = Dtest[1, ], ignore.case = TRUE, invert = TRUE), drop = FALSE]
+        D = D[, grep(pattern = "time|date", x = colnames(Dtest), ignore.case = TRUE, invert = TRUE), drop = FALSE]
+        if (inherits(x = D[1,1], what = "POSIXt")) {
+          # remove timestamp
+          D = D[, -1, drop = FALSE]
+        }
         # Identify time and acceleration columns 
         acccol = vmcol = NA
         if (colnames == TRUE) {
-          acccol = grep("axis", colnames(D), ignore.case = TRUE)
+          acccol = grep("axis|activity", colnames(D), ignore.case = TRUE)
           vmcol = grep("vector magnitude|vm", colnames(D), ignore.case = TRUE)
         } else {
           # Then assume 
@@ -239,24 +253,26 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
           }
         }
         # D colnames and formatting
-        colnames(D)[acccol] = c("NeishabouriCount_y", "NeishabouriCount_x", "NeishabouriCount_z")
-        colnames(D)[vmcol] = c("NeishabouriCount_vm")
+        if (is.na(acccol[1]) == FALSE) { 
+          colnames(D)[acccol] = c("NeishabouriCount_y", "NeishabouriCount_x", "NeishabouriCount_z")
+        }
+        if (is.na(vmcol[1]) == FALSE) { 
+          D = as.matrix(D, drop = FALSE) # convert to matrix as data.frame will auto-collapse to vector
+          colnames(D)[vmcol] = c("NeishabouriCount_vm")
+        }
         keep = c(acccol, vmcol)[!is.na(c(acccol, vmcol))]
-        D = D[, keep]
+        D = D[, keep, drop = FALSE]
         if (ncol(D) == 3 & is.na(vmcol)) {
           D$NeishabouriCount_vm = sqrt(D[,1]^2 + D[,2]^2 + D[,3]^2)
         }
-        
         # extract information from header
-        
         if (header_test == TRUE) {
           I$deviceSerialNumber = AGh$value[grep(pattern = "serialnumber", x = AGh$variable)]
           # Add serial number to header object because g.extractheadersvars for Actigraph uses this
           I$header[nrow(I$header) + 1, 1] = NA
           I$header$value[nrow(I$header)] = as.character(I$deviceSerialNumber)
           row.names(I$header)[nrow(I$header)] = "Serial Number:"
-          
-          epochSize = AGh$value[grep(pattern = "epochperiod", x = AGh$variable)]
+          epochSize = AGh$value[grep(pattern = "epochperiod|cycleperiod", x = AGh$variable)]
           epSizeShort = sum(as.numeric(unlist(strsplit(epochSize, ":"))) * c(3600, 60, 1))
           
           # extract date/timestamp from fileheader
@@ -303,6 +319,14 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
           stop(paste0("\nTime format in data ", timestamp, " does not match with time format ",
                       params_general[["extEpochData_timeformat"]],
                       " as specified by argument extEpochData_timeformat, please correct.\n"))
+        }
+        if (params_general[["windowsizes"]][1] > epSizeShort) {
+            # aggregate data to lower resolution to match desired epoch size in argument windowsizes
+            step = params_general[["windowsizes"]][1] %/% epSizeShort
+            Dcs = apply(D, 2, cumsum)
+            Dcs = apply(Dcs, 2, diff, lag = 1)
+            D = Dcs[seq(1, nrow(Dcs), by = step), , drop = FALSE] 
+            epSizeShort = epSizeShort * step
         }
         if (epSizeShort != params_general[["windowsizes"]][1]) {
           stop(paste0("\nThe short epoch size as specified by the user as the first value of argument windowsizes (",
@@ -398,7 +422,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
               index = index + 1
             }
           }
-          D = data.table::fread(input = fnames[i],
+          D = data.table::fread(input = fnames[i], 
                                 header = FALSE, sep = ",", skip = index, quote = quote)
           D = D[,1]
           colnames(D)[1] = "ZCY"
@@ -427,19 +451,17 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
           if (quote == "") D$ZCY = as.numeric(D$ZCY)
         }
       }
-      
       quartlystart = (ceiling(as.numeric(timestamp_POSIX) / epSizeLong)) * epSizeLong
       
       ts_longEp_POSIX = as.POSIXlt(quartlystart, tz = tz, origin = "1970-01-01") # POSIX time
       M$wdayname = weekdays(x = ts_longEp_POSIX, abbreviate = FALSE) # extract weekday as day name
       M$wday = ts_longEp_POSIX$wday # extract weekday as a daynumber
-      
       if (length(ts_longEp_POSIX) > 2) {
         # calculate time difference relative to original data
         # to know how much epoch to ignore at the beginning of the file
         deltastart = as.numeric(difftime(ts_longEp_POSIX, timestamp_POSIX,units = "sec") / 5)
         # shorten the data (object D) accordingly
-        D = D[(deltastart + 1):nrow(D),]
+        D = D[(deltastart + 1):nrow(D), drop = FALSE]
       }
       # Define compatible metashort and metalong dimensions
       LMS = nrow(D)
@@ -450,14 +472,12 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         # keep only until last epSizeLong available
         # redefine metashort length
         LMS = expected_LML * epSizeLong / epSizeShort
-        D = D[1:LMS,]
+        D = D[1:LMS, , drop = FALSE]
         LML = expected_LML
-      } 
-      
+      }
       #create timeseries for metashort
       time_shortEp_num = seq(quartlystart, quartlystart + ((nrow(D) - 1) * epSizeShort), by = epSizeShort)
       time_longEp_num = seq(quartlystart, quartlystart + ((nrow(D) - 1) * epSizeShort), by = epSizeLong)
-      
       if (LML * 15 > LMS) {
         time_longEp_num = time_longEp_num[1:floor(length(time_shortEp_num) / (epSizeLong/epSizeShort))]
         time_shortEp_num = time_shortEp_num[1:(length(time_longEp_num) * (epSizeLong/epSizeShort))]
@@ -472,11 +492,11 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         M$metashort = data.frame(timestamp = time_shortEp_8601,
                                  accmetric = D[1:length(time_shortEp_8601),1],stringsAsFactors = FALSE)
       } else if (params_general[["dataFormat"]] == "actigraph_csv") {
-        M$metashort = as.data.frame(cbind(time_shortEp_8601,
-                                          D[1:length(time_shortEp_8601), ]))
+        M$metashort = data.frame(timestamp = time_shortEp_8601)
+        M$metashort = cbind(M$metashort, D[1:length(time_shortEp_8601), ])
         colnames(M$metashort) = c("timestamp", colnames(D))
       }
-      
+
       if (length(which(is.na(M$metashort$ZCY) == TRUE)) > 0) {
         # impute missing data by zero
         # if it is a lot then this will be detected as non-wear
@@ -496,8 +516,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
       }
       navalues = which(is.na(imp) == TRUE)
       if (length(navalues) > 0) imp[navalues] = 1
-      
-      
+
       if (params_general[["dataFormat"]] == "ukbiobank_csv") {
         # Take long epoch mean of UK Biobank based invalid data indicater per 5 seconds
         imp2 = cumsum(imp)
@@ -518,7 +537,6 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         imp4 = round(imp4)
         if (any(is.na(imp4))) imp4[which(is.na(imp4))] = 3
       }
-      
       if (length(imp4) < LML) {
         imp4 = c(imp4, rep(0, LML - length(imp4)))
       }
@@ -530,7 +548,6 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
       # update weekday name and number based on actual data
       M$wdayname = weekdays(x = starttime, abbreviate = FALSE)
       M$wday = as.POSIXlt(starttime)$wday + 1
-      
       # Save these files as new meta-file
       filefoldername = NA
       save(M, C, I, filename_dir, filefoldername,
