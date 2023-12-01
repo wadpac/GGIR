@@ -51,7 +51,7 @@ g.plot = function(IMP, M, I, durplot) {
   
   # start plot with empty canvas
   plot.new()	
-  par(fig = c(0, 1, 0, 1), new = T, mar = c(6, 4, 3, 0))
+  par(fig = c(0, 1, 0, 1), new = T, mar = c(4, 4, 3, 0))
   plot(seq(0, durplot), seq(0, durplot), col = "white", type = "l", axes = F, 
        xlab = "", ylab = "", main = paste0("device brand: ", monn, " | filename: ", fname), cex.main = 0.6)#dummy plot
   # lim = par("usr")
@@ -132,15 +132,19 @@ g.plot = function(IMP, M, I, durplot) {
   names(mnights) = rep("midnight", length(mnights))
   names(noons) = rep("noon", length(noons))
   if (length(mnights) > 0 & length(noons) > 0) {
-    # axis 1: midnight, noon labels
-    ticks = sort(c(mnights, noons))
-    tick_labels = names(ticks)
+    # axis 1: midnight, noon labels (including one extra day at the beginning and end)
+    extramnights = c(mnights[1] - max(diff(mnights)), mnights, max(mnights) + max(diff(mnights)))
+    extranoons = c(noons[1] - max(diff(noons)), noons, max(noons) + max(diff(noons)))
+    if (extranoons[1] < extramnights[1]) extranoons = extranoons[-1]
+    if (max(extranoons) > max(extramnights)) extranoons = extranoons[-length(extranoons)]
+    ticks = sort(c(extramnights, extranoons))
+    tick_labels = rep("", length(ticks)) # no tick labels
     # axis 2: day counting (including one extra day at the beginning and end)
     if (length(noons) > 1) {
-      ticks2 = c(mnights[1] - max(diff(mnights)), mnights, max(mnights) + max(diff(mnights)))
+      extramnights = c(mnights[1] - max(diff(mnights)), mnights, max(mnights) + max(diff(mnights)))
+      ticks2 = extramnights
       tick2_labels = paste0("d", 1:length(noons))
     }
-    
   } else {
     ticks = seq(0, nrow(M$metalong) + n_ws2_perday, by = n_ws2_perday)
     tick_labels = 1:length(ticks)
@@ -182,8 +186,8 @@ g.plot = function(IMP, M, I, durplot) {
     # axis 2 (day counting)
     if (length(noons) > 1) { # only if more than 1 day
       axis(side = 1, at = noons, labels = tick2_labels, 
-           cex.axis = 0.8, font = 2, line = 3.2, tick = FALSE)
-      axis(side = 1, at = ticks2, labels = NA, line = 4.2)
+           cex.axis = 0.8, font = 2, line = -0.4, tick = FALSE)
+      axis(side = 1, at = ticks2, labels = NA, line = 0.5, tck = -0.02)
     }
   }
   plot_nonwear = function(timeline, M, durplot, ticks) {
