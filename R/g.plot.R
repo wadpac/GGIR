@@ -1,5 +1,6 @@
 g.plot = function(IMP, M, I, durplot) {
-  # Extracting filename and monitor type 
+  
+    # Extracting filename and monitor type 
   fname = I$filename
   mon = I$monc
   monn = I$monn
@@ -56,7 +57,7 @@ g.plot = function(IMP, M, I, durplot) {
        xlab = "", ylab = "", main = paste0("device brand: ", monn, " | filename: ", fname), cex.main = 0.6)#dummy plot
   # draw coloured rectangles
   Y0 = -50
-  Y1 = c(durplot) # + n_ws2_perday)
+  Y1 = durplot * 0.98
   legend_names = c("not worn", "signal clipping", "also not worn", "study protocol masked")
   legend_lty = c(NA, NA, NA, NA)
   legend_density = c(100, 100, 100, dens)
@@ -130,15 +131,15 @@ g.plot = function(IMP, M, I, durplot) {
   noons = grep("12:00:00", M$metalong$timestamp)
   if (length(mnights) > 0 & length(noons) > 0) {
     # axis 1: midnight, noon labels (including one extra day at the beginning and end)
-    extramnights = c(mnights[1] - max(diff(mnights)), mnights, max(mnights) + max(diff(mnights)))
-    extranoons = c(noons[1] - max(diff(noons)), noons, max(noons) + max(diff(noons)))
+    extramnights = c(mnights[1] - n_ws2_perday, mnights, max(mnights) + n_ws2_perday)
+    extranoons = c(noons[1] - n_ws2_perday, noons, max(noons) + n_ws2_perday)
     if (extranoons[1] < extramnights[1]) extranoons = extranoons[-1]
     if (max(extranoons) > max(extramnights)) extranoons = extranoons[-length(extranoons)]
     ticks_12hours = sort(c(extramnights, extranoons))
     x_labels_12hours = rep("", length(ticks_12hours)) # no tick labels
     # axis 2: day counting (including one extra day at the beginning and end)
     if (length(extranoons) > 1) {
-      extramnights = c(mnights[1] - max(diff(mnights)), mnights, max(mnights) + max(diff(mnights)))
+      extramnights = c(mnights[1] - n_ws2_perday, mnights, max(mnights) + n_ws2_perday)
       ticks_dayborders = extramnights
       x_labels_days = ceiling((extranoons / n_ws2_perday) - 0.5) + 1
     }
@@ -179,7 +180,6 @@ g.plot = function(IMP, M, I, durplot) {
     axis(side = 1, at = ticks_12hours, labels = x_labels_12hours, las = 3, cex.axis = 0.8)
     abline(v = noons, lwd = 0.5, col = "grey", lty = 2)
     abline(v = mnights, lwd = 0.5, lty = 3)
-    # lines(timeline, Acceleration, lwd = 1)
     # axis 2 (day counting)
     if (length(extranoons) > 1) { # only if more than 1 day
       axis(side = 1, at = extranoons, labels = x_labels_days, 
