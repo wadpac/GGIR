@@ -57,7 +57,7 @@ g.plot = function(IMP, M, I, durplot) {
        xlab = "", ylab = "", main = paste0("device brand: ", monn, " | filename: ", fname), cex.main = 0.6)#dummy plot
   # draw coloured rectangles
   Y0 = -50
-  Y1 = durplot * 0.98
+  Y1 = durplot * 0.98 # leave space around legend
   legend_names = c("not worn", "signal clipping", "also not worn", "study protocol masked")
   legend_lty = c(NA, NA, NA, NA)
   legend_density = c(100, 100, 100, dens)
