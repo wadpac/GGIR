@@ -177,15 +177,15 @@ g.plot = function(IMP, M, I, durplot) {
          xlab = "Recording day", ylab = ylabel,  xlim = c(0, durplot), 
          ylim = YLIM, )
     axis(side = 2, at = YTICKS, las = 1, cex.axis = 0.8)
-    axis(side = 1, at = ticks_12hours, labels = x_labels_12hours, las = 3, cex.axis = 0.8)
+    # axis(side = 1, at = ticks_12hours, labels = x_labels_12hours, las = 3, cex.axis = 0.8)
     abline(v = noons, lwd = 0.5, col = "grey", lty = 2)
     abline(v = mnights, lwd = 0.5, lty = 3)
     # axis 2 (day counting)
     if (length(extranoons) > 1) { # only if more than 1 day
       axis(side = 1, at = extranoons, labels = x_labels_days, 
            cex.axis = ifelse(test = length(extranoons) > 10, yes = 0.6, no = 0.8),
-           font = 1, line = -0.4, tick = FALSE, lwd = 0.8)
-      axis(side = 1, at = ticks_dayborders, labels = NA, line = 0.5, tck = -0.02)
+           font = 1, tick = FALSE, lwd = 0.8, mgp = c(3,1,0)) #line = -0.4
+      axis(side = 1, at = ticks_dayborders, labels = NA, tck = -0.05, mgp = c(3,1,0))# line = 0.5, 
     }
   }
   plot_nonwear = function(timeline, M, durplot, ticks_12hours) {
