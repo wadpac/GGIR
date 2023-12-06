@@ -187,7 +187,11 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
       } else if (params_general[["dataFormat"]] == "sensewear_xls") {
         # read data
         D = as.data.frame(readxl::read_excel(path = fnames[i], col_types = "text"))
-        timestamp_POSIX = as.POSIXct(as.numeric(D[, grep(pattern = "Time", x = colnames(D))]) * (60*60*24), origin = "1899-12-30", tz = tz)
+        # Convert timestamps which is read as Excel timestamp
+        timestamp_POSIX = format(as.POSIXct(as.numeric(D[, grep(pattern = "Time", x = colnames(D))]) * (60*60*24),
+                                            origin = "1899-12-30", tz = "GMT"))
+        timestamp_POSIX = as.POSIXct(timestamp_POSIX, tz = tz)
+        
         D = D[, c("METs", "Step Counter", "Sleep")]
         colnames(D) = c("ExtAct", "ExtStep", "ExtSleep")
         D$ExtAct = as.numeric(D$ExtAct)
