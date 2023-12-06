@@ -39,8 +39,8 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
       srep_tmp$SIBoverlapNap = 0
       srep_tmp$NonwearOverlapSIB = 0
       srep_tmp$NapOverlapSIB = 0
-      srep_tmp$start = as.POSIXlt(srep_tmp$start, tz = tz)
-      srep_tmp$end = as.POSIXlt(srep_tmp$end, tz = tz)
+      srep_tmp$start = as.POSIXct(srep_tmp$start, tz = tz)
+      srep_tmp$end = as.POSIXct(srep_tmp$end, tz = tz)
       # # for qc purposes:
       # dsummary[di,fi] = nrow(srep_tmp)
       # ds_names[fi] = "n_sibs_sibreport"
@@ -135,10 +135,12 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
       }
       ds_names[fi:(fi + 1)] = c("frag_mean_dur_srnonw_day", "dur_day_srnonw_min")
       fi = fi + 2
-      # Overlap sib with srnap
+      
       calcOverlapPercentage = function(overlap, duration) {
         return(sum(overlap * duration) / sum(duration))
       }
+      
+      # Overlap sib with srnap
       if (length(SIBoverlapNap_indices) > 0) {
         overlap_perc = calcOverlapPercentage(overlap = srep_tmp$SIBoverlapNap[SIBoverlapNap_indices],
                                              duration = srep_tmp$duration[SIBoverlapNap_indices])
@@ -151,9 +153,6 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
       ds_names[fi:(fi + 2)] = c("mdur_sib_overl_srnap", "tdur_sib_overl_srnap", "perc_sib_overl_srnap")
       fi = fi + 3
       # Overlap srnap with sib
-      calcOverlapPercentage = function(overlap, duration) {
-        return(sum(overlap * duration) / sum(duration))
-      }
       if (length(SIBoverlapNap_indices) > 0) {
         overlap_perc = calcOverlapPercentage(overlap = srep_tmp$NapOverlapSIB[NapOverlapSIB_indices],
                                              duration = srep_tmp$duration[NapOverlapSIB_indices])
