@@ -2,6 +2,8 @@
 
 - Part 2: Fix bug that caused part 2 to struggle with corrupt ActiGraph .gt3x files #972
 
+- Part 2: Redefine horizontal axis of plots_to_check_data_quality #983
+
 - Documentation: Expanded documentation on desiredtz, configtz, and time stamp format in part 5 time series #966
 
 - Facilitate handling of Sensewear xls file format with externally derived epoch data #974
