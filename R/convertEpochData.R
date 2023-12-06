@@ -153,7 +153,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
     # include verbose info
     if (verbose == TRUE) {
       if (i  == 1) {
-        cat(paste0("\nLoading file: ", i))
+        cat(paste0("\nP1 file: ", i))
       } else {
         cat(paste0(" ", i))
       }
