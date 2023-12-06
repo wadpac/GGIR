@@ -1,12 +1,11 @@
 library(GGIR)
 context("g.part5.analyseRest")
-tz = "Europe/Amsterdam"
+
+tz = "Pacific/Auckland"
 ds_names = rep("", 40)
 dsummary = matrix("", 1, 40)
 startday = as.POSIXct(x = "2022-06-02 08:00:00", tz = tz)
 time = seq(startday, startday + (16 * 3600), by = 60)
-
-
 
 test_that("Overlap 1 nap and 1 sib", {
   fi = 1
@@ -14,7 +13,8 @@ test_that("Overlap 1 nap and 1 sib", {
   sibreport = data.frame(ID = rep("test123", 2), type = c("nap", "sib"),
                          start = c("2022-06-02 14:00:00", "2022-06-02 14:05:00"),
                          end = c("2022-06-02 14:20:00", "2022-06-02 14:20:00"))
-  sibreport$duration = as.numeric(difftime(time1 = sibreport$end, time2 = sibreport$start, units = "mins", tz = tz))
+  sibreport$duration = as.numeric(difftime(time1 = sibreport$end,
+                                           time2 = sibreport$start, units = "mins", tz = tz))
   restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
                                      ds_names = ds_names, fi = fi, di = di,
                                      time = time,

@@ -6,6 +6,9 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
   if (is.ISO8601(as.character(time[1]))) {
     time = iso8601chartime2POSIX(time, tz = tz)
   }
+  sibreport$end = as.POSIXct(sibreport$end, tz = tz)
+  sibreport$start = as.POSIXct(sibreport$start, tz = tz)
+  
   # Only consider sib episodes with minimum duration
   if (length(grep(pattern = "mean_acc_1min", x = colnames(sibreport))) > 0) {
     sibreport$acc_edge = pmax(sibreport$mean_acc_1min_before, sibreport$mean_acc_1min_after)
