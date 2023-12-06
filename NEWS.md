@@ -8,6 +8,8 @@
 
 - Part 1: Now also able to handle some more variations in Actigraph csv count file format #978, and automatically aggregates to lower resolution if short epoch size is longer than observed epoch size in actigraph count csv.
 
+- Part 5: Fix bug in recently added fucntionality for studying overlap between sibs and self-reported beahviours #989.
+
 # CHANGES IN GGIR VERSION 3.0-1
 
 - Part 2: Added option to provide a csv file with start and end dates when accelerometer is expected to be worn #943
