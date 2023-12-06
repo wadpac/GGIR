@@ -1,12 +1,11 @@
 library(GGIR)
 context("g.part5.analyseRest")
-tz = "Europe/Amsterdam"
+
+tz = "Pacific/Auckland"
 ds_names = rep("", 40)
 dsummary = matrix("", 1, 40)
-startday = as.POSIXlt(x = "2022-06-02 08:00:00", tz = tz)
+startday = as.POSIXct(x = "2022-06-02 08:00:00", tz = tz)
 time = seq(startday, startday + (16 * 3600), by = 60)
-
-
 
 test_that("Overlap 1 nap and 1 sib", {
   fi = 1
@@ -14,7 +13,8 @@ test_that("Overlap 1 nap and 1 sib", {
   sibreport = data.frame(ID = rep("test123", 2), type = c("nap", "sib"),
                          start = c("2022-06-02 14:00:00", "2022-06-02 14:05:00"),
                          end = c("2022-06-02 14:20:00", "2022-06-02 14:20:00"))
-  sibreport$duration = as.numeric(difftime(time1 = sibreport$end, time2 = sibreport$start, units = "mins", tz = tz))
+  sibreport$duration = as.numeric(difftime(time1 = sibreport$end,
+                                           time2 = sibreport$start, units = "mins", tz = tz))
   restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
                                      ds_names = ds_names, fi = fi, di = di,
                                      time = time,
@@ -81,12 +81,16 @@ test_that("No overlap 1 nonwear, 1 nap, and 1 sib", {
   fi = restAnalyses$fi
   di = restAnalyses$di
   dsummary = restAnalyses$dsummary
+  expect_equal(sum(as.numeric(restAnalyses$dsummary), na.rm = TRUE), 129)
+  
   ds_names = restAnalyses$ds_names
   dsummary = as.numeric(dsummary[, which(ds_names != "")])
   ds_names = ds_names[ds_names != ""]
   names(dsummary) = ds_names
   dsummary = as.data.frame(t(dsummary))
   
+  expect_equal(ncol(dsummary), 27)
+  expect_equal(nrow(dsummary), 1)
   expect_equal(dsummary$nbouts_day_sib, 1)
   expect_equal(dsummary$nbouts_day_srnap, 1)
   expect_equal(dsummary$nbouts_day_srnonw, 1)
@@ -96,5 +100,6 @@ test_that("No overlap 1 nonwear, 1 nap, and 1 sib", {
   expect_equal(dsummary$perc_sib_overl_srnap, 0)
   expect_equal(dsummary$perc_sib_overl_srnonw, 0)
   expect_equal(dsummary$perc_srnonw_overl_sib, 0)
-  expect_equal(sum(dsummary), 129)
+  expect_equal(sum(dsummary, na.rm = TRUE), 129)
+  
 })
