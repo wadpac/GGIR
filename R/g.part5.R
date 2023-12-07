@@ -591,9 +591,13 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                       lightpeak_col = NULL
                     }
                     
+                    angle_col = grep(pattern = "angle", x = names(ts), value = TRUE)
+                    if (length(angle_col) == 0) {
+                      angle_col = NULL
+                    }
                     g.part5.savetimeseries(ts = ts[, c("time", "ACC", "diur", "nonwear",
                                                        "guider", "window", napNonwear_col,
-                                                       lightpeak_col, selfreported_col)],
+                                                       lightpeak_col, selfreported_col, angle_col)],
                                            LEVELS = LEVELS,
                                            desiredtz = params_general[["desiredtz"]],
                                            rawlevels_fname = rawlevels_fname,
