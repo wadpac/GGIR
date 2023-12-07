@@ -53,6 +53,9 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
   if (is.ISO8601(as.character(ts$time[1]))) {
     ts$time = iso8601chartime2POSIX(ts$time, tz = tz)
   }
+  sibreport$end = as.POSIXct(sibreport$end, tz = tz)
+  sibreport$start = as.POSIXct(sibreport$start, tz = tz)
+  
   # Only consider sib episodes with minimum duration
   if (length(grep(pattern = "mean_acc_1min", x = colnames(sibreport))) > 0) {
     sibreport$acc_edge = pmax(sibreport$mean_acc_1min_before, sibreport$mean_acc_1min_after)
@@ -109,8 +112,8 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
       srep_tmp$NonwearOverlapSIB = 0
       srep_tmp$NapOverlapSIB = 0
       srep_tmp$SleeplogOverlapSIB = 0
-      srep_tmp$start = as.POSIXlt(srep_tmp$start, tz = tz)
-      srep_tmp$end = as.POSIXlt(srep_tmp$end, tz = tz)
+      srep_tmp$start = as.POSIXct(srep_tmp$start, tz = tz)
+      srep_tmp$end = as.POSIXct(srep_tmp$end, tz = tz)
       if (length(sibs) > 0) {
         classes = unique(srep_tmp$type)
         selfreport = which(srep_tmp$type == "nonwear" | srep_tmp$type == "nap" | srep_tmp$type == "sleeplog") 
