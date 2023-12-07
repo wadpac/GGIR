@@ -2,6 +2,8 @@
 
 - Part 2: Fix bug that caused part 2 to struggle with corrupt ActiGraph .gt3x files #972
 
+- Part 2: Redefine horizontal axis of plots_to_check_data_quality #983
+
 - Documentation: Expanded documentation on desiredtz, configtz, and time stamp format in part 5 time series #966
 
 - Part 1: Now also able to handle some more variations in Actigraph csv count file format #978, and automatically aggregates to lower resolution if short epoch size is longer than observed epoch size in actigraph count csv.
