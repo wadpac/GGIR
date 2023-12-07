@@ -89,7 +89,7 @@ test_that("No overlap 1 nonwear, 1 nap, and 1 sib", {
   names(dsummary) = ds_names
   dsummary = as.data.frame(t(dsummary))
   
-  expect_equal(ncol(dsummary), 27)
+  expect_equal(ncol(dsummary), 35)
   expect_equal(nrow(dsummary), 1)
   expect_equal(dsummary$nbouts_day_sib, 1)
   expect_equal(dsummary$nbouts_day_srnap, 1)
