@@ -141,12 +141,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
           data = P$data
         }
       } else if (dformat == FORMAT$AD_HOC_CSV) {
-        if (length(params_rawdata[["rmc.col.time"]]) > 0 && mon == MONITOR$AD_HOC) {
-          columns_to_use = 2:4
-        } else {
-          columns_to_use = 1:3
-        }
-        data = P$data[, columns_to_use]
+        data = P$data[, c(params_rawdata[["rmc.col.acc"]],  params_rawdata[["rmc.col.temp"]])]
       } else if (dformat == FORMAT$GT3X) {
         data = as.matrix(P[,2:4])
       }
@@ -195,7 +190,6 @@ g.calibrate = function(datafile, params_rawdata = c(),
             use.temp = TRUE
           } else if (mon == MONITOR$AD_HOC && dformat == FORMAT$AD_HOC_CSV && length(params_rawdata[["rmc.col.temp"]]) > 0) { # ad-hoc format csv with temperature
             Gx = as.numeric(data[,1]); Gy = as.numeric(data[,2]); Gz = as.numeric(data[,3])
-            temperature = as.numeric(data[, params_rawdata[["rmc.col.temp"]]])
             use.temp = TRUE
           } else if (mon == MONITOR$AD_HOC && dformat == FORMAT$AD_HOC_CSV && length(params_rawdata[["rmc.col.temp"]]) == 0) { # ad-hoc format csv without temperature
             Gx = as.numeric(data[,1]); Gy = as.numeric(data[,2]); Gz = as.numeric(data[,3])
@@ -205,11 +199,10 @@ g.calibrate = function(datafile, params_rawdata = c(),
             if (ncol(data) == 3) extra = 0
             if (ncol(data) >= 4) extra = 1
             for (jij in 1:3) {
-              data2[,jij] = data[,(jij+extra)]
+              data2[, jij] = data[, (jij + extra)]
             }
             Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
           }
-
           if (mon == MONITOR$GENEACTIV) {
             if ("temperature" %in% colnames(data)) {
               temperaturecolumn = which(colnames(data) == "temperature") #GGIRread
@@ -221,7 +214,8 @@ g.calibrate = function(datafile, params_rawdata = c(),
             temperaturecolumn = 5
             temperature = as.numeric(data[,temperaturecolumn])
           } else if (mon == MONITOR$AD_HOC && use.temp == TRUE) {
-            temperaturecolumn = params_rawdata[["rmc.col.temp"]]
+            temperaturecolumn = which(names(data) == "temperature")
+            if (length(temperaturecolumn) == 0) temperaturecolumn = 4
             temperature = as.numeric(data[,temperaturecolumn])
           } else if (mon == MONITOR$ACTIGRAPH) {
             use.temp = FALSE
