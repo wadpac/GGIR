@@ -2,11 +2,17 @@
 
 - Part 2: Fix bug that caused part 2 to struggle with corrupt ActiGraph .gt3x files #972
 
+- Part 2: Redefine horizontal axis of plots_to_check_data_quality #983
+
 - Documentation: Expanded documentation on desiredtz, configtz, and time stamp format in part 5 time series #966
 
 - Part 1: Now also able to handle some more variations in Actigraph csv count file format #978, and automatically aggregates to lower resolution if short epoch size is longer than observed epoch size in actigraph count csv.
 
-- Part 5: Fix bug in recently added fucntionality for studying overlap between sibs and self-reported beahviours #989.
+- Part 5: Reverting decision to prohibit segmentDAYSPTcrit.part5 to be c(0, 0). The default remains unchanged and documentation now only emphasizes the downside of using c(0, 0). #980
+
+- Argument documentation: Fixing series of typos (thanks to Pieter-Jan Marent for pointing them out)
+
+- Part 5: Fix bug in recently added functionality for studying overlap between sibs and self-reported behaviours #989.
 
 - Part 1: Fix bug that caused a mismatch between IDs and filenames in part 1 when movisens participant folders did not contain the acc.bin file #994.
 
