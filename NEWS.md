@@ -8,7 +8,7 @@
 
 - Part 5: Fix bug in recently added fucntionality for studying overlap between sibs and self-reported beahviours #989.
 
-- Part 1: Fix bug in adhoc-csv format calibration process as it could not extract temperature column #991
+- Part 1:Enable use of temperature data in adhoc-csv format throughout GGIR #991
 
 # CHANGES IN GGIR VERSION 3.0-1
 
