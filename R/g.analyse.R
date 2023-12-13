@@ -1,6 +1,6 @@
 g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                       params_general = c(), params_cleaning = c(),
-                      quantiletype = 7, myfun = c(), ...) {
+                      quantiletype = 7, myfun = c(), ID, ...) {
   
   #get input variables
   input = list(...)
@@ -34,7 +34,11 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   
   fname = I$filename
   averageday = IMP$averageday
-  strategy = IMP$strategy
+  if (is.null(IMP$data_masking_strategy)) {
+    data_masking_strategy = IMP$strategy
+  } else {
+    data_masking_strategy = IMP$data_masking_strategy
+  }
   hrs.del.start = IMP$hrs.del.start
   hrs.del.end = IMP$hrs.del.end
   maxdur = IMP$maxdur
@@ -67,7 +71,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   }
   #----------------------
   # Extract ID centrally
-  ID = extractID(hvars = hvars, idloc = idloc, fname = I$filename)
+  # ID = extractID(hvars = hvars, idloc = idloc, fname = I$filename)
   
   #--------------------------------------------------------------
   # Extract qwindow if an activity log is provided:
@@ -144,7 +148,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   midnights = dmidn$midnights;          midnightsi = dmidn$midnightsi
   starttimei = 1
   endtimei = nrow(M$metalong)
-  if (strategy == 2) {
+  if (data_masking_strategy == 2) {
     starttimei = firstmidnighti
     endtimei = lastmidnighti - 1
   }
@@ -230,8 +234,8 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                                      myfun = myfun, desiredtz = desiredtz,
                                      params_247 = params_247, params_phyact = params_phyact)
   }
-  #metashort is shortened from midgnight to midnight if requested (strategy 2)
-  if (strategy == 2) {
+  #metashort is shortened from midgnight to midnight if requested (data_masking_strategy 2)
+  if (data_masking_strategy == 2) {
     if (starttimei == 1) {
       metashort = as.matrix(metashort[starttimei:(endtimei*(ws2/ws3)),])
     } else {
@@ -250,7 +254,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   lookat = lookattmp[which(lookattmp > 1)] #]c(2:ncol(metashort[,lookattmp]))
   colnames_to_lookat = colnames(metashort)[lookat]
   AveAccAve24hr = matrix(NA,length(lookat),1)
-  if (length(which(r5 == 0)) > 0) { #to catch strategy 2 with only 1 midnight and other cases where there is no valid data
+  if (length(which(r5 == 0)) > 0) { #to catch data_masking_strategy 2 with only 1 midnight and other cases where there is no valid data
     for (h in 1:length(lookat)) {
       average24h = matrix(0,n_ws3_perday,1)
       average24hc = matrix(0,n_ws3_perday,1)
@@ -292,7 +296,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                             startt = startt)
   
   if (!is.null(M$QClog)) {
-    # Summarise the QC log (currently only expected from cwa Axivity files)
+    # Summarise the QC log (currently only expected from cwa Axivity, actigraph, and csv files)
     QCsummarise = function(QClog, wx) {
       x = ifelse(test = length(wx) > 0,
                  yes = sum(QClog$end[wx] - QClog$start[wx]) / 60,
@@ -300,44 +304,59 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
       return(x)
     }
     # total imputation
-    impdone = which(M$QClog$imputed == TRUE)
-    file_summary$Dur_imputed = QCsummarise(M$QClog, impdone)
-    file_summary$Nblocks_imputed = length(impdone)
+    if ("imputed" %in% colnames(M$QClog)) {
+      impdone = which(M$QClog$imputed == TRUE)
+      if (any(colnames(M$QClog) == "timegaps_min")) {
+        file_summary$Dur_imputed = sum(M$QClog$timegaps_min)
+        file_summary$Nblocks_imputed = sum(M$QClog$timegaps_n)
+      } else {
+        file_summary$Dur_imputed = QCsummarise(M$QClog, impdone)
+        file_summary$Nblocks_imputed = length(impdone)
+      }
+    }
     
     # checksum
-    chsum_failed = which(M$QClog$checksum_pass == FALSE)
-    file_summary$Dur_chsum_failed = QCsummarise(M$QClog, chsum_failed)
-    file_summary$Nblocks_chsum_failed = length(chsum_failed)
+    if ("checksum_pass" %in% colnames(M$QClog)) {
+      chsum_failed = which(M$QClog$checksum_pass == FALSE)
+      file_summary$Dur_chsum_failed = QCsummarise(M$QClog, chsum_failed)
+      file_summary$Nblocks_chsum_failed = length(chsum_failed)
+      
+    }
     
     # nonincremental block ID
-    nonincremental = which(M$QClog$blockID_current - M$QClog$blockID_next != 1)
-    file_summary$Dur_nonincremental = QCsummarise(M$QClog, nonincremental)
-    file_summary$Nblocks_nonincremental = length(nonincremental)
+    if ("blockID_current" %in% colnames(M$QClog)) {
+      nonincremental = which(M$QClog$blockID_current - M$QClog$blockID_next != 1)
+      file_summary$Dur_nonincremental = QCsummarise(M$QClog, nonincremental)
+      file_summary$Nblocks_nonincremental = length(nonincremental)
+    }
     
     # sampling frequency issues
-    freqBlockHead = M$QClog$frequency_blockheader
-    frequency_bias = abs(M$QClog$frequency_observed - freqBlockHead) / freqBlockHead
-
-    freqissue = which(frequency_bias >= 0.05 & frequency_bias < 0.1)
-    file_summary$Dur_freqissue_5_10 = QCsummarise(M$QClog, freqissue)
-    file_summary$Nblock_freqissue_5_10 = length(freqissue)
-    
-    freqissue = which(frequency_bias >= 0.1 & frequency_bias < 0.2)
-    file_summary$Dur_freqissue_10_20 = QCsummarise(M$QClog, freqissue)
-    file_summary$Nblock_freqissue_10_20 = length(freqissue)
-    
-    freqissue = which(frequency_bias >= 0.2 & frequency_bias < 0.3)
-    file_summary$Dur_freqissue_20_30 = QCsummarise(M$QClog, freqissue)
-    file_summary$Nblock_freqissue_20_30 = length(freqissue)
-    
-    freqissue = which(frequency_bias >= 0.3)
-    file_summary$Dur_freqissue_30 = QCsummarise(M$QClog, freqissue)
-    file_summary$Nblock_freqissue_30 = length(freqissue)
+    if ("frequency_blockheader" %in% colnames(M$QClog)) {
+      freqBlockHead = M$QClog$frequency_blockheader
+      frequency_bias = abs(M$QClog$frequency_observed - freqBlockHead) / freqBlockHead
+    }
+    if ("frequency_bias" %in% colnames(M$QClog)) {
+      freqissue = which(frequency_bias >= 0.05 & frequency_bias < 0.1)
+      file_summary$Dur_freqissue_5_10 = QCsummarise(M$QClog, freqissue)
+      file_summary$Nblock_freqissue_5_10 = length(freqissue)
+      
+      freqissue = which(frequency_bias >= 0.1 & frequency_bias < 0.2)
+      file_summary$Dur_freqissue_10_20 = QCsummarise(M$QClog, freqissue)
+      file_summary$Nblock_freqissue_10_20 = length(freqissue)
+      
+      freqissue = which(frequency_bias >= 0.2 & frequency_bias < 0.3)
+      file_summary$Dur_freqissue_20_30 = QCsummarise(M$QClog, freqissue)
+      file_summary$Nblock_freqissue_20_30 = length(freqissue)
+      
+      freqissue = which(frequency_bias >= 0.3)
+      file_summary$Dur_freqissue_30 = QCsummarise(M$QClog, freqissue)
+      file_summary$Nblock_freqissue_30 = length(freqissue)
+    }
   }
-
+  
   metrics_nav = list(lookat = lookat,
-                    colnames_to_lookat = colnames_to_lookat,
-                    longitudinal_axis_id = longitudinal_axis_id)
+                     colnames_to_lookat = colnames_to_lookat,
+                     longitudinal_axis_id = longitudinal_axis_id)
   output_perfile = g.analyse.perfile(I, C, metrics_nav,
                                      AveAccAve24hr, 
                                      doquan, doiglevels, tooshort, 
@@ -348,7 +367,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                                      output_perday = output_perday,
                                      dataqual_summary = dataqual_summary,
                                      file_summary = file_summary)
-
+  
   filesummary = output_perfile$filesummary
   daysummary = output_perfile$daysummary
   

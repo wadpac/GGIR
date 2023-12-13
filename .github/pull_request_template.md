@@ -7,4 +7,4 @@ Checklist before merging:
 - [ ] Added tests (if you added functionality) or fixed existing test (if you fixed a bug).
 - [ ] Updated or expanded the documentation.
 - [ ] Updated release notes in `inst/NEWS.Rd` with a user-readable summary. Please, include references to relevant issues or PR discussions.
-- [ ] Added your name to the contributors lists in the `DESCRIPTION` and `CITATION.cff` files.
+- [ ] Added your name to the contributors lists in the `DESCRIPTION` file, if you think you made a significant contribution.

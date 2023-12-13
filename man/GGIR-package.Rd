@@ -21,8 +21,8 @@
   \tabular{ll}{
   Package: \tab GGIR\cr
   Type: \tab Package\cr
-  Version: \tab 3.0-0\cr
-  Date: \tab 2023-10-16\cr
+  Version: \tab 3.0-2\cr
+  Date: \tab 2023-12-13\cr
   License: \tab Apache License (== 2.0)\cr
   Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
   }
@@ -45,7 +45,7 @@
   #impute meta-data:
   IMP = g.impute(M = data.getmeta, I = data.inspectfile)
   #analyse and produce summary:
-  A = g.analyse(I = data.inspectfile, C = data.calibrate, M = data.getmeta, IMP)
+  A = g.analyse(I = data.inspectfile, C = data.calibrate, M = data.getmeta, IMP, ID = "01wk0")
   #plot data
   g.plot(IMP, M = data.getmeta, I = data.inspectfile, durplot=4)
 }

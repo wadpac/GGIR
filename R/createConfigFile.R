@@ -54,11 +54,11 @@ createConfigFile = function(config.parameters = c(), GGIRversion = "") {
                     "backup.cal.coef", "dayborder", "dynrange",
                     "configtz", "do.lfen", "hb", "lb", "n", "myfun") ==  TRUE) {
         out[i,3] = "Calibration, Feature extraction, Epoch size, Time zone"
-      } else if (NM %in% c("strategy", "hrs.del.start", "hrs.del.end", "maxdur",
+      } else if (NM %in% c("strategy", "data_masking_strategy", "hrs.del.start", "hrs.del.end", "maxdur",
                            "includedaycrit", "M5L5res", "winhr", "qwindow", "qlevels",
                            "ilevels", "mvpathreshold", "boutcriter", "ndayswindow",
                            "do.imp", "epochvalues2csv", "mvpadur",
-                           "window.summary.size", "dayborder", "closedbout",
+                           "dayborder", "closedbout",
                            "IVIS_windowsize_minutes", "IVIS_epochsize_seconds", "iglevels",
                            "IVIS.activity.metric", "TimeSegments2ZeroFile", "qM5L5", "do.part3.pdf") ==  TRUE) {
         out[i,3] = "Study design, Parameters descriptive analysis"

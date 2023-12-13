@@ -18,18 +18,13 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
   
   if (f1 == 0) warning("\nWarning: f1 = 0 is not a meaningful value")
   filelist = isfilelist(datadir)
+  if (ismovisens(datadir)) filelist = TRUE
 
   # list all accelerometer files
   dir2fn = datadir2fnames(datadir, filelist)
   fnames = dir2fn$fnames
   fnamesfull = dir2fn$fnamesfull
-
-  # check whether these are movisens files
-  if (filelist == FALSE & ismovisens(datadir) == TRUE) {
-    fnamesfull = dir(datadir, recursive = TRUE, pattern = "acc.bin", full.names = TRUE)
-    fnames = dir(datadir, recursive = FALSE)
-  }
-  filesizes = file.info(fnamesfull)$size # in bytes
+  filesizes = file.size(fnamesfull) # in bytes
   bigEnough = which(filesizes/1e6 > params_rawdata[["minimumFileSizeMB"]])
   fnamesfull = fnamesfull[bigEnough]
   fnames = fnames[bigEnough]

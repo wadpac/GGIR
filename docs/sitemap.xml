@@ -19,6 +19,9 @@
     <loc>/articles/GGIRParameters.html</loc>
   </url>
   <url>
+    <loc>/articles/HouseHoldCoanalysis.html</loc>
+  </url>
+  <url>
     <loc>/articles/index.html</loc>
   </url>
   <url>
@@ -52,10 +55,16 @@
     <loc>/reference/appendRecords.html</loc>
   </url>
   <url>
+    <loc>/reference/applyCosinorAnalyses.html</loc>
+  </url>
+  <url>
     <loc>/reference/applyExtFunction.html</loc>
   </url>
   <url>
     <loc>/reference/CalcSleepRegularityIndex.html</loc>
+  </url>
+  <url>
+    <loc>/reference/check_log.html</loc>
   </url>
   <url>
     <loc>/reference/check_myfun.html</loc>
@@ -89,6 +98,12 @@
   </url>
   <url>
     <loc>/reference/data.inspectfile.html</loc>
+  </url>
+  <url>
+    <loc>/reference/data.metalong.html</loc>
+  </url>
+  <url>
+    <loc>/reference/data.ts.html</loc>
   </url>
   <url>
     <loc>/reference/datadir2fnames.html</loc>
@@ -235,6 +250,9 @@
     <loc>/reference/g.part5_initialise_ts.html</loc>
   </url>
   <url>
+    <loc>/reference/g.part6.html</loc>
+  </url>
+  <url>
     <loc>/reference/g.plot.html</loc>
   </url>
   <url>
@@ -254,6 +272,12 @@
   </url>
   <url>
     <loc>/reference/g.report.part5.html</loc>
+  </url>
+  <url>
+    <loc>/reference/g.report.part5_dictionary.html</loc>
+  </url>
+  <url>
+    <loc>/reference/g.report.part6.html</loc>
   </url>
   <url>
     <loc>/reference/g.shell.GGIR.html</loc>
@@ -320,6 +344,12 @@
   </url>
   <url>
     <loc>/reference/parametersVignette.html</loc>
+  </url>
+  <url>
+    <loc>/reference/part6AlignIndividuals.html</loc>
+  </url>
+  <url>
+    <loc>/reference/part6PairwiseAggregation.html</loc>
   </url>
   <url>
     <loc>/reference/POSIXtime2iso8601.html</loc>

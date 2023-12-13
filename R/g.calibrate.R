@@ -141,10 +141,16 @@ g.calibrate = function(datafile, params_rawdata = c(),
           data = P$data
         }
       } else if (dformat == FORMAT$AD_HOC_CSV) {
-        if (length(params_rawdata[["rmc.col.time"]]) > 0 && mon == MONITOR$AD_HOC) {
+        if ("timestamp" %in% colnames(P$data)) {
           columns_to_use = 2:4
         } else {
           columns_to_use = 1:3
+        }
+        if ("temperature" %in% colnames(P$data)) {
+          columns_to_use = c(columns_to_use, which(colnames(P$data) == "temperature"))
+          use.temp = TRUE
+        } else {
+          use.temp = FALSE
         }
         data = P$data[, columns_to_use]
       } else if (dformat == FORMAT$GT3X) {
@@ -160,7 +166,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
       zeros = which(data[,1] == 0 & data[,2] == 0 & data[,3] == 0)
       if ((mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) || length(zeros) > 0) {
         data = g.imputeTimegaps(x = as.data.frame(data), xyzCol = 1:3, timeCol = c(), sf = sf, impute = FALSE)
-        data = as.matrix(data)
+        data = as.matrix(data$x)
       }
       LD = nrow(data)
       #store data that could not be used for this block, but will be added to next block
@@ -193,13 +199,8 @@ g.calibrate = function(datafile, params_rawdata = c(),
           } else if (mon == MONITOR$MOVISENS) {
             Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
             use.temp = TRUE
-          } else if (mon == MONITOR$AD_HOC && dformat == FORMAT$AD_HOC_CSV && length(params_rawdata[["rmc.col.temp"]]) > 0) { # ad-hoc format csv with temperature
+          } else if (dformat == FORMAT$AD_HOC_CSV) {
             Gx = as.numeric(data[,1]); Gy = as.numeric(data[,2]); Gz = as.numeric(data[,3])
-            temperature = as.numeric(data[, params_rawdata[["rmc.col.temp"]]])
-            use.temp = TRUE
-          } else if (mon == MONITOR$AD_HOC && dformat == FORMAT$AD_HOC_CSV && length(params_rawdata[["rmc.col.temp"]]) == 0) { # ad-hoc format csv without temperature
-            Gx = as.numeric(data[,1]); Gy = as.numeric(data[,2]); Gz = as.numeric(data[,3])
-            use.temp = FALSE
           } else if (dformat == FORMAT$CSV && mon != MONITOR$AXIVITY) { # csv and not AX (so, GENEAcitv)
             data2 = matrix(NA,nrow(data),3)
             if (ncol(data) == 3) extra = 0
@@ -220,8 +221,8 @@ g.calibrate = function(datafile, params_rawdata = c(),
           } else if (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) {
             temperaturecolumn = 5
             temperature = as.numeric(data[,temperaturecolumn])
-          } else if (mon == MONITOR$AD_HOC && use.temp == TRUE) {
-            temperaturecolumn = params_rawdata[["rmc.col.temp"]]
+          } else if (dformat == FORMAT$AD_HOC_CSV && use.temp == TRUE) {
+            temperaturecolumn = 4
             temperature = as.numeric(data[,temperaturecolumn])
           } else if (mon == MONITOR$ACTIGRAPH) {
             use.temp = FALSE

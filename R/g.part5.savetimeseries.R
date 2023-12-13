@@ -3,7 +3,8 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
                                   save_ms5raw_without_invalid = TRUE,
                                   DaCleanFile = NULL,
                                   includedaycrit.part5 = 2/3, ID = NULL,
-                                  sep_reports = ",") {
+                                  sep_reports = ",",
+                                  params_247 = NULL) {
   ms5rawlevels = data.frame(date_time = ts$time, class_id = LEVELS,
                             # class_name = rep("",Nts),
                             stringsAsFactors = FALSE)
@@ -64,10 +65,6 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
         includedaycrit.part5 = includedaycrit.part5 * 100
       } else if (includedaycrit.part5 > 1 & includedaycrit.part5 <= 25) { # if includedaycrit.part5 is used like includedaycrit as a number of hours
         includedaycrit.part5 = (includedaycrit.part5 / 24) * 100
-      } else if (includedaycrit.part5 < 0 ) {
-        warning("\nNegative value of includedaycrit.part5 is not allowed, please change.")
-      } else if (includedaycrit.part5 > 25) {
-        warning("\nIncorrect value of includedaycrit.part5, this should be a fraction of the day between zero and one or the number of hours in a day.")
       }
       maxpernwday = 100 - includedaycrit.part5
       # Exclude days that have 100% nonwear over the full window or 100% over wakinghours
@@ -79,17 +76,22 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
                                      no =  ifelse(mdat$guider == 'setwindow', yes = 3,
                                                   no = ifelse(mdat$guider == 'L512', yes = 4,
                                                               no = ifelse(mdat$guider == 'HorAngle', yes = 5,
-                                                              no = 0)))))
+                                                                          no = ifelse(mdat$guider == 'NotWorn', yes = 6,
+                                                                                      no = 0))))))
     mdat = mdat[,-which(names(mdat) %in% c("timestamp","time"))]
     # re-oder columns
-    if (save_ms5raw_format == "csv") {
+    if ("csv" %in% save_ms5raw_format) {
       # save to csv file
-      data.table::fwrite(mdat, rawlevels_fname, row.names = F, sep = sep_reports)
-    } else if (save_ms5raw_format == "RData") {
+      fname = rawlevels_fname[grep("*csv$", rawlevels_fname)]
+      data.table::fwrite(mdat, fname, row.names = F, sep = sep_reports)
+    }
+    if ("RData" %in% save_ms5raw_format || params_247[["part6HCA"]] == TRUE || params_247[["part6CR"]] == TRUE) {
       # only doing this for RData output, because it would affect file size too much in csv,
       # remember that this function can create many files: sample sizes times all combinations of thresholds.
-      mdat$timestamp = as.POSIXct(mdat$timenum, origin = "1970-01-01",tz = desiredtz) 
-      save(mdat, file = rawlevels_fname)
+      mdat$timestamp = as.POSIXct(mdat$timenum, origin = "1970-01-01",tz = desiredtz)
+      rawlevels_fname = gsub(pattern = ".csv", replacement = ".RData", x = rawlevels_fname)
+      fname = unique(rawlevels_fname[grep("*RData$", rawlevels_fname)])
+      save(mdat, file = fname)
     }
     #===============================
     rm(mdat)

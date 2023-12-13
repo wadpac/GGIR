@@ -78,9 +78,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     numeric_params = c("qlevels", "ilevels", "IVIS_windowsize_minutes", "IVIS_epochsize_seconds",
                        "IVIS.activity.metric", "IVIS_acc_threshold",
                        "qM5L5", "MX.ig.min.dur", "M5L5res", "winhr", "LUXthresholds", "LUX_cal_constant",
-                       "LUX_cal_exponent", "LUX_day_segments", "window.summary.size", "L5M5window")
-    boolean_params = "cosinor"
-    character_params = c("qwindow_dateformat")
+                       "LUX_cal_exponent", "LUX_day_segments", "L5M5window")
+    boolean_params = c("cosinor", "part6CR", "part6HCA")
+    character_params = c("qwindow_dateformat", "part6Window")
     check_class("247", params = params_247, parnames = numeric_params, parclass = "numeric")
     check_class("247", params = params_247, parnames = boolean_params, parclass = "boolean")
     check_class("247", params = params_247, parnames = character_params, parclass = "character")
@@ -90,12 +90,14 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "boutcriter.in", "boutcriter.lig", "boutcriter.mvpa",
                        "threshold.lig", "threshold.mod", "threshold.vig", "boutdur.mvpa",
                        "boutdur.in", "boutdur.lig")
+    character_params = c("frag.metrics", "part6_threshold_combi")
     check_class("phyact", params = params_phyact, parnames = numeric_params, parclass = "numeric")
     # check_class("phyact", params = params_phyact, parnames = boolean_params, parclass = "boolean")
-    check_class("phyact", params = params_phyact, parnames = "frag.metrics", parclass = "character")
+    check_class("phyact", params = params_phyact, parnames = character_params, parclass = "character")
+    
   }
   if (length(params_cleaning) > 0) {
-    numeric_params = c("includedaycrit", "ndayswindow", "strategy", "maxdur", "hrs.del.start",
+    numeric_params = c("includedaycrit", "ndayswindow", "data_masking_strategy", "maxdur", "hrs.del.start",
                        "hrs.del.end", "includedaycrit.part5", "minimum_MM_length.part5",
                        "includenightcrit", "max_calendar_days")
     boolean_params = c("excludefirstlast.part5", "do.imp", "excludefirstlast",
@@ -211,30 +213,42 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   
   if (length(params_cleaning) > 0) {
-    if (params_cleaning[["strategy"]] %in% c(2, 4) & params_cleaning[["hrs.del.start"]] != 0) {
-      warning(paste0("\nSetting argument hrs.del.start in combination with strategy = ",
-                     params_cleaning[["strategy"]]," is not meaningful, because this is only used when straytegy = 1"), call. = FALSE)
+    # overwrite data_masking_strategy with strategy in case the latter is used
+    if (params_cleaning[["strategy"]] != params_cleaning[["data_masking_strategy"]]
+        & params_cleaning[["strategy"]] != 1) {
+      params_cleaning[["data_masking_strategy"]] = params_cleaning[["strategy"]]
     }
-    if (params_cleaning[["strategy"]] %in% c(2, 4) & params_cleaning[["hrs.del.end"]] != 0) {
-      warning(paste0("\nSetting argument hrs.del.end in combination with strategy = ",
-                     params_cleaning[["strategy"]]," is not meaningful, because this is only used when straytegy = 1"), call. = FALSE)
+    if (params_cleaning[["data_masking_strategy"]] %in% c(2, 4) & params_cleaning[["hrs.del.start"]] != 0) {
+      warning(paste0("\nSetting argument hrs.del.start in combination with data_masking_strategy = ",
+                     params_cleaning[["data_masking_strategy"]]," is not meaningful, because this is only used when straytegy = 1"), call. = FALSE)
     }
-    if (!(params_cleaning[["strategy"]] %in% c(3, 5)) & params_cleaning[["ndayswindow"]] != 7) {
-      warning(paste0("\nSetting argument ndayswindow in combination with strategy = ",
-                     params_cleaning[["strategy"]]," is not meaningful, because this is only used when strategy = 3 or strategy = 5"), call. = FALSE)
+    if (params_cleaning[["data_masking_strategy"]] %in% c(2, 4) & params_cleaning[["hrs.del.end"]] != 0) {
+      warning(paste0("\nSetting argument hrs.del.end in combination with data_masking_strategy = ",
+                     params_cleaning[["data_masking_strategy"]]," is not meaningful, because this is only used when straytegy = 1"), call. = FALSE)
     }
-    if (params_cleaning[["strategy"]] == 5 &
+    if (!(params_cleaning[["data_masking_strategy"]] %in% c(3, 5)) & params_cleaning[["ndayswindow"]] != 7) {
+      warning(paste0("\nSetting argument ndayswindow in combination with data_masking_strategy = ",
+                     params_cleaning[["data_masking_strategy"]]," is not meaningful, because this is only used when data_masking_strategy = 3 or data_masking_strategy = 5"), call. = FALSE)
+    }
+    if (params_cleaning[["data_masking_strategy"]] == 5 &
         params_cleaning[["ndayswindow"]] != round(params_cleaning[["ndayswindow"]])) {
       newValue = round(params_cleaning[["ndayswindow"]])
       warning(paste0("\nArgument ndayswindow has been rounded from ",
                      params_cleaning[["ndayswindow"]], " to ", newValue, " days",
-                     "because when strategy == 5 we expect an integer value", call. = FALSE))
+                     "because when data_masking_strategy == 5 we expect an integer value", call. = FALSE))
       params_cleaning[["ndayswindow"]] = newValue
     }
     if (length(params_cleaning[["data_cleaning_file"]]) > 0) {
       # Convert paths from Windows specific slashed to generic slashes
       params_cleaning[["data_cleaning_file"]] = gsub(pattern = "\\\\",
                                                      replacement = "/", x = params_cleaning[["data_cleaning_file"]])
+    }
+    if (params_cleaning[["includedaycrit.part5"]] < 0) {
+      warning("\nNegative value of includedaycrit.part5 is not allowed, please change.")
+    } else if (params_cleaning[["includedaycrit.part5"]]  > 24) {
+      warning(paste0("\nIncorrect value of includedaycrit.part5, this should be",
+                     " a fraction of the day between zero and one or the number ",
+                     "of hours in a day."))
     }
   }
   if (length(params_phyact) > 0) {
@@ -248,7 +262,26 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_phyact[["mvpadur"]] = c(1,5,10)
       warning("\nmvpadur needs to be a vector with length three, value now reset to default c(1, 5, 10)", call. = FALSE)
     }
+    if (length(params_phyact[["threshold.lig"]]) == 1 &&
+        length(params_phyact[["threshold.mod"]]) == 1 &&
+        length(params_phyact[["threshold.vig"]]) == 1) {
+      params_phyact[["part6_threshold_combi"]] = paste(params_phyact[["threshold.lig"]],
+                                                       params_phyact[["threshold.mod"]],
+                                                       params_phyact[["threshold.vig"]], sep = "_")
+    }
   }
+  # params output 
+  if (length(params_output) > 0) {
+    if (!all(params_output[["save_ms5raw_format"]] %in% c("RData", "csv"))) {
+      formats2keep = which(params_output[["save_ms5raw_format"]] %in% c("RData", "csv"))
+      if (length(formats2keep) > 0) {
+        params_output[["save_ms5raw_format"]] = params_output[["save_ms5raw_format"]][formats2keep]
+      } else {
+        params_output[["save_ms5raw_format"]] = "csv"# specify as csv if user does not clearly specify format
+      }
+    }
+  }
+  # params 247
   if (length(params_247) > 0) {
     if (length(params_247[["iglevels"]]) > 0) {
       if (length(params_247[["iglevels"]]) == 1) {
@@ -269,6 +302,13 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       if (params_247[["LUX_day_segments"]][length(params_247[["LUX_day_segments"]])] != 24) {
         params_247[["LUX_day_segments"]] = c(params_247[["LUX_day_segments"]], 24)
       }
+    }
+    # params 247 & params output
+    if (params_247[["part6HCA"]] == TRUE) {
+      # Add RData because part 6 will need it
+      params_output[["save_ms5raw_format"]] = unique(c(params_output[["save_ms5raw_format"]], "RData"))
+      params_output[["save_ms5rawlevels"]] = TRUE
+      params_output[["save_ms5raw_without_invalid"]] = FALSE
     }
   }
   if (!is.null(params_general[["expand_tail_max_hours"]])) {
@@ -393,23 +433,18 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                      ", the default value has been assigned (i.e., 0.5) "), call. = FALSE)
     } else if (params_cleaning[["segmentWEARcrit.part5"]] < 0 | 
                params_cleaning[["segmentWEARcrit.part5"]] > 1) {
-      stop(paste0("Incorrect value of segmentWEARcrit.part5, this should be a",
-                  "fraction of the day between zero and one, please change."), 
+      stop(paste0("Incorrect value of segmentWEARcrit.part5, this should be a ",
+                  "fraction between zero and one, please change."), 
            call. = FALSE)
     }
     if (length(params_cleaning[["segmentDAYSPTcrit.part5"]]) != 2) {
       stop("\nArgument segmentDAYSPTcrit.part5 is expected to be a numeric vector of length 2", call. = FALSE)
     }
-    if (sum(params_cleaning[["segmentDAYSPTcrit.part5"]]) < 0.5 |
-        0 %in% params_cleaning[["segmentDAYSPTcrit.part5"]] == FALSE) {
-      
-      stop(paste0("\nIf you used argument segmentDAYSPTcrit.part5 then make sure",
-                  " it includes one zero",
-                  " and one value of at least 0.5, see documentation for",
-                  " argument segmentDAYSPTcrit.part5. If you do not use",
-                  " argument segmentDAYSPTcrit.part5",
-                  " then delete it from your config.csv file (in your output folder)",
-                  " or delete the config.csv file itself."), call. = FALSE)
+    if (any(params_cleaning[["segmentDAYSPTcrit.part5"]] < 0) | 
+        any(params_cleaning[["segmentDAYSPTcrit.part5"]] > 1)) {
+      stop(paste0("Incorrect values of segmentDAYSPTcrit.part5, these should be a ",
+                  "fractions between zero and one, please change."), 
+           call. = FALSE)
     }
   }
   

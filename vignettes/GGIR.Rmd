@@ -159,8 +159,9 @@ additional packages:
         the absence of timestamps GGIR will calculate timestamps from
         the sample frequency, the start time and start date as presented
         in the file header.
-    -   [Movisens](https://www.movisens.com/en/) with data stored in
-        folders.
+    -   [Movisens](https://www.movisens.com/en/) .bin files with data 
+        stored in folders. GGIR expects that each participant's folder 
+        contains at least a file named acc.bin.
     -   Any other accelerometer brand that generates csv output, see
         documentation for functions `read.myacc.csv` and argument
         `rmc.noise` in the [GGIR function documentation
@@ -307,11 +308,11 @@ for that.
     re-running parts of the pipeline.
 -   `idloc` - tells GGIR where to find the participant ID (default:
     inside file header)
--   `strategy` - informs GGIR how to consider the design of the
+-   `data_masking_strategy` - informs GGIR how to consider the design of the
     experiment.
-    -   If `strategy` is set to value 1, then check out arguments
+    -   If `data_masking_strategy` is set to value 1, then check out arguments
         `hrs.del.start` and `hrs.del.end`.
-    -   If `strategy` is set to value 3 or 5, then check out arguments
+    -   If `data_masking_strategy` is set to value 3 or 5, then check out arguments
         `ndayswindow`, `hrs.del.start` and `hrs.del.end`.
 -   `maxdur` - maximum number of days you expect in a data file based on
     the study protocol.
@@ -352,6 +353,11 @@ for that.
     over larger periods of time but accelerometers only allow for a few weeks of 
     data collection. GGIR will never append or alter the raw input file, this operation
     is preformed on the derived data.
+-   `study_dates_file` - if specified trims the recorded data to the first and 
+    last date in which the study took place. This is relevant for studies that started
+    the recording several days before the accelerometers were actually worn by
+    participants. This is used on the top of data_masking_strategy, so that it may be combined
+    with the strategies in GGIR.
 
 ### Key arguments related to sleep analysis {#key-arguments-related-to-sleep-analysis}
 
@@ -511,7 +517,7 @@ GGIR(mode=c(1,2,3,4,5),
       #=====================
       # Part 2
       #=====================
-      strategy = 1,
+      data_masking_strategy = 1,
       hrs.del.start = 0,          hrs.del.end = 0,
       maxdur = 9,                 includedaycrit = 16,
       qwindow=c(0,24),
@@ -730,13 +736,13 @@ Part 2 generates the following output:
 | `WWD_`| Week days (weighted average) The variable was calculated per day and then averaged over week days. Double week days were averaged. This is only relevant for experiments that last for more than seven days)      |
 | WWD\_MVPA_E5S_T100_ENMO       | Time spent in moderate-to-vigorous based on 5 second epoch size and an ENMO metric threshold of 100         |
 | `WWE_MVPA_E5 S_B1M80%_T100_ENMO`| Time spent in moderate-to-vigorous based on 5 second epoch size and an ENMO metric threshold of 100 based on a bout criteria of 100    |
-| `WE_[100, 150)_mg_0-24h_ENMO`  | Time spent between (and including) 100 mg and 150 (excluding 150 itself) between 0 and 24 hours (the full day) using metric ENMO data exclusion strategy (value=1, ignore specific hours; value=2, ignore all data before the first midnight and after the last midnight)    |
+| `WE_[100, 150)_mg_0-24h_ENMO`  | Time spent between (and including) 100 mg and 150 (excluding 150 itself) between 0 and 24 hours (the full day) using metric ENMO data exclusion data_masking_strategy (value=1, ignore specific hours; value=2, ignore all data before the first midnight and after the last midnight)    |
 | `_M VPA_E5S_B1M80_T100`        | MVPA calculated based on 5 second epoch setting bout duration 1 Minute and inclusion criterion of more than 80 percent. This is only done for metric ENMO at the moment, and only if mvpa threshold is not left blank     |
 | `_ENMO_mg`         | ENMO or other metric was first calculated per day and then average according to AD, WD, WWE, WWD           |
-| data exclusion strategy        | A log of the decision made when calling g.impute: value=1 mean ignore specific hours; value=2 mean ignore all data before the first midnight and after the last midnight |
-| n hours ignored at start of meas (if strategy=1, 3 or 5)        | number of hours ignored at the start of the measurement (if strategy = 1) or at the start of the `ndayswindow` (if strategy = 3 or 5) A log of decision made in part2.R       |
-| n hours ignored at end of meas (if strategy=1, 3 or 5)          | number of hours ignored at the end of the measurement (if strategy = 1) or at the end of the `ndayswindow` (if strategy = 3 or 5). A log of decision made in part2.R         |
-| n hours ignored at end of meas (if strategy = 1, 3 or 5)          | number of days of measurement after which all data is ignored (if strategy = 1, 3 or 5) A log of decision made in part2.R    |
+| data exclusion data_masking_strategy        | A log of the decision made when calling g.impute: value=1 mean ignore specific hours; value=2 mean ignore all data before the first midnight and after the last midnight |
+| n hours ignored at start of meas (if data_masking_strategy=1, 3 or 5)        | number of hours ignored at the start of the measurement (if data_masking_strategy = 1) or at the start of the `ndayswindow` (if data_masking_strategy = 3 or 5) A log of decision made in part2.R       |
+| n hours ignored at end of meas (if data_masking_strategy=1, 3 or 5)          | number of hours ignored at the end of the measurement (if data_masking_strategy = 1) or at the end of the `ndayswindow` (if data_masking_strategy = 3 or 5). A log of decision made in part2.R         |
+| n hours ignored at end of meas (if data_masking_strategy = 1, 3 or 5)          | number of days of measurement after which all data is ignored (if data_masking_strategy = 1, 3 or 5) A log of decision made in part2.R    |
 | epoch size to which acceleration was averaged (seconds) | A log of decision made in part1.R     |
 | pdffilenumb        | Indicator of in which pdf-file the plot was stored  |
 | pdfpagecount       | Indicator of in which pdf-page the plot was stored|
@@ -787,21 +793,21 @@ The data_quality_report.csv is stored in subfolder folder results/QC.
 | QCmessage	| Character QC message at the end of the auto-calibration |
 | mean.temp	|  Mean temperature in sphere data |
 | device.serial.number	| Device serial number |
-| NFilePagesSkipped	| (Only for Axivity .cwa format) Number of data blocks skipped |
-| filehealth_totimp_min | (Only for Axivity .cwa format) Total number of minutes of data imputed |
-| filehealth_checksumfail_min	| (Only for Axivity .cwa format) Total number of minutes of data where the checksum failed |
-| filehealth_niblockid_min |  (Only for Axivity .cwa format) Total number of minutes of data with non-incremental block ids |
+| NFilePagesSkipped	| (Only for Axivity .cwa format) Number of raw data blocks skipped |
+| filehealth_totimp_min | (Only for Axivity .cwa, ActiGraph gt3x, and ad-hoc csv format) Total number of minutes of raw data imputed |
+| filehealth_checksumfail_min	| (Only for Axivity .cwa format) Total number of minutes of raw data where the checksum failed |
+| filehealth_niblockid_min |  (Only for Axivity .cwa format) Total number of minutes of raw data with non-incremental block ids |
 | filehealth_fbias0510_min | (Only for Axivity .cwa format) Total number of minutes with a sampling frequency bias between 5 and 10% |
 | filehealth_fbias1020_min | (Only for Axivity .cwa format) Total number of minutes with a sampling frequency bias between 10 and 20% |
 | filehealth_fbias2030_min |  (Only for Axivity .cwa format) Total number of minutes with a sampling frequency bias between 20 and 30% |
 | filehealth_fbias30_min | (Only for Axivity .cwa format) Total number of minutes with a sampling frequency bias higher than 30% |
-| filehealth_totimp_N | (Only for Axivity .cwa format) Total number of data blocks that were imputed |
+| filehealth_totimp_N | (Only for Axivity .cwa, ActiGraph gt3x, and ad-hoc csv format) Total number of data blocks that were imputed |
 | filehealth_checksumfail_N	| (Only for Axivity .cwa format)  Total number of blocks where the checksum failed  |
-| filehealth_niblockid_N | (Only for Axivity .cwa format) Total number of data blocks with non-incremental block ids  |
-| filehealth_fbias0510_N | (Only for Axivity .cwa format) Total number of data blocks with a sampling frequency bias between 5 and 10% |
-| filehealth_fbias1020_N | (Only for Axivity .cwa format) Total number of data blocks with a sampling frequency bias between 10 and 20%|
-| filehealth_fbias2030_N | (Only for Axivity .cwa format) Total number of data blocks with a sampling frequency bias between 20 and 30% |
-| filehealth_fbias30_N | (Only for Axivity .cwa format) Total number of data blocks with a sampling frequency bias higher than 30% |
+| filehealth_niblockid_N | (Only for Axivity .cwa format) Total number of raw data blocks with non-incremental block ids  |
+| filehealth_fbias0510_N | (Only for Axivity .cwa format) Total number of raw data blocks with a sampling frequency bias between 5 and 10% |
+| filehealth_fbias1020_N | (Only for Axivity .cwa format) Total number of raw data blocks with a sampling frequency bias between 10 and 20%|
+| filehealth_fbias2030_N | (Only for Axivity .cwa format) Total number of raw data blocks with a sampling frequency bias between 20 and 30% |
+| filehealth_fbias30_N | (Only for Axivity .cwa format) Total number of raw data blocks with a sampling frequency bias higher than 30% |
 
 
 
@@ -874,7 +880,7 @@ data. If either of these applies set argument `sleepwindowType` to
 | guider_guider_inbedStart  | Time of getting in bed   |
 | guider_guider_inbedEnd    | Time of getting out of bed|
 | guider_inbedDuration      | Time in Bed: guider_inbedEnd - guider_inbedStart  |
-| sleepefficiency           | Sleep efficiency, calculated as: SleepDurationInSpt / guider_inbedDuration or SleepDurationInSpt / (Spt + latency) as defined with  `relyonguider_SleepEfficiency`|
+| sleepefficiency           | Sleep efficiency, calculated by one of two metrics as controlled by argument `sleepefficiency.metric`: SleepDurationInSpt / guider_inbedDuration (default) or SleepDurationInSpt / (SptDuration + latency) |
 | sleeplatency  | Sleep latency, calculated as: sleeponset - guider_inbedStart   |
 
 ### Person level summaries
@@ -969,11 +975,7 @@ vigorous activity:
 | `ACC_`      | (average) acceleration according to default metric specific by acc.metric|
 | `_spt_wake_`| Wakefulness within the Sleep period time window.|
 | `_spt_sleep_`           | Sleep within the Sleep period time window.     |
-| `_IN_`      | Inactivity. Note that we use the term inactivity instead
-        of sedentary behaviour for the lowest intensity level of behaviour. The reason
-        for this is that GGIR does not attempt to classifying the activity type 
-        sitting at the moment, by which we feel that using the term sedentary
-        behaviour would fail to communicate that.|
+| `_IN_`      | Inactivity. Note that we use the term inactivity instead of sedentary behaviour for the lowest intensity level of behaviour. The reason for this is that GGIR does not attempt to classifying the activity type sitting at the moment, by which we feel that using the term sedentary behaviour would fail to communicate that.|
 | `_LIG_`     | Light activity        |
 | `_MOD_`     | Moderate activity     |
 | `_VIG_`     | Vigorous activity     |
@@ -1652,14 +1654,17 @@ correspond to the date of analysis.
 
 | Column name          | Description        |
 |------------------------|-----------------------------------------------|
+| timenum      | Time stamp in UTC time format (i.e., seconds since 1970-01-01). To convert timenum to time stamp format, you need to specify your desired time zone, e.g., `as.POSIXct(mdat$timenum, tz = "Europe/London")`.|
+| ACC      | Average acceleration metric selected by `acc.metric`, default = "ENMO".|
 | SleepPeriodTime      | Is 1 if SPT is detected, 0 if not. Note that this refers to the combined usage of guider and detected sustained inactivity bouts (rest periods).|
 | invalidepoch         | Is 1 if epoch was detect as invalid (e.g. non-wear), 0 if not.       |
-| guider   | Is 1 if guider method detect epoch as SPT (e.g. sleeplog, HDCZA), 0 if not. You will not find here which guider is used, for this see other GGIR output.    |
+| guider   | Number to indicate what guider type was used, where 1=sleeplog, 2=HDCZA, 3=swetwindow, 4=L512, 5=HorAngle, 6=NotWorn |
 | window   | Numeric indicator of the analysis window in the recording. If timewindow = "MM" then these correspond to calendar days, if timewindow = "WW" then these correspond to which wakingup-wakingup window in the recording, if timewindow = "OO" then these correspond to which sleeponset-sleeponset window in the recording. So, in a recording of one week you may find window numbers 1, 2, 3, 4, 5 and 6.|
 | class_id | The behavioural class codes are documented in the exported csv file meta/ms5outraw/behaviouralcodes.csv. Class codes above class 8 will be analysis specific, because it depends on the number time variants of the bouts used. For example, if you look at MVPA lasting 1-10, 10-20, 30-40 then all of them will have their own class_id. |
 | invalid_fullwindow   | Fraction of the window (see above) that represents invalid data. I added this to make it easier to filter the timeseries based on whether days are valid or not.         |
 | invalid_sleepperiod  | Fraction of SPT within the current window that represents invalid data.          |
 | invalid_wakinghours  | Fraction of SPT within the current window that represents invalid data.          |
+| timestamp      | Time stamp derived from converting the column timenum, only available if `save_ms5raw_format = TRUE`.|
 
 To familiarize yourself with how the variables it can be helpful to plot
 them yourself.

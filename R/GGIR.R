@@ -1,6 +1,6 @@
 GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                 studyname = c(), f0 = 1, f1 = 0,
-                do.report = c(2, 4, 5), configfile = c(),
+                do.report = c(2, 4, 5, 6), configfile = c(),
                 myfun = c(), verbose = TRUE,
                 ...) {
   #get input variables
@@ -20,23 +20,23 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       }
     }
   }
-
+  
   if (length(datadir) == 0) {
     stop('\nVariable datadir is not specified')
   }
-
+  
   if (length(outputdir) == 0) {
     stop('\nVariable outputdir is not specified')
   }
-
+  
   # Convert paths from Windows specific slashed to generic slashes
   outputdir = gsub(pattern = "\\\\", replacement = "/", x = outputdir)
   datadir = gsub(pattern = "\\\\", replacement = "/", x = datadir)
-
+  
   #===========================
   # Establish default start / end file index to process
   filelist = isfilelist(datadir)
-
+  
   if (filelist == FALSE) {
     if (dir.exists(datadir) == FALSE && 1 %in% mode) {
       # Note: The check whether datadir exists is only relevant when running part 1
@@ -47,7 +47,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       
       stop("\nDirectory specified by argument datadir does not exist")
     }
-    if (datadir == outputdir || grepl(paste(datadir, '/', sep =''), outputdir)) {
+    if (datadir == outputdir || grepl(paste(datadir, '/', sep = ''), outputdir)) {
       stop(paste0('\nError: The file path specified by argument outputdir should ',
                   'NOT equal or be a subdirectory of the path specified by argument datadir'))
     }
@@ -81,9 +81,9 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     f1 = 0
   }
   # Establish which parts need to be processed:
-  dopart1 = dopart2 = dopart3 = dopart4 = dopart5 = FALSE
+  dopart1 = dopart2 = dopart3 = dopart4 = dopart5 = dopart6 = FALSE
   if (length(which(mode == 0)) > 0) {
-    dopart1 = dopart2 = dopart3 = dopart4 = dopart5 = TRUE
+    dopart1 = dopart2 = dopart3 = dopart4 = dopart5 = TRUE # intentionally not including dopart6
   } else {
     # if (length(which(mode == 0)) > 0) dopart0 = TRUE
     if (length(which(mode == 1)) > 0) dopart1 = TRUE
@@ -91,15 +91,16 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     if (length(which(mode == 3)) > 0) dopart3 = TRUE
     if (length(which(mode == 4)) > 0) dopart4 = TRUE
     if (length(which(mode == 5)) > 0) dopart5 = TRUE
+    if (length(which(mode == 6)) > 0) dopart6 = TRUE
   }
-
+  
   if (filelist == TRUE) {
     metadatadir = paste0(outputdir, "/output_", studyname)
   } else {
     outputfoldername = unlist(strsplit(datadir, "/"))[length(unlist(strsplit(datadir, "/")))]
     metadatadir = paste0(outputdir, "/output_", outputfoldername)
   }
-
+  
   # Configuration file - check whether it exists or auto-load
   configfile_csv = c()
   ex = "csv"
@@ -128,7 +129,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       }
     }
   }
-
+  
   #----------------------------------------------------------
   # Extract parameters from user input, configfile and/or defaults.
   params = extract_params(input = input, configfile_csv = configfile_csv) # load default parameters here in g.shell.GGIR
@@ -146,21 +147,21 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     dopart3 = dopart4 = dopart5 = FALSE
     mode = mode[which(mode <= 2)]
   }
-
+  
   if (dopart3 == TRUE & params_metrics[["do.anglez"]] == FALSE & params_general[["dataFormat"]] == "raw") {
     params_metrics[["do.anglez"]] = TRUE
   }
-
+  
   if (length(myfun) != 0) { # Run check on myfun object, if provided
     check_myfun(myfun, params_general[["windowsizes"]])
   }
-
+  
   if (params_output[["visualreport"]] == TRUE & params_general[["dataFormat"]] != "raw") {
     params_output[["visualreport"]] == FALSE
     warning(paste0("Turning off visualreport generation because",
                    " dataFormat is not raw."), call. = FALSE)
   }
-
+  
   # check package dependencies
   if (params_metrics$do.neishabouricounts == TRUE) {
     is_actilifecounts_installed = is.element('actilifecounts', installed.packages()[,1])
@@ -172,7 +173,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       }
     }
   }
-
+  
   if (params_247$cosinor == TRUE) {
     is_ActCR_installed = is.element('ActCR', installed.packages()[,1])
     if (is_ActCR_installed == FALSE) {
@@ -214,7 +215,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       }
     }
   }
-
+  
   #-----------------------------------------------------------
   # Print GGIR header to console
   GGIRversion = "could not extract version"
@@ -329,11 +330,23 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
             params_phyact = params_phyact,
             verbose = verbose)
   }
+  if (dopart6 == TRUE) {
+    if (verbose == TRUE) print_console_header("Part 6")
+    if (f1 == 0) {
+      f1 = length(dir(paste0(metadatadir, "/meta/ms5.outraw/", 
+                             params_phyact[["part6_threshold_combi"]])))
+    }
+    g.part6(datadir = datadir, metadatadir = metadatadir, f0 = f0, f1 = f1,
+            params_general = params_general, params_phyact = params_phyact,
+            params_247 = params_247,
+            verbose = verbose)
+  }
+  
   #--------------------------------------------------
   # Store configuration parameters in config file
   LS = ls()
   LS = LS[which(LS %in% c("input", "txt", "dopart1", "dopart2", "dopart3", "LS",
-                          "dopart4", "dopart5", "metadatadir", "ci", "config",
+                          "dopart4", "dopart5", "dopart6", "metadatadir", "ci", "config",
                           "configfile", "filelist", "outputfoldername", "numi", "logi",
                           "conv2logical", "conv2num", "SI", "params", "argNames", "dupArgNames",
                           "print_console_header", "configfile_csv", "myfun", "ex",
@@ -341,7 +354,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                           "is_read.gt3x_installed", "is_ActCR_installed", 
                           "is_actilifecounts_installed", "rawaccfiles", 
                           "checkFormat", "getExt") == FALSE)]
-
+  
   config.parameters = mget(LS)
   config.matrix = as.data.frame(createConfigFile(config.parameters, GGIRversion))
   config.matrix$context[which(config.matrix$context == "")] = "not applicable"
@@ -349,23 +362,23 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     data.table::fwrite(config.matrix, file = paste0(metadatadir, "/config.csv"),
                        row.names = FALSE, sep = params_output[["sep_config"]])
   } else {
-      warning("\nCould not write config file.")
+    warning("\nCould not write config file.")
   }
   #==========================
   # Report generation:
   # -----
   # check a few basic assumptions before continuing
   if (length(which(do.report == 2)) > 0) {
-    if (verbose == TRUE) print_console_header("Report part 2")
     N.files.ms2.out = length(dir(paste0(metadatadir, "/meta/ms2.out")))
     if (N.files.ms2.out > 0) {
+      if (verbose == TRUE) print_console_header("Report part 2")
       # if (N.files.ms2.out < f0) f0 = 1
       # if (N.files.ms2.out < f1) f1 = N.files.ms2.out
       if (length(f0) == 0) f0 = 1
       if (f1 == 0) f1 = N.files.ms2.out
       if (length(params_247[["qwindow"]]) > 2 |
           is.character(params_247[["qwindow"]]) |
-        (length(params_247[["qwindow"]]) == 2 & !all(c(0, 24) %in% params_247[["qwindow"]]))) {
+          (length(params_247[["qwindow"]]) == 2 & !all(c(0, 24) %in% params_247[["qwindow"]]))) {
         store.long = TRUE
       } else {
         store.long = FALSE
@@ -374,14 +387,12 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      maxdur = params_cleaning[["maxdur"]],
                      store.long = store.long, do.part2.pdf = params_output[["do.part2.pdf"]],
                      verbose = verbose, sep_reports = params_output[["sep_reports"]])
-    } else {
-      if (verbose == TRUE) cat("\nSkipped because no milestone data available")
     }
   }
   if (length(which(do.report == 4)) > 0) {
-    if (verbose == TRUE) print_console_header("Report part 4")
     N.files.ms4.out = length(dir(paste0(metadatadir, "/meta/ms4.out")))
     if (N.files.ms4.out > 0) {
+      if (verbose == TRUE) print_console_header("Report part 4")
       if (N.files.ms4.out < f0) f0 = 1
       if (N.files.ms4.out < f1) f1 = N.files.ms4.out
       if (f1 == 0) f1 = N.files.ms4.out
@@ -391,14 +402,12 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      data_cleaning_file = params_cleaning[["data_cleaning_file"]],
                      sleepwindowType = params_sleep[["sleepwindowType"]],
                      verbose = verbose, sep_reports = params_output[["sep_reports"]])
-    } else {
-      if (verbose == TRUE) cat("\nSkipped because no milestone data available")
     }
   }
   if (length(which(do.report == 5)) > 0) {
     N.files.ms5.out = length(dir(paste0(metadatadir, "/meta/ms5.out")))
-    if (verbose == TRUE) print_console_header("Report part 5")
     if (N.files.ms5.out > 0) {
+      if (verbose == TRUE) print_console_header("Report part 5")
       if (N.files.ms5.out < f0) f0 = 1
       if (N.files.ms5.out < f1) f1 = N.files.ms5.out
       if (f1 == 0) f1 = N.files.ms5.out
@@ -408,8 +417,19 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      week_weekend_aggregate.part5 = params_output[["week_weekend_aggregate.part5"]],
                      LUX_day_segments = params_247[["LUX_day_segments"]],
                      verbose = verbose, sep_reports = params_output[["sep_reports"]])
-    } else {
-      if (verbose == TRUE) cat("\nSkipped because no milestone data available")
+      g.report.part5_dictionary(metadatadir = metadatadir, sep_reports = params_output[["sep_reports"]])
+    }
+  }
+  if (length(which(do.report == 6)) > 0) {
+    N.files.ms6.out = length(dir(paste0(metadatadir, "/meta/ms6.out")))
+    if (N.files.ms6.out > 0) {
+      if (verbose == TRUE) print_console_header("Report part 6")
+      if (N.files.ms6.out < f0) f0 = 1
+      if (N.files.ms6.out < f1) f1 = N.files.ms6.out
+      if (f1 == 0) f1 = N.files.ms6.out
+      g.report.part6(metadatadir = metadatadir, f0 = f0, f1 = f1,
+                     params_cleaning = params_cleaning,
+                     verbose = verbose, sep_reports = params_output[["sep_reports"]])
     }
   }
   if (params_output[["visualreport"]] == TRUE) {
@@ -419,8 +439,9 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     files.ms4.out = dir(paste0(metadatadir, "/meta/ms4.out"))
     # at least one metafile from the same recording in each folder
     files.available = Reduce(intersect, list(files.basic, files.ms3.out, files.ms4.out))
-    if (verbose == TRUE) print_console_header("Generate visual reports")
+    
     if (length(files.available) > 0) {
+      if (verbose == TRUE) print_console_header("Generate visual reports")
       g.plot5(metadatadir = metadatadir,
               dofirstpage = params_output[["dofirstpage"]],
               viewingwindow = params_output[["viewingwindow"]],
@@ -435,8 +456,6 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
               includedaycrit = params_cleaning[["includedaycrit"]],
               includenightcrit = params_cleaning[["includenightcrit"]],
               verbose = TRUE)
-    } else {
-      if (verbose == TRUE) cat("\nSkipped because no milestone data available")
     }
   }
 }

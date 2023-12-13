@@ -18,7 +18,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.10-3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -99,7 +99,7 @@
 <span>     outputdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>     studyname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>     f0 <span class="op">=</span> <span class="fl">1</span>, f1 <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>     do.report <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span>,</span>
+<span>     do.report <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">6</span><span class="op">)</span>,</span>
 <span>     configfile <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>     myfun <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>     verbose <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
@@ -141,8 +141,8 @@
     File index to finish with (defaults to number of files available).</p></dd>
 
   <dt>do.report</dt>
-<dd><p>Numeric (default = c(2, 4, 5)).
-    For which parts to generate a summary spreadsheet: 2, 4, and/or 5. Default is c(2, 4, 5).
+<dd><p>Numeric (default = c(2, 4, 5, 6)).
+    For which parts to generate a summary spreadsheet: 2, 4, 5, and/or 6. Default is c(2, 4, 5, 6).
     A report will be generated based on the available milestone data. When creating
     milestone data with multiple machines it is advisable to turn the report
     generation off when generating the milestone data, value = c(),
@@ -620,6 +620,12 @@
         using <a href="read.myacc.csv.html">read.myacc.csv</a>. The <a href="read.myacc.csv.html">read.myacc.csv</a> does not take rmc.noise as argument,
         but when interacting with GGIR or <a href="g.part1.html">g.part1</a> rmc.noise is used.</p></dd>
 
+        
+      <dt>rmc.scalefactor.acc</dt>
+<dd><p>Numeric value (default 1) to scale the acceleration signals via multiplication.
+        For example, if data is provided in m/s2 then by setting this to 1/9.81
+        we would derive gravitational units.</p></dd>
+
 
       <dt>frequency_tol</dt>
 <dd><p>Number (default = 0.1) as passed on to readAxivity from the GGIRread package.
@@ -628,6 +634,7 @@
         by lack of movement with gravitational oriationed guessed from most recent
         valid data block. Only applicable to Axivity .cwa data.</p></dd>
 
+      
     
 </dl><p></p>
 </div>
@@ -959,31 +966,61 @@
 <dd><p>Numeric (default = 23).
         Minimum length in hours of a MM day to be included in the cleaned <a href="g.part4.html">g.part4</a> results.</p></dd>
 
+        
+      <dt>study_dates_file</dt>
+<dd><p>Character (default = c()).
+        Full path to csv file containing the first and last date of the expected 
+        wear period for every study participant (dates are provided per individual).
+        Expected format of the activity diary is: First column headers followed 
+        by one row per recording. There should be three columns: first column is 
+        recording ID, which needs to match with the ID GGIR extracts from the 
+        accelerometer file; second column should contain the first date of the 
+        study; and third column the last date of the study. Date columns should be
+        by default in format "23-04-2017", or in the date format  specified by 
+        argument <code>study_dates_dateformat</code> (below). If not specified (default), 
+        then GGIR would use the first and last day of the recording as beginning 
+        and end of the study. Note that these dates are used on top of the 
+        <code>data_masking_strategy</code> selected.</p></dd>
 
+        
+      <dt>study_dates_dateformat</dt>
+<dd><p>Character (default = "<!-- %d-%m-%Y"). -->
+        To specify the date format used in the <code>study_dates_file</code> as used 
+        by <a href="https://rdrr.io/r/base/strptime.html" class="external-link">strptime</a>.</p></dd>
+
+        
       <dt>strategy</dt>
 <dd><p>Numeric (default = 1).
+        See <code>data_masking_strategy</code> below.</p></dd>
+
+        
+      <dt>data_masking_strategy</dt>
+<dd><p>Numeric (default = 1).
         How to deal with knowledge about study protocol.
-        strategy = 1 means select data based on <code>hrs.del.start</code> and <code>hrs.del.end</code>.
-        strategy = 2 makes that only the data between the first
+        data_masking_strategy = 1 means select data based on <code>hrs.del.start</code> and <code>hrs.del.end</code>.
+        data_masking_strategy = 2 makes that only the data between the first
         midnight and the last midnight is used.
-        strategy = 3 only selects the most active X days in the file where X is
-        specified by argument <code>ndayswindow</code>, where the days are a series of 24-h blocks
-        starting any time in the day.
-        strategy = 4 to only use the data after the first midnight.
-        strategy = 5 is similar to <code>strategy = 3</code>, but it selects X complete
-        calendar days where X is specified by argument <code>ndayswindow</code>.</p></dd>
+        data_masking_strategy = 3 selects the most active X days in the file where X is
+        specified by argument <code>ndayswindow</code>, where the days are a series 
+        of 24-h blocks starting any time in the day (X hours at the begining and end
+        of this period can be deleted with arguments <code>hrs.del.start</code> and <code>hrs.del.end</code>)
+        data_masking_strategy = 4 to only use the data after the first midnight.
+        data_masking_strategy = 5 is similar to <code>data_masking_strategy = 3</code>, but it selects X complete
+        calendar days where X is specified by argument <code>ndayswindow</code> 
+        (X hours at the begining and end of this period can be deleted with 
+        arguments <code>hrs.del.start</code> and <code>hrs.del.end</code>).</p></dd>
 
 
       <dt>hrs.del.start</dt>
 <dd><p>Numeric (default = 0).
         How many HOURS after start of experiment did wearing
-        of monitor start? Used in GGIR <a href="g.part2.html">g.part2</a> when <code>strategy = 1</code>.</p></dd>
+        of monitor start? Used in GGIR <a href="g.part2.html">g.part2</a> when <code>data_masking_strategy = 1</code>.</p></dd>
 
 
       <dt>hrs.del.end</dt>
 <dd><p>Numeric (default = 0).
         How many HOURS before the end of the experiment did
-        wearing of monitor definitely end? Used in GGIR <a href="g.part2.html">g.part2</a> when <code>strategy = 1</code>.</p></dd>
+        wearing of monitor definitely end? Used in GGIR <a href="g.part2.html">g.part2</a> when <code>data_masking_strategy = 1</code>.</p></dd>
 
 
       <dt>maxdur</dt>
@@ -994,9 +1031,9 @@
 
       <dt>ndayswindow</dt>
 <dd><p>Numeric (default = 7).
-        If <code>strategy</code> is set to 3 or 5, then this is the size of the window as a
-        number of days. For strategy 3 value can be fractional, e.g. 7.5,
-        while for strategy 5 it needs to be an integer.</p></dd>
+        If <code>data_masking_strategy</code> is set to 3 or 5, then this is the size of the window as a
+        number of days. For data_masking_strategy 3 value can be fractional, e.g. 7.5,
+        while for data_masking_strategy 5 it needs to be an integer.</p></dd>
 
 
       <dt>includedaycrit.part5</dt>
@@ -1012,12 +1049,25 @@
 
         
       <dt>segmentDAYSPTcrit.part5</dt>
-<dd><p>Numeric vector or length 2 (default = c(0, 0)).
+<dd><p>Numeric vector or length 2 (default = c(0.9, 0)).
         Inclusion criteria for the proportion of the segment that should be 
         classified as day (awake) and spt (sleep period time) to be considered 
-        valid. Usually, one of the two numbers is 0, and the other defines the 
-        proportion of the segment that should be classified as day or spt.</p></dd>
-
+        valid. One of the two numbers should be 0, and the other defines the 
+        proportion of the segment that should be classified as day or spt, respectively.
+        The default setting would focus on waking hour
+        segments and includes all segments that overlap for at least 90 percent 
+        with waking hours. In order to shift focus to the SPT you could use
+        c(0, 0.9) which ensures that all segments that overlap for at least
+        90 percent with the SPT are included.
+        Setting both to zero would be problematic and is not allowed as that would introduce
+        bias in behavioural estimates for the following reason: A complete segment
+        would be averaged with an incomplete segments (someone going to bed or waking up
+        in the middle of a segment) by which it is no longer clear whether the person
+        is less active or sleeps more during that segment. Similarly it is not
+        clear whether the person has more wakefulness during SPT for a segment or
+        woke up or went to bed during the segment. Therefore, a 
+        minimum value of 0.5 is required but any value closer to 1
+        would be better.</p></dd>
 
       <dt>includedaycrit</dt>
 <dd><p>Numeric (default = 16).
@@ -1041,7 +1091,7 @@
 
 
       <dt>nonwear_approach</dt>
-<dd><p>Character (default = "2013").
+<dd><p>Character (default = "2023").
         Whether to use the traditional version of the non-wear detection algorithm 
         (nonwear_approach = "2013") or the new version (nonwear_approach = "2023"). 
         The 2013 version would use the longsize window (windowsizes[3], one hour 
@@ -1163,6 +1213,11 @@
         Fragmentation metric to exract. Can be "mean", "TP", "Gini",
         "power", or "CoV", "NFragPM", or all the above metrics with "all".
         See package vignette for description of fragmentation metrics.</p></dd>
+
+
+      <dt>part6_threshold_combi</dt>
+<dd><p>Character (default = "40_100_120") to indicate the threshold combination derived in
+        part 5 to be used for part 6</p></dd>
 
     
 </dl><p></p>
@@ -1324,12 +1379,12 @@
         
       <dt>sleepefficiency.metric</dt>
 <dd><p>Numeric (default = 1).
-        If 1 (default), sleep efficiency is calculated as detected nocturnal sleep time divided by
-        log-derived duration in sleep period time (considering user-reported sleep onset and
-        wake times). If 2, sleep efficiency is calculated as detected nocturnal
-        sleep time divided by detected duration in sleep period time plus sleep latency (where
-        sleep latency refers to the difference between log-derived sleep onset and 
-        accelerometer-detected sleep onset).</p></dd>
+        If 1 (default), sleep efficiency is calculated as detected sleep time during
+        the SPT window divided by log-derived time in bed. If 2, sleep efficiency is
+        calculated as detected sleep time during the SPT window divided by detected
+        duration in sleep period time plus sleep latency (where sleep latency refers
+        to the difference between time in bed and sleep onset). sleepefficiency.metric is only considered
+        when argument <code>sleepwindowType = "TimeInBed"</code></p></dd>
 
         
       <dt>possible_nap_edge_acc</dt>
@@ -1368,7 +1423,10 @@
         no need to have a column with the date followed by a column with the next 
         date. If times in the activity diary are not multiple of the short window 
         size (epoch length), the next epoch is considered (e.g., with epoch of 5 
-        seconds, 8:00:02 will be redefined as 8:00:05 in the activity log).</p></dd>
+        seconds, 8:00:02 will be redefined as 8:00:05 in the activity log).
+        When using the qwindow functionality in combination with GGIR part 5 then
+        make sure to check that arguments <code>segmentWEARcrit.part5</code> and 
+        <code>segmentDAYSPTcrit.part5</code> are specfied to your research needs.</p></dd>
 
 
       <dt>qwindow_dateformat</dt>
@@ -1486,9 +1544,26 @@
 
 
       <dt>cosinor</dt>
-<dd><p>Argument depricated after version 1.5-24.
-        Boolean (default = FALSE). Whether to apply the cosinor analysis from the ActCR package.</p></dd>
+<dd><p>Boolean (default = FALSE). Whether to apply the cosinor analysis from the ActCR package.</p></dd>
 
+        
+      <dt>part6CR</dt>
+<dd><p>Boolean (default = FALSE) to indicate whether circadian rhythm analysis should be run by part 6.</p></dd>
+
+      <dt>part6HCA</dt>
+<dd><p>Boolean (default = FALSE) to indicate whether Household Co Analysis should 
+        be run by part 6.</p></dd>
+
+      <dt>part6Window</dt>
+<dd><p>Character vector with length two (default = c("start", "end")) to indicate
+        the start and the end of the time series to be used for circadian rhythm analysis
+        in part 6. In other words, this parameters is not used for Household co-analysis.
+        Alternative values are: "Wx", "Ox", "Hx", where "x" is a number to indicat
+        the xth wakeup, onset or hour of the recording. Negative values for "x"
+        are also possible and will count relative to the end of the recording. For example,
+        c("W1", "W-1") goes from the first till the last wakeup, c("H5", "H-5") 
+        ignores the first and last 5 hours, and c("O2", "W10") goes from the second
+        onset till the 10th wakeup time.</p></dd>
 
     
 </dl><p></p>
@@ -1516,7 +1591,7 @@
 <dd><p>Character (default = c("MM", "WW")).
         In <a href="g.part5.html">g.part5</a>: Timewindow over which summary statistics are derived.
         Value can be "MM" (midnight to midnight), "WW" (waking time to waking time),
-        or both c("MM","WW").</p></dd>
+        "OO" (sleep onset to sleep onset), or any combination of them.</p></dd>
 
 
       <dt>save_ms5rawlevels</dt>
@@ -1688,7 +1763,7 @@
 <span class="r-in"><span>       <span class="co">#-------------------------------</span></span></span>
 <span class="r-in"><span>       <span class="co"># Part 2 parameters:</span></span></span>
 <span class="r-in"><span>       <span class="co">#-------------------------------</span></span></span>
-<span class="r-in"><span>       strategy <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>       data_masking_strategy <span class="op">=</span> <span class="fl">1</span>,</span></span>
 <span class="r-in"><span>       ndayswindow <span class="op">=</span> <span class="fl">7</span>,</span></span>
 <span class="r-in"><span>       hrs.del.start <span class="op">=</span> <span class="fl">1</span>,</span></span>
 <span class="r-in"><span>       hrs.del.end <span class="op">=</span> <span class="fl">1</span>,</span></span>

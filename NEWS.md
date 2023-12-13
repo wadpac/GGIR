@@ -1,6 +1,36 @@
+# CHANGES IN GGIR VERSION 3.0-2
+
+- Part 2: Fix bug that caused part 2 to struggle with corrupt ActiGraph .gt3x files #972
+
+- Part 2: Redefine horizontal axis of plots_to_check_data_quality #983
+
+- Documentation: Expanded documentation on desiredtz, configtz, and time stamp format in part 5 time series #966
+
+- Part 1: Now also able to handle some more variations in Actigraph csv count file format #978, and automatically aggregates to lower resolution if short epoch size is longer than observed epoch size in actigraph count csv.
+
+- Part 5: Reverting decision to prohibit segmentDAYSPTcrit.part5 to be c(0, 0). The default remains unchanged and documentation now only emphasizes the downside of using c(0, 0). #980
+
+- Argument documentation: Fixing series of typos (thanks to Pieter-Jan Marent for pointing them out)
+
+- Part 5: Fix bug in recently added functionality for studying overlap between sibs and self-reported behaviours #989.
+
+- Part 1: Fix bug in adhoc-csv format calibration process as it could not extract temperature column #991
+
+- Part 1: Fix bug that caused a mismatch between IDs and filenames in part 1 when movisens participant folders did not contain the acc.bin file #994.
+
 # CHANGES IN GGIR VERSION 3.0-1
 
+- Part 2: Added option to provide a csv file with start and end dates when accelerometer is expected to be worn #943
+
+- Part 5: Now stores dictionary for variable names in part 5 reports #938
+
 - Part 2: Bug fix in csv report generation when appending part 2 milestone data with differing number of columns #951
+
+- Part 1: Bug fix in gt3x data reading by avoiding duplication of first second when appending chunks of data #952
+
+- Part 1 + 2: Log information regarding number of time gaps and total time imputed with function g.imputeTimeGaps for ad-hoc csv and ActiGraph data in line with previously added similar functionality for Axivity cwa #571
+
+- Part 6: Added new part 6 with for now only Household co-analysis and Cosinor analysis.
 
 # CHANGES IN GGIR VERSION 3.0-0
 
@@ -14,6 +44,8 @@
 relative to start and end of the most active time window as identified.  #905
 
 - Part 5: Change default for segmentDAYSPTcrit.part5 from c(0,0) to c(0, 0.9) and now prohibiting the use of c(0, 0) as it gives biased estimates. We knew this, but some users started using the default without attempting to understand it, by which it seems necessary to force a sensible default. #940
+
+- Add contributing guidelines for github.io documentation #923
 
 - Part 5: Added optioned "OO" to argument timewindow, which defines windows from sleep Onset to sleep Onset #931
 
@@ -34,8 +66,6 @@ relative to start and end of the most active time window as identified.  #905
 - Part 4: More informative error message when advanced sleep log has duplicate or missing dates #925
 
 - Fix recently introduced bug where GGIR environment was not exported to cluster in GGIR part 1, 2, 3, and 5 #910
-
-- Add contributing guidelines for github.io documentation #923
 
 # CHANGES IN GGIR VERSION 2.10-3
 

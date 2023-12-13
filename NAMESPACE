@@ -40,9 +40,12 @@ export(g.analyse, g.calibrate,
        correctOlderMilestoneData,
        convertEpochData, appendRecords, extractID,
        g.part5_analyseSegment, g.part5_initialise_ts,
-       g.part5.analyseRest)
+       g.part5.analyseRest, part6AlignIndividuals,
+       part6PairwiseAggregation, g.part6, g.report.part6, check_log, g.report.part5_dictionary)
 
-importFrom("grDevices", "colors", "dev.off", "pdf","rainbow","rgb")
+
+importFrom("grDevices", "colors", "dev.off", "pdf",
+           "rgb", "rainbow", "palette")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
            "rect","axis.POSIXct", "barplot", "box", "legend",
            "lines", "mtext", "text", "arrows", "segments")
@@ -53,7 +56,7 @@ importFrom("utils", "read.csv", "sessionInfo", "write.csv",
 importFrom("stats", "aggregate.data.frame", "weighted.mean",
            "rnorm","median","aggregate","C", "lm.wfit",
            "quantile", "sd","coef", "lm", "embed", "na.pass",
-            "residuals", "fitted", "cor")
+            "residuals", "fitted", "reshape", "cor")
 import(data.table)
 importFrom("methods", "is")
 importFrom("utils", "available.packages", "packageVersion", "help", "read.table")

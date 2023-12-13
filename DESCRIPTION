@@ -1,8 +1,8 @@
 Package: GGIR
 Type: Package
 Title: Raw Accelerometer Data Analysis
-Version: 3.0-0
-Date: 2023-10-16
+Version: 3.0-2
+Date: 2023-12-13
 Authors@R: c(person("Vincent T","van Hees",role=c("aut","cre"),
                     email="v.vanhees@accelting.com"),
              person("Jairo H","Migueles",role="aut",
@@ -30,6 +30,6 @@ URL: https://github.com/wadpac/GGIR/, https://groups.google.com/forum/#!forum/Rp
 BugReports: https://github.com/wadpac/GGIR/issues
 License: Apache License (== 2.0) | file LICENSE
 Suggests: testthat, covr, knitr, rmarkdown, actilifecounts, ActCR, GGIRread, read.gt3x
-Imports: data.table, foreach, doParallel, signal, zoo, unisensR, ineq, methods
+Imports: data.table, foreach, doParallel, signal, zoo, unisensR, ineq, methods, psych, irr
 Depends: stats, utils, R (>= 3.5)
 VignetteBuilder: knitr

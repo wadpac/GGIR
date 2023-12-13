@@ -87,9 +87,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   params_phyact[["boutdur.mvpa"]] = sort(params_phyact[["boutdur.mvpa"]],decreasing = TRUE)
   params_phyact[["boutdur.lig"]] = sort(params_phyact[["boutdur.lig"]],decreasing = TRUE)
   params_phyact[["boutdur.in"]] = sort(params_phyact[["boutdur.in"]],decreasing = TRUE)
-  if (params_output[["save_ms5raw_format"]] != "RData" & params_output[["save_ms5raw_format"]] != "csv") {
-    params_output[["save_ms5raw_format"]] = "csv"# specify as csv if user does not clearly specify format
-  }
   #--------------------------------
   # get full file path and folder name if requested by end-user and keep this for storage in output
   if (params_output[["storefolderstructure"]] == TRUE) {
@@ -111,7 +108,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         params_general = c(), ms5.out, ms5.outraw,
                         fnames.ms3, sleeplog, logs_diaries,
                         extractfilenames, referencefnames, folderstructure,
-                        fullfilenames, foldernam, verbose) {
+                        fullfilenames, foldername, ffdone, verbose) {
     tail_expansion_log =  NULL
     fnames.ms1 = dir(paste(metadatadir, "/meta/basic", sep = ""))
     fnames.ms2 = dir(paste(metadatadir, "/meta/ms2.out", sep = ""))
@@ -551,7 +548,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                       di = di + 1
                     }
                   }
-                  if (params_output[["save_ms5rawlevels"]] == TRUE) {
+                  if (params_output[["save_ms5rawlevels"]] == TRUE || params_247[["part6HCA"]] == TRUE || params_247[["part6CR"]] == TRUE) {
                     legendfile = paste0(metadatadir,ms5.outraw,"/behavioralcodes",as.Date(Sys.time()),".csv")
                     if (file.exists(legendfile) == FALSE) {
                       legendtable = data.frame(class_name = Lnames, class_id = 0:(length(Lnames) - 1), stringsAsFactors = FALSE)
@@ -561,7 +558,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     # I moved this bit of code to the end, because we want guider to be included (VvH April 2020)
                     rawlevels_fname =  paste0(metadatadir, ms5.outraw, "/", TRLi, "_", TRMi, "_", TRVi, "/",
                                               gsub(pattern = "[.]|rdata|csv|cwa|gt3x|bin",
-                                                   replacement = "", x = tolower(fnames.ms3[i])),
+                                                   replacement = "", x = fnames.ms3[i], ignore.case = TRUE),
                                               "_", sibDef, ".", params_output[["save_ms5raw_format"]])
                     # save time series to csv files
                     if (params_output[["do.sibreport"]] == TRUE & length(params_sleep[["nap_model"]]) > 0) {
@@ -584,7 +581,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                            save_ms5raw_without_invalid = params_output[["save_ms5raw_without_invalid"]],
                                            DaCleanFile = DaCleanFile,
                                            includedaycrit.part5 = params_cleaning[["includedaycrit.part5"]], ID = ID,
-                                           sep_reports = params_output[["sep_reports"]])
+                                           sep_reports = params_output[["sep_reports"]],
+                                           params_247 = params_247)
                   }
                 }
               }
@@ -710,7 +708,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                   params_general, ms5.out, ms5.outraw,
                                                   fnames.ms3, sleeplog, logs_diaries,
                                                   extractfilenames, referencefnames, folderstructure,
-                                                  fullfilenames, foldername, verbose)
+                                                  fullfilenames, foldername, ffdone, verbose)
                                      })
                                      return(tryCatchResult)
                                    }
@@ -731,7 +729,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                  params_general, ms5.out, ms5.outraw,
                  fnames.ms3, sleeplog, logs_diaries,
                  extractfilenames, referencefnames, folderstructure,
-                 fullfilenames, foldername, verbose)
+                 fullfilenames, foldername, ffdone, verbose)
     }
   }
 }

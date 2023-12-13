@@ -96,7 +96,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
     }
     if (params_general[["overwrite"]] == TRUE) skip = 0
     if (skip == 0) {
-      M = c()
+      M = I = c()
       filename_dir = c()
       filefoldername = c()
       file2read = paste0(path,fnames[i])
@@ -105,6 +105,13 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       # convert to character/numeric if stored as factor in metashort and metalong
       M$metashort = correctOlderMilestoneData(M$metashort)
       M$metalong = correctOlderMilestoneData(M$metalong)
+      # extract ID centrally to be used in GGIR
+      if (is.null(I$sf)) {
+        M$filecorrupt = TRUE
+      } else {
+        hvars = g.extractheadervars(I)
+        ID = extractID(hvars = hvars, idloc = params_general[["idloc"]], fname = I$filename)
+      }
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
         #-----------------------
         # If required by user, ignore specific timewindows for imputation and set them to zeroinstead:
@@ -146,7 +153,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                        dayborder = params_general[["dayborder"]],
                        desiredtz = params_general[["desiredtz"]],
                        TimeSegments2Zero = TimeSegments2Zero,
-                       acc.metric = params_general[["acc.metric"]])
+                       acc.metric = params_general[["acc.metric"]],
+                       ID = ID)
         
         if (params_cleaning[["do.imp"]] == FALSE) { #for those interested in sensisitivity analysis
           IMP$metashort = M$metashort
@@ -168,7 +176,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                         params_phyact = params_phyact,
                         params_general = params_general,
                         params_cleaning = params_cleaning,
-                        myfun = myfun)
+                        myfun = myfun, ID = ID)
         RDname = as.character(unlist(strsplit(fnames[i], "eta_"))[2])
         # reset M and IMP so that they include the expanded time (needed for sleep detection in parts 3 and 4)
         if (length(tail_expansion_log) != 0) {
@@ -237,8 +245,12 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           df = as.data.frame(df, check.names = FALSE)
           return(df)
         }
-        SUM$summary = char2num_df(SUM$summary)
-        SUM$daysummary = char2num_df(SUM$daysummary)
+        # Only apply this to column that are not ID because ID can be number
+        # combined with letter E, which would then resolve to numeric
+        noID = which(colnames(SUM$summary) != "ID")
+        SUM$summary[noID] = char2num_df(SUM$summary[noID])
+        noIDday = which(colnames(SUM$daysummary) != "ID")
+        SUM$daysummary[noIDday] = char2num_df(SUM$daysummary[noIDday])
         # save milestone data
         save(SUM, IMP, tail_expansion_log, file = paste0(metadatadir, ms2.out, "/", RDname)) #IMP is needed for g.plot in g.report.part2
       }

@@ -311,6 +311,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     P = g.imputeTimegaps(P, xyzCol = c("accx", "accy", "accz"), timeCol = "timestamp", sf = sf, k = 0.25, 
                          PreviousLastValue = PreviousLastValue,
                          PreviousLastTime = PreviousLastTime, epochsize = NULL)
+    P = P$x
     PreviousLastValue = as.numeric(P[nrow(P), c("accx", "accy", "accz")])
     PreviousLastTime = as.POSIXct(P[nrow(P), "timestamp"])
   }

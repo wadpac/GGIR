@@ -273,16 +273,25 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           # go through the nights get default onset and wake (based on sleeplog or on heuristic
           # algorithms) def.noc.sleep is an input argument the GGIR user can use to specify what
           # detection strategy is used in the absense of a sleep diary
-          if (length(params_sleep[["def.noc.sleep"]]) == 0 | length(SPTE_start) == 0) {
+          if (length(params_sleep[["def.noc.sleep"]]) == 0 ||
+              length(SPTE_start) == 0 ||
+              length(SPTE_start[which(is.na(SPTE_start) == FALSE)]) == 0) {
             # use L5+/-6hr algorithm if SPTE fails OR if the user explicitely asks for it (length
             # zero argument)
             guider = "notavailable"
-            if (length(L5list) > 0) {
+            if (length(L5list) > 0 & length(L5list) >= j) {
               defaultSptOnset = L5list[j] - 6
               defaultSptWake = L5list[j] + 6
               guider = "L512"
+            } else {
+              # This should never happen, but just as a final backup
+              defaultSptOnset = 21
+              defaultSptWake = 31
+              warning("Guider not identified in ID ", accid, ", falling back on 9pm-7am window", call. = FALSE)
             }
-          } else if (length(params_sleep[["def.noc.sleep"]]) == 1 | length(params_sleep[["loglocation"]]) != 0 & length(SPTE_start) != 0) {
+          } else if ((length(params_sleep[["def.noc.sleep"]]) == 1 ||
+                     length(params_sleep[["loglocation"]]) != 0) &&
+                     length(SPTE_start) != 0) {
             # use SPTE algorithm (inside the g.sib.det function) as backup for sleeplog OR if user
             # explicitely asks for it
             defaultSptOnset = SPTE_start[j]

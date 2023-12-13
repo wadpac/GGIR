@@ -64,8 +64,9 @@ g.analyse.perfile = function(I, C, metrics_nav,
   s_names[vi:(vi + q0)] = c("calib_err",
                             "calib_status", colnames_to_lookat)
   vi = vi + q0 + 2
-  # readAxivity QClog summary
-  if ("Dur_imputed" %in% names(file_summary)) {
+  # QClog summary
+  if ("Dur_chsum_failed" %in% names(file_summary)) {
+    # readAxivity QClog
     # These are summaries of the file health check by the GGIRread::readAxivity
     # the function handles data blocks (1-3 seconds) with faulty data by imputing 
     # them and logging the information.
@@ -101,6 +102,15 @@ g.analyse.perfile = function(I, C, metrics_nav,
                              "filehealth_fbias2030_N",
                              "filehealth_fbias30_N")
     vi = vi + 7
+  } else if ("Dur_imputed" %in% names(file_summary)) {
+    # ActiGraph QClog
+    # This also logs time gaps in ActiGraph files, which correspond with periods
+    # in which the idle sleep mode has been activated
+    filesummary[vi:(vi + 1)] = c(file_summary$Dur_imputed, # total imputed
+                                 file_summary$Nblocks_imputed)
+    s_names[vi:(vi + 1)] = c("filehealth_totimp_min",
+                    "filehealth_totimp_N")
+    vi = vi + 2
   }
   
   #quantile, ML5, and intensity gradient variables
@@ -166,20 +176,20 @@ g.analyse.perfile = function(I, C, metrics_nav,
                                "cosinor_acrotime", "cosinor_ndays", "cosinor_R2")
       vi = vi + 6
       try(expr = {filesummary[vi:(vi + 10)]  = c(cosinor_coef$coefext$params$minimum,
-                                                cosinor_coef$coefext$params$amp,
-                                                cosinor_coef$coefext$params$alpha,
-                                                cosinor_coef$coefext$params$beta,
-                                                cosinor_coef$coefext$params$acrotime,
-                                                cosinor_coef$coefext$params$UpMesor,
-                                                cosinor_coef$coefext$params$DownMesor,
-                                                cosinor_coef$coefext$params$MESOR,
-                                                cosinor_coef$coefext$params$ndays,
-                                                cosinor_coef$coefext$params$F_pseudo,
-                                                cosinor_coef$coefext$params$R2)}, silent = TRUE)
+                                                 cosinor_coef$coefext$params$amp,
+                                                 cosinor_coef$coefext$params$alpha,
+                                                 cosinor_coef$coefext$params$beta,
+                                                 cosinor_coef$coefext$params$acrotime,
+                                                 cosinor_coef$coefext$params$UpMesor,
+                                                 cosinor_coef$coefext$params$DownMesor,
+                                                 cosinor_coef$coefext$params$MESOR,
+                                                 cosinor_coef$coefext$params$ndays,
+                                                 cosinor_coef$coefext$params$F_pseudo,
+                                                 cosinor_coef$coefext$params$R2)}, silent = TRUE)
       s_names[vi:(vi + 10)] = c("cosinorExt_minimum", "cosinorExt_amp", "cosinorExt_alpha",
-                               "cosinorExt_beta", "cosinorExt_acrotime", "cosinorExt_UpMesor",
-                               "cosinorExt_DownMesor", "cosinorExt_MESOR",
-                               "cosinorExt_ndays", "cosinorExt_F_pseudo", "cosinorExt_R2")
+                                "cosinorExt_beta", "cosinorExt_acrotime", "cosinorExt_UpMesor",
+                                "cosinorExt_DownMesor", "cosinorExt_MESOR",
+                                "cosinorExt_ndays", "cosinorExt_F_pseudo", "cosinorExt_R2")
       vi = vi + 11
       filesummary[vi:(vi + 1)]  = c(cosinor_coef$IVIS$InterdailyStability,
                                     cosinor_coef$IVIS$IntradailyVariability)
@@ -261,7 +271,7 @@ g.analyse.perfile = function(I, C, metrics_nav,
       }
       vi = vi + 6 + ((dtwtel * sp) - 1)
     }
-    filesummary[vi] = params_cleaning[["strategy"]]
+    filesummary[vi] = params_cleaning[["data_masking_strategy"]]
     filesummary[(vi + 1)] = params_cleaning[["hrs.del.start"]]
     filesummary[(vi + 2)] = params_cleaning[["hrs.del.end"]]
     filesummary[(vi + 3)] = params_cleaning[["maxdur"]]
@@ -277,9 +287,9 @@ g.analyse.perfile = function(I, C, metrics_nav,
     s_names[vi:(vi + 6)] = as.character(c(paste0("data exclusion stategy (value=1, ignore specific hours;",
                                                  " value=2, ignore all data before the first midnight and",
                                                  " after the last midnight)"),
-                                          "n hours ignored at start of meas (if strategy=1)",
-                                          "n hours ignored at end of meas (if strategy=1)",
-                                          "n days of measurement after which all data is ignored (if strategy=1)",
+                                          "n hours ignored at start of meas (if data_masking_strategy=1)",
+                                          "n hours ignored at end of meas (if data_masking_strategy=1)",
+                                          "n days of measurement after which all data is ignored (if data_masking_strategy=1)",
                                           "epoch size to which acceleration was averaged (seconds)",
                                           "if_hip_long_axis_id", "GGIR version"))
     vi = vi + 6

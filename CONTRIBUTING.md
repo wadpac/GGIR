@@ -30,7 +30,7 @@ The sections below outline the steps in each case.
 5. add your own tests (if necessary);
 6. update or expand the documentation, see [package documentation guidelines](#package-documentation);
 7. make sure the release notes in `inst/NEWS.Rd` are updated;
-8. add your name to the contributors lists in the `DESCRIPTION` and `CITATION.cff` files;
+8. add your name to the contributors lists in the `DESCRIPTION` file;
 9. push your feature branch to (your fork of) the GGIR repository on GitHub;
 10. create the pull request, e.g. following the instructions [here](https://help.github.com/articles/creating-a-pull-request/). The pull request template includes a checklist with the above items.
 
