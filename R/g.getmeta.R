@@ -639,7 +639,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           col_mli = col_mli + 1
           metalong[(count2):((count2 - 1) + length(NWav)), col_mli] = round(temperatureb, digits = n_decimal_places)
           col_mli = col_mli + 1
-        } else if (mon == MONITOR$MOVISENS || mon == MONITOR$AD_HOC) {
+        } else if (mon == MONITOR$MOVISENS || (mon == MONITOR$AD_HOC && length(params_rawdata[["rmc.col.temp"]]) != 0)) {
           metalong[(count2):((count2 - 1) + length(NWav)), col_mli] = round(temperatureb, digits = n_decimal_places)
           col_mli = col_mli + 1
         }
