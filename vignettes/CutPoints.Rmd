@@ -26,6 +26,8 @@ See also complementary vignettes on:
 The physical activity research field has used so called cut-points to segment
 accelerometer time series based on level of intensity. In this vignette we have 
 compiled a list of published cut-points with instructions on how to use them with GGIR.
+Please note that GGIR refers to cut-points as thresholds, but we are referring to the
+same thing: A value or a set of values to help split levels of movement intensity.
 As newer cut-points are frequently published the list below may not be up to date.
 **Please let us know if you are aware of any published cut-points that we missed!**
 
