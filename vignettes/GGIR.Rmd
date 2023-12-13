@@ -159,8 +159,9 @@ additional packages:
         the absence of timestamps GGIR will calculate timestamps from
         the sample frequency, the start time and start date as presented
         in the file header.
-    -   [Movisens](https://www.movisens.com/en/) with data stored in
-        folders.
+    -   [Movisens](https://www.movisens.com/en/) .bin files with data 
+        stored in folders. GGIR expects that each participant's folder 
+        contains at least a file named acc.bin.
     -   Any other accelerometer brand that generates csv output, see
         documentation for functions `read.myacc.csv` and argument
         `rmc.noise` in the [GGIR function documentation
