@@ -14,7 +14,7 @@
 
 - Part 5: Fix bug in recently added functionality for studying overlap between sibs and self-reported behaviours #989.
 
-- Part 1: Fix bug in adhoc-csv format calibration process as it could not extract temperature column #991
+- Part 1:Enable use of temperature data in adhoc-csv format throughout GGIR #991
 
 - Part 1: Fix bug that caused a mismatch between IDs and filenames in part 1 when movisens participant folders did not contain the acc.bin file #994.
 
