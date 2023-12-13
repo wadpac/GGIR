@@ -6,6 +6,10 @@
 
 - Part 1: Now also able to handle some more variations in Actigraph csv count file format #978, and automatically aggregates to lower resolution if short epoch size is longer than observed epoch size in actigraph count csv.
 
+- Part 5: Reverting decision to prohibit segmentDAYSPTcrit.part5 to be c(0, 0). The default remains unchanged and documentation now only emphasizes the downside of using c(0, 0). #980
+
+- Argument documentation: Fixing series of typos (thanks to Pieter-Jan Marent for pointing them out)
+
 - Part 5: Fix bug in recently added fucntionality for studying overlap between sibs and self-reported beahviours #989.
 
 # CHANGES IN GGIR VERSION 3.0-1

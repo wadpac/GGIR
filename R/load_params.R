@@ -73,7 +73,7 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                       MX.ig.min.dur = 10, M5L5res = 10, winhr = 5, iglevels = c(),
                       LUXthresholds = c(0, 100, 500, 1000, 3000, 5000, 10000),
                       LUX_cal_constant = c(), LUX_cal_exponent = c(), LUX_day_segments = c(),
-                      window.summary.size = 10, L5M5window = c(0, 24), cosinor = FALSE,
+                      L5M5window = c(0, 24), cosinor = FALSE,
                       part6CR = FALSE, part6HCA = FALSE,
                       part6Window = c("start", "end"))
   }
