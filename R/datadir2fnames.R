@@ -16,12 +16,12 @@ datadir2fnames = function(datadir,filelist) {
       fnamesfull = dir(datadir, recursive = TRUE, pattern = "acc.bin", full.names = TRUE)
       fnames = basename(dirname(fnamesfull))
       nfolders = length(dir(datadir))
-      if (nfolders > length(fnamesfull)) { # meaning there are participants folder without acc.bin
+      if (nfolders > length(fnamesfull)) { # meaning there are movisens data folder without acc.bin
         # folders without acc.bin
         allfolders = dir(datadir, full.names = TRUE)
         foldersWithAccBin = dirname(fnamesfull)
         noAccBin = allfolders[which(!allfolders %in% foldersWithAccBin)]
-        warning(paste0("The following participant folders do not contain the ",
+        warning(paste0("The following movisens data folders do not contain the ",
                        "acc.bin file with the accelerometer recording, and ",
                        "therefore cannot be processed in GGIR: ",
                        paste(noAccBin, collapse = ", ")), call. = FALSE)
