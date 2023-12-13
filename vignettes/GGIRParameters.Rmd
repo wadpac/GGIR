@@ -124,7 +124,7 @@ find a description and default value for all the arguments.
 | maxRecordingInterval        | 1                 | params_general           |
 | nonwear_approach            | 1                 | params_general           |
 | dataFormat                  | 1                 | params_general           |
-| extEpochData_dateformat     | 1                 | params_general           |
+| extEpochData_timeformat     | 1                 | params_general           |
 | metadatadir                 | 2, 3, 4, 5        | not in parameter objects |
 | minimum_MM_length.part5     | 5                 | params_cleaning          |
 | strategy                    | 2, 5              | params_cleaning          |
@@ -149,7 +149,6 @@ find a description and default value for all the arguments.
 | epochvalues2csv             | 2                 | params_output            |
 | do.part2.pdf                | 2                 | params_output            |
 | mvpadur                     | 2                 | params_phyact            |
-| window.summary.size         | 2                 | params_247               |
 | bout.metric                 | 2, 5              | params_phyact            |
 | closedbout                  | 2                 | params_phyact            |
 | IVIS_windowsize_minutes     | 2                 | params_247               |

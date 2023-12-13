@@ -13,10 +13,7 @@ test_that("load_params can load parameters", {
   expect_equal(length(params$params_sleep), 22)
   expect_equal(length(params$params_metrics), 41)
   expect_equal(length(params$params_rawdata), 38)
-  expect_equal(length(params$params_247), 23)
-  expect_equal(length(params$params_cleaning), 24)
-  expect_equal(length(params$params_phyact), 14)
-  expect_equal(length(params$params_247), 23)
+  expect_equal(length(params$params_247), 22)
   expect_equal(length(params$params_cleaning), 24)
   expect_equal(length(params$params_phyact), 14)
   expect_equal(length(params$params_output), 19)
@@ -224,4 +221,16 @@ test_that("load_params can load parameters", {
   params_cleaning$segmentWEARcrit.part5 = 16
   expect_error(check_params(params_cleaning = params_cleaning),
                  regexp = "Incorrect value of segmentWEARcrit.part5")
+  params_cleaning$segmentWEARcrit.part5 = 0.5
+  
+  # segmentDAYSPTcrit.part5 should be two numbers between 0 and 1
+  params_cleaning$segmentDAYSPTcrit.part5 = NULL
+  expect_error(check_params(params_cleaning = params_cleaning),
+                 regexp = "Argument segmentDAYSPTcrit.part5 is expected to be a numeric vector of length 2")
+  params_cleaning$segmentDAYSPTcrit.part5 = c(-1, 0)
+  expect_error(check_params(params_cleaning = params_cleaning),
+               regexp = paste0("Incorrect values of segmentDAYSPTcrit.part5,",
+                               " these should be a fractions between zero",
+                               " and one, please change."))
+  
 })

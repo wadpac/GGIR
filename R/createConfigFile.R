@@ -58,7 +58,7 @@ createConfigFile = function(config.parameters = c(), GGIRversion = "") {
                            "includedaycrit", "M5L5res", "winhr", "qwindow", "qlevels",
                            "ilevels", "mvpathreshold", "boutcriter", "ndayswindow",
                            "do.imp", "epochvalues2csv", "mvpadur",
-                           "window.summary.size", "dayborder", "closedbout",
+                           "dayborder", "closedbout",
                            "IVIS_windowsize_minutes", "IVIS_epochsize_seconds", "iglevels",
                            "IVIS.activity.metric", "TimeSegments2ZeroFile", "qM5L5", "do.part3.pdf") ==  TRUE) {
         out[i,3] = "Study design, Parameters descriptive analysis"

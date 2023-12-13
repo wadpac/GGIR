@@ -78,7 +78,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     numeric_params = c("qlevels", "ilevels", "IVIS_windowsize_minutes", "IVIS_epochsize_seconds",
                        "IVIS.activity.metric", "IVIS_acc_threshold",
                        "qM5L5", "MX.ig.min.dur", "M5L5res", "winhr", "LUXthresholds", "LUX_cal_constant",
-                       "LUX_cal_exponent", "LUX_day_segments", "window.summary.size", "L5M5window")
+                       "LUX_cal_exponent", "LUX_day_segments", "L5M5window")
     boolean_params = c("cosinor", "part6CR", "part6HCA")
     character_params = c("qwindow_dateformat", "part6Window")
     check_class("247", params = params_247, parnames = numeric_params, parclass = "numeric")
@@ -433,23 +433,18 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                      ", the default value has been assigned (i.e., 0.5) "), call. = FALSE)
     } else if (params_cleaning[["segmentWEARcrit.part5"]] < 0 | 
                params_cleaning[["segmentWEARcrit.part5"]] > 1) {
-      stop(paste0("Incorrect value of segmentWEARcrit.part5, this should be a",
-                  "fraction of the day between zero and one, please change."), 
+      stop(paste0("Incorrect value of segmentWEARcrit.part5, this should be a ",
+                  "fraction between zero and one, please change."), 
            call. = FALSE)
     }
     if (length(params_cleaning[["segmentDAYSPTcrit.part5"]]) != 2) {
       stop("\nArgument segmentDAYSPTcrit.part5 is expected to be a numeric vector of length 2", call. = FALSE)
     }
-    if (sum(params_cleaning[["segmentDAYSPTcrit.part5"]]) < 0.5 |
-        0 %in% params_cleaning[["segmentDAYSPTcrit.part5"]] == FALSE) {
-      
-      stop(paste0("\nIf you used argument segmentDAYSPTcrit.part5 then make sure",
-                  " it includes one zero",
-                  " and one value of at least 0.5, see documentation for",
-                  " argument segmentDAYSPTcrit.part5. If you do not use",
-                  " argument segmentDAYSPTcrit.part5",
-                  " then delete it from your config.csv file (in your output folder)",
-                  " or delete the config.csv file itself."), call. = FALSE)
+    if (any(params_cleaning[["segmentDAYSPTcrit.part5"]] < 0) | 
+        any(params_cleaning[["segmentDAYSPTcrit.part5"]] > 1)) {
+      stop(paste0("Incorrect values of segmentDAYSPTcrit.part5, these should be a ",
+                  "fractions between zero and one, please change."), 
+           call. = FALSE)
     }
   }
   
