@@ -12,7 +12,7 @@
 
 - Argument documentation: Fixing series of typos (thanks to Pieter-Jan Marent for pointing them out)
 
-- Part 5: Fix bug in recently added fucntionality for studying overlap between sibs and self-reported beahviours #989.
+- Part 5: Fix bug in recently added functionality for studying overlap between sibs and self-reported behaviours #989.
 
 # CHANGES IN GGIR VERSION 3.0-1
 
