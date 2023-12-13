@@ -14,6 +14,8 @@
 
 - Part 5: Fix bug in recently added functionality for studying overlap between sibs and self-reported behaviours #989.
 
+- Part 1: Fix bug that caused a mismatch between IDs and filenames in part 1 when movisens participant folders did not contain the acc.bin file #994.
+
 # CHANGES IN GGIR VERSION 3.0-1
 
 - Part 2: Added option to provide a csv file with start and end dates when accelerometer is expected to be worn #943
