@@ -1,16 +1,16 @@
 ---
 title: "Household Co-Analysis"
 output:
-  html_document:
+   html_document:
     toc: true
     number_sections: true
     toc_depth: 3
     toc_float: true
 urlcolor: blue
 vignette: >
-    %\VignetteIndexEntry{Household Co-Analysis}
-    \usepackage[utf8]{inputenc}
-    %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Household Co-Analysis}
+  \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 
