@@ -14,3 +14,4 @@ RELEASE_CYCLE.md
 ^dev-functions$
 .zenodo.json
 .chapterInProgress.Rmd
+codecov.yml
