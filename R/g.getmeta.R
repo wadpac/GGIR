@@ -421,8 +421,10 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
               temperaturecolumn = temperaturecolumn + 3
               lightcolumn = lightcolumn + 3
             }
-          } else if (mon == MONITOR$MOVISENS || mon == MONITOR$AD_HOC) {
+          } else if (mon == MONITOR$MOVISENS) {
             temperaturecolumn = 4
+          } else if (mon == MONITOR$AD_HOC) {
+            temperaturecolumn = which(colnames(data) == "temperature")
           }
           if (mon != MONITOR$AD_HOC && mon != MONITOR$MOVISENS) {
             light = as.numeric(data[, lightcolumn])
