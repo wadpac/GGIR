@@ -3,22 +3,36 @@ context("g.readaccfile")
 test_that("g.readaccfile and g.inspectfile can read gt3x, cwa, and actigraph csv files correctly", {
   skip_on_cran()
   
-  cat("\nActigraph .csv")
-  for (filename in c("ActiGraph13.csv", "ActiGraph61.csv")) {
-    csvfile = system.file(paste0("testfiles/", filename), package = "GGIR")[1]
+  desiredtz = "Europe/London"
+  params_rawdata = list(frequency_tol = 0.1, interpolationType = 1,
+                        desiredtz = "Europe/London", configtz = "Europe/London")
 
-    Icsv = g.inspectfile(csvfile, desiredtz = "Europe/London")
-    expect_equal(Icsv$monc, MONITOR$ACTIGRAPH)
-    expect_equal(Icsv$dformc, FORMAT$CSV)
-  }
+  filequality = list(filecorrupt = FALSE, filetooshort = FALSE)
+  dayborder = 0
+
+  cat("\nActigraph .csv")
+
+  create_test_acc_csv()
+  filename = "123A_testaccfile.csv"
+  on.exit(if (file.exists(filename)) file.remove(filename))
+
+  Icsv = g.inspectfile(filename, desiredtz = desiredtz)
+  expect_equal(Icsv$monc, MONITOR$ACTIGRAPH)
+  expect_equal(Icsv$dformc, FORMAT$CSV)
+
+  csv_read = g.readaccfile(filename, blocksize = 10, blocknumber = 1, filequality = filequality,
+                           dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
+                           PreviousEndPage = 1, inspectfileobject = Icsv,
+                           params_rawdata = params_rawdata)
+  expect_equal(nrow(csv_read$P), 3000)
+  expect_false(csv_read$filequality$filecorrupt)
+  expect_false(csv_read$filequality$filetooshort)
+  expect_equal(sum(csv_read$P), 3151.11, tolerance = .01, scale = 1)
 
   cwafile  = system.file("testfiles/ax3_testfile.cwa", package = "GGIRread")[1]
   GAfile  = system.file("testfiles/GENEActiv_testfile.bin", package = "GGIRread")[1]
   gt3xfile  = system.file("testfiles/actigraph_testfile.gt3x", package = "GGIR")[1]
   
-  desiredtz = "Europe/London"
-  params_rawdata = list(frequency_tol = 0.1, interpolationType = 1,
-                        desiredtz = "Europe/London", configtz = "Europe/London")
   cat("\nActigraph .gt3x")
   # actigraph .gt3x
   Igt3x = g.inspectfile(gt3xfile, desiredtz = desiredtz)
@@ -63,11 +77,9 @@ test_that("g.readaccfile and g.inspectfile can read gt3x, cwa, and actigraph csv
   expect_equal(decn,".")
   decn =  g.dotorcomma(GAfile, dformat = FORMAT$BIN, mon = MONITOR$GENEACTIV, desiredtz = desiredtz)
   expect_equal(decn,".")
-  filequality = list(filecorrupt = FALSE, filetooshort = FALSE)
-  dayborder = 0
   
   cwa_read = g.readaccfile(cwafile, blocksize = 10, blocknumber = 1, filequality = filequality,
-                           dayborder,ws = 3, desiredtz = desiredtz, 
+                           dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
                            PreviousEndPage = 1, inspectfileobject = Icwa,
                            params_rawdata = params_rawdata)
   GA_read = g.readaccfile(GAfile, blocksize = 2, blocknumber = 1, filequality = filequality,
