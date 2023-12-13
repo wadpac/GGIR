@@ -38,7 +38,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     # endpage and the blocksize.
     if (blocknumber != 1 & length(PreviousEndPage) != 0) {
       # if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) || dformat == FORMAT$CSV) {  # change this line as the csv data do not need to skip one more row (the skip argument in read.csv does not include this row of the dataset)
-      if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) | dformat == FORMAT$GT3X) {
+      if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) || dformat == FORMAT$GT3X) {
         # only in GENEActiv binary data and for gt3x format data
         # page selection is defined from start to end (including end)
         startpage = PreviousEndPage + 1
@@ -68,7 +68,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
         switchoffLD = 1 #last block
       }
     }
-    if (length(P) == 0) { #if first block doens't read then probably corrupt
+    if (length(P) == 0) { # if first block isn't read then probably corrupt
       if (blocknumber == 1) {
         #try to read without specifying blocks (file too short)
         try(expr = {
@@ -119,17 +119,13 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                                  loadGENEActiv = params_rawdata[["loadGENEActiv"]])}) # detect dot or comma dataformat
     options(warn = 0) #turn on warnings
 
-    testheader =  quiet(as.data.frame(data.table::fread(filename, nrows = 2, skip = 10,
-                                                        dec = decn, showProgress = FALSE,
-                                                        header = TRUE),
-                                                        stringsAsFactors = FALSE))
-    if (suppressWarnings(is.na(as.numeric(colnames(testheader)[1]))) ==  FALSE) { # it has no header, first value is a number
-      freadheader = FALSE
-    } else { # it has a header, first value is a character
-      freadheader = TRUE
-      headerlength = 11
-      # skip 1 more row only in the case the file has a header, only in the first chunk of data (when the header needs to be skipped)
-      if (blocknumber == 1) {
+    # skip 1 more row only if the file has a header. Only the first chunk of data can have a header.
+    if (blocknumber == 1) {
+      testheader =  quiet(as.data.frame(data.table::fread(filename, nrows = 2, skip = 10,
+                                                          dec = decn, showProgress = FALSE,
+                                                          header = TRUE),
+                                                          stringsAsFactors = FALSE))
+      if (suppressWarnings(is.na(as.numeric(colnames(testheader)[1])))) { # first value is *not* a number, so file starts with a header
         startpage = startpage + 1
         endpage = endpage + 1
       }
