@@ -1166,7 +1166,8 @@ GGIR(mode = 1:5,
         
       \item{possible_nap_edge_acc}{
         Numeric (default = Inf).
-        Minimum acceleration before or after the SIB for the nap to be considered.
+        Maximum acceleration before or after the SIB for the nap to be considered.
+        By default this will allow all possible naps.
       }
     }
   }
