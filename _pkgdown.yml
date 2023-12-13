@@ -46,7 +46,7 @@ navbar:
       href: https://twitter.com/RpackageGGIR
       aria-label: Twitter
     articles:
-      text: Articles
+      text: Chapters
       menu:
         - text: 1. The GGIR pipeline
           href: articles/chapterInProgress.html
