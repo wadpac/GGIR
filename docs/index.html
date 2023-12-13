@@ -44,12 +44,9 @@
 <li class="nav-item">
   <a class="nav-link" href="articles/chapter0_GetStarted.html">Get Started</a>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="CONTRIBUTING.html">Contributing</a>
-</li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-chapters">Chapters</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-chapters">
     <a class="dropdown-item" href="articles/chapterInProgress.html">1. The GGIR pipeline</a>
     <a class="dropdown-item" href="articles/chapterInProgress.html">2. Inspecting the Data Quality</a>
     <a class="dropdown-item" href="articles/chapterInProgress.html">3. From Raw Data to Acceleration Metrics</a>
@@ -104,48 +101,12 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9"><p><img src="articles/GGIR-MASTERLOGO-RGB.png"></p>
-<p><img src="https://github.com/wadpac/GGIR/workflows/R-CMD-check/badge.svg" alt="GitHub Actions R-CMD-check"><a href="https://app.codecov.io/gh/wadpac/GGIR" class="external-link"><img src="https://codecov.io/gh/wadpac/GGIR/branch/master/graph/badge.svg" alt="codecov"></a> <a href="https://cran.r-project.org/package=GGIR" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/last-month/GGIR"></a></p>
-<p><a href="https://CRAN.R-project.org/package=GGIR" class="external-link"><strong>GGIR</strong></a> stands out as an R-package designed for the processing of multi-day <strong>raw accelerometer data</strong>, specifically tailored for applications in physical activity and sleep research. The name GGIR was decided as a short and easy to remember acronym for <em><strong>G</strong>ENEActive and <strong>G</strong>ENEA data <strong>I</strong>n <strong>R</strong></em>, which was the original purpose of GGIR. However, later the functionality expanded to other sensor brands, and the abbreviation has lost its functional meaning.</p>
-<p>The term <strong><em>raw</em></strong> refers to data being expressed in m/s<sup>2</sup> or gravitational acceleration, as opposed to the previous generation accelerometers which stored data in brand-specific units. Recently, GGIR has expanded the functionality to also provide support for analysing these brand-specific units (usually referred to as activity counts) derived from older devices.</p>
-<p>Although GGIR is mainly designed to be applied over <strong><em>multi-day recordings</em></strong>, it can also be used on shorter recordings with only a few hours of data, yet most of the functionalities available in the package are only applied when the recordings last several days.</p>
-<p>The signal processing pipeline includes automatic calibration, detection of sustained abnormally high values, detection of non-wear, and calculation of average magnitude of dynamic acceleration based on a variety of metrics. Then, GGIR uses this information to describe the data per recording, per day of measurement, and (optionally) per segment of a day of measurement, including estimates of physical activity, inactivity, and sleep. The output of GGIR comes in a variety of data sets containing these estimates in csv files, as well as several visualizations to assist with the check of the data quality, the performance of the sleep-related algorithms, and summaries of the estimates per file.</p>
-<div class="section level2">
-<h2 id="citing-ggir">Citing GGIR<a class="anchor" aria-label="anchor" href="#citing-ggir"></a>
-</h2>
-<p>We published an overview paper of GGIR in 2019 <a href="https://doi.org/10.1123/jmpb.2018-0063" class="external-link">link</a> which tried to describe most of the functionalities available in the package at that time.</p>
-<p>A correct citation of research software is important to make your research reproducible and to acknowledge the effort that goes into the development of open-source software.</p>
-<p>To do so, please report the GGIR version you used in the text. Additionally, please also cite:</p>
-<ol style="list-style-type: decimal">
-<li>Migueles JH, Rowlands AV, et al. GGIR: A Research Community–Driven Open Source R Package for Generating Physical Activity and Sleep Outcomes From Multi-Day Raw Accelerometer Data. Journal for the Measurement of Physical Behaviour. 2(3) 2019. doi: 10.1123/jmpb.2018-0063.</li>
-</ol>
-<p>If your work depends on the quantification of <strong>physical activity</strong> then also cite:</p>
-<ol start="2" style="list-style-type: decimal">
-<li>van Hees VT, Gorzelniak L, et al. Separating Movement and Gravity Components in an Acceleration Signal and Implications for the Assessment of Human Daily Physical Activity. PLoS ONE 8(4) 2013. <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691" class="external-link">link</a>
-</li>
-<li>Sabia S, van Hees VT, Shipley MJ, Trenell MI, Hagger-Johnson G, Elbaz A, Kivimaki M, Singh-Manoux A. Association between questionnaire- and accelerometer-assessed physical activity: the role of sociodemographic factors. Am J Epidemiol. 2014 Mar 15;179(6):781-90. doi: 10.1093/aje/kwt330. Epub 2014 Feb 4. PMID: 24500862 <a href="https://pubmed.ncbi.nlm.nih.gov/24500862/" class="external-link">link</a>
-</li>
-</ol>
-<p>If you used the <strong>auto-calibration functionality</strong> then also cite:</p>
-<ol start="4" style="list-style-type: decimal">
-<li>van Hees VT, Fang Z, et al. Auto-calibration of accelerometer data for free-living physical activity assessment using local gravity and temperature: an evaluation on four continents. J Appl Physiol 2014. <a href="https://doi.org/10.1152/japplphysiol.00421.2014" class="external-link">link</a>
-</li>
-</ol>
-<p>If you used the <strong>sleep detection</strong> then also cite:</p>
-<ol start="5" style="list-style-type: decimal">
-<li>van Hees VT, Sabia S, et al. A novel, open access method to assess sleep duration using a wrist-worn accelerometer, PLoS ONE, 2015 <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0142533" class="external-link">link</a>
-</li>
-</ol>
-<p>If you used the <strong>sleep detection without relying on sleep diary</strong> then also cite:</p>
-<ol start="6" style="list-style-type: decimal">
-<li>van Hees VT, Sabia S, et al. Estimating sleep parameters using an accelerometer without sleep diary. Scientific Reports 2018. doi: 10.1038/s41598-018-31266-z. <a href="https://www.nature.com/articles/s41598-018-31266-z" class="external-link">link</a>
-</li>
-</ol>
-<p>If you used the <strong>sleep regularity index</strong> then also cite:</p>
-<ol start="7" style="list-style-type: decimal">
-<li>Andrew J. K. Phillips, William M. Clerx, et al. Irregular sleep/wake patterns are associated with poorer academic performance and delayed circadian and sleep/wake timing. Scientific Reports. 2017 June 12 <a href="https://www.nature.com/articles/s41598-017-03171-4" class="external-link">link</a>.</li>
-</ol>
-</div>
+  <main id="main" class="col-md-9"><br><center>
+<img src="articles/GGIR-MASTERLOGO-RGB.png" alt="GGIR" width="90%">
+</center>
+<p><br></p>
+<p><a href="https://CRAN.R-project.org/package=GGIR" class="external-link"><strong>GGIR</strong></a> is a widely used R-package designed for the processing of multi-day <strong>raw accelerometer data</strong>, specifically tailored for applications in physical activity, sleep, and circadian rhythm research.</p>
+<p>The term <strong><em>raw</em></strong> refers to data being expressed in m/s<sup>2</sup> or gravitational acceleration, as opposed to the previous generation accelerometers which stored data in brand-specific units aggregated per time interval, referred to as epochs, and typically lasting between 1 and 60 seconds. In contrast, raw data accelerometry typically collects that with 10 to 100 values per second. GGIR can handle a variety of file formats from various sensor brands.</p>
 <div class="section level2">
 <h2 id="images-usage">Images usage<a class="anchor" aria-label="anchor" href="#images-usage"></a>
 </h2>

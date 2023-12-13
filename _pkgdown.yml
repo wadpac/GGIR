@@ -35,9 +35,6 @@ navbar:
     installation:
       text: Installation
       href: articles/chapter0_Installation.html
-    contributing:
-      text: Contributing
-      href: CONTRIBUTING.html
     help:
       text: Need help?
       href: articles/chapter0_Support.html
@@ -45,7 +42,7 @@ navbar:
       icon: fa-twitter
       href: https://twitter.com/RpackageGGIR
       aria-label: Twitter
-    articles:
+    chapters:
       text: Chapters
       menu:
         - text: 1. The GGIR pipeline
@@ -70,7 +67,7 @@ navbar:
           href: articles/chapterInProgress.html
   
   structure:
-    left:  [installation, intro, contributing, articles, news, help]
+    left:  [installation, intro, chapters, news, help]
     right: [search, github, twitter]
 
 news:
