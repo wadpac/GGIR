@@ -194,7 +194,7 @@ g.plot = function(IMP, M, I, durplot) {
     plot(timeline, M$metalong$nonwearscore, type = "s",
          xlab = "", ylab = "Non-wear score", axes = F,
          lwd = 0.1, xlim = c(0,durplot), ylim = c(0, 3), cex.lab = 0.8)
-    axis(side = 2,at = c(0, 1, 2, 3), cex.axis = 0.8)
+    axis(side = 2,at = c(0, 1, 2, 3), cex.axis = 0.8, las = 1)
   }
   # plot data
   if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA)) {
@@ -211,7 +211,7 @@ g.plot = function(IMP, M, I, durplot) {
          xlim = c(0, durplot), ylim = c(20,35), cex.lab = 0.8)
     abline(h = 20, col = "black", lwd = 1, lty = 2)
     abline(h = 35, col = "black", lwd = 1, lty = 2)
-    axis(side = 2,at = c(20,35), cex.axis = 0.8)
+    axis(side = 2,at = c(20,35), cex.axis = 0.8, las = 1)
   } else {
     # Recordings without temperature
     par(fig = c(0, 1, 0, 0.80), new = T)
