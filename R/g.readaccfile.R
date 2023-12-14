@@ -16,12 +16,6 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     params_rawdata = params$params_rawdata
     params_general = params$params_general
   }
-  # function wrapper to read blocks of accelerationd data from various brands
-  # the code identifies which accelerometer brand and data format it is
-  # blocksize = number of pages to read at once
-  # blocknumber = block count relative to beginning of measurement
-  # sf = sample frequency (Hertz)
-  # ws = large window size (default 3600 seconds)
   
   switchoffLD = 0
   I = inspectfileobject
