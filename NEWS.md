@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.0-3
+
+- Part 1: Fix bug where on machines with GMT timezone and R >= 4.3.0, for GENEActiv .bin files, the starting timestamps of M$metalong and M$metashort were truncated to midninght #1000
+
 # CHANGES IN GGIR VERSION 3.0-2
 
 - Part 2: Fix bug that caused part 2 to struggle with corrupt ActiGraph .gt3x files #972
