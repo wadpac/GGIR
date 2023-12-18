@@ -24,41 +24,44 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
   dformat = I$dformc
   sf = I$sf
   
-  P = c()
-  updatepageindexing = function(startpage = c(), deltapage = c(), blocknumber = c(), PreviousEndPage = c(),
-                                mon = c(), dformat = c()) {
-    # This function ensures that startpage is only specified for blocknumber 1.
-    # The next time (blocknumber > 1) the startpage will be derived from the previous
-    # endpage and the blocksize.
-    if (blocknumber != 1 & length(PreviousEndPage) != 0) {
-      # if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) || dformat == FORMAT$CSV) {  # change this line as the csv data do not need to skip one more row (the skip argument in read.csv does not include this row of the dataset)
-      if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) || dformat == FORMAT$GT3X) {
-        # only in GENEActiv binary data and for gt3x format data
-        # page selection is defined from start to end (including end)
-        startpage = PreviousEndPage + 1
-      } else {
-        # for other monitor brands and data formats
-        # page selection is defined from start to end (excluding end itself)
-        # so start page of one block equals the end page of previous block
-        startpage = PreviousEndPage
-      }
-    }
-    endpage = startpage + deltapage
-    return(list(startpage = startpage, endpage = endpage))
-  }
-
   if ((mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) ||
       (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) || 
-      (mon == MONITOR$AD_HOC && dformat == FORMAT$AD_HOC_CSV)) {
+      dformat == FORMAT$AD_HOC_CSV) {
     blocksize = blocksize * 300
   }
 
-  if (mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) {
-    startpage = blocksize * (blocknumber - 1) + 1 # GENEActiv starts with page 1
-    UPI = updatepageindexing(startpage = startpage, deltapage = blocksize,
-                             blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
-    startpage = UPI$startpage;    endpage = UPI$endpage
-    
+  startpage = blocksize * (blocknumber - 1)
+
+  if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) ||
+      (mon == MONITOR$MOVISENS && dformat == FORMAT$BIN) ||
+      dformat == FORMAT$GT3X ||
+      dformat == FORMAT$AD_HOC_CSV) {
+    startpage = startpage + 1 # pages are numbered starting with page 1
+  } else if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) {
+    headerlength = 10
+    startpage = startpage + headerlength
+  }
+
+  # startpage should only be specified for blocknumber 1.
+  # The next time (blocknumber > 1) the startpage will be derived from the previous
+  # endpage and the blocksize.
+  if (blocknumber != 1 && length(PreviousEndPage) != 0) {
+    if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) || dformat == FORMAT$GT3X) {
+      # only in GENEActiv binary data and for gt3x format data
+      # page selection is defined from start to end (including end)
+      startpage = PreviousEndPage + 1
+    } else {
+      # for other monitor brands and data formats
+      # page selection is defined from start to end (excluding end itself)
+      # so start page of one block equals the end page of previous block
+      startpage = PreviousEndPage
+    }
+  }
+  endpage = startpage + blocksize
+
+  P = c()
+
+  if (mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) {    
     try(expr = {P = GGIRread::readGENEActiv(filename = filename, start = startpage,
                                             end = endpage, desiredtz = params_general[["desiredtz"]],
                                             configtz = params_general[["configtz"]])}, silent = TRUE)
@@ -91,14 +94,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       }
     }
     #===============
-  } else if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) {
-    headerlength = 10
-    #--------------
-    startpage = headerlength + (blocksize * (blocknumber - 1))
-    UPI = updatepageindexing(startpage = startpage, deltapage = blocksize,
-                             blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
-    startpage = UPI$startpage;    endpage = UPI$endpage
-    
+  } else if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) {    
     # load rows 11:13  to investigate whether the file has a header
     # invisible because R complains about poor Actigraph file format,
     # this is an an ActiGraph problem not a GGIR problem, so we ignore it
@@ -184,10 +180,6 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       }
     }
     
-    startpage = blocksize * (blocknumber - 1)
-    UPI = updatepageindexing(startpage = startpage, deltapage = blocksize,
-                             blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
-    startpage = UPI$startpage;    endpage = UPI$endpage
     P = apply_readAxivity(bstart = startpage, bend = endpage)
     if (length(P) > 1) { # data reading succesful
       if (length(P$data) == 0) { # too short?
@@ -249,18 +241,11 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       }
     }
   } else if (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) {
-    freadheader = FALSE
-    headerlength = 0
-    startpage = (headerlength + (blocksize * (blocknumber - 1)))
-    UPI = updatepageindexing(startpage = startpage, deltapage = blocksize,
-                             blocknumber = blocknumber,
-                             PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
-    startpage = UPI$startpage;    endpage = UPI$endpage
     try(expr = {
       P = as.data.frame(
         data.table::fread(filename, nrows = blocksize,
                           skip = startpage,
-                          dec = decn, showProgress = FALSE, header = freadheader),
+                          dec = decn, showProgress = FALSE, header = FALSE),
         stringsAsFactors = TRUE)
     }, silent = TRUE)
     if (length(P) > 1) {
@@ -295,10 +280,6 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       P = c()
     }
   } else if (mon == MONITOR$MOVISENS && dformat == FORMAT$BIN) {
-    startpage = blocksize * (blocknumber - 1) + 1
-    UPI = updatepageindexing(startpage = startpage, deltapage = blocksize,
-                             blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
-    startpage = UPI$startpage;    endpage = UPI$endpage
     file_length = unisensR::getUnisensSignalSampleCount(dirname(filename), "acc.bin")
     if (endpage > file_length) {
       endpage = file_length
@@ -314,10 +295,6 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       filequality$filetooshort = TRUE
     }
   } else if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$GT3X) {
-    startpage = blocksize * (blocknumber - 1) + 1
-    UPI = updatepageindexing(startpage = startpage, deltapage = blocksize,
-                             blocknumber = blocknumber, PreviousEndPage = PreviousEndPage, mon = mon, dformat = dformat)
-    startpage = UPI$startpage;    endpage = UPI$endpage
     P = try(expr = {as.data.frame(read.gt3x::read.gt3x(path = filename, batch_begin = startpage,
                                                        batch_end = endpage,asDataFrame = TRUE))}, silent = TRUE)
     if (length(P) == 0 | inherits(P, "try-error") == TRUE) { # too short or not data at all
@@ -331,11 +308,6 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       } # If data passes these checks then it is usefull
     }
   } else if (mon == MONITOR$AD_HOC && dformat == FORMAT$AD_HOC_CSV) { # user-specified csv format
-    startpage = blocksize * (blocknumber - 1) + 1
-    UPI = updatepageindexing(startpage = startpage,deltapage = blocksize,
-                             blocknumber = blocknumber,PreviousEndPage = PreviousEndPage,
-                             mon = mon, dformat = dformat)
-    startpage = UPI$startpage;    endpage = UPI$endpage
     try(expr = {P = read.myacc.csv(rmc.file = filename,
                                    rmc.nrow = blocksize, rmc.skip = startpage,
                                    rmc.dec = params_rawdata[["rmc.dec"]],
