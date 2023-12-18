@@ -17,7 +17,6 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     params_general = params$params_general
   }
   
-  switchoffLD = 0
   I = inspectfileobject
   mon = I$monc
   if (mon == MONITOR$VERISENSE) mon = MONITOR$ACTIGRAPH
@@ -60,6 +59,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
   endpage = startpage + blocksize
 
   P = c()
+  switchoffLD = 0
 
   if (mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) {    
     try(expr = {P = GGIRread::readGENEActiv(filename = filename, start = startpage,
@@ -88,7 +88,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       }
     }
     if (length(P) > 0) { #check whether there is enough data
-      if (nrow(P$data.out) < ((sf * ws * 2) + 1) & blocknumber == 1) {
+      if (blocknumber == 1 && nrow(P$data.out) < (sf * ws * 2 + 1)) {
         P = c();  switchoffLD = 1
         filequality$filetooshort = TRUE
       }
@@ -141,7 +141,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       } else {
         P = data.matrix(P[, 2:ncol(P)]) # avoid timestamp column
       }
-      if (nrow(P) < ((sf * ws * 2) + 1) & blocknumber == 1) {
+      if (blocknumber == 1 && nrow(P) < (sf * ws * 2 + 1)) {
         P = c() ; switchoffLD = 1
         filequality$filetooshort = TRUE
       }
@@ -186,7 +186,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
         P = c() ; switchoffLD = 1
         if (blocknumber == 1) filequality$filetooshort = TRUE
       } else {
-        if (nrow(P$data) < ((sf * ws * 2) + 1)) {
+        if (nrow(P$data) < (sf * ws * 2 + 1)) {
           P = c() ; switchoffLD = 1
           if (blocknumber == 1) filequality$filetooshort = TRUE
         }
@@ -219,7 +219,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
             P = c() ; switchoffLD = 1
             if (blocknumber == 1) filequality$filetooshort = TRUE
           } else {
-            if (nrow(P$data) < ((sf * ws * 2) + 1)) {
+            if (nrow(P$data) < (sf * ws * 2 + 1)) {
               P = c() ; switchoffLD = 1
               if (blocknumber == 1) filequality$filetooshort = TRUE
             } else {
@@ -249,7 +249,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
         stringsAsFactors = TRUE)
     }, silent = TRUE)
     if (length(P) > 1) {
-      if (nrow(P) < ((sf * ws * 2) + 1) & blocknumber == 1) {
+      if (blocknumber == 1 && nrow(P) < (sf * ws * 2 + 1)) {
         P = c() ; switchoffLD = 1 #added 30-6-2012
         filequality$filetooshort = TRUE
       }
@@ -289,7 +289,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                          startIndex = startpage,
                                          endIndex = endpage)
     P = as.matrix(P)
-    if (nrow(P) < ((sf * ws * 2) + 1) & blocknumber == 1) {
+    if (blocknumber == 1 && nrow(P) < (sf * ws * 2 + 1)) {
       P = c()
       switchoffLD = 1
       filequality$filetooshort = TRUE
@@ -299,10 +299,12 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                                        batch_end = endpage,asDataFrame = TRUE))}, silent = TRUE)
     if (length(P) == 0 | inherits(P, "try-error") == TRUE) { # too short or not data at all
       P = c() ; switchoffLD = 1
-      if (blocknumber == 1) filequality$filetooshort = TRUE
-      if (blocknumber == 1) filequality$filecorrupt = TRUE
+      if (blocknumber == 1) {
+        filequality$filetooshort = TRUE
+        filequality$filecorrupt = TRUE
+      }
     } else {
-      if (nrow(P) < ((sf * ws * 2) + 1)) {
+      if (nrow(P) < (sf * ws * 2 + 1)) {
         P = c() ; switchoffLD = 1
         if (blocknumber == 1) filequality$filetooshort = TRUE
       } # If data passes these checks then it is usefull
@@ -346,7 +348,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     if (length(sf) == 0) sf = params_rawdata[["rmc.sf"]]
     if (length(P) == 4) { # added PreviousLastValue and PreviousLastTime as output of read.myacc.csv
       # P = as.matrix(P) # turned off 21-5-2019
-      if (nrow(P$data) < ((sf * ws * 2) + 1) & blocknumber == 1) {
+      if (blocknumber == 1 && nrow(P$data) < (sf * ws * 2 + 1)) {
         P = c() ; switchoffLD = 1 #added 30-6-2012
         filequality$filetooshort = TRUE
       }
