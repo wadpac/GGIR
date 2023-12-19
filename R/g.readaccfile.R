@@ -116,10 +116,9 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
 
     # skip 1 more row only if the file has a header. Only the first chunk of data can have a header.
     if (blocknumber == 1) {
-      testheader =  quiet(as.data.frame(data.table::fread(filename, nrows = 2, skip = 10,
-                                                          dec = decn, showProgress = FALSE,
-                                                          header = TRUE),
-                                                          stringsAsFactors = FALSE))
+      testheader =  quiet(data.table::fread(filename, nrows = 2, skip = 10,
+                                            dec = decn, showProgress = FALSE,
+                                            header = TRUE, data.table=FALSE, stringsAsFactors=FALSE))
       if (suppressWarnings(is.na(as.numeric(colnames(testheader)[1])))) { # first value is *not* a number, so file starts with a header
         startpage = startpage + 1
         endpage = endpage + 1
@@ -128,11 +127,10 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     
     #--------------
     try(expr = {
-      P = quiet(as.data.frame(
-        data.table::fread(filename, nrows = blocksize,
-                          skip = startpage,
-                          dec = decn, showProgress = FALSE, header = FALSE),  # header should always be FALSE to prevent that acceleration values are taken as header when reading chunks 2 onwards
-        stringsAsFactors = TRUE))
+      P = quiet(data.table::fread(filename, nrows = blocksize, skip = startpage,
+                                  dec = decn, showProgress = FALSE,
+                                  header = FALSE, # header should always be FALSE to prevent that acceleration values are taken as header when reading chunks 2 onwards
+                                  data.table=FALSE, stringsAsFactors=TRUE))
     }, silent = TRUE)
     if (length(P) > 1) {
       # data.matrix turnes num to char if there are missing values.
@@ -242,11 +240,10 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     }
   } else if (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) {
     try(expr = {
-      P = as.data.frame(
-        data.table::fread(filename, nrows = blocksize,
-                          skip = startpage,
-                          dec = decn, showProgress = FALSE, header = FALSE),
-        stringsAsFactors = TRUE)
+      P = data.table::fread(filename, nrows = blocksize,
+                            skip = startpage,
+                            dec = decn, showProgress = FALSE, header = FALSE,
+                            data.table=FALSE, stringsAsFactors = TRUE)
     }, silent = TRUE)
     if (length(P) > 1) {
       if (blocknumber == 1 && nrow(P) < (sf * ws * 2 + 1)) {
