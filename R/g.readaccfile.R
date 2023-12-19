@@ -136,7 +136,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                   data.table=FALSE, stringsAsFactors=TRUE))
     }, silent = TRUE)
     if (length(P) > 1) {
-      # data.matrix turnes num to char if there are missing values.
+      # use data.matrix because as.matrix turned num to char if there are missing values.
       if (ncol(P) == 3) {
         P = data.matrix(P)
       } else {
