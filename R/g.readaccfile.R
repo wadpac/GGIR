@@ -87,8 +87,11 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
         P = c() #just no data in this last block
       }
     }
-    if (length(P) > 0) { #check whether there is enough data
-      if (blocknumber == 1 && nrow(P$data.out) < (sf * ws * 2 + 1)) {
+    if (length(P) > 0) {
+      names(P)[names(P) == "data.out"] = "data"
+
+      #check whether there is enough data
+      if (blocknumber == 1 && nrow(P$data) < (sf * ws * 2 + 1)) {
         P = c();  switchoffLD = 1
         filequality$filetooshort = TRUE
       }

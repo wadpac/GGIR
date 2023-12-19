@@ -267,7 +267,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
       
       if (mon == MONITOR$GENEACTIV  && dformat == FORMAT$BIN) {
-        data = P$data.out
+        data = P$data
       } else if (dformat == FORMAT$CSV) { #csv (Actigraph or ad-hoc csv format)
         if (params_rawdata[["imputeTimegaps"]] == TRUE) {
           P = as.data.frame(P)

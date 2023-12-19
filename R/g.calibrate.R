@@ -122,7 +122,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
     #process data as read from binary file
     if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
       if (mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) {
-        data = P$data.out
+        data = P$data
       } else if (dformat == FORMAT$CSV || mon == MONITOR$MOVISENS) {
         data = as.matrix(P)
       } else if (dformat == FORMAT$CWA) {

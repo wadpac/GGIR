@@ -5,7 +5,7 @@ g.getstarttime = function(datafile, P, header, mon, dformat, desiredtz, configtz
     starttime = P$data[1,1]
     starttime = as.POSIXlt(starttime, tz = desiredtz, origin = "1970-01-01")
   } else if (mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) {
-    starttime = as.POSIXlt(P$data.out$time[1], tz = desiredtz, origin = "1970-01-01")
+    starttime = as.POSIXlt(P$data$time[1], tz = desiredtz, origin = "1970-01-01")
   } else if (dformat == FORMAT$CSV && (mon == MONITOR$ACTIGRAPH || mon == MONITOR$AXIVITY || mon == MONITOR$VERISENSE)) {
     if (mon == MONITOR$ACTIGRAPH || mon == MONITOR$VERISENSE) {
       tmph = read.csv(datafile, nrow = 8, skip = 1)

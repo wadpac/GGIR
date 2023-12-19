@@ -90,7 +90,7 @@ test_that("g.readaccfile and g.inspectfile can read gt3x, cwa, and actigraph csv
   
   # As of R 4.0, an extra header row is extracted, which affects the positioning of the values.
   # expect_equal(as.numeric(as.character(wav_read$P$header$hvalues[7])),17) 
-  expect_equal(round(sum(GA_read$P$data.out[, 2:4]), digits = 2), -467.59)
+  expect_equal(round(sum(GA_read$P$data[, 2:4]), digits = 2), -467.59)
   # print(GA_read$P$header)
   # expect_equal(as.character(unlist(GA_read$P$header[3, 1])), "216 Hours")
   
