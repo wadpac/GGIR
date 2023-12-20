@@ -724,7 +724,14 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   if (filecorrupt == FALSE & filetooshort == FALSE & filedoesnotholdday == FALSE) {
     cut = count:nrow(metashort)
     if (length(cut) > 1) {
-      metashort = as.matrix(metashort[-cut,])
+      tmp = metashort[-cut,]
+      # for a very small file, there could be just one row in metashort[-cut,], so it gets coerced to a vector.
+      # But what we actually need is a 1-row matrix. So we need to transpose it. 
+      if(is.vector(tmp)) { 
+        metashort = as.matrix(t(tmp))
+      } else {
+        metashort = as.matrix(tmp)
+      }
     }
     if (nrow(metashort) > 1) {
       starttime3 = round(as.numeric(starttime)) #numeric time but relative to the desiredtz
@@ -737,9 +744,16 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       time6 = strftime(time6, format = "%Y-%m-%dT%H:%M:%S%z")
       metashort[,1] = as.character(time6)
     }
-    cut2 = (count2):nrow(metalong) # how it was
+    cut2 = count2:nrow(metalong)
     if (length(cut2) > 1) {
-      metalong = as.matrix(metalong[-cut2,])
+      tmp = metalong[-cut2,]
+      # for a very small file, there could be just one row in metalong[-cut2,], so it gets coerced to a vector.
+      # But what we actually need is a 1-row matrix. So we need to transpose it. 
+      if(is.vector(tmp)) { 
+        metalong = as.matrix(t(tmp))
+      } else {
+        metalong = as.matrix(tmp)
+      }
     }
     if (nrow(metalong) > 2) {
       starttime4 = round(as.numeric(starttime)) #numeric time but relative to the desiredtz
