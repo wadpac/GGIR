@@ -148,7 +148,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
     outputfinal$window_number = as.numeric(gsub(" ", "", outputfinal$window_number))
     # outputfinal_segments = outputfinal[which(!outputfinal$window %in% c("MM", "WW")),]
     # outputfinal = outputfinal[which(outputfinal$window %in% c("MM", "WW")),]
-    outputfinal = outputfinal[order(outputfinal$window_number, outputfinal$window, outputfinal$filename), ]
+    outputfinal = outputfinal[order(outputfinal$filename, outputfinal$window_number, outputfinal$window), ]
 
     # split results to different spreadsheets in order to minimize individual
     # filesize and to ease organising dataset
