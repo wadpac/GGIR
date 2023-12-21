@@ -108,7 +108,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       invisible(force(x))
     }
 
-    op <- options(stringsAsFactors = FALSE)
+    op <- options(warn = -1) #turn off warnings
     on.exit(options(op))
     options(warn = -1) # turn off warnings
     suppressWarnings(expr = {decn = g.dotorcomma(filename, dformat, mon,
