@@ -113,8 +113,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     options(warn = -1) # turn off warnings
     suppressWarnings(expr = {decn = g.dotorcomma(filename, dformat, mon,
                                                  desiredtz = params_general[["desiredtz"]],
-                                                 rmc.dec = params_rawdata[["rmc.dec"]],
-                                                 loadGENEActiv = params_rawdata[["loadGENEActiv"]])}) # detect dot or comma dataformat
+                                                 rmc.dec = params_rawdata[["rmc.dec"]])}) # detect dot or comma dataformat
     options(warn = 0) #turn on warnings
 
     # skip 1 more row only if the file has a header. Only the first chunk of data can have a header.

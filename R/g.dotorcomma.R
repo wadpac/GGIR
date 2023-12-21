@@ -1,4 +1,4 @@
-g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", loadGENEActiv = "GGIRread", ...) {
+g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", ...) {
   #get input variables (relevant when read.myacc.csv is used)
   input = list(...)
   decn = getOption("OutDec") # extract system decimal separator

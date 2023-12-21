@@ -9,7 +9,7 @@
   should be interpretted
 }
 \usage{
-  g.dotorcomma(inputfile,dformat,mon, desiredtz = "", loadGENEActiv = "GGIRread", ...)
+  g.dotorcomma(inputfile,dformat,mon, desiredtz = "", ...)
 }
 \arguments{
   \item{inputfile}{
@@ -25,9 +25,6 @@
   }
   \item{desiredtz}{
     Desired timezone, see documentation \link{g.getmeta}
-  }
-  \item{loadGENEActiv}{
-    See \link{GGIR}
   }
   \item{...}{
     Any input arguments needed for function \link{read.myacc.csv} if you
