@@ -119,8 +119,6 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
         out = base::merge(tmp, out, all = TRUE)
       }
       if (length(tail_expansion_log) != 0) {
-        # col2na = grep(pattern = "spt|sleeplog_used",
-        #               x = names(out), value = FALSE)
         col2na = grep(pattern = paste0("sleep_efficiency|N_atleast5minwakenight|daysleeper|",
                                        "daysleeper|sleeplog_used|_spt_sleep|_spt_wake"),
                       x = names(out), value = FALSE)
@@ -146,8 +144,6 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
     
     # order data.frame
     outputfinal$window_number = as.numeric(gsub(" ", "", outputfinal$window_number))
-    # outputfinal_segments = outputfinal[which(!outputfinal$window %in% c("MM", "WW")),]
-    # outputfinal = outputfinal[which(outputfinal$window %in% c("MM", "WW")),]
     outputfinal = outputfinal[order(outputfinal$filename, outputfinal$window_number, outputfinal$window), ]
 
     # split results to different spreadsheets in order to minimize individual
