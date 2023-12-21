@@ -34,7 +34,7 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
     if (nightsi[1] == 1) {
       wi = wi + 1
       # add extra nightsi to get the last day processed (as wi has been increased by 1)
-      nightsi = c(nightsi, nightsi[length(nightsi)] + (24*(60/epochSize) * 60) - 1)
+      nightsi = c(nightsi, nightsi[length(nightsi)] + (24*(60/epochSize) * 60))
     }
     if (length(nightsi) >= wi) {
       if (wi == 1) {
