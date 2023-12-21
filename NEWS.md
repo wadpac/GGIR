@@ -1,5 +1,7 @@
 # CHANGES IN GGIR VERSION 3.0-3
 
+- Part 2: Fix bug where data_quality_report.csv contained incorrect filehealth[...] values whenever some of these values were supposed to be blank #1003
+
 - Part 1: Fix bug where on machines with GMT timezone and R >= 4.3.0, for GENEActiv .bin files, the starting timestamps of M$metalong and M$metashort were truncated to midninght #1000
 
 # CHANGES IN GGIR VERSION 3.0-2
