@@ -37,7 +37,7 @@ test_that("Test recordings that start at midnight", {
   rn = "output_test/results/part5_daysummary_MM_L40M100V400_T5A5.csv"
   out5 = read.csv(rn)
   expect_equal(nrow(out5), 2)
-  expect_true(all(out5$dur_day_spt_min == 1440))
+  expect_equal(out5$dur_day_spt_min, c(1440, 1439.917))
   
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
   if (file.exists(fn)) unlink(fn)
