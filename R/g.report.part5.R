@@ -148,8 +148,8 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
     outputfinal$window_number = as.numeric(gsub(" ", "", outputfinal$window_number))
     # outputfinal_segments = outputfinal[which(!outputfinal$window %in% c("MM", "WW")),]
     # outputfinal = outputfinal[which(outputfinal$window %in% c("MM", "WW")),]
-    outputfinal = outputfinal[order(outputfinal$filename, outputfinal$window, outputfinal$window_number),]
-    
+    outputfinal = outputfinal[order(outputfinal$window_number, outputfinal$window, outputfinal$filename), ]
+
     # split results to different spreadsheets in order to minimize individual
     # filesize and to ease organising dataset
     uwi = as.character(unique(outputfinal$window))
@@ -475,7 +475,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   }
                   OF3tmp = OF3[, columns2keep]
                   foo34 = function(df,aggPerIndividual,nameold,namenew,cval,window) {
-                    # function to help with calculating additinal variables
+                    # function to help with calculating additional variables
                     # related to counting how many days of measurement there are
                     # that meet a certain criteria
                     # cval is a vector with 0 and 1, indicating whether the criteria is met
