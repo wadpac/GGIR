@@ -24,10 +24,10 @@ test_that("g.readaccfile and g.inspectfile can read gt3x, cwa, and actigraph csv
                            dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
                            PreviousEndPage = 1, inspectfileobject = Icsv,
                            params_rawdata = params_rawdata)
-  expect_equal(nrow(csv_read$P), 3000)
+  expect_equal(nrow(csv_read$P$data), 3000)
   expect_false(csv_read$filequality$filecorrupt)
   expect_false(csv_read$filequality$filetooshort)
-  expect_equal(sum(csv_read$P), 3151.11, tolerance = .01, scale = 1)
+  expect_equal(sum(csv_read$P$data), 3151.11, tolerance = .01, scale = 1)
 
   cwafile  = system.file("testfiles/ax3_testfile.cwa", package = "GGIRread")[1]
   GAfile  = system.file("testfiles/GENEActiv_testfile.bin", package = "GGIRread")[1]
