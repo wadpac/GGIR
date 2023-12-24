@@ -151,31 +151,25 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
   } else if (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) {
     if (utils::packageVersion("GGIRread") < "0.3.0") {
       # ignore frequency_tol parameter
-      apply_readAxivity = function(fname = filename,
-                                   bstart, bend,
-                                   desiredtz = params_general[["desiredtz"]],
-                                   configtz = params_general[["configtz"]],
-                                   interpolationType = params_rawdata[["interpolationType"]],
-                                   frequency_tol = params_rawdata[["frequency_tol"]]) {
-        try(expr = {P = GGIRread::readAxivity(filename = fname, start = bstart,
-                                              end = bend, progressBar = FALSE, desiredtz = desiredtz,
-                                              configtz = configtz,
-                                              interpolationType = interpolationType)}, silent = TRUE)
+      apply_readAxivity = function(bstart, bend) {
+        try(expr = {P = GGIRread::readAxivity(filename = filename, start = bstart, end = bend,
+                                              progressBar = FALSE,
+                                              desiredtz = params_general[["desiredtz"]],
+                                              configtz = params_general[["configtz"]],
+                                              interpolationType = params_rawdata[["interpolationType"]])
+            }, silent = TRUE)
         return(P)
       }
     } else {
       # pass on frequency_tol parameter to GGIRread::readAxivity function
-      apply_readAxivity = function(fname = filename,
-                                   bstart, bend,
-                                   desiredtz = params_general[["desiredtz"]],
-                                   configtz = params_general[["configtz"]],
-                                   interpolationType = params_rawdata[["interpolationType"]],
-                                   frequency_tol = params_rawdata[["frequency_tol"]]) {
-        try(expr = {P = GGIRread::readAxivity(filename = filename, start = bstart,
-                                              end = bend, progressBar = FALSE, desiredtz = desiredtz,
-                                              configtz = configtz,
-                                              interpolationType = interpolationType,
-                                              frequency_tol = frequency_tol)}, silent = TRUE)
+      apply_readAxivity = function(bstart, bend) {
+        try(expr = {P = GGIRread::readAxivity(filename = filename, start = bstart, end = bend, 
+                                              progressBar = FALSE,
+                                              desiredtz = params_general[["desiredtz"]],
+                                              configtz = params_general[["configtz"]],
+                                              interpolationType = params_rawdata[["interpolationType"]],
+                                              frequency_tol = params_rawdata[["frequency_tol"]])
+            }, silent = TRUE)
         return(P)
       }
     }
