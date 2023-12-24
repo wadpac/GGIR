@@ -253,8 +253,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
         switchoffLD = 1
       }
       # resample the acceleration data, because AX3 data is stored at irregular time points
-      rawTime = vector(mode = "numeric", nrow(P))
-      rawTime = as.numeric(as.POSIXlt(P[,1],tz = params_general[["desiredtz"]]))
+      rawTime = P[,1]
       rawAccel = as.matrix(P[,2:4])
       step = 1/sf
       start = rawTime[1]
@@ -262,7 +261,6 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       timeRes = seq(start, end, step)
       nr = length(timeRes) - 1
       timeRes = as.vector(timeRes[1:nr])
-      accelRes = matrix(0,nrow = nr, ncol = 3, dimnames = list(NULL, c("x", "y", "z")))
       # at the moment the function is designed for reading the r3 acceleration channels only,
       # because that is the situation of the use-case we had.
       rawLast = nrow(rawAccel)
