@@ -239,33 +239,32 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     }
   } else if (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) {
     try(expr = {
-      P = data.table::fread(filename, nrows = blocksize,
+      rawData = data.table::fread(filename, nrows = blocksize,
                             skip = startpage,
                             dec = decn, showProgress = FALSE, header = FALSE,
                             data.table=FALSE, stringsAsFactors=FALSE)
     }, silent = TRUE)
-    if (length(P) > 1) {
-      if (blocknumber == 1 && nrow(P) < (sf * ws * 2 + 1)) {
-        P = c() ; switchoffLD = 1 #added 30-6-2012
+    if (length(rawData) > 1) {
+      if (blocknumber == 1 && nrow(rawData) < (sf * ws * 2 + 1)) {
+        P = c() ; switchoffLD = 1
         filequality$filetooshort = TRUE
+      } else {
+        if (nrow(rawData) < blocksize) { #last block
+          switchoffLD = 1
+        }
+        # resample the acceleration data, because AX3 data is stored at irregular time points
+        rawTime = rawData[,1]
+        rawAccel = as.matrix(rawData[,2:4])
+        step = 1/sf
+        timeRes = seq(rawTime[1], rawTime[length(rawTime)], step)
+        timeRes = timeRes[1 : (length(timeRes) - 1)]
+
+        # at the moment the function is designed for reading the 3 acceleration channels only,
+        # because that is the situation of the use-case we had.
+        accelRes = GGIRread::resample(rawAccel, rawTime, timeRes, nrow(rawAccel), params_rawdata[["interpolationType"]]) # this is now the resampled acceleration data
+        P$data = data.frame(timeRes, accelRes)
+        colnames(P$data) = c("time", "x", "y", "z")
       }
-      if (nrow(P) < (blocksize)) { #last block
-        switchoffLD = 1
-      }
-      # resample the acceleration data, because AX3 data is stored at irregular time points
-      rawTime = P[,1]
-      rawAccel = as.matrix(P[,2:4])
-      step = 1/sf
-      start = rawTime[1]
-      end = rawTime[length(rawTime)]
-      timeRes = seq(start, end, step)
-      nr = length(timeRes) - 1
-      timeRes = as.vector(timeRes[1:nr])
-      # at the moment the function is designed for reading the r3 acceleration channels only,
-      # because that is the situation of the use-case we had.
-      rawLast = nrow(rawAccel)
-      accelRes = GGIRread::resample(rawAccel, rawTime, timeRes, rawLast, params_rawdata[["interpolationType"]]) # this is now the resampled acceleration data
-      P = cbind(timeRes,accelRes)
     } else {
       P = c()
     }
