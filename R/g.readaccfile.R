@@ -254,10 +254,6 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       }
       # resample the acceleration data, because AX3 data is stored at irregular time points
       rawTime = vector(mode = "numeric", nrow(P))
-      if (length(params_general[["desiredtz"]]) == 0 & blocknumber == 1) {
-        cat("Forgot to specify argument desiredtz? Now Europe/London assumed")
-        params_general[["desiredtz"]] = "Europe/London"
-      }
       rawTime = as.numeric(as.POSIXlt(P[,1],tz = params_general[["desiredtz"]]))
       rawAccel = as.matrix(P[,2:4])
       step = 1/sf
