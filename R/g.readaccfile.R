@@ -234,6 +234,9 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
         if (blocknumber == 1) filequality$filecorrupt = TRUE
       }
     }
+    if ("temp" %in% colnames(P$data)) {
+      colnames(P$data)[colnames(P$data) == "temp"] = "temperature"
+    }
   } else if (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) {
     try(expr = {
       P = data.table::fread(filename, nrows = blocksize,
