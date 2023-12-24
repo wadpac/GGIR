@@ -132,8 +132,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     try(expr = {
       P = quiet(data.table::fread(filename, nrows = blocksize, skip = startpage,
                                   dec = decn, showProgress = FALSE,
-                                  header = FALSE, # header should always be FALSE to prevent that acceleration values are taken as header when reading chunks 2 onwards
-                                  data.table=FALSE, stringsAsFactors=TRUE))
+                                  header = FALSE, # header should always be FALSE to prevent acceleration values from being mistaken for header when reading chunks 2 and on
+                                  data.table=FALSE, stringsAsFactors=FALSE))
     }, silent = TRUE)
     if (length(P) > 1) {
       # use data.matrix because as.matrix turned num to char if there are missing values.
@@ -246,7 +246,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       P = data.table::fread(filename, nrows = blocksize,
                             skip = startpage,
                             dec = decn, showProgress = FALSE, header = FALSE,
-                            data.table=FALSE, stringsAsFactors = TRUE)
+                            data.table=FALSE, stringsAsFactors=FALSE)
     }, silent = TRUE)
     if (length(P) > 1) {
       if (blocknumber == 1 && nrow(P) < (sf * ws * 2 + 1)) {
