@@ -1,6 +1,6 @@
 library(GGIR)
 context("g.readaccfile")
-test_that("g.readaccfile and g.inspectfile can read gt3x, cwa, and actigraph csv files correctly", {
+test_that("g.readaccfile and g.inspectfile can read gt3x, cwa, Axivity csv, and actigraph csv files correctly", {
   skip_on_cran()
   
   desiredtz = "Europe/London"
@@ -30,6 +30,8 @@ test_that("g.readaccfile and g.inspectfile can read gt3x, cwa, and actigraph csv
   expect_equal(sum(csv_read$P$data), 3151.11, tolerance = .01, scale = 1)
 
   cwafile  = system.file("testfiles/ax3_testfile.cwa", package = "GGIRread")[1]
+  Ax3CsvFile  = system.file("testfiles/ax3_testfile.csv", package = "GGIR")[1]
+  Ax6CsvFile  = system.file("testfiles/ax6_testfile.csv", package = "GGIR")[1]
   GAfile  = system.file("testfiles/GENEActiv_testfile.bin", package = "GGIRread")[1]
   gt3xfile  = system.file("testfiles/actigraph_testfile.gt3x", package = "GGIR")[1]
   
@@ -45,6 +47,7 @@ test_that("g.readaccfile and g.inspectfile can read gt3x, cwa, and actigraph csv
                     inspectfileobject = Igt3x)
   expect_true(Mgt3x$filetooshort)
   expect_false(Mgt3x$filecorrupt)
+  
   cat("\nAxivity .cwa")
   # axivity .cwa
   Icwa = g.inspectfile(cwafile, desiredtz = desiredtz, params_rawdata = params_rawdata)
@@ -57,7 +60,34 @@ test_that("g.readaccfile and g.inspectfile can read gt3x, cwa, and actigraph csv
                    inspectfileobject = Icwa)
   expect_true(Mcwa$filetooshort)
   expect_false(Mcwa$filecorrupt)
- 
+
+  cat("\nAxivity .csv")
+
+  for (csvData in list(list(Ax3CsvFile, 2881, 2370.08), list(Ax6CsvFile, 2875, 1063.66))) {
+    IAxivityCsv = g.inspectfile(csvData[[1]], desiredtz = desiredtz, params_rawdata = params_rawdata)
+    expect_equal(IAxivityCsv$monc, MONITOR$AXIVITY)
+    expect_equal(IAxivityCsv$dformc, FORMAT$CSV)
+
+    csv_read = g.readaccfile(csvData[[1]], blocksize = 10, blocknumber = 1, filequality = filequality,
+                             dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
+                             PreviousEndPage = 1, inspectfileobject = IAxivityCsv,
+                             params_rawdata = params_rawdata)
+
+    # For both ax3 and ax6 files, we expect 4 columns: timestamp and XYZ.
+    # All gyro data in ax6 files gets ignored.
+    expect_equal(ncol(csv_read$P$data), 4)
+    
+    expect_equal(nrow(csv_read$P$data), csvData[[2]])
+    expect_false(csv_read$filequality$filecorrupt)
+    expect_false(csv_read$filequality$filetooshort)
+    expect_equal(sum(csv_read$P$data[c("x","y","z")]), csvData[[3]], tolerance = .01, scale = 1)
+
+    MAxCsv = g.getmeta(datafile = Ax3CsvFile, desiredtz = desiredtz, windowsize = c(1,300,300),
+                      inspectfileobject = IAxivityCsv)
+    expect_true(MAxCsv$filetooshort)
+    expect_false(MAxCsv$filecorrupt)   
+  }
+
   cat("\nGENEActiv .bin")
   # GENEActiv .bin
   IGA = g.inspectfile(GAfile, desiredtz = desiredtz)
@@ -97,6 +127,6 @@ test_that("g.readaccfile and g.inspectfile can read gt3x, cwa, and actigraph csv
   #also test one small other function:
   datadir  = system.file("testfiles", package = "GGIR")[1]
   fnames = datadir2fnames(datadir = datadir, filelist = FALSE)
-  expect_equal(length(fnames$fnames), 6)
-  expect_equal(length(fnames$fnamesfull), 6)
+  expect_equal(length(fnames$fnames), 8)
+  expect_equal(length(fnames$fnamesfull), 8)
 })
