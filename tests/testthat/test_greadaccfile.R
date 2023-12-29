@@ -43,6 +43,16 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   expect_equal(Igt3x$sf, 30)
   EHV = g.extractheadervars(Igt3x)
   expect_equal(EHV$deviceSerialNumber, "MOS2E39180594_firmware_1.9.2")
+
+  gt3x_read = g.readaccfile(gt3xfile, blocksize = 3000, blocknumber = 1, filequality = filequality,
+                            dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
+                            PreviousEndPage = 1, inspectfileobject = Igt3x,
+                            params_rawdata = params_rawdata)
+  expect_equal(nrow(gt3x_read$P$data), 17640)
+  expect_false(gt3x_read$filequality$filecorrupt)
+  expect_false(gt3x_read$filequality$filetooshort)
+  expect_equal(sum(gt3x_read$P$data[c("x","y","z")]), 2732.35, tolerance = .01, scale = 1)
+
   Mgt3x = g.getmeta(datafile = gt3xfile, desiredtz = desiredtz, windowsize = c(1,300,300),
                     inspectfileobject = Igt3x)
   expect_true(Mgt3x$filetooshort)
@@ -155,6 +165,31 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   expect_false(movisens_read$filequality$filecorrupt)
   expect_false(movisens_read$filequality$filetooshort)
   expect_equal(sum(movisens_read$P$data[c("x","y","z")]), 4385.29, tolerance = .01, scale = 1)
+
+  # ad-hoc csv file
+
+  # create test files: No header, with temperature, with time
+  N = 30
+  sf = 30
+  x = Sys.time()+((0:(N-1))/sf)
+  timestamps = as.POSIXlt(x, origin="1970-1-1", tz = "Europe/London")
+  mydata = data.frame(x = rnorm(N), time = timestamps, y = rnorm(N), z = rnorm(N),
+            temp = rnorm(N) + 20)
+  testfile = "testcsv1.csv"
+  on.exit(if (file.exists(testfile)) file.remove(testfile))
+
+  write.csv(mydata, file= testfile, row.names = FALSE)
+  
+  loadedData = read.myacc.csv(rmc.file=testfile, rmc.nrow=20, rmc.dec=".",
+                      rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
+                      desiredtz = "",
+                      rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time=2,
+                      rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.origin = "1970-01-01")
+  if (file.exists(testfile)) file.remove(testfile)
+
+
+
+
 
   # test decimal separator recognition extraction
   decn =  g.dotorcomma(cwafile,dformat = FORMAT$CWA, mon = MONITOR$AXIVITY, desiredtz = desiredtz)

@@ -290,19 +290,25 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       }, silent = TRUE)
     }
   } else if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$GT3X) {
-    P = try(expr = {read.gt3x::read.gt3x(path = filename, batch_begin = startpage,
-                                                       batch_end = endpage, asDataFrame = TRUE)}, silent = TRUE)
-    if (length(P) == 0 || inherits(P, "try-error") == TRUE) { # too short or not data at all
+    P$data = try(expr = {read.gt3x::read.gt3x(path = filename, batch_begin = startpage,
+                                              batch_end = endpage, asDataFrame = TRUE)}, silent = TRUE)
+    if (length(P$data) == 0 || inherits(P$data, "try-error") == TRUE) { # too short or no data at all
       P = c() ; switchoffLD = 1
       if (blocknumber == 1) {
         filequality$filetooshort = TRUE
         filequality$filecorrupt = TRUE
       }
-    } else {
-      if (nrow(P) < (sf * ws * 2 + 1)) {
-        P = c() ; switchoffLD = 1
-        if (blocknumber == 1) filequality$filetooshort = TRUE
-      } # If data passes these checks then it is usefull
+    } else if (nrow(P$data) < (sf * ws * 2 + 1)) {
+      P = c() ; switchoffLD = 1
+      if (blocknumber == 1) filequality$filetooshort = TRUE
+    } else { # If data passes these checks then it is usefull
+      colnames(P$data)[colnames(P$data) == "X"] = "x"
+      colnames(P$data)[colnames(P$data) == "Y"] = "y"
+      colnames(P$data)[colnames(P$data) == "Z"] = "z"
+
+      # read.gt3x::read.gt3x returns timestamps as POSIXct with GMT timezone, but they are actally in local time of the device.
+      # Convert them to numeric unix timestamps.
+      P$data$time = as.numeric(P$data$time)
     }
   } else if (mon == MONITOR$AD_HOC && dformat == FORMAT$AD_HOC_CSV) { # user-specified csv format
     try(expr = {P = read.myacc.csv(rmc.file = filename,
