@@ -20,7 +20,7 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
 
   create_test_acc_csv()
   filename = "123A_testaccfile.csv"
-  on.exit(if (file.exists(filename)) file.remove(filename))
+  on.exit({if (file.exists(filename)) file.remove(filename)}, add = TRUE)
 
   Icsv = g.inspectfile(filename, desiredtz = desiredtz)
   expect_equal(Icsv$monc, MONITOR$ACTIGRAPH)
@@ -133,11 +133,11 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   cat("\n Movisens")
 
   output_dir = "output_unisensExample"
-  on.exit(if (file.exists(output_dir)) unlink(output_dir, recursive = TRUE))
+  on.exit({if (file.exists(output_dir)) unlink(output_dir, recursive = TRUE)}, add = TRUE)
   if (file.exists(output_dir)) unlink(output_dir, recursive = TRUE)
 
   zip_file = "0.3.4.zip"
-  on.exit(if (file.exists(zip_file)) unlink(zip_file), add = TRUE)
+  on.exit({if (file.exists(zip_file)) unlink(zip_file)}, add = TRUE)
   if (!file.exists(zip_file)) {
     # link to a tagged release of Unisens/unisensR github repo
     movisens_url = "https://github.com/Unisens/unisensR/archive/refs/tags/0.3.4.zip"
@@ -145,7 +145,7 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   }
   
   movisens_dir = "unisensR-0.3.4"
-  on.exit(if (file.exists(movisens_dir)) unlink(movisens_dir, recursive = TRUE), add = TRUE)
+  on.exit({if (file.exists(movisens_dir)) unlink(movisens_dir, recursive = TRUE)}, add = TRUE)
   if (file.exists(movisens_dir)) {
     unlink(movisens_dir, recursive = TRUE)
   }
@@ -169,27 +169,39 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   # ad-hoc csv file
 
   # create test files: No header, with temperature, with time
-  N = 30
+  N = 3000
   sf = 30
   x = Sys.time()+((0:(N-1))/sf)
   timestamps = as.POSIXlt(x, origin="1970-1-1", tz = "Europe/London")
-  mydata = data.frame(x = rnorm(N), time = timestamps, y = rnorm(N), z = rnorm(N),
-            temp = rnorm(N) + 20)
+  mydata = data.frame(Xcol = rnorm(N), timecol = timestamps, Ycol = rnorm(N), Zcol = rnorm(N),
+            tempcol = rnorm(N) + 20)
   testfile = "testcsv1.csv"
-  on.exit(if (file.exists(testfile)) file.remove(testfile))
+  on.exit({if (file.exists(testfile)) file.remove(testfile)}, add = TRUE)
 
-  write.csv(mydata, file= testfile, row.names = FALSE)
-  
-  loadedData = read.myacc.csv(rmc.file=testfile, rmc.nrow=20, rmc.dec=".",
-                      rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
-                      desiredtz = "",
-                      rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time=2,
-                      rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.origin = "1970-01-01")
-  if (file.exists(testfile)) file.remove(testfile)
+  write.csv(mydata, file = testfile, row.names = FALSE)
 
+  AHcsv = g.inspectfile(testfile, 
+                        rmc.dec=".", rmc.sf=30, rmc.unit.time="POSIX",
+                        rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
+                        rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time=2,
+                        rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.origin = "1970-01-01")
 
+  expect_equal(AHcsv$monc, MONITOR$AD_HOC)
+  expect_equal(AHcsv$dformc, FORMAT$AD_HOC_CSV)
+  expect_equal(AHcsv$sf, 30)
 
+  csv_read = g.readaccfile(testfile, blocksize = 3000, blocknumber = 1, filequality = filequality,
+                           dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
+                           PreviousEndPage = 1, inspectfileobject = AHcsv,
+                           rmc.dec=".", rmc.sf=30, rmc.unit.time="POSIX",
+                           rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
+                           rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time=2,
+                           rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.origin = "1970-01-01")
 
+  expect_equal(nrow(csv_read$P$data), 2999)
+  expect_false(csv_read$filequality$filecorrupt)
+  expect_false(csv_read$filequality$filetooshort)
+  expect_equal(sum(csv_read$P$data[c("x","y","z")]), -103.37, tolerance = .01, scale = 1)
 
   # test decimal separator recognition extraction
   decn =  g.dotorcomma(cwafile,dformat = FORMAT$CWA, mon = MONITOR$AXIVITY, desiredtz = desiredtz)
