@@ -17,7 +17,7 @@ g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", ...) {
   if (exists("rmc.dec") == FALSE) rmc.dec = decn
   if (length(rmc.firstrow.acc) == 1) {
     dformat = FORMAT$AD_HOC_CSV
-    mon = MONITOR$MOVISENS
+    mon = MONITOR$AD_HOC
     decn = rmc.dec
   }
   if (dformat == FORMAT$CSV) {
@@ -36,9 +36,7 @@ g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", ...) {
         break
       }
       numtemp = as.numeric(deci[2,2])
-      if (is.na(numtemp) == FALSE) {
-        if (numtemp != 0) break
-      }
+      if (is.na(numtemp) == FALSE && numtemp != 0) break
     }
     if (!exists("deci")) stop("Problem with reading .csv file in GGIR function dotorcomma")
     if (is.na(suppressWarnings(as.numeric(deci[2,2]))) == T & decn == ".") decn = ","
