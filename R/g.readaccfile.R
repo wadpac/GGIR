@@ -38,18 +38,6 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     blocksize = blocksize * 300
   }
 
-  startpage = blocksize * (blocknumber - 1)
-
-  if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) ||
-      (mon == MONITOR$MOVISENS && dformat == FORMAT$BIN) ||
-      dformat == FORMAT$GT3X ||
-      dformat == FORMAT$AD_HOC_CSV) {
-    startpage = startpage + 1 # pages are numbered starting with page 1
-  } else if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) {
-    headerlength = 10
-    startpage = startpage + headerlength
-  }
-
   # startpage should only be specified for blocknumber 1.
   # The next time (blocknumber > 1) the startpage will be derived from the previous
   # endpage and the blocksize.
@@ -63,6 +51,18 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       # page selection is defined from start to end (excluding end itself)
       # so start page of one block equals the end page of previous block
       startpage = PreviousEndPage
+    }
+  } else {
+    startpage = blocksize * (blocknumber - 1)
+
+    if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) ||
+        (mon == MONITOR$MOVISENS && dformat == FORMAT$BIN) ||
+        dformat == FORMAT$GT3X ||
+        dformat == FORMAT$AD_HOC_CSV) {
+      startpage = startpage + 1 # pages are numbered starting with page 1
+    } else if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) {
+      headerlength = 10
+      startpage = startpage + headerlength
     }
   }
   endpage = startpage + blocksize
@@ -348,9 +348,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     }, silent = TRUE)
     if (length(sf) == 0) sf = params_rawdata[["rmc.sf"]]
     if (length(P) == 4) { # added PreviousLastValue and PreviousLastTime as output of read.myacc.csv
-      # P = as.matrix(P) # turned off 21-5-2019
       if (blocknumber == 1 && nrow(P$data) < (sf * ws * 2 + 1)) {
-        P = c() ; switchoffLD = 1 #added 30-6-2012
+        P = c() ; switchoffLD = 1
         filequality$filetooshort = TRUE
       }
     } else {

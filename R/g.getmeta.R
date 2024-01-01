@@ -157,7 +157,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     deviceSerialNumber = hvars$deviceSerialNumber
   }
   # if GENEActiv csv, deprecated function
-  if (mon == MONITOR$GENEACTIV && dformat == FORMAT$CSV & length(params_rawdata[["rmc.firstrow.acc"]]) == 0) {
+  if (mon == MONITOR$GENEACTIV && dformat == FORMAT$CSV && length(params_rawdata[["rmc.firstrow.acc"]]) == 0) {
     stop("The GENEActiv csv reading functionality is deprecated in GGIR from the version 2.6-4 onwards. Please, use either the GENEActiv bin files or try to read the csv files with GGIR::read.myacc.csv")
   }
   if (mon == MONITOR$ACTIGRAPH) {
@@ -366,15 +366,15 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         metricnames_long = c("timestamp","nonwearscore","clippingscore","en")
       } else if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA)) {
         metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","temperaturemean","EN")
-      } else if (mon == MONITOR$MOVISENS || (mon == MONITOR$AD_HOC & use.temp == TRUE)) { 
+      } else if (mon == MONITOR$MOVISENS || (mon == MONITOR$AD_HOC && use.temp == TRUE)) { 
         # at the moment read.myacc.csv does not facilitate extracting light data, so only temperature is used
         metricnames_long = c("timestamp","nonwearscore","clippingscore","temperaturemean","EN")
       }
       rm(SWMT)
       if (exists("P")) rm(P); gc()
-      if (i != 0 & exists("P")) rm(P); gc()
+      if (i != 0 && exists("P")) rm(P); gc()
       LD = nrow(data)
-      if (LD < (ws*sf) & i == 1) {
+      if (LD < (ws*sf) && i == 1) {
         warning('\nWarning data too short for doing non-wear detection 3\n')
         switchoffLD = 1
         LD = 0 #ignore rest of the data and store what has been loaded so far.
@@ -721,7 +721,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     i = i + 1 #go to next block
   }
   # deriving timestamps
-  if (filecorrupt == FALSE & filetooshort == FALSE & filedoesnotholdday == FALSE) {
+  if (filecorrupt == FALSE && filetooshort == FALSE && filedoesnotholdday == FALSE) {
     cut = count:nrow(metashort)
     if (length(cut) > 1) {
       tmp = metashort[-cut,]
