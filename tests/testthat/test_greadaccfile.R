@@ -168,7 +168,8 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
 
   # ad-hoc csv file
 
-  # create test files: No header, with temperature, with time
+  # Create test file: No header, with temperature, with time.
+  # The first row of the file will contain column names.
   N = 3000
   sf = 30
   x = Sys.time()+((0:(N-1))/sf)
@@ -190,18 +191,35 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   expect_equal(AHcsv$dformc, FORMAT$AD_HOC_CSV)
   expect_equal(AHcsv$sf, 30)
 
-  csv_read = g.readaccfile(testfile, blocksize = 3000, blocknumber = 1, filequality = filequality,
+  # Read the file starting with row 1 (rmc.firstrow.acc = 1); this row contains column names.
+  # Verify that full 3000 rows are still read.
+  csv_read = g.readaccfile(testfile, blocksize = 10, blocknumber = 1, filequality = filequality, # blocksize is # of pages of 300 samples
                            dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
                            PreviousEndPage = 1, inspectfileobject = AHcsv,
                            rmc.dec=".", rmc.sf=30, rmc.unit.time="POSIX",
                            rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
                            rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time=2,
                            rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.origin = "1970-01-01")
-
-  expect_equal(nrow(csv_read$P$data), 2999)
+  
+  expect_equal(nrow(csv_read$P$data), 3000)
   expect_false(csv_read$filequality$filecorrupt)
   expect_false(csv_read$filequality$filetooshort)
-  expect_equal(sum(csv_read$P$data[c("x","y","z")]), -103.37, tolerance = .01, scale = 1)
+  expect_equal(sum(csv_read$P$data[c("x","y","z")]), -103.61, tolerance = .01, scale = 1)
+
+  # since the 1st row of the file contains column names, pointing rmc.firstrow.acc 2
+  # should lead to the same eaxt 3000 lines being read (the lines after the column names).
+  csv_read2 = g.readaccfile(testfile, blocksize = 10, blocknumber = 1, filequality = filequality, # blocksize is # of pages of 300 samples
+                           dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
+                           PreviousEndPage = 1, inspectfileobject = AHcsv,
+                           rmc.dec=".", rmc.sf=30, rmc.unit.time="POSIX",
+                           rmc.firstrow.acc = 2, rmc.firstrow.header=c(),
+                           rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time=2,
+                           rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.origin = "1970-01-01")
+
+  expect_equal(nrow(csv_read2$P$data), 3000)
+  expect_false(csv_read2$filequality$filecorrupt)
+  expect_false(csv_read2$filequality$filetooshort)
+  expect_equal(sum(csv_read2$P$data[c("x","y","z")]), sum(csv_read$P$data[c("x","y","z")]), tolerance = .01, scale = 1)
 
   # test decimal separator recognition extraction
   decn =  g.dotorcomma(cwafile,dformat = FORMAT$CWA, mon = MONITOR$AXIVITY, desiredtz = desiredtz)

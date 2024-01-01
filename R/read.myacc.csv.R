@@ -29,25 +29,21 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   if (!is.null(rmc.desiredtz) || !is.null(rmc.configtz)) {
     generalWarning = paste0("Argument rmc.desiredtz and rmc.configtz are scheduled to be deprecated",
                    " and will be replaced by the existing arguments desiredtz and configtz, respectively.")
-    showGeneralWarning = TRUE
+
     # Check if both types of tz are provided:
     if (!is.null(desiredtz) && desiredtz != "" && !is.null(rmc.desiredtz)) {
       if (rmc.desiredtz != desiredtz) { # if different --> error (don't know which one to use)
-        showGeneralWarning = FALSE
         stop(paste0("\n", generalWarning, "Please, specify only desiredtz and set ",
              "rmc.desiredtz to NULL to ensure it is no longer used."))
       }
     }
     if (!is.null(configtz) && !is.null(rmc.configtz)) { # then both provided 
       if (rmc.configtz != configtz) { # if different --> error (don't know which one to use)
-        showGeneralWarning = FALSE
         stop(paste0("\n", generalWarning, "Please, specify only configtz and set ",
              "rmc.configtz to NULL to ensure it is no longer used."))
       }
     }
-    if (showGeneralWarning == TRUE) {
-      warning(paste0("\n", generalWarning))
-    }
+    warning(paste0("\n", generalWarning))
 
     # Until deprecation still allow rmc. to be used, 
     # so use it to overwrite normal tz in this function:
@@ -62,16 +58,18 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                 " and consider specifying configtz."))
   }
   
+  if (is.null(rmc.firstrow.acc) || rmc.firstrow.acc < 1) {
+    rmc.firstrow.acc = 1
+  }
+  skip = rmc.firstrow.acc - 1
+  if (!is.null(rmc.skip) && length(rmc.skip) > 0) {
+    skip = skip + rmc.skip
+  }
+
   # bitrate should be or header item name as character, or the actual numeric bit rate
   # unit.temp can take C(elsius), F(ahrenheit), and K(elvin) and converts it into Celsius
   # Note all argument names start with rmc (read myacc csv) to avoid name clashes when passed on throughout GGIR
   if (length(rmc.firstrow.header) == 0) { # no header block
-    if (rmc.firstrow.acc == 2) {
-      freadheader = TRUE
-    } else {
-      freadheader = FALSE
-    }
-    skip = rmc.firstrow.acc
     sf = rmc.sf
     header = "no header"
   } else {
@@ -121,8 +119,6 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
       colnames(header_tmp2) = NULL
       header = header_tmp2
     }
-    skip = rmc.firstrow.acc - 1
-    freadheader = TRUE
     # assess whether accelerometer data conversion is needed
     if (length(rmc.bitrate) > 0 & length(rmc.dynamic_range) > 0 & rmc.unit.acc == "bit") {
       if (is.character(rmc.bitrate[1]) == TRUE) { # extract bitrate if it is in the header
@@ -153,12 +149,9 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
       row.names(header)[nrow(header)] = "sample_rate"
     }
   }
-  if (length(rmc.skip) > 0) {
-    skip = skip + rmc.skip
-  }
   # read data from file
-  P = data.table::fread(rmc.file,nrows = rmc.nrow, skip = skip,
-                        dec = rmc.dec, showProgress = FALSE, header = freadheader,
+  P = data.table::fread(rmc.file, nrows = rmc.nrow, skip = skip,
+                        dec = rmc.dec, showProgress = FALSE, header = "auto",
                         data.table=FALSE, stringsAsFactors=FALSE)
   
   if (length(configtz) == 0) {
