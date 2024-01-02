@@ -170,7 +170,10 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
 
   # Create test file: No header, with temperature, with time.
   # The first row of the file will contain column names.
-  N = 3000
+  # Have this file contain 6000 samples. We'll read it in 2 sets of 3000 lines,
+  # and if there are any lines unnecessarily skipped, then the second attempt to 
+  # read a block of 3000 will return fewer than 3000 lines.
+  N = 6000
   sf = 30
   x = Sys.time()+((0:(N-1))/sf)
   timestamps = as.POSIXlt(x, origin="1970-1-1", tz = "Europe/London")
@@ -195,7 +198,7 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   # Verify that full 3000 rows are still read.
   csv_read = g.readaccfile(testfile, blocksize = 10, blocknumber = 1, filequality = filequality, # blocksize is # of pages of 300 samples
                            dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
-                           PreviousEndPage = 1, inspectfileobject = AHcsv,
+                           PreviousEndPage = c(), inspectfileobject = AHcsv,
                            rmc.dec=".", rmc.sf=30, rmc.unit.time="POSIX",
                            rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
                            rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time=2,
@@ -204,13 +207,16 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   expect_equal(nrow(csv_read$P$data), 3000)
   expect_false(csv_read$filequality$filecorrupt)
   expect_false(csv_read$filequality$filetooshort)
-  expect_equal(sum(csv_read$P$data[c("x","y","z")]), -103.61, tolerance = .01, scale = 1)
-
+  expect_equal(sum(csv_read$P$data[c("x","y","z")]), -38.90, tolerance = .01, scale = 1)
+  # endpage should be (# of rows read + 1) because for the next block we'll need to skip
+  # not just the rows read but also the row containing column names.
+  expect_equal(csv_read$endpage, 3001)
+  
   # since the 1st row of the file contains column names, pointing rmc.firstrow.acc 2
   # should lead to the same eaxt 3000 lines being read (the lines after the column names).
-  csv_read2 = g.readaccfile(testfile, blocksize = 10, blocknumber = 1, filequality = filequality, # blocksize is # of pages of 300 samples
+  csv_read2 = g.readaccfile(testfile, blocksize = 10, blocknumber = 1, filequality = filequality,
                            dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
-                           PreviousEndPage = 1, inspectfileobject = AHcsv,
+                           PreviousEndPage = c(), inspectfileobject = AHcsv,
                            rmc.dec=".", rmc.sf=30, rmc.unit.time="POSIX",
                            rmc.firstrow.acc = 2, rmc.firstrow.header=c(),
                            rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time=2,
@@ -220,6 +226,29 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   expect_false(csv_read2$filequality$filecorrupt)
   expect_false(csv_read2$filequality$filetooshort)
   expect_equal(sum(csv_read2$P$data[c("x","y","z")]), sum(csv_read$P$data[c("x","y","z")]), tolerance = .01, scale = 1)
+  expect_equal(csv_read2$endpage, 3000)
+
+  # reading the next 3000 lines should also give the same result for rmc.firstrow.acc == 1 or 2.
+  csv_read3 = g.readaccfile(testfile, blocksize = 10, blocknumber = 2, filequality = filequality,
+                           dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
+                           PreviousEndPage = csv_read$endpage, inspectfileobject = AHcsv,
+                           rmc.dec=".", rmc.sf=30, rmc.unit.time="POSIX",
+                           rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
+                           rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time=2,
+                           rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.origin = "1970-01-01")
+
+  expect_equal(nrow(csv_read3$P$data), 3000)
+
+  csv_read4 = g.readaccfile(testfile, blocksize = 10, blocknumber = 2, filequality = filequality,
+                           dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
+                           PreviousEndPage = csv_read2$endpage, inspectfileobject = AHcsv,
+                           rmc.dec=".", rmc.sf=30, rmc.unit.time="POSIX",
+                           rmc.firstrow.acc = 2, rmc.firstrow.header=c(),
+                           rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time=2,
+                           rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.origin = "1970-01-01")
+
+  expect_equal(nrow(csv_read4$P$data), 3000)
+  expect_equal(sum(csv_read3$P$data[c("x","y","z")]), sum(csv_read4$P$data[c("x","y","z")]), tolerance = .01, scale = 1)
 
   # test decimal separator recognition extraction
   decn =  g.dotorcomma(cwafile,dformat = FORMAT$CWA, mon = MONITOR$AXIVITY, desiredtz = desiredtz)

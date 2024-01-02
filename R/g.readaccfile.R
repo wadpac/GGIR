@@ -57,8 +57,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
 
     if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) ||
         (mon == MONITOR$MOVISENS && dformat == FORMAT$BIN) ||
-        dformat == FORMAT$GT3X ||
-        dformat == FORMAT$AD_HOC_CSV) {
+        dformat == FORMAT$GT3X) {
       startpage = startpage + 1 # pages are numbered starting with page 1
     } else if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) {
       headerlength = 10
@@ -311,6 +310,18 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       P$data$time = as.numeric(P$data$time)
     }
   } else if (mon == MONITOR$AD_HOC && dformat == FORMAT$AD_HOC_CSV) { # user-specified csv format
+    # skip 1 more row only if rmc.firstrow.acc points at a row containing column names.
+    # This is only relevant for the first chunk of data.
+    if (blocknumber == 1) {
+      testheader =  data.table::fread(filename, nrows = 2, skip = params_rawdata[["rmc.firstrow.acc"]]-1,
+                                      dec = decn, showProgress = FALSE,
+                                      header = TRUE, data.table=FALSE, stringsAsFactors=FALSE)
+      if (suppressWarnings(is.na(as.numeric(colnames(testheader)[1])))) { # first value is *not* a number, so file starts with a header
+        startpage = startpage + 1
+        endpage = endpage + 1
+      }
+    }
+
     try(expr = {P = read.myacc.csv(rmc.file = filename,
                                    rmc.nrow = blocksize, rmc.skip = startpage,
                                    rmc.dec = params_rawdata[["rmc.dec"]],
