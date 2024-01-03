@@ -12,7 +12,7 @@
   g.readaccfile(filename, blocksize, blocknumber, filequality,
                            ws, PreviousEndPage = 1, inspectfileobject = c(),
                            PreviousLastValue = c(0,0,1), PreviousLastTime = NULL,
-                           params_rawdata = c(), params_general = c(), ...)
+                           params_rawdata = c(), params_general = c(), header = NULL, ...)
 }
 \arguments{
   \item{filename}{
@@ -49,6 +49,10 @@
   }
   \item{params_general}{
     See \link{g.part1}
+  }
+  \item{header}{
+    Header information that was extracted the previous time this file was read,
+    to be re-used instead of being extracted again.
   }
   \item{...}{
     Any input arguments needed for function \link{read.myacc.csv} if you

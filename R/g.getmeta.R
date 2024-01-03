@@ -215,6 +215,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     metalong = NULL
     metashort = NULL
   }
+  header = NULL
   while (LD > 1) {
     P = c()
     if (verbose == TRUE) {
@@ -235,7 +236,9 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                             inspectfileobject = INFI,
                             PreviousLastValue = PreviousLastValue,
                             PreviousLastTime = PreviousLastTime,
-                            params_rawdata = params_rawdata, params_general = params_general)
+                            params_rawdata = params_rawdata, params_general = params_general, 
+                            header = header)
+    header = accread$header
     if ("PreviousLastValue" %in% names(accread$P)) { # output when reading ad-hoc csv
       P = accread$P[1:2]
       PreviousLastValue = accread$P$PreviousLastValue

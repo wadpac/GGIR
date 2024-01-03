@@ -98,6 +98,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
   count = 1 #counter to keep track of the number of seconds that have been read
   LD = 2 #dummy variable used to identify end of file and to make the process stop
   switchoffLD = 0 #dummy variable part of "end of loop mechanism"
+  header = NULL
   while (LD > 1) {
     P = c()
     if (verbose == TRUE) {
@@ -112,7 +113,9 @@ g.calibrate = function(datafile, params_rawdata = c(),
     accread = g.readaccfile(filename = datafile, blocksize = blocksize, blocknumber = i,
                             filequality = filequality, ws = ws,
                             PreviousEndPage = PreviousEndPage, inspectfileobject = INFI,
-                            params_rawdata = params_rawdata, params_general = params_general)
+                            params_rawdata = params_rawdata, params_general = params_general,
+                            header = header)
+    header = accread$header
     P = accread$P
     switchoffLD = accread$switchoffLD
     PreviousEndPage = accread$endpage

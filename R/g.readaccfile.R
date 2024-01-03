@@ -1,7 +1,7 @@
 g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                          ws, PreviousEndPage = 1, inspectfileobject = c(),
                          PreviousLastValue = c(0, 0, 1), PreviousLastTime = NULL,
-                         params_rawdata = c(), params_general = c(), ...) {
+                         params_rawdata = c(), params_general = c(), header = NULL, ...) {
   #get input variables
   input = list(...)
   if (length(input) > 0 ||
@@ -155,7 +155,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                               progressBar = FALSE,
                                               desiredtz = params_general[["desiredtz"]],
                                               configtz = params_general[["configtz"]],
-                                              interpolationType = params_rawdata[["interpolationType"]])
+                                              interpolationType = params_rawdata[["interpolationType"]],
+                                              header = header)
             }, silent = TRUE)
         return(P)
       }
@@ -167,12 +168,13 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                               desiredtz = params_general[["desiredtz"]],
                                               configtz = params_general[["configtz"]],
                                               interpolationType = params_rawdata[["interpolationType"]],
-                                              frequency_tol = params_rawdata[["frequency_tol"]])
+                                              frequency_tol = params_rawdata[["frequency_tol"]],
+                                              header = header)
             }, silent = TRUE)
         return(P)
       }
     }
-    
+
     P = apply_readAxivity(bstart = startpage, bend = endpage)
     if (length(P) > 1) { # data reading succesful
       if (length(P$data) == 0) { # too short?
@@ -355,7 +357,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                    PreviousLastTime = PreviousLastTime,
                                    epochsize = params_general[["windowsizes"]][1:2],
                                    desiredtz = params_general[["desiredtz"]],
-                                   configtz = params_general[["configtz"]])
+                                   configtz = params_general[["configtz"]],
+                                   header = header)
     }, silent = TRUE)
     if (length(sf) == 0) sf = params_rawdata[["rmc.sf"]]
     if (length(P) == 4) { # added PreviousLastValue and PreviousLastTime as output of read.myacc.csv

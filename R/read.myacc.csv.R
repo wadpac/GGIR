@@ -24,7 +24,8 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                           PreviousLastTime = NULL,
                           epochsize = NULL,
                           desiredtz = NULL,
-                          configtz = NULL) {
+                          configtz = NULL,
+                          header = NULL) {
 
   if (!is.null(rmc.desiredtz) || !is.null(rmc.configtz)) {
     generalWarning = paste0("Argument rmc.desiredtz and rmc.configtz are scheduled to be deprecated",
@@ -66,87 +67,90 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     skip = skip + rmc.skip
   }
 
-  # bitrate should be or header item name as character, or the actual numeric bit rate
-  # unit.temp can take C(elsius), F(ahrenheit), and K(elvin) and converts it into Celsius
-  # Note all argument names start with rmc (read myacc csv) to avoid name clashes when passed on throughout GGIR
-  if (length(rmc.firstrow.header) == 0) { # no header block
-    sf = rmc.sf
-    header = "no header"
-  } else {
-    # extract header information:
-    if (length(rmc.header.length) == 0) {
-      rmc.header.length = rmc.firstrow.acc - 1
-    }
-    
-    options(warn = -1) # fread complains about quote in first row for some file types
-    header_tmp = data.table::fread(file = rmc.file,
-                                   nrows = rmc.header.length, 
-                                   skip = rmc.firstrow.header - 1,
-                                   dec = rmc.dec, showProgress = FALSE, header = FALSE,
-                                   blank.lines.skip = TRUE,
-                                   data.table=FALSE, stringsAsFactors=FALSE)
-    options(warn = 0)
-    if (length(rmc.header.structure) != 0) { # header is stored in 1 column, with strings that need to be split
-      if (length(header_tmp) == 1) { # one header item
-        header_tmp = as.matrix(unlist(strsplit(as.character(header_tmp[,1]), rmc.header.structure)))
-      } else { # multiple header items
-        mysplit = function(x){
-          tmp = strsplit(as.character(x), rmc.header.structure)
-          tmp = unlist(tmp)
-          return(tmp)
-        }
-        header_tmp0 = header_tmp
-        header_tmp = unlist(lapply(header_tmp[,1], FUN = mysplit))
-        if (length(header_tmp) > 2) {
-          header_tmp = data.frame(matrix(unlist(header_tmp), nrow = nrow(header_tmp0), byrow = T), stringsAsFactors = FALSE)
-          colnames(header_tmp) = NULL
-        } else {
-          header_tmp = data.frame(matrix(unlist(header_tmp), nrow = 1, byrow = T), stringsAsFactors = FALSE)
-          colnames(header_tmp) = NULL
-        }
+  # only extract the header if it hasn't been extracted for this file before
+  if (is.null(header)) {
+    # bitrate should be or header item name as character, or the actual numeric bit rate
+    # unit.temp can take C(elsius), F(ahrenheit), and K(elvin) and converts it into Celsius
+    # Note all argument names start with rmc (read myacc csv) to avoid name clashes when passed on throughout GGIR
+    if (length(rmc.firstrow.header) == 0) { # no header block
+      sf = rmc.sf
+      header = "no header"
+    } else {
+      # extract header information:
+      if (length(rmc.header.length) == 0) {
+        rmc.header.length = rmc.firstrow.acc - 1
       }
-      if (ncol(header_tmp) == 1) header_tmp = t(header_tmp)
-      header_tmp2 = as.data.frame(as.character(unlist(header_tmp[,2])), stringsAsFactors = FALSE)
-      row.names(header_tmp2) = header_tmp[,1] 
-      colnames(header_tmp2) = NULL
-      header = header_tmp2
-    } else { # column 1 is header name, column 2 is header value
-      colnames(header_tmp) = NULL
-      validrows = which(is.na(header_tmp[,1]) == FALSE & header_tmp[,1] != "")
-      header_tmp = header_tmp[validrows,1:2]
-      header_tmp2 = as.data.frame(header_tmp[,2], stringsAsFactors = FALSE)
-      row.names(header_tmp2) = header_tmp[,1]
-      colnames(header_tmp2) = NULL
-      header = header_tmp2
-    }
-    # assess whether accelerometer data conversion is needed
-    if (length(rmc.bitrate) > 0 & length(rmc.dynamic_range) > 0 & rmc.unit.acc == "bit") {
-      if (is.character(rmc.bitrate[1]) == TRUE) { # extract bitrate if it is in the header
-        rmc.bitrate = as.numeric(header[which(row.names(header) == rmc.bitrate[1]),1])
+      
+      options(warn = -1) # fread complains about quote in first row for some file types
+      header_tmp = data.table::fread(file = rmc.file,
+                                     nrows = rmc.header.length, 
+                                     skip = rmc.firstrow.header - 1,
+                                     dec = rmc.dec, showProgress = FALSE, header = FALSE,
+                                     blank.lines.skip = TRUE,
+                                     data.table=FALSE, stringsAsFactors=FALSE)
+      options(warn = 0)
+      if (length(rmc.header.structure) != 0) { # header is stored in 1 column, with strings that need to be split
+        if (length(header_tmp) == 1) { # one header item
+          header_tmp = as.matrix(unlist(strsplit(as.character(header_tmp[,1]), rmc.header.structure)))
+        } else { # multiple header items
+          mysplit = function(x){
+            tmp = strsplit(as.character(x), rmc.header.structure)
+            tmp = unlist(tmp)
+            return(tmp)
+          }
+          header_tmp0 = header_tmp
+          header_tmp = unlist(lapply(header_tmp[,1], FUN = mysplit))
+          if (length(header_tmp) > 2) {
+            header_tmp = data.frame(matrix(unlist(header_tmp), nrow = nrow(header_tmp0), byrow = T), stringsAsFactors = FALSE)
+            colnames(header_tmp) = NULL
+          } else {
+            header_tmp = data.frame(matrix(unlist(header_tmp), nrow = 1, byrow = T), stringsAsFactors = FALSE)
+            colnames(header_tmp) = NULL
+          }
+        }
+        if (ncol(header_tmp) == 1) header_tmp = t(header_tmp)
+        header_tmp2 = as.data.frame(as.character(unlist(header_tmp[,2])), stringsAsFactors = FALSE)
+        row.names(header_tmp2) = header_tmp[,1] 
+        colnames(header_tmp2) = NULL
+        header = header_tmp2
+      } else { # column 1 is header name, column 2 is header value
+        colnames(header_tmp) = NULL
+        validrows = which(is.na(header_tmp[,1]) == FALSE & header_tmp[,1] != "")
+        header_tmp = header_tmp[validrows,1:2]
+        header_tmp2 = as.data.frame(header_tmp[,2], stringsAsFactors = FALSE)
+        row.names(header_tmp2) = header_tmp[,1]
+        colnames(header_tmp2) = NULL
+        header = header_tmp2
       }
-      if (is.character(rmc.dynamic_range[1]) ==  TRUE) { # extract dynamic range if it is in the header
-        rmc.dynamic_range = as.numeric(header[which(row.names(header) == rmc.dynamic_range[1]),1])
-      } 
-    }
-    # extract sample frequency:
-    sf = as.numeric(header[which(row.names(header) == rmc.headername.sf[1]),1])
-    sn = as.numeric(header[which(row.names(header) == rmc.headername.sn[1]),1])
-    ID = as.numeric(header[which(row.names(header) == rmc.headername.recordingid[1]),1])
-    
-    # standardise key header names to ease use elsewhere in GGIR:
-    if (length(rmc.headername.sf) > 0) {
-      row.names(header)[which(row.names(header) == rmc.headername.sf[1])] = "sample_rate"
-    }
-    if (length(rmc.headername.sn) > 0) {
-      row.names(header)[which(row.names(header) == rmc.headername.sn[1])] = "device_serial_number"
-    }
-    if (length(rmc.headername.recordingid) > 0) {
-      row.names(header)[which(row.names(header) == rmc.headername.recordingid[1])] = "recordingID"
-    }
-    if (length(sf) == 0) {
-      sf = rmc.sf # if sf not retrieved from header than use default
-      header = rbind(header,1) # add it also to the header
-      row.names(header)[nrow(header)] = "sample_rate"
+      # assess whether accelerometer data conversion is needed
+      if (length(rmc.bitrate) > 0 & length(rmc.dynamic_range) > 0 & rmc.unit.acc == "bit") {
+        if (is.character(rmc.bitrate[1]) == TRUE) { # extract bitrate if it is in the header
+          rmc.bitrate = as.numeric(header[which(row.names(header) == rmc.bitrate[1]),1])
+        }
+        if (is.character(rmc.dynamic_range[1]) ==  TRUE) { # extract dynamic range if it is in the header
+          rmc.dynamic_range = as.numeric(header[which(row.names(header) == rmc.dynamic_range[1]),1])
+        } 
+      }
+      # extract sample frequency:
+      sf = as.numeric(header[which(row.names(header) == rmc.headername.sf[1]),1])
+      sn = as.numeric(header[which(row.names(header) == rmc.headername.sn[1]),1])
+      ID = as.numeric(header[which(row.names(header) == rmc.headername.recordingid[1]),1])
+      
+      # standardise key header names to ease use elsewhere in GGIR:
+      if (length(rmc.headername.sf) > 0) {
+        row.names(header)[which(row.names(header) == rmc.headername.sf[1])] = "sample_rate"
+      }
+      if (length(rmc.headername.sn) > 0) {
+        row.names(header)[which(row.names(header) == rmc.headername.sn[1])] = "device_serial_number"
+      }
+      if (length(rmc.headername.recordingid) > 0) {
+        row.names(header)[which(row.names(header) == rmc.headername.recordingid[1])] = "recordingID"
+      }
+      if (length(sf) == 0) {
+        sf = rmc.sf # if sf not retrieved from header than use default
+        header = rbind(header,1) # add it also to the header
+        row.names(header)[nrow(header)] = "sample_rate"
+      }
     }
   }
   # read data from file
