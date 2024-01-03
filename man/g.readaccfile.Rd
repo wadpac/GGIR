@@ -22,7 +22,7 @@
     Size of blocks (in file pages) to be read
   }
   \item{blocknumber}{
-    Block number relative to start of file
+    Block number relative to start of file, starting with 1.
   }
   \item{filequality}{
     Single row dataframe with columns: filetooshort, filecorrupt,
