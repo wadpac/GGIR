@@ -98,10 +98,10 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
         header_tmp0 = header_tmp
         header_tmp = unlist(lapply(header_tmp[,1], FUN = mysplit))
         if (length(header_tmp) > 2) {
-          header_tmp = data.frame(matrix(unlist(header_tmp), nrow = nrow(header_tmp0), byrow = T), stringsAsFactors = TRUE)
+          header_tmp = data.frame(matrix(unlist(header_tmp), nrow = nrow(header_tmp0), byrow = T), stringsAsFactors = FALSE)
           colnames(header_tmp) = NULL
         } else {
-          header_tmp = data.frame(matrix(unlist(header_tmp), nrow = 1, byrow = T), stringsAsFactors = TRUE)
+          header_tmp = data.frame(matrix(unlist(header_tmp), nrow = 1, byrow = T), stringsAsFactors = FALSE)
           colnames(header_tmp) = NULL
         }
       }
@@ -323,7 +323,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     accelRes = GGIRread::resample(rawAccel, rawTime, timeRes, rawLast, interpolationType) # this is now the resampled acceleration data
     colnamesP = colnames(P)
     timeRes = as.POSIXct(timeRes, origin = rmc.origin, tz = configtz)
-    P = as.data.frame(accelRes, stringsAsFactors = TRUE)
+    P = as.data.frame(accelRes, stringsAsFactors = FALSE)
     P$time = timeRes
     P = P[,c(ncol(P),1:(ncol(P) - 1))]
     colnames(P) = colnamesP
