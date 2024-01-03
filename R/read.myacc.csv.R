@@ -69,7 +69,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
 
   # only extract the header if it hasn't been extracted for this file before
   if (is.null(header)) {
-    # bitrate should be or header item name as character, or the actual numeric bit rate
+    # bitrate should be either header item name as character, or the actual numeric bit rate.
     # unit.temp can take C(elsius), F(ahrenheit), and K(elvin) and converts it into Celsius
     # Note all argument names start with rmc (read myacc csv) to avoid name clashes when passed on throughout GGIR
     if (length(rmc.firstrow.header) == 0) { # no header block
@@ -146,9 +146,9 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
       if (length(rmc.headername.recordingid) > 0) {
         row.names(header)[which(row.names(header) == rmc.headername.recordingid[1])] = "recordingID"
       }
-      if (length(sf) == 0) {
-        sf = rmc.sf # if sf not retrieved from header than use default
-        header = rbind(header,1) # add it also to the header
+      if (is.na(sf)) {
+        sf = rmc.sf # if sf not retrieved from header then use default
+        header = rbind(header, sf) # add it also to the header
         row.names(header)[nrow(header)] = "sample_rate"
       }
     }
