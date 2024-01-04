@@ -123,7 +123,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
         header = header_tmp2
       }
       # assess whether accelerometer data conversion is needed
-      if (length(rmc.bitrate) > 0 & length(rmc.dynamic_range) > 0 & rmc.unit.acc == "bit") {
+      if (length(rmc.bitrate) > 0 && length(rmc.dynamic_range) > 0 && rmc.unit.acc == "bit") {
         if (is.character(rmc.bitrate[1]) == TRUE) { # extract bitrate if it is in the header
           rmc.bitrate = as.numeric(header[which(row.names(header) == rmc.bitrate[1]),1])
         }
@@ -133,8 +133,6 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
       }
       # extract sample frequency:
       sf = as.numeric(header[which(row.names(header) == rmc.headername.sf[1]),1])
-      sn = as.numeric(header[which(row.names(header) == rmc.headername.sn[1]),1])
-      ID = as.numeric(header[which(row.names(header) == rmc.headername.recordingid[1]),1])
       
       if (is.na(sf)) { # sf not retrieved from header
         # first see if maybe sf *is* in the header, just not under the rmc.headername.sf name
