@@ -317,7 +317,6 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     PreviousLastTime = as.POSIXct(P[nrow(P), "time"])
   }
   if (rmc.doresample == TRUE) { #resample
-    rawTime = vector(mode = "numeric", nrow(P))
     rawTime = as.numeric(as.POSIXct(P$time,tz = configtz))
     rawAccel = as.matrix(P[,-c(which(colnames(P) == "time"))])
     step = 1/sf
@@ -326,7 +325,6 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     timeRes = seq(start, end, step)
     nr = length(timeRes) - 1
     timeRes = as.vector(timeRes[1:nr])
-    accelRes = matrix(0,nrow = nr, ncol = ncol(rawAccel), dimnames = list(NULL,colnames(rawAccel)))
     rawLast = nrow(rawAccel)
     accelRes = GGIRread::resample(rawAccel, rawTime, timeRes, rawLast, interpolationType) # this is now the resampled acceleration data
     colnamesP = colnames(P)
