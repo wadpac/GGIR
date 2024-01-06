@@ -106,6 +106,7 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
         xm[which(xm[1:S2check] == 0)] = xm[which(xm[1:S2check] != 0)[1]]
         # tail
         LN = length(xm)
+        S2check = min(LN-1, S2check)
         xm_tail = xm[(LN - S2check):LN]
         lastvalue = xm_tail[which(xm_tail != 0)][1]
         if (length(lastvalue) == 0) lastvalue = xm[which(xm != 0)][1]

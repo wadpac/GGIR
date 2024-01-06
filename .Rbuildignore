@@ -13,3 +13,5 @@ RELEASE_CYCLE.md
 ^vignettes/chapter*.Rmd
 ^dev-functions$
 .zenodo.json
+.chapterInProgress.Rmd
+codecov.yml
