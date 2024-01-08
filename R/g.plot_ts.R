@@ -3,12 +3,13 @@ g.plot_ts = function(metadatadir = c(),
                      f0 = c(), f1 = c(), overwrite = FALSE,
                      desiredtz = "",
                      verbose = TRUE,
-                     part6_threshold_combi = NULL) {
+                     part6_threshold_combi = "") {
   
   #---------------------------------------
   # Attempt to load time series directly
   
   # Identify correct subfolder
+  
   expected_ts_path = paste0(metadatadir, "/meta/ms5.outraw/", part6_threshold_combi)
   expected_ms5raw_path = paste0(metadatadir, "/meta/ms5.outraw")
   # if (!dir.exists(expected_ts_path)) {
@@ -26,7 +27,8 @@ g.plot_ts = function(metadatadir = c(),
   #   }
   # }
   if (dir.exists(expected_ts_path)) {
-    fnames.ms5raw = dir(expected_ts_path)
+    fnames.ms5raw = dir(expected_ts_path, pattern = "[.]RData")
+    
     ts_exists = ifelse(length(fnames.ms5raw) > 0, yes = TRUE, no = FALSE) 
     
     # Extract behavioural class names:
@@ -44,8 +46,9 @@ g.plot_ts = function(metadatadir = c(),
     behClassCodes = behClassCodes[neworder]
     # loop through files
     mdat = NULL
-    for (i in f0:f1) {
-      if (ts_exists) {
+    if (ts_exists) {
+      for (i in f0:f1) {
+        
         load(file = paste0(metadatadir, "/meta/ms5.outraw/",
                            part6_threshold_combi, "/", fnames.ms5raw[i]))
         
