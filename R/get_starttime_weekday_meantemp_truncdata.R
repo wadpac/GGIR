@@ -1,31 +1,17 @@
-get_starttime_weekday_meantemp_truncdata = function(temp.available, monc, dformat, data, 
+get_starttime_weekday_meantemp_truncdata = function(use.temp, monc, dformat, data, 
                                                     P, header, desiredtz, sf, i, datafile,
                                                     ws2, starttime, wday, wdayname, configtz = NULL) {
   #ensures that first window starts at logical timepoint relative to its size
   # (15,30,45 or 60 minutes of each hour)
   start_meas = ws2/60 
-  if (temp.available == TRUE) {
-    use.temp = TRUE
-  } else {
-    use.temp = FALSE
-  }
   meantemp = c()
-  if (monc == MONITOR$GENEACTIV || (monc == MONITOR$AXIVITY && dformat == FORMAT$CWA) || monc == MONITOR$MOVISENS || (monc == MONITOR$AD_HOC && use.temp == TRUE)) {
-    if (monc == MONITOR$GENEACTIV) {
-      if ("temperature" %in% colnames(data)) {
-        tempcolumn = which(colnames(data) == "temperature") #GGIRread
-      } else {
-        tempcolumn = 7
-      }
-    }
-    if (monc == MONITOR$AXIVITY || monc == MONITOR$AD_HOC) tempcolumn = 5
-    if (monc == MONITOR$MOVISENS) tempcolumn = 4
-    meantemp = mean(as.numeric(data[, tempcolumn]), na.rm = TRUE)
-    if (is.na(meantemp) == T) { #mean(as.numeric(data[1:10,7]))
+  if (use.temp) {
+    meantemp = mean(as.numeric(data$temperature, na.rm = TRUE))
+    if (is.na(meantemp) == T) {
       warning("temperature is NA", call. = FALSE)
       meantemp = 0
       use.temp = FALSE
-    } else if (mean(as.numeric(data[1:10,tempcolumn])) > 50) {
+    } else if (mean(as.numeric(data$temperature[1:10])) > 50) {
       warning("temperature value is unreaslistically high (> 50 Celcius)", call. = FALSE)
       meantemp = 0
       use.temp = FALSE

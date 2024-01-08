@@ -12,12 +12,12 @@
   corresponding weekday and mean temperature (if temperature is available).
 }
 \usage{
-  get_starttime_weekday_meantemp_truncdata(temp.available, monc, 
+  get_starttime_weekday_meantemp_truncdata(use.temp, monc, 
   dformat, data, P, header, desiredtz, sf, i,
   datafile, ws2, starttime, wday, wdayname, configtz = NULL)
 }
 \arguments{
-  \item{temp.available}{
+  \item{use.temp}{
     Boolean whether temperate is available.
   }
   \item{monc}{

@@ -193,14 +193,15 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     NR = ceiling(nev / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
     metashort = matrix(" ",NR,(1 + nmetrics)) #generating output matrix for acceleration signal
     temp.available = ("temperature" %in% colnames(P$data))
+    light.available = ("light" %in% colnames(P$data))
     QClog = NULL
 
     # output matrix for 15 minutes summaries
-    if (temp.available == FALSE) {
+    if (!temp.available) {
       metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 4)
-    } else if (temp.available == TRUE && mon != MONITOR$MOVISENS && mon != MONITOR$AD_HOC) {
+    } else if (light.available) { {
       metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 7)
-    } else if (temp.available == TRUE && (mon == MONITOR$MOVISENS || mon == MONITOR$AD_HOC)) {
+    } else {
       metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 5)
     }
     #===============================================
@@ -352,7 +353,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       wday = SWMT$wday; wdayname = SWMT$wdayname
       params_general[["desiredtz"]] = SWMT$desiredtz; data = SWMT$data
       
-      if (use.temp && ("light" %in% colnames(data))) {
+      if (use.temp && light.available) {
         metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","temperaturemean","EN")
       } else if (use.temp) {
         metricnames_long = c("timestamp","nonwearscore","clippingscore","temperaturemean","EN")
@@ -368,7 +369,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         switchoffLD = 1
         LD = 0 #ignore rest of the data and store what has been loaded so far.
       }
-      
       
       #store data that could not be used for this block, but will be added to next block
       if (LD >= (ws*sf)) {
@@ -400,30 +400,14 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         dur = nrow(data)	#duration of experiment in data points
         durexp = nrow(data) / (sf*ws)	#duration of experiment in hrs
         #--------------------------------------------
-        if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) || mon == MONITOR$MOVISENS ||
-            (mon == MONITOR$AD_HOC && length(params_rawdata[["rmc.col.temp"]]) > 0)) {
-          if (mon == MONITOR$GENEACTIV) {
-            temperaturecolumn = 6; lightcolumn = 5
-          } else if (mon == MONITOR$AXIVITY) {
-            temperaturecolumn = 5; lightcolumn = 7
-            if (gyro_available == TRUE) {
-              temperaturecolumn = temperaturecolumn + 3
-              lightcolumn = lightcolumn + 3
-            }
-          } else if (mon == MONITOR$MOVISENS) {
-            temperaturecolumn = 4
-          } else if (mon == MONITOR$AD_HOC) {
-            temperaturecolumn = which(colnames(data) == "temperature")
-          }
-          if (mon != MONITOR$AD_HOC && mon != MONITOR$MOVISENS) {
-            light = as.numeric(data[, lightcolumn])
-          }
-          if (mon == MONITOR$AD_HOC && length(params_rawdata[["rmc.col.wear"]]) > 0) {
-            wearcol = as.character(data[, which(colnames(data) == "wear")])
-            suppressWarnings(storage.mode(wearcol) <- "logical")
-          }
-          temperature = as.numeric(data[, temperaturecolumn])
+        temperature = light = c()
+        if (light.available) {
+          light = as.numeric(data$light)
         }
+        if (use.temp) {
+          temperature = as.numeric(data$temperature)
+        }
+
         # Initialization of variables
         data_scaled = FALSE
         if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$GT3X) {
@@ -443,9 +427,9 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           }
           data_scaled = TRUE
         } else if (mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) {
-          yy = as.matrix(cbind(as.numeric(data[,temperaturecolumn]),
-                               as.numeric(data[,temperaturecolumn]),
-                               as.numeric(data[,temperaturecolumn])))
+          yy = as.matrix(cbind(temperature,
+                               temperature,
+                               temperature))
           data = data[,2:4]
           data[,1:3] = scale(as.matrix(data[,1:3]),center = -offset, scale = 1/scale) +
             scale(yy, center = rep(meantemp,3), scale = 1/tempoffset)  #rescale data
@@ -461,9 +445,9 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         } else if ((dformat == FORMAT$CSV || dformat == FORMAT$AD_HOC_CSV) && (mon != MONITOR$AXIVITY)) {
           # Any brand that is not Axivity with csv or Movisense format data
           if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AD_HOC && use.temp == TRUE)) {
-            tempcolumnvalues = as.numeric(as.character(data[,temperaturecolumn]))
+            tempcolumnvalues = as.numeric(as.character(data$temperature))
             yy = as.matrix(cbind(tempcolumnvalues, tempcolumnvalues, tempcolumnvalues))
-            meantemp = mean(as.numeric(data[,temperaturecolumn]))
+            meantemp = mean(temperature)
             if (length(meantempcal) == 0) meantempcal = meantemp
           }
           if (ncol(data) == 3) data = data[,1:3]
