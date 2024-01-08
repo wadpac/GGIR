@@ -3,7 +3,7 @@ g.plot_ts = function(metadatadir = c(),
                      f0 = c(), f1 = c(), overwrite = FALSE,
                      desiredtz = "",
                      verbose = TRUE,
-                     part6_threshold_combi = "") {
+                     part6_threshold_combi = NULL) {
   
   #---------------------------------------
   # Attempt to load time series directly
