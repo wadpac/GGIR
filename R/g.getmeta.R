@@ -352,15 +352,12 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       wday = SWMT$wday; wdayname = SWMT$wdayname
       params_general[["desiredtz"]] = SWMT$desiredtz; data = SWMT$data
       
-      if (mon == MONITOR$ACTIGRAPH || mon == MONITOR$VERISENSE ||
-          (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) ||
-          (mon == MONITOR$AD_HOC && use.temp == FALSE)) {
-        metricnames_long = c("timestamp","nonwearscore","clippingscore","en")
-      } else if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA)) {
+      if (use.temp && ("light" %in% colnames(data))) {
         metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","temperaturemean","EN")
-      } else if (mon == MONITOR$MOVISENS || (mon == MONITOR$AD_HOC && use.temp == TRUE)) { 
-        # at the moment read.myacc.csv does not facilitate extracting light data, so only temperature is used
+      } else if (use.temp) {
         metricnames_long = c("timestamp","nonwearscore","clippingscore","temperaturemean","EN")
+      } else {
+        metricnames_long = c("timestamp","nonwearscore","clippingscore","en")
       }
       rm(SWMT)
       if (exists("P")) rm(P); gc()
