@@ -212,7 +212,11 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     metalong = NULL
     metashort = NULL
   }
+
+  PreviousLastValue = c(0, 0, 1)
+  PreviousLastTime = NULL
   header = NULL
+
   while (LD > 1) {
     P = c()
     if (verbose == TRUE) {
@@ -225,8 +229,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     
     options(warn = -1) #turn off warnings (code complains about unequal rowlengths
     
-    if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
-    if (!exists("PreviousLastTime")) PreviousLastTime = NULL
     accread = g.readaccfile(filename = datafile, blocksize = blocksize, blocknumber = i,
                             filequality = filequality,
                             ws = ws, PreviousEndPage = PreviousEndPage,
@@ -253,75 +255,28 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     startpage = accread$startpage
     options(warn = -1) # to ignore warnings relating to failed mmap.load attempt
     rm(accread); gc()
-    options(warn = 0) # to ignore warnings relating to failed mmap.load attempt
     options(warn = 0) #turn on warnings
     #============
     #process data as read from binary file
     if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
-      
-      if (mon == MONITOR$GENEACTIV  && dformat == FORMAT$BIN) {
-        data = P$data
-      } else if (dformat == FORMAT$CSV) { #csv (Actigraph or ad-hoc csv format)
-        if (params_rawdata[["imputeTimegaps"]] == TRUE) {
-          P = as.data.frame(P)
-          if (ncol(P) == 3) {
-            timeCol = c()
-            xyzCol = names(P)[1:3]
-          } else if (ncol(P) == 4) {
-            timeCol = names(P)[1]
-            xyzCol = names(P)[2:4]
-          }
-          if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
-          if (!exists("PreviousLastTime")) PreviousLastTime = NULL
-          P = g.imputeTimegaps(P, xyzCol = xyzCol, timeCol = timeCol, sf = sf, k = 0.25,
-                               PreviousLastValue = PreviousLastValue,
-                               PreviousLastTime = PreviousLastTime,
-                               epochsize = c(ws3, ws2))
-          QClog = rbind(QClog, P$QClog)
-          P = P$x 
-          PreviousLastValue = as.numeric(P[nrow(P), xyzCol])
-          if (is.null(timeCol)) PreviousLastTime = NULL else PreviousLastTime = as.POSIXct(P[nrow(P), timeCol])
-        }
-        data = P
-      } else if (dformat == FORMAT$CWA) {
-        if (P$header$hardwareType == "AX6") {
-          # GGIR now ignores the AX6 gyroscope signals until added value has robustly been demonstrated.
-          # Note however that while AX6 is able to collect gyroscope data, it can also be configured
-          # to only collect accelerometer data, so only remove gyro data if it's present.
-          if (ncol(P$data) == 10) {
-            data = P$data[,-c(2:4)]
-            P$data = P$data[1:min(100,nrow(P$data)),-c(2:4)] # trim object, because rest of data is not needed anymore
-          } else {
-            data = P$data
-            P$data = P$data[1:min(100,nrow(P$data)),] # trim object, because rest of data is not needed anymore
-          }
-          gyro_available = FALSE
-          # If we ever want to use gyroscope data then
-          # comment out this if statement and set gyro_available = TRUE
+      data = P$data
+      QClog = rbind(QClog, P$QClog)
+
+      if (params_rawdata[["imputeTimegaps"]] && (dformat == FORMAT$CSV || dformat == FORMAT$GT3X)) {
+        P = g.imputeTimegaps(data, xyzCol = c("x", "y", "z"), timeCol = "time", sf = sf, k = 0.25,
+                             PreviousLastValue = PreviousLastValue,
+                             PreviousLastTime = PreviousLastTime,
+                             epochsize = c(ws3, ws2))
+        data = P$x
+        PreviousLastValue = as.numeric(data[nrow(data), c("x", "y", "z")])
+        if ("time" %in% colnames(data)) {
+          PreviousLastTime = as.POSIXct(data$time[nrow(data)])
         } else {
-          data = P$data
-          P$data = P$data[1:min(100,nrow(P$data)),] # trim object, because rest of data is not needed anymore
+          PreviousLastTime = NULL
         }
         QClog = rbind(QClog, P$QClog)
-      } else if (dformat == FORMAT$AD_HOC_CSV) {
-        data = P$data
-      } else if (mon == MONITOR$MOVISENS) {
-        data = P
-      } else if (dformat == FORMAT$GT3X) {
-        if (params_rawdata[["imputeTimegaps"]] == TRUE) {
-          if (!exists("PreviousLastValue")) PreviousLastValue = c(0, 0, 1)
-          if (!exists("PreviousLastTime")) PreviousLastTime = NULL
-          P = g.imputeTimegaps(P, xyzCol = c("X", "Y", "Z"), timeCol = "time", sf = sf, k = 0.25,
-                               PreviousLastValue = PreviousLastValue,
-                               PreviousLastTime = PreviousLastTime,
-                               epochsize = c(ws3, ws2))
-          QClog = rbind(QClog, P$QClog)
-          P = P$x 
-          PreviousLastValue = as.numeric(P[nrow(P), c("X", "Y", "Z")])
-          PreviousLastTime = as.POSIXct(P[nrow(P), "time"])
-        }
-        data = P[,2:ncol(P)]
       }
+
       data = as.matrix(data, rownames.force = FALSE)
       #add left over data from last time
       if (nrow(S) > 0) {
