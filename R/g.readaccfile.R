@@ -286,9 +286,9 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     } else {
       colnames(P$data) = c("x", "y", "z")
       # there may or may not be a temp.bin file containing temperature
-      try(expr = {P$temp = g.readtemp_movisens(dirname(filename), desiredtz = params_general[["desiredtz"]], 
-                                               from = startpage, to = endpage,
-                                               interpolationType = params_rawdata[["interpolationType"]])
+      try(expr = {P$data$temperature = g.readtemp_movisens(filename, desiredtz = params_general[["desiredtz"]], 
+                                                           from = startpage, to = endpage,
+                                                           interpolationType = params_rawdata[["interpolationType"]])
       }, silent = TRUE)
     }
   } else if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$GT3X) {

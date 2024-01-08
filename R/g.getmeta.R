@@ -104,7 +104,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   filename = unlist(strsplit(as.character(datafile),"/"))
   filename = filename[length(filename)]
   # parameters
-  ws3 = params_general[["windowsizes"]][1]; ws2 = params_general[["windowsizes"]][2]; ws = params_general[["windowsizes"]][3]  #window sizes
+  ws3 = params_general[["windowsizes"]][1]; ws2 = params_general[["windowsizes"]][2]; ws = params_general[["windowsizes"]][3]
   if ((ws2/60) != round(ws2/60)) {
     ws2 = as.numeric(60 * ceiling(ws2/60))
     if (verbose == TRUE) {
@@ -122,7 +122,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     }
   }
   params_general[["windowsizes"]] = c(ws3,ws2,ws)
-  data = PreviousEndPage = PreviousStartPage = starttime = wday = wdayname = c()
+  data = PreviousEndPage = starttime = wday = wdayname = c()
   
   filequality = data.frame(filetooshort = FALSE, filecorrupt = FALSE,
                            filedoesnotholdday = FALSE, NFilePagesSkipped = 0, stringsAsFactors = TRUE)
@@ -171,7 +171,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     }
   }
   if (LD > 1) {
-    if (sf == 0) stop("Sample frequency not recognised") #assume 80Hertz in the absense of any other info
+    if (sf == 0) stop("Sample frequency not recognised")
     header = INFI$header
     ID = hvars$ID
     
@@ -192,20 +192,16 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     # NR = ceiling((90*10^6) / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
     NR = ceiling(nev / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
     metashort = matrix(" ",NR,(1 + nmetrics)) #generating output matrix for acceleration signal
-    if (mon == MONITOR$ACTIGRAPH || mon == MONITOR$VERISENSE || (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) ||
-        (mon == MONITOR$AD_HOC && length(params_rawdata[["rmc.col.temp"]]) == 0)) {
-      temp.available = FALSE
-    } else if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) ||
-               mon == MONITOR$MOVISENS || (mon == MONITOR$AD_HOC && length(params_rawdata[["rmc.col.temp"]]) > 0)) {
-      temp.available = TRUE
-    }
+    temp.available = ("temperature" %in% colnames(P$data))
     QClog = NULL
+
+    # output matrix for 15 minutes summaries
     if (temp.available == FALSE) {
-      metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 4) #generating output matrix for 15 minutes summaries
+      metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 4)
     } else if (temp.available == TRUE && mon != MONITOR$MOVISENS && mon != MONITOR$AD_HOC) {
-      metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 7) #generating output matrix for 15 minutes summaries
+      metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 7)
     } else if (temp.available == TRUE && (mon == MONITOR$MOVISENS || mon == MONITOR$AD_HOC)) {
-      metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 5) #generating output matrix for 15 minutes summaries
+      metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 5)
     }
     #===============================================
     # Read file
@@ -257,13 +253,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     options(warn = -1) # to ignore warnings relating to failed mmap.load attempt
     rm(accread); gc()
     options(warn = 0) # to ignore warnings relating to failed mmap.load attempt
-    if (mon == MONITOR$MOVISENS) { # if movisens, then read temperature
-      PreviousStartPage = startpage
-      temperature = g.readtemp_movisens(datafile, desiredtz = params_general[["desiredtz"]], PreviousStartPage,
-                                        PreviousEndPage, interpolationType = params_rawdata[["interpolationType"]])
-      P = cbind(P, temperature[1:nrow(P)])
-      colnames(P)[4] = "temp"
-    }
     options(warn = 0) #turn on warnings
     #============
     #process data as read from binary file
