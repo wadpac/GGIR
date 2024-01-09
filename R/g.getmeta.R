@@ -355,71 +355,15 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           temperature = as.numeric(data$temperature)
         }
 
-        # Initialization of variables
-        data_scaled = FALSE
-        if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$GT3X) {
-          data = data[, 1:3]
-          data[, 1:3] = scale(data[, 1:3], center = -offset, scale = 1/scale) #rescale data
-          data_scaled = TRUE
-        } else if (mon == MONITOR$AXIVITY && (dformat == FORMAT$CWA || dformat == FORMAT$CSV)) {
-          extraction_succeeded = FALSE
-          if (gyro_available == TRUE) {
-            data[,5:7] = scale(data[,5:7],center = -offset, scale = 1/scale) #rescale data
-            extraction_succeeded = TRUE
-            data = data[, 2:7]
-          }
-          if (extraction_succeeded == FALSE) {
-            data[, 2:4] = scale(data[, 2:4],center = -offset, scale = 1/scale) #rescale data
-            data = data[,2:4]
-          }
-          data_scaled = TRUE
-        } else if (mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) {
+        # rescale data
+        data[, c("x", "y", "z")] = scale(data[, c("x", "y", "z")],center = -offset, scale = 1/scale)
+        if (use.temp && length(meantempcal) > 0) {
           yy = as.matrix(cbind(temperature,
                                temperature,
                                temperature))
-          data = data[,2:4]
-          data[,1:3] = scale(as.matrix(data[,1:3]),center = -offset, scale = 1/scale) +
-            scale(yy, center = rep(meantemp,3), scale = 1/tempoffset)  #rescale data
-          rm(yy); gc()
-          data_scaled = TRUE
-        } else if (mon == MONITOR$MOVISENS) {
-          yy = as.matrix(cbind(as.numeric(data[,4]),as.numeric(data[,4]),as.numeric(data[,4])))
-          data = data[,1:3]
-          data[,1:3] = scale(as.matrix(data[,1:3]),center = -offset, scale = 1/scale) +
-            scale(yy, center = rep(meantemp,3), scale = 1/tempoffset)  #rescale data
-          rm(yy); gc()
-          data_scaled = TRUE
-        } else if ((dformat == FORMAT$CSV || dformat == FORMAT$AD_HOC_CSV) && (mon != MONITOR$AXIVITY)) {
-          # Any brand that is not Axivity with csv or Movisense format data
-          if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AD_HOC && use.temp == TRUE)) {
-            tempcolumnvalues = as.numeric(as.character(data$temperature))
-            yy = as.matrix(cbind(tempcolumnvalues, tempcolumnvalues, tempcolumnvalues))
-            meantemp = mean(temperature)
-            if (length(meantempcal) == 0) meantempcal = meantemp
-          }
-          if (ncol(data) == 3) data = data[,1:3]
-          if (ncol(data) >= 4) {
-            data = data[,2:4]
-            if (is(data[,1], "character")) {
-              data = apply(data, 2,as.numeric)
-            }
-          }
-          suppressWarnings(storage.mode(data) <- "numeric")
-          if ((mon == MONITOR$ACTIGRAPH || mon == MONITOR$AD_HOC || mon == MONITOR$VERISENSE) && use.temp == FALSE) {
-            data = scale(data,center = -offset, scale = 1/scale)  #rescale data
-          } else if ((mon == MONITOR$GENEACTIV || mon == MONITOR$AD_HOC) && use.temp == TRUE) {
-            # meantemp replaced by meantempcal # 19-12-2013
-            data = scale(data,center = -offset, scale = 1/scale) +
-              scale(yy, center = rep(meantempcal,3), scale = 1/tempoffset)  #rescale data
-            rm(yy); gc()
-          }
-          data_scaled = TRUE
+          data[, c("x", "y", "z")] = data[, c("x", "y", "z")] + scale(yy, center = rep(meantempcal,3), scale = 1/tempoffset)
         }
-        if (data_scaled == FALSE) {
-          warning(paste0("\nAutocalibration was not applied, this should",
-                         "not happen please contact GGIR maintainers"))
-        }
-        suppressWarnings(storage.mode(data) <- "numeric")
+
         ## resample experiment to see whehter processing time can be much improved if data is resampled
         sfold = sforiginal # keep sf, because light, temperature are not resampled at the moment
         # STORE THE RAW DATA
