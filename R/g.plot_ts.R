@@ -33,7 +33,7 @@ g.plot_ts = function(metadatadir = c(),
                             "#222255", "black")
   mygreys = rep(c("darkblue", "lightblue"), 20)
   mygreys = adjustcolor(col = mygreys, alpha.f = 0.5)
-  
+  axis_resolution = 24  # assumption that this is either (0, 12] or 24.
   if (dir.exists(expected_ts_path)) {
     
     fnames.ms5raw = dir(expected_ts_path, pattern = "[.]RData")
@@ -91,7 +91,7 @@ g.plot_ts = function(metadatadir = c(),
         
         # TO DO:
         # - (v) Replace colours by more contrasting colours
-        # - Allow for controlling timestamp axis, e.g. 1, 3, 6, 12, 24 hourly ticks by only date at main ticks
+        # - (v) Allow for controlling timestamp axis, e.g. 1, 3, 6, 12, 24 hourly ticks by only date at main ticks
         # - Tidy up code and move to separate function
         # - Allow for splitting (day/WW/.../x hours before onset/window surrounding each nap, etc)
         # - Allow for selecting variables to show?
@@ -144,10 +144,33 @@ g.plot_ts = function(metadatadir = c(),
         #----- Angle and overlapping classes and self-reported classes:
         par(mar = c(4, 4, 1, 8))
         plot(mdat$timestamp, mdat$angle, type = "l",
-             ylim = c(-90, 90), col = "grey", cex = 0.5, bty = "l",
+             ylim = c(-90, 90), col = "grey", cex = 0.5, bty = "l", xaxt = 'n',
              xlab = "Timestamp", ylab = "Angle (degrees)")
         axis(side = 4, at = seq(-90 + (180/Nlevels2/2), 90, by = 180 / Nlevels2),
              labels = YLAB, las = 2, cex.axis = 0.7)
+        
+        # POSlt = as.POSIXlt(mdat$timestamp)
+        date = as.numeric(format(mdat$timestamp, "%d"))
+        hour = as.numeric(format(mdat$timestamp, "%H"))
+        min = as.numeric(format(mdat$timestamp, "%M"))
+        sec = as.numeric(format(mdat$timestamp, "%S"))
+        
+        ticks = which(min == 0 & sec == 0 & hour %in% seq(0, 24, by = axis_resolution))
+        atTime = mdat$timestamp[ticks]
+        if (axis_resolution <= 12) {
+          labTime = paste0(hour[ticks], ":00")
+          axis(side = 1, at = atTime,
+               labels = labTime, las = 1, cex.axis = 0.7)
+        } else {
+          labTime = date[ticks]
+          axis(side = 1, at = atTime,
+               labels = rep("", length(labTime)), las = 1, cex.axis = 0.7)
+          axis(side = 1, at = atTime + 12 * 3600,
+               labels = labTime,  tick = FALSE, las = 1, cex.axis = 0.7)
+        }
+        
+                      
+        
         # COL = mycolors[1:Nlevels2]
         lev = 1
         for (si in 1:length(selfreport)) {
