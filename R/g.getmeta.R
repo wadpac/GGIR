@@ -142,20 +142,16 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   mon = INFI$monc
   dformat = INFI$dformc
   sf = INFI$sf
-  if (is.null(sf)) {
-    filequality$filecorrupt = TRUE
-    filecorrupt = TRUE
-    filetooshort = FALSE
-    filedoesnotholdday = FALSE
-    NFilePagesSkipped = 0
-    QClog = NULL
-    LD = 0 # to prevent while loop and skip reading of file
-    deviceSerialNumber = "notExtracted"
+
+  if (is.null(sf)) { # sf is NULL for corrupt files
+    return(invisible(list(filecorrupt = TRUE, filetooshort = FALSE, NFilePagesSkipped = 0,
+                     metalong = c(), metashort = c(), wday = c(), wdayname = c(),
+                     windowsizes = c(), bsc_qc = bsc_qc, QClog = NULL)))
   }
-  if (LD > 1) {
-    hvars = g.extractheadervars(INFI)
-    deviceSerialNumber = hvars$deviceSerialNumber
-  }
+
+  hvars = g.extractheadervars(INFI)
+  deviceSerialNumber = hvars$deviceSerialNumber
+
   # if GENEActiv csv, deprecated function
   if (mon == MONITOR$GENEACTIV && dformat == FORMAT$CSV && length(params_rawdata[["rmc.firstrow.acc"]]) == 0) {
     stop("The GENEActiv csv reading functionality is deprecated in GGIR from the version 2.6-4 onwards. Please, use either the GENEActiv bin files or try to read the csv files with GGIR::read.myacc.csv")
@@ -170,48 +166,44 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       params_rawdata[["dynrange"]] = 6
     }
   }
-  if (LD > 1) {
-    if (sf == 0) stop("Sample frequency not recognised")
-    header = INFI$header
-    ID = hvars$ID
-    
-    # get now-wear, clip, and blocksize parameters (thresholds)
-    ncb_params = get_nw_clip_block_params(chunksize = params_rawdata[["chunksize"]],
-                                          dynrange = params_rawdata[["dynrange"]],
-                                          mon, rmc.noise = params_rawdata[["rmc.noise"]],
-                                          sf, dformat,
-                                          rmc.dynamic_range = params_rawdata[["rmc.dynamic_range"]])
-    clipthres = ncb_params$clipthres
-    blocksize = ncb_params$blocksize
-    sdcriter = ncb_params$sdcriter
-    racriter = ncb_params$racriter
-    n_decimal_places = 4 # number of decimal places to which features should be rounded
-    #creating matrixes for storing output
-    S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
-    nev = 80*10^7 # number expected values
-    # NR = ceiling((90*10^6) / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
-    NR = ceiling(nev / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
-    metashort = matrix(" ",NR,(1 + nmetrics)) #generating output matrix for acceleration signal
-    temp.available = ("temperature" %in% colnames(P$data))
-    light.available = ("light" %in% colnames(P$data))
-    QClog = NULL
 
-    # output matrix for 15 minutes summaries
-    if (!temp.available) {
-      metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 4)
-    } else if (light.available) { {
-      metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 7)
-    } else {
-      metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 5)
-    }
-    #===============================================
-    # Read file
-    switchoffLD = 0 #dummy variable part "end of loop mechanism"
-    sforiginal = sf
+  if (sf == 0) stop("Sample frequency not recognised")
+  header = INFI$header
+  ID = hvars$ID
+  
+  # get now-wear, clip, and blocksize parameters (thresholds)
+  ncb_params = get_nw_clip_block_params(chunksize = params_rawdata[["chunksize"]],
+                                        dynrange = params_rawdata[["dynrange"]],
+                                        mon, rmc.noise = params_rawdata[["rmc.noise"]],
+                                        sf, dformat,
+                                        rmc.dynamic_range = params_rawdata[["rmc.dynamic_range"]])
+  clipthres = ncb_params$clipthres
+  blocksize = ncb_params$blocksize
+  sdcriter = ncb_params$sdcriter
+  racriter = ncb_params$racriter
+  n_decimal_places = 4 # number of decimal places to which features should be rounded
+  #creating matrixes for storing output
+  S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
+  nev = 80*10^7 # number expected values
+  # NR = ceiling((90*10^6) / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
+  NR = ceiling(nev / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
+  metashort = matrix(" ",NR,(1 + nmetrics)) #generating output matrix for acceleration signal
+  temp.available = ("temperature" %in% colnames(P$data))
+  light.available = ("light" %in% colnames(P$data))
+  QClog = NULL
+
+  # output matrix for 15 minutes summaries
+  if (!temp.available) {
+    metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 4)
+  } else if (light.available) {
+    metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 7)
   } else {
-    metalong = NULL
-    metashort = NULL
+    metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 5)
   }
+  #===============================================
+  # Read file
+  switchoffLD = 0 #dummy variable part "end of loop mechanism"
+  sforiginal = sf
 
   PreviousLastValue = c(0, 0, 1)
   PreviousLastTime = NULL
@@ -280,14 +272,14 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       data = as.matrix(data, rownames.force = FALSE)
       #add left over data from last time
       if (nrow(S) > 0) {
-        if (params_rawdata[["imputeTimegaps"]] == TRUE) {
+        if (params_rawdata[["imputeTimegaps"]]) {
           if ("remaining_epochs" %in% colnames(data)) {
             if (ncol(S) == (ncol(data) - 1)) {
               # this block has time gaps while the previous block did not
               S = cbind(S, 1)
               colnames(S)[4] = "remaining_epochs"
             }
-          } else if ("remaining_epochs" %in% colnames(S) == TRUE) {
+          } else if ("remaining_epochs" %in% colnames(S)) {
             if ((ncol(S) - 1) == ncol(data)) {
               # this block does not have time gaps while the previous blog did
               data = cbind(data, 1)
@@ -649,7 +641,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     i = i + 1 #go to next block
   }
   # deriving timestamps
-  if (filecorrupt == FALSE && filetooshort == FALSE && filedoesnotholdday == FALSE) {
+  if (!filecorrupt && !filetooshort && !filedoesnotholdday) {
     cut = count:nrow(metashort)
     if (length(cut) > 1) {
       tmp = metashort[-cut,]
