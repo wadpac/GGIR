@@ -5,6 +5,112 @@ g.plot_ts = function(metadatadir = c(),
                      verbose = TRUE,
                      part6_threshold_combi = NULL) {
   
+  
+  # Declare functions:
+  panelplot = function(mdat, ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
+                       BCN, BCC, axis_resolution) {
+    # create vector with color blind friendly colors
+    mycolors = cbPalette <- c("#E69F00","#56B4E9","#009E73","#F0E442",
+                              "#0072B2","#D55E00","#CC79A7", "#999999",
+                              "#222255", "black")
+    mygreys = rep(c("darkblue", "lightblue"), 20)
+    mygreys = adjustcolor(col = mygreys, alpha.f = 0.5)
+    
+    Ymax = max(mdat$ACC) * 2
+    Ymin = min(mdat$ACC)
+    
+    layout.matrix <- matrix(c(1, 2, 3), nrow = 3, ncol = 1)
+    layout(mat = layout.matrix,
+           heights = c(1, 2, 2), # Heights rows
+           widths = c(5)) # Widths columns
+    #----- LUX
+    par(mar = c(1, 4, 1, 8))
+    plot(mdat$timestamp, mdat$lightpeak / 1000, type = "l", col = "grey", cex = 0.8, bty = "l",
+         xlab = "Timestamp", ylab = "Light (klux)", xaxt = 'n')
+    
+    #----- Acceleration and main non-overlapping behavioural classes
+    par(mar = c(1, 4, 1, 8))
+    plot(mdat$timestamp, mdat$ACC, type = "l",
+         ylim = c(0, Ymax), col = "grey", cex = 0.5, bty = "l", xaxt = 'n',
+         xlab = "", ylab =  expression(paste("Acceleration (m", italic("g"), ")")))
+    COL = mycolors[1:Nlevels[1]]
+    y = (0:(Nlevels[1] - 1)) / (Nlevels[1] - 1)
+    fraction_bottom_bars = 0.45
+    fraction_for_bars = 0.35
+    yticks = Ymax * fraction_bottom_bars + (y * fraction_for_bars * Ymax)
+    yStepSize = (Ymax * fraction_for_bars) / Nlevels[1]
+    axis(side = 4, at = yticks,
+         labels = BCN, las = 2, cex.axis = 0.7)
+    lev = 1
+    for (clai in 1:length(BCC)) {
+      tempi = which(mdat$class_id == BCC[clai])
+      if (length(tempi) > 0) {
+        A = rep(0, nrow(mdat))
+        A[tempi] = 1
+        t0 = mdat$timestamp[which(diff(c(0, A)) == 1)]
+        t1 = mdat$timestamp[which(diff(c(A, 0)) == -1) + 1]
+        y0 = yticks[lev] - yStepSize * 0.8
+        y1 = yticks[lev] + yStepSize * 0.8
+        rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = COL[clai], border = FALSE) #boarder = FALSE
+      }
+      lev = lev + 1
+    }
+    legend("top", legend = BCN, bty = 'n',
+           col = COL, pch = rep(15, length(BCN)),
+           ncol = pmin(5, length(BCN)), cex = 1, pt.cex = 2) #
+    #----- Angle and overlapping classes and self-reported classes:
+    par(mar = c(4, 4, 1, 8))
+    plot(mdat$timestamp, mdat$angle, type = "l",
+         ylim = c(-90, 90), col = "grey", cex = 0.5, bty = "l", xaxt = 'n',
+         xlab = "Timestamp", ylab = "Angle (degrees)")
+    axis(side = 4, at = seq(-90 + (180/Nlevels[2]/2), 90, by = 180 / Nlevels[2]),
+         labels = ylabels_plot2, las = 2, cex.axis = 0.7)
+    
+    # assign timestamp axis:
+    date = as.numeric(format(mdat$timestamp, "%d"))
+    hour = as.numeric(format(mdat$timestamp, "%H"))
+    min = as.numeric(format(mdat$timestamp, "%M"))
+    sec = as.numeric(format(mdat$timestamp, "%S"))
+    ticks = which(min == 0 & sec == 0 & hour %in% seq(0, 24, by = axis_resolution))
+    atTime = mdat$timestamp[ticks]
+    if (axis_resolution <= 12) {
+      labTime = paste0(hour[ticks], ":00")
+      axis(side = 1, at = atTime,
+           labels = labTime, las = 1, cex.axis = 0.7)
+    } else {
+      labTime = date[ticks]
+      axis(side = 1, at = atTime,
+           labels = rep("", length(labTime)), las = 1, cex.axis = 0.7)
+      axis(side = 1, at = atTime + 12 * 3600,
+           labels = labTime,  tick = FALSE, las = 1, cex.axis = 0.7)
+    }
+    
+    lev = 1
+    for (si in 1:length(selfreport_vars)) {
+      tempi = which(mdat$selfreport == selfreport_vars[si])
+      if (length(tempi) > 0) {
+        A = rep(0, nrow(mdat))
+        A[tempi] = 1
+        t0 = mdat$timestamp[which(diff(c(0, A)) == 1)]
+        t1 = mdat$timestamp[which(diff(c(A, 0)) == -1)]
+        y0 = -90 + 180 * ((lev - 1) / Nlevels[2])
+        y1 = -90 + 180 * ((lev) / Nlevels[2])
+        rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = mygreys[lev], border = FALSE)
+      }
+      lev = lev + 1
+    }
+    for (labi in 1:length(binary_vars)) {
+      if (length(table(mdat[,binary_vars[labi]])) > 1) {
+        t0 = mdat$timestamp[which(diff(c(0, mdat[,binary_vars[labi]])) == 1)]
+        t1 = mdat$timestamp[which(diff(c(mdat[,binary_vars[labi]], 0)) == -1)]
+        y0 = -90 + 180 * ((lev - 1) / Nlevels[2])
+        y1 = -90 + 180 * ((lev) / Nlevels[2])
+        rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = mygreys[lev], border = FALSE)
+      }
+      lev = lev + 1
+    }
+  }
+  
   #---------------------------------------
   # Attempt to load time series directly
   
@@ -27,13 +133,8 @@ g.plot_ts = function(metadatadir = c(),
   #   }
   # }
   
-  # create vector with color blind friendly colors
-  mycolors = cbPalette <- c("#E69F00","#56B4E9","#009E73","#F0E442",
-                            "#0072B2","#D55E00","#CC79A7", "#999999",
-                            "#222255", "black")
-  mygreys = rep(c("darkblue", "lightblue"), 20)
-  mygreys = adjustcolor(col = mygreys, alpha.f = 0.5)
-  axis_resolution = 24  # assumption that this is either (0, 12] or 24.
+ 
+  axis_resolution = 6  # assumption that this is either (0, 12] or 24.
   if (dir.exists(expected_ts_path)) {
     
     fnames.ms5raw = dir(expected_ts_path, pattern = "[.]RData")
@@ -45,159 +146,67 @@ g.plot_ts = function(metadatadir = c(),
     
     mdat = NULL
     if (ts_exists) {
-      # Extract behavioural class names:
+     
+      Nlevels = c(0, 0)
+      # Extract behavioural class names and codes:
       legendfiles = list.files(path = paste0(metadatadir, "/meta/ms5.outraw"), pattern = "codes", full.names = TRUE)
       df = file.info(legendfiles)
       legendfiles = rownames(df)[which.max(df$mtime)]
-      legend = read.csv(rownames(df)[which.max(df$mtime)])
-      behClassNames = legend$class_name
-      behClassCodes = legend$class_id
+      legendF = read.csv(rownames(df)[which.max(df$mtime)])
+      BCN = legendF$class_name # behavioural class names (characters)
+      BCC = legendF$class_id # behavioural class codes (numeric)
       
-      neworder = c(grep(pattern = "sleep", x = behClassNames), grep(pattern = "IN", x = behClassNames),
-                   grep(pattern = "LIG", x = behClassNames), grep(pattern = "MVPA", x = behClassNames)) 
-      behClassNames = behClassNames[neworder]
-      behClassCodes = behClassCodes[neworder]
-      class2remove = grep(pattern = "unbt|spt_wake", x = behClassNames, invert = FALSE, value = FALSE)
-      behClassNames = behClassNames[-class2remove]
-      behClassCodes = behClassCodes[behClassCodes %in% behClassCodes[class2remove] == FALSE]
+      neworder = c(grep(pattern = "sleep", x = BCN), grep(pattern = "IN", x = BCN),
+                   grep(pattern = "LIG", x = BCN), grep(pattern = "MVPA", x = BCN)) 
+      BCN = BCN[neworder]
+      BCC = BCC[neworder]
+      class2remove = grep(pattern = "unbt|spt_wake", x = BCN, invert = FALSE, value = FALSE)
+      BCN = BCN[-class2remove]
+      BCC = BCC[BCC %in% BCC[class2remove] == FALSE]
       
-      Nlevels = length(behClassCodes)
-      maxN = 9
-      if (Nlevels > maxN) {
-        behClassCodes = behClassCodes[1:maxN]
-        behClassNames = behClassNames[1:maxN]
-        Nlevels = maxN
+      Nlevels[1] = length(BCC)
+      maxN = 9 # maximum number of levels to show
+      if (Nlevels[1] > maxN) {
+        BCC = BCC[1:maxN]
+        BCN = BCN[1:maxN]
+        Nlevels[1] = maxN
       }
-      behClassNames = gsub(pattern = "day_|spt_", replacement = "", x = behClassNames)
-      behClassNames = gsub(pattern = "sleep", replacement = "noc_sleep", x = behClassNames)
+      BCN = gsub(pattern = "day_|spt_", replacement = "", x = BCN)
+      BCN = gsub(pattern = "sleep", replacement = "noc_sleep", x = BCN)
       
-      selfreport = c("nap", "nonwear", "sleeplog")
+      # Bottom plot
+      selfreport_vars = c("nap", "nonwear", "sleeplog")
+      binary_vars = c("SleepPeriodTime", "sibdetection", "invalidepoch")
+      Nlevels[2] = length(binary_vars) + length(selfreport_vars)
+      ylabels_plot2 = c(selfreport_vars, binary_vars)
+      ylabels_plot2 = gsub(pattern = "invalidepoch", replacement = "invalid", x = ylabels_plot2)
+      ylabels_plot2 = gsub(pattern = "SleepPeriodTime", replacement = "acc_spt", x = ylabels_plot2)
+      ylabels_plot2 = gsub(pattern = "sibdetection", replacement = "acc_sib", x = ylabels_plot2)
+      ylabels_plot2 = gsub(pattern = "nap", replacement = "selfreported_nap", x = ylabels_plot2)
+      ylabels_plot2 = gsub(pattern = "nonwear", replacement = "selfreported_nonwear", x = ylabels_plot2)
+      ylabels_plot2 = gsub(pattern = "sleeplog", replacement = "selfreported_sleepwindow", x = ylabels_plot2)
       
-      binlabs = c("SleepPeriodTime", "sibdetection", "invalidepoch")
-      Nlevels2 = length(binlabs) + length(selfreport)
-      
-      YLAB = c(selfreport, binlabs)
-      YLAB = gsub(pattern = "invalidepoch", replacement = "invalid", x = YLAB)
-      YLAB = gsub(pattern = "SleepPeriodTime", replacement = "acc_spt", x = YLAB)
-      YLAB = gsub(pattern = "sibdetection", replacement = "acc_sib", x = YLAB)
-      YLAB = gsub(pattern = "nap", replacement = "selfreported_nap", x = YLAB)
-      YLAB = gsub(pattern = "nonwear", replacement = "selfreported_nonwear", x = YLAB)
-      YLAB = gsub(pattern = "sleeplog", replacement = "selfreported_sleepwindow", x = YLAB)
       # loop through files
       for (i in f0:f1) {
-        print(paste0("file", i))
         load(file = paste0(metadatadir, "/meta/ms5.outraw/",
                            part6_threshold_combi, "/", fnames.ms5raw[i]))
         
         # TO DO:
-        # - (v) Replace colours by more contrasting colours
-        # - (v) Allow for controlling timestamp axis, e.g. 1, 3, 6, 12, 24 hourly ticks by only date at main ticks
-        # - Tidy up code and move to separate function
         # - Allow for splitting (day/WW/.../x hours before onset/window surrounding each nap, etc)
+        # - Store each of these windows in the same pdf, starting with an overview plot by default
         # - Allow for selecting variables to show?
-        # - Add vertical grid to ease inspection
-        mdat = mdat[1:1440,]
-        Ymax = max(mdat$ACC) * 2
-        Ymin = min(mdat$ACC)
+        # - Add vertical grid to ease inspection tailored to window selected
+        
+        
+        mdat = mdat[1:2880,]
         
         graphics.off()
         x11()
-        layout.matrix <- matrix(c(1, 2, 3), nrow = 3, ncol = 1)
-        layout(mat = layout.matrix,
-               heights = c(1, 2, 2), # Heights rows
-               widths = c(5)) # Widths columns
-        #----- LUX
-        par(mar = c(1, 4, 1, 8))
-        plot(mdat$timestamp, mdat$lightpeak / 1000, type = "l", col = "grey", cex = 0.8, bty = "l",
-             xlab = "Timestamp", ylab = "Light (klux)", xaxt = 'n')
         
-        #----- Acceleration and main non-overlapping behavioural classes
-        par(mar = c(1, 4, 1, 8))
-        plot(mdat$timestamp, mdat$ACC, type = "l",
-             ylim = c(0, Ymax), col = "grey", cex = 0.5, bty = "l", xaxt = 'n',
-             xlab = "", ylab =  expression(paste("Acceleration (m", italic("g"), ")")))
-        COL = mycolors[1:Nlevels]
-        y = (0:(Nlevels - 1)) / (Nlevels - 1)
-        
-        
-        yticks = Ymax * 0.45 + (y * 0.35 * Ymax)
-        yStepSize = (Ymax * 0.35) / Nlevels
-        axis(side = 4, at = yticks,
-             labels = behClassNames, las = 2, cex.axis = 0.7)
-        lev = 1
-        for (clai in 1:length(behClassCodes)) {
-          tempi = which(mdat$class_id == behClassCodes[clai])
-          if (length(tempi) > 0) {
-            A = rep(0, nrow(mdat))
-            A[tempi] = 1
-            t0 = mdat$timestamp[which(diff(c(0, A)) == 1)]
-            t1 = mdat$timestamp[which(diff(c(A, 0)) == -1) + 1]
-            y0 = yticks[lev] - yStepSize * 0.8
-            y1 = yticks[lev] + yStepSize * 0.8
-            rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = COL[clai], border = FALSE) #boarder = FALSE
-          }
-          lev = lev + 1
-        }
-        legend("top", legend = behClassNames, bty = 'n',
-               col = COL, pch = rep(15, length(behClassNames)),
-               ncol = pmin(5, length(behClassNames)), cex = 1, pt.cex = 2) #
-        #----- Angle and overlapping classes and self-reported classes:
-        par(mar = c(4, 4, 1, 8))
-        plot(mdat$timestamp, mdat$angle, type = "l",
-             ylim = c(-90, 90), col = "grey", cex = 0.5, bty = "l", xaxt = 'n',
-             xlab = "Timestamp", ylab = "Angle (degrees)")
-        axis(side = 4, at = seq(-90 + (180/Nlevels2/2), 90, by = 180 / Nlevels2),
-             labels = YLAB, las = 2, cex.axis = 0.7)
-        
-        # POSlt = as.POSIXlt(mdat$timestamp)
-        date = as.numeric(format(mdat$timestamp, "%d"))
-        hour = as.numeric(format(mdat$timestamp, "%H"))
-        min = as.numeric(format(mdat$timestamp, "%M"))
-        sec = as.numeric(format(mdat$timestamp, "%S"))
-        
-        ticks = which(min == 0 & sec == 0 & hour %in% seq(0, 24, by = axis_resolution))
-        atTime = mdat$timestamp[ticks]
-        if (axis_resolution <= 12) {
-          labTime = paste0(hour[ticks], ":00")
-          axis(side = 1, at = atTime,
-               labels = labTime, las = 1, cex.axis = 0.7)
-        } else {
-          labTime = date[ticks]
-          axis(side = 1, at = atTime,
-               labels = rep("", length(labTime)), las = 1, cex.axis = 0.7)
-          axis(side = 1, at = atTime + 12 * 3600,
-               labels = labTime,  tick = FALSE, las = 1, cex.axis = 0.7)
-        }
-        
-                      
-        
-        # COL = mycolors[1:Nlevels2]
-        lev = 1
-        for (si in 1:length(selfreport)) {
-          tempi = which(mdat$selfreport == selfreport[si])
-          if (length(tempi) > 0) {
-            A = rep(0, nrow(mdat))
-            A[tempi] = 1
-            t0 = mdat$timestamp[which(diff(c(0, A)) == 1)]
-            t1 = mdat$timestamp[which(diff(c(A, 0)) == -1)]
-            y0 = -90 + 180 * ((lev - 1) / Nlevels2)
-            y1 = -90 + 180 * ((lev) / Nlevels2)
-            rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = mygreys[lev], border = FALSE)
-          }
-          lev = lev + 1
-        }
-        for (labi in 1:length(binlabs)) {
-          if (length(table(mdat[,binlabs[labi]])) > 1) {
-            t0 = mdat$timestamp[which(diff(c(0, mdat[,binlabs[labi]])) == 1)]
-            t1 = mdat$timestamp[which(diff(c(mdat[,binlabs[labi]], 0)) == -1)]
-            y0 = -90 + 180 * ((lev - 1) / Nlevels2)
-            y1 = -90 + 180 * ((lev) / Nlevels2)
-            rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = mygreys[lev], border = FALSE)
-          }
-          lev = lev + 1
-        }
-        print("end")
-        # browser()
+       
+        panelplot(mdat, ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
+                  BCN, BCC, axis_resolution)
+        browser()
       }
     }
   }
