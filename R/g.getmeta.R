@@ -270,7 +270,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       }
 
       data = as.matrix(data, rownames.force = FALSE)
-      #add left over data from last time
+      #add leftover data from last time
       if (nrow(S) > 0) {
         if (params_rawdata[["imputeTimegaps"]]) {
           if ("remaining_epochs" %in% colnames(data)) {
@@ -305,7 +305,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       } else if (use.temp) {
         metricnames_long = c("timestamp","nonwearscore","clippingscore","temperaturemean","EN")
       } else {
-        metricnames_long = c("timestamp","nonwearscore","clippingscore","en")
+        metricnames_long = c("timestamp","nonwearscore","clippingscore","EN")
       }
       rm(SWMT)
       if (exists("P")) rm(P); gc()
@@ -328,7 +328,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           }
         }
         if ((LD - use) > 1) {
-          S = data[(use + 1):LD,] #store left over
+          S = data[(use + 1):LD,] #store leftover data
           if (ncol(S) == 1) {
             S = t(S)
           }
