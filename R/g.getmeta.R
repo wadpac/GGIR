@@ -203,7 +203,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   #===============================================
   # Read file
   switchoffLD = 0 #dummy variable part "end of loop mechanism"
-  sforiginal = sf
 
   PreviousLastValue = c(0, 0, 1)
   PreviousLastTime = NULL
@@ -364,11 +363,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           data[, c("x", "y", "z")] = data[, c("x", "y", "z")] + scale(yy, center = rep(meantempcal,3), scale = 1/tempoffset)
         }
 
-        ## resample experiment to see whehter processing time can be much improved if data is resampled
-        sfold = sforiginal # keep sf, because light, temperature are not resampled at the moment
-        # STORE THE RAW DATA
-        # data[,1], data[,2], data[,3], starttime, (temperature, light)
-        
         EN = sqrt(data[,1]^2 + data[,2]^2 + data[,3]^2) # Do not delete Used for long epoch calculation
         accmetrics = g.applymetrics(data = data,
                                     sf = sf, ws3 = ws3,
@@ -457,7 +451,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         blocksize = BlocksizeNew$blocksize
         ##==================================================
         # MODULE 2 - non-wear time & clipping
-        NWCW = detect_nonwear_clipping(data = data, windowsizes = c(ws3, ws2, ws), sf = sfold,
+        NWCW = detect_nonwear_clipping(data = data, windowsizes = c(ws3, ws2, ws), sf = sf,
                                        clipthres = clipthres, sdcriter = sdcriter, racriter = racriter,
                                        nonwear_approach = params_cleaning[["nonwear_approach"]],
                                        params_rawdata = params_rawdata)
@@ -471,23 +465,23 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           if (mon == MONITOR$GENEACTIV || mon == MONITOR$AXIVITY) {
             #light (running mean)
             lightc = cumsum(c(0,light))
-            select = seq(1, length(lightc), by = (ws2 * sfold))
+            select = seq(1, length(lightc), by = (ws2 * sf))
             lightmean = diff(lightc[round(select)]) / abs(diff(round(select)))
             rm(lightc); gc()
             #light (running max)
             lightmax = matrix(0, length(lightmean), 1)
-            for (li in 1:(length(light)/(ws2*sfold))) {
-              tempm = max(light[((li - 1) * (ws2 * sfold)):(li * (ws2 * sfold))])
+            for (li in 1:(length(light)/(ws2*sf))) {
+              tempm = max(light[((li - 1) * (ws2 * sf)):(li * (ws2 * sf))])
               if (length(tempm) > 0) {
                 lightmax[li] = tempm[1]
               } else {
-                lightmax[li] = max(light[((li - 1) * (ws2 * sfold)):(li * (ws2 * sfold))])
+                lightmax[li] = max(light[((li - 1) * (ws2 * sf)):(li * (ws2 * sf))])
               }
             }
           }
           #temperature (running mean)
           temperaturec = cumsum(c(0, temperature))
-          select = seq(1, length(temperaturec), by = (ws2 * sfold))
+          select = seq(1, length(temperaturec), by = (ws2 * sf))
           temperatureb = diff(temperaturec[round(select)]) / abs(diff(round(select)))
           rm(temperaturec); gc()
         }
@@ -550,13 +544,13 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             # metalong
             metalong = impute_at_epoch_level(gapsize = floor(remaining_epochs[gaps_to_fill] * (ws3/ws2)) + 1, # plus 1 needed to count for current epoch
                                              timeseries = metalong,
-                                             gap_index = floor(gaps_to_fill / (ws2 * sfold)) + count2, # Using floor so that the gap is filled in the epoch in which it is occurring
+                                             gap_index = floor(gaps_to_fill / (ws2 * sf)) + count2, # Using floor so that the gap is filled in the epoch in which it is occurring
                                              metnames = metricnames_long)
             # metashort
             # added epoch-level nonwear to metashort to get it imputed, then remove it
             metashort = impute_at_epoch_level(gapsize = remaining_epochs[gaps_to_fill], # gapsize in epochs
                                               timeseries = metashort,
-                                              gap_index = floor(gaps_to_fill / (ws3 * sfold)) + count, # Using floor so that the gap is filled in the epoch in which it is occurring
+                                              gap_index = floor(gaps_to_fill / (ws3 * sf)) + count, # Using floor so that the gap is filled in the epoch in which it is occurring
                                               metnames = c("timestamp", metnames)) # epoch level index of gap
             nr_after = c(nrow(metalong), nrow(metashort))
             count2 = count2 + (nr_after[1] - nr_before[1])
