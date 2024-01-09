@@ -69,10 +69,11 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                           do.brondcounts = params_metrics[["do.brondcounts"]],
                           do.neishabouricounts = params_metrics[["do.neishabouricounts"]],
                           stringsAsFactors = TRUE)
+
   if (length(params_rawdata[["chunksize"]]) == 0) params_rawdata[["chunksize"]] = 1
   if (params_rawdata[["chunksize"]] > 1.5) params_rawdata[["chunksize"]] = 1.5
   if (params_rawdata[["chunksize"]] < 0.2) params_rawdata[["chunksize"]] = 0.2
-  gyro_available = FALSE
+
   nmetrics = sum(c(params_metrics[["do.bfen"]], params_metrics[["do.enmo"]],
                    params_metrics[["do.lfenmo"]], params_metrics[["do.en"]],
                    params_metrics[["do.hfen"]], params_metrics[["do.hfenplus"]],
@@ -101,8 +102,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   if (length(nmetrics) == 0) {
     if (verbose == TRUE) cat("\nWARNING: No metrics selected\n")
   }
-  filename = unlist(strsplit(as.character(datafile),"/"))
-  filename = filename[length(filename)]
   # parameters
   ws3 = params_general[["windowsizes"]][1]; ws2 = params_general[["windowsizes"]][2]; ws = params_general[["windowsizes"]][3]
   if ((ws2/60) != round(ws2/60)) {
@@ -168,8 +167,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   }
 
   if (sf == 0) stop("Sample frequency not recognised")
-  header = INFI$header
-  ID = hvars$ID
   
   # get now-wear, clip, and blocksize parameters (thresholds)
   ncb_params = get_nw_clip_block_params(chunksize = params_rawdata[["chunksize"]],
