@@ -1,4 +1,4 @@
-get_nw_clip_block_params = function(chunksize, dynrange, monc, rmc.noise=c(), sf, dformat,
+get_nw_clip_block_params = function(chunksize, dynrange, monc, dformat, deviceSerialNumber = "", rmc.noise=c(), sf,
                                     rmc.dynamic_range) {
   blocksize = round(14512 * (sf/50) * chunksize)
   if (monc == MONITOR$GENEA) blocksize = round(21467 * (sf/80)  * chunksize)
@@ -16,6 +16,18 @@ get_nw_clip_block_params = function(chunksize, dynrange, monc, rmc.noise=c(), sf
   if (monc == MONITOR$AXIVITY && dformat == FORMAT$CSV) blocksize = round(blocksize)
   if (monc == MONITOR$MOVISENS) blocksize = sf * 60 * 1440
   if (monc == MONITOR$VERISENSE && dformat == FORMAT$CSV) blocksize = round(blocksize)
+
+
+  if (monc == MONITOR$ACTIGRAPH) {
+    # If Actigraph then try to specify dynamic range based on Actigraph model
+    if (length(grep(pattern = "CLE", x = deviceSerialNumber)) == 1) {
+      dynrange = 6
+    } else if (length(grep(pattern = "MOS", x = deviceSerialNumber)) == 1) {
+      dynrange = 8
+    } else if (length(grep(pattern = "NEO", x = deviceSerialNumber)) == 1) {
+      dynrange = 6
+    }
+  }
 
   # Clipping threshold: estimate number of data points of clipping based on raw data at about 87 Hz
   if (length(dynrange) > 0) {

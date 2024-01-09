@@ -95,7 +95,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   if (length(myfun) != 0) {
     nmetrics = nmetrics + length(myfun$colnames)
     # check myfun object already, because we do not want to discover
-    # bugs after waiting for the data to be load
+    # bugs after waiting for the data to load
     check_myfun(myfun, params_general[["windowsizes"]])
   }
   
@@ -121,7 +121,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     }
   }
   params_general[["windowsizes"]] = c(ws3,ws2,ws)
-  data = PreviousEndPage = starttime = wday = wdayname = c()
+  PreviousEndPage = starttime = wday = wdayname = c()
   
   filequality = data.frame(filetooshort = FALSE, filecorrupt = FALSE,
                            filedoesnotholdday = FALSE, NFilePagesSkipped = 0)
@@ -135,7 +135,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   count2 = 1 #count number of blocks read with length "ws2" (long epoch, 15 minutes by default)
   LD = 2 #dummy variable used to identify end of file and to make the process stop
   bsc_qc = data.frame(time = c(), size = c(), stringsAsFactors = FALSE)
-  # inspect file
   
   if (length(inspectfileobject) > 0) {
     INFI = inspectfileobject
@@ -153,6 +152,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                      windowsizes = c(), bsc_qc = bsc_qc, QClog = NULL)))
   }
 
+  if (sf == 0) stop("Sample frequency not recognised")
+
   hvars = g.extractheadervars(INFI)
   deviceSerialNumber = hvars$deviceSerialNumber
 
@@ -160,24 +161,14 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   if (mon == MONITOR$GENEACTIV && dformat == FORMAT$CSV && length(params_rawdata[["rmc.firstrow.acc"]]) == 0) {
     stop("The GENEActiv csv reading functionality is deprecated in GGIR from the version 2.6-4 onwards. Please, use either the GENEActiv bin files or try to read the csv files with GGIR::read.myacc.csv")
   }
-  if (mon == MONITOR$ACTIGRAPH) {
-    # If Actigraph then try to specify dynamic range based on Actigraph model
-    if (length(grep(pattern = "CLE", x = deviceSerialNumber)) == 1) {
-      params_rawdata[["dynrange"]] = 6
-    } else if (length(grep(pattern = "MOS", x = deviceSerialNumber)) == 1) {
-      params_rawdata[["dynrange"]] = 8
-    } else if (length(grep(pattern = "NEO", x = deviceSerialNumber)) == 1) {
-      params_rawdata[["dynrange"]] = 6
-    }
-  }
 
-  if (sf == 0) stop("Sample frequency not recognised")
-  
   # get now-wear, clip, and blocksize parameters (thresholds)
   ncb_params = get_nw_clip_block_params(chunksize = params_rawdata[["chunksize"]],
                                         dynrange = params_rawdata[["dynrange"]],
-                                        mon, rmc.noise = params_rawdata[["rmc.noise"]],
-                                        sf, dformat,
+                                        monc = mon, dformat = dformat,
+                                        deviceSerialNumber = deviceSerialNumber,
+                                        rmc.noise = params_rawdata[["rmc.noise"]],
+                                        sf = sf,
                                         rmc.dynamic_range = params_rawdata[["rmc.dynamic_range"]])
   clipthres = ncb_params$clipthres
   blocksize = ncb_params$blocksize
@@ -357,7 +348,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         }
 
         # rescale data
-        data[, c("x", "y", "z")] = scale(data[, c("x", "y", "z")],center = -offset, scale = 1/scale)
+        data[, c("x", "y", "z")] = scale(data[, c("x", "y", "z")], center = -offset, scale = 1/scale)
         if (use.temp && length(meantempcal) > 0) {
           yy = as.matrix(cbind(temperature,
                                temperature,
