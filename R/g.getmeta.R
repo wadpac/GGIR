@@ -124,7 +124,12 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   data = PreviousEndPage = starttime = wday = wdayname = c()
   
   filequality = data.frame(filetooshort = FALSE, filecorrupt = FALSE,
-                           filedoesnotholdday = FALSE, NFilePagesSkipped = 0, stringsAsFactors = TRUE)
+                           filedoesnotholdday = FALSE, NFilePagesSkipped = 0)
+  filetooshort = FALSE
+  filecorrupt = FALSE
+  filedoesnotholdday = FALSE
+  NFilePagesSkipped = 0
+  
   i = 1 #counter to keep track of which binary block is being read
   count = 1 #counter to keep track of the number of seconds that have been read
   count2 = 1 #count number of blocks read with length "ws2" (long epoch, 15 minutes by default)
