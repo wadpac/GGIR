@@ -452,49 +452,49 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         # metalong
         col_mli = 2
         metalong[count2:((count2 - 1) + length(NWav)),col_mli] = NWav; col_mli = col_mli + 1
-        metalong[(count2):((count2 - 1) + length(NWav)),col_mli] = CWav; col_mli = col_mli + 1
-        if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) || 
-            mon == MONITOR$MOVISENS || (mon == MONITOR$AD_HOC && length(params_rawdata[["rmc.col.temp"]]) != 0)) { # going from sample to ws2
-          if (mon == MONITOR$GENEACTIV || mon == MONITOR$AXIVITY) {
-            #light (running mean)
-            lightc = cumsum(c(0,light))
-            select = seq(1, length(lightc), by = (ws2 * sf))
-            lightmean = diff(lightc[round(select)]) / abs(diff(round(select)))
-            rm(lightc); gc()
-            #light (running max)
-            lightmax = matrix(0, length(lightmean), 1)
-            for (li in 1:(length(light)/(ws2*sf))) {
-              tempm = max(light[((li - 1) * (ws2 * sf)):(li * (ws2 * sf))])
-              if (length(tempm) > 0) {
-                lightmax[li] = tempm[1]
-              } else {
-                lightmax[li] = max(light[((li - 1) * (ws2 * sf)):(li * (ws2 * sf))])
-              }
+        metalong[count2:((count2 - 1) + length(NWav)),col_mli] = CWav; col_mli = col_mli + 1
+
+        if(light.available) {
+          #light (running mean)
+          lightc = cumsum(c(0,light))
+          select = seq(1, length(lightc), by = (ws2 * sf))
+          lightmean = diff(lightc[round(select)]) / abs(diff(round(select)))
+          rm(lightc); gc()
+          #light (running max)
+          lightmax = matrix(0, length(lightmean), 1)
+          for (li in 1:(length(light)/(ws2*sf))) {
+            tempm = max(light[((li - 1) * (ws2 * sf)):(li * (ws2 * sf))])
+            if (length(tempm) > 0) {
+              lightmax[li] = tempm[1]
+            } else {
+              lightmax[li] = max(light[((li - 1) * (ws2 * sf)):(li * (ws2 * sf))])
             }
           }
+
+          metalong[(count2):((count2 - 1) + length(NWav)), col_mli] = round(lightmean, digits = n_decimal_places)
+          col_mli = col_mli + 1
+          metalong[(count2):((count2 - 1) + length(NWav)), col_mli] = round(lightmax, digits = n_decimal_places)
+          col_mli = col_mli + 1
+        }
+
+        if(use.temp) {
           #temperature (running mean)
           temperaturec = cumsum(c(0, temperature))
           select = seq(1, length(temperaturec), by = (ws2 * sf))
           temperatureb = diff(temperaturec[round(select)]) / abs(diff(round(select)))
           rm(temperaturec); gc()
+
+          metalong[(count2):((count2 - 1) + length(NWav)), col_mli] = round(temperatureb, digits = n_decimal_places)
+          col_mli = col_mli + 1
         }
+
         #EN going from sample to ws2
         ENc = cumsum(c(0, EN))
         select = seq(1, length(ENc), by = (ws2 * sf)) #<= EN is derived from data, so it needs the new sf
         ENb = diff(ENc[round(select)]) / abs(diff(round(select)))
         rm(ENc, EN); gc()
-        if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA)) {
-          metalong[(count2):((count2 - 1) + length(NWav)), col_mli] = round(lightmean, digits = n_decimal_places)
-          col_mli = col_mli + 1
-          metalong[(count2):((count2 - 1) + length(NWav)), col_mli] = round(lightmax, digits = n_decimal_places)
-          col_mli = col_mli + 1
-          metalong[(count2):((count2 - 1) + length(NWav)), col_mli] = round(temperatureb, digits = n_decimal_places)
-          col_mli = col_mli + 1
-        } else if (mon == MONITOR$MOVISENS || (mon == MONITOR$AD_HOC && length(params_rawdata[["rmc.col.temp"]]) != 0)) {
-          metalong[(count2):((count2 - 1) + length(NWav)), col_mli] = round(temperatureb, digits = n_decimal_places)
-          col_mli = col_mli + 1
-        }
         metalong[(count2):((count2 - 1) + length(NWav)), col_mli] = round(ENb, digits = n_decimal_places)
+
         if (exists("remaining_epochs")) {
           # Impute long gaps at epoch levels, because imputing them at raw level would
           # be too memory hungry
