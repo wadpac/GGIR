@@ -68,7 +68,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                           do.zcz = params_metrics[["do.zcz"]],
                           do.brondcounts = params_metrics[["do.brondcounts"]],
                           do.neishabouricounts = params_metrics[["do.neishabouricounts"]],
-                          stringsAsFactors = TRUE)
+                          stringsAsFactors = FALSE)
 
   if (length(params_rawdata[["chunksize"]]) == 0) params_rawdata[["chunksize"]] = 1
   if (params_rawdata[["chunksize"]] > 1.5) params_rawdata[["chunksize"]] = 1.5
