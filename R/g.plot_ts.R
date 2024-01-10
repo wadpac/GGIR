@@ -214,7 +214,7 @@ g.plot_ts = function(metadatadir = c(),
         subploti = cbind(subploti,
                          subploti + 720)
         for (jj in 1:nrow(subploti)) {
-          ma = which(acc_naps > subploti[jj, 1] + 60 & acc_naps < subploti[jj, 2] - 60)
+          ma = which(acc_naps > subploti[jj, 1] & acc_naps < subploti[jj, 2])
           if (length(ma) == 0) {
             is.na(subploti[jj, ]) = TRUE
           }
