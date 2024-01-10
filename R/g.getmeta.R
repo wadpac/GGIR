@@ -181,18 +181,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   # NR = ceiling((90*10^6) / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
   NR = ceiling(nev / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
   metashort = matrix(" ",NR,(1 + nmetrics)) #generating output matrix for acceleration signal
-  temp.available = ("temperature" %in% colnames(P$data))
-  light.available = ("light" %in% colnames(P$data))
   QClog = NULL
 
-  # output matrix for 15 minutes summaries
-  if (!temp.available) {
-    metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 4)
-  } else if (light.available) {
-    metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 7)
-  } else {
-    metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 5)
-  }
   #===============================================
   # Read file
   switchoffLD = 0 #dummy variable part "end of loop mechanism"
@@ -223,11 +213,23 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                             header = header)
     header = accread$header
     if ("PreviousLastValue" %in% names(accread$P)) { # output when reading ad-hoc csv
-      P = accread$P[1:2]
       PreviousLastValue = accread$P$PreviousLastValue
       PreviousLastTime = accread$P$PreviousLastTime
-    } else {
-      P = accread$P
+    } 
+    P = accread$P
+    
+    if (i == 1) {
+      temp.available = ("temperature" %in% colnames(P$data))
+      light.available = ("light" %in% colnames(P$data))
+
+      # output matrix for 15 minutes summaries
+      if (!temp.available) {
+        metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 4)
+      } else if (light.available) {
+        metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 7)
+      } else {
+        metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 5)
+      }
     }
     filequality = accread$filequality
     filetooshort = filequality$filetooshort
