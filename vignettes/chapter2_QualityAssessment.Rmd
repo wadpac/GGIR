@@ -30,7 +30,7 @@ Work in progress...
 
 ### Visualization: plots_to_check_data_quality.pdf
 
-### Report: part2_day_summary.csv => recording_duration
+### Report: part2_day_summary.csv =\> recording_duration
 
-### Report: part4_day_summary.csv => fraction_night_valid
+### Report: part4_day_summary.csv =\> fraction_night_valid
 
