@@ -9,6 +9,9 @@ g.plot_ts = function(metadatadir = c(),
   # Declare functions:
   panelplot = function(mdat, ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
                        BCN, BCC, axis_resolution) {
+    window_duration = mdat$timenum[nrow(mdat)] - mdat$timenum[1]
+    # print(paste0("window duration: ", window_duration / 3600))
+
     # create vector with color blind friendly colors
     mycolors = cbPalette <- c("#E69F00","#56B4E9","#009E73","#F0E442",
                               "#0072B2","#D55E00","#CC79A7", "#999999",
@@ -26,7 +29,7 @@ g.plot_ts = function(metadatadir = c(),
     #----- LUX
     par(mar = c(1, 4, 1, 8))
     plot(mdat$timestamp, mdat$lightpeak / 1000, type = "l", col = "grey", cex = 0.8, bty = "l",
-         xlab = "Timestamp", ylab = "Light (klux)", xaxt = 'n')
+         xlab = "Timestamp", ylab = "Light (klux)", xaxt = 'n', ylim = c(0, 20))
     
     #----- Acceleration and main non-overlapping behavioural classes
     par(mar = c(1, 4, 1, 8))
@@ -188,25 +191,43 @@ g.plot_ts = function(metadatadir = c(),
       
       # loop through files
       for (i in f0:f1) {
+        # cat("\n")
+        # print(paste0("file ", i, " ", fnames.ms5raw[i]))
         load(file = paste0(metadatadir, "/meta/ms5.outraw/",
                            part6_threshold_combi, "/", fnames.ms5raw[i]))
         
         # TO DO:
-        # - Allow for splitting (day/WW/.../x hours before onset/window surrounding each nap, etc)
-        # - Store each of these windows in the same pdf, starting with an overview plot by default
-        # - Allow for selecting variables to show?
         # - Add vertical grid to ease inspection tailored to window selected
         
+        pdf(paste0(metadatadir, "/results/file summary reports/Time_report_",
+                   fnames.ms5raw[i], ".pdf"), paper = "a4r",
+            width = 0, height = 0)
         
-        mdat = mdat[1:2880,]
-        
-        graphics.off()
-        x11()
-        
-       
+        # whole data
         panelplot(mdat, ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
-                  BCN, BCC, axis_resolution)
-        browser()
+                  BCN, BCC, axis_resolution = 24)
+
+        # zoom on windows that have either daytime sib or selfreported nap
+        acc_naps = which((mdat$sibdetection == 1 | mdat$selfreport == "nap") &
+                           mdat$SleepPeriodTime == 0)
+        subploti = seq(1, nrow(mdat), by = 540)
+        subploti = cbind(subploti,
+                         subploti + 720)
+        for (jj in 1:nrow(subploti)) {
+          ma = which(acc_naps > subploti[jj, 1] + 60 & acc_naps < subploti[jj, 2] - 60)
+          if (length(ma) == 0) {
+            is.na(subploti[jj, ]) = TRUE
+          }
+        }
+        subploti = subploti[!is.na(subploti[,1]), , drop = FALSE]
+        if (nrow(subploti) > 0) {
+          for (ani in 1:nrow(subploti)) {
+            panelplot(mdat[(subploti[ani, 1] + 1):subploti[ani, 2], ],
+                           ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
+                           BCN, BCC, axis_resolution = 1)
+          }
+        }
+        dev.off()
       }
     }
   }
