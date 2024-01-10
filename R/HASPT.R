@@ -58,9 +58,7 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
       # However, we need to take into account that there may be some
       # noise in the data, so threshold needs to be above zero
       x = activity
-      if (activityThreshold == 0) {
-        activityThreshold = sd(x) * 0.2
-      }
+      activityThreshold = sd(x) * 0.2
       # smooth x to 5 minute rolling average to reduce sensitivity to sudden peaks
       ma <- function(x, n = 300 / ws3){stats::filter(x, rep(1 / n, n), sides = 2)}
       x = ma(x)
