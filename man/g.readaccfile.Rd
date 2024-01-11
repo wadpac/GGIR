@@ -66,8 +66,7 @@
     \item \code{P} Block object extracted from file with format specific to
     accelerometer brand
     \item \code{filequality} Same as in function arguments
-    \item \code{switchoffLD} Boolean to indicate whether it is worth
-    continueing to read the next block of data or not
+    \item \code{isLastBlock} Boolean indicating whether this was the last block to read
     \item \code{endpage} Page number on which blocked ends, this will be
     used as input for argument PreviousEndPage when reading the next block.
   }

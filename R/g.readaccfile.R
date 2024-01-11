@@ -66,7 +66,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
   endpage = startpage + blocksize
 
   P = c()
-  switchoffLD = 0
+  isLastBlock = FALSE
 
   if (mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) {    
     try(expr = {P = GGIRread::readGENEActiv(filename = filename, start = startpage,
@@ -76,7 +76,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       names(P)[names(P) == "data.out"] = "data"
 
       if (nrow(P$data) < (blocksize*300)) {
-        switchoffLD = 1 # last block
+        isLastBlock = TRUE
       }
     }
   } else if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) {    
@@ -170,11 +170,11 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
         P = apply_readAxivity(bstart = startpage, bend = endpage)
         if (length(P) > 1) { # data reading succesful
           if (length(P$data) == 0) { # if this still does not work then
-            P = c() ; switchoffLD = 1
+            P = c() ; isLastBlock = TRUE
             if (blocknumber == 1) filequality$filetooshort = TRUE
           } else {
             if (nrow(P$data) < (sf * ws * 2 + 1)) {
-              P = c() ; switchoffLD = 1
+              P = c() ; isLastBlock = TRUE
               if (blocknumber == 1) filequality$filetooshort = TRUE
             } else {
               filequality$NFilePagesSkipped = NFilePagesSkipped # store number of pages jumped
@@ -205,8 +205,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                             data.table=FALSE, stringsAsFactors=FALSE)
     }, silent = TRUE)
     if (length(rawData) > 0) {
-      if (nrow(rawData) < blocksize) { #last block
-        switchoffLD = 1
+      if (nrow(rawData) < blocksize) { # last block
+        isLastBlock = TRUE
       }
       # resample the acceleration data, because AX3 data is stored at irregular time points
       rawTime = rawData[,1]
@@ -225,7 +225,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     file_length = unisensR::getUnisensSignalSampleCount(dirname(filename), "acc.bin")
     if (endpage > file_length) {
       endpage = file_length
-      switchoffLD = 1
+      isLastBlock = TRUE
     }
     P$data = unisensR::readUnisensSignalEntry(dirname(filename), "acc.bin",
                                               startIndex = startpage,
@@ -307,19 +307,19 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     if(length(P$data) <= 1 || nrow(P$data) == 0) {
       warning('\nFile empty, possibly corrupt.\n')
       P = c()
-      switchoffLD = 1
+      isLastBlock = TRUE
       filequality$filetooshort = TRUE
       filequality$filecorrupt = TRUE
     } else if (nrow(P$data) < (sf * ws * 2 + 1)) {
       # not enough data for analysis
       P = c()
-      switchoffLD = 1
+      isLastBlock = TRUE
       filequality$filetooshort = TRUE
     }
   }
 
   invisible(list(P = P,
                  filequality = filequality,
-                 switchoffLD = switchoffLD,
+                 isLastBlock = isLastBlock,
                  endpage = endpage,  startpage = startpage))
 }

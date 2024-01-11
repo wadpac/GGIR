@@ -185,7 +185,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
 
   #===============================================
   # Read file
-  switchoffLD = 0 #dummy variable part "end of loop mechanism"
+  isLastBlock = FALSE # dummy variable part "end of loop mechanism"
 
   PreviousLastValue = c(0, 0, 1)
   PreviousLastTime = NULL
@@ -236,7 +236,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     filecorrupt = filequality$filecorrupt
     filedoesnotholdday = filequality$filedoesnotholdday
     NFilePagesSkipped = filequality$NFilePagesSkipped
-    switchoffLD = accread$switchoffLD
+    isLastBlock = accread$isLastBlock
     PreviousEndPage = accread$endpage
     startpage = accread$startpage
     options(warn = -1) # to ignore warnings relating to failed mmap.load attempt
@@ -307,7 +307,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       LD = nrow(data)
       if (LD < (ws*sf) && i == 1) {
         warning('\nWarning data too short for doing non-wear detection 3\n')
-        switchoffLD = 1
+        isLastBlock = TRUE
         LD = 0 #ignore rest of the data and store what has been loaded so far.
       }
       
@@ -564,7 +564,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       LD = 0 #once LD < 1 the analysis stops, so this is a trick to stop it
       # stop reading because there is not enough data in this block
     }
-    if (switchoffLD == 1) LD = 0
+    if (isLastBlock) LD = 0
     if (ceiling(daylimit) != FALSE) {
       if (i == ceiling(daylimit)) { #to speed up testing only read first 'i' blocks of data
         LD = 0 #once LD < 1 the analysis stops, so this is a trick to stop it

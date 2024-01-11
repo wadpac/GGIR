@@ -90,7 +90,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
   i = 1 #counter to keep track of which binary block is being read
   count = 1 #counter to keep track of the number of seconds that have been read
   LD = 2 #dummy variable used to identify end of file and to make the process stop
-  switchoffLD = 0 #dummy variable part of "end of loop mechanism"
+  isLastBlock = FALSE # dummy variable part of "end of loop mechanism"
   header = NULL
   while (LD > 1) {
     P = c()
@@ -110,7 +110,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
                             header = header)
     header = accread$header
     P = accread$P
-    switchoffLD = accread$switchoffLD
+    isLastBlock = accread$isLastBlock
     PreviousEndPage = accread$endpage
 
     if (i == 1) {
@@ -220,7 +220,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
       # cat("\nstop reading because there is not enough data in this block\n")
     }
     spherepopulated = 0
-    if (switchoffLD == 1) {
+    if (isLastBlock) {
       LD = 0
     }
     meta_temp = data.frame(V = meta, stringsAsFactors = FALSE)
