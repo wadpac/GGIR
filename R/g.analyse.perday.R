@@ -30,12 +30,10 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
     if (firstmidnighti == 1) {  #if measurement starts at midnight
       ndays = ndays - 1
       startatmidnight =  1
-      cat("measurement starts at midnight or there is no midnight")
     }
     if (lastmidnight == time[length(time)] & nrow(metashort) < ((60/ws3) * 1440)) {	#if measurement ends at midnight
       ndays = ndays - 1
       endatmidnight = 1
-      cat("measurement ends at midnight or there is no midnight")
     }
   }
   
@@ -141,7 +139,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
     if (length(params_247[["qwindow"]]) < 2) params_247[["qwindow"]] = c()
     if (length(params_247[["qwindow"]]) > 0) {
       if (length(qwindow_names) == 1) {
-        cat("Argument to qwindow is invalid, requires a vector of at least length 2")
+        warning("Argument to qwindow is invalid, requires a vector of at least length 2")
       }
       if (length(qwindow_names) == 2) {
         if (params_247[["qwindow"]][1] != 0 | params_247[["qwindow"]][2] != 24) {

@@ -67,7 +67,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   n_ws2_perday = (1440*60) / ws2
   n_ws3_perday = (1440*60) / ws3
   if (((nrow(metalong)/((1440*60)/ws2)*10) - (nrow(metashort)/((60/ws3)*1440)) * 10) > 1) {
-    cat("Matrices 'metalong' and 'metashort' are not compatible")
+    stop("Matrices 'metalong' and 'metashort' are not compatible")
   }
   #----------------------
   # Extract ID centrally
@@ -168,9 +168,6 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   # LW = length(which(as.numeric(qcheck) != 1)) / (60/ws3) #number of minutes wear time between first and last midnights
   nfulldays = (lastmidnighti - firstmidnighti) / ((3600/ws2)*24)
   ndays = length(midnights) + 1 #ceiling(nfulldays + 2) # ceiling to cope with days with 23 hours
-  if (ndays != round(ndays)) { #day saving time causing trouble?
-    cat("One day in this measurement is longer or shorter than 24 hours (probably related to day saving time)")
-  }
   #-------------------------------------
   # Detect orientation (at the moment only desighned for hip with accelerometer):
   # assess which angle per axis is most strongly 24 hour correlated:
@@ -279,8 +276,6 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
       average24h = average24h / average24hc
       AveAccAve24hr[h] = mean(average24h) #average acceleration in an average 24 hour cycle
     }
-  } else {
-    cat("file skipped for general average caculation because not enough data")
   }
   rm(metalong); rm(metashort)
   dataqual_summary = data.frame(clipping_score = LC2  / ((LD/1440)*96),

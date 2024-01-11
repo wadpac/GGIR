@@ -150,7 +150,15 @@ GGIR(mode = 1:5,
 
       \item{part5_agg2_60seconds}{
         Boolean (default = FALSE).
-        Whether to use aggregate epochs to 60 seconds as part of the GGIR \link{g.part5} analysis.}
+        Whether to use aggregate epochs to 60 seconds as part of the GGIR 
+        \link{g.part5} analysis. Aggregation is doen by averaging. 
+        Note that when working with count metrics such as Neishabouri counts this
+        means that the threshold can stay the same as in part 2, because again the
+        threshold is expressed relative to the original epoch size, even if averaged
+        per minute. For example if we want to use a cut-point 100 count per minute
+        then we specify \code{mvpathreshold = 100 * (5/60)} as well as
+        `threshold.mod = \code{100 * (5/60)} regardless of whether we set 
+        part5_agg2_60seconds to TRUE or FALSE.}
 
       \item{print.filename}{
         Boolean (default = FALSE).
@@ -235,12 +243,15 @@ GGIR(mode = 1:5,
       \item{dataFormat}{
         Character (default = "raw").
         To indicate what the format is of the data in datadir.
-        Current alternatives: ukbiobank_csv, actiwatch_csv, and actiwatch_awd, which correspond
-        to the 5, 15 and 60 second epoch level data files provided by UK Biobank
-        in csv format, Actiwatch in csv format, and Actiwatch in awd format.
-        For the Actiwatch data functionality has been tested with example data from
-        only one research group. Please let us know if you have difficulties using this
-        functionality in your data.}
+        Current alternatives: ukbiobank_csv, actiwatch_csv, actiwatch_awd, and 
+        actigraph_csv, which correspond to epoch level data files from, respecitively,
+        UK Biobank in csv format, Actiwatch in csv format, Actiwatch in awd format,
+        and ActiGraph csv format. Here, the assumed epoch size for UK Biobank csv 
+        data is 5 seconds. The epoch size for the other non-raw data formats is 
+        flexible, but make sure that you set first value of argument 
+        \code{windowsizes} needs to be set accordingly. Also when working with 
+        non-raw data formats specify argument \code{extEpochData_timeformat} as
+        documented below.}
         
        \item{maxRecordingInterval}{
         Numeric (default = NULL).

@@ -1,6 +1,7 @@
 g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                      acc.metric = "ENMO", desiredtz = "",
-                     myfun=c(), sensor.location = "wrist", params_sleep = c(), zc.scale = 1, ...) {
+                     myfun=c(), sensor.location = "wrist",
+                     params_sleep = c(), zc.scale = 1, ...) {
   
   #get input variables
   input = list(...)
@@ -81,10 +82,6 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
     #========================================================================
     # timestamps
     time = format(IMP$metashort[,1])
-    # # angle
-    # if (length(which(colnames(IMP$metashort) == "anglez")) == 0 ) {
-    #   cat("metric anglez was not extracted, please make sure that anglez  is extracted")
-    # }
     fix_NA_invector = function(x){
       if (length(which(is.na(x) == TRUE)) > 0) {
         x[which(is.na(x) == T)] = 0
@@ -325,7 +322,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
       }
       detection.failed = FALSE
     } else {
-      cat("No midnights found")
+      message("No midnights found in file")
       detection.failed = TRUE
     }
     metatmp = data.frame(time, invalid, night = night, sleep = sleep, stringsAsFactors = T)
