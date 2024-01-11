@@ -2,7 +2,7 @@
 
 - Part 2: Fix bug where data_quality_report.csv contained incorrect filehealth[...] values whenever some of these values were supposed to be blank #1003
 
-- Part 1: Fix bug where on machines with GMT timezone and R >= 4.3.0, for GENEActiv .bin files, the starting timestamps of M$metalong and M$metashort were truncated to midninght #1000
+- Part 1: Fix bug where on machines with GMT timezone and R >= 4.3.0, for GENEActiv .bin files, the starting timestamps of M\$metalong and M\$metashort were truncated to midninght #1000
 
 - Part 5: Fix bug where part5 output showed duplicate rows when argument dayborder is set to nondefault value #1006
 
