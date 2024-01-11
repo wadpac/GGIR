@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.0-4
+
+- Part 2 and 5: Fix bug, timing of LX is now expressed on scale between 12 and 36 to allow for meaningful person level summary of this value #1012
+
 # CHANGES IN GGIR VERSION 3.0-3
 
 - Part 2: Fix bug where data_quality_report.csv contained incorrect filehealth[...] values whenever some of these values were supposed to be blank #1003
