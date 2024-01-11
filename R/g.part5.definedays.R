@@ -95,8 +95,12 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
       if (is.data.frame(qwindow)) {
         date_of_interest = substr(ts$time[qqq[1]], 1, 10)
         qdate = which(qwindow$ID == ID & qwindow$date == date_of_interest)
-        qnames = unlist(qwindow$qwindow_names[qdate])
-        qwindow = unlist(qwindow$qwindow_values[qdate])
+        if (length(qdate) == 1) { # if ID/date matched with activity log
+          qnames = unlist(qwindow$qwindow_names[qdate])
+          qwindow = unlist(qwindow$qwindow_values[qdate])
+        } else { # if ID/date not correctly matched with activity log
+          qwindow = c(0, 24)
+        }
       }
       breaks = qwindow2timestamp(qwindow, lastepoch = lastepoch)
       breaks_i = c()
