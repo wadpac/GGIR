@@ -72,24 +72,13 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     try(expr = {P = GGIRread::readGENEActiv(filename = filename, start = startpage,
                                             end = endpage, desiredtz = params_general[["desiredtz"]],
                                             configtz = params_general[["configtz"]])}, silent = TRUE)
-    if (length(P) == 0 && blocknumber == 1) { # if first block isn't read then probably corrupt file
-      warning('\nFile possibly corrupt\n')
-      P = c(); switchoffLD = 1
-      filequality$filecorrupt = TRUE
-    } else {
+    if (length(P) > 0 && ("data.out" %in% names(P))) {
       names(P)[names(P) == "data.out"] = "data"
 
       if (nrow(P$data) < (blocksize*300)) {
         switchoffLD = 1 # last block
       }
-
-      # check whether there is enough data
-      if (blocknumber == 1 && nrow(P$data) < (sf * ws * 2 + 1)) {
-        P = c();  switchoffLD = 1
-        filequality$filetooshort = TRUE
-      }
     }
-    #===============
   } else if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) {    
     # load rows 11:13  to investigate whether the file has a header
     # invisible because R complains about poor Actigraph file format,
@@ -119,15 +108,13 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                        data.table=FALSE, stringsAsFactors=FALSE))
     }, silent = TRUE)
     if (length(P$data) > 0) {
+      if (ncol(P$data) < 3) {
+        P$data = c()
+      }
       if (ncol(P$data) > 3) {
         P$data = P$data[, 2:4] # remove timestamp column, keep only XYZ columns
       }
-      colnames(P$data)[1:3] = c("x", "y", "z")
-
-      if (blocknumber == 1 && nrow(P$data) < (sf * ws * 2 + 1)) {
-        P = c() ; switchoffLD = 1
-        filequality$filetooshort = TRUE
-      }
+      colnames(P$data) = c("x", "y", "z")
     }
   } else if (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) {
     if (utils::packageVersion("GGIRread") < "0.3.0") {
@@ -158,17 +145,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     }
 
     P = apply_readAxivity(bstart = startpage, bend = endpage)
-    if (length(P) > 1) { # data reading succesful
-      if (length(P$data) == 0) { # too short?
-        P = c() ; switchoffLD = 1
-        if (blocknumber == 1) filequality$filetooshort = TRUE
-      } else {
-        if (blocknumber == 1 && nrow(P$data) < (sf * ws * 2 + 1)) {
-          P = c() ; switchoffLD = 1
-          filequality$filetooshort = TRUE
-        }
-      }
-    } else { 
+    if (length(P) == 0) { 
       # If data reading is not successful then try following steps to retrieve issue
       # I am not sure if this is still relevant after all the improvements to GGIRread
       # but leaving this in just in case it is still needed
@@ -227,29 +204,22 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                             dec = decn, showProgress = FALSE, header = FALSE,
                             data.table=FALSE, stringsAsFactors=FALSE)
     }, silent = TRUE)
-    if (length(rawData) > 1) {
-      if (blocknumber == 1 && nrow(rawData) < (sf * ws * 2 + 1)) {
-        P = c() ; switchoffLD = 1
-        filequality$filetooshort = TRUE
-      } else {
-        if (nrow(rawData) < blocksize) { #last block
-          switchoffLD = 1
-        }
-        # resample the acceleration data, because AX3 data is stored at irregular time points
-        rawTime = rawData[,1]
-        rawAccel = as.matrix(rawData[,2:4])
-        step = 1/sf
-        timeRes = seq(rawTime[1], rawTime[length(rawTime)], step)
-        timeRes = timeRes[1 : (length(timeRes) - 1)]
-
-        # at the moment the function is designed for reading the 3 acceleration channels only,
-        # because that is the situation of the use-case we had.
-        accelRes = GGIRread::resample(rawAccel, rawTime, timeRes, nrow(rawAccel), params_rawdata[["interpolationType"]]) # this is now the resampled acceleration data
-        P$data = data.frame(timeRes, accelRes)
-        colnames(P$data) = c("time", "x", "y", "z")
+    if (length(rawData) > 0) {
+      if (nrow(rawData) < blocksize) { #last block
+        switchoffLD = 1
       }
-    } else {
-      P = c()
+      # resample the acceleration data, because AX3 data is stored at irregular time points
+      rawTime = rawData[,1]
+      rawAccel = as.matrix(rawData[,2:4])
+      step = 1/sf
+      timeRes = seq(rawTime[1], rawTime[length(rawTime)], step)
+      timeRes = timeRes[1 : (length(timeRes) - 1)]
+
+      # at the moment the function is designed for reading the 3 acceleration channels only,
+      # because that is the situation of the use-case we had.
+      accelRes = GGIRread::resample(rawAccel, rawTime, timeRes, nrow(rawAccel), params_rawdata[["interpolationType"]]) # this is now the resampled acceleration data
+      P$data = data.frame(timeRes, accelRes)
+      colnames(P$data) = c("time", "x", "y", "z")
     }
   } else if (mon == MONITOR$MOVISENS && dformat == FORMAT$BIN) {
     file_length = unisensR::getUnisensSignalSampleCount(dirname(filename), "acc.bin")
@@ -258,32 +228,19 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       switchoffLD = 1
     }
     P$data = unisensR::readUnisensSignalEntry(dirname(filename), "acc.bin",
-                                         startIndex = startpage,
-                                         endIndex = endpage)
-    if (blocknumber == 1 && nrow(P$data) < (sf * ws * 2 + 1)) {
-      P = c()
-      switchoffLD = 1
-      filequality$filetooshort = TRUE
-    } else {
-      colnames(P$data) = c("x", "y", "z")
-      # there may or may not be a temp.bin file containing temperature
-      try(expr = {P$data$temperature = g.readtemp_movisens(filename, desiredtz = params_general[["desiredtz"]], 
-                                                           from = startpage, to = endpage,
-                                                           interpolationType = params_rawdata[["interpolationType"]])
-      }, silent = TRUE)
-    }
+                                              startIndex = startpage,
+                                              endIndex = endpage)
+    colnames(P$data) = c("x", "y", "z")
+    # there may or may not be a temp.bin file containing temperature
+    try(expr = {P$data$temperature = g.readtemp_movisens(filename, desiredtz = params_general[["desiredtz"]], 
+                                                         from = startpage, to = endpage,
+                                                         interpolationType = params_rawdata[["interpolationType"]])
+    }, silent = TRUE)
   } else if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$GT3X) {
     P$data = try(expr = {read.gt3x::read.gt3x(path = filename, batch_begin = startpage,
                                               batch_end = endpage, asDataFrame = TRUE)}, silent = TRUE)
     if (length(P$data) == 0 || inherits(P$data, "try-error") == TRUE) { # too short or no data at all
-      P = c() ; switchoffLD = 1
-      if (blocknumber == 1) {
-        filequality$filetooshort = TRUE
-        filequality$filecorrupt = TRUE
-      }
-    } else if (nrow(P$data) < (sf * ws * 2 + 1)) {
-      P = c() ; switchoffLD = 1
-      if (blocknumber == 1) filequality$filetooshort = TRUE
+      P$data = c()
     } else { # If data passes these checks then it is usefull
       colnames(P$data)[colnames(P$data) == "X"] = "x"
       colnames(P$data)[colnames(P$data) == "Y"] = "y"
@@ -343,15 +300,24 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                    header = header)
     }, silent = TRUE)
     if (length(sf) == 0) sf = params_rawdata[["rmc.sf"]]
-    if (length(P) == 4) { # added PreviousLastValue and PreviousLastTime as output of read.myacc.csv
-      if (blocknumber == 1 && nrow(P$data) < (sf * ws * 2 + 1)) {
-        P = c() ; switchoffLD = 1
-        filequality$filetooshort = TRUE
-      }
-    } else {
+  }
+
+  if (blocknumber == 1) {
+    # if first block isn't read then the file is probably corrupt
+    if(length(P$data) <= 1 || nrow(P$data) == 0) {
+      warning('\nFile empty, possibly corrupt.\n')
       P = c()
+      switchoffLD = 1
+      filequality$filetooshort = TRUE
+      filequality$filecorrupt = TRUE
+    } else if (nrow(P$data) < (sf * ws * 2 + 1)) {
+      # not enough data for analysis
+      P = c()
+      switchoffLD = 1
+      filequality$filetooshort = TRUE
     }
   }
+
   invisible(list(P = P,
                  filequality = filequality,
                  switchoffLD = switchoffLD,
