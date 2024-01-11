@@ -72,32 +72,18 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     try(expr = {P = GGIRread::readGENEActiv(filename = filename, start = startpage,
                                             end = endpage, desiredtz = params_general[["desiredtz"]],
                                             configtz = params_general[["configtz"]])}, silent = TRUE)
-    
-    if (length(P) > 0) {
-      if (nrow(P$data.out) < (blocksize*300)) {
-        switchoffLD = 1 #last block
-      }
-    }
-    if (length(P) == 0) { # if first block isn't read then probably corrupt
-      if (blocknumber == 1) {
-        #try to read without specifying blocks (file too short)
-        try(expr = {
-          P = GGIRread::readGENEActiv(filename = filename, desiredtz = params_general[["desiredtz"]],
-                                      configtz = params_general[["configtz"]])
-        }, silent = TRUE)
-        if (length(P) == 0) {
-          warning('\nFile possibly corrupt\n')
-          P = c(); switchoffLD = 1
-          filequality$filecorrupt = TRUE
-        } #if not then P is now filled with data
-      } else {
-        P = c() #just no data in this last block
-      }
-    }
-    if (length(P) > 0) {
+    if (length(P) == 0 && blocknumber == 1) { # if first block isn't read then probably corrupt file
+      warning('\nFile possibly corrupt\n')
+      P = c(); switchoffLD = 1
+      filequality$filecorrupt = TRUE
+    } else {
       names(P)[names(P) == "data.out"] = "data"
 
-      #check whether there is enough data
+      if (nrow(P$data) < (blocksize*300)) {
+        switchoffLD = 1 # last block
+      }
+
+      # check whether there is enough data
       if (blocknumber == 1 && nrow(P$data) < (sf * ws * 2 + 1)) {
         P = c();  switchoffLD = 1
         filequality$filetooshort = TRUE
