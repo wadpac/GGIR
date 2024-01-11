@@ -112,14 +112,13 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       }
     }
     
-    #--------------
     try(expr = {
       P$data = quiet(data.table::fread(filename, nrows = blocksize, skip = startpage,
                                        dec = decn, showProgress = FALSE,
                                        header = FALSE, # header should always be FALSE to prevent acceleration values from being mistaken for header when reading chunks 2 and on
                                        data.table=FALSE, stringsAsFactors=FALSE))
     }, silent = TRUE)
-    if (length(P$data) > 1) {
+    if (length(P$data) > 0) {
       if (ncol(P$data) > 3) {
         P$data = P$data[, 2:4] # remove timestamp column, keep only XYZ columns
       }
@@ -129,8 +128,6 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
         P = c() ; switchoffLD = 1
         filequality$filetooshort = TRUE
       }
-    } else {
-      P = c()
     }
   } else if (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) {
     if (utils::packageVersion("GGIRread") < "0.3.0") {
