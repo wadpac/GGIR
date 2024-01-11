@@ -72,13 +72,13 @@ g.analyse.perfile = function(I, C, metrics_nav,
     # them and logging the information.
     # Normally we do not expect issue with cwa files, but by logging the information
     # we will facilitate better insight into when this happens.
-    filesummary[vi:(vi + 6)] = c(file_summary$Dur_imputed, # total imputed
-                                 file_summary$Dur_chsum_failed, # checksum
-                                 file_summary$Dur_nonincremental, # nonincremental id between blocks
-                                 file_summary$Dur_freqissue_5_10, # bias 5-10%
-                                 file_summary$Dur_freqissue_10_20, # bias 10-20%
-                                 file_summary$Dur_freqissue_20_30, # bias 20-30%
-                                 file_summary$Dur_freqissue_30) # bias >30%
+    filesummary[vi:(vi + 6)] = c(ifelse(is.null(file_summary$Dur_imputed), " ", file_summary$Dur_imputed), # total imputed
+                                 ifelse(is.null(file_summary$Dur_chsum_failed), " ", file_summary$Dur_chsum_failed), # checksum
+                                 ifelse(is.null(file_summary$Dur_nonincremental), " ", file_summary$Dur_nonincremental), # nonincremental id between blocks
+                                 ifelse(is.null(file_summary$Dur_freqissue_5_10), " ", file_summary$Dur_freqissue_5_10), # bias 5-10%
+                                 ifelse(is.null(file_summary$Dur_freqissue_10_20), " ", file_summary$Dur_freqissue_10_20), # bias 10-20%
+                                 ifelse(is.null(file_summary$Dur_freqissue_20_30), " ", file_summary$Dur_freqissue_20_30), # bias 20-30%
+                                 ifelse(is.null(file_summary$Dur_freqissue_30), " ", file_summary$Dur_freqissue_30)) # bias >30%
     s_names[vi:(vi + 6)] = c("filehealth_totimp_min",
                              "filehealth_checksumfail_min",
                              "filehealth_niblockid_min", # non incremental block id
@@ -87,13 +87,13 @@ g.analyse.perfile = function(I, C, metrics_nav,
                              "filehealth_fbias2030_min",
                              "filehealth_fbias30_min")
     vi = vi + 7
-    filesummary[vi:(vi + 6)] = c( file_summary$Nblocks_imputed,
-                                  file_summary$Nblocks_chsum_failed,
-                                  file_summary$Nblocks_nonincremental,
-                                  file_summary$Nblock_freqissue_5_10,
-                                  file_summary$Nblock_freqissue_10_20,
-                                  file_summary$Nblock_freqissue_20_30,
-                                  file_summary$Nblock_freqissue_30)
+    filesummary[vi:(vi + 6)] = c( ifelse(is.null(file_summary$Nblocks_imputed), " ", file_summary$Nblocks_imputed),
+                                  ifelse(is.null(file_summary$Nblocks_chsum_failed), " ", file_summary$Nblocks_chsum_failed),
+                                  ifelse(is.null(file_summary$Nblocks_nonincremental), " ", file_summary$Nblocks_nonincremental),
+                                  ifelse(is.null(file_summary$Nblock_freqissue_5_10), " ", file_summary$Nblock_freqissue_5_10),
+                                  ifelse(is.null(file_summary$Nblock_freqissue_10_20), " ", file_summary$Nblock_freqissue_10_20),
+                                  ifelse(is.null(file_summary$Nblock_freqissue_20_30), " ", file_summary$Nblock_freqissue_20_30),
+                                  ifelse(is.null(file_summary$Nblock_freqissue_30), " ", file_summary$Nblock_freqissue_30))
     s_names[vi:(vi + 6)] = c("filehealth_totimp_N",
                              "filehealth_checksumfail_N",
                              "filehealth_niblockid_N",

@@ -10,8 +10,8 @@ g.plot = function(IMP, M, I, durplot) {
   if (length(fname2) > 1) fname = paste0(fname2[1], fname2[2])
   
   # Time variable and duration of recording
-  ws3 = M$windowsize[1]
-  ws2 = M$windowsize[2]
+  ws3 = M$windowsizes[1]
+  ws2 = M$windowsizes[2]
   n_ws2_perday = (1440*60) / ws2
   timeline = 1:nrow(M$metalong)
   durplot = durplot * n_ws2_perday
