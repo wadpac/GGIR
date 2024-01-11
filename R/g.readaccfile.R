@@ -163,9 +163,9 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
         P = c() ; switchoffLD = 1
         if (blocknumber == 1) filequality$filetooshort = TRUE
       } else {
-        if (nrow(P$data) < (sf * ws * 2 + 1)) {
+        if (blocknumber == 1 && nrow(P$data) < (sf * ws * 2 + 1)) {
           P = c() ; switchoffLD = 1
-          if (blocknumber == 1) filequality$filetooshort = TRUE
+          filequality$filetooshort = TRUE
         }
       }
     } else { 
