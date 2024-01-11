@@ -157,14 +157,15 @@ g.calibrate = function(datafile, params_rawdata = c(),
           if(use.temp) {
             temperature = as.numeric(data$temperature)
 
-            # ignore temperature if the values are unrealisticly high or NA
-            if (length(which(is.na(mean(temperature[1:10])) == T)) > 0) {
-              warning("\ntemperature ignored for auto-calibration because values are NA\n")
+            # ignore temperature if the values are unrealisticly high or not numeric
+            if (is.na(mean(temperature, na.rm = TRUE))) {
+              # mean() returns NA_real_ if it's calculated *not* on numeric (or logical coersed to numeric) values
+              warning("\ntemperature ignored for auto-calibration because there are non-numeric values\n")
               use.temp = FALSE
-            } else if (length(which(mean(temperature[1:10]) > 120)) > 0) {
+            } else if (mean(temperature[1:10], na.rm = TRUE) > 120) {
               warning("\ntemperature ignored for auto-calibration because values are too high\n")
               use.temp = FALSE
-            } else if (sd(temperature, na.rm = TRUE) == 0) {
+            } else if (sd(temperature, na.rm = TRUE) < 0.01) {
               warning("\ntemperature ignored for auto-calibration because no variance in values\n")
               use.temp = FALSE
             }
