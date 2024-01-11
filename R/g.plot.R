@@ -10,8 +10,8 @@ g.plot = function(IMP, M, I, durplot) {
   if (length(fname2) > 1) fname = paste0(fname2[1], fname2[2])
   
   # Time variable and duration of recording
-  ws3 = M$windowsize[1]
-  ws2 = M$windowsize[2]
+  ws3 = M$windowsizes[1]
+  ws2 = M$windowsizes[2]
   n_ws2_perday = (1440*60) / ws2
   timeline = 1:nrow(M$metalong)
   durplot = durplot * n_ws2_perday
@@ -52,7 +52,7 @@ g.plot = function(IMP, M, I, durplot) {
   
   # start plot with empty canvas
   plot.new()	
-  par(fig = c(0, 1, 0, 1), new = T, mar = c(5, 4, 3, 0))
+  par(fig = c(0, 1, 0, 1), new = T, mar = c(5, 4, 3, 0.5))
   plot(seq(0, durplot), seq(0, durplot), col = "white", type = "l", axes = F, 
        xlab = "", ylab = "", main = paste0("device brand: ", monn, " | filename: ", fname), cex.main = 0.6)#dummy plot
   # draw coloured rectangles
@@ -103,10 +103,7 @@ g.plot = function(IMP, M, I, durplot) {
   legend_density = legend_density[legend_index]
   x.intersp = x.intersp[legend_index]
   
-  if (length(legend_index) > 0) {
-    legend("top", legend = legend_names, col = legend_colors, density = legend_density, #lty = legend_lty,  lty = legend_lty, 
-           fill = legend_colors, border = legend_colors, x.intersp = x.intersp, ncol = 4, cex = 0.7, bty = 'n', lwd = 0.6)
-  }
+  
   
   abline(v = timeline[length(timeline)], col = "blue", lwd = 1)	
   
@@ -129,6 +126,14 @@ g.plot = function(IMP, M, I, durplot) {
   MEND = length(timeline)
   mnights = grep("00:00:00", M$metalong$timestamp)
   noons = grep("12:00:00", M$metalong$timestamp)
+  abline(v = noons, lwd = 0.5, col = "grey", lty = 2)
+  abline(v = mnights, lwd = 0.5, lty = 3)
+  if (length(legend_index) > 0) {
+    legend("top", legend = legend_names, col = legend_colors, density = legend_density, #lty = legend_lty,  lty = legend_lty, 
+           fill = legend_colors, border = legend_colors,
+           x.intersp = x.intersp, ncol = 4, cex = 0.6, lwd = 0.6,
+           bg = "white", box.col = "black")
+  }
   if (length(mnights) > 0 & length(noons) > 0) {
     # axis 1: midnight, noon labels (including one extra day at the beginning and end)
     extramnights = c(mnights[1] - n_ws2_perday, mnights, max(mnights) + n_ws2_perday)
@@ -190,9 +195,6 @@ g.plot = function(IMP, M, I, durplot) {
          xlab = "Recording day", ylab = ylabel,  xlim = c(0, durplot), 
          ylim = YLIM, )
     axis(side = 2, at = YTICKS, las = 1, cex.axis = 0.8)
-    # axis(side = 1, at = ticks_12hours, labels = x_labels_12hours, las = 3, cex.axis = 0.8)
-    abline(v = noons, lwd = 0.5, col = "grey", lty = 2)
-    abline(v = mnights, lwd = 0.5, lty = 3)
     # axis 2 (day counting)
     if (length(extranoons) > 1) { # only if more than 1 day
       axis(side = 1, at = extranoons, labels = x_labels_days, 
@@ -205,7 +207,7 @@ g.plot = function(IMP, M, I, durplot) {
     plot(timeline, M$metalong$nonwearscore, type = "s",
          xlab = "", ylab = "Non-wear score", axes = F,
          lwd = 0.1, xlim = c(0,durplot), ylim = c(0, 3), cex.lab = 0.8)
-    axis(side = 2,at = c(0, 1, 2, 3), cex.axis = 0.8)
+    axis(side = 2,at = c(0, 1, 2, 3), cex.axis = 0.8, las = 1)
   }
   # plot data
   if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA)) {
@@ -222,7 +224,7 @@ g.plot = function(IMP, M, I, durplot) {
          xlim = c(0, durplot), ylim = c(20,35), cex.lab = 0.8)
     abline(h = 20, col = "black", lwd = 1, lty = 2)
     abline(h = 35, col = "black", lwd = 1, lty = 2)
-    axis(side = 2,at = c(20,35), cex.axis = 0.8)
+    axis(side = 2,at = c(20,35), cex.axis = 0.8, las = 1)
   } else {
     # Recordings without temperature
     par(fig = c(0, 1, 0, 0.80), new = T)

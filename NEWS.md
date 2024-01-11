@@ -1,3 +1,11 @@
+# CHANGES IN GGIR VERSION 3.0-3
+
+- Part 2: Fix bug where data_quality_report.csv contained incorrect filehealth[...] values whenever some of these values were supposed to be blank #1003
+
+- Part 1: Fix bug where on machines with GMT timezone and R >= 4.3.0, for GENEActiv .bin files, the starting timestamps of M\$metalong and M\$metashort were truncated to midninght #1000
+
+- Part 5: Fix bug where part5 output showed duplicate rows when argument dayborder is set to nondefault value #1006
+
 # CHANGES IN GGIR VERSION 3.0-2
 
 - Part 2: Fix bug that caused part 2 to struggle with corrupt ActiGraph .gt3x files #972
@@ -10,7 +18,15 @@
 
 - Part 1: Now also able to handle some more variations in Actigraph csv count file format #978, and automatically aggregates to lower resolution if short epoch size is longer than observed epoch size in actigraph count csv.
 
-- Part 5: Fix bug in recently added fucntionality for studying overlap between sibs and self-reported beahviours #989.
+- Part 5: Reverting decision to prohibit segmentDAYSPTcrit.part5 to be c(0, 0). The default remains unchanged and documentation now only emphasizes the downside of using c(0, 0). #980
+
+- Argument documentation: Fixing series of typos (thanks to Pieter-Jan Marent for pointing them out)
+
+- Part 5: Fix bug in recently added functionality for studying overlap between sibs and self-reported behaviours #989.
+
+- Part 1:Enable use of temperature data in adhoc-csv format throughout GGIR #991
+
+- Part 1: Fix bug that caused a mismatch between IDs and filenames in part 1 when movisens participant folders did not contain the acc.bin file #994.
 
 
 # CHANGES IN GGIR VERSION 3.0-1

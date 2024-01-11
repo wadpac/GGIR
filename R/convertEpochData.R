@@ -287,7 +287,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         }
         if (is.na(vmcol[1]) == FALSE) { 
           D = as.matrix(D, drop = FALSE) # convert to matrix as data.frame will auto-collapse to vector
-          colnames(D)[vmcol] = c("NeishabouriCount_vm")
+          colnames(D)[vmcol] = c("NeishabouriCount_x")
         }
         keep = c(acccol, vmcol)[!is.na(c(acccol, vmcol))]
         D = D[, keep, drop = FALSE]
@@ -332,9 +332,9 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
             format = params_general[["extEpochData_timeformat"]]
             timestamp_POSIX = as.POSIXlt(timestamp, tz = tz, format = format)
             if (all(is.na(timestamp_POSIX))) {
-              stop(paste0("\nTimestamps are not available in the file, neither it has
-                          a header to extract the timestamps from. Therefore, the file
-                          cannot be processed.\n"))
+              stop(paste0("\nTimestamps are not available in the file, neither has",
+                          " it a header to extract the timestamps from. Therefore, the file",
+                          " cannot be processed.\n"))
             }
             
             epochSize = difftime(timestamp_POSIX[2], timestamp_POSIX[1], 
