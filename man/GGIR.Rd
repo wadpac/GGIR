@@ -235,12 +235,15 @@ GGIR(mode = 1:5,
       \item{dataFormat}{
         Character (default = "raw").
         To indicate what the format is of the data in datadir.
-        Current alternatives: ukbiobank_csv, actiwatch_csv, and actiwatch_awd, which correspond
-        to the 5, 15 and 60 second epoch level data files provided by UK Biobank
-        in csv format, Actiwatch in csv format, and Actiwatch in awd format.
-        For the Actiwatch data functionality has been tested with example data from
-        only one research group. Please let us know if you have difficulties using this
-        functionality in your data.}
+        Current alternatives: ukbiobank_csv, actiwatch_csv, actiwatch_awd, and 
+        actigraph_csv, which correspond to epoch level data files from, respecitively,
+        UK Biobank in csv format, Actiwatch in csv format, Actiwatch in awd format,
+        and ActiGraph csv format. Here, the assumed epoch size for UK Biobank csv 
+        data is 5 seconds. The epoch size for the other non-raw data formats is 
+        flexible, but make sure that you set first value of argument 
+        \code{windowsizes} needs to be set accordingly. Also when working with 
+        non-raw data formats specify argument \code{extEpochData_timeformat} as
+        documented below.}
         
        \item{maxRecordingInterval}{
         Numeric (default = NULL).
