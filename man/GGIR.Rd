@@ -150,7 +150,15 @@ GGIR(mode = 1:5,
 
       \item{part5_agg2_60seconds}{
         Boolean (default = FALSE).
-        Whether to use aggregate epochs to 60 seconds as part of the GGIR \link{g.part5} analysis.}
+        Whether to use aggregate epochs to 60 seconds as part of the GGIR 
+        \link{g.part5} analysis. Aggregation is doen by averaging. 
+        Note that when working with count metrics such as Neishabouri counts this
+        means that the threshold can stay the same as in part 2, because again the
+        threshold is expressed relative to the original epoch size, even if averaged
+        per minute. For example if we want to use a cut-point 100 count per minute
+        then we specify \code{mvpathreshold = 100 * (5/60)} as well as
+        `threshold.mod = \code{100 * (5/60)} regardless of whether we set 
+        part5_agg2_60seconds to TRUE or FALSE.}
 
       \item{print.filename}{
         Boolean (default = FALSE).
