@@ -24,11 +24,9 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
   sf = I$sf
 
   # detect dot or comma separator in the data file
-  op <- options(warn = -1) #turn off warnings
+  op <- options(warn = -1) # turn off warnings
   on.exit(options(op))
-  options(warn = -1) # turn off warnings
   suppressWarnings(expr = {decn = g.dotorcomma(filename, dformat, mon,
-                                               desiredtz = params_general[["desiredtz"]],
                                                rmc.dec = params_rawdata[["rmc.dec"]])})
   options(warn = 0) # turn on warnings
   

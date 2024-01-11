@@ -1,4 +1,4 @@
-g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", ...) {
+g.dotorcomma = function(inputfile, dformat, mon, ...) {
   #get input variables (relevant when read.myacc.csv is used)
   input = list(...)
   decn = getOption("OutDec") # extract system decimal separator
@@ -48,8 +48,8 @@ g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", ...) {
       if (is.na(as.numeric(deci$data.out[2, 2])) == T & decn == ".") decn = ","
     }
   } else if (dformat == FORMAT$CWA) {
-    try(expr = {deci = GGIRread::readAxivity(filename = inputfile,start = 1, end = 10, desiredtz = desiredtz,
-                               interpolationType = 1)$data},silent = TRUE)
+    try(expr = {deci = GGIRread::readAxivity(filename = inputfile, start = 1, end = 10,
+                                             interpolationType = 1)$data}, silent = TRUE)
     if (!exists("deci")) stop("Problem with reading .cwa file in GGIR function dotorcomma")
     if (is.na(suppressWarnings(as.numeric(deci[2,2]))) == T & decn == ".") decn = ","
   } else if (dformat == FORMAT$GT3X) {
