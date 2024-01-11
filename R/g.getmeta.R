@@ -100,15 +100,16 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   }
   
   if (length(nmetrics) == 0) {
-    if (verbose == TRUE) cat("\nWARNING: No metrics selected\n")
+    if (verbose == TRUE) warning("No metrics selected.", call. = FALSE)
   }
   # parameters
   ws3 = params_general[["windowsizes"]][1]; ws2 = params_general[["windowsizes"]][2]; ws = params_general[["windowsizes"]][3]
   if ((ws2/60) != round(ws2/60)) {
     ws2 = as.numeric(60 * ceiling(ws2/60))
     if (verbose == TRUE) {
-      cat("\nWARNING: The long windowsize needs to be a multitude of 1 minute periods. The\n")
-      cat(paste0("\nlong windowsize has now been automatically adjusted to: ", ws2, " seconds in order to meet this criteria.\n"))
+      warning(paste0("The long windowsize needs to be a multitude of 1 minute periods.\n",
+                     "Long windowsize has now been automatically adjusted to ",
+                     ws2, " seconds in order to meet this criteria."), call. = FALSE)
     }
   }
   if ((ws2/ws3) != round(ws2/ws3)) {
@@ -116,8 +117,9 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     def2 = abs(def - ws3)
     ws3 = as.numeric(def[which(def2 == min(def2))])
     if (verbose == TRUE) {
-      cat("\nWARNING: The long windowsize needs to be a multitude of short windowsize. The \n")
-      cat(paste0("\nshort windowsize has now been automatically adjusted to: ", ws3, " seconds in order to meet this criteria.\n"))
+      warning(paste0("The long windowsize needs to be a multitude of short windowsize.\n",
+                     "The short windowsize has now been automatically adjusted to ",
+                     ws3, " seconds in order to meet this criteria.\n"), call. = FALSE)
     }
   }
   params_general[["windowsizes"]] = c(ws3,ws2,ws)
@@ -404,7 +406,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           metashort = rbind(metashort,extension)
           extension2 = matrix(" ", ((3600/ws2) * 24)  + (totalgap * (ws2/ws3)), ncol(metalong)) #add another day to metashort once you reach the end of it
           metalong = rbind(metalong, extension2)
-          if (verbose == TRUE) cat("\nvariable metashort extended\n")
         }
         col_msi = 2
         # Add metric time series to metashort object

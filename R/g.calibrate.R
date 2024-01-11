@@ -193,7 +193,6 @@ g.calibrate = function(datafile, params_rawdata = c(),
           if (count > (nrow(meta) - (2.5 * (3600/ws4) * 24))) {
             extension = matrix(99999, ((3600/ws4) * 24), ncol(meta))
             meta = rbind(meta,extension)
-            if (verbose == TRUE) cat("\nvariabel meta extended\n")
           }
           #storing in output matrix
           meta[count:(count - 1 + length(EN2)), 1] = EN2
@@ -217,7 +216,6 @@ g.calibrate = function(datafile, params_rawdata = c(),
       }
     } else {
       LD = 0 #once LD < 1 the analysis stops, so this is a trick to stop it
-      # cat("\nstop reading because there is not enough data in this block\n")
     }
     spherepopulated = 0
     if (isLastBlock) {
@@ -277,7 +275,6 @@ g.calibrate = function(datafile, params_rawdata = c(),
           QC = "recalibration not done because not enough points on all sides of the sphere"
         }
       } else {
-        if (verbose == TRUE) cat(" No non-movement found\n")
         QC = "recalibration not done because no non-movement data available"
         meta_temp = c()
       }
@@ -310,7 +307,6 @@ g.calibrate = function(datafile, params_rawdata = c(),
           scale(inputtemp, center = F, scale = 1/tempoffset)}, silent = TRUE)
         if (length(curr) == 0) {
           # set coefficients to default, because it did not work.
-          if (verbose == TRUE) cat("\nObject curr has length zero.")
           break
         }
         closestpoint = curr / sqrt(rowSums(curr^2))
