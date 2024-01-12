@@ -243,13 +243,14 @@ GGIR(mode = 1:5,
       \item{dataFormat}{
         Character (default = "raw").
         To indicate what the format is of the data in datadir.
-        Current alternatives: ukbiobank_csv, actiwatch_csv, actiwatch_awd, and 
-        actigraph_csv, which correspond to epoch level data files from, respecitively,
-        UK Biobank in csv format, Actiwatch in csv format, Actiwatch in awd format,
-        and ActiGraph csv format. Here, the assumed epoch size for UK Biobank csv 
+        Current alternatives: ukbiobank_csv, actiwatch_csv, actiwatch_awd, 
+        actigraph_csv, and sensewear_xls, which correspond to epoch level data 
+        files from, respecitively,  UK Biobank in csv format, Actiwatch in csv 
+        format, Actiwatch in awd format, ActiGraph csv format, and Sensewear in
+        xls format. Here, the assumed epoch size for UK Biobank csv 
         data is 5 seconds. The epoch size for the other non-raw data formats is 
         flexible, but make sure that you set first value of argument 
-        \code{windowsizes} needs to be set accordingly. Also when working with 
+        \code{windowsizes} accordingly. Also when working with 
         non-raw data formats specify argument \code{extEpochData_timeformat} as
         documented below.}
         
@@ -270,8 +271,8 @@ GGIR(mode = 1:5,
       \item{extEpochData_timeformat}{
         Character (default = "\%d-\%m-\%Y \%H:\%M:\%S").
         To specify the time format used in the external epoch level data when
-        argument \code{dataFormat} is set to "actiwatch_csv", "actiwatch_awd", or 
-        "actigraph_csv". For example "\%Y-\%m-\%d \%I:\%M:\%S \%p" for 
+        argument \code{dataFormat} is set to "actiwatch_csv", "actiwatch_awd", 
+        "actigraph_csv" or "sensewear_xls". For example "\%Y-\%m-\%d \%I:\%M:\%S \%p" for 
         "2023-07-11 01:24:01 PM" or "\%m/\%d/\%Y \%H:\%M:\%S" "2023-07-11 13:24:01"
         }
       }
