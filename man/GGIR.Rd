@@ -1613,6 +1613,21 @@ GGIR(mode = 1:5,
            ignorenonwear = FALSE,
            HASPT.ignore.invalid = FALSE,
            save_ms5raw_without_invalid = FALSE)
+           
+           
+       # For externally derived Sensear data in .xls format:  
+        GGIR(datadir = "C:/yoursenseweardatafolder",
+            outputdir = "D:/youroutputfolder",
+            mode = 1:5,
+            windowsizes = c(60, 900, 3600),
+            dataFormat = "sensewear_xls",
+            extEpochData_timeformat = "\%d-\%b-\%Y \%H:\%M:\%S",
+            HASPT.algo = "NotWorn",
+            desiredtz = "America/New_York",
+            overwrite = TRUE,
+            do.report = c(2, 4, 5),
+            visualreport = FALSE)
+           
   }
 }
 \author{
