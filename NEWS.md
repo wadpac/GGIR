@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.0-4
+
+- Facilitate handling of Sensewear xls file format with externally derived epoch data #974
+
 # CHANGES IN GGIR VERSION 3.0-3
 
 - Part 2: Fix bug where data_quality_report.csv contained incorrect filehealth[...] values whenever some of these values were supposed to be blank #1003
@@ -13,8 +17,6 @@
 - Part 2: Redefine horizontal axis of plots_to_check_data_quality #983
 
 - Documentation: Expanded documentation on desiredtz, configtz, and time stamp format in part 5 time series #966
-
-- Facilitate handling of Sensewear xls file format with externally derived epoch data #974
 
 - Part 1: Now also able to handle some more variations in Actigraph csv count file format #978, and automatically aggregates to lower resolution if short epoch size is longer than observed epoch size in actigraph count csv.
 
