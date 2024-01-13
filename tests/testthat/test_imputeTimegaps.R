@@ -11,7 +11,13 @@ test_that("timegaps are correctly imputed", {
   x_without_time = data.frame(X = 1:N, Y = 1:N, Z = 1:N)
   xyzCol = c("X", "Y", "Z")
   
+  # Duration of each consecutive gap is equal to the distance netween 
+  # the sample right before and the sample right after the zeros that got removed to create this gap. 
+  # So the duration of each gap is equal to the number of zeros + 1.
+  ngaps = 4
   zeros = c(5:200, 6000:6500, 7000:7500, 8000:9500)
+  gaps_duration = length(zeros) + ngaps
+  gaps_duration = gaps_duration/sf/60
   
   # TEST THAT SAME FILE WITH DIFFERENT FORMATS IS IMPUTED IN THE SAME WAY ----
   # Format 1: with timestamp & with timegaps (no zeroes, incomplete dataset)
@@ -58,9 +64,9 @@ test_that("timegaps are correctly imputed", {
   expect_equal(x2_imputed_QClog$timegaps_n, 4)
   expect_equal(x3_imputed_QClog$timegaps_n, 4)
   
-  expect_equal(x1_imputed_QClog$timegaps_min, length(zeros)/sf/60)
-  expect_equal(x2_imputed_QClog$timegaps_min, length(zeros)/sf/60)
-  expect_equal(x3_imputed_QClog$timegaps_min, length(zeros)/sf/60)
+  expect_equal(x1_imputed_QClog$timegaps_min, gaps_duration)
+  expect_equal(x2_imputed_QClog$timegaps_min, gaps_duration)
+  expect_equal(x3_imputed_QClog$timegaps_min, gaps_duration)
   
   # TEST IMPUTATION WHEN FIRST ROW IS NOT CONSECUTIVE TO PREVIOUS CHUNK ----
   # Format 4: with timestamp & with timegaps (no zeroes, incomplete dataset)
