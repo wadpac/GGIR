@@ -6,28 +6,20 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
     longEpochSize = epochsize[2]
   }
   # dummy variables to control the process
-  remove_time_at_end = dummyTime = FirstRowZeros = imputelast = FALSE
+  remove_time_at_end = FirstRowZeros = imputelast = FALSE
   # initialize numberofgaps and GapsLength
-  NumberOfGaps = GapsLength = NULL
+  NumberOfGaps = GapsLength = 0
+
   # add temporary timecolumn to enable timegap imputation where there are zeros
-  if (length(timeCol) == 1) {
-    if (!(timeCol %in% colnames(x))) dummyTime = TRUE
-  }
-  if (length(timeCol) == 0 | dummyTime == TRUE) { 
-    dummytime = Sys.time()
-    adhoc_time = seq(dummytime, dummytime + (nrow(x) - 1) * (1/sf), by = 1/sf)
-    if (length(adhoc_time) < nrow(x)) { 
-      NotEnough = nrow(x) - length(adhoc_time)
-      adhoc_time = seq(dummytime, dummytime + (nrow(x) + NotEnough) * (1/sf), by = 1/sf)
-    }
-    x$time = adhoc_time[1:nrow(x)]
+  if (length(timeCol) == 0 || !(timeCol %in% colnames(x))) { 
+    x$time = seq(from = Sys.time(), by = 1/sf, length.out = nrow(x))
     timeCol = "time"
     remove_time_at_end = TRUE
   }
   
-  # define function to imputation at raw level
+  # define function for imputation at raw level
   imputeRaw = function(x, sf) {
-    # impute raw timestamps because timestamps still need to be meaningul when
+    # impute raw timestamps because timestamps still need to be meaningful when
     # resampling or when plotting
     gapp = which(x$gap != 1)
     if (length(gapp) > 0) {
@@ -91,7 +83,7 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
         units(first_deltatime) = "secs"
         first_deltatime = as.numeric(first_deltatime)
       }
-      if (first_deltatime >= k) { # prevent trying to impute timegaps shorter than 2 samples
+      if (first_deltatime >= k) { # don't impute a timegap shorter than the minimum requested
         x = rbind(x[1,], x)
         x[1, timeCol] = PreviousLastTime
         x[1, xyzCol] = PreviousLastValue
@@ -178,23 +170,22 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
       }
     }
   } else if (impute == FALSE) {
-    if (FirstRowZeros == TRUE) x = x[-1,] # since zeros[1] was removed in line 21
-    if (imputelast == TRUE) x = x[-nrow(x),] # since zeros[length(zeros)] was removed in line 27
+    if (FirstRowZeros == TRUE) x = x[-1,] # since zeros[1] was removed
+    if (imputelast == TRUE) x = x[-nrow(x),] # since zeros[length(zeros)] was removed
   }
   # impute last value?
   if (imputelast) x[nrow(x), xyzCol] = x[nrow(x) - 1, xyzCol]
+
   if (remove_time_at_end == TRUE) {
     x = x[, grep(pattern = "time", x = colnames(x), invert = TRUE)]
   }
-  # keep only timestamp column
+  # keep only the time, not timestamp column
   if (all(c("time", "timestamp") %in% colnames(x))) {
     x = x[, grep(pattern = "timestamp", x = colnames(x), invert = TRUE)]
   }
   # QClog
   start = as.numeric(as.POSIXct(x[1,1], origin = "1970-1-1"))
   end = start + nrow(x)
-  if (is.null(GapsLength)) GapsLength = 0
-  if (is.null(NumberOfGaps)) NumberOfGaps = 0
   imputed = NumberOfGaps > 0
   QClog = data.frame(imputed = imputed, 
                      start = start, end = end,

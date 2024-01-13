@@ -240,7 +240,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     NFilePagesSkipped = filequality$NFilePagesSkipped
     isLastBlock = accread$isLastBlock
     PreviousEndPage = accread$endpage
-    startpage = accread$startpage
     options(warn = -1) # to ignore warnings relating to failed mmap.load attempt
     rm(accread); gc()
     options(warn = 0) #turn on warnings
