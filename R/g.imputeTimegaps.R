@@ -96,7 +96,7 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
     if (NumberOfGaps > 0) {
       x$gap = 1
       x$gap[gapsi] = round(deltatime[gapsi] * sf)   # as.integer was problematic many decimals close to wholenumbers (but not whole numbers) resulting in 1 row less than expected
-      GapsLength = sum(x$gap[gapsi]) - NumberOfGaps # - numberOfGaps because x$gap == 1 means no gap
+      GapsLength = sum(x$gap[gapsi])
       #  normalisation to 1 G 
       normalise = which(x$gap > 1)
       for (i_normalise in normalise) {
