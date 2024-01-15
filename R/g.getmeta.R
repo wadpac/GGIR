@@ -303,7 +303,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         metricnames_long = c("timestamp","nonwearscore","clippingscore","EN")
       }
       rm(SWMT)
-      if (exists("P")) rm(P); gc()
       if (i != 0 && exists("P")) rm(P); gc()
       LD = nrow(data)
       if (LD < (ws*sf) && i == 1) {
