@@ -287,18 +287,22 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     if (length(sf) == 0) sf = params_rawdata[["rmc.sf"]]
   }
 
-  if (blocknumber == 1) {
-    # if first block isn't read then the file is probably corrupt
-    if(length(P$data) <= 1 || nrow(P$data) == 0) {
+  # if first block isn't read then the file is probably corrupt
+  if (length(P$data) <= 1 || nrow(P$data) == 0) {
+    P = c()
+    isLastBlock = TRUE
+    if (blocknumber == 1) {
       warning('\nFile empty, possibly corrupt.\n')
-      P = c()
-      isLastBlock = TRUE
       filequality$filetooshort = TRUE
       filequality$filecorrupt = TRUE
-    } else if (nrow(P$data) < (sf * ws * 2 + 1)) {
+    }
+  } else if (nrow(P$data) < (sf * ws * 2 + 1)) {
+    # a shorter chunk of data than expected was read
+    isLastBlock = TRUE
+
+    if (blocknumber == 1) {
       # not enough data for analysis
       P = c()
-      isLastBlock = TRUE
       filequality$filetooshort = TRUE
     }
   }
