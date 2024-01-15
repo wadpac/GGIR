@@ -169,29 +169,14 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
         # read the entire block:
         P = apply_readAxivity(bstart = startpage, bend = endpage)
         if (length(P) > 1) { # data reading succesful
-          if (length(P$data) == 0) { # if this still does not work then
-            P = c() ; isLastBlock = TRUE
-            if (blocknumber == 1) filequality$filetooshort = TRUE
-          } else {
-            if (nrow(P$data) < (sf * ws * 2 + 1)) {
-              P = c() ; isLastBlock = TRUE
-              if (blocknumber == 1) filequality$filetooshort = TRUE
-            } else {
-              filequality$NFilePagesSkipped = NFilePagesSkipped # store number of pages jumped
-            }
-          }
+          filequality$NFilePagesSkipped = NFilePagesSkipped # store number of pages jumped
+
           # Add replications of Ptest to the beginning of P to achieve same data 
           # length as under normal conditions
           P$data = rbind(do.call("rbind",
                                  replicate(NFilePagesSkipped, PtestStartPage$data, simplify = FALSE)),
                          P$data)
-        } else { # Data reading still not succesful, so classify file as corrupt
-          P = c()
-          if (blocknumber == 1) filequality$filecorrupt = TRUE
         }
-      } else {
-        P = c()
-        if (blocknumber == 1) filequality$filecorrupt = TRUE
       }
     }
     if ("temp" %in% colnames(P$data)) {
