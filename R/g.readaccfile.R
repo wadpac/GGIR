@@ -279,7 +279,6 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                    interpolationType = params_rawdata[["interpolationType"]],
                                    PreviousLastValue = PreviousLastValue,
                                    PreviousLastTime = PreviousLastTime,
-                                   epochsize = params_general[["windowsizes"]][1:2],
                                    desiredtz = params_general[["desiredtz"]],
                                    configtz = params_general[["configtz"]],
                                    header = header)

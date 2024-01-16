@@ -22,7 +22,6 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                           interpolationType = 1,
                           PreviousLastValue = c(0, 0, 1),
                           PreviousLastTime = NULL,
-                          epochsize = NULL,
                           desiredtz = NULL,
                           configtz = NULL,
                           header = NULL) {

@@ -35,7 +35,6 @@
                           interpolationType=1, 
                           PreviousLastValue = c(0, 0, 1),
                           PreviousLastTime = NULL,
-                          epochsize = NULL,
                           desiredtz = NULL,
                           configtz = NULL,
                           header = NULL)	
@@ -163,9 +162,6 @@
   }
     \item{PreviousLastTime}{
     Automatically identified last timestamp in previous chunk of data read.
-  }
-  \item{epochsize}{
-    Numeric vector of length two, with short and long epoch sizes. Only used by GGIR internally.
   }
   \item{desiredtz}{
     Timezone in which device was worn.
