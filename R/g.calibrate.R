@@ -29,7 +29,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
   # set parameters
   filequality = data.frame(filetooshort = FALSE, filecorrupt = FALSE,
                            filedoesnotholdday = FALSE, stringsAsFactors = TRUE)
-  ws4 = 10 #epoch for recalibration, don't change
+  ws4 = params_general[["windowsizes"]][4] #epoch for recalibration
   ws2 = params_general[["windowsizes"]][2] #dummy variable
   ws =  params_general[["windowsizes"]][3] # window size for assessing non-wear time (seconds)
   cal.error.start = cal.error.end = c()

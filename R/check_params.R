@@ -129,13 +129,13 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     check_class("general", params = params_general, parnames = character_params, parclass = "character")
 
     ws3 = params_general[["windowsizes"]][1]; ws2 = params_general[["windowsizes"]][2]; ws = params_general[["windowsizes"]][3]
-    if ((ws2/60) != round(ws2/60)) {
+    if (ws2/60 != round(ws2/60)) {
       ws2 = as.numeric(60 * ceiling(ws2/60))
       warning(paste0("The long windowsize needs to be a multitude of 1 minute periods.\n",
                      "Long windowsize has now been automatically adjusted to ",
                      ws2, " seconds in order to meet this criteria."), call. = FALSE)
     }
-    if ((ws2/ws3) != round(ws2/ws3)) {
+    if (ws2/ws3 != round(ws2/ws3)) {
       def = c(1,5,10,15,20,30,60)
       def2 = abs(def - ws3)
       ws3 = as.numeric(def[which(def2 == min(def2))])
@@ -143,7 +143,16 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                      "The short windowsize has now been automatically adjusted to ",
                      ws3, " seconds in order to meet this criteria.\n"), call. = FALSE)
     }
-    params_general[["windowsizes"]] = c(ws3,ws2,ws)
+
+    ws4 = 10 #epoch for recalibration, don't change
+    if (ws/ws4 != round(ws/ws4)) {
+      ws = as.numeric(ws4 * ceiling(ws/ws4))
+      warning(paste0("The windowsize for assessing non-wear needs to be a multitude of ", ws4,
+                     "\n This windowsize has now been automatically adjusted to ",
+                     ws, " seconds in order to meet this criteria.\n"), call. = FALSE)
+    }
+  
+    params_general[["windowsizes"]] = c(ws3, ws2, ws, ws4)
   }
   #-----------------------------------------------------------------------------------
   # Check value combinations and apply corrections if not logical
