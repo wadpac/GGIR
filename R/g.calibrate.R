@@ -60,12 +60,6 @@ g.calibrate = function(datafile, params_rawdata = c(),
     return()
   }
   
-  if (mon == MONITOR$GENEACTIV && dformat == FORMAT$CSV && length(params_rawdata[["rmc.firstrow.acc"]]) == 0) {
-    stop(paste0("The GENEActiv csv reading functionality is deprecated in",
-                " GGIR from the version 2.6-4 onwards. Please, use either",
-                " the GENEActiv bin files or try to read the csv files with",
-                " GGIR::read.myacc.csv"), call. = FALSE)
-  }
   if (sf == 0) {
     stop(paste0("\nSample frequency not recognised in ", datafile,
                 " calibration procedure stopped."), call. = FALSE)

@@ -218,6 +218,14 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       sf = Pusercsvformat$header$sample_rate
     }
   }
+
+  if (mon == MONITOR$GENEACTIV && dformat == FORMAT$CSV) {
+    stop(paste0("The GENEActiv csv reading functionality is deprecated in",
+                " GGIR from version 2.6-4 onwards. Please, use either",
+                " the GENEActiv bin files or try to read the csv files with",
+                " GGIR::read.myacc.csv"), call. = FALSE)
+  }
+
   if (dformat == FORMAT$BIN) {
     if (mon == MONITOR$GENEACTIV) {
       H = GGIRread::readGENEActiv(filename = datafile, start = 0, end = 1)$header
@@ -244,10 +252,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       }
     }
   } else if (dformat == FORMAT$CSV) {
-    if (mon == MONITOR$GENEACTIV) {
-      H = read.csv(datafile,nrow = 20, skip = 0) #note that not the entire header is copied
-      # cat("\nGENEACTIV csv files support is deprecated in GGIR v2.6-2 onwards. Please, either use the GENEACTIV bin files or the read.myacc.csv function on the csv files")
-    } else if (mon == MONITOR$ACTIGRAPH) {
+    if (mon == MONITOR$ACTIGRAPH) {
       H = read.csv(datafile, nrow = 9, skip = 0)
     } else if (mon == MONITOR$AXIVITY) {
       H = "file does not have header" # these files have no header

@@ -141,11 +141,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   hvars = g.extractheadervars(INFI)
   deviceSerialNumber = hvars$deviceSerialNumber
 
-  # if GENEActiv csv, deprecated function
-  if (mon == MONITOR$GENEACTIV && dformat == FORMAT$CSV && length(params_rawdata[["rmc.firstrow.acc"]]) == 0) {
-    stop("The GENEActiv csv reading functionality is deprecated in GGIR from the version 2.6-4 onwards. Please, use either the GENEActiv bin files or try to read the csv files with GGIR::read.myacc.csv")
-  }
-
   # get now-wear, clip, and blocksize parameters (thresholds)
   ncb_params = get_nw_clip_block_params(chunksize = params_rawdata[["chunksize"]],
                                         dynrange = params_rawdata[["dynrange"]],
