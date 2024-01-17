@@ -136,8 +136,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                      windowsizes = c(), bsc_qc = bsc_qc, QClog = NULL)))
   }
 
-  if (sf == 0) stop("Sample frequency not recognised")
-
   hvars = g.extractheadervars(INFI)
   deviceSerialNumber = hvars$deviceSerialNumber
 

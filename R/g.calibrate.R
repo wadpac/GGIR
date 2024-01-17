@@ -60,10 +60,6 @@ g.calibrate = function(datafile, params_rawdata = c(),
     return()
   }
   
-  if (sf == 0) {
-    stop(paste0("\nSample frequency not recognised in ", datafile,
-                " calibration procedure stopped."), call. = FALSE)
-  }
   #creating matrices for storing output
   S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
   NR = ceiling((90*10^6) / (sf*ws4)) + 1000 #NR = number of 'ws4' second rows (this is for 10 days at 80 Hz)

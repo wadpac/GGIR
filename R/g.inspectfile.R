@@ -213,6 +213,8 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       sf = params_rawdata[["rmc.sf"]]
       if (is.null(sf)) {
         stop("\nFile header doesn't specify sample rate. Please provide rmc.sf value to process ", datafile)
+      } else if (sf == 0) {
+        stop("\nFile header doesn't specify sample rate. Please provide a non-zero rmc.sf value to process ", datafile)
       }
     } else {
       sf = Pusercsvformat$header$sample_rate
@@ -268,6 +270,9 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       H = data.frame(name = row.names(header), value = header, stringsAsFactors = TRUE)
     }
     sf = params_rawdata[["rmc.sf"]]
+    if (sf == 0) {
+      stop("\nPlease provide a non-zero rmc.sf value to process ", datafile)
+    }
   } else if (dformat == FORMAT$GT3X) { # gt3x
     info = try(expr = {read.gt3x::parse_gt3x_info(datafile, tz = desiredtz)},silent = TRUE)
     if (inherits(info, "try-error") == TRUE || is.null(info)) {
@@ -290,6 +295,11 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       sf = as.numeric(H[which(H[,1] == "Sample Rate"), 2])
     }
   }
+
+  if (sf == 0) {
+    stop(paste0("\nSample frequency not recognised in ", datafile), call. = FALSE)
+  }
+
   if (is.null(sf) == FALSE) {
     H = as.matrix(H)
     if (ncol(H) == 3 && dformat == FORMAT$CSV && mon == MONITOR$ACTIGRAPH) {
