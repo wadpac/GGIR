@@ -306,6 +306,17 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     }
   }
 
+  # remove any columns we don't need/expect
+  P$data = P$data[,which(colnames(P$data) %in% c("x", "y", "z", "time", "light", "temperature", "wear"))]
+
+  # every column except for time and wear should be numeric.
+  # If it isn't, some non-numeric input was present, and we don't know how to deal with it.
+  for (col in c("x", "y", "z", "light", "temperature")) {
+    if ((col %in% colnames(P$data)) && !is.numeric(P$data[, col])) {
+      stop(paste0("Corrupt file. ", col, " column contains non-numeric data."))
+    }
+  }
+
   invisible(list(P = P,
                  filequality = filequality,
                  isLastBlock = isLastBlock,

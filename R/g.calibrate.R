@@ -116,7 +116,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
     if (i == 1) {
       use.temp = ("temperature" %in% colnames(P$data))
       if (use.temp) {
-        meta = matrix(99999,NR,8) #for meta data
+        meta = matrix(99999,NR,8) # for metadata
       } else {
         meta = matrix(99999,NR,7)
       }
@@ -155,17 +155,10 @@ g.calibrate = function(datafile, params_rawdata = c(),
           Gz = data$z
 
           if(use.temp) {
-            temperature = as.numeric(data$temperature)
-
-            # ignore temperature if the values are unrealisticly high or not numeric
-            if (is.na(mean(temperature, na.rm = TRUE))) {
-              # mean() returns NA_real_ if it's calculated *not* on numeric (or logical coersed to numeric) values
-              warning("\ntemperature ignored for auto-calibration because there are non-numeric values\n")
-              use.temp = FALSE
-            } else if (mean(temperature[1:10], na.rm = TRUE) > 120) {
+            if (mean(data$temperature[1:10], na.rm = TRUE) > 120) {
               warning("\ntemperature ignored for auto-calibration because values are too high\n")
               use.temp = FALSE
-            } else if (sd(temperature, na.rm = TRUE) < 0.01) {
+            } else if (sd(data$temperature, na.rm = TRUE) < 0.01) {
               warning("\ntemperature ignored for auto-calibration because no variance in values\n")
               use.temp = FALSE
             }
@@ -181,7 +174,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
           D1 = g.downsample(Gy,sf,ws4,ws2); 	GyM2 = D1$var2
           D1 = g.downsample(Gz,sf,ws4,ws2); 	GzM2 = D1$var2
           if (use.temp == TRUE) {
-            D1 = g.downsample(temperature,sf,ws4,ws2);
+            D1 = g.downsample(data$temperature,sf,ws4,ws2);
             TemperatureM2 = D1$var2
           }
           #sd acceleration

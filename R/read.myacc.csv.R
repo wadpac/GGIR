@@ -312,7 +312,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                          PreviousLastValue = PreviousLastValue,
                          PreviousLastTime = PreviousLastTime, epochsize = NULL)
     P = P$x
-    PreviousLastValue = as.numeric(P[nrow(P), c("x", "y", "z")])
+    PreviousLastValue = P[nrow(P), c("x", "y", "z")]
     PreviousLastTime = as.POSIXct(P[nrow(P), "time"])
   }
   if (rmc.doresample == TRUE) { #resample

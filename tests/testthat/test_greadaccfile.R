@@ -72,7 +72,7 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
                            PreviousEndPage = 1, inspectfileobject = Icwa,
                            params_rawdata = params_rawdata)
   expect_equal(cwa_read$P$header$blocks, 145)
-  expect_equal(round(cwa_read$P$data[200, 6], digits = 4), 0)
+  expect_equal(sum(cwa_read$P$data[c("x","y","z")]), 280.53, tolerance = .01, scale = 1)
 
   Mcwa = g.getmeta(cwafile, desiredtz = desiredtz, windowsize = c(1,300,300),
                    inspectfileobject = Icwa)

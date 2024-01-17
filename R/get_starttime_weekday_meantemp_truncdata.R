@@ -7,11 +7,7 @@ get_starttime_weekday_meantemp_truncdata = function(use.temp, monc, dformat, dat
   meantemp = c()
   if (use.temp) {
     meantemp = mean(as.numeric(data$temperature, na.rm = TRUE))
-    if (is.na(meantemp) == T) {
-      warning("temperature is NA", call. = FALSE)
-      meantemp = 0
-      use.temp = FALSE
-    } else if (mean(as.numeric(data$temperature[1:10])) > 50) {
+    if (mean(data$temperature[1:10]) > 50) {
       warning("temperature value is unreaslistically high (> 50 Celcius)", call. = FALSE)
       meantemp = 0
       use.temp = FALSE

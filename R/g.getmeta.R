@@ -222,7 +222,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     NFilePagesSkipped = filequality$NFilePagesSkipped
     isLastBlock = accread$isLastBlock
     PreviousEndPage = accread$endpage
-    options(warn = -1) # to ignore warnings relating to failed mmap.load attempt
+    
     rm(accread); gc()
     options(warn = 0) #turn on warnings
     #============
@@ -237,7 +237,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                              PreviousLastTime = PreviousLastTime,
                              epochsize = c(ws3, ws2))
         data = P$x
-        PreviousLastValue = as.numeric(data[nrow(data), c("x", "y", "z")])
+        PreviousLastValue = data[nrow(data), c("x", "y", "z")]
         if ("time" %in% colnames(data)) {
           PreviousLastTime = as.POSIXct(data$time[nrow(data)])
         } else {
@@ -325,10 +325,10 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         #--------------------------------------------
         temperature = light = c()
         if (light.available) {
-          light = as.numeric(data$light)
+          light = data[, "light"]
         }
         if (use.temp) {
-          temperature = as.numeric(data$temperature)
+          temperature = data[, "temperature"]
         }
 
         # rescale data

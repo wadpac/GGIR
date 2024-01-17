@@ -11,11 +11,6 @@ detect_nonwear_clipping = function(data = c(), windowsizes = c(5, 900, 3600), sf
   CWav = NWav = rep(0, nmin)
   crit = ((window/window2)/2) + 1
   
-  if (is.numeric(data[,1]) == FALSE) {
-    data[,1] = as.numeric(data[,1])
-    data[,2] = as.numeric(data[,2])
-    data[,3] = as.numeric(data[,3])
-  }
   if (nonwear_approach %in% c("2013", "2023")) {
     # define windows to check:
     for (h in 1:nmin) { #number of windows
