@@ -157,14 +157,29 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   expect_equal(Mcsv$dformc, FORMAT$BIN)
   expect_equal(Mcsv$sf, 64)
 
-  movisens_read = g.readaccfile(movisensFile, blocksize = 3000, blocknumber = 1, filequality = filequality,
+  movisens_blocksize = 3000
+  movisens_read = g.readaccfile(movisensFile, blocksize = movisens_blocksize, blocknumber = 1, filequality = filequality,
                                 dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
                                 PreviousEndPage = 1, inspectfileobject = Mcsv,
                                 params_rawdata = params_rawdata)
-  expect_equal(nrow(movisens_read$P$data), 3001)
+  # for Movisens files, we'll read from startpage to endpage inclusive, so there will be blocksize+1 samples returned
+  expect_equal(nrow(movisens_read$P$data), movisens_blocksize+1)
   expect_false(movisens_read$filequality$filecorrupt)
   expect_false(movisens_read$filequality$filetooshort)
   expect_equal(sum(movisens_read$P$data[c("x","y","z")]), 4385.29, tolerance = .01, scale = 1)
+  expect_equal(movisens_read$endpage, movisens_blocksize + 1)
+
+  # read the next block (set PreviousEndPage to movisens_read$endpage)
+  movisens_read2 = g.readaccfile(movisensFile, blocksize = movisens_blocksize, blocknumber = 2, filequality = filequality,
+                                dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
+                                PreviousEndPage = movisens_read$endpage, inspectfileobject = Mcsv,
+                                params_rawdata = params_rawdata)
+  expect_equal(nrow(movisens_read2$P$data), movisens_blocksize+1)
+  expect_equal(movisens_read2$endpage, movisens_blocksize * 2 + 2)
+  
+  # if the 1st sample of 2nd block is identical to the last sample of the 1st block,
+  # this means that we calculated the startpage of the 2nd block incorrectly.
+  expect_false(any(movisens_read2$P$data[1,] == movisens_read$P$data[nrow(movisens_read$P$data),]))
 
   # ad-hoc csv file
 
