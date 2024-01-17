@@ -10,8 +10,10 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   filequality = list(filecorrupt = FALSE, filetooshort = FALSE)
   dayborder = 0
 
-  Ax3CsvFile  = system.file("testfiles/ax3_testfile.csv", package = "GGIR")[1]
-  Ax6CsvFile  = system.file("testfiles/ax6_testfile.csv", package = "GGIR")[1]
+  # For Axivity csv files, we'll be able to read files with both unix and formatted (Y-M-D h:m:s) timestamps
+  Ax3CsvFile  = system.file("testfiles/ax3_testfile_unix_timestamps.csv", package = "GGIR")[1]
+  Ax6CsvFile  = system.file("testfiles/ax6_testfile_formatted_timestamps.csv", package = "GGIR")[1]
+
   cwafile  = system.file("testfiles/ax3_testfile.cwa", package = "GGIRread")[1]
   GAfile  = system.file("testfiles/GENEActiv_testfile.bin", package = "GGIRread")[1]
   gt3xfile  = system.file("testfiles/actigraph_testfile.gt3x", package = "GGIR")[1]
@@ -81,7 +83,7 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
 
   cat("\nAxivity .csv")
 
-  for (csvData in list(list(Ax3CsvFile, 2881, 2370.08), list(Ax6CsvFile, 2875, 1063.66))) {
+  for (csvData in list(list(Ax3CsvFile, 2881, 2370.08), list(Ax6CsvFile, 2875, 1064.66))) {
     IAxivityCsv = g.inspectfile(csvData[[1]], desiredtz = desiredtz, params_rawdata = params_rawdata)
     expect_equal(IAxivityCsv$monc, MONITOR$AXIVITY)
     expect_equal(IAxivityCsv$dformc, FORMAT$CSV)
