@@ -563,10 +563,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     if (nrow(metashort) > 1) {
       starttime3 = round(as.numeric(starttime)) #numeric time but relative to the desiredtz
       time5 = seq(starttime3, (starttime3 + ((nrow(metashort) - 1) * ws3)), by = ws3)
-      if (length(params_general[["desiredtz"]]) == 0) {
-        warning("\ndesiredtz not specified, system timezone used as default")
-        params_general[["desiredtz"]] = ""
-      }
       time6 = as.POSIXlt(time5,origin = "1970-01-01", tz = params_general[["desiredtz"]])
       time6 = strftime(time6, format = "%Y-%m-%dT%H:%M:%S%z")
       metashort[,1] = as.character(time6)
