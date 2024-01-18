@@ -17,6 +17,10 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     params_general = params$params_general
   }
   
+  desiredtz = params_general[["desiredtz"]]
+  configtz = params_general[["configtz"]]
+  if (length(configtz) == 0) configtz = desiredtz
+
   I = inspectfileobject
   mon = I$monc
   if (mon == MONITOR$VERISENSE) mon = MONITOR$ACTIGRAPH
@@ -71,8 +75,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
 
   if (mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) {    
     try(expr = {P = GGIRread::readGENEActiv(filename = filename, start = startpage,
-                                            end = endpage, desiredtz = params_general[["desiredtz"]],
-                                            configtz = params_general[["configtz"]])}, silent = TRUE)
+                                            end = endpage, desiredtz = desiredtz,
+                                            configtz = configtz)}, silent = TRUE)
     if (length(P) > 0 && ("data.out" %in% names(P))) {
       names(P)[names(P) == "data.out"] = "data"
 
@@ -123,8 +127,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       apply_readAxivity = function(bstart, bend) {
         try(expr = {P = GGIRread::readAxivity(filename = filename, start = bstart, end = bend,
                                               progressBar = FALSE,
-                                              desiredtz = params_general[["desiredtz"]],
-                                              configtz = params_general[["configtz"]],
+                                              desiredtz = desiredtz,
+                                              configtz = configtz,
                                               interpolationType = params_rawdata[["interpolationType"]],
                                               header = header)
             }, silent = TRUE)
@@ -135,8 +139,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       apply_readAxivity = function(bstart, bend) {
         try(expr = {P = GGIRread::readAxivity(filename = filename, start = bstart, end = bend, 
                                               progressBar = FALSE,
-                                              desiredtz = params_general[["desiredtz"]],
-                                              configtz = params_general[["configtz"]],
+                                              desiredtz = desiredtz,
+                                              configtz = configtz,
                                               interpolationType = params_rawdata[["interpolationType"]],
                                               frequency_tol = params_rawdata[["frequency_tol"]],
                                               header = header)
@@ -218,7 +222,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                               endIndex = endpage)
     colnames(P$data) = c("x", "y", "z")
     # there may or may not be a temp.bin file containing temperature
-    try(expr = {P$data$temperature = g.readtemp_movisens(filename, desiredtz = params_general[["desiredtz"]], 
+    try(expr = {P$data$temperature = g.readtemp_movisens(filename, desiredtz = desiredtz, 
                                                          from = startpage, to = endpage,
                                                          interpolationType = params_rawdata[["interpolationType"]])
     }, silent = TRUE)
@@ -233,8 +237,17 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       colnames(P$data)[colnames(P$data) == "Z"] = "z"
 
       # read.gt3x::read.gt3x returns timestamps as POSIXct with GMT timezone, but they are actally in local time of the device.
-      # Convert them to numeric unix timestamps.
-      P$data$time = as.numeric(P$data$time)
+      # Don't just convert timezones, instead force the correct local timezone of the device (configtz)
+      # while keeping the same hh:mm:ss time.
+      # (Converting to POSIXlt then back to POSIXct with the correct timezone
+      #  seems to work fine as an equivalent of lubridate::force_tz().
+      #  as.POSIXlt() used to be slow but seems reasonably fast these days).
+      P$data$time = as.POSIXlt(P$data$time)
+      P$data$time = as.POSIXct(P$data$time, tz=configtz)
+
+      if (configtz != desiredtz) {
+        P$data$time = as.POSIXct(P$data$time, tz=desiredtz)
+      }
     }
   } else if (mon == MONITOR$AD_HOC && dformat == FORMAT$AD_HOC_CSV) { # user-specified csv format
     # skip 1 more row only if rmc.firstrow.acc points at a row containing column names.
@@ -280,8 +293,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                    interpolationType = params_rawdata[["interpolationType"]],
                                    PreviousLastValue = PreviousLastValue,
                                    PreviousLastTime = PreviousLastTime,
-                                   desiredtz = params_general[["desiredtz"]],
-                                   configtz = params_general[["configtz"]],
+                                   desiredtz = desiredtz,
+                                   configtz = configtz,
                                    header = header)
     }, silent = TRUE)
     if (length(sf) == 0) sf = params_rawdata[["rmc.sf"]]
