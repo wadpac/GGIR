@@ -3,9 +3,12 @@ context("g.readaccfile")
 test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity csv, and actigraph csv files correctly", {
   skip_on_cran()
   
-  desiredtz = "Europe/London"
-  params_rawdata = list(frequency_tol = 0.1, interpolationType = 1,
-                        desiredtz = "Europe/London", configtz = "Europe/London")
+  desiredtz = "Pacific/Auckland"
+  configtz = "Europe/Berlin"
+  params = extract_params(input = list(frequency_tol = 0.1, interpolationType = 1,
+                                       desiredtz = desiredtz, configtz = configtz))
+  params_rawdata = params$params_rawdata
+  params_general = params$params_general
 
   filequality = list(filecorrupt = FALSE, filetooshort = FALSE)
   dayborder = 0
@@ -29,9 +32,9 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   expect_equal(Icsv$dformc, FORMAT$CSV)
 
   csv_read = g.readaccfile(filename, blocksize = 10, blocknumber = 1, filequality = filequality,
-                           dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
+                           dayborder = dayborder, ws = 3,
                            PreviousEndPage = 1, inspectfileobject = Icsv,
-                           params_rawdata = params_rawdata)
+                           params_rawdata = params_rawdata, params_general = params_general)
   expect_equal(nrow(csv_read$P$data), 3000)
   expect_false(csv_read$filequality$filecorrupt)
   expect_false(csv_read$filequality$filetooshort)
@@ -47,9 +50,9 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   expect_equal(EHV$deviceSerialNumber, "MOS2E39180594_firmware_1.9.2")
 
   gt3x_read = g.readaccfile(gt3xfile, blocksize = 3000, blocknumber = 1, filequality = filequality,
-                            dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
+                            dayborder = dayborder, ws = 3,
                             PreviousEndPage = 1, inspectfileobject = Igt3x,
-                            params_rawdata = params_rawdata)
+                            params_rawdata = params_rawdata, params_general = params_general)
   expect_equal(nrow(gt3x_read$P$data), 17640)
   expect_false(gt3x_read$filequality$filecorrupt)
   expect_false(gt3x_read$filequality$filetooshort)
@@ -62,7 +65,7 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   
   cat("\nAxivity .cwa")
   # axivity .cwa
-  Icwa = g.inspectfile(cwafile, desiredtz = desiredtz, params_rawdata = params_rawdata)
+  Icwa = g.inspectfile(cwafile, params_rawdata = params_rawdata, params_general = params_general)
   expect_equal(Icwa$monc, MONITOR$AXIVITY)
   expect_equal(Icwa$dformc, FORMAT$CWA)
   expect_equal(Icwa$sf, 100)
@@ -70,9 +73,9 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   expect_equal(EHV$deviceSerialNumber,"39434")
 
   cwa_read = g.readaccfile(cwafile, blocksize = 10, blocknumber = 1, filequality = filequality,
-                           dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
+                           dayborder = dayborder, ws = 3, 
                            PreviousEndPage = 1, inspectfileobject = Icwa,
-                           params_rawdata = params_rawdata)
+                           params_rawdata = params_rawdata, params_general = params_general)
   expect_equal(cwa_read$P$header$blocks, 145)
   expect_equal(sum(cwa_read$P$data[c("x","y","z")]), 280.53, tolerance = .01, scale = 1)
 
@@ -84,14 +87,14 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   cat("\nAxivity .csv")
 
   for (csvData in list(list(Ax3CsvFile, 2881, 2370.08), list(Ax6CsvFile, 2875, 1064.66))) {
-    IAxivityCsv = g.inspectfile(csvData[[1]], desiredtz = desiredtz, params_rawdata = params_rawdata)
+    IAxivityCsv = g.inspectfile(csvData[[1]], params_rawdata = params_rawdata, params_general = params_general)
     expect_equal(IAxivityCsv$monc, MONITOR$AXIVITY)
     expect_equal(IAxivityCsv$dformc, FORMAT$CSV)
 
     csv_read = g.readaccfile(csvData[[1]], blocksize = 10, blocknumber = 1, filequality = filequality,
-                             dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
+                             dayborder = dayborder, ws = 3, 
                              PreviousEndPage = 1, inspectfileobject = IAxivityCsv,
-                             params_rawdata = params_rawdata)
+                             params_rawdata = params_rawdata, params_general = params_general)
 
     # For both ax3 and ax6 files, we expect 4 columns: timestamp and XYZ.
     # All gyro data in ax6 files gets ignored.
@@ -161,9 +164,9 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
 
   movisens_blocksize = 3000
   movisens_read = g.readaccfile(movisensFile, blocksize = movisens_blocksize, blocknumber = 1, filequality = filequality,
-                                dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
+                                dayborder = dayborder, ws = 3,
                                 PreviousEndPage = 1, inspectfileobject = Mcsv,
-                                params_rawdata = params_rawdata)
+                                params_rawdata = params_rawdata, params_general = params_general)
   # for Movisens files, we'll read from startpage to endpage inclusive, so there will be blocksize+1 samples returned
   expect_equal(nrow(movisens_read$P$data), movisens_blocksize+1)
   expect_false(movisens_read$filequality$filecorrupt)
@@ -173,9 +176,9 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
 
   # read the next block (set PreviousEndPage to movisens_read$endpage)
   movisens_read2 = g.readaccfile(movisensFile, blocksize = movisens_blocksize, blocknumber = 2, filequality = filequality,
-                                dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
+                                dayborder = dayborder, ws = 3,
                                 PreviousEndPage = movisens_read$endpage, inspectfileobject = Mcsv,
-                                params_rawdata = params_rawdata)
+                                params_rawdata = params_rawdata, params_general = params_general)
   expect_equal(nrow(movisens_read2$P$data), movisens_blocksize+1)
   expect_equal(movisens_read2$endpage, movisens_blocksize * 2 + 2)
   
@@ -193,7 +196,7 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   N = 6000
   sf = 30
   x = Sys.time()+((0:(N-1))/sf)
-  timestamps = as.POSIXlt(x, origin="1970-1-1", tz = "Europe/London")
+  timestamps = as.POSIXlt(x, origin="1970-1-1", tz = configtz)
   mydata = data.frame(Xcol = rnorm(N), timecol = timestamps, Ycol = rnorm(N), Zcol = rnorm(N),
             tempcol = rnorm(N) + 20)
   testfile = "testcsv1.csv"
@@ -214,7 +217,7 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   # Read the file starting with row 1 (rmc.firstrow.acc = 1); this row contains column names.
   # Verify that full 3000 rows are still read.
   csv_read = g.readaccfile(testfile, blocksize = 10, blocknumber = 1, filequality = filequality, # blocksize is # of pages of 300 samples
-                           dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
+                           dayborder = dayborder, ws = 3, desiredtz = desiredtz, configtz = configtz,
                            PreviousEndPage = c(), inspectfileobject = AHcsv,
                            rmc.dec=".", rmc.sf=30, rmc.unit.time="POSIX",
                            rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
@@ -232,7 +235,7 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   # since the 1st row of the file contains column names, pointing rmc.firstrow.acc 2
   # should lead to the same eaxt 3000 lines being read (the lines after the column names).
   csv_read2 = g.readaccfile(testfile, blocksize = 10, blocknumber = 1, filequality = filequality,
-                           dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
+                           dayborder = dayborder, ws = 3, desiredtz = desiredtz, configtz = configtz,
                            PreviousEndPage = c(), inspectfileobject = AHcsv,
                            rmc.dec=".", rmc.sf=30, rmc.unit.time="POSIX",
                            rmc.firstrow.acc = 2, rmc.firstrow.header=c(),
@@ -247,7 +250,7 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
 
   # reading the next 3000 lines should also give the same result for rmc.firstrow.acc == 1 or 2.
   csv_read3 = g.readaccfile(testfile, blocksize = 10, blocknumber = 2, filequality = filequality,
-                           dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
+                           dayborder = dayborder, ws = 3, desiredtz = desiredtz, configtz = configtz,
                            PreviousEndPage = csv_read$endpage, inspectfileobject = AHcsv,
                            rmc.dec=".", rmc.sf=30, rmc.unit.time="POSIX",
                            rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
@@ -257,7 +260,7 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   expect_equal(nrow(csv_read3$P$data), 3000)
 
   csv_read4 = g.readaccfile(testfile, blocksize = 10, blocknumber = 2, filequality = filequality,
-                           dayborder = dayborder, ws = 3, desiredtz = desiredtz, 
+                           dayborder = dayborder, ws = 3, desiredtz = desiredtz, configtz = configtz,
                            PreviousEndPage = csv_read2$endpage, inspectfileobject = AHcsv,
                            rmc.dec=".", rmc.sf=30, rmc.unit.time="POSIX",
                            rmc.firstrow.acc = 2, rmc.firstrow.header=c(),
