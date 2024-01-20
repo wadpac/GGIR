@@ -247,8 +247,9 @@ GGIR(mode = 1:5,
         actigraph_csv, and sensewear_xls, which correspond to epoch level data 
         files from, respecitively,  UK Biobank in csv format, Actiwatch in csv 
         format, Actiwatch in awd format, ActiGraph csv format, and Sensewear in
-        xls format. Here, the assumed epoch size for UK Biobank csv 
-        data is 5 seconds. The epoch size for the other non-raw data formats is 
+        xls format (also works with xlsx). Here, the assumed epoch size for
+        UK Biobank csvdata is 5 seconds. 
+        The epoch size for the other non-raw data formats is 
         flexible, but make sure that you set first value of argument 
         \code{windowsizes} accordingly. Also when working with 
         non-raw data formats specify argument \code{extEpochData_timeformat} as
@@ -1620,6 +1621,9 @@ GGIR(mode = 1:5,
             outputdir = "D:/youroutputfolder",
             mode = 1:5,
             windowsizes = c(60, 900, 3600),
+            threshold.in = 1.5,
+            threshold.mod = 3,
+            threshold.vig = 6,
             dataFormat = "sensewear_xls",
             extEpochData_timeformat = "\%d-\%b-\%Y \%H:\%M:\%S",
             HASPT.algo = "NotWorn",
