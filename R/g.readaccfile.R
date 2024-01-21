@@ -195,11 +195,30 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                             data.table=FALSE, stringsAsFactors=FALSE)
     }, silent = TRUE)
     if (length(rawData) > 0) {
-      if (nrow(rawData) < blocksize) { # last block
+      if (nrow(rawData) < blocksize) {
         isLastBlock = TRUE
       }
-      # resample the acceleration data, because AX3 data is stored at irregular time points
+
       rawTime = rawData[,1]
+
+      # If timestamps in the csv file are formatted (Y-M-D h:m:s.f), data.table::fread assumes them to be
+      # in the timezone of the current device (i.e. as if configtz == "").
+      # If this is not the case, we need to force the correct timezone (force, as opposed to converting to that timezone).
+      # Converting to POSIXlt then back to POSIXct with the correct timezone
+      # seems to work fine as an equivalent of lubridate::force_tz().
+      #
+      # A similar thing needs to be done if the csv file contains Unix timestamps as well.
+      # OmGui converts device timestamps to Unix timestamps as if the timestamps were originally in UTC.
+      # So we need to convert the Unix timestamp into a hh:mm:ss format, then force that timestamp
+      # from  UTC into configtz timzone.
+      if (configtz != "" || is.numeric(rawTime)) {
+        rawTime = as.POSIXlt(rawTime, tz="UTC")
+        rawTime = as.POSIXct(rawTime, tz=configtz)
+      }
+
+      rawTime = as.numeric(rawTime)
+
+      # resample the acceleration data, because AX3 data is stored at irregular time points
       rawAccel = as.matrix(rawData[,2:4])
       step = 1/sf
       timeRes = seq(rawTime[1], rawTime[length(rawTime)], step)

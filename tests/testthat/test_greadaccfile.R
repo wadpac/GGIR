@@ -17,7 +17,9 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   Ax3CsvFile  = system.file("testfiles/ax3_testfile_unix_timestamps.csv", package = "GGIR")[1]
   Ax6CsvFile  = system.file("testfiles/ax6_testfile_formatted_timestamps.csv", package = "GGIR")[1]
 
-  cwafile  = system.file("testfiles/ax3_testfile.cwa", package = "GGIRread")[1]
+  Ax3CwaFile  = system.file("testfiles/ax3_testfile.cwa", package = "GGIRread")[1]
+  Ax6CwaFile  = system.file("testfiles/ax6_testfile.cwa", package = "GGIRread")[1]
+
   GAfile  = system.file("testfiles/GENEActiv_testfile.bin", package = "GGIRread")[1]
   gt3xfile  = system.file("testfiles/actigraph_testfile.gt3x", package = "GGIR")[1]
   
@@ -64,35 +66,45 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   expect_false(Mgt3x$filecorrupt)
   
   cat("\nAxivity .cwa")
-  # axivity .cwa
-  Icwa = g.inspectfile(cwafile, params_rawdata = params_rawdata, params_general = params_general)
+
+  Icwa = g.inspectfile(Ax3CwaFile, params_rawdata = params_rawdata, params_general = params_general)
   expect_equal(Icwa$monc, MONITOR$AXIVITY)
   expect_equal(Icwa$dformc, FORMAT$CWA)
   expect_equal(Icwa$sf, 100)
   EHV = g.extractheadervars(Icwa)
   expect_equal(EHV$deviceSerialNumber,"39434")
 
-  cwa_read = g.readaccfile(cwafile, blocksize = 10, blocknumber = 1, filequality = filequality,
-                           dayborder = dayborder, ws = 3, 
+  cwa_read = g.readaccfile(Ax3CwaFile, blocksize = 10, blocknumber = 1, filequality = filequality,
+                           dayborder = dayborder, ws = 2, 
                            PreviousEndPage = 1, inspectfileobject = Icwa,
                            params_rawdata = params_rawdata, params_general = params_general)
   expect_equal(cwa_read$P$header$blocks, 145)
   expect_equal(sum(cwa_read$P$data[c("x","y","z")]), 280.53, tolerance = .01, scale = 1)
 
-  Mcwa = g.getmeta(cwafile, desiredtz = desiredtz, windowsize = c(1,300,300),
+  Mcwa = g.getmeta(Ax3CwaFile, desiredtz = desiredtz, windowsize = c(1,300,300),
                    inspectfileobject = Icwa)
   expect_true(Mcwa$filetooshort)
   expect_false(Mcwa$filecorrupt)
 
+  ax3_start_timestamp = cwa_read$P$data$time[1]
+
+  Icwa = g.inspectfile(Ax6CwaFile, params_rawdata = params_rawdata, params_general = params_general)
+  cwa_read = g.readaccfile(Ax6CwaFile, blocksize = 10, blocknumber = 1, filequality = filequality,
+                           dayborder = dayborder, ws = 2, 
+                           PreviousEndPage = 1, inspectfileobject = Icwa,
+                           params_rawdata = params_rawdata, params_general = params_general)
+  ax6_start_timestamp = cwa_read$P$data$time[1]
+
   cat("\nAxivity .csv")
 
-  for (csvData in list(list(Ax3CsvFile, 2881, 2370.08), list(Ax6CsvFile, 2875, 1064.66))) {
+  for (csvData in list(list(Ax3CsvFile, 2881, 2370.08, ax3_start_timestamp),
+                       list(Ax6CsvFile, 2875, 1064.66, ax6_start_timestamp))) {
     IAxivityCsv = g.inspectfile(csvData[[1]], params_rawdata = params_rawdata, params_general = params_general)
     expect_equal(IAxivityCsv$monc, MONITOR$AXIVITY)
     expect_equal(IAxivityCsv$dformc, FORMAT$CSV)
 
     csv_read = g.readaccfile(csvData[[1]], blocksize = 10, blocknumber = 1, filequality = filequality,
-                             dayborder = dayborder, ws = 3, 
+                             dayborder = dayborder, ws = 2, 
                              PreviousEndPage = 1, inspectfileobject = IAxivityCsv,
                              params_rawdata = params_rawdata, params_general = params_general)
 
@@ -104,6 +116,11 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
     expect_false(csv_read$filequality$filecorrupt)
     expect_false(csv_read$filequality$filetooshort)
     expect_equal(sum(csv_read$P$data[c("x","y","z")]), csvData[[3]], tolerance = .01, scale = 1)
+
+    # check that the timestamps for the Axivity csv look the same as they did for
+    # the original cwa version of the same file (this verifies that timestamp conversion
+    # worked the same for both formats)
+    expect_equal(csv_read$P$data$time[1], csvData[[4]], tolerance = .01, scale = 1)
 
     MAxCsv = g.getmeta(datafile = Ax3CsvFile, desiredtz = desiredtz, windowsize = c(1,300,300),
                       inspectfileobject = IAxivityCsv)
@@ -271,7 +288,7 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   expect_equal(sum(csv_read3$P$data[c("x","y","z")]), sum(csv_read4$P$data[c("x","y","z")]), tolerance = .01, scale = 1)
 
   # test decimal separator recognition extraction
-  decn =  g.dotorcomma(cwafile,dformat = FORMAT$CWA, mon = MONITOR$AXIVITY, desiredtz = desiredtz)
+  decn =  g.dotorcomma(Ax3CwaFile,dformat = FORMAT$CWA, mon = MONITOR$AXIVITY, desiredtz = desiredtz)
   expect_equal(decn,".")
   decn =  g.dotorcomma(GAfile, dformat = FORMAT$BIN, mon = MONITOR$GENEACTIV, desiredtz = desiredtz)
   expect_equal(decn,".")
