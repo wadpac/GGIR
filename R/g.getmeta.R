@@ -225,7 +225,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       QClog = rbind(QClog, P$QClog)
 
       if (params_rawdata[["imputeTimegaps"]] && (dformat == FORMAT$CSV || dformat == FORMAT$GT3X)) {
-        P = g.imputeTimegaps(data, xyzCol = c("x", "y", "z"), timeCol = "time", sf = sf, k = 0.25,
+        P = g.imputeTimegaps(data, sf = sf, k = 0.25,
                              PreviousLastValue = PreviousLastValue,
                              PreviousLastTime = PreviousLastTime,
                              epochsize = c(ws3, ws2))

@@ -1,4 +1,4 @@
-g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE, 
+g.imputeTimegaps = function(x, sf, k=0.25, impute = TRUE, 
                             PreviousLastValue = c(0, 0, 1), PreviousLastTime = NULL, 
                             epochsize = NULL) {
   if (!is.null(epochsize)) {
@@ -11,12 +11,13 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
   NumberOfGaps = GapsLength = 0
 
   # add temporary timecolumn to enable timegap imputation where there are zeros
-  if (length(timeCol) == 0 || !(timeCol %in% colnames(x))) { 
+  if (!("time" %in% colnames(x))) { 
     x$time = seq(from = Sys.time(), by = 1/sf, length.out = nrow(x))
-    timeCol = "time"
     remove_time_at_end = TRUE
   }
   
+  xyzCol = which(colnames(x) %in% c("x", "y", "z"))
+
   # define function for imputation at raw level
   imputeRaw = function(x, sf) {
     # impute raw timestamps because timestamps still need to be meaningful when
@@ -46,7 +47,7 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
   }
   
   # find zeros and remove them from dataset
-  zeros = which(x[,xyzCol[1]] == 0 & x[,xyzCol[2]] == 0 & x[,xyzCol[3]] == 0)
+  zeros = which(x$x == 0 & x$y == 0 & x$z == 0)
   if (length(zeros) > 0) {
     # if first value is a zero, remember value from previous chunk to replicate
     # if chunk = 1, then it will use c(0, 0, 1)
@@ -71,21 +72,21 @@ g.imputeTimegaps = function(x, xyzCol, timeCol = c(), sf, k=0.25, impute = TRUE,
     if (k < 2/sf) { # prevent trying to impute timegaps shorter than 2 samples
       k = 2/sf
     }
-    deltatime = diff(x[, timeCol])
+    deltatime = diff(x$time)
     if (!is.numeric(deltatime)) {  # in csv axivity, the time is directly read as numeric (seconds)
       units(deltatime) = "secs"
       deltatime = as.numeric(deltatime)
     }
     # refill if first value is not consecutive from last value in previous chunk
     if (!is.null(PreviousLastTime)) {
-      first_deltatime = diff(c(PreviousLastTime, x[1, timeCol]))
+      first_deltatime = diff(c(PreviousLastTime, x$time[1]))
       if (!is.numeric(first_deltatime)) {  # in csv axivity, the time is directly read as numeric (seconds)
         units(first_deltatime) = "secs"
         first_deltatime = as.numeric(first_deltatime)
       }
       if (first_deltatime >= k) { # don't impute a timegap shorter than the minimum requested
         x = rbind(x[1,], x)
-        x[1, timeCol] = PreviousLastTime
+        x$time[1] = PreviousLastTime
         x[1, xyzCol] = PreviousLastValue
         deltatime = c(first_deltatime, deltatime)
       }

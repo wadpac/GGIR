@@ -126,7 +126,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
       # current ActiGraph csv's are not with zeros but with last observation carried forward
       zeros = which(data[,1] == 0 & data[,2] == 0 & data[,3] == 0)
       if ((mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) || length(zeros) > 0) {
-        data = g.imputeTimegaps(x = data, xyzCol = 1:3, timeCol = c(), sf = sf, impute = FALSE)
+        data = g.imputeTimegaps(x = data, sf = sf, impute = FALSE)
         data = data$x
       }
       LD = nrow(data)

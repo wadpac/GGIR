@@ -307,7 +307,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
       gapsi = which(deltatime > 0.25)
       sf = (P$time[gapsi[1]] - P$time[1]) / (gapsi[1] - 1)
     }
-    P = g.imputeTimegaps(P, xyzCol = c("x", "y", "z"), timeCol = "time", sf = sf, k = 0.25, 
+    P = g.imputeTimegaps(P, sf = sf, k = 0.25, 
                          PreviousLastValue = PreviousLastValue,
                          PreviousLastTime = PreviousLastTime, epochsize = NULL)
     P = P$x
