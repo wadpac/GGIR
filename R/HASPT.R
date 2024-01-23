@@ -45,7 +45,7 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
       }
       nomov = rep(0,length(x)) # no movement
       pp = NA
-      if (length(horizontal) > 0) {t
+      if (length(horizontal) > 0) {
         nomov[horizontal] = 1
       }
     } else if (HASPT.algo == "NotWorn") {  
