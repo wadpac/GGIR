@@ -25,22 +25,22 @@ g.imputeTimegaps = function(x, sf, k=0.25, impute = TRUE,
     gapp = which(x$gap != 1)
     if (length(gapp) > 0) {
       if (gapp[1] > 1) {
-        newTime = x$timestamp[1:(gapp[1] - 1)]
+        newTime = x$time[1:(gapp[1] - 1)]
       } else {
         newTime = NULL
       }
       for (g in 1:length(gapp)) {
-        newTime = c(newTime, x$timestamp[gapp[g]] + seq(0, (x$gap[gapp[g]] - 1) / sf, by = 1/sf))
+        newTime = c(newTime, x$time[gapp[g]] + seq(0, (x$gap[gapp[g]] - 1) / sf, by = 1/sf))
         if (g < length(gapp)) {
-          newTime = c(newTime, x$timestamp[(gapp[g] + 1):(gapp[g + 1] - 1)])
+          newTime = c(newTime, x$time[(gapp[g] + 1):(gapp[g + 1] - 1)])
         }
       }
-      newTime =  c(newTime, x$time[(gapp[g] + 1):length(x$timestamp)])
+      newTime =  c(newTime, x$time[(gapp[g] + 1):length(x$time)])
     }
     x <- as.data.frame(lapply(x, rep, x$gap))
     
     if (length(gapp) > 0) {
-      x$timestamp = newTime[1:nrow(x)]
+      x$time = newTime[1:nrow(x)]
     }
     x = x[, which(colnames(x) != "gap")]
     return(x)
@@ -92,7 +92,7 @@ g.imputeTimegaps = function(x, sf, k=0.25, impute = TRUE,
       }
     }
     # impute time gaps
-    gapsi = which(deltatime >= k) # limit imputation to gaps larger than 0.25 seconds
+    gapsi = which(deltatime >= k) # limit imputation to gaps longer than the minimum requested
     NumberOfGaps = length(gapsi)
     if (NumberOfGaps > 0) {
       x$gap = 1
@@ -177,21 +177,19 @@ g.imputeTimegaps = function(x, sf, k=0.25, impute = TRUE,
   # impute last value?
   if (imputelast) x[nrow(x), xyzCol] = x[nrow(x) - 1, xyzCol]
 
-  if (remove_time_at_end == TRUE) {
-    x = x[, grep(pattern = "time", x = colnames(x), invert = TRUE)]
-  }
-  # keep only the time, not timestamp column
-  if (all(c("time", "timestamp") %in% colnames(x))) {
-    x = x[, grep(pattern = "timestamp", x = colnames(x), invert = TRUE)]
-  }
   # QClog
-  start = as.numeric(as.POSIXct(x[1,1], origin = "1970-1-1"))
+  start = as.numeric(as.POSIXct(x$time[1], origin = "1970-1-1"))
   end = start + nrow(x)
   imputed = NumberOfGaps > 0
   QClog = data.frame(imputed = imputed, 
                      start = start, end = end,
                      blockLengthSeconds = (end - start) / sf,
                      timegaps_n = NumberOfGaps, timegaps_min = GapsLength/sf/60)
+
+  if (remove_time_at_end == TRUE) {
+    x = x[, grep(pattern = "time", x = colnames(x), invert = TRUE)]
+  }
+
   # return data and QClog
   return(list(x = x, QClog = QClog))
 }

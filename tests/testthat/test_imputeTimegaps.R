@@ -25,7 +25,11 @@ test_that("timegaps are correctly imputed", {
   x1_imputed_QClog = x1_imputed$QClog; x1_imputed = x1_imputed$x
   x1_removed = g.imputeTimegaps(x1, sf = sf, k = 2/sf, impute = FALSE, PreviousLastValue = c(0,0,1))
   x1_removed_QClog = x1_removed$QClog; x1_removed = x1_removed$x
-  
+
+  # make sure the timestamps got imputed correctly
+  # (here we are checking that the last imputed timestamp is correct relative to the first timestamp after the gap)
+  expect_equal(as.numeric(x1_imputed$time[201] - x1_imputed$time[200]), 1/sf, tolerance = .01, scale = 1)
+
   # Format 2: with timestamp & with zeros (complete dataset)
   x2 = x
   x2[zeros, xyzCol] = 0
