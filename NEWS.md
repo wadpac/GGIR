@@ -1,6 +1,10 @@
 # CHANGES IN GGIR VERSION 3.0-4
 
+- Part 5: Improved handling of inconsistent number of columns in part 5 milestone data #1002
+
 - Part 3: Revised NotWorn option for argument HASPT.algo as used for count data #1011
+
+- Visualreport: Now able to handle recordings with no valid days argument visualreport_without_invalid = TRUE, fixes bug #1016
 
 # CHANGES IN GGIR VERSION 3.0-3
 
