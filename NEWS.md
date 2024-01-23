@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.0-4
+
+- Part 3: Revised NotWorn option for argument HASPT.algo as used for count data #1011
+
 # CHANGES IN GGIR VERSION 3.0-3
 
 - Part 2: Fix bug where data_quality_report.csv contained incorrect filehealth[...] values whenever some of these values were supposed to be blank #1003
