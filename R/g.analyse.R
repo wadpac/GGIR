@@ -169,7 +169,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   nfulldays = (lastmidnighti - firstmidnighti) / ((3600/ws2)*24)
   ndays = length(midnights) + 1 #ceiling(nfulldays + 2) # ceiling to cope with days with 23 hours
   #-------------------------------------
-  # Detect orientation (at the moment only desighned for hip with accelerometer):
+  # Detect orientation (at the moment only designed for hip with accelerometer):
   # assess which angle per axis is most strongly 24 hour correlated:
   # for hip worn devices this will be the vertical axis
   longitudinal_axis_id = ""
