@@ -383,13 +383,13 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   varnum = c()
                 }
               }
-              gUnitMetric = length(grep(x = colnames(metashort)[mi], pattern = "BrondCount|ZCX|ZCY|ZCZ|NeishabouriCount", invert = TRUE)) > 0
+              gUnitMetric = length(grep(x = colnames(metashort)[mi], pattern = "BrondCount|ZCX|ZCY|ZCZ|NeishabouriCount|ExtAct", invert = TRUE)) > 0
               UnitReScale = ifelse(test = gUnitMetric, yes = 1000, no = 1)
               # Starting filling output matrix daysummary with variables per day segment and full day.
               if (minames[mi] %in% c("ENMO","LFENMO", "BFEN", "EN", "HFEN", "HFENplus", "MAD", "ENMOa",
                                      "ZCX", "ZCY", "ZCZ", "BrondCount_x", "BrondCount_y",
                                      "BrondCount_z", "NeishabouriCount_x", "NeishabouriCount_y", 
-                                     "NeishabouriCount_z", "NeishabouriCount_vm")) {
+                                     "NeishabouriCount_z", "NeishabouriCount_vm", "ExtAct")) {
                 collectfi = c()
                 for (winhr_value in params_247[["winhr"]]) { # Variable (column) names
                   # We are first defining location of variable names, before calculating
@@ -590,17 +590,18 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 }
               }
               if (mi %in% ExtFunColsi == TRUE) { # INSERT HERE VARIABLES DERIVED WITH EXTERNAL FUNCTION
-                if (myfun$reporttype == "event") { # For the event report type we take the sum
+                rti = which(ExtFunColsi == mi)
+                if (myfun$reporttype[rti] == "event") { # For the event report type we take the sum
                   varnameevent = paste0(colnames(metashort)[mi], "_sum", anwi_nameindices[anwi_index])
                   fi = correct_fi(di, ds_names, fi, varname = varnameevent)
                   daysummary[di,fi] = sum(varnum)
                   ds_names[fi] = varnameevent; fi = fi + 1
-                } else if (myfun$reporttype == "scalar") { # For the scalar report type we take the mean
+                } else if (myfun$reporttype[rti] == "scalar") { # For the scalar report type we take the mean
                   varnamescalar = paste0(colnames(metashort)[mi], "_mean", anwi_nameindices[anwi_index])
                   fi = correct_fi(di, ds_names, fi, varname = varnamescalar)
                   daysummary[di,fi] = mean(varnum)
                   ds_names[fi] = varnamescalar; fi = fi + 1
-                } else if (myfun$reporttype == "type") { # For type we calculate time spent in each class 
+                } else if (myfun$reporttype[rti] == "type") { # For type we calculate time spent in each class 
                   # Not implemented yet
                 }
               }
