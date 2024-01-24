@@ -2,7 +2,7 @@ g.part5_initialise_ts = function(IMP, M, params_247, params_general) {
   
   # extract key variables from the mile-stone data: time, acceleration and elevation angle
   # note that this is imputed ACCELERATION because we use this for describing behaviour:
-  scale = ifelse(test = grepl("^Brond|^Neishabouri|^ZC", params_general[["acc.metric"]]), yes = 1, no = 1000)
+  scale = ifelse(test = grepl("^Brond|^Neishabouri|^ZC|^ExtAct", params_general[["acc.metric"]]), yes = 1, no = 1000)
   # if (length(which(names(IMP$metashort) == "anglez")) == 0 & verbose == TRUE) {
   #   cat("Warning: anglez not extracted. Please check that do.anglez == TRUE")
   # }
