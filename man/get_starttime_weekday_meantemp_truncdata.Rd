@@ -1,25 +1,22 @@
 \name{get_starttime_weekday_meantemp_truncdata }
 \alias{get_starttime_weekday_meantemp_truncdata}
 \title{
-  Get starttime (adjusted), weekday, mean temp, and adjust data accordingly.
+  Get starttime (adjusted), weekday, and adjust data accordingly.
 }
 \description{
   Function not intended for direct use by user.
   Used inside \link{g.getmeta} as an intermediate step between
   loading the raw data and calibrating it. This step includes extracting
   the starttime and adjusting it to nearest integer number of long epoch window
-  lengths in an hour, truncating the data accordingly, extracting the 
-  corresponding weekday and mean temperature (if temperature is available).
+  lengths in an hour, truncating the data accordingly, and extracting the 
+  corresponding weekday.
 }
 \usage{
-  get_starttime_weekday_meantemp_truncdata(use.temp, monc, 
+  get_starttime_weekday_meantemp_truncdata(monc, 
   dformat, data, P, header, desiredtz, sf, i,
   datafile, ws2, starttime, wday, wdayname, configtz = NULL)
 }
 \arguments{
-  \item{use.temp}{
-    Boolean whether temperate is available.
-  }
   \item{monc}{
     See \link{g.inspectfile}
   }

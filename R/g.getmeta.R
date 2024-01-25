@@ -191,18 +191,29 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     P = accread$P
     
     if (i == 1) {
-      temp.available = ("temperature" %in% colnames(P$data))
       light.available = ("light" %in% colnames(P$data))
 
+      use.temp = ("temperature" %in% colnames(P$data))
+      if (use.temp) {
+        if (mean(P$data$temperature[1:10], na.rm = TRUE) > 50) {
+          warning("temperature value is unreaslistically high (> 50 Celcius)", call. = FALSE)
+          use.temp = FALSE
+        }
+      }
+
       # output matrix for 15 minutes summaries
-      if (!temp.available) {
+      if (!use.temp) {
         metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 4)
+        metricnames_long = c("timestamp","nonwearscore","clippingscore","EN")
       } else if (light.available) {
         metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 7)
+        metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","temperaturemean","EN")
       } else {
         metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 5)
+        metricnames_long = c("timestamp","nonwearscore","clippingscore","temperaturemean","EN")
       }
     }
+    
     filequality = accread$filequality
     filetooshort = filequality$filetooshort
     filecorrupt = filequality$filecorrupt
@@ -254,24 +265,15 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         }
         data = suppressWarnings(rbind(S,data)) # suppress warnings about string as factor
       }
-      SWMT = get_starttime_weekday_meantemp_truncdata(temp.available, mon, dformat,
+      SWMT = get_starttime_weekday_meantemp_truncdata(mon, dformat,
                                                       data,
                                                       P, header, desiredtz = params_general[["desiredtz"]],
                                                       sf, i, datafile,  ws2,
                                                       starttime, wday, wdayname, configtz = params_general[["configtz"]])
       starttime = SWMT$starttime
-      meantemp = SWMT$meantemp
-      use.temp = SWMT$use.temp
       wday = SWMT$wday; wdayname = SWMT$wdayname
       params_general[["desiredtz"]] = SWMT$desiredtz; data = SWMT$data
       
-      if (use.temp && light.available) {
-        metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","temperaturemean","EN")
-      } else if (use.temp) {
-        metricnames_long = c("timestamp","nonwearscore","clippingscore","temperaturemean","EN")
-      } else {
-        metricnames_long = c("timestamp","nonwearscore","clippingscore","EN")
-      }
       rm(SWMT)
       if (i != 0 && exists("P")) {
         rm(P); gc()

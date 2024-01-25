@@ -1,18 +1,9 @@
-get_starttime_weekday_meantemp_truncdata = function(use.temp, monc, dformat, data, 
+get_starttime_weekday_meantemp_truncdata = function(monc, dformat, data, 
                                                     P, header, desiredtz, sf, i, datafile,
                                                     ws2, starttime, wday, wdayname, configtz = NULL) {
   #ensures that first window starts at logical timepoint relative to its size
   # (15,30,45 or 60 minutes of each hour)
   start_meas = ws2/60 
-  meantemp = c()
-  if (use.temp) {
-    meantemp = mean(as.numeric(data$temperature, na.rm = TRUE))
-    if (mean(data$temperature[1:10]) > 50) {
-      warning("temperature value is unreaslistically high (> 50 Celcius)", call. = FALSE)
-      meantemp = 0
-      use.temp = FALSE
-    }
-  }
   # extraction and modification of starting point of measurement
   if (i == 1) { #only do this for first block of data
     starttime = g.getstarttime(
@@ -125,8 +116,6 @@ get_starttime_weekday_meantemp_truncdata = function(use.temp, monc, dformat, dat
   invisible(
     list(
       starttime = starttime,
-      meantemp = meantemp,
-      use.temp = use.temp,
       wday = wday,
       wdayname = wdayname,
       desiredtz = desiredtz,
