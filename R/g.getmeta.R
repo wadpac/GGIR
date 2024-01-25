@@ -148,10 +148,9 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   sdcriter = ncb_params$sdcriter
   racriter = ncb_params$racriter
   n_decimal_places = 4 # number of decimal places to which features should be rounded
-  #creating matrixes for storing output
+  # creating matrices for storing output
   S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
   nev = 80*10^7 # number expected values
-  # NR = ceiling((90*10^6) / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
   NR = ceiling(nev / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
   metashort = matrix(" ",NR,(1 + nmetrics)) #generating output matrix for acceleration signal
   QClog = NULL
@@ -274,7 +273,9 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         metricnames_long = c("timestamp","nonwearscore","clippingscore","EN")
       }
       rm(SWMT)
-      if (i != 0 && exists("P")) rm(P); gc()
+      if (i != 0 && exists("P")) {
+        rm(P); gc()
+      }
       LD = nrow(data)
       if (LD < (ws*sf) && i == 1) {
         warning('\nWarning data too short for doing non-wear detection 3\n')
