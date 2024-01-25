@@ -241,7 +241,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                               endIndex = endpage)
     colnames(P$data) = c("x", "y", "z")
     # there may or may not be a temp.bin file containing temperature
-    try(expr = {P$data$temperature = g.readtemp_movisens(filename, desiredtz = desiredtz, 
+    try(expr = {P$data$temperature = g.readtemp_movisens(filename,
                                                          from = startpage, to = endpage,
                                                          interpolationType = params_rawdata[["interpolationType"]])
     }, silent = TRUE)
