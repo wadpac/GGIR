@@ -23,7 +23,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
     params_general = params$params_general
   }
 
-  use.temp = TRUE
+  use.temp = temp.available = TRUE
   filename = unlist(strsplit(as.character(datafile),"/"))
   filename = filename[length(filename)]
   # set parameters
@@ -104,7 +104,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
     PreviousEndPage = accread$endpage
 
     if (i == 1) {
-      use.temp = ("temperature" %in% colnames(P$data))
+      use.temp = temp.available = ("temperature" %in% colnames(P$data))
       if (use.temp) {
         meta = matrix(99999,NR,8) # for metadata
       } else {
@@ -343,15 +343,10 @@ g.calibrate = function(datafile, params_rawdata = c(),
       cal.error.end = round(mean(abs(cal.error.end - 1)), digits = 5)
       # assess whether calibration error has sufficiently been improved
       if (cal.error.end < cal.error.start & cal.error.end < 0.01 & nhoursused > params_rawdata[["minloadcrit"]]) { #do not change scaling if there is no evidence that calibration improves
-        if (use.temp == TRUE && (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) ||
-                                mon == MONITOR$MOVISENS || (mon == MONITOR$AD_HOC && use.temp == FALSE))) {
+        if (use.temp == temp.available) {
           QC = "recalibration done, no problems detected"
-        } else if (use.temp == FALSE && (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) ||
-                                         (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) || mon == MONITOR$MOVISENS ||
-                                         (mon == MONITOR$AD_HOC && use.temp == TRUE)))  {
+        } else {
           QC = "recalibration done, but temperature values not used"
-        } else if (mon != MONITOR$GENEACTIV)  {
-          QC = "recalibration done, no problems detected"
         }
         LD = 0 #stop loading
       } else {
