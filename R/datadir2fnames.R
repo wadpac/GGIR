@@ -13,7 +13,7 @@ datadir2fnames = function(datadir,filelist) {
     }
   } else {
     if (ismovisens(datadir)) {
-      fnamesfull = dir(datadir, recursive = TRUE, pattern = "acc.bin", full.names = TRUE)
+      fnamesfull = dir(datadir, recursive = TRUE, pattern = "acc.bin$", full.names = TRUE)
       fnames = basename(dirname(fnamesfull))
       nfolders = length(dir(datadir))
       if (nfolders > length(fnamesfull)) { # meaning there are movisens data folder without acc.bin
