@@ -9,7 +9,7 @@
   for direct use by package user
 }
 \usage{
-  g.getstarttime(datafile, P, header, mon, dformat, desiredtz,
+  g.getstarttime(datafile, P, mon, dformat, desiredtz,
   configtz = NULL)
 }
 \arguments{
@@ -18,9 +18,6 @@
   }
   \item{P}{
     Object extracted with \link{g.readaccfile}
-  }
-  \item{header}{
-    File header extracted with \link{g.inspectfile}
   }
   \item{mon}{
     Same as in \link{g.dotorcomma}
