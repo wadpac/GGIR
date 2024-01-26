@@ -14,7 +14,9 @@ get_starttime_weekday_meantemp_truncdata = function(monc, dformat, data,
       desiredtz = desiredtz,
       configtz = configtz
     )
-    if (exists("P")) rm(P); gc()
+    if (exists("P")) {
+      rm(P); gc()
+    }
     #==================================================
     #inspection timezone
     timezone = attr(unclass(as.POSIXlt(starttime[1])), which = "tzone")
