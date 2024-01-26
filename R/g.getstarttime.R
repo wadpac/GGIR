@@ -114,7 +114,7 @@ g.getstarttime = function(datafile, P, mon, dformat, desiredtz, configtz = NULL)
     if (fc$ydm == 1 & fc$ydb == 1) fc$ydm = 0 # not M(M) when MMM is also detected for yy
     # Now we can identify which format it is:
     theformat = names(fc)[which(fc == 1)[1]]
-    if (length(theformat) == 0) warning("date format not recognised")
+    if (is.na(theformat)) warning("date format not recognised")
     splitformat = unlist(strsplit(theformat,""))
     # identify separater:
     if (length(grep("/",starttime)) > 0) {
