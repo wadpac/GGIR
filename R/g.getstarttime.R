@@ -7,6 +7,22 @@ g.getstarttime = function(datafile, P, mon, dformat, desiredtz, configtz = NULL)
     starttime = as.POSIXlt(P$data$time[1], tz = desiredtz, origin = "1970-01-01")
   } else if (mon == MONITOR$MOVISENS) {
       starttime = unisensR::readUnisensStartTime(dirname(datafile))
+
+      # movisens timestamp is stored in unisens.xml file as a string "%Y-%m-%dT%H:%M:%S",
+      # without a timezone.
+      # unisensR::readUnisensStartTime() converts this string into a POSIXct object,
+      # but since no timezone information was stored, this conversion happens using
+      # the system timezone.
+      # If configtz is different from the system timezone (""), we need to force the
+      # correct timezone (force, while keeping the same hh:mm:ss time, not just convert to congigtz)
+      # (Converting to POSIXlt then back to POSIXct with the correct timezone
+      #  seems to work fine as an equivalent of lubridate::force_tz()).
+      if (configtz != "") {
+        starttime = as.POSIXlt(starttime)
+        starttime = as.POSIXct(starttime, tz=configtz)
+      }
+      starttime = as.POSIXlt(starttime, tz = desiredtz)
+
   } else if (dformat == FORMAT$CSV && (mon == MONITOR$ACTIGRAPH || mon == MONITOR$VERISENSE)) {
     tmph = read.csv(datafile, nrow = 8, skip = 1)
     tmphi = 1
