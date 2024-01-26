@@ -24,47 +24,40 @@ g.getstarttime = function(datafile, P, mon, dformat, desiredtz, configtz = NULL)
       starttime = as.POSIXlt(starttime, tz = desiredtz)
 
   } else if (dformat == FORMAT$CSV && (mon == MONITOR$ACTIGRAPH || mon == MONITOR$VERISENSE)) {
-    tmph = read.csv(datafile, nrow = 8, skip = 1)
+    starttime = startdate = NULL
+    header_rows = 8
+    tmph = read.csv(datafile, nrow = header_rows, skip = 1)
+
     tmphi = 1
-    while (tmphi < 10) {
-      if (length(unlist(strsplit(format(tmph[tmphi,1]),"Start Time"))) > 1) {
+    while (tmphi < header_rows) {
+      tmp = unlist(strsplit(format(tmph[tmphi,1]),"Start Time"))
+      if (length(tmp) > 1) {
+        starttime = tmp[2]
         break
       }
       tmphi = tmphi + 1
     }
-    starttime = unlist(strsplit(format(tmph[tmphi,1]),"Start Time"))[2]
+    if (is.null(starttime)) {
+      stop(paste0("Start Time not found in the header of ", datafile))
+    }
     #-------------------------------
     tmphi = 1
-    while (tmphi < 10) {
-      if (length(unlist(strsplit(format(tmph[tmphi,1]),"Start Date"))) > 1) {
+    while (tmphi < header_rows) {
+      tmp = unlist(strsplit(format(tmph[tmphi,1]),"Start Date"))
+      if (length(tmp) > 1) {
+        startdate = tmp[2]
         break
       }
       tmphi = tmphi + 1
     }
-    startdate = unlist(strsplit(format(tmph[tmphi,1]), "Start Date"))[2]
-    startdate = as.character(unlist(strsplit(format(startdate)," ")))
-    starttime = as.character(unlist(strsplit(format(starttime)," ")))
+    if (is.null(startdate)) {
+      stop(paste0("Start Date not found in the header of ", datafile))
+    }
 
     #-----------------------------------------
-    #remove possible spaces in date or time
-    newstarttime = starttime #20-11-2014
-    newstartdate = startdate #20-11-2014
-    if (length(startdate) > 1) {
-      for (rpsi in 1:length(startdate)) {
-        if (length(unlist(strsplit(startdate[rpsi], ""))) > 1) {
-          newstartdate = startdate[rpsi]
-        }
-      }
-    }
-    if (length(starttime) > 1) {
-      for (rpsi in 1:length(starttime)) {
-        if (length(unlist(strsplit(starttime[rpsi], ""))) > 1) {
-          newstarttime = starttime[rpsi]
-        }
-      }
-    }
-    starttime = newstarttime
-    startdate = newstartdate
+    # trim any spaces
+    startdate = gsub(" ", "", startdate, fixed = TRUE)
+    starttime = gsub(" ", "", starttime, fixed = TRUE)
 
     #-----------------------------------------
     # flexible four date/time formats
