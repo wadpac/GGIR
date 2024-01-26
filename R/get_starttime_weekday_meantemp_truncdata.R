@@ -17,19 +17,6 @@ get_starttime_weekday_meantemp_truncdata = function(monc, dformat, data,
     if (exists("P")) {
       rm(P); gc()
     }
-    #==================================================
-    #inspection timezone
-    timezone = attr(unclass(as.POSIXlt(starttime[1])), which = "tzone")
-    # assuming that timestamps is good, but that timezone might be lost in conversion from string to POSIXct
-    if (dformat == FORMAT$BIN) { #not sure whether this is required for csv-format (2)
-      if (length(which(timezone == "GMT")) > 0) {
-        if (length(desiredtz) == 0) {
-          warning("desiredtz not specified, local timezone used as default", call. = FALSE)
-          desiredtz = ""
-        }
-        starttime = as.POSIXlt(starttime[1], tz = desiredtz)
-      }
-    }
     #================================================
     #assess weekday
     wday = unclass(as.POSIXlt(starttime[1]))$wday #day of the week 0-6 and 0 is Sunday
