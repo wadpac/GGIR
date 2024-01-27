@@ -13,7 +13,7 @@
 }
 \usage{
   get_starttime_weekday_meantemp_truncdata(monc, 
-  dformat, data, P, header, desiredtz, sf, i,
+  dformat, data, P, header, desiredtz, sf,
   datafile, ws2, starttime, wday, wdayname, configtz = NULL)
 }
 \arguments{
@@ -37,10 +37,6 @@
   }
   \item{sf}{
     Numeric, sample frequency in Hertz
-  }
-  \item{i}{
-    Integer index of passed on from \link{g.getmeta}
-    to indicate what data block is being read.
   }
   \item{datafile}{
     See \link{g.getmeta}
