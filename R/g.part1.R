@@ -384,7 +384,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
                            "g.getstarttime", "POSIXtime2iso8601",
                            "iso8601chartime2POSIX", "datadir2fnames", "read.myacc.csv",
                            "get_nw_clip_block_params",
-                           "get_starttime_weekday_meantemp_truncdata", "ismovisens",
+                           "get_starttime_weekday_truncdata", "ismovisens",
                            "g.extractheadervars", "g.imputeTimegaps", "extract_params",
                            "load_params",
                            "check_params", "detect_nonwear_clipping")

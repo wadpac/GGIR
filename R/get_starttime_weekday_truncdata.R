@@ -1,7 +1,7 @@
-get_starttime_weekday_meantemp_truncdata = function(monc, dformat, data, 
-                                                    P, header, desiredtz, sf, datafile,
-                                                    ws2, starttime, wday, wdayname, configtz = NULL) {
-  #ensures that first window starts at logical timepoint relative to its size
+get_starttime_weekday_truncdata = function(monc, dformat, data, 
+                                           P, header, desiredtz, sf, datafile,
+                                           ws2, starttime, wday, wdayname, configtz = NULL) {
+  # ensures that first window starts at logical timepoint relative to its size
   # (15,30,45 or 60 minutes of each hour)
   start_meas = ws2/60 
   # extraction and modification of starting point of measurement
@@ -28,9 +28,9 @@ get_starttime_weekday_meantemp_truncdata = function(monc, dformat, data,
   start_min = starttime$min
   start_sec = starttime$sec
 
-  secshift = 60 - start_sec #shift in seconds needed
+  secshift = 60 - start_sec # shift in seconds needed
   if (secshift != 60) {
-    start_min = start_min + 1 #shift in minutes needed (+1 one to account for seconds comp)
+    start_min = start_min + 1 # shift in minutes needed (+1 one to account for seconds comp)
   }
   if (secshift == 60) secshift = 0 # if starttime is 00:00 then we do not want to remove data
 
@@ -39,7 +39,7 @@ get_starttime_weekday_meantemp_truncdata = function(monc, dformat, data,
     minshift = 0
   }
 
-  sampleshift = ((minshift)*60*sf) + (secshift*sf) #derive sample shift
+  sampleshift = (minshift * 60 * sf) + (secshift * sf) # derive sample shift
   sampleshift = floor(sampleshift)
   if (sampleshift > 1) {
     data = data[-c(1 : sampleshift),] # delete data accordingly
