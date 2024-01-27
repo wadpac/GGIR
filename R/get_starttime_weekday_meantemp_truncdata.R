@@ -19,7 +19,7 @@ get_starttime_weekday_meantemp_truncdata = function(monc, dformat, data,
     }
     #================================================
     #assess weekday
-    wday = unclass(as.POSIXlt(starttime[1]))$wday #day of the week 0-6 and 0 is Sunday
+    wday = starttime$wday #day of the week 0-6 and 0 is Sunday
     wday = wday + 1
     weekdays = c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
     wdayname = weekdays[wday]
