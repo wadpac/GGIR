@@ -272,7 +272,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                                                       starttime, wday, wdayname, configtz = params_general[["configtz"]])
       starttime = SWMT$starttime
       wday = SWMT$wday; wdayname = SWMT$wdayname
-      params_general[["desiredtz"]] = SWMT$desiredtz; data = SWMT$data
+      data = SWMT$data
       
       rm(SWMT)
       if (i != 0 && exists("P")) {

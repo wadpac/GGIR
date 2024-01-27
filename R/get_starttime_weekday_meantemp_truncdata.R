@@ -17,95 +17,44 @@ get_starttime_weekday_meantemp_truncdata = function(monc, dformat, data,
     if (exists("P")) {
       rm(P); gc()
     }
-    #================================================
-    #assess weekday
+    
+    # assess weekday
     wday = starttime$wday #day of the week 0-6 and 0 is Sunday
     wday = wday + 1
     weekdays = c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
     wdayname = weekdays[wday]
-    #======================================================
-    #assess how much data to delete till next 15 minute period
-    tmp = unlist(strsplit(format(starttime)," "))
-    if (length(tmp) > 1) {
-      starttime2 = as.numeric(unlist(strsplit(tmp[2],":")))
-    } else if (length(tmp) == 1 && !grepl("T", tmp)) {
-      starttime2 = as.numeric(unlist(strsplit(tmp[2],":")))
-    } else {
-      # first get char to POSIX
-      tmp = iso8601chartime2POSIX(starttime, tz = desiredtz)
-      tmp = unlist(strsplit(format(tmp)," ")) # to keep it consistent with what we had
-      starttime2 = as.numeric(unlist(strsplit(format(tmp[2]),":")))
-    }
-    if (length(which(is.na(starttime2) ==  TRUE)) > 0 |
-        length(starttime2) == 0) {
-      starttime2 = c(0,0,0)
-    }
-    start_hr = as.numeric(starttime2[1])
-    start_min = as.numeric(starttime2[2])
-    start_sec = as.numeric(starttime2[3])
-    
+
+    # assess how much data to delete till next 15 minute period
+
+    start_min = starttime$min
+    start_sec = starttime$sec
+
     secshift = 60 - start_sec #shift in seconds needed
     if (secshift != 60) {
       start_min = start_min + 1 #shift in minutes needed (+1 one to account for seconds comp)
     }
     if (secshift == 60) secshift = 0 # if starttime is 00:00 then we do not want to remove data
-    minshift = start_meas - (((start_min/start_meas) - floor(start_min/start_meas)) * start_meas)
+
+    minshift = start_meas - (start_min %% start_meas)
     if (minshift == start_meas) {
-      minshift = 0;
-      
+      minshift = 0
     }
+
     sampleshift = ((minshift)*60*sf) + (secshift*sf) #derive sample shift
-    if (floor(sampleshift) > 1) {
-      data = data[-c(1:floor(sampleshift)),] #delete data accordingly
+    sampleshift = floor(sampleshift)
+    if (sampleshift > 1) {
+      data = data[-c(1 : sampleshift),] # delete data accordingly
     }
-    newmin = start_min + minshift #recalculate first timestamp
-    newsec = 0
-    remem2add24 = FALSE
-    if (newmin >= 60) {
-      newmin = newmin - 60
-      start_hr = start_hr + 1
-      if (start_hr == 24) { #if measurement is started in 15 minutes before midnight
-        start_hr = 0
-        remem2add24 = TRUE #remember to add 24 hours because this is now the wrong day
-      }
-    }
-    starttime3 = paste0(tmp[1], " ", start_hr, ":", newmin, ":", newsec)
-    #create timestamp from string (now desiredtz is added)
-    if (length(desiredtz) == 0) {
-      warning("desiredtz not specified, local timezone used as default", call. = FALSE)
-      desiredtz = ""
-    }
-    starttime_a = as.POSIXct(starttime3, format = "%d/%m/%Y %H:%M:%S", tz = desiredtz)
-    starttime_b = as.POSIXct(starttime3, format = "%d-%m-%Y %H:%M:%S", tz = desiredtz)
-    starttime_c = as.POSIXct(starttime3, format = "%Y/%m/%d %H:%M:%S", tz = desiredtz)
-    starttime_d = as.POSIXct(starttime3, format = "%Y-%m-%d %H:%M:%S", tz = desiredtz)
-    if (is.na(starttime_a) == FALSE) {
-      starttime = starttime_a
-    } else {
-      if (is.na(starttime_b) == FALSE) {
-        starttime = starttime_b
-      } else {
-        if (is.na(starttime_c) == FALSE) {
-          starttime = starttime_c
-        } else {
-          if (is.na(starttime_d) == FALSE) {
-            starttime = starttime_d
-          } else {
-            warning("date not recognized")
-          }
-        }
-      }
-    }
-    if (remem2add24 == TRUE) {
-      starttime = as.POSIXlt(as.numeric(starttime) + (24 * 3600), origin = "1970-01-01")
-    }
+
+    # recalculate the timestamp
+    starttime$min = start_min + minshift # if the result is >= 60, hours (and possibly date) will adjust automatically
+    starttime$sec = 0
   }
   invisible(
     list(
       starttime = starttime,
       wday = wday,
       wdayname = wdayname,
-      desiredtz = desiredtz,
       data = data
     )
   )
