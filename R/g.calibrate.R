@@ -24,9 +24,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
   }
 
   use.temp = temp.available = TRUE
-  filename = unlist(strsplit(as.character(datafile),"/"))
-  filename = filename[length(filename)]
-  # set parameters
+  
   filequality = data.frame(filetooshort = FALSE, filecorrupt = FALSE,
                            filedoesnotholdday = FALSE, stringsAsFactors = TRUE)
   ws4 = params_general[["windowsizes"]][4] #epoch for recalibration
