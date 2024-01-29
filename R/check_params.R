@@ -171,7 +171,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   
   if (length(params_general) > 0 & length(params_metrics) > 0 & length(params_sleep) > 0) {
-    if (params_general[["sensor.location"]] == "hip" &  params_sleep[["HASPT.algo"]] != "notused") {
+    if (params_general[["sensor.location"]] == "hip" &&
+        params_sleep[["HASPT.algo"]] %in% c("notused", "NotWorn") == FALSE) {
       if (params_metrics[["do.anglex"]] == FALSE | params_metrics[["do.angley"]] == FALSE | params_metrics[["do.anglez"]] == FALSE) {
         warning(paste0("\nWhen working with hip data all three angle metrics are needed,",
                        "so GGIR now auto-sets arguments do.anglex, do.angley, and do.anglez to TRUE."), call. = FALSE)
