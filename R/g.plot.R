@@ -134,6 +134,7 @@ g.plot = function(IMP, M, I, durplot) {
            x.intersp = x.intersp, ncol = 4, cex = 0.6, lwd = 0.6,
            bg = "white", box.col = "black")
   }
+  extranoons = c()
   if (length(mnights) > 0 & length(noons) > 0) {
     # axis 1: midnight, noon labels (including one extra day at the beginning and end)
     extramnights = c(mnights[1] - n_ws2_perday, mnights, max(mnights) + n_ws2_perday)
