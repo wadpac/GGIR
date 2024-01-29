@@ -328,9 +328,9 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         # rescale data
         data[, c("x", "y", "z")] = scale(data[, c("x", "y", "z")], center = -offset, scale = 1/scale)
         if (use.temp && length(meantempcal) > 0) {
-          yy = as.matrix(cbind(temperature,
-                               temperature,
-                               temperature))
+          yy = cbind(temperature,
+                     temperature,
+                     temperature)
           data[, c("x", "y", "z")] = data[, c("x", "y", "z")] + scale(yy, center = rep(meantempcal,3), scale = 1/tempoffset)
         }
 
@@ -552,13 +552,11 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   if (!filecorrupt && !filetooshort && !filedoesnotholdday) {
     cut = count:nrow(metashort)
     if (length(cut) > 1) {
-      tmp = metashort[-cut,]
+      metashort = metashort[-cut,]
       # for a very small file, there could be just one row in metashort[-cut,], so it gets coerced to a vector.
       # But what we actually need is a 1-row matrix. So we need to transpose it. 
-      if(is.vector(tmp)) { 
-        metashort = as.matrix(t(tmp))
-      } else {
-        metashort = as.matrix(tmp)
+      if(is.vector(metashort)) { 
+        metashort = as.matrix(t(metashort))
       }
     }
     if (nrow(metashort) > 1) {
@@ -570,13 +568,11 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     }
     cut2 = count2:nrow(metalong)
     if (length(cut2) > 1) {
-      tmp = metalong[-cut2,]
+      metalong = metalong[-cut2,]
       # for a very small file, there could be just one row in metalong[-cut2,], so it gets coerced to a vector.
       # But what we actually need is a 1-row matrix. So we need to transpose it. 
-      if(is.vector(tmp)) { 
-        metalong = as.matrix(t(tmp))
-      } else {
-        metalong = as.matrix(tmp)
+      if(is.vector(metalong)) { 
+        metalong = as.matrix(t(metalong))
       }
     }
     if (nrow(metalong) > 2) {
