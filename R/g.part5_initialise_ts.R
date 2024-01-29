@@ -8,13 +8,13 @@ g.part5_initialise_ts = function(IMP, M, params_247, params_general, longitudina
   if (params_general[["sensor.location"]] != "hip") {
     longitudinal_axis = NULL
   }
-  if (is.null(longitudinal_axis)) {
+  if (is.null(longitudinal_axis) && "anglez" %in% names(IMP$metashort)) {
     angleName = "anglez"
-  } else if (longitudinal_axis == 1) {
+  } else if (longitudinal_axis == 1 && "anglex" %in% names(IMP$metashort)) {
     angleName = "anglex"
-  } else if (longitudinal_axis == 2) {
+  } else if (longitudinal_axis == 2 && "anglex" %in% names(IMP$metashort)) {
     angleName = "angley"
-  } else if (longitudinal_axis == 3) {
+  } else if (longitudinal_axis == 3 && "anglex" %in% names(IMP$metashort)) {
     angleName = "anglez"
   }
   if (angleName %in% names(IMP$metashort)) {
