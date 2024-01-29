@@ -224,9 +224,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             S$sib.end.time[replaceLastWakeup] = ts$time[nrow(ts)]
           }
         }
-        
         for (sibDef in def) { # loop through sleep definitions (defined by angle and time threshold in g.part3)
-          
           ws3new = ws3 # reset wse3new, because if part5_agg2_60seconds is TRUE then this will have been change in the previous iteration of the loop
           if (params_general[["part5_agg2_60seconds"]] == TRUE) {
             ts = ts_backup
@@ -281,7 +279,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               ts$time_num = floor(as.numeric(ts$time) / 60) * 60
               
               # only include angle if angle is present
-              angleColName = ifelse("angle" %in% names(ts), yes = "angle", no = NULL)
+              angleColName = grep(pattern = "angle", x = names(ts), value = TRUE)
               if (lightpeak_available == TRUE) {
                 ts = aggregate(ts[, c("ACC","sibdetection", "diur", "nonwear", angleColName, "lightpeak", "lightpeak_imputationcode")],
                                by = list(ts$time_num), FUN = function(x) mean(x))
