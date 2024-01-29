@@ -41,34 +41,38 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
   }
 
   if (blocknumber < 1) blocknumber = 1
+
   # startpage should only be specified for blocknumber 1.
   # The next time (blocknumber > 1) the startpage will be derived from the previous
   # endpage and the blocksize.
-  if (blocknumber > 1 && length(PreviousEndPage) != 0) {
-    if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) || dformat == FORMAT$GT3X ||
-        (mon == MONITOR$MOVISENS && dformat == FORMAT$BIN)) {
-      # for GENEActiv binary data, gt3x format data, and Movisens data,
-      # page selection is defined from start to end (including end)
+
+  if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) || dformat == FORMAT$GT3X ||
+      (mon == MONITOR$MOVISENS && dformat == FORMAT$BIN)) {
+    # for GENEActiv binary data, gt3x format data, and Movisens data,
+    # page selection is defined from start to end **including end**
+    if (blocknumber > 1 && length(PreviousEndPage) != 0) {
       startpage = PreviousEndPage + 1
     } else {
-      # for other monitor brands and data formats
-      # page selection is defined from start to end (excluding end itself)
-      # so start page of one block equals the end page of previous block
-      startpage = PreviousEndPage
+      startpage = blocksize * (blocknumber - 1) + 1 # pages are numbered starting with page 1
     }
+    endpage = startpage + blocksize - 1 # -1 because both startpage and endpage will be read,
+                                        # and we want to read blocksize # of samples
   } else {
-    startpage = blocksize * (blocknumber - 1)
+    # for other monitor brands and data formats
+    # page selection is defined from start to end **excluding end itself**,
+    # so start page of one block equals the end page of previous block
+    if (blocknumber > 1 && length(PreviousEndPage) != 0) {
+      startpage = PreviousEndPage
+    } else {
+      startpage = blocksize * (blocknumber - 1) # pages are numbered starting with page 0
 
-    if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) ||
-        (mon == MONITOR$MOVISENS && dformat == FORMAT$BIN) ||
-        dformat == FORMAT$GT3X) {
-      startpage = startpage + 1 # pages are numbered starting with page 1
-    } else if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) {
-      headerlength = 10
-      startpage = startpage + headerlength
+      if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) {
+        headerlength = 10
+        startpage = startpage + headerlength
+      }
     }
+    endpage = startpage + blocksize
   }
-  endpage = startpage + blocksize
 
   P = c()
   isLastBlock = FALSE
