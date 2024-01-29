@@ -174,6 +174,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         M$metashort = correctOlderMilestoneData(M$metashort)
         M$metalong = correctOlderMilestoneData(M$metalong)
         # load output g.part3
+        longitudinal_axis = NULL # initialise var that is part of ms3.out
         load(paste0(metadatadir, "/meta/ms3.out/", fnames.ms3[i]))
         # remove expanded time so that it is not used for behavioral classification
         if (length(tail_expansion_log) != 0) {
@@ -188,8 +189,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         #====================================
         # Initialise time series data.frame (ts) which will hold the time series
         # which forms the center of all part 5 activity
+        # note longitudinal_axis comes from loaded part 3 milestone data and not from params_sleep
+        
         ts = g.part5_initialise_ts(IMP, M, params_247, params_general,
-                                   longitudinal_axis = params_sleep[["longitudinal_axis"]])
+                                   longitudinal_axis = longitudinal_axis)
         Nts = nrow(ts)
         lightpeak_available = "lightpeak" %in% names(ts)
         

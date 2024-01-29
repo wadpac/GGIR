@@ -287,7 +287,15 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
             if (newqqq2 > length(anglez)) newqqq2 = length(anglez)
             # only try to extract SPT again if it is possible to extract a window of more than 23 hour
             if (newqqq2 < length(anglez) & (newqqq2 - newqqq1) > (23*(3600/ws3)) ) {
-              spt_estimate_tmp = HASPT(anglez[newqqq1:newqqq2], ws3 = ws3,
+              if (do.HASPT.hip == TRUE & params_sleep[["HASPT.algo"]] != "NotWorn") {
+                tmpANGLE = anglez[newqqq1:newqqq2]
+                if (params_sleep[["longitudinal_axis"]] == 1) {
+                  tmpANGLE = anglex[newqqq1:newqqq2]
+                } else if (params_sleep[["longitudinal_axis"]] == 2) {
+                  tmpANGLE = angley[newqqq1:newqqq2]
+                }
+              }
+              spt_estimate_tmp = HASPT(angle = tmpANGLE, ws3 = ws3,
                                        constrain2range = params_sleep[["constrain2range"]],
                                        perc = perc, spt_threshold = spt_threshold, sptblocksize = sptblocksize,
                                        spt_max_gap = spt_max_gap,
@@ -307,7 +315,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
             } else {
               daysleep_offset  = 0
             }
-          } 
+          }
           if (qqq1 == 1) {  # only use startTimeRecord if the start of the block send into SPTE was after noon
             startTimeRecord = unlist(iso8601chartime2POSIX(IMP$metashort$timestamp[1], tz = desiredtz))
             startTimeRecord = sum(as.numeric(startTimeRecord[c("hour", "min", "sec")]) / c(1, 60, 3600))

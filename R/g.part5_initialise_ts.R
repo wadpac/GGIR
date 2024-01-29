@@ -4,6 +4,10 @@ g.part5_initialise_ts = function(IMP, M, params_247, params_general, longitudina
   scale = ifelse(test = grepl("^Brond|^Neishabouri|^ZC|^ExtAct", params_general[["acc.metric"]]), yes = 1, no = 1000)
 
   # Use anglez by default or longitudinal axis if specified when sensor is worn on hip
+  
+  if (params_general[["sensor.location"]] != "hip") {
+    longitudinal_axis = NULL
+  }
   if (is.null(longitudinal_axis)) {
     angleName = "anglez"
   } else if (longitudinal_axis == 1) {
