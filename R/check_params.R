@@ -332,10 +332,13 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   
   if (length(params_general) > 0 & length(params_sleep) > 0) {
     if (params_sleep[["HASPT.algo"]] == "HorAngle") {
-      # Not everywhere in the code we check that both HASPT.algo is HorAngle and sensor.location is hip.
+      # Not everywhere in the code we check that when HASPT.algo is HorAngle, sensor.location is hip.
       # However, the underlying assumption is that they are linked. Even if a study would
       # use a waist or chest worn sensor we refer to it as hip as the orientation and need
-      # for detecting longitudinal axis the same. Therefore, for sensor.location to be hip
+      # for detecting longitudinal axis are the same. 
+      # Therefore, sensor.location should be forced to hip if HASPT.algo is HorAngle.
+      # On the other hand hip does not mean that HorAngle needs to be used, because
+      # when using count data from the hip the user may prefer the HASPT.algo=NotWorn.
       params_general[["sensor.location"]] = "hip"
     }
   }
