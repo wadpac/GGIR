@@ -328,6 +328,17 @@ check_params = function(params_sleep = c(), params_metrics = c(),
               " and expand_tail_max_hours will be set to NULL.", call. = FALSE)
     }
   }
+  
+  if (length(params_general) > 0 & length(params_sleep) > 0) {
+    if (params_sleep[["HASPT.algo"]] == "HorAngle") {
+      # Not everywhere in the code we check that both HASPT.algo is HorAngle and sensor.location is hip.
+      # However, the underlying assumption is that they are linked. Even if a study would
+      # use a waist or chest worn sensor we refer to it as hip as the orientation and need
+      # for detecting longitudinal axis the same. Therefore, for sensor.location to be hip
+      params_general[["sensor.location"]] = "hip"
+    }
+  }
+  
   if (length(params_metrics) > 0 & length(params_general) > 0) {
     if (params_general[["dataFormat"]] %in% c("actiwatch_awd", "actiwatch_csv")) {
       if (params_metrics[["do.zcy"]] == FALSE | params_general[["acc.metric"]] != "ZCY") {
