@@ -259,20 +259,6 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         daysleep_offset = 0
         if (do.HASPT.hip == TRUE & params_sleep[["HASPT.algo"]] != "NotWorn") {
           params_sleep[["HASPT.algo"]] = "HorAngle"
-          if (length(params_sleep[["longitudinal_axis"]]) == 0) { #only estimate long axis if not provided by user
-            count_updown = matrix(0,3,2)
-            count_updown[1,] = sort(c(length(which(anglex[qqq1:qqq2] < 45)), length(which(anglex[qqq1:qqq2] > 45))))
-            count_updown[2,] = sort(c(length(which(angley[qqq1:qqq2] < 45)), length(which(angley[qqq1:qqq2] > 45))))
-            count_updown[3,] = sort(c(length(which(anglez[qqq1:qqq2] < 45)), length(which(anglez[qqq1:qqq2] > 45))))
-            ratio_updown = count_updown[,1] / count_updown[,2]
-            validval = which(abs(ratio_updown) != Inf & is.na(ratio_updown) == FALSE)
-            if (length(validval) > 0) {
-              ratio_updown[validval] = ratio_updown
-              params_sleep[["longitudinal_axis"]] = which.max(ratio_updown)
-            } else {
-              params_sleep[["longitudinal_axis"]] = 2 # y-axis as fall back option if detection does not work
-            }
-          }
           if (params_sleep[["longitudinal_axis"]] == 1) {
             tmpANGLE = anglex[qqq1:qqq2]
           } else if (params_sleep[["longitudinal_axis"]] == 2) {

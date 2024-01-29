@@ -188,7 +188,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         #====================================
         # Initialise time series data.frame (ts) which will hold the time series
         # which forms the center of all part 5 activity
-        ts = g.part5_initialise_ts(IMP, M, params_247, params_general)
+        ts = g.part5_initialise_ts(IMP, M, params_247, params_general,
+                                   longitudinal_axis = params_sleep[["longitudinal_axis"]])
         Nts = nrow(ts)
         lightpeak_available = "lightpeak" %in% names(ts)
         
@@ -571,9 +572,13 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     } else {
                       lightpeak_col = NULL
                     }
+                    angle_col = grep(pattern = "angle", x = names(ts), value = TRUE)
+                    if (length(angle_col) == 0) {
+                      angle_col = NULL
+                    }
                     g.part5.savetimeseries(ts = ts[, c("time", "ACC", "diur", "nonwear",
                                                        "guider", "window", napNonwear_col,
-                                                       lightpeak_col)],
+                                                       lightpeak_col, angle_col)],
                                            LEVELS = LEVELS,
                                            desiredtz = params_general[["desiredtz"]],
                                            rawlevels_fname = rawlevels_fname,

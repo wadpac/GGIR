@@ -2,6 +2,10 @@
 
 - Facilitate handling of Sensewear xls file format with externally derived epoch data #974
 
+- Part 3: Now uses longitudinal axis detected in part 2 instead re-estimating this using a different approach #1024
+
+- Part 5: If sensor.location is hip then store and use longitudinal angle in part 5 time series instead of anglez #1024.
+
 # CHANGES IN GGIR VERSION 3.0-3
 
 - Part 2: Fix bug where data_quality_report.csv contained incorrect filehealth[...] values whenever some of these values were supposed to be blank #1003
