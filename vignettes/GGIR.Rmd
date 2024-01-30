@@ -302,7 +302,7 @@ We are not giving a detailed explanation, please see the package manual
 for that.
 
 -   `mode` - which part of GGIR to run, GGIR is constructed in five
-    parts.
+    parts with a sixth part under development.
 -   `overwrite` - whether to overwrite previously produced milestone
     output. Between each GGIR part, GGIR stores milestone output to ease
     re-running parts of the pipeline.

@@ -27,6 +27,8 @@ GGIR(mode = 1:5,
     Specify which of the five parts need to be run, e.g., mode = 1 makes
     that \link{g.part1} is run; or mode = 1:5 makes
     that the whole GGIR pipeline is run, from \link{g.part1} to \link{g.part5}.
+    Optionally mode can also include the number 6 to tell GGIR to run \link{g.part6}
+    which is currently under development.
   }
   \item{datadir}{
     Character (default = c()).
