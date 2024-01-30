@@ -45,10 +45,10 @@ export(g.analyse, g.calibrate,
 
 
 importFrom("grDevices", "colors", "dev.off", "pdf",
-           "rgb", "rainbow", "palette")
+           "rgb", "rainbow", "palette", "adjustcolor")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
            "rect","axis.POSIXct", "barplot", "box", "legend",
-           "lines", "mtext", "text", "arrows", "segments")
+           "lines", "mtext", "text", "arrows", "segments", "layout")
 importFrom("utils", "read.csv", "sessionInfo", "write.csv",
            "installed.packages", "setTxtProgressBar",
            "txtProgressBar", "write.table", "head",

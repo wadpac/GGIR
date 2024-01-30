@@ -17,7 +17,7 @@ g.plot_ts = function(metadatadir = c(),
                               "#0072B2","#D55E00","#CC79A7", "#999999",
                               "#222255", "black")
     mygreys = rep(c("darkblue", "lightblue"), 20)
-    mygreys = adjustcolor(col = mygreys, alpha.f = 0.5)
+    mygreys = grDevices::adjustcolor(col = mygreys, alpha.f = 0.5)
     
     Ymax = max(mdat$ACC) * 2
     Ymin = min(mdat$ACC)
