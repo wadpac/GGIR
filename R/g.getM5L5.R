@@ -50,6 +50,14 @@ g.getM5L5 = function(varnum, ws3, t0_LFMF, t1_LFMF, M5L5res, winhr,
     M5start = (DAYM5HOUR * (3600 / ws3)) + 1 # (hour * (number of ws3 epochs in an hour)) + 1 because first epoch is one and not zero
     M5end = M5start + (winhr * (3600 / ws3))
   }
+  # added 24 hours to create continuous scale to achieve more meaningful aggregation at person level
+  if (do.M5L5 == TRUE) {
+    if (!is.null(M5L5vars[1]) &&
+        is.na(M5L5vars[1]) == FALSE &&
+        M5L5vars[1] < 12) {
+      M5L5vars[1] = M5L5vars[1] + 24 
+    }
+  }
   #-----------------------
   if (length(iglevels) > 0 & length(MX.ig.min.dur) == 1) { # intensity gradient (as described by Alex Rowlands 2018)
     if (winhr >= MX.ig.min.dur) {

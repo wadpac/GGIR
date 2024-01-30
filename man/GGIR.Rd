@@ -1232,7 +1232,8 @@ GGIR(mode = 1:5,
 
       \item{winhr}{
         Numeric (default = 5).
-        Vector of window size(s) (unit: hours) of L5 and M5 analysis.}
+        Vector of window size(s) (unit: hours) of LX and MX analysis,
+        where look for least and most active consecutive number of X hours.}
 
       \item{qlevels}{
         Numeric (default = NULL).

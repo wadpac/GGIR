@@ -1,5 +1,7 @@
 # CHANGES IN GGIR VERSION 3.0-4
 
+- Part 2 and 5: Fix bug, timing of LX is now expressed on scale between 12 and 36 to allow for meaningful person level summary of this value #1012
+
 - Facilitate handling of Sensewear xls file format with externally derived epoch data #974
 
 # CHANGES IN GGIR VERSION 3.0-3
