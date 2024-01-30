@@ -1,10 +1,15 @@
-updateBlocksize = function(blocksize=c(), bsc_qc=data.frame(time=c(),size=c())) {
+updateBlocksize = function(blocksize = c(),
+                           bsc_qc = data.frame(time = c(), size = c())) {
   if (length(blocksize) == 0) {
-    cat("\nWarning: Please provide valid blocksize unequal to zero")
+    warning("Blocksize is zero, please contact maintainers")
   }
   gco = gc()
-  memuse = gco[2,2] #memuse in mb
-  bsc_qc_new_row = data.frame(time=format(Sys.time()),size=memuse,stringsAsFactors = FALSE)
+  memuse = gco[2, 2] # memuse in mb
+  bsc_qc_new_row = data.frame(
+    time = format(Sys.time()),
+    size = memuse,
+    stringsAsFactors = FALSE
+  )
   if (nrow(bsc_qc) == 0) {
     bsc_qc = bsc_qc_new_row
   } else {
@@ -15,16 +20,6 @@ updateBlocksize = function(blocksize=c(), bsc_qc=data.frame(time=c(),size=c())) 
       blocksize = round(blocksize * 0.8)
     }
   }
-  # Following commented out because it causes problems with reproducibility in unit-test across machines:
-  # assumed_memory_R = 4000
-  # memratio = (assumed_memory_R - memuse) / memuse
-  # if (nrow(bsc_qc) < 10) {
-  #   if (memratio > 1.1) {
-  #     blocksize = round(blocksize * 0.8) # reduce blocksize
-      # } else if (memratio < 0.90) {  # increase blocksize.... 
-      #   blocksize = round(blocksize * 1.1) 
-  #   }
-  # }
   blocksize = round(blocksize)
-  return(list(blocksize=blocksize, bsc_qc=bsc_qc))
+  return(list(blocksize = blocksize, bsc_qc = bsc_qc))
 }

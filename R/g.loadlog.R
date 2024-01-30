@@ -27,12 +27,15 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
     }
   }
   if (length(S) == 0) {
-    cat("\nCould not read sleeplog file, check that file path is correct.")
-    cat("\nTip: Try to aply function g.loadlog to your sleeplog file first to verify that sleeplog is correctly processed.")
+    warning(paste0("Could not read sleeplog file, check that file path is correct.",
+                   "Tip: Try to aply function g.loadlog to your sleeplog file first",
+                   " to verify that sleeplog is correctly processed."), call. = FALSE)
   } else {
     if (nrow(S) == 0 | ncol(S) <= 2) {
-      cat("\nCould not read sleeplog file. Does it have at least 3 columns and comma seperated values?")
-      cat("\nTip: Try to aply function g.loadlog to your sleeplog file first to verify that sleeplog is correctly processed.")
+      warning(paste0("Could not read sleeplog file. Does it have at least 3 columns",
+                     " and comma seperated values?",
+                     " Tip: Try to aply function g.loadlog to your sleeplog file ",
+                     "first to verify that sleeplog is correctly processed."), call. = FALSE)
     }
   }
   count = 1 # to keep track of row in new sleeplog matrix

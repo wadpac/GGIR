@@ -134,6 +134,7 @@ g.plot = function(IMP, M, I, durplot) {
            x.intersp = x.intersp, ncol = 4, cex = 0.6, lwd = 0.6,
            bg = "white", box.col = "black")
   }
+  extranoons = c()
   if (length(mnights) > 0 & length(noons) > 0) {
     # axis 1: midnight, noon labels (including one extra day at the beginning and end)
     extramnights = c(mnights[1] - n_ws2_perday, mnights, max(mnights) + n_ws2_perday)
@@ -154,24 +155,37 @@ g.plot = function(IMP, M, I, durplot) {
   }
   # creating plot functions to avoid duplicated code
   plot_acc = function(timeline, Acceleration, durplot, ticks_12hours, metricName, x_labels_12hours) {
-    if (metricName %in% c("ZCX", "ZCY", "ZCX") == TRUE | 
+    if (metricName %in% c("ZCX", "ZCY", "ZCX", "ExtAct") == TRUE | 
         length(grep(pattern = "count", x = metricName, ignore.case = TRUE)) > 0) {
       # Metric is not on a G scale
-      ylabel = paste0(metricName, " (counts)")
+      ylabel = paste0(metricName, ifelse(metricName == "ExtAct", yes = "", no = " (counts)"))
       YLIM = c(0, max(Acceleration, na.rm = TRUE) * 1.05)
+      YTICKS = NULL
       if (YLIM[2] < 0.8) {
         YLIM[2] = 0.8
+        YTICKS = c(0, 0.2, 0.4, 0.6, 0.8)
       } else if (YLIM[2] >= 0.8 & YLIM[2] < 1.5) {
         YLIM[2] = 1.5
-      } else if (YLIM[2] >= 1.5 & YLIM[2] < 10) {
+        YTICKS = c(0, 0.5, 1, 1.5)
+      } else if (YLIM[2] >= 1.5 & YLIM[2] < 5) {
+        YLIM[2] = 5
+        YTICKS = 0:5
+      } else if (YLIM[2] >= 5 & YLIM[2] < 10) {
         YLIM[2] = 10
-      } else if (YLIM[2] >= 10 & YLIM[2] < 500) {
+        YTICKS = seq(0, 10, by = 2)
+      } else if (YLIM[2] >= 10 & YLIM[2] < 250) {
+        YLIM[2] = 250
+        YTICKS = seq(0, 250, by = 50)
+      } else if (YLIM[2] >= 250 & YLIM[2] < 500) {
         YLIM[2] = 500
+        YTICKS = seq(0, 500, by = 100)
       } else if (YLIM[2] >= 500 & YLIM[2] < 1000) {
         YLIM[2] = 1000
+        YTICKS = seq(0, 1000, by = 200)
       }
-      YTICKS = round(c(0, YLIM[2] * 0.3, YLIM[2] * 0.65, YLIM[2] * 0.95))
-      YTICKS = unique(round(YTICKS/10) * 10) # round to nearest ten and remove possible duplicates
+      if (is.null(YTICKS)) {
+        YTICKS = round(c(0, YLIM[2] * 1/4, YLIM[2] * 2/4, YLIM[2] * 3/4, YLIM[2]))
+      }
     } else {
       ylabel = expression(paste("Acceleration (m", italic("g"), ")"))
       YLIM = c(0, 0.6)

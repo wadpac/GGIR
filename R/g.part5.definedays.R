@@ -34,7 +34,7 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
     if (nightsi[1] == 1) {
       wi = wi + 1
       # add extra nightsi to get the last day processed (as wi has been increased by 1)
-      nightsi = c(nightsi, nightsi + (24*(60/epochSize) * 60) - 1)
+      nightsi = c(nightsi, nightsi[length(nightsi)] + (24*(60/epochSize) * 60))
     }
     if (length(nightsi) >= wi) {
       if (wi == 1) {
@@ -89,13 +89,18 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
     # in MM, also define segments of the day based on qwindow
     if (!is.na(qqq[1]) & !is.na(qqq[2])) {
       fullQqq = qqq[1]:qqq[2]
+      firstepoch = format(ts$time[qqq[1]],  "%H:%M:%S")
       lastepoch = format(ts$time[qqq[2]],  "%H:%M:%S")
       qnames = NULL
       if (is.data.frame(qwindow)) {
         date_of_interest = substr(ts$time[qqq[1]], 1, 10)
         qdate = which(qwindow$ID == ID & qwindow$date == date_of_interest)
-        qnames = unlist(qwindow$qwindow_names[qdate])
-        qwindow = unlist(qwindow$qwindow_values[qdate])
+        if (length(qdate) == 1) { # if ID/date matched with activity log
+          qnames = unlist(qwindow$qwindow_names[qdate])
+          qwindow = unlist(qwindow$qwindow_values[qdate])
+        } else { # if ID/date not correctly matched with activity log
+          qwindow = c(0, 24)
+        }
       }
       breaks = qwindow2timestamp(qwindow, lastepoch = lastepoch)
       breaks_i = c()
@@ -108,7 +113,7 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
       }
       # build up segments
       segments = list(qqq)
-      segments_timing = paste("00:00:00", lastepoch, sep = "-")
+      segments_timing = paste(firstepoch, lastepoch, sep = "-")
       segments_names = "MM"
       si = 2
       do.segments = TRUE

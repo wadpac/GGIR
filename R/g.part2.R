@@ -141,11 +141,13 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           }
         }
         if (length(myfun) > 0) {
-          if (myfun$outputtype == "character") {
-            # At the moment we do not have a strategy in place on how to impute categorical variables
-            # produced by external functions. Therefore, for the moment ignore these variables until
-            # there is a plan.
-            M$metashort = M$metashort[,-which(names(M$metashort) %in% myfun$colnames == TRUE)]
+          for (mi in 1:length(myfun$outputtype)) {
+            if (myfun$outputtype[mi] == "character") {
+              # At the moment we do not have a strategy in place on how to impute categorical variables
+              # produced by external functions. Therefore, for the moment ignore these variables until
+              # there is a plan.
+              M$metashort = M$metashort[,-which(names(M$metashort) %in% myfun$colnames == TRUE)]
+            }
           }
         }
         IMP = g.impute(M, I,

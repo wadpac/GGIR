@@ -117,6 +117,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
         hvalues[pp] = c("not stored in header")
       }
       mon = I$monn
+      
       if (mon == "genea") {
         deviceSerialNumber = hvalues[which(hnames == "Serial_Number")] #serial number
       } else if (mon == "geneactive") {
@@ -130,9 +131,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
         }
       } else if (mon == "actigraph" | mon == "axivity" | mon == "verisense") {
         deviceSerialNumber = "not extracted"
-      } else if (I$monc == 5) { #movisense
-        deviceSerialNumber = "not extracted"
-      } else if (I$monc == 99) {
+      } else if (I$monc %in% c(5, 98, 99)) { #movisense 5, Actiwatch 98, Sensewear 99
         deviceSerialNumber = "not extracted"
       } else if (I$monc == 0) {
         if (header != "no header") {
