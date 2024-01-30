@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.0-5
+
+- Part 1: For externally derived epoch data in dataFormat actiwatch_csv, actiwatch_awd, actigraph_csv, and sensewear_xls the non-wear detection is no longer done based on a hard-coded 60 minute rolling window but the window length is now modifiable with the third value of argument windowsizes (in seconds) as also used for raw data. #1026
+
 # CHANGES IN GGIR VERSION 3.0-4
 
 - Part 5: Improved handling of inconsistent number of columns in part 5 milestone data #1002
