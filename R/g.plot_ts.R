@@ -4,18 +4,20 @@ g.plot_ts = function(metadatadir = c(),
                      desiredtz = "",
                      verbose = TRUE,
                      part6_threshold_combi = NULL) {
-  
+  if (!file.exists(paste0(metadatadir, "/results/file summary reports"))) {
+    dir.create(file.path(paste0(metadatadir, "/results"), "file summary reports"))
+  }
   
   # Declare functions:
   panelplot = function(mdat, ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
                        BCN, BCC, axis_resolution) {
     window_duration = mdat$timenum[nrow(mdat)] - mdat$timenum[1]
     # print(paste0("window duration: ", window_duration / 3600))
-
+    
     # create vector with color blind friendly colors
-    mycolors = cbPalette <- c("#E69F00","#56B4E9","#009E73","#F0E442",
-                              "#0072B2","#D55E00","#CC79A7", "#999999",
-                              "#222255", "black")
+    mycolors = c("#E69F00","#56B4E9","#009E73","#F0E442",
+                 "#0072B2","#D55E00","#CC79A7", "#999999",
+                 "#222255", "black")
     mygreys = rep(c("darkblue", "lightblue"), 20)
     mygreys = grDevices::adjustcolor(col = mygreys, alpha.f = 0.5)
     
@@ -136,7 +138,7 @@ g.plot_ts = function(metadatadir = c(),
   #   }
   # }
   
- 
+  
   axis_resolution = 6  # assumption that this is either (0, 12] or 24.
   if (dir.exists(expected_ts_path)) {
     
@@ -149,7 +151,7 @@ g.plot_ts = function(metadatadir = c(),
     
     mdat = NULL
     if (ts_exists) {
-     
+      
       Nlevels = c(0, 0)
       # Extract behavioural class names and codes:
       legendfiles = list.files(path = paste0(metadatadir, "/meta/ms5.outraw"), pattern = "codes", full.names = TRUE)
@@ -196,38 +198,40 @@ g.plot_ts = function(metadatadir = c(),
         load(file = paste0(metadatadir, "/meta/ms5.outraw/",
                            part6_threshold_combi, "/", fnames.ms5raw[i]))
         
-        # TO DO:
-        # - Add vertical grid to ease inspection tailored to window selected
-        
-        pdf(paste0(metadatadir, "/results/file summary reports/Time_report_",
-                   fnames.ms5raw[i], ".pdf"), paper = "a4r",
-            width = 0, height = 0)
-        
-        # whole data
-        panelplot(mdat, ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
-                  BCN, BCC, axis_resolution = 24)
-
-        # zoom on windows that have either daytime sib or selfreported nap
-        acc_naps = which((mdat$sibdetection == 1 | mdat$selfreport == "nap") &
-                           mdat$SleepPeriodTime == 0)
-        subploti = seq(1, nrow(mdat), by = 540)
-        subploti = cbind(subploti,
-                         subploti + 720)
-        for (jj in 1:nrow(subploti)) {
-          ma = which(acc_naps > subploti[jj, 1] & acc_naps < subploti[jj, 2])
-          if (length(ma) == 0) {
-            is.na(subploti[jj, ]) = TRUE
+        if (all(c("lightpeak", "selfreport", "sibdetection") %in% colnames(mdat))) {
+          # TO DO:
+          # - Add vertical grid to ease inspection tailored to window selected
+          
+          pdf(paste0(metadatadir, "/results/file summary reports/Time_report_",
+                     fnames.ms5raw[i], ".pdf"), paper = "a4r",
+              width = 0, height = 0)
+          
+          # whole data
+          panelplot(mdat, ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
+                    BCN, BCC, axis_resolution = 24)
+          
+          # zoom on windows that have either daytime sib or selfreported nap
+          acc_naps = which((mdat$sibdetection == 1 | mdat$selfreport == "nap") &
+                             mdat$SleepPeriodTime == 0)
+          subploti = seq(1, nrow(mdat), by = 540)
+          subploti = cbind(subploti,
+                           subploti + 720)
+          for (jj in 1:nrow(subploti)) {
+            ma = which(acc_naps > subploti[jj, 1] & acc_naps < subploti[jj, 2])
+            if (length(ma) == 0) {
+              is.na(subploti[jj, ]) = TRUE
+            }
           }
-        }
-        subploti = subploti[!is.na(subploti[,1]), , drop = FALSE]
-        if (nrow(subploti) > 0) {
-          for (ani in 1:nrow(subploti)) {
-            panelplot(mdat[(subploti[ani, 1] + 1):subploti[ani, 2], ],
-                           ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
-                           BCN, BCC, axis_resolution = 1)
+          subploti = subploti[!is.na(subploti[,1]), , drop = FALSE]
+          if (nrow(subploti) > 0) {
+            for (ani in 1:nrow(subploti)) {
+              panelplot(mdat[(subploti[ani, 1] + 1):subploti[ani, 2], ],
+                        ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
+                        BCN, BCC, axis_resolution = 1)
+            }
           }
+          dev.off()
         }
-        dev.off()
       }
     }
   }
