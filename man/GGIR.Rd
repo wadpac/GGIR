@@ -863,8 +863,9 @@ GGIR(mode = 1:5,
 
       \item{includedaycrit.part5}{
         Numeric (default = 2/3).
-        Inclusion criteria for number of valid hours, either
-        as expressed as a ratio of 1 or as the number of hours in a 24 hour day.}
+        Inclusion criteria for number of valid hours during the waking hours of a day,
+        either as expressed as a ratio of 1 or as the number of hours,
+        which is converted by GGIR to a ratio. For example 16 become 16/24=2/3.}
 
       \item{segmentWEARcrit.part5}{
         Numeric (default = 0.5).
