@@ -136,7 +136,7 @@ test_that("chainof5parts", {
   expect_equal(mean(IMP$metashort$ENMO), 0.029, tolerance = 3)
   expect_equal(as.numeric(SUM$summary$meas_dur_def_proto_day), 1, tolerance = 2)
   expect_equal(as.numeric(SUM$daysummary$`L16_ig_gradient_ENMO_mg_0-24hr`[1]), -1.12, tolerance = 2)
-  
+  expect_equal(as.numeric(SUM$daysummary$`L16hr_ENMO_mg_0-24hr`), c(33.5, 19.8333, 13), tolerance = 0.001)
   # part 2
   
   # part 2 with data_masking_strategy = 1
