@@ -302,7 +302,7 @@ We are not giving a detailed explanation, please see the package manual
 for that.
 
 -   `mode` - which part of GGIR to run, GGIR is constructed in five
-    parts.
+    parts with a sixth part under development.
 -   `overwrite` - whether to overwrite previously produced milestone
     output. Between each GGIR part, GGIR stores milestone output to ease
     re-running parts of the pipeline.
@@ -902,7 +902,7 @@ may not be obvious:
 | `_WE`| Weekend days    |
 | `_WD`| Week days       |
 | sleeplog_used     | Whether a sleeplog was available (TRUE) or not (FALSE)|
-| sleep_efficiency  | Accelerometer derived sleep efficiency within the sleep period time calculated as the ratio between acc_SleepDurationInSpt and guider_SptDuration (denominator) or acc_SleepDurationInSpt and acc_SptDuration + latency (denominator), as defined with relyonguider_SleepEfficiency. Only available at person level, because at night level the user can calculate this from existing variables. |
+| sleep_efficiency  | Accelerometer derived sleep efficiency within the sleep period time calculated as the ratio between acc_SleepDurationInSpt and guider_SptDuration (denominator) or acc_SleepDurationInSpt and acc_SptDuration + latency (denominator), as defined with sleepefficiency.metric. Only available at person level, because at night level the user can calculate this from existing variables. |
 | n_nights_acc      | Number of nights of accelerometer data   |
 | n_nights_sleeplog | Number of nights of sleeplog data.       |
 | n\_WE_nights_complete        | Number of weekend nights complete which means both accelerometer and estimate from guider. |
@@ -1665,6 +1665,7 @@ correspond to the date of analysis.
 | invalid_sleepperiod  | Fraction of SPT within the current window that represents invalid data.          |
 | invalid_wakinghours  | Fraction of SPT within the current window that represents invalid data.          |
 | timestamp      | Time stamp derived from converting the column timenum, only available if `save_ms5raw_format = TRUE`.|
+| angle | anglez by default. If `sensor.location = "hip"` or `HASPT.algo = "HorAngle"` then angle represents the angle for the longitudinal axis as provided by argument longitudinal_axis or estimated if no angle was provided. If more angles were extracted in part 1 then these will be add with their letter appended. }
 
 To familiarize yourself with how the variables it can be helpful to plot
 them yourself.
