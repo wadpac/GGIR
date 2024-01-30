@@ -403,6 +403,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         # Force acc.metric to be LFENMO
         params_general[["acc.metric"]] = "LFENMO"
       }
+    } else if (params_general[["dataFormat"]] == "sensewear_xls") {
+      params_general[["acc.metric"]] = "ExtAct"
     }
   }
   if (!is.null(params_general[["recordingEndSleepHour"]])) {

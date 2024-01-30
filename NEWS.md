@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.0-4
+
+- Facilitate handling of Sensewear xls file format with externally derived epoch data #974
+
 # CHANGES IN GGIR VERSION 3.0-3
 
 - Part 2: Fix bug where data_quality_report.csv contained incorrect filehealth[...] values whenever some of these values were supposed to be blank #1003
@@ -25,6 +29,7 @@
 - Part 1:Enable use of temperature data in adhoc-csv format throughout GGIR #991
 
 - Part 1: Fix bug that caused a mismatch between IDs and filenames in part 1 when movisens participant folders did not contain the acc.bin file #994.
+
 
 # CHANGES IN GGIR VERSION 3.0-1
 
