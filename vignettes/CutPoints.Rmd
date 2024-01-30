@@ -274,7 +274,27 @@ activity intensity classification with cut-points.
 |                  | Hip                | (mean: 78.7 yr)   | **`do.enmo = TRUE`\    | Moderate: 14\   |
 |                  |                    |                   | `acc.metric = "ENMO"`  | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
-| Fraysse 2020^†^  | GENEActiv\        | ≥70 yr \          | `do.enmoa = TRUE`\     | Light: 42.5\    |
+| Bammann 2021     | ActiGraph\         | 62.9 (SD=3.6) yr  | **Default values\      | Moderate: 94\   |
+|                  | Hip                |                   | **`do.enmo = TRUE`\    | Vigorous: 230   |
+|                  |                    |                   | `acc.metric = "ENMO"`  |                 |
++------------------+--------------------+-------------------+------------------------+-----------------+
+| Bammann 2021     | ActiGraph\         | 62.9 (SD=3.6) yr  | **Default values\      | Moderate: 122\  |
+|                  | Dominant Wrist     |                   | **`do.enmo = TRUE`\    | Vigorous: 234   |
+|                  |                    |                   | `acc.metric = "ENMO"`  |                 |
++------------------+--------------------+-------------------+------------------------+-----------------+
+| Bammann 2021     | ActiGraph\         | 62.9 (SD=3.6) yr  | **Default values\      | Moderate: 100\  |
+|                  | Non-dominant Wrist |                   | **`do.enmo = TRUE`\    | Vigorous: 245   |
+|                  |                    |                   | `acc.metric = "ENMO"`  |                 |
++------------------+--------------------+-------------------+------------------------+-----------------+
+| Bammann 2021     | ActiGraph\         | 62.9 (SD=3.6) yr  | **Default values\      | Moderate: 342   |
+|                  | Dominant Ankle     |                   | **`do.enmo = TRUE`\    |                 |
+|                  |                    |                   | `acc.metric = "ENMO"`  |                 |
++------------------+--------------------+-------------------+------------------------+-----------------+
+| Bammann 2021     | ActiGraph\         | 62.9 (SD=3.6) yr  | **Default values\      | Moderate: 331   |
+|                  | Non-dominant Ankle |                   | **`do.enmo = TRUE`\    |                 |
+|                  |                    |                   | `acc.metric = "ENMO"`  |                 |
++------------------+--------------------+-------------------+------------------------+-----------------+
+| Fraysse 2020^†^  | GENEActiv\         | ≥70 yr \          | `do.enmoa = TRUE`\     | Light: 42.5\    |
 |                  | Non-dominant wrist | (mean: 77 yr)     | `do.enmo = FALSE`\     | Moderate: 98\   |
 |                  |                    |                   | `acc.metric = "ENMOa"` | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
@@ -306,6 +326,7 @@ activity intensity classification with cut-points.
 |                  | Hip                |                   | `do.enmo = FALSE`\     | Moderate: 2.4\  |
 |                  |                    |                   | `acc.metric = "MAD"`   | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
+
 
 \*Cut-points derived from applying the Youden index on ROC curves.\
 \*\* Cut-points derived from increasing Sensitivity over Specificity for light and vice versa for moderate on ROC curves (see [paper](https://doi.org/10.1080/02640414.2018.1555904) for more details).\
@@ -341,16 +362,22 @@ why cut-points still have value in GGIR see:
 
 # References
 
--   Esliger 2011: <https://journals.lww.com/acsm-msse/Fulltext/2011/06000/Validation_of_the_GENEA_Accelerometer.22.aspx>
--   Phillips 2013: <https://doi.org/10.1016/j.jsams.2012.05.013>
--   Schaefer 2014: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3960318/>
--   Hildebrand 2014: <https://journals.lww.com/acsm-msse/Fulltext/2014/09000/Age_Group_Comparability_of_Raw_Accelerometer.17.aspx>
--   Hildebrand 2016: <https://doi.org/10.1111/sms.12795>
--   Vähä-Ypyä 2015: <https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0134813>
 -   Aittasalo 2015: <https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-015-0010-0>
--   Roscoe 2017: <https://link.springer.com/article/10.1007/s00431-017-2948-2>
--   Sanders 2018: <https://doi.org/10.1080/02640414.2018.1555904>
--   Migueles 2021: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8150960/>
--   Fraysse 2020: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7843957/>
+-   Bammann 2021: <https://doi.org/10.1371/journal.pone.0252615>
 -   Dibben 2020: <https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7>
 -   Dillon 2016: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4858250/>
+-   Esliger 2011: <https://journals.lww.com/acsm-msse/Fulltext/2011/06000/Validation_of_the_GENEA_Accelerometer.22.aspx>
+-   Fraysse 2020: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7843957/>
+-   Hildebrand 2014: <https://journals.lww.com/acsm-msse/Fulltext/2014/09000/Age_Group_Comparability_of_Raw_Accelerometer.17.aspx>
+-   Hildebrand 2016: <https://doi.org/10.1111/sms.12795>
+-   Migueles 2021: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8150960/>
+-   Phillips 2013: <https://doi.org/10.1016/j.jsams.2012.05.013>
+-   Sanders 2018: <https://doi.org/10.1080/02640414.2018.1555904>
+-   Schaefer 2014: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3960318/>
+-   Roscoe 2017: <https://link.springer.com/article/10.1007/s00431-017-2948-2>
+-   Vähä-Ypyä 2015: <https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0134813>
+
+
+
+
+
