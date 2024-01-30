@@ -301,6 +301,15 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
         if (length(unlist(strsplit(M5HOUR," "))) == 1) M5HOUR = paste0(M5HOUR," 00:00:00")
         if (L5HOUR != "not detected") {
           time_num = sum(as.numeric(unlist(strsplit(unlist(strsplit(L5HOUR," "))[2], ":"))) * c(3600, 60, 1)) / 3600
+          if (!is.null(dayofinterst) && length(sumSleep$daysleeper[dayofinterst]) == 1) {
+            daysleeper_value = sumSleep$daysleeper[dayofinterst]
+          } else {
+            daysleeper_value = 0
+          }
+          if ((time_num < 12 & daysleeper_value == 0) |
+            (time_num < 18 & daysleeper_value == 1)) {
+            time_num = time_num + 24
+          }
           dsummary[si,fi] = time_num
         } else {
           dsummary[si,fi] = NA

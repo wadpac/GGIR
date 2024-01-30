@@ -136,13 +136,15 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
             n2exclude = sort(unique(c(n2exclude, missingNights)))
           }
           # Account for shift in nights relative to windows
-          if (P2daysummary_tmp$`N hours`[1] < 24 & P2daysummary_tmp$`N hours`[1] > 12 & length(n2exclude) > 0) {
-            # First calendar day is between 12 and 24 hours
-            # this means that the first night viewindow (=2) may include some data but
-            # is not reflected by the sleep reportswindow
-            # so our night counts should be increased by one
-            n2excludeb = n2exclude = n2exclude + 1
-            incrementNight = 1
+          if (nrow(P2daysummary_tmp) > 0) {
+            if (P2daysummary_tmp$`N hours`[1] < 24 & P2daysummary_tmp$`N hours`[1] > 12 & length(n2exclude) > 0) {
+              # First calendar day is between 12 and 24 hours
+              # this means that the first night viewindow (=2) may include some data but
+              # is not reflected by the sleep reportswindow
+              # so our night counts should be increased by one
+              n2excludeb = n2exclude = n2exclude + 1
+              incrementNight = 1
+            }
           }
           
           if (length(tail_expansion_log) != 0) { # then keep timing of sleeponset to plot
