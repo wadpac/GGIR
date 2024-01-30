@@ -1665,6 +1665,7 @@ correspond to the date of analysis.
 | invalid_sleepperiod  | Fraction of SPT within the current window that represents invalid data.          |
 | invalid_wakinghours  | Fraction of SPT within the current window that represents invalid data.          |
 | timestamp      | Time stamp derived from converting the column timenum, only available if `save_ms5raw_format = TRUE`.|
+| angle | anglez by default. If `sensor.location = "hip"` or `HASPT.algo = "HorAngle"` then angle represents the angle for the longitudinal axis as provided by argument longitudinal_axis or estimated if no angle was provided. If more angles were extracted in part 1 then these will be add with their letter appended. }
 
 To familiarize yourself with how the variables it can be helpful to plot
 them yourself.
