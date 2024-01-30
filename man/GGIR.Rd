@@ -349,8 +349,11 @@ GGIR(mode = 1:5,
       \item{chunksize}{
         Numeric (default = 1).
         Value between 0.2 and 1 to specify the size of chunks to be
-        loaded as a fraction of a 12 hour period, e.g., 0.5 equals 6 hour chunks, 1 equals 12 hour chunks.
-        For machines with less than 4Gb of RAM memory a value below 1 is recommended.}
+        loaded as a fraction of an approximately 12 hour period for auto-calibration
+        procedure and as fraction of 24 hour period for the metric calculation, e.g., 
+        0.5 equals 6 and 12 hour chunks, respectively. 
+        For machines with less than 4Gb of RAM memory or with < 2GB memory per process
+        when using \code{do.parallel = TRUE} a value below 1 is recommended.}
 
       \item{dynrange}{
         Numeric (default = NULL).
