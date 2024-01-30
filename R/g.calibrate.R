@@ -81,7 +81,6 @@ g.calibrate = function(datafile, params_rawdata = c(),
   isLastBlock = FALSE # dummy variable part of "end of loop mechanism"
   header = NULL
   while (LD > 1) {
-    P = c()
     if (verbose == TRUE) {
       if (i == 1) {
         cat(paste("\nLoading chunk: ",i,sep=""))
@@ -97,12 +96,11 @@ g.calibrate = function(datafile, params_rawdata = c(),
                             params_rawdata = params_rawdata, params_general = params_general,
                             header = header)
     header = accread$header
-    P = accread$P
     isLastBlock = accread$isLastBlock
     PreviousEndPage = accread$endpage
 
     if (i == 1) {
-      use.temp = temp.available = ("temperature" %in% colnames(P$data))
+      use.temp = temp.available = ("temperature" %in% colnames(accread$P$data))
       if (use.temp) {
         meta = matrix(99999,NR,8) # for metadata
       } else {
@@ -110,13 +108,14 @@ g.calibrate = function(datafile, params_rawdata = c(),
       }
     }
 
-    rm(accread);
     options(warn = 0) #turn on warnings
     #process data as read from binary file
-    if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
-      data = P$data
-      rm(P)
-      #add left over data from last time
+    if (length(accread$P) > 0) { # would have been set to zero if file was corrupt or empty
+      data = accread$P$data
+      if (exists("accread")) {
+        rm(accread)
+      }
+      # add leftover data from last time
       if (min(dim(S)) > 1) {
         data = rbind(S,data)
       }

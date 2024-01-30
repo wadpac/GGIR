@@ -33,37 +33,22 @@ get_nw_clip_block_params = function(chunksize, dynrange, monc, dformat, deviceSe
   if (length(dynrange) > 0) {
     clipthres = dynrange - 0.5
   } else {
+    clipthres = 7.5 # hard-coded assumption that dynamic range is 8g
     if (monc == MONITOR$GENEA) {
       clipthres = 5.5
-    } else if (monc == MONITOR$GENEACTIV) {
-      clipthres = 7.5
-    } else if (monc == MONITOR$ACTIGRAPH) {
-      clipthres = 7.5 # hard coded assumption that dynamic range is 8g
-    } else if (monc == MONITOR$AXIVITY) {
-      clipthres = 7.5 # hard coded assumption that dynamic range is 8g
     } else if (monc == MONITOR$MOVISENS) {
       clipthres = 15.5 # hard coded assumption that dynamic range is 16g
-    } else if (monc == MONITOR$VERISENSE) {
-      clipthres = 7.5
     } else if (monc == MONITOR$AD_HOC) {
       clipthres = rmc.dynamic_range
     }
   }
   # Nonwear threshold: non-wear criteria are monitor-specific
   racriter = 0.15 # very likely irrelevant parameters, but leave in for consistency
+  sdcriter = 0.013
   if (monc == MONITOR$GENEA) {
     sdcriter = 0.003
     racriter = 0.05
-  } else if (monc == MONITOR$GENEACTIV) {
-    sdcriter = 0.013
-  } else if (monc == MONITOR$ACTIGRAPH) {
-    sdcriter = 0.013
-  } else if (monc == MONITOR$AXIVITY) {
-    sdcriter = 0.013
-  } else if (monc == MONITOR$MOVISENS) {
-    sdcriter = 0.013
   } else if (monc == MONITOR$VERISENSE) {
-    sdcriter = 0.013
     racriter = 0.20
   } else if (monc == MONITOR$AD_HOC) {
     if (length(rmc.noise) == 0) {
