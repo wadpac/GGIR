@@ -9,6 +9,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
   tz = params_general[["desiredtz"]]
   epSizeShort = params_general[["windowsizes"]][1]
   epSizeLong = params_general[["windowsizes"]][2]
+  epSizeNonWear = params_general[["windowsizes"]][3]
   myfun = NULL
   # Identify input data file extensions
   if (dir.exists(datadir) == FALSE) {
@@ -557,7 +558,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                  params_general[["dataFormat"]] == "actigraph_csv" |
                  params_general[["dataFormat"]] == "sensewear_xls") {
         # Using rolling 60 minute sum to indicate whether it is nonwear
-        imp2 = zoo::rollapply(imp, width = (1*3600) / epSizeShort, FUN = sum, fill = 0)
+        imp2 = zoo::rollapply(imp, width = ceiling(epSizeNonWear / epSizeShort), FUN = sum, fill = 0)
         imp4 = imp2
         imp4[which(imp2 > 0)] = 0
         imp4[which(imp2 == 0)] = 3 # If rolling average is zero then consider it nonwear
