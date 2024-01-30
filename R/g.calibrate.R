@@ -26,7 +26,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
   use.temp = temp.available = TRUE
   
   filequality = data.frame(filetooshort = FALSE, filecorrupt = FALSE,
-                           filedoesnotholdday = FALSE, stringsAsFactors = TRUE)
+                           filedoesnotholdday = FALSE, stringsAsFactors = FALSE)
   ws4 = params_general[["windowsizes"]][4] #epoch for recalibration
   ws2 = params_general[["windowsizes"]][2] #dummy variable
   ws =  params_general[["windowsizes"]][3] # window size for assessing non-wear time (seconds)
@@ -366,7 +366,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
     }
   }
   if (all(dim(meta_temp)) != 0) {  # change 2022-08-18 to handle when filetooshort = TRUE (7 columns, empty rows)
-    spheredata = data.frame(A = meta_temp, stringsAsFactors = TRUE)
+    spheredata = meta_temp
     if (use.temp == TRUE) {
       names(spheredata) = c("Euclidean Norm","meanx","meany","meanz","sdx","sdy","sdz","temperature")
     } else {
