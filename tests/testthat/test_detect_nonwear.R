@@ -11,6 +11,7 @@ test_that("detects non wear time", {
   create_test_acc_csv(Nmin = Ndays * 1440, sf = sf)
   
   data = as.matrix(read.csv("123A_testaccfile.csv", skip = 10))
+  colnames(data) = c("x", "y", "z")
 
   # 2013 algorithm ------
   # clipthres to 1.7 to test the clipping detection

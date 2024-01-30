@@ -334,7 +334,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           data[, c("x", "y", "z")] = data[, c("x", "y", "z")] + scale(yy, center = rep(meantempcal,3), scale = 1/tempoffset)
         }
 
-        EN = sqrt(data[,1]^2 + data[,2]^2 + data[,3]^2) # Do not delete Used for long epoch calculation
+        EN = sqrt(data[, "x"]^2 + data[, "y"]^2 + data[, "z"]^2) # Do not delete Used for long epoch calculation
         accmetrics = g.applymetrics(data = data,
                                     sf = sf, ws3 = ws3,
                                     metrics2do = metrics2do,

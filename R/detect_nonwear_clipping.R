@@ -45,18 +45,19 @@ detect_nonwear_clipping = function(data = c(), windowsizes = c(5, 900, 3600), sf
         }
       }
       # ---
-      if (length(params_rawdata[["rmc.col.wear"]]) > 0) {
-        wearcol = as.character(data[, which(colnames(data) == "wear")])
+      if ("wear" %in% colnames(data)) {
+        wearcol = as.character(data[, "wear"])
         suppressWarnings(storage.mode(wearcol) <- "logical")
         wearTable = table(wearcol[(1 + hoc1):hoc2], useNA = FALSE)
         NWav[h] = as.logical(tail(names(sort(wearTable)), 1)) * 3 # times 3 to simulate heuristic approach
       }
-      for (jj in  1:3) {
+      xyzCol = which(colnames(data) %in% c("x", "y", "z"))
+      for (jj in seq(3)) {
         # Clipping
-        aboveThreshold = which(abs(data[(1 + cliphoc1):cliphoc2, jj]) > clipthres)
+        aboveThreshold = which(abs(data[(1 + cliphoc1):cliphoc2, xyzCol[jj]]) > clipthres)
         CW[h, jj] = length(aboveThreshold)
         if (length(aboveThreshold) > 0) {
-          if (length(which(abs(data[c((1 + cliphoc1):cliphoc2)[aboveThreshold],jj]) > clipthres * 1.5)) > 0) {
+          if (length(which(abs(data[c((1 + cliphoc1):cliphoc2)[aboveThreshold],  xyzCol[jj]]) > clipthres * 1.5)) > 0) {
             CW[h, jj] = window2 # If there is a a value that is more than 150% the dynamic range then ignore entire block.
           }
         }
@@ -68,18 +69,18 @@ detect_nonwear_clipping = function(data = c(), windowsizes = c(5, 900, 3600), sf
         } else if (nonwear_approach == "2023") {
           indices = seq((1 + hoc1), hoc2, by = ceiling(sf / 5))
         }
-        maxwacc = max(data[indices, jj], na.rm = TRUE)
-        minwacc = min(data[indices, jj], na.rm = TRUE)
+        maxwacc = max(data[indices, xyzCol[jj]], na.rm = TRUE)
+        minwacc = min(data[indices, xyzCol[jj]], na.rm = TRUE)
         absrange = abs(maxwacc - minwacc)
         if (absrange < racriter) {
-          sdwacc = sd(data[indices,jj], na.rm = TRUE)
+          sdwacc = sd(data[indices, xyzCol[jj]], na.rm = TRUE)
           if (sdwacc < sdcriter) {
             NW[NWflag,jj] = 1
           }
         }
       }
       CW = CW / (window2)
-      if (length(params_rawdata[["rmc.col.wear"]]) == 0) {
+      if (!("wear" %in% colnames(data))) {
         NWav[h] = (NW[h,1] + NW[h,2] + NW[h,3]) #indicator of non-wear
       }
       CWav[h] = max(c(CW[h, 1], CW[h, 2], CW[h, 3])) #indicator of clipping
