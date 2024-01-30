@@ -1105,7 +1105,9 @@ GGIR(mode = 1:5,
         "HorAngle", which is based on HDCZA but replaces non-movement detection of
         the HDCZA algorithm by looking for time segments where the angle of the
         longitudinal sensor axis has an angle relative to the horizontal plane
-        between -45 and +45 degrees.}
+        between -45 and +45 degrees. And "NotWorn" which is also the same as HDCZA
+        but looks for time segments when the 5 minute rolling average of counts is
+        below 20 per cent of its standard deviation.}
 
       \item{HASPT.ignore.invalid}{
         Boolean (default = FALSE).

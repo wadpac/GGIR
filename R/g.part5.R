@@ -327,10 +327,12 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
               shortendFname = gsub(pattern = "[.]|RData|csv|cwa|bin", replacement = "", x = fnames.ms3[i], ignore.case = TRUE)
               sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_", shortendFname, "_",sibDef,".csv")
-              data.table::fwrite(x = sibreport, file = sibreport_fname, row.names = FALSE,
-                                 sep = params_output[["sep_reports"]])
+              if (length(sibreport) > 0) {
+                data.table::fwrite(x = sibreport, file = sibreport_fname, row.names = FALSE,
+                                   sep = params_output[["sep_reports"]])
+              }
               # nap/sib/nonwear overlap analysis
-              if (length(params_sleep[["nap_model"]]) > 0) {
+              if (length(params_sleep[["nap_model"]]) > 0 & length(sibreport) > 0) {
                 # nap detection
                 if (params_general[["acc.metric"]] != "ENMO" |
                     params_sleep[["HASIB.algo"]] != "vanHees2015") {

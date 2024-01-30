@@ -118,6 +118,18 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
         colnames(tmp) = expectedCols
         out = base::merge(tmp, out, all = TRUE)
       }
+      if (!is.null(expectedCols) && ncol(out) > length(expectedCols)) {
+        warning(paste0("Columns dropped in output part5 for ",
+                       basename(x),
+                       " because these could not be matched to columns for earlier",
+                       " recordings in this dataset. Please check whether these recordings ",
+                       " were processed with a",
+                       " different GGIR version or configuration. If yes, reprocess",
+                       " consistently. If not, ",
+                       " consider renaming this file such that it is",
+                       " alphabetically first and by that processed first, which",
+                       " should address the issue."), call. = FALSE)
+      }
       if (length(tail_expansion_log) != 0) {
         col2na = grep(pattern = paste0("sleep_efficiency|N_atleast5minwakenight|daysleeper|",
                                        "daysleeper|sleeplog_used|_spt_sleep|_spt_wake"),
@@ -130,8 +142,26 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
       }
       return(out)
     }
-    out_try = myfun(fnames.ms5[f0])
-    expectedCols = colnames(out_try)
+    # It can be that first part 5 milestone file has less columns when it 
+    # was processed with a different GGIR version or configuration.
+    # This would then complicate
+    # appending later milestone files to it. So, check first a random sample for highest number
+    # of columns. If this fails to identify a file with the maximum number of
+    # column then the above function will provide a warning to
+    # inform the user and with instructions on how to address it.
+    expectedCols = NULL
+    set.seed(1234)
+    # Create list of file indices to try
+    testfiles = unique(sample(x = f0:f1, size = pmin(5, f1 - f0 + 1)))
+    for (testf in testfiles) {
+      out_try = myfun(fnames.ms5[testf])
+      if (ncol(out_try) > length(expectedCols)) {
+        # expectedCols should equal the column names of the milestone
+        # file with the largest number of columns
+        expectedCols = colnames(out_try) 
+      }
+    }
+    # Now load and append all files
     outputfinal = as.data.frame(do.call(rbind,
                                         lapply(fnames.ms5[f0:f1], myfun, expectedCols)),
                                 stringsAsFactors = FALSE)
