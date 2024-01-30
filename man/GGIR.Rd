@@ -1137,7 +1137,8 @@ GGIR(mode = 1:5,
       \item{longitudinal_axis}{
         Integer (default = NULL).
         To indicate which axis is the longitudinal axis.
-        If not provided, the function will estimate longitudinal axis. Only used when
+        If not provided, the function will estimate longitudinal axis as the axis
+        with the highest 24 hour lagged autocorrelation. Only used when
         \code{sensor.location = "hip"} or \code{HASPT.algo = "HorAngle"}.}
 
       \item{anglethreshold}{
