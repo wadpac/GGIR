@@ -182,8 +182,8 @@ find a description and default value for all the arguments.
 | criterror                   | 4                 | params_output            |
 | includenightcrit            | 4                 | params_cleaning          |
 | relyonguider                | 4                 | params_sleep             |
-| relyonsleeplog              | 4                 | not in parameter objects |
-| relyonguider_SleepEfficiency| 4                 | params_sleep             |
+| relyonsleeplog              | 4                 | deprecated               |
+| sleepefficiency.metric      | 4                 | params_sleep             |
 | def.noc.sleep               | 4                 | params_sleep             |
 | data_cleaning_file          | 4, 5              | params_cleaning          |
 | excludefirst.part4          | 4                 | params_cleaning          |

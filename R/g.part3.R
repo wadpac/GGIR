@@ -75,6 +75,18 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
       load(paste(metadatadir, "/meta/basic/meta_", fnames[i], sep = ""))
       load(paste(metadatadir, "/meta/ms2.out/", fnames[i], sep = ""))
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
+        if (params_general[["sensor.location"]] == "hip") {
+          if (is.null(params_sleep[["longitudinal_axis"]])) {
+            # If user does not specify longitudinal axis explicitly then re-use
+            # estimated longitudinal axis from part 2
+            if (is.na(SUM$summary$if_hip_long_axis_id) == FALSE) {
+              params_sleep[["longitudinal_axis"]] = SUM$summary$if_hip_long_axis_id
+            } else {
+              # If not available default to 2
+              params_sleep[["longitudinal_axis"]] = 2
+            }
+          }
+        }
         SLE = g.sib.det(M, IMP, I, twd = c(-12,12),
                         acc.metric = params_general[["acc.metric"]],
                         desiredtz = params_general[["desiredtz"]],

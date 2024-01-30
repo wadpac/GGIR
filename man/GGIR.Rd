@@ -27,6 +27,8 @@ GGIR(mode = 1:5,
     Specify which of the five parts need to be run, e.g., mode = 1 makes
     that \link{g.part1} is run; or mode = 1:5 makes
     that the whole GGIR pipeline is run, from \link{g.part1} to \link{g.part5}.
+    Optionally mode can also include the number 6 to tell GGIR to run \link{g.part6}
+    which is currently under development.
   }
   \item{datadir}{
     Character (default = c()).
@@ -347,8 +349,11 @@ GGIR(mode = 1:5,
       \item{chunksize}{
         Numeric (default = 1).
         Value between 0.2 and 1 to specify the size of chunks to be
-        loaded as a fraction of a 12 hour period, e.g., 0.5 equals 6 hour chunks, 1 equals 12 hour chunks.
-        For machines with less than 4Gb of RAM memory a value below 1 is recommended.}
+        loaded as a fraction of an approximately 12 hour period for auto-calibration
+        procedure and as fraction of 24 hour period for the metric calculation, e.g., 
+        0.5 equals 6 and 12 hour chunks, respectively. 
+        For machines with less than 4Gb of RAM memory or with < 2GB memory per process
+        when using \code{do.parallel = TRUE} a value below 1 is recommended.}
 
       \item{dynrange}{
         Numeric (default = NULL).
@@ -863,8 +868,9 @@ GGIR(mode = 1:5,
 
       \item{includedaycrit.part5}{
         Numeric (default = 2/3).
-        Inclusion criteria for number of valid hours, either
-        as expressed as a ratio of 1 or as the number of hours in a 24 hour day.}
+        Inclusion criteria for number of valid hours during the waking hours of a day,
+        either as expressed as a ratio of 1 or as the number of hours,
+        which is converted by GGIR to a ratio. For example 16 become 16/24=2/3.}
 
       \item{segmentWEARcrit.part5}{
         Numeric (default = 0.5).
@@ -1137,7 +1143,8 @@ GGIR(mode = 1:5,
       \item{longitudinal_axis}{
         Integer (default = NULL).
         To indicate which axis is the longitudinal axis.
-        If not provided, the function will estimate longitudinal axis. Only used when
+        If not provided, the function will estimate longitudinal axis as the axis
+        with the highest 24 hour lagged autocorrelation. Only used when
         \code{sensor.location = "hip"} or \code{HASPT.algo = "HorAngle"}.}
 
       \item{anglethreshold}{
