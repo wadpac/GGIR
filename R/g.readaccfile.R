@@ -216,8 +216,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       # So we need to convert the Unix timestamp into a hh:mm:ss format, then force that timestamp
       # from  UTC into configtz timzone.
       if (configtz != "" || is.numeric(rawTime)) {
-        rawTime = as.POSIXlt(rawTime, tz="UTC")
-        rawTime = as.POSIXct(rawTime, tz=configtz)
+        rawTime = as.POSIXlt(rawTime, tz="UTC", origin = "1970-01-01")
+        rawTime = as.POSIXct(rawTime, tz=configtz, origin = "1970-01-01")
       }
 
       rawTime = as.numeric(rawTime)
@@ -266,11 +266,11 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       # (Converting to POSIXlt then back to POSIXct with the correct timezone
       #  seems to work fine as an equivalent of lubridate::force_tz().
       #  as.POSIXlt() used to be slow but seems reasonably fast these days).
-      P$data$time = as.POSIXlt(P$data$time)
-      P$data$time = as.POSIXct(P$data$time, tz=configtz)
+      P$data$time = as.POSIXlt(P$data$time, origin = "1970-01-01")
+      P$data$time = as.POSIXct(P$data$time, tz=configtz, origin = "1970-01-01")
 
       if (configtz != desiredtz) {
-        P$data$time = as.POSIXct(P$data$time, tz=desiredtz)
+        P$data$time = as.POSIXct(P$data$time, tz=desiredtz, origin = "1970-01-01")
       }
     }
   } else if (mon == MONITOR$AD_HOC && dformat == FORMAT$AD_HOC_CSV) { # user-specified csv format
