@@ -31,7 +31,7 @@
 #- SSP(sunspot.year, scale = 1.2)
 
 SSP = function(data, scale = 2^(1/8), box_size = 4, m = 1){
-  if (length(data) <= box_size && inherits(x = data, "data.frame")) {
+  if (inherits(x = data, "data.frame")) {
     data = data[, 1]
   }
   if (length(data) <= box_size || any(is.na(data))) {
