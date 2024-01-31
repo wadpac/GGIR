@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.0-6
+
+- Part 6: Add DFA functionality #839
+
 # CHANGES IN GGIR VERSION 3.0-5
 
 - Part 5: Fix bug in functionality for Sensewear data (externally derived epoch data) #1030
