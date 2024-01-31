@@ -140,7 +140,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       } else if (mon == MONITOR$AXIVITY) {
         # sample frequency is not stored
         tmp = read.csv(datafile, nrow = 100000, skip = 0)
-        tmp = as.numeric(as.POSIXlt(tmp[, 1]))
+        tmp = as.numeric(as.POSIXct(tmp[, 1], origin = "1970-01-01"))
         sf = length(tmp) / (tmp[length(tmp)] - tmp[1])
         sf = floor((sf) / 5 ) * 5 # round down to nearest integer of 5, we never want to assume that there is more frequency content in a signal than there truly is
       }
