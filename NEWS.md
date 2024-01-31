@@ -1,6 +1,6 @@
 # CHANGES IN GGIR VERSION 3.0-6
 
-- Part 6: Add DFA functionality #839
+- Part 6: Add DFA functionality #839 (credits: Ian Meneghel Danilevicz and Victor Barreto Mesquita)
 
 # CHANGES IN GGIR VERSION 3.0-5
 
