@@ -202,8 +202,9 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       s_names[fi] = "N_valid_days"
       fi = fi + 1
       
-      # Cosinor analysis
+
       if (do.cr == TRUE) {
+        # Cosinor analysis
         colnames(ts)[which(colnames(ts) == "timenum")] = "time"
         acc4cos = ts[, c("time", "ACC")]
         acc4cos$ACC  = acc4cos$ACC / 1000 # convert to mg because that is what applyCosinorAnalyses expects
@@ -211,9 +212,15 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                             qcheck = ts$invalidepoch,
                                             midnightsi = nightsi,
                                             epochsizes = rep(epochSize, 2))
+        # DFA
+        if (params_247[["part6DFA"]] == TRUE) { 
+          ssp = SSP(ts$ACC)
+          abi = ABI(ssp)
+        }
         rm(acc4cos)
       } else {
         cosinor_coef = NULL
+        ssp = abi = NULL
       }
       if (length(cosinor_coef) > 0) {
         summary[fi] = cosinor_coef$timeOffsetHours
@@ -263,6 +270,11 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                   "cosinorExt_ndays", "cosinorExt_F_pseudo", 
                                   "cosinorExt_R2", "cosinorIS", "cosinorIV")
         fi = fi + 20
+      }
+      if (params_247[["part6DFA"]] == TRUE) {
+        summary[fi:(fi + 1)] = c(ssp, abi)
+        s_names[fi:(fi + 1)] = c("SSP", "ABI")
+        fi = fi + 2
       }
       #=============================================
       # Store results in milestone data

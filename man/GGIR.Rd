@@ -1348,6 +1348,10 @@ GGIR(mode = 1:5,
         ignores the first and last 5 hours, and c("O2", "W10") goes from the second
         onset till the 10th wakeup time.
       }
+      \item{part6DFA}{
+        Boolean (default = FALSE) to indicate whether to perform Detrended Fluctuation
+        Analysis. Turned off by default because it can be very time consuming.
+      }
     }
   }
 
