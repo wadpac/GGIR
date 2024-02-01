@@ -166,7 +166,7 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   if (!file.exists(zip_file)) {
     # link to a tagged release of Unisens/unisensR github repo
     movisens_url = "https://github.com/Unisens/unisensR/archive/refs/tags/0.3.4.zip"
-    download.file(url = movisens_url, destfile = zip_file)
+    download.file(url = movisens_url, destfile = zip_file, quiet = TRUE)
   }
   
   movisens_dir = "unisensR-0.3.4"
