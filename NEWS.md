@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.0-5
+
+- Part 1: Fixed minor bug in g.calibrate when no non-movement periods are found #1032
+
 # CHANGES IN GGIR VERSION 3.0-4
 
 - Part 5: Improved handling of inconsistent number of columns in part 5 milestone data #1002
