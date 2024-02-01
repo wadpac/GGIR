@@ -332,10 +332,10 @@ g.calibrate = function(datafile, params_rawdata = c(),
       } else {
         meta_temp = meta_temp[nomovement,]
       }
-      dup = which(rowSums(meta_temp[1:(nrow(meta_temp) - 1), 2:7] == meta_temp[2:nrow(meta_temp), 2:7]) == 3) # remove duplicated values
-      if (length(dup) > 0) meta_temp = meta_temp[-dup,]
-      rm(nomovement, dup)
       if (min(dim(meta_temp)) > 1) {
+        dup = which(rowSums(meta_temp[1:(nrow(meta_temp) - 1), 2:7] == meta_temp[2:nrow(meta_temp), 2:7]) == 3) # remove duplicated values
+        if (length(dup) > 0) meta_temp = meta_temp[-dup,]
+        rm(nomovement, dup)
         meta_temp = meta_temp[(is.na(meta_temp[,4]) == F & is.na(meta_temp[,1]) == F),]
         npoints = nrow(meta_temp)
         cal.error.start = sqrt(as.numeric(meta_temp[,2])^2 + as.numeric(meta_temp[,3])^2 + as.numeric(meta_temp[,4])^2)
@@ -471,7 +471,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
       QC = "recalibration not done because recalibration does not decrease error"
     }
   }
-  if (all(dim(meta_temp)) != 0) {  # change 2022-08-18 to handle when filetooshort = TRUE (7 columns, empty rows)
+  if (all(dim(meta_temp)) != 0 & !is.null(meta_temp)) {  # change 2022-08-18 to handle when filetooshort = TRUE (7 columns, empty rows)
     spheredata = data.frame(A = meta_temp, stringsAsFactors = TRUE)
     if (use.temp == TRUE) {
       names(spheredata) = c("Euclidean Norm","meanx","meany","meanz","sdx","sdy","sdz","temperature")
