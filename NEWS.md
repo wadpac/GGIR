@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.0-5
+
+- Part 5: Fix bug in functionality for Sensewear data (externally derived epoch data) #1030
+
 # CHANGES IN GGIR VERSION 3.0-4
 
 - Part 5: Improved handling of inconsistent number of columns in part 5 milestone data #1002
