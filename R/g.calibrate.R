@@ -121,7 +121,10 @@ g.calibrate = function(datafile, params_rawdata = c(),
       }
       # remove 0s if ActiGraph csv (idle sleep mode) OR if similar imputation done in ad-hoc csv
       # current ActiGraph csv's are not with zeros but with last observation carried forward
-      zeros = which(data$x == 0 & data$y == 0 & data$z == 0)
+      zeros = c()
+      if (!(mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV)) {
+        zeros = which(data$x == 0 & data$y == 0 & data$z == 0)
+      }
       if ((mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) || length(zeros) > 0) {
         data = g.imputeTimegaps(x = data, sf = sf, impute = FALSE)
         data = data$x
