@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.0-5
+
+- Part 5: Fix issue with defining days specific to when timewindow is MM, recordings starts at midnight and both first and last days are incomplete #1029
+
 # CHANGES IN GGIR VERSION 3.0-4
 
 - Part 5: Improved handling of inconsistent number of columns in part 5 milestone data #1002

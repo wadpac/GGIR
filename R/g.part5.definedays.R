@@ -46,28 +46,26 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
         qqq_backup = qqq
       } else if (wi > length(nightsi)) {
         qqq[1] = qqq_backup[2] + 1
-        if (wi <= length(nightsi)) {
-          qqq[2] = nightsi[wi] - 1
-        } else {
-          if (wi - indjump <= length(nightsi)) {
-            tmp1 = which(nightsi_bu == nightsi[wi - indjump])
-            qqq[2] = nightsi_bu[tmp1 + indjump] - 1
-            indjump = indjump + 1 # in case there are multiple days beyond nightsi
-            if (is.na(qqq[2])) { # if that does not work use last midnight and add 24 hours
-              index_lastmidn = which(nightsi_bu == nightsi[wi - (indjump - 1)]) + (indjump - 1)
-              if (length(index_lastmidn) > 0) {
-                qqq[2] = nightsi_bu[index_lastmidn] + (24*(60/epochSize) * 60) - 1
-              } else {
-                qqq[2] = NA
-              }
-            }
-          } else {
-            qqq[2] = NA
-          }
+        if (wi - indjump <= length(nightsi)) {
+          tmp1 = which(nightsi_bu == nightsi[wi - indjump])
+          qqq[2] = nightsi_bu[tmp1 + indjump] - 1
+          indjump = indjump + 1 # in case there are multiple days beyond nightsi
           if (is.na(qqq[2])) { # if that does not work use last midnight and add 24 hours
-            qqq[2] = qqq_backup[2] + (24*(60/epochSize) * 60) - 1
+            index_lastmidn = which(nightsi_bu == nightsi[wi - (indjump - 1)]) + (indjump - 1)
+            if (length(index_lastmidn) > 0) {
+              qqq[2] = nightsi_bu[index_lastmidn] + (24*(60/epochSize) * 60) - 1
+            } else {
+              qqq[2] = NA
+            }
           }
-          if (qqq[1] == qqq[2])  qqq[2] = qqq[2] + (24*(60/epochSize) * 60) - 1
+        } else {
+          qqq[2] = NA
+        }
+        if (is.na(qqq[2])) { # if that does not work use last midnight and add 24 hours
+          qqq[2] = qqq_backup[2] + (24*(60/epochSize) * 60) - 1
+        }
+        if (qqq[1] == qqq[2]) {
+          qqq[2] = qqq[2] + (24*(60/epochSize) * 60) - 1
         }
         if (is.na(qqq[2]) == TRUE | Nts < qqq[2]) {
           qqq[2] = Nts
@@ -88,6 +86,7 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
     }
     # in MM, also define segments of the day based on qwindow
     if (!is.na(qqq[1]) & !is.na(qqq[2])) {
+      if (qqq[2] > Nts) qqq[2] = Nts
       fullQqq = qqq[1]:qqq[2]
       firstepoch = format(ts$time[qqq[1]],  "%H:%M:%S")
       lastepoch = format(ts$time[qqq[2]],  "%H:%M:%S")
