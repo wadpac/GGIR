@@ -119,11 +119,12 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     if (length(P$data) > 0) {
       if (ncol(P$data) < 3) {
         P$data = c()
+      } else {
+        if (ncol(P$data) > 3) {
+          P$data = P$data[, 2:4] # remove timestamp column, keep only XYZ columns
+        }
+        colnames(P$data) = c("x", "y", "z")
       }
-      if (ncol(P$data) > 3) {
-        P$data = P$data[, 2:4] # remove timestamp column, keep only XYZ columns
-      }
-      colnames(P$data) = c("x", "y", "z")
     }
   } else if (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) {
     if (utils::packageVersion("GGIRread") < "0.3.0") {
