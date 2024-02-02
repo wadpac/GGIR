@@ -5,16 +5,17 @@ articles:
   chapter0_GetStarted: chapter0_GetStarted.html
   chapter0_Installation: chapter0_Installation.html
   chapter0_Support: chapter0_Support.html
-  chapter10_HouseholdCoanalysis: chapter10_HouseholdCoanalysis.html
-  chapter1_Pipeline: chapter1_Pipeline.html
-  chapter2_QualityAssessment: chapter2_QualityAssessment.html
-  chapter3_AccMetrics: chapter3_AccMetrics.html
-  chapter4_StudyProtocol: chapter4_StudyProtocol.html
-  chapter5_DataImptutation: chapter5_DataImptutation.html
-  chapter6_SleepAnalysis: chapter6_SleepAnalysis.html
-  chapter7_24hTimeUseAnalysis: chapter7_24hTimeUseAnalysis.html
-  chapter8_PhysicalBehavioursAnalysis: chapter8_PhysicalBehavioursAnalysis.html
-  chapter9_CircadianRhythms: chapter9_CircadianRhythms.html
+  chapter10_CircadianRhythms: chapter10_CircadianRhythms.html
+  chapter11_HouseholdCoanalysis: chapter11_HouseholdCoanalysis.html
+  chapter1_WhatIsGGIR: chapter1_WhatIsGGIR.html
+  chapter2_Pipeline: chapter2_Pipeline.html
+  chapter3_QualityAssessment: chapter3_QualityAssessment.html
+  chapter4_AccMetrics: chapter4_AccMetrics.html
+  chapter5_StudyProtocol: chapter5_StudyProtocol.html
+  chapter6_DataImptutation: chapter6_DataImptutation.html
+  chapter7_SleepAnalysis: chapter7_SleepAnalysis.html
+  chapter8_24hTimeUseAnalysis: chapter8_24hTimeUseAnalysis.html
+  chapter9_PhysicalBehavioursAnalysis: chapter9_PhysicalBehavioursAnalysis.html
   chapterInProgress: chapterInProgress.html
   copy-of-GGIR: copy-of-GGIR.html
   CutPoints: CutPoints.html
@@ -24,5 +25,5 @@ articles:
   HouseHoldCoanalysis: HouseHoldCoanalysis.html
   readmyacccsv: readmyacccsv.html
   TutorialDaySegmentAnalyses: TutorialDaySegmentAnalyses.html
-last_built: 2024-01-24T07:48Z
+last_built: 2024-02-02T12:19Z
 

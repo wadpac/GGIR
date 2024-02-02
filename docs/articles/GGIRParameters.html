@@ -29,7 +29,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-4</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,16 +47,17 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-chapters">Chapters</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-chapters">
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">1. The GGIR pipeline</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">2. Inspecting the Data Quality</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">3. From Raw Data to Acceleration Metrics</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">4. Accounting for Study Protocol</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">5. How GGIR Deals with Invalid Data</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">6. Sleep Analysis</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">7. The 24-hour time use analysis</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">8. Physical Behaviours Analysis</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">9. Circadian Rhythms</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">10. Household Co-Analysis</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">1. What is GGIR</a>
+    <a class="dropdown-item" href="../articles/chapter2_Pipeline.html">2. The GGIR pipeline</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">3. Inspecting the Data Quality</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">4. From Raw Data to Acceleration Metrics</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">5. Accounting for Study Protocol</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">6. How GGIR Deals with Invalid Data</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">7. Sleep Analysis</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">8. The 24-hour time use analysis</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">9. Physical Behaviours Analysis</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">10. Circadian Rhythms</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">11. Household Co-Analysis</a>
   </div>
 </li>
 <li class="nav-item dropdown">
@@ -885,10 +886,10 @@ arguments.</p>
 <tr class="even">
 <td>relyonsleeplog</td>
 <td>4</td>
-<td>not in parameter objects</td>
+<td>deprecated</td>
 </tr>
 <tr class="odd">
-<td>relyonguider_SleepEfficiency</td>
+<td>sleepefficiency.metric</td>
 <td>4</td>
 <td>params_sleep</td>
 </tr>
@@ -1064,7 +1065,9 @@ manual</a>.</p>
 </h4>
 <p>Numeric (default = 1:5). Specify which of the five parts need to be
 run, e.g., mode = 1 makes that g.part1 is run; or mode = 1:5 makes that
-the whole GGIR pipeline is run, from g.part1 to g.part5.</p>
+the whole GGIR pipeline is run, from g.part1 to g.part5. Optionally mode
+can also include the number 6 to tell GGIR to run g.part6 which is
+currently under development.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="datadir">datadir<a class="anchor" aria-label="anchor" href="#datadir"></a>
@@ -1284,14 +1287,15 @@ biased output.</p>
 </h4>
 <p>Character (default = “raw”). To indicate what the format is of the
 data in datadir. Current alternatives: ukbiobank_csv, actiwatch_csv,
-actiwatch_awd, and actigraph_csv, which correspond to epoch level data
-files from, respecitively, UK Biobank in csv format, Actiwatch in csv
-format, Actiwatch in awd format, and ActiGraph csv format. Here, the
-assumed epoch size for UK Biobank csv data is 5 seconds. The epoch size
-for the other non-raw data formats is flexible, but make sure that you
-set first value of argument windowsizes needs to be set accordingly.
-Also when working with non-raw data formats specify argument
-extEpochData_timeformat as documented below.</p>
+actiwatch_awd, actigraph_csv, and sensewear_xls, which correspond to
+epoch level data files from, respecitively, UK Biobank in csv format,
+Actiwatch in csv format, Actiwatch in awd format, ActiGraph csv format,
+and Sensewear in xls format (also works with xlsx). Here, the assumed
+epoch size for UK Biobank csvdata is 5 seconds. The epoch size for the
+other non-raw data formats is flexible, but make sure that you set first
+value of argument windowsizes accordingly. Also when working with
+non-raw data formats specify argument extEpochData_timeformat as
+documented below.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="maxrecordinginterval">maxRecordingInterval<a class="anchor" aria-label="anchor" href="#maxrecordinginterval"></a>
@@ -1314,9 +1318,9 @@ filenames of the respective recording.</p>
 </h4>
 <p>Character (default = “%d-%m-%Y %H:%M:%S”). To specify the time format
 used in the external epoch level data when argument dataFormat is set to
-“actiwatch_csv”, “actiwatch_awd”, or “actigraph_csv”. For example
-“%Y-%m-%d %I:%M:%S %p” for “2023-07-11 01:24:01 PM” or “%m/%d/%Y
-%H:%M:%S” “2023-07-11 13:24:01”</p>
+“actiwatch_csv”, “actiwatch_awd”, “actigraph_csv” or “sensewear_xls”.
+For example “%Y-%m-%d %I:%M:%S %p” for “2023-07-11 01:24:01 PM” or
+“%m/%d/%Y %H:%M:%S” “2023-07-11 13:24:01”</p>
 </div>
 </div>
 <div class="section level3">
@@ -1326,9 +1330,12 @@ used in the external epoch level data when argument dataFormat is set to
 <h4 class="unnumbered" id="chunksize">chunksize<a class="anchor" aria-label="anchor" href="#chunksize"></a>
 </h4>
 <p>Numeric (default = 1). Value between 0.2 and 1 to specify the size of
-chunks to be loaded as a fraction of a 12 hour period, e.g., 0.5 equals
-6 hour chunks, 1 equals 12 hour chunks. For machines with less than 4Gb
-of RAM memory a value below 1 is recommended.</p>
+chunks to be loaded as a fraction of an approximately 12 hour period for
+auto-calibration procedure and as fraction of 24 hour period for the
+metric calculation, e.g., 0.5 equals 6 and 12 hour chunks, respectively.
+For machines with less than 4Gb of RAM memory or with &lt; 2GB memory
+per process when using do.parallel = TRUE a value below 1 is
+recommended.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="spherecrit">spherecrit<a class="anchor" aria-label="anchor" href="#spherecrit"></a>
@@ -1955,9 +1962,10 @@ when data_masking_strategy = 1.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="includedaycrit-part5">includedaycrit.part5<a class="anchor" aria-label="anchor" href="#includedaycrit-part5"></a>
 </h4>
-<p>Numeric (default = 2/3). Inclusion criteria for number of valid
-hours, either as expressed as a ratio of 1 or as the number of hours in
-a 24 hour day.</p>
+<p>Numeric (default = 2/3). Inclusion criteria for number of valid hours
+during the waking hours of a day, either as expressed as a ratio of 1 or
+as the number of hours, which is converted by GGIR to a ratio. For
+example 16 become 16/24=2/3.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="excludefirstlast-part5">excludefirstlast.part5<a class="anchor" aria-label="anchor" href="#excludefirstlast-part5"></a>
@@ -2151,7 +2159,9 @@ van Hees et al. 2018. Other options included: “HorAngle”, which is based
 on HDCZA but replaces non-movement detection of the HDCZA algorithm by
 looking for time segments where the angle of the longitudinal sensor
 axis has an angle relative to the horizontal plane between -45 and +45
-degrees.</p>
+degrees. And “NotWorn” which is also the same as HDCZA but looks for
+time segments when the 5 minute rolling average of counts is below 20
+per cent of its standard deviation.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="hasib-algo">HASIB.algo<a class="anchor" aria-label="anchor" href="#hasib-algo"></a>
@@ -2171,8 +2181,9 @@ Actigraphy such as Galland2012.</p>
 <h4 class="unnumbered" id="longitudinal_axis">longitudinal_axis<a class="anchor" aria-label="anchor" href="#longitudinal_axis"></a>
 </h4>
 <p>Integer (default = NULL). To indicate which axis is the longitudinal
-axis. If not provided, the function will estimate longitudinal axis.
-Only used when sensor.location = “hip” or HASPT.algo = “HorAngle”.</p>
+axis. If not provided, the function will estimate longitudinal axis as
+the axis with the highest 24 hour lagged autocorrelation. Only used when
+sensor.location = “hip” or HASPT.algo = “HorAngle”.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="haspt-ignore-invalid">HASPT.ignore.invalid<a class="anchor" aria-label="anchor" href="#haspt-ignore-invalid"></a>
@@ -2520,8 +2531,9 @@ minutes.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="winhr">winhr<a class="anchor" aria-label="anchor" href="#winhr"></a>
 </h4>
-<p>Numeric (default = 5). Vector of window size(s) (unit: hours) of L5
-and M5 analysis.</p>
+<p>Numeric (default = 5). Vector of window size(s) (unit: hours) of LX
+and MX analysis, where look for least and most active consecutive number
+of X hours.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="iglevels">iglevels<a class="anchor" aria-label="anchor" href="#iglevels"></a>

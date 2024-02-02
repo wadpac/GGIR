@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-4</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,16 +27,17 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-chapters">Chapters</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-chapters">
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">1. The GGIR pipeline</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">2. Inspecting the Data Quality</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">3. From Raw Data to Acceleration Metrics</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">4. Accounting for Study Protocol</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">5. How GGIR Deals with Invalid Data</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">6. Sleep Analysis</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">7. The 24-hour time use analysis</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">8. Physical Behaviours Analysis</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">9. Circadian Rhythms</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">10. Household Co-Analysis</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">1. What is GGIR</a>
+    <a class="dropdown-item" href="../articles/chapter2_Pipeline.html">2. The GGIR pipeline</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">3. Inspecting the Data Quality</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">4. From Raw Data to Acceleration Metrics</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">5. Accounting for Study Protocol</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">6. How GGIR Deals with Invalid Data</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">7. Sleep Analysis</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">8. The 24-hour time use analysis</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">9. Physical Behaviours Analysis</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">10. Circadian Rhythms</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">11. Household Co-Analysis</a>
   </div>
 </li>
 <li class="active nav-item dropdown">
@@ -82,6 +83,16 @@
       <small>Source: <a href="https://github.com/wadpac/GGIR/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.0-4" id="changes-in-ggir-version-30-4">CHANGES IN GGIR VERSION 3.0-4<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-30-4"></a></h2>
+<ul><li><p>Part 5: Improved handling of inconsistent number of columns in part 5 milestone data <a href="https://github.com/wadpac/GGIR/issues/1002" class="external-link">#1002</a></p></li>
+<li><p>Part 3: Revised NotWorn option for argument HASPT.algo as used for count data <a href="https://github.com/wadpac/GGIR/issues/1011" class="external-link">#1011</a></p></li>
+<li><p>Visualreport: Now able to handle recordings with no valid days in combination with argument visualreport_without_invalid = TRUE, fixes bug <a href="https://github.com/wadpac/GGIR/issues/1016" class="external-link">#1016</a></p></li>
+<li><p>Part 2 and 5: Timing of LX is now expressed on scale between 12 and 36 to allow for meaningful person level summary of this value, fixes <a href="https://github.com/wadpac/GGIR/issues/1012" class="external-link">#1012</a></p></li>
+<li><p>Facilitate handling of Sensewear xls file format with externally derived epoch data <a href="https://github.com/wadpac/GGIR/issues/974" class="external-link">#974</a></p></li>
+<li><p>Part 3: If argument sensor.location is set to hip then use longitudinal axis detected in part 2 instead of estimating it again with a different algorithm <a href="https://github.com/wadpac/GGIR/issues/1024" class="external-link">#1024</a></p></li>
+<li><p>Part 5: If argument sensor.location is set to hip then store and use longitudinal angle and possible other angles in part 5 time series instead of anglez <a href="https://github.com/wadpac/GGIR/issues/1024" class="external-link">#1024</a>.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.0-3" id="changes-in-ggir-version-30-3">CHANGES IN GGIR VERSION 3.0-3<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-30-3"></a></h2><p class="text-muted">CRAN release: 2024-01-11</p>
 <ul><li><p>Part 2: Fix bug where data_quality_report.csv contained incorrect filehealth[…] values whenever some of these values were supposed to be blank <a href="https://github.com/wadpac/GGIR/issues/1003" class="external-link">#1003</a></p></li>

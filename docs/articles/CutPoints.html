@@ -29,7 +29,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-4</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,16 +47,17 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-chapters">Chapters</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-chapters">
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">1. The GGIR pipeline</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">2. Inspecting the Data Quality</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">3. From Raw Data to Acceleration Metrics</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">4. Accounting for Study Protocol</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">5. How GGIR Deals with Invalid Data</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">6. Sleep Analysis</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">7. The 24-hour time use analysis</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">8. Physical Behaviours Analysis</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">9. Circadian Rhythms</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">10. Household Co-Analysis</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">1. What is GGIR</a>
+    <a class="dropdown-item" href="../articles/chapter2_Pipeline.html">2. The GGIR pipeline</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">3. Inspecting the Data Quality</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">4. From Raw Data to Acceleration Metrics</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">5. Accounting for Study Protocol</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">6. How GGIR Deals with Invalid Data</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">7. Sleep Analysis</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">8. The 24-hour time use analysis</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">9. Physical Behaviours Analysis</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">10. Circadian Rhythms</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">11. Household Co-Analysis</a>
   </div>
 </li>
 <li class="nav-item dropdown">
@@ -743,14 +744,73 @@ Moderate: 14<br>
 Vigorous: N/A</td>
 </tr>
 <tr class="even">
-<td align="left">Fraysse 2020<sup>†</sup>
+<td align="left">Bammann 2021</td>
+<td align="left">ActiGraph<br>
+Hip</td>
+<td align="left">62.9 (SD=3.6) yr</td>
+<td align="left">
+<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
 </td>
-<td colspan="4" align="left">GENEActiv  | ≥70 yr   |
-<code>do.enmoa = TRUE</code>  | Light: 42.5  | Non-dominant wrist |
-(mean: 77 yr) | <code>do.enmo = FALSE</code>  | Moderate: 98<br>
-| | <code>acc.metric = "ENMOa"</code> | Vigorous: N/A</td>
+<td align="left">Moderate: 94<br>
+Vigorous: 230</td>
 </tr>
 <tr class="odd">
+<td align="left">Bammann 2021</td>
+<td align="left">ActiGraph<br>
+Dominant Wrist</td>
+<td align="left">62.9 (SD=3.6) yr</td>
+<td align="left">
+<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
+</td>
+<td align="left">Moderate: 122<br>
+Vigorous: 234</td>
+</tr>
+<tr class="even">
+<td align="left">Bammann 2021</td>
+<td align="left">ActiGraph<br>
+Non-dominant Wrist</td>
+<td align="left">62.9 (SD=3.6) yr</td>
+<td align="left">
+<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
+</td>
+<td align="left">Moderate: 100<br>
+Vigorous: 245</td>
+</tr>
+<tr class="odd">
+<td align="left">Bammann 2021</td>
+<td align="left">ActiGraph<br>
+Dominant Ankle</td>
+<td align="left">62.9 (SD=3.6) yr</td>
+<td align="left">
+<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
+</td>
+<td align="left">Moderate: 342</td>
+</tr>
+<tr class="even">
+<td align="left">Bammann 2021</td>
+<td align="left">ActiGraph<br>
+Non-dominant Ankle</td>
+<td align="left">62.9 (SD=3.6) yr</td>
+<td align="left">
+<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
+</td>
+<td align="left">Moderate: 331</td>
+</tr>
+<tr class="odd">
+<td align="left">Fraysse 2020<sup>†</sup>
+</td>
+<td align="left">GENEActiv<br>
+Non-dominant wrist</td>
+<td align="left">≥70 yr<br>
+(mean: 77 yr)</td>
+<td align="left">
+<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
+</td>
+<td align="left">Light: 42.5<br>
+Moderate: 98<br>
+Vigorous: N/A</td>
+</tr>
+<tr class="even">
 <td align="left">Fraysse 2020<sup>†</sup>
 </td>
 <td align="left">GENEActiv<br>
@@ -764,7 +824,7 @@ Dominant wrist</td>
 Moderate: 92.5<br>
 Vigorous: N/A</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Dibben 2020<sup>‡</sup>
 </td>
 <td align="left">GENEActiv<br>
@@ -777,7 +837,7 @@ Right wrist</td>
 Moderate: 45.5<br>
 Vigorous: N/A</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Dibben 2020<sup>‡</sup>
 </td>
 <td align="left">GENEActiv<br>
@@ -790,7 +850,7 @@ Right wrist</td>
 Moderate: 26.2<br>
 Vigorous: N/A</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Dibben 2020<sup>‡</sup>
 </td>
 <td align="left">GENEActiv<br>
@@ -803,7 +863,7 @@ Left wrist</td>
 Moderate: 43.6<br>
 Vigorous: N/A</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Dibben 2020<sup>‡</sup>
 </td>
 <td align="left">GENEActiv<br>
@@ -816,7 +876,7 @@ Left wrist</td>
 Moderate: 22.8<br>
 Vigorous: N/A</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Dibben 2020<sup>‡</sup>
 </td>
 <td align="left">GENEActiv<br>
@@ -829,7 +889,7 @@ Hip</td>
 Moderate: 40.6<br>
 Vigorous: N/A</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Dibben 2020<sup>‡</sup>
 </td>
 <td align="left">GENEActiv<br>
@@ -884,31 +944,33 @@ a motivation why cut-points still have value in GGIR see: <a href="https://www.a
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <ul>
+<li>Aittasalo 2015: <a href="https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-015-0010-0" class="external-link uri">https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-015-0010-0</a>
+</li>
+<li>Bammann 2021: <a href="https://doi.org/10.1371/journal.pone.0252615" class="external-link uri">https://doi.org/10.1371/journal.pone.0252615</a>
+</li>
+<li>Dibben 2020: <a href="https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7" class="external-link uri">https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7</a>
+</li>
+<li>Dillon 2016: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4858250/" class="external-link uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4858250/</a>
+</li>
 <li>Esliger 2011: <a href="https://journals.lww.com/acsm-msse/Fulltext/2011/06000/Validation_of_the_GENEA_Accelerometer.22.aspx" class="external-link uri">https://journals.lww.com/acsm-msse/Fulltext/2011/06000/Validation_of_the_GENEA_Accelerometer.22.aspx</a>
 </li>
-<li>Phillips 2013: <a href="https://doi.org/10.1016/j.jsams.2012.05.013" class="external-link uri">https://doi.org/10.1016/j.jsams.2012.05.013</a>
-</li>
-<li>Schaefer 2014: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3960318/" class="external-link uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3960318/</a>
+<li>Fraysse 2020: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7843957/" class="external-link uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7843957/</a>
 </li>
 <li>Hildebrand 2014: <a href="https://journals.lww.com/acsm-msse/Fulltext/2014/09000/Age_Group_Comparability_of_Raw_Accelerometer.17.aspx" class="external-link uri">https://journals.lww.com/acsm-msse/Fulltext/2014/09000/Age_Group_Comparability_of_Raw_Accelerometer.17.aspx</a>
 </li>
 <li>Hildebrand 2016: <a href="https://doi.org/10.1111/sms.12795" class="external-link uri">https://doi.org/10.1111/sms.12795</a>
 </li>
-<li>Vähä-Ypyä 2015: <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0134813" class="external-link uri">https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0134813</a>
+<li>Migueles 2021: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8150960/" class="external-link uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8150960/</a>
 </li>
-<li>Aittasalo 2015: <a href="https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-015-0010-0" class="external-link uri">https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-015-0010-0</a>
-</li>
-<li>Roscoe 2017: <a href="https://link.springer.com/article/10.1007/s00431-017-2948-2" class="external-link uri">https://link.springer.com/article/10.1007/s00431-017-2948-2</a>
+<li>Phillips 2013: <a href="https://doi.org/10.1016/j.jsams.2012.05.013" class="external-link uri">https://doi.org/10.1016/j.jsams.2012.05.013</a>
 </li>
 <li>Sanders 2018: <a href="https://doi.org/10.1080/02640414.2018.1555904" class="external-link uri">https://doi.org/10.1080/02640414.2018.1555904</a>
 </li>
-<li>Migueles 2021: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8150960/" class="external-link uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8150960/</a>
+<li>Schaefer 2014: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3960318/" class="external-link uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3960318/</a>
 </li>
-<li>Fraysse 2020: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7843957/" class="external-link uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7843957/</a>
+<li>Roscoe 2017: <a href="https://link.springer.com/article/10.1007/s00431-017-2948-2" class="external-link uri">https://link.springer.com/article/10.1007/s00431-017-2948-2</a>
 </li>
-<li>Dibben 2020: <a href="https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7" class="external-link uri">https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7</a>
-</li>
-<li>Dillon 2016: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4858250/" class="external-link uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4858250/</a>
+<li>Vähä-Ypyä 2015: <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0134813" class="external-link uri">https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0134813</a>
 </li>
 </ul>
 </div>

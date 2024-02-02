@@ -6,12 +6,12 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="GGIR">
-<title>Contributing to the development of GGIR • GGIR</title>
+<title>5. How GGIR Deals with Invalid Data • GGIR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Contributing to the development of GGIR">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="5. How GGIR Deals with Invalid Data">
 <meta property="og:description" content="GGIR">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:creator" content="@RpackageGGIR">
@@ -29,7 +29,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-4</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,22 +44,20 @@
 <li class="nav-item">
   <a class="nav-link" href="../articles/chapter0_GetStarted.html">Get Started</a>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../CONTRIBUTING.html">Contributing</a>
-</li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">1. The GGIR pipeline</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">2. Inspecting the Data Quality in GGIR</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">3. From Raw Data to Acceleration Metrics</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">4. Accounting for Study Protocol</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">5. How GGIR Deals with Invalid Data</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">6. Characterizing Human Behaviour with GGIR</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">7. The 24-hour time use analysis</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">8. Cleaning the Data</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">9. Inspecting the results</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">10. Motivation and Clarification</a>
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-chapters">Chapters</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-chapters">
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">1. What is GGIR</a>
+    <a class="dropdown-item" href="../articles/chapter2_Pipeline.html">2. The GGIR pipeline</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">3. Inspecting the Data Quality</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">4. From Raw Data to Acceleration Metrics</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">5. Accounting for Study Protocol</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">6. How GGIR Deals with Invalid Data</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">7. Sleep Analysis</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">8. The 24-hour time use analysis</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">9. Physical Behaviours Analysis</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">10. Circadian Rhythms</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">11. Household Co-Analysis</a>
   </div>
 </li>
 <li class="nav-item dropdown">
@@ -109,32 +107,38 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="" class="logo" alt=""><h1>Contributing to the development of GGIR</h1>
+      <img src="" class="logo" alt=""><h1>5. How GGIR Deals with Invalid Data</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/wadpac/GGIR/blob/HEAD/vignettes/chapter0_Contributing.Rmd" class="external-link"><code>vignettes/chapter0_Contributing.Rmd</code></a></small>
-      <div class="d-none name"><code>chapter0_Contributing.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/wadpac/GGIR/blob/HEAD/vignettes/chapter6_DataImptutation.Rmd" class="external-link"><code>vignettes/chapter6_DataImptutation.Rmd</code></a></small>
+      <div class="d-none name"><code>chapter6_DataImptutation.Rmd</code></div>
     </div>
 
     
     
-<p>GGIR operates as open-source software, offering opportunities for
-contribution to its development. Delve into this article to gain a
-deeper understanding of how you can actively participate and contribute
-to the advancement of GGIR.</p>
+<p>Work in progress…</p>
 <div class="section level2">
-<h2 id="contributing-to-the-code">Contributing to the code<a class="anchor" aria-label="anchor" href="#contributing-to-the-code"></a>
-</h2>
-<p>The development version of GGIR can be found on <a href="https://github.com/wadpac/GGIR" class="external-link">github</a>, which is also where
-you will find <a href="https://github.com/wadpac/GGIR/blob/master/CONTRIBUTING.md" class="external-link">guidance</a>
-on how to contribute.</p>
-</div>
-<div class="section level2">
-<h2 id="contributing-to-the-ggir-documentation">Contributing to the GGIR documentation<a class="anchor" aria-label="anchor" href="#contributing-to-the-ggir-documentation"></a>
+<h2 id="what-is-considered-invalid-data">What is considered invalid data?<a class="anchor" aria-label="anchor" href="#what-is-considered-invalid-data"></a>
 </h2>
 </div>
 <div class="section level2">
-<h2 id="contributing-by-doing-research-on-ggir-algorithms">Contributing by doing research on GGIR algorithms<a class="anchor" aria-label="anchor" href="#contributing-by-doing-research-on-ggir-algorithms"></a>
+<h2 id="imputation-of-invalid-data-in-ggir">Imputation of invalid data in GGIR<a class="anchor" aria-label="anchor" href="#imputation-of-invalid-data-in-ggir"></a>
+</h2>
+<div class="section level3">
+<h3 id="same-time-on-different-days-of-the-recording">Same time on different days of the recording<a class="anchor" aria-label="anchor" href="#same-time-on-different-days-of-the-recording"></a>
+</h3>
+</div>
+<div class="section level3">
+<h3 id="by-zero-on-on-user-defined-time-windows-timesegments2zerofile">By zero on on user-defined time windows (TimeSegments2ZeroFile)<a class="anchor" aria-label="anchor" href="#by-zero-on-on-user-defined-time-windows-timesegments2zerofile"></a>
+</h3>
+</div>
+</div>
+<div class="section level2">
+<h2 id="key-arguments">Key arguments<a class="anchor" aria-label="anchor" href="#key-arguments"></a>
+</h2>
+</div>
+<div class="section level2">
+<h2 id="related-output">Related output<a class="anchor" aria-label="anchor" href="#related-output"></a>
 </h2>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

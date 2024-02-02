@@ -29,7 +29,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-4</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,16 +47,17 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-chapters">Chapters</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-chapters">
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">1. The GGIR pipeline</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">2. Inspecting the Data Quality</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">3. From Raw Data to Acceleration Metrics</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">4. Accounting for Study Protocol</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">5. How GGIR Deals with Invalid Data</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">6. Sleep Analysis</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">7. The 24-hour time use analysis</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">8. Physical Behaviours Analysis</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">9. Circadian Rhythms</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">10. Household Co-Analysis</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">1. What is GGIR</a>
+    <a class="dropdown-item" href="../articles/chapter2_Pipeline.html">2. The GGIR pipeline</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">3. Inspecting the Data Quality</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">4. From Raw Data to Acceleration Metrics</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">5. Accounting for Study Protocol</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">6. How GGIR Deals with Invalid Data</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">7. Sleep Analysis</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">8. The 24-hour time use analysis</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">9. Physical Behaviours Analysis</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">10. Circadian Rhythms</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">11. Household Co-Analysis</a>
   </div>
 </li>
 <li class="nav-item dropdown">
@@ -378,7 +379,7 @@ manual for that.</p>
 <ul>
 <li>
 <code>mode</code> - which part of GGIR to run, GGIR is constructed
-in five parts.</li>
+in five parts with a sixth part under development.</li>
 <li>
 <code>overwrite</code> - whether to overwrite previously produced
 milestone output. Between each GGIR part, GGIR stores milestone output
@@ -1031,7 +1032,10 @@ modifiable by argument <code>winhr</code>)</td>
 </tr>
 <tr class="even">
 <td>L5hr_A_mg_0-24</td>
-<td>Starting time in hours and fractions of hours of L5_A_mg_0-24</td>
+<td>Starting time in hours and fractions of hours of L5_A_mg_0-24, where
+hours below 12 are incremented with 24 to create a continuous scale
+throughout the night (e.g. 36 = 6am) in line with numeric timeing of
+sleep variables in GGIR part 4 output.</td>
 </tr>
 <tr class="odd">
 <td>M5hr_A_mg_0-24</td>
@@ -1741,8 +1745,8 @@ meaning may not be obvious:</p>
 calculated as the ratio between acc_SleepDurationInSpt and
 guider_SptDuration (denominator) or acc_SleepDurationInSpt and
 acc_SptDuration + latency (denominator), as defined with
-relyonguider_SleepEfficiency. Only available at person level, because at
-night level the user can calculate this from existing variables.</td>
+sleepefficiency.metric. Only available at person level, because at night
+level the user can calculate this from existing variables.</td>
 </tr>
 <tr class="even">
 <td>n_nights_acc</td>
@@ -2954,6 +2958,14 @@ data.</td>
 <td>timestamp</td>
 <td>Time stamp derived from converting the column timenum, only
 available if <code>save_ms5raw_format = TRUE</code>.</td>
+</tr>
+<tr class="even">
+<td>angle</td>
+<td>anglez by default. If <code>sensor.location = "hip"</code> or
+<code>HASPT.algo = "HorAngle"</code> then angle represents the angle for
+the longitudinal axis as provided by argument longitudinal_axis or
+estimated if no angle was provided. If more angles were extracted in
+part 1 then these will be add with their letter appended. }</td>
 </tr>
 </tbody>
 </table>
