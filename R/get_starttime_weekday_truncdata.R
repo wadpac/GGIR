@@ -25,10 +25,11 @@ get_starttime_weekday_truncdata = function(monc, dformat, data,
 
   # assess how much data to delete till next 15 minute period
   secshift = 60 - starttime$sec # shift in seconds needed
-  if (secshift != 60) {
+  if (secshift == 60) {
+    secshift = 0 # if starttime is 00:00 then we do not want to remove data
+  } else {
     starttime$min = starttime$min + 1 # shift in minutes needed (+1 one to account for seconds comp)
   }
-  if (secshift == 60) secshift = 0 # if starttime is 00:00 then we do not want to remove data
 
   minshift = start_meas - (starttime$min %% start_meas)
   if (minshift == start_meas) {
