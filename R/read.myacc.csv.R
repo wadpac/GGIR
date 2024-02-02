@@ -265,7 +265,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     }
   }
   if (!(rmc.unit.time %in% c("UNIXsec", "ActivPAL")) && (configtz != desiredtz)) {
-    P$time = as.POSIXct(as.numeric(P$time), tz = desiredtz, origin = "1970-01-01")
+    P$time = as.POSIXct(P$time, tz = desiredtz, origin = "1970-01-01")
   }
   
   # If acceleration is stored in mg units then convert to gravitational units
