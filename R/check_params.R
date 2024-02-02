@@ -78,7 +78,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     numeric_params = c("qlevels", "ilevels", "IVIS_windowsize_minutes", "IVIS_epochsize_seconds",
                        "IVIS.activity.metric", "IVIS_acc_threshold",
                        "qM5L5", "MX.ig.min.dur", "M5L5res", "winhr", "LUXthresholds", "LUX_cal_constant",
-                       "LUX_cal_exponent", "LUX_day_segments", "window.summary.size", "L5M5window")
+                       "LUX_cal_exponent", "LUX_day_segments", "L5M5window")
     boolean_params = c("cosinor", "part6CR", "part6HCA")
     character_params = c("qwindow_dateformat", "part6Window")
     check_class("247", params = params_247, parnames = numeric_params, parclass = "numeric")
@@ -171,7 +171,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   
   if (length(params_general) > 0 & length(params_metrics) > 0 & length(params_sleep) > 0) {
-    if (params_general[["sensor.location"]] == "hip" &  params_sleep[["HASPT.algo"]] != "notused") {
+    if (params_general[["sensor.location"]] == "hip" &&
+        params_sleep[["HASPT.algo"]] %in% c("notused", "NotWorn") == FALSE) {
       if (params_metrics[["do.anglex"]] == FALSE | params_metrics[["do.angley"]] == FALSE | params_metrics[["do.anglez"]] == FALSE) {
         warning(paste0("\nWhen working with hip data all three angle metrics are needed,",
                        "so GGIR now auto-sets arguments do.anglex, do.angley, and do.anglez to TRUE."), call. = FALSE)
@@ -328,6 +329,20 @@ check_params = function(params_sleep = c(), params_metrics = c(),
               " and expand_tail_max_hours will be set to NULL.", call. = FALSE)
     }
   }
+  
+  if (length(params_general) > 0 & length(params_sleep) > 0) {
+    if (params_sleep[["HASPT.algo"]] == "HorAngle") {
+      # Not everywhere in the code we check that when HASPT.algo is HorAngle, sensor.location is hip.
+      # However, the underlying assumption is that they are linked. Even if a study would
+      # use a waist or chest worn sensor we refer to it as hip as the orientation and need
+      # for detecting longitudinal axis are the same. 
+      # Therefore, sensor.location should be forced to hip if HASPT.algo is HorAngle.
+      # On the other hand hip does not mean that HorAngle needs to be used, because
+      # when using count data from the hip the user may prefer the HASPT.algo=NotWorn.
+      params_general[["sensor.location"]] = "hip"
+    }
+  }
+  
   if (length(params_metrics) > 0 & length(params_general) > 0) {
     if (params_general[["dataFormat"]] %in% c("actiwatch_awd", "actiwatch_csv")) {
       if (params_metrics[["do.zcy"]] == FALSE | params_general[["acc.metric"]] != "ZCY") {
@@ -403,6 +418,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         # Force acc.metric to be LFENMO
         params_general[["acc.metric"]] = "LFENMO"
       }
+    } else if (params_general[["dataFormat"]] == "sensewear_xls") {
+      params_general[["acc.metric"]] = "ExtAct"
     }
   }
   if (!is.null(params_general[["recordingEndSleepHour"]])) {
@@ -433,23 +450,18 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                      ", the default value has been assigned (i.e., 0.5) "), call. = FALSE)
     } else if (params_cleaning[["segmentWEARcrit.part5"]] < 0 | 
                params_cleaning[["segmentWEARcrit.part5"]] > 1) {
-      stop(paste0("Incorrect value of segmentWEARcrit.part5, this should be a",
-                  "fraction of the day between zero and one, please change."), 
+      stop(paste0("Incorrect value of segmentWEARcrit.part5, this should be a ",
+                  "fraction between zero and one, please change."), 
            call. = FALSE)
     }
     if (length(params_cleaning[["segmentDAYSPTcrit.part5"]]) != 2) {
       stop("\nArgument segmentDAYSPTcrit.part5 is expected to be a numeric vector of length 2", call. = FALSE)
     }
-    if (sum(params_cleaning[["segmentDAYSPTcrit.part5"]]) < 0.5 |
-        0 %in% params_cleaning[["segmentDAYSPTcrit.part5"]] == FALSE) {
-      
-      stop(paste0("\nIf you used argument segmentDAYSPTcrit.part5 then make sure",
-                  " it includes one zero",
-                  " and one value of at least 0.5, see documentation for",
-                  " argument segmentDAYSPTcrit.part5. If you do not use",
-                  " argument segmentDAYSPTcrit.part5",
-                  " then delete it from your config.csv file (in your output folder)",
-                  " or delete the config.csv file itself."), call. = FALSE)
+    if (any(params_cleaning[["segmentDAYSPTcrit.part5"]] < 0) | 
+        any(params_cleaning[["segmentDAYSPTcrit.part5"]] > 1)) {
+      stop(paste0("Incorrect values of segmentDAYSPTcrit.part5, these should be a ",
+                  "fractions between zero and one, please change."), 
+           call. = FALSE)
     }
   }
   

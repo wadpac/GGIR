@@ -1,8 +1,47 @@
+# CHANGES IN GGIR VERSION 3.0-4
+
+- Part 5: Improved handling of inconsistent number of columns in part 5 milestone data #1002
+
+- Part 3: Revised NotWorn option for argument HASPT.algo as used for count data #1011
+
+- Visualreport: Now able to handle recordings with no valid days in combination with argument visualreport_without_invalid = TRUE, fixes bug #1016
+
+- Part 2 and 5: Timing of LX is now expressed on scale between 12 and 36 to allow for meaningful person level summary of this value, fixes #1012
+
+- Facilitate handling of Sensewear xls file format with externally derived epoch data #974
+
+- Part 3: If argument sensor.location is set to hip then use longitudinal axis detected in part 2 instead of estimating it again with a different algorithm #1024
+
+- Part 5: If argument sensor.location is set to hip then store and use longitudinal angle and possible other angles in part 5 time series instead of anglez #1024.
+
+# CHANGES IN GGIR VERSION 3.0-3
+
+- Part 2: Fix bug where data_quality_report.csv contained incorrect filehealth[...] values whenever some of these values were supposed to be blank #1003
+
+- Part 1: Fix bug where on machines with GMT timezone and R >= 4.3.0, for GENEActiv .bin files, the starting timestamps of M\$metalong and M\$metashort were truncated to midninght #1000
+
+- Part 5: Fix bug where part5 output showed duplicate rows when argument dayborder is set to nondefault value #1006
+
 # CHANGES IN GGIR VERSION 3.0-2
 
 - Part 2: Fix bug that caused part 2 to struggle with corrupt ActiGraph .gt3x files #972
 
+- Part 2: Redefine horizontal axis of plots_to_check_data_quality #983
+
 - Documentation: Expanded documentation on desiredtz, configtz, and time stamp format in part 5 time series #966
+
+- Part 1: Now also able to handle some more variations in Actigraph csv count file format #978, and automatically aggregates to lower resolution if short epoch size is longer than observed epoch size in actigraph count csv.
+
+- Part 5: Reverting decision to prohibit segmentDAYSPTcrit.part5 to be c(0, 0). The default remains unchanged and documentation now only emphasizes the downside of using c(0, 0). #980
+
+- Argument documentation: Fixing series of typos (thanks to Pieter-Jan Marent for pointing them out)
+
+- Part 5: Fix bug in recently added functionality for studying overlap between sibs and self-reported behaviours #989.
+
+- Part 1:Enable use of temperature data in adhoc-csv format throughout GGIR #991
+
+- Part 1: Fix bug that caused a mismatch between IDs and filenames in part 1 when movisens participant folders did not contain the acc.bin file #994.
+
 
 # CHANGES IN GGIR VERSION 3.0-1
 

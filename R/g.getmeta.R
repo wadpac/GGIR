@@ -202,9 +202,9 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     QClog = NULL
     if (temp.available == FALSE) {
       metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 4) #generating output matrix for 15 minutes summaries
-    } else if (temp.available == TRUE && mon != MONITOR$MOVISENS) {
+    } else if (temp.available == TRUE && mon != MONITOR$MOVISENS && mon != MONITOR$AD_HOC) {
       metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 7) #generating output matrix for 15 minutes summaries
-    } else if (temp.available == TRUE && mon == MONITOR$MOVISENS) {
+    } else if (temp.available == TRUE && (mon == MONITOR$MOVISENS || mon == MONITOR$AD_HOC)) {
       metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 5) #generating output matrix for 15 minutes summaries
     }
     #===============================================
@@ -364,10 +364,10 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) ||
           (mon == MONITOR$AD_HOC && use.temp == FALSE)) {
         metricnames_long = c("timestamp","nonwearscore","clippingscore","en")
-      } else if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) ||
-                 (mon == MONITOR$AD_HOC & use.temp == TRUE)) {
+      } else if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA)) {
         metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","temperaturemean","EN")
-      } else if (mon == MONITOR$MOVISENS) {
+      } else if (mon == MONITOR$MOVISENS || (mon == MONITOR$AD_HOC & use.temp == TRUE)) { 
+        # at the moment read.myacc.csv does not facilitate extracting light data, so only temperature is used
         metricnames_long = c("timestamp","nonwearscore","clippingscore","temperaturemean","EN")
       }
       rm(SWMT)
@@ -424,7 +424,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           } else if (mon == MONITOR$MOVISENS) {
             temperaturecolumn = 4
           } else if (mon == MONITOR$AD_HOC) {
-            temperaturecolumn = params_rawdata[["rmc.col.temp"]]
+            temperaturecolumn = which(colnames(data) == "temperature")
           }
           if (mon != MONITOR$AD_HOC && mon != MONITOR$MOVISENS) {
             light = as.numeric(data[, lightcolumn])
@@ -435,7 +435,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           }
           temperature = as.numeric(data[, temperaturecolumn])
         }
-        
         # Initialization of variables
         data_scaled = FALSE
         if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$GT3X) {
@@ -485,12 +484,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
               data = apply(data, 2,as.numeric)
             }
           }
-          if (ncol(data) >= 4 & mon == MONITOR$AD_HOC) {
-            columns_to_use = params_rawdata[["rmc.col.acc"]]
-          } else {
-            columns_to_use = 1:3
-          }
-          data = data[,columns_to_use]
           suppressWarnings(storage.mode(data) <- "numeric")
           if ((mon == MONITOR$ACTIGRAPH || mon == MONITOR$AD_HOC || mon == MONITOR$VERISENSE) && use.temp == FALSE) {
             data = scale(data,center = -offset, scale = 1/scale)  #rescale data
@@ -610,7 +603,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         metalong[count2:((count2 - 1) + length(NWav)),col_mli] = NWav; col_mli = col_mli + 1
         metalong[(count2):((count2 - 1) + length(NWav)),col_mli] = CWav; col_mli = col_mli + 1
         if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) || 
-            mon == MONITOR$MOVISENS) { # going from sample to ws2
+            mon == MONITOR$MOVISENS || (mon == MONITOR$AD_HOC && length(params_rawdata[["rmc.col.temp"]]) != 0)) { # going from sample to ws2
           if (mon == MONITOR$GENEACTIV || mon == MONITOR$AXIVITY) {
             #light (running mean)
             lightc = cumsum(c(0,light))
@@ -646,7 +639,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           col_mli = col_mli + 1
           metalong[(count2):((count2 - 1) + length(NWav)), col_mli] = round(temperatureb, digits = n_decimal_places)
           col_mli = col_mli + 1
-        } else if (mon == MONITOR$MOVISENS) {
+        } else if (mon == MONITOR$MOVISENS || (mon == MONITOR$AD_HOC && length(params_rawdata[["rmc.col.temp"]]) != 0)) {
           metalong[(count2):((count2 - 1) + length(NWav)), col_mli] = round(temperatureb, digits = n_decimal_places)
           col_mli = col_mli + 1
         }
@@ -731,7 +724,14 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   if (filecorrupt == FALSE & filetooshort == FALSE & filedoesnotholdday == FALSE) {
     cut = count:nrow(metashort)
     if (length(cut) > 1) {
-      metashort = as.matrix(metashort[-cut,])
+      tmp = metashort[-cut,]
+      # for a very small file, there could be just one row in metashort[-cut,], so it gets coerced to a vector.
+      # But what we actually need is a 1-row matrix. So we need to transpose it. 
+      if(is.vector(tmp)) { 
+        metashort = as.matrix(t(tmp))
+      } else {
+        metashort = as.matrix(tmp)
+      }
     }
     if (nrow(metashort) > 1) {
       starttime3 = round(as.numeric(starttime)) #numeric time but relative to the desiredtz
@@ -744,9 +744,16 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       time6 = strftime(time6, format = "%Y-%m-%dT%H:%M:%S%z")
       metashort[,1] = as.character(time6)
     }
-    cut2 = (count2):nrow(metalong) # how it was
+    cut2 = count2:nrow(metalong)
     if (length(cut2) > 1) {
-      metalong = as.matrix(metalong[-cut2,])
+      tmp = metalong[-cut2,]
+      # for a very small file, there could be just one row in metalong[-cut2,], so it gets coerced to a vector.
+      # But what we actually need is a 1-row matrix. So we need to transpose it. 
+      if(is.vector(tmp)) { 
+        metalong = as.matrix(t(tmp))
+      } else {
+        metalong = as.matrix(tmp)
+      }
     }
     if (nrow(metalong) > 2) {
       starttime4 = round(as.numeric(starttime)) #numeric time but relative to the desiredtz

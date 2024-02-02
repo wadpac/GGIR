@@ -271,11 +271,6 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     } else {
       # Skip g.part1, but instead convert epoch data to a format that
       # looks as if it came out of g.part1
-      warning(paste0("\nBe aware that you are using epoch level aggregates of raw data ",
-                     "computed outside GGIR by which their reproducibility and ",
-                     "transparancy is also outside the scope of GGIR. GGIR",
-                     " input arguments related to raw data handling are ignored."),
-              call. = FALSE)
       convertEpochData(datadir = datadir,
                        metadatadir = metadatadir,
                        params_general = params_general,

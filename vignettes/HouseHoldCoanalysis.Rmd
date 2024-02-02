@@ -1,16 +1,16 @@
 ---
 title: "Household Co-Analysis"
 output:
-  html_document:
+   html_document:
     toc: true
     number_sections: true
     toc_depth: 3
     toc_float: true
 urlcolor: blue
 vignette: >
-    %\VignetteIndexEntry{Household Co-Analysis}
-    \usepackage[utf8]{inputenc}
-    %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Household Co-Analysis}
+  \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 
@@ -168,7 +168,7 @@ you will find csv files with the time series per household.
 
 The data dictionary below shows the column names you would get for a household with
 two members: X and Y. Most of the columns are copied from the time series output files, which
-are documented [here](https://cran.r-project.org/web/packages/GGIR/vignettes/GGIR.html#571_Time_series_output_files).
+are documented [here](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#571_Time_series_output_files).
 Therefore, those column are not documented here.
 
 Variable name | Description

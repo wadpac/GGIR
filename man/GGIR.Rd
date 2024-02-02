@@ -27,6 +27,8 @@ GGIR(mode = 1:5,
     Specify which of the five parts need to be run, e.g., mode = 1 makes
     that \link{g.part1} is run; or mode = 1:5 makes
     that the whole GGIR pipeline is run, from \link{g.part1} to \link{g.part5}.
+    Optionally mode can also include the number 6 to tell GGIR to run \link{g.part6}
+    which is currently under development.
   }
   \item{datadir}{
     Character (default = c()).
@@ -150,11 +152,19 @@ GGIR(mode = 1:5,
 
       \item{part5_agg2_60seconds}{
         Boolean (default = FALSE).
-        Wether to use aggregate epochs to 60 seconds as part of the GGIR \link{g.part5} analysis.}
+        Whether to use aggregate epochs to 60 seconds as part of the GGIR 
+        \link{g.part5} analysis. Aggregation is doen by averaging. 
+        Note that when working with count metrics such as Neishabouri counts this
+        means that the threshold can stay the same as in part 2, because again the
+        threshold is expressed relative to the original epoch size, even if averaged
+        per minute. For example if we want to use a cut-point 100 count per minute
+        then we specify \code{mvpathreshold = 100 * (5/60)} as well as
+        `threshold.mod = \code{100 * (5/60)} regardless of whether we set 
+        part5_agg2_60seconds to TRUE or FALSE.}
 
       \item{print.filename}{
         Boolean (default = FALSE).
-        Whether to print the filename before before analysing it (in case do.parallel = FALSE).
+        Whether to print the filename before analysing it (in case do.parallel = FALSE).
         Printing the filename can be useful to investigate
         problems (e.g., to verify that which file is being read).}
 
@@ -171,7 +181,7 @@ GGIR(mode = 1:5,
       \item{configtz}{
         Character (default = "", i.e., system timezone).
         At the moment only functional for GENEActiv .bin, AX3 cwa, ActiGraph .gt3x,
-        and ad-hoc csv file format at the moment.
+        and ad-hoc csv file format.
         Timezone in which the accelerometer was configured. Only use this argument
         if the timezone of configuration and timezone in which recording took
         place are different. Use the "TZ identifier" as specified at
@@ -207,7 +217,7 @@ GGIR(mode = 1:5,
 
       \item{expand_tail_max_hours}{
         Numeric (default = NULL).
-        This parameter has been replaced for \code{recordingEndSleepHour}.}
+        This parameter has been replaced by \code{recordingEndSleepHour}.}
         
       \item{recordingEndSleepHour}{
         Numeric (default = NULL).
@@ -215,32 +225,37 @@ GGIR(mode = 1:5,
         \link{g.part1} output with synthetic data to trigger sleep detection for last night.
         Using argument \code{recordingEndSleepHour} implies the assumption that the
         participant fell asleep at or before the end of the recording if the recording
-        ended at or after \code{recordingEndSleepHour} hour of the last day. This assumption may not
-        always hold true and should be used with caution.
+        ended at or after \code{recordingEndSleepHour} hour of the last day.
+        This assumption may not always hold true and should be used with caution.
         The synthetic data for metashort entails: timestamps continuing
         regularly, zeros for acceleration metrics other than EN, one for EN.
         Angle columns are created in a way that it triggers the sleep detection using
         the equation: \code{round(sin((1:length_expansion) / (900/epochsize))) * 15}.
-        To keep track of the tail expansion \link{g.part1} stores the lenght of the expansion in
+        To keep track of the tail expansion \link{g.part1} stores the length of the expansion in
         the RData files, which is then passed via \link{g.part2}, \link{g.part3},
         and \link{g.part4} to \link{g.part5}. In \link{g.part5} the tail expansion
         size is included as an additional variable in the csv-reports.
-        In the \link{g.part4} csv-report the last nigth is omitted, because we know
+        In the \link{g.part4} csv-report the last night is omitted, because we know
         that sleep estimates from the last night will not be trustworthy. Similarly,
         in the \link{g.part5} output columns related to the sleep assessment will
-        be omitted for the last window to avoid biassing the averages Further,
+        be omitted for the last window to avoid biasing the averages. Further,
         the synthetic data are also ignored in the visualizations and time series
         output to avoid biased output.}
 
       \item{dataFormat}{
         Character (default = "raw").
-        to indicate what the format is of the data in datadir.
-        Current alternatives: ukbiobank_csv, actiwatch_csv, and actiwatch_awd, which correspond
-        to the 5, 15 and 60 second epoch level data files provided by UK Biobank
-        in csv format, Actiwatch in csv format, and Actiwatch in awd format.
-        For the Actiwatch data functionality has been tested with example data from
-        only one research group. Please let us know if you have difficulties using this
-        functionality in your data.}
+        To indicate what the format is of the data in datadir.
+        Current alternatives: ukbiobank_csv, actiwatch_csv, actiwatch_awd, 
+        actigraph_csv, and sensewear_xls, which correspond to epoch level data 
+        files from, respecitively,  UK Biobank in csv format, Actiwatch in csv 
+        format, Actiwatch in awd format, ActiGraph csv format, and Sensewear in
+        xls format (also works with xlsx). Here, the assumed epoch size for
+        UK Biobank csvdata is 5 seconds. 
+        The epoch size for the other non-raw data formats is 
+        flexible, but make sure that you set first value of argument 
+        \code{windowsizes} accordingly. Also when working with 
+        non-raw data formats specify argument \code{extEpochData_timeformat} as
+        documented below.}
         
        \item{maxRecordingInterval}{
         Numeric (default = NULL).
@@ -249,8 +264,8 @@ GGIR(mode = 1:5,
         ID can be matched, make sure argument \code{idloc} is set correctly.
         If argument \code{maxRecordingInterval} is set to NULL (default) recordings
         are not appended. If recordings overlap then GGIR will use the data from
-        the latest recording. If recordings are seperated then the timegap between
-        the recordings is filled with data points that resembale monitor not worn.
+        the latest recording. If recordings are separated then the timegap between
+        the recordings is filled with data points that resemble monitor not worn.
         The maximum value of maxFile gap is 504 (21 days). Only recordings from the
         same accelerometer brand are appended. The part 2 csv report
         will show number of appended recordings, sampling rate for each, time overlap or gap 
@@ -259,8 +274,8 @@ GGIR(mode = 1:5,
       \item{extEpochData_timeformat}{
         Character (default = "\%d-\%m-\%Y \%H:\%M:\%S").
         To specify the time format used in the external epoch level data when
-        argument \code{dataFormat} is set to "actiwatch_csv", "actiwatch_awd", or 
-        "actigraph_csv". For example "\%Y-\%m-\%d \%I:\%M:\%S \%p" for 
+        argument \code{dataFormat} is set to "actiwatch_csv", "actiwatch_awd", 
+        "actigraph_csv" or "sensewear_xls". For example "\%Y-\%m-\%d \%I:\%M:\%S \%p" for 
         "2023-07-11 01:24:01 PM" or "\%m/\%d/\%Y \%H:\%M:\%S" "2023-07-11 13:24:01"
         }
       }
@@ -333,9 +348,12 @@ GGIR(mode = 1:5,
 
       \item{chunksize}{
         Numeric (default = 1).
-        Value between 0.2 and 1 to specificy the size of chunks to be
-        loaded as a fraction of a 12 hour period, e.g., 0.5 equals 6 hour chunks, 1 equals 12 hour chunks.
-        For machines with less than 4Gb of RAM memory a value below 1 is recommended.}
+        Value between 0.2 and 1 to specify the size of chunks to be
+        loaded as a fraction of an approximately 12 hour period for auto-calibration
+        procedure and as fraction of 24 hour period for the metric calculation, e.g., 
+        0.5 equals 6 and 12 hour chunks, respectively. 
+        For machines with less than 4Gb of RAM memory or with < 2GB memory per process
+        when using \code{do.parallel = TRUE} a value below 1 is recommended.}
 
       \item{dynrange}{
         Numeric (default = NULL).
@@ -387,7 +405,7 @@ GGIR(mode = 1:5,
       \item{rmc.col.temp}{
         Numeric (default = NULL).
         Scalar with column (number) in which the temperature is stored.
-        Leave in default setting if no temperature is avaible. The temperature
+        Leave in default setting if no temperature is available. The temperature
         will be used by \link{g.calibrate}.}
 
       \item{rmc.col.time}{
@@ -666,10 +684,10 @@ GGIR(mode = 1:5,
 
       \item{do.brondcounts}{
         Boolean (default = FALSE).
-        THIS OPTION HAS BEEN DEPRECATED (October2022) DUE TO ISSUES WITH THE ACTIVITYCOUNTS PACKAGE,
-        WE WILL ADD THIS BACK IN ONCE THE ISSUES WITH THE ACTIVITYCOUNTS PACKAGE ARE ADDRESSED.
-        If TRUE, calculates the metric via R package activityCounts.
-        We call them BrondCounts because there are large number of acitivty counts in
+        this option has been deprecated (October 2022) due to issues with the 
+        activityCounts package that we used as a dependency.
+        If TRUE, calculated the metric via R package activityCounts.
+        We called them BrondCounts because there are large number of activity counts in
         the physical activity and sleep research field. By calling them _brondcounts_
         we clarify that these are the counts proposed by Jan Br&#248;nd and implemented
         in R by Ruben Brondeel. The _brondcounts_ are intended to be an imitation of
@@ -703,11 +721,11 @@ GGIR(mode = 1:5,
 
       \item{zc.lb}{
         Numeric (default = 0.25).
-        Used for zero-crossing counts only. Lower boundery of cut-off frequency filter.}
+        Used for zero-crossing counts only. Lower boundary of cut-off frequency filter.}
 
       \item{zc.hb}{
         Numeric (default = 3).
-        Used for zero-crossing counts only. Higher boundery of cut-off frequencies in filter.}
+        Used for zero-crossing counts only. Higher boundary of cut-off frequencies in filter.}
 
       \item{zc.sb}{
         Numeric (default = 0.01).
@@ -760,8 +778,8 @@ GGIR(mode = 1:5,
 
       \item{excludefirstlast.part5}{
         Boolean (default = FALSE).
-        If TRUE then the first and last window (waking-waking or
-        midnight-midnight) are ignored in \link{g.part5}.}
+        If TRUE then the first and last window (waking-waking,
+        midnight-midnight, or sleep onset-onset) are ignored in \link{g.part5}.}
 
       \item{excludefirstlast}{
         Boolean (default = FALSE).
@@ -785,7 +803,7 @@ GGIR(mode = 1:5,
 
       \item{minimum_MM_length.part5}{
         Numeric (default = 23).
-        Minimum length in hours of a MM day to be included in the cleaned \link{g.part4} results.}
+        Minimum length in hours of a MM day to be included in the cleaned \link{g.part5} results.}
         
       \item{study_dates_file}{
         Character (default = c()).
@@ -819,12 +837,12 @@ GGIR(mode = 1:5,
         midnight and the last midnight is used.
         data_masking_strategy = 3 selects the most active X days in the file where X is
         specified by argument \code{ndayswindow}, where the days are a series 
-        of 24-h blocks starting any time in the day (X hours at the begining and end
+        of 24-h blocks starting any time in the day (X hours at the beginning and end
         of this period can be deleted with arguments \code{hrs.del.start} and \code{hrs.del.end})
         data_masking_strategy = 4 to only use the data after the first midnight.
         data_masking_strategy = 5 is similar to \code{data_masking_strategy = 3}, but it selects X complete
         calendar days where X is specified by argument \code{ndayswindow} 
-        (X hours at the begining and end of this period can be deleted with 
+        (X hours at the beginning and end of this period can be deleted with 
         arguments \code{hrs.del.start} and \code{hrs.del.end}).}
 
       \item{hrs.del.start}{
@@ -850,8 +868,9 @@ GGIR(mode = 1:5,
 
       \item{includedaycrit.part5}{
         Numeric (default = 2/3).
-        Inclusion criteria for number of valid hours, either
-        as expressed as a ratio of 1 or as the number of hours in a 24 hour day.}
+        Inclusion criteria for number of valid hours during the waking hours of a day,
+        either as expressed as a ratio of 1 or as the number of hours,
+        which is converted by GGIR to a ratio. For example 16 become 16/24=2/3.}
 
       \item{segmentWEARcrit.part5}{
         Numeric (default = 0.5).
@@ -862,22 +881,21 @@ GGIR(mode = 1:5,
         Numeric vector or length 2 (default = c(0.9, 0)).
         Inclusion criteria for the proportion of the segment that should be 
         classified as day (awake) and spt (sleep period time) to be considered 
-        valid. One of the two numbers should be 0, and the other defines the 
+        valid. If you are interested in comparing time spent in behaviour then it
+        is better to set one of the two numbers to 0, and the other defines the 
         proportion of the segment that should be classified as day or spt, respectively.
         The default setting would focus on waking hour
         segments and includes all segments that overlap for at least 90 percent 
         with waking hours. In order to shift focus to the SPT you could use
         c(0, 0.9) which ensures that all segments that overlap for at least
         90 percent with the SPT are included.
-        Setting both to zero would be problematic and is not allowed as that would introduce
-        bias in behavioural estimates for the following reason: A complete segment
+        Setting both to zero would be problematic when comparing time spent in
+        behaviours between days or individuals: A complete segment
         would be averaged with an incomplete segments (someone going to bed or waking up
         in the middle of a segment) by which it is no longer clear whether the person
         is less active or sleeps more during that segment. Similarly it is not
         clear whether the person has more wakefulness during SPT for a segment or
-        woke up or went to bed during the segment. Therefore, a 
-        minimum value of 0.5 is required but any value closer to 1
-        would be better.
+        woke up or went to bed during the segment.
       }
       \item{includedaycrit}{
         Numeric (default = 16).
@@ -920,9 +938,11 @@ GGIR(mode = 1:5,
       \item{mvpathreshold}{
         Numeric (default = 100).
         Acceleration threshold for MVPA estimation in GGIR \link{g.part2}.
-        This can be a single number or an array of numbers, e.g., \code{mvpathreshold = c(100, 120)}.
-        In the later case the code will estimate MVPA seperately for each threshold.
-        If this variable is left blank, e.g., \code{mvpathreshold = c()}, then MVPA is not estimated.}
+        This can be a single number or an array of numbers,
+        e.g., \code{mvpathreshold = c(100, 120)}.
+        In the latter case the code will estimate MVPA separately for each threshold.
+        If this variable is left blank, e.g., \code{mvpathreshold = c()}, then
+        MVPA is not estimated.}
 
       \item{mvpadur}{
         Numeric (default = 10).
@@ -947,8 +967,8 @@ GGIR(mode = 1:5,
         In \link{g.part5}: Threshold for moderate physical activity
         to separate light from moderate. Value can be one number or an array of
         multiple numbers, e.g., \code{threshold.mod = c(100, 120)}.
-        If multiple numbers are entered then analysis will be repliced for each
-        ombination of threshold values. Threshold is applied to the first metric in the
+        If multiple numbers are entered then analysis will be repeated for each
+        combination of threshold values. Threshold is applied to the first metric in the
         milestone data, so if you have only specified \code{do.enmo = TRUE}
         then it will be applied to ENMO.}
 
@@ -957,7 +977,7 @@ GGIR(mode = 1:5,
         In \link{g.part5}: Threshold for vigorous physical activity
         to separate moderate from vigorous. Value can be one number or an array of
         multiple numbers, e.g., \code{threshold.vig =c(400,500)}. If multiple numbers are
-        entered then analysis will be repliced for each combination of threshold values.
+        entered then analysis will be repeated for each combination of threshold values.
         Threshold is applied to the first metric in the milestone data, so if you
         have only specified \code{do.enmo = TRUE} then it will be applied to ENMO.}
 
@@ -970,7 +990,7 @@ GGIR(mode = 1:5,
 
       \item{boutdur.in}{
         Numeric (default = c(10, 20, 30)).
-        Duration(s) of inactivty bouts in minutes to be extracted.
+        Duration(s) of inactivity bouts in minutes to be extracted.
         Inactivity bouts are detected in the segments of the data which
         were not labelled as sleep or MVPA bouts.
         It will start with the identification of the longest to the shortest duration.
@@ -985,7 +1005,7 @@ GGIR(mode = 1:5,
 
       \item{boutdur.lig}{
         Numeric (default = c(1, 5, 10)).
-        Duration(s) of light activty bouts in minutes
+        Duration(s) of light activity bouts in minutes
         to be extracted. Light activity bouts are detected in the segments of the data
         which were not labelled as sleep, MVPA, or inactivity bouts.
         It will start with the identification of the longest to the shortest duration.
@@ -1008,7 +1028,7 @@ GGIR(mode = 1:5,
 
       \item{frag.metrics}{
         Character (default = NULL).
-        Fragmentation metric to exract. Can be "mean", "TP", "Gini",
+        Fragmentation metric to extract. Can be "mean", "TP", "Gini",
         "power", or "CoV", "NFragPM", or all the above metrics with "all".
         See package vignette for description of fragmentation metrics.}
 
@@ -1091,7 +1111,9 @@ GGIR(mode = 1:5,
         "HorAngle", which is based on HDCZA but replaces non-movement detection of
         the HDCZA algorithm by looking for time segments where the angle of the
         longitudinal sensor axis has an angle relative to the horizontal plane
-        between -45 and +45 degrees.}
+        between -45 and +45 degrees. And "NotWorn" which is also the same as HDCZA
+        but looks for time segments when the 5 minute rolling average of counts is
+        below 20 per cent of its standard deviation.}
 
       \item{HASPT.ignore.invalid}{
         Boolean (default = FALSE).
@@ -1121,7 +1143,8 @@ GGIR(mode = 1:5,
       \item{longitudinal_axis}{
         Integer (default = NULL).
         To indicate which axis is the longitudinal axis.
-        If not provided, the function will estimate longitudinal axis. Only used when
+        If not provided, the function will estimate longitudinal axis as the axis
+        with the highest 24 hour lagged autocorrelation. Only used when
         \code{sensor.location = "hip"} or \code{HASPT.algo = "HorAngle"}.}
 
       \item{anglethreshold}{
@@ -1164,7 +1187,9 @@ GGIR(mode = 1:5,
         when argument \code{sleepwindowType = "TimeInBed"}}
         
       \item{possible_nap_edge_acc}{
-        Minimum acceleration before or after the SIB for the nap to be considered.
+        Numeric (default = Inf).
+        Maximum acceleration before or after the SIB for the nap to be considered.
+        By default this will allow all possible naps.
       }
     }
   }
@@ -1194,16 +1219,16 @@ GGIR(mode = 1:5,
         with start times for the activity types in that day format in hours:minutes:seconds. 
         The header of the column will be used as label for each activity type. 
         Insert a new date column before continuing with activity types for next day. 
-        Leave missing values empty. If an activitylog is used then individuals who 
-        do not appear in the activitylog will still be processed with value 
-        \code{qwindow = c(0, 24)}. Dates with no activiy log data can be skipped,
+        Leave missing values empty. If an activity log is used then individuals who 
+        do not appear in the activity log will still be processed with value 
+        \code{qwindow = c(0, 24)}. Dates with no activity log data can be skipped,
         no need to have a column with the date followed by a column with the next 
         date. If times in the activity diary are not multiple of the short window 
         size (epoch length), the next epoch is considered (e.g., with epoch of 5 
         seconds, 8:00:02 will be redefined as 8:00:05 in the activity log).
         When using the qwindow functionality in combination with GGIR part 5 then
         make sure to check that arguments \code{segmentWEARcrit.part5} and 
-        \code{segmentDAYSPTcrit.part5} are specfied to your research needs.
+        \code{segmentDAYSPTcrit.part5} are specified to your research needs.
         }
 
       \item{qwindow_dateformat}{
@@ -1216,7 +1241,8 @@ GGIR(mode = 1:5,
 
       \item{winhr}{
         Numeric (default = 5).
-        Vector of window size(s) (unit: hours) of L5 and M5 analysis.}
+        Vector of window size(s) (unit: hours) of LX and MX analysis,
+        where look for least and most active consecutive number of X hours.}
 
       \item{qlevels}{
         Numeric (default = NULL).
@@ -1233,11 +1259,6 @@ GGIR(mode = 1:5,
         \code{ilevels = c(0,100,200)}. There is no limit to the number of levels. 
         If left empty then the intensity levels will not be extracted. Distribution 
         will be derived from short epoch metric data.}
-
-      \item{window.summary.size}{
-        Numeric (default = 10).
-        Functionality designed for the London Centre
-        of Longidutinal studies. Size in minutes of the summary window}
 
       \item{iglevels}{
         Numeric (default = NULL).
@@ -1263,7 +1284,7 @@ GGIR(mode = 1:5,
         Metric used for activity calculation.
         Value = 1, uses continuous scaled acceleration.
         Value = 2, tries to collapse acceleration into a binary score of rest
-        versus active to try to similate the original approach.}
+        versus active to try to simulate the original approach.}
 
       \item{IVIS_acc_threshold}{
         Numeric (default = 20).
@@ -1279,7 +1300,7 @@ GGIR(mode = 1:5,
 
       \item{LUXthresholds}{
         Numeric (default = c(0, 100, 500, 1000, 3000, 5000, 10000)).
-        Vector with numeric sequece corresponding to
+        Vector with numeric sequence corresponding to
         the thresholds used to calculate time spent in LUX ranges.}
 
       \item{LUX_cal_constant}{
@@ -1379,7 +1400,7 @@ GGIR(mode = 1:5,
         inactivity bouts (SIB). If set to TRUE and when an advanced sleep diary is
         available in part 4 then part 5 will use this to generate summary statistics
         on the overlap between self-reported nonwear and napping with SIB. Here,
-        SIB cna be filter based on argument possible_nap_edge_acc and the first value
+        SIB can be filter based on argument possible_nap_edge_acc and the first value
         of possible_nap_dur}
 
       \item{do.visual}{
@@ -1416,7 +1437,7 @@ GGIR(mode = 1:5,
         into making sure that the csv-report are correct, while the visualreport has
         mostly been a side project. This is unfortunate and we hope to find funding
         in the future to design a new report specifically for the purpose of
-        QC-ing the anlayses done by GGIR.}
+        QC-ing the analyses done by GGIR.}
 
       \item{viewingwindow}{
         Numeric (default = 1).
@@ -1603,6 +1624,24 @@ GGIR(mode = 1:5,
            ignorenonwear = FALSE,
            HASPT.ignore.invalid = FALSE,
            save_ms5raw_without_invalid = FALSE)
+           
+           
+       # For externally derived Sensear data in .xls format:  
+        GGIR(datadir = "C:/yoursenseweardatafolder",
+            outputdir = "D:/youroutputfolder",
+            mode = 1:5,
+            windowsizes = c(60, 900, 3600),
+            threshold.in = 1.5,
+            threshold.mod = 3,
+            threshold.vig = 6,
+            dataFormat = "sensewear_xls",
+            extEpochData_timeformat = "\%d-\%b-\%Y \%H:\%M:\%S",
+            HASPT.algo = "NotWorn",
+            desiredtz = "America/New_York",
+            overwrite = TRUE,
+            do.report = c(2, 4, 5),
+            visualreport = FALSE)
+           
   }
 }
 \author{
