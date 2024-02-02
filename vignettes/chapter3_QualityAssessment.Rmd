@@ -1,0 +1,36 @@
+---
+title: "2. Inspecting the Data Quality"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{2. Inspecting the Data Quality}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Work in progress...
+
+## Autocalibration algorithm
+
+## Non-wear detection algorithms
+
+## Clipping score
+
+## Key arguments
+
+## Related output
+
+### Report: data_quality_report.csv
+
+### Visualization: plots_to_check_data_quality.pdf
+
+### Report: part2_day_summary.csv =\> recording_duration
+
+### Report: part4_day_summary.csv =\> fraction_night_valid
+
