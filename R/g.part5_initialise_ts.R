@@ -16,8 +16,10 @@ g.part5_initialise_ts = function(IMP, M, params_247, params_general, longitudina
     angleName = "angley"
   } else if (longitudinal_axis == 3 && "anglex" %in% names(IMP$metashort)) {
     angleName = "anglez"
+  } else {
+    angleName = NULL
   }
-  if (angleName %in% names(IMP$metashort)) {
+  if (!is.null(angleName) && angleName %in% names(IMP$metashort)) {
     ts = data.frame(time = IMP$metashort[,1], ACC = IMP$metashort[,params_general[["acc.metric"]]] * scale,
                     guider = rep("unknown", nrow(IMP$metashort)),
                     angle = as.numeric(as.matrix(IMP$metashort[,which(names(IMP$metashort) == angleName)])))

@@ -63,6 +63,10 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
       ma <- function(x, n = 300 / ws3){stats::filter(x, rep(1 / n, n), sides = 2, circular = TRUE)}
       x = ma(x)
       activityThreshold = sd(x, na.rm = TRUE) * 0.2
+      # For sensewear external data this will not work as it mostly has values of 1 and up.
+      if (activityThreshold < min(activity)) {
+        activityThreshold = quantile(x, probs = 0.1)  
+      }
       if (HASPT.ignore.invalid == TRUE) {
         invalid = adjustlength(x, invalid)
         zeroMovement = which(x <= activityThreshold & invalid == 0)
@@ -121,6 +125,5 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
     }
     tib.threshold = pp
   }
-  invisible(list(SPTE_start=SPTE_start,
-                 SPTE_end=SPTE_end, tib.threshold=tib.threshold))
+  invisible(list(SPTE_start = SPTE_start, SPTE_end = SPTE_end, tib.threshold = tib.threshold))
 }
