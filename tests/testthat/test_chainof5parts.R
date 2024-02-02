@@ -136,7 +136,7 @@ test_that("chainof5parts", {
   expect_equal(mean(IMP$metashort$ENMO), 0.029, tolerance = 3)
   expect_equal(as.numeric(SUM$summary$meas_dur_def_proto_day), 1, tolerance = 2)
   expect_equal(as.numeric(SUM$daysummary$`L16_ig_gradient_ENMO_mg_0-24hr`[1]), -1.12, tolerance = 2)
-  
+  expect_equal(as.numeric(SUM$daysummary$`L16hr_ENMO_mg_0-24hr`), c(33.5, 19.8333, 13), tolerance = 0.001)
   # part 2
   
   # part 2 with data_masking_strategy = 1
@@ -227,7 +227,7 @@ test_that("chainof5parts", {
   expect_true(file.exists(rn2[1]))
   TSFILE = read.csv(rn2[1])
   expect_that(nrow(TSFILE),equals(1150))
-  expect_equal(ncol(TSFILE), 11)
+  expect_equal(ncol(TSFILE), 12)
   expect_equal(length(unique(TSFILE$class_id)), 10)
   #GGIR
   suppressWarnings(GGIR(mode = c(2,3,4,5), datadir = fn, outputdir = getwd(),

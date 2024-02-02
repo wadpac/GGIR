@@ -1,16 +1,38 @@
-g.part5_initialise_ts = function(IMP, M, params_247, params_general) {
-  
+g.part5_initialise_ts = function(IMP, M, params_247, params_general, longitudinal_axis = c()) {
   # extract key variables from the mile-stone data: time, acceleration and elevation angle
   # note that this is imputed ACCELERATION because we use this for describing behaviour:
-  scale = ifelse(test = grepl("^Brond|^Neishabouri|^ZC", params_general[["acc.metric"]]), yes = 1, no = 1000)
-  # if (length(which(names(IMP$metashort) == "anglez")) == 0 & verbose == TRUE) {
-  #   cat("Warning: anglez not extracted. Please check that do.anglez == TRUE")
-  # }
+  scale = ifelse(test = grepl("^Brond|^Neishabouri|^ZC|^ExtAct", params_general[["acc.metric"]]), yes = 1, no = 1000)
+
+  # Use anglez by default or longitudinal axis if specified when sensor is worn on hip
   
-  if ("anglez" %in% names(IMP$metashort)) {
+  if (params_general[["sensor.location"]] != "hip") {
+    longitudinal_axis = NULL
+  }
+  if (is.null(longitudinal_axis) && "anglez" %in% names(IMP$metashort)) {
+    angleName = "anglez"
+  } else if (longitudinal_axis == 1 && "anglex" %in% names(IMP$metashort)) {
+    angleName = "anglex"
+  } else if (longitudinal_axis == 2 && "anglex" %in% names(IMP$metashort)) {
+    angleName = "angley"
+  } else if (longitudinal_axis == 3 && "anglex" %in% names(IMP$metashort)) {
+    angleName = "anglez"
+  }
+  if (angleName %in% names(IMP$metashort)) {
     ts = data.frame(time = IMP$metashort[,1], ACC = IMP$metashort[,params_general[["acc.metric"]]] * scale,
                     guider = rep("unknown", nrow(IMP$metashort)),
-                    angle = as.numeric(as.matrix(IMP$metashort[,which(names(IMP$metashort) == "anglez")])))
+                    angle = as.numeric(as.matrix(IMP$metashort[,which(names(IMP$metashort) == angleName)])))
+    # also store other angles if available:
+    for (otherAngle in c("anglex", "angley", "anglez")) {
+      if (otherAngle %in% names(IMP$metashort) == TRUE && angleName != otherAngle) {
+        if (otherAngle == "anglex") {
+          ts$anglex = as.numeric(as.matrix(IMP$metashort[, otherAngle]))
+        } else if (otherAngle == "angley") {
+          ts$angley = as.numeric(as.matrix(IMP$metashort[, otherAngle]))
+        } else if (otherAngle == "anglez") {
+          ts$anglez = as.numeric(as.matrix(IMP$metashort[, otherAngle]))
+        }
+      }
+    }
   } else {
     ts = data.frame(time = IMP$metashort[,1], ACC = IMP$metashort[,params_general[["acc.metric"]]] * scale,
                     guider = rep("unknown", nrow(IMP$metashort)))

@@ -171,7 +171,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   
   if (length(params_general) > 0 & length(params_metrics) > 0 & length(params_sleep) > 0) {
-    if (params_general[["sensor.location"]] == "hip" &  params_sleep[["HASPT.algo"]] != "notused") {
+    if (params_general[["sensor.location"]] == "hip" &&
+        params_sleep[["HASPT.algo"]] %in% c("notused", "NotWorn") == FALSE) {
       if (params_metrics[["do.anglex"]] == FALSE | params_metrics[["do.angley"]] == FALSE | params_metrics[["do.anglez"]] == FALSE) {
         warning(paste0("\nWhen working with hip data all three angle metrics are needed,",
                        "so GGIR now auto-sets arguments do.anglex, do.angley, and do.anglez to TRUE."), call. = FALSE)
@@ -328,6 +329,20 @@ check_params = function(params_sleep = c(), params_metrics = c(),
               " and expand_tail_max_hours will be set to NULL.", call. = FALSE)
     }
   }
+  
+  if (length(params_general) > 0 & length(params_sleep) > 0) {
+    if (params_sleep[["HASPT.algo"]] == "HorAngle") {
+      # Not everywhere in the code we check that when HASPT.algo is HorAngle, sensor.location is hip.
+      # However, the underlying assumption is that they are linked. Even if a study would
+      # use a waist or chest worn sensor we refer to it as hip as the orientation and need
+      # for detecting longitudinal axis are the same. 
+      # Therefore, sensor.location should be forced to hip if HASPT.algo is HorAngle.
+      # On the other hand hip does not mean that HorAngle needs to be used, because
+      # when using count data from the hip the user may prefer the HASPT.algo=NotWorn.
+      params_general[["sensor.location"]] = "hip"
+    }
+  }
+  
   if (length(params_metrics) > 0 & length(params_general) > 0) {
     if (params_general[["dataFormat"]] %in% c("actiwatch_awd", "actiwatch_csv")) {
       if (params_metrics[["do.zcy"]] == FALSE | params_general[["acc.metric"]] != "ZCY") {
@@ -403,6 +418,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         # Force acc.metric to be LFENMO
         params_general[["acc.metric"]] = "LFENMO"
       }
+    } else if (params_general[["dataFormat"]] == "sensewear_xls") {
+      params_general[["acc.metric"]] = "ExtAct"
     }
   }
   if (!is.null(params_general[["recordingEndSleepHour"]])) {

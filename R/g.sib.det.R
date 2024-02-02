@@ -109,7 +109,11 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
       }
     }
     if (acc.metric %in% colnames(IMP$metashort) == FALSE) {
-      warning("Argument acc.metric is set to ",acc.metric," but not found in GGIR part 1 output data")
+      if ("ExtAct" %in% colnames(IMP$metashort) == TRUE) {
+        acc.metric = "ExtAct"
+      } else {
+        warning("Argument acc.metric is set to ",acc.metric," but not found in GGIR part 1 output data")
+      }
     }
     ACC = as.numeric(as.matrix(IMP$metashort[,which(colnames(IMP$metashort) == acc.metric)]))
     night = rep(0, length(ACC))
@@ -146,8 +150,17 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
     # to emphasize that we know that this is not actually neurological sleep
     getSleepFromExternalFunction = FALSE
     if (length(myfun) != 0) {
-      if ("wake_sleep" %in% myfun$colnames & myfun$outputtype == "character") {
+      if ("wake_sleep" %in% myfun$colnames) {
+        if (myfun$outputtype[which(myfun$colnames == "wake_sleep")] == "character") {
+          getSleepFromExternalFunction = TRUE
+          sleepColName = "wake_sleep"
+          sleepColType = "character"
+        }
+      }
+      if ("ExtSleep" %in% myfun$colnames) {
         getSleepFromExternalFunction = TRUE
+        sleepColName = "ExtSleep"
+        sleepColType = "numeric"
       }
     }
     if (getSleepFromExternalFunction == FALSE) {
@@ -163,7 +176,11 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
       # So, the assumption is that the external function provides a 
       # character "Sleep" when it detects sleep
       sleep = matrix(0, nD, 1)
-      sleep[which(M$metashort$wake_sleep == "Sleep")] = 1 
+      if (sleepColType == "character") {
+        sleep[which(M$metashort[, sleepColName] == "Sleep")] = 1 
+      } else {
+        sleep[which(M$metashort[, sleepColName] == 1)] = 1 
+      }
     }
     #-------------------------------------------------------------------
     # detect midnights
@@ -242,20 +259,6 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         daysleep_offset = 0
         if (do.HASPT.hip == TRUE & params_sleep[["HASPT.algo"]] != "NotWorn") {
           params_sleep[["HASPT.algo"]] = "HorAngle"
-          if (length(params_sleep[["longitudinal_axis"]]) == 0) { #only estimate long axis if not provided by user
-            count_updown = matrix(0,3,2)
-            count_updown[1,] = sort(c(length(which(anglex[qqq1:qqq2] < 45)), length(which(anglex[qqq1:qqq2] > 45))))
-            count_updown[2,] = sort(c(length(which(angley[qqq1:qqq2] < 45)), length(which(angley[qqq1:qqq2] > 45))))
-            count_updown[3,] = sort(c(length(which(anglez[qqq1:qqq2] < 45)), length(which(anglez[qqq1:qqq2] > 45))))
-            ratio_updown = count_updown[,1] / count_updown[,2]
-            validval = which(abs(ratio_updown) != Inf & is.na(ratio_updown) == FALSE)
-            if (length(validval) > 0) {
-              ratio_updown[validval] = ratio_updown
-              params_sleep[["longitudinal_axis"]] = which.max(ratio_updown)
-            } else {
-              params_sleep[["longitudinal_axis"]] = 2 # y-axis as fall back option if detection does not work
-            }
-          }
           if (params_sleep[["longitudinal_axis"]] == 1) {
             tmpANGLE = anglex[qqq1:qqq2]
           } else if (params_sleep[["longitudinal_axis"]] == 2) {
@@ -284,7 +287,15 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
             if (newqqq2 > length(anglez)) newqqq2 = length(anglez)
             # only try to extract SPT again if it is possible to extract a window of more than 23 hour
             if (newqqq2 < length(anglez) & (newqqq2 - newqqq1) > (23*(3600/ws3)) ) {
-              spt_estimate_tmp = HASPT(anglez[newqqq1:newqqq2], ws3 = ws3,
+              if (do.HASPT.hip == TRUE & params_sleep[["HASPT.algo"]] != "NotWorn") {
+                tmpANGLE = anglez[newqqq1:newqqq2]
+                if (params_sleep[["longitudinal_axis"]] == 1) {
+                  tmpANGLE = anglex[newqqq1:newqqq2]
+                } else if (params_sleep[["longitudinal_axis"]] == 2) {
+                  tmpANGLE = angley[newqqq1:newqqq2]
+                }
+              }
+              spt_estimate_tmp = HASPT(angle = tmpANGLE, ws3 = ws3,
                                        constrain2range = params_sleep[["constrain2range"]],
                                        perc = perc, spt_threshold = spt_threshold, sptblocksize = sptblocksize,
                                        spt_max_gap = spt_max_gap,
@@ -304,7 +315,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
             } else {
               daysleep_offset  = 0
             }
-          } 
+          }
           if (qqq1 == 1) {  # only use startTimeRecord if the start of the block send into SPTE was after noon
             startTimeRecord = unlist(iso8601chartime2POSIX(IMP$metashort$timestamp[1], tz = desiredtz))
             startTimeRecord = sum(as.numeric(startTimeRecord[c("hour", "min", "sec")]) / c(1, 60, 3600))

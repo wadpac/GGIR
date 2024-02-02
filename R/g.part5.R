@@ -174,6 +174,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         M$metashort = correctOlderMilestoneData(M$metashort)
         M$metalong = correctOlderMilestoneData(M$metalong)
         # load output g.part3
+        longitudinal_axis = NULL # initialise var that is part of ms3.out
         load(paste0(metadatadir, "/meta/ms3.out/", fnames.ms3[i]))
         # remove expanded time so that it is not used for behavioral classification
         if (length(tail_expansion_log) != 0) {
@@ -188,7 +189,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         #====================================
         # Initialise time series data.frame (ts) which will hold the time series
         # which forms the center of all part 5 activity
-        ts = g.part5_initialise_ts(IMP, M, params_247, params_general)
+        # note longitudinal_axis comes from loaded part 3 milestone data and not from params_sleep
+        
+        ts = g.part5_initialise_ts(IMP, M, params_247, params_general,
+                                   longitudinal_axis = longitudinal_axis)
         Nts = nrow(ts)
         lightpeak_available = "lightpeak" %in% names(ts)
         
@@ -223,9 +227,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             S$sib.end.time[replaceLastWakeup] = ts$time[nrow(ts)]
           }
         }
-        
         for (sibDef in def) { # loop through sleep definitions (defined by angle and time threshold in g.part3)
-          
           ws3new = ws3 # reset wse3new, because if part5_agg2_60seconds is TRUE then this will have been change in the previous iteration of the loop
           if (params_general[["part5_agg2_60seconds"]] == TRUE) {
             ts = ts_backup
@@ -280,7 +282,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               ts$time_num = floor(as.numeric(ts$time) / 60) * 60
               
               # only include angle if angle is present
-              angleColName = ifelse("angle" %in% names(ts), yes = "angle", no = NULL)
+              angleColName = grep(pattern = "angle", x = names(ts), value = TRUE)
               if (lightpeak_available == TRUE) {
                 ts = aggregate(ts[, c("ACC","sibdetection", "diur", "nonwear", angleColName, "lightpeak", "lightpeak_imputationcode")],
                                by = list(ts$time_num), FUN = function(x) mean(x))
@@ -327,10 +329,12 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
               shortendFname = gsub(pattern = "[.]|RData|csv|cwa|bin", replacement = "", x = fnames.ms3[i], ignore.case = TRUE)
               sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_", shortendFname, "_",sibDef,".csv")
-              data.table::fwrite(x = sibreport, file = sibreport_fname, row.names = FALSE,
-                                 sep = params_output[["sep_reports"]])
+              if (length(sibreport) > 0) {
+                data.table::fwrite(x = sibreport, file = sibreport_fname, row.names = FALSE,
+                                   sep = params_output[["sep_reports"]])
+              }
               # nap/sib/nonwear overlap analysis
-              if (length(params_sleep[["nap_model"]]) > 0) {
+              if (length(params_sleep[["nap_model"]]) > 0 & length(sibreport) > 0) {
                 # nap detection
                 if (params_general[["acc.metric"]] != "ENMO" |
                     params_sleep[["HASIB.algo"]] != "vanHees2015") {
@@ -571,9 +575,13 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     } else {
                       lightpeak_col = NULL
                     }
+                    angle_col = grep(pattern = "angle", x = names(ts), value = TRUE)
+                    if (length(angle_col) == 0) {
+                      angle_col = NULL
+                    }
                     g.part5.savetimeseries(ts = ts[, c("time", "ACC", "diur", "nonwear",
                                                        "guider", "window", napNonwear_col,
-                                                       lightpeak_col)],
+                                                       lightpeak_col, angle_col)],
                                            LEVELS = LEVELS,
                                            desiredtz = params_general[["desiredtz"]],
                                            rawlevels_fname = rawlevels_fname,

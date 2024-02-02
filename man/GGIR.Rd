@@ -27,6 +27,8 @@ GGIR(mode = 1:5,
     Specify which of the five parts need to be run, e.g., mode = 1 makes
     that \link{g.part1} is run; or mode = 1:5 makes
     that the whole GGIR pipeline is run, from \link{g.part1} to \link{g.part5}.
+    Optionally mode can also include the number 6 to tell GGIR to run \link{g.part6}
+    which is currently under development.
   }
   \item{datadir}{
     Character (default = c()).
@@ -243,13 +245,15 @@ GGIR(mode = 1:5,
       \item{dataFormat}{
         Character (default = "raw").
         To indicate what the format is of the data in datadir.
-        Current alternatives: ukbiobank_csv, actiwatch_csv, actiwatch_awd, and 
-        actigraph_csv, which correspond to epoch level data files from, respecitively,
-        UK Biobank in csv format, Actiwatch in csv format, Actiwatch in awd format,
-        and ActiGraph csv format. Here, the assumed epoch size for UK Biobank csv 
-        data is 5 seconds. The epoch size for the other non-raw data formats is 
+        Current alternatives: ukbiobank_csv, actiwatch_csv, actiwatch_awd, 
+        actigraph_csv, and sensewear_xls, which correspond to epoch level data 
+        files from, respecitively,  UK Biobank in csv format, Actiwatch in csv 
+        format, Actiwatch in awd format, ActiGraph csv format, and Sensewear in
+        xls format (also works with xlsx). Here, the assumed epoch size for
+        UK Biobank csvdata is 5 seconds. 
+        The epoch size for the other non-raw data formats is 
         flexible, but make sure that you set first value of argument 
-        \code{windowsizes} needs to be set accordingly. Also when working with 
+        \code{windowsizes} accordingly. Also when working with 
         non-raw data formats specify argument \code{extEpochData_timeformat} as
         documented below.}
         
@@ -270,8 +274,8 @@ GGIR(mode = 1:5,
       \item{extEpochData_timeformat}{
         Character (default = "\%d-\%m-\%Y \%H:\%M:\%S").
         To specify the time format used in the external epoch level data when
-        argument \code{dataFormat} is set to "actiwatch_csv", "actiwatch_awd", or 
-        "actigraph_csv". For example "\%Y-\%m-\%d \%I:\%M:\%S \%p" for 
+        argument \code{dataFormat} is set to "actiwatch_csv", "actiwatch_awd", 
+        "actigraph_csv" or "sensewear_xls". For example "\%Y-\%m-\%d \%I:\%M:\%S \%p" for 
         "2023-07-11 01:24:01 PM" or "\%m/\%d/\%Y \%H:\%M:\%S" "2023-07-11 13:24:01"
         }
       }
@@ -345,8 +349,11 @@ GGIR(mode = 1:5,
       \item{chunksize}{
         Numeric (default = 1).
         Value between 0.2 and 1 to specify the size of chunks to be
-        loaded as a fraction of a 12 hour period, e.g., 0.5 equals 6 hour chunks, 1 equals 12 hour chunks.
-        For machines with less than 4Gb of RAM memory a value below 1 is recommended.}
+        loaded as a fraction of an approximately 12 hour period for auto-calibration
+        procedure and as fraction of 24 hour period for the metric calculation, e.g., 
+        0.5 equals 6 and 12 hour chunks, respectively. 
+        For machines with less than 4Gb of RAM memory or with < 2GB memory per process
+        when using \code{do.parallel = TRUE} a value below 1 is recommended.}
 
       \item{dynrange}{
         Numeric (default = NULL).
@@ -861,8 +868,9 @@ GGIR(mode = 1:5,
 
       \item{includedaycrit.part5}{
         Numeric (default = 2/3).
-        Inclusion criteria for number of valid hours, either
-        as expressed as a ratio of 1 or as the number of hours in a 24 hour day.}
+        Inclusion criteria for number of valid hours during the waking hours of a day,
+        either as expressed as a ratio of 1 or as the number of hours,
+        which is converted by GGIR to a ratio. For example 16 become 16/24=2/3.}
 
       \item{segmentWEARcrit.part5}{
         Numeric (default = 0.5).
@@ -1103,7 +1111,9 @@ GGIR(mode = 1:5,
         "HorAngle", which is based on HDCZA but replaces non-movement detection of
         the HDCZA algorithm by looking for time segments where the angle of the
         longitudinal sensor axis has an angle relative to the horizontal plane
-        between -45 and +45 degrees.}
+        between -45 and +45 degrees. And "NotWorn" which is also the same as HDCZA
+        but looks for time segments when the 5 minute rolling average of counts is
+        below 20 per cent of its standard deviation.}
 
       \item{HASPT.ignore.invalid}{
         Boolean (default = FALSE).
@@ -1133,7 +1143,8 @@ GGIR(mode = 1:5,
       \item{longitudinal_axis}{
         Integer (default = NULL).
         To indicate which axis is the longitudinal axis.
-        If not provided, the function will estimate longitudinal axis. Only used when
+        If not provided, the function will estimate longitudinal axis as the axis
+        with the highest 24 hour lagged autocorrelation. Only used when
         \code{sensor.location = "hip"} or \code{HASPT.algo = "HorAngle"}.}
 
       \item{anglethreshold}{
@@ -1230,7 +1241,8 @@ GGIR(mode = 1:5,
 
       \item{winhr}{
         Numeric (default = 5).
-        Vector of window size(s) (unit: hours) of L5 and M5 analysis.}
+        Vector of window size(s) (unit: hours) of LX and MX analysis,
+        where look for least and most active consecutive number of X hours.}
 
       \item{qlevels}{
         Numeric (default = NULL).
@@ -1612,6 +1624,24 @@ GGIR(mode = 1:5,
            ignorenonwear = FALSE,
            HASPT.ignore.invalid = FALSE,
            save_ms5raw_without_invalid = FALSE)
+           
+           
+       # For externally derived Sensear data in .xls format:  
+        GGIR(datadir = "C:/yoursenseweardatafolder",
+            outputdir = "D:/youroutputfolder",
+            mode = 1:5,
+            windowsizes = c(60, 900, 3600),
+            threshold.in = 1.5,
+            threshold.mod = 3,
+            threshold.vig = 6,
+            dataFormat = "sensewear_xls",
+            extEpochData_timeformat = "\%d-\%b-\%Y \%H:\%M:\%S",
+            HASPT.algo = "NotWorn",
+            desiredtz = "America/New_York",
+            overwrite = TRUE,
+            do.report = c(2, 4, 5),
+            visualreport = FALSE)
+           
   }
 }
 \author{

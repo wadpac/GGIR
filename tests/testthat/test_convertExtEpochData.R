@@ -113,4 +113,25 @@ test_that("External epoch data is correctly converted", {
   if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
   
   
+  
+  # Sensewear
+  move2folder(system.file("testfiles/sensewear.xls", package = "GGIR")[1], dn)
+  params_general[["windowsizes"]][1] = 60
+  params_general[["windowsizes"]][2] = 60
+  params_general[["windowsizes"]][3] = 120
+  params_general[["dataFormat"]] = "sensewear_xls"
+  params_general[["extEpochData_timeformat"]] = "%d-%b-%Y %H:%M:%S"
+  convertEpochData(datadir = dn, metadatadir = "./output_tmp_testdata",
+                   params_general = params_general)
+  if (dir.exists(dn))  unlink(dn, recursive = TRUE)
+  load(paste0(QCbasis, "/meta_sensewear.xls.RData"))
+  expect_equal(nrow(M$metashort), 60)
+  expect_equal(ncol(M$metashort), 4)
+  expect_true(all(c("timestamp", "ExtAct", "ExtStep",
+                    "ExtSleep") %in% colnames(M$metashort)))
+  
+  # Tidy up by deleting output folder
+  if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
+  
+  
 })
