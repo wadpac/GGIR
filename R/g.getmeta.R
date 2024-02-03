@@ -173,8 +173,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       }
     }
     
-    options(warn = -1) #turn off warnings (code complains about unequal rowlengths
-    
     accread = g.readaccfile(filename = datafile, blocksize = blocksize, blocknumber = i,
                             filequality = filequality,
                             ws = ws, PreviousEndPage = PreviousEndPage,
@@ -184,6 +182,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                             params_rawdata = params_rawdata, params_general = params_general, 
                             header = header)
     header = accread$header
+
     if ("PreviousLastValue" %in% names(accread$P)) { # output when reading ad-hoc csv
       PreviousLastValue = accread$P$PreviousLastValue
       PreviousLastTime = accread$P$PreviousLastTime
@@ -196,21 +195,24 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       use.temp = ("temperature" %in% colnames(P$data))
       if (use.temp) {
         if (mean(P$data$temperature[1:10], na.rm = TRUE) > 50) {
-          warning("temperature value is unreaslistically high (> 50 Celcius)", call. = FALSE)
+          warning("temperature value is unreaslistically high (> 50 Celcius) and will not be used.", call. = FALSE)
           use.temp = FALSE
         }
       }
 
       # output matrix for 15 minutes summaries
-      if (!use.temp) {
+      if (!use.temp && !light.available) {
         metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 4)
         metricnames_long = c("timestamp","nonwearscore","clippingscore","EN")
-      } else if (light.available) {
-        metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 7)
-        metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","temperaturemean","EN")
-      } else {
+      } else if (use.temp && !light.available) {
         metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 5)
         metricnames_long = c("timestamp","nonwearscore","clippingscore","temperaturemean","EN")
+      } else if (!use.temp && light.available) {
+        metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 6)
+        metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","EN")
+      } else if (use.temp && light.available) {
+        metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 7)
+        metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","temperaturemean","EN")
       }
     }
     
@@ -223,7 +225,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     PreviousEndPage = accread$endpage
     
     rm(accread); gc()
-    options(warn = 0) #turn on warnings
     #============
     #process data as read from binary file
     if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
