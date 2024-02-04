@@ -244,13 +244,19 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     P$data = unisensR::readUnisensSignalEntry(dirname(filename), "acc.bin",
                                               startIndex = startpage,
                                               endIndex = endpage)
-    colnames(P$data) = c("x", "y", "z")
-    # there may or may not be a temp.bin file containing temperature
-    try(expr = {P$data$temperature = g.readtemp_movisens(filename,
-                                                         from = startpage, to = endpage,
-                                                         acc_sf = sf, acc_length = nrow(P$data),
-                                                         interpolationType = params_rawdata[["interpolationType"]])
-    }, silent = TRUE)
+    if (length(P$data) > 0) {
+      if (ncol(P$data) < 3) {
+        P$data = c()
+      } else {
+        colnames(P$data) = c("x", "y", "z")
+        # there may or may not be a temp.bin file containing temperature
+        try(expr = {P$data$temperature = g.readtemp_movisens(filename,
+                                                             from = startpage, to = endpage,
+                                                             acc_sf = sf, acc_length = nrow(P$data),
+                                                             interpolationType = params_rawdata[["interpolationType"]])
+        }, silent = TRUE)
+      }
+    } 
   } else if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$GT3X) {
     P$data = try(expr = {read.gt3x::read.gt3x(path = filename, batch_begin = startpage,
                                               batch_end = endpage, asDataFrame = TRUE)}, silent = TRUE)
