@@ -4,14 +4,14 @@ test_that("qwindow implementation in part 2", {
   skip_on_cran()
   
   Ndays = 2
-  create_test_acc_csv(Nmin = Ndays*1440)
+  create_part1_meta(Ndays = Ndays)
   fn = "123A_testaccfile.csv"
   actlog = data.frame(id = c("123A", "124A"),
-                      date = c("23/06/2016", "23/06/2016"),
-                      work = c("7:45:30", "7:45:00"),
+                      date = c("14/11/2013", "14/11/2013"),
+                      work = c("12:00:30", "12:00:00"),
                       travelhome = c("17:00:00", "17:00:00"),
                       home = c("17:30:00", "18:00:00"),
-                      date = c("24/06/2016", "24/06/2016"),
+                      date = c("15/11/2013", "15/11/2013"),
                       work = c("7:45:15", "7:45:00"),
                       travelhome = c("17:00:00", "17:00:00"),
                       home = c("17:30:00", "18:00:00"),
@@ -24,7 +24,7 @@ test_that("qwindow implementation in part 2", {
   # tests
   
   # part 2
-  GGIR(mode = 1:2, datadir = fn, outputdir = getwd(), studyname = "test",
+  GGIR(mode = 2, datadir = fn, outputdir = getwd(), studyname = "test",
        idloc = 2,
        qwindow = actlog_fn, qwindow_dateformat = "%d/%m/%Y",
        do.report = 2, visualreport = FALSE, verbose = FALSE)

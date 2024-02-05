@@ -1,6 +1,6 @@
 create_part1_meta = function(desired_outputdir = "output_test",
                              Ndays = 2, windowsizes = c(5, 900, 3600),
-                             lux = FALSE) {
+                             lux = FALSE, start_time = NULL) {
   # function to create output folder structure and fill it with part 1
   # milestone data. These data come from the objects in the data folder,
   # and it is repeated to fill in the desired duration as defined with Ndays.
@@ -12,8 +12,13 @@ create_part1_meta = function(desired_outputdir = "output_test",
   }
   # utils::data(data.calibrate); utils::data(data.inspectfile); utils::data(data.getmeta)
   M = GGIR::data.getmeta; C = GGIR::data.calibrate; I = GGIR::data.inspectfile
+  I$filename = "123A_testaccfile.csv"
   # extend M$metashort
-  from = as.POSIXct(M$metashort$timestamp[1])
+  if (is.null(start_time)) {
+    from = as.POSIXct(M$metashort$timestamp[1])
+  } else {
+    from = as.POSIXct(paste0("2013-11-14T", start_time, "+0100"))
+  }
   timestamp = seq.POSIXt(from = from, to = (from + Ndays*24*60*60) - 1, by = windowsizes[1])
   anglez = rep(M$metashort$angle, length.out = length(timestamp))
   enmo = rep(M$metashort$ENMO, length.out = length(timestamp))

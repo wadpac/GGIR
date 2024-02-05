@@ -27,6 +27,9 @@
     Logical (default = FALSE). Whether to append light recording to the 
     milestone data.
   }
+  \item{start_time}{
+    Start time of the recording, in the hh:mm:ss format.
+  }
 }
 \keyword{internal}
 \author{

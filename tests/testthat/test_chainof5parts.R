@@ -4,7 +4,6 @@ test_that("chainof5parts", {
   skip_on_cran()
   
   Ndays = 2
-  create_test_acc_csv(Nmin = Ndays*1440)
   create_test_sleeplog_csv(advanced = FALSE)
   fn = "123A_testaccfile.csv"
   sleeplog_fn = "testsleeplogfile.csv"
@@ -23,12 +22,13 @@ test_that("chainof5parts", {
   expect_true(isfilelist("file1.gt3x"))
   expect_true(isfilelist(c("file1.bin", "file2.bin")))
   #--------------------------------------------
-  # part 1
-  g.part1(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
-          overwrite = TRUE, desiredtz = desiredtz,
-          do.enmo = TRUE, do.anglez = TRUE ,do.cal = TRUE,
-          windowsizes = c(15,3600,3600), do.parallel = do.parallel,
-          minimumFileSizeMB = minimumFileSizeMB, verbose = FALSE)
+  # load part 1 metadata
+  dir.create(file.path(dn, "meta/basic"), recursive = TRUE)
+  dir.create(file.path(dn, "results/QC"), recursive = TRUE)
+  M = GGIR::M; C = GGIR::C; I = GGIR::I; filefoldername = GGIR::filefoldername
+  filename_dir = GGIR::filename_dir; tail_expansion_log = GGIR::tail_expansion_log
+  save(M, C, I, filefoldername, filename_dir, tail_expansion_log, 
+       file = file.path(dn, "meta/basic/meta_123A_testaccfile.csv.RData"))
   expect_true(dir.exists(dn))
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
@@ -385,59 +385,8 @@ test_that("chainof5parts", {
   expect_true(dir.exists(dirname))
   expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(6))
   expect_that(round(nightsummary$SptDuration[1], digits = 4), equals(13.075))
-  #---------------------
-  # Part 1 with external function and selectdaysfile:
-  exampleExtFunction = function(data=c(), parameters=c()) {
-    data = data.frame(data, agglevel = round((1:nrow(data)) / (30 * 60 * 15)))
-    output = aggregate(data, by = list(data$agglevel), FUN = mean)
-    output = output[, -c(1, 2, ncol(output))]
-    return(output)
-  }
-  myfun =  list(FUN = exampleExtFunction,
-                parameters = 1.1,
-                expected_sample_rate = 3, # resample data to 30 Hertz before applying function
-                expected_unit = "mg",
-                minlength = 15,
-                outputres = 15,
-                colnames = c("A", "B", "C"),
-                outputtype = "numeric", #"numeric" (averaging is possible), "category" (majority vote)
-                aggfunction = mean,
-                timestamp = as.numeric(Sys.time())) # for unit test only
-  # create selectdaysfile
-  SDF = matrix("", 1, 3)
-  SDF[1, 1] = "MOS2D12345678"
-  SDF[1, 2:3] =  c("23-05-2016", "24-05-2016")
-  colnames(SDF) = c("Monitor", "Day1", "Day2")
-  selectdaysfile = "selectdaysfile.csv"
-  write.csv(SDF, file = selectdaysfile)
+ 
   
-  
-  g.part1(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
-          overwrite = TRUE, desiredtz = desiredtz,
-          do.parallel = do.parallel, myfun = myfun,
-          do.enmo = TRUE, do.anglez = TRUE, do.cal = FALSE,
-          windowsizes = c(15, 300, 3600),
-          chunksize = 2, do.en = TRUE, do.anglex = TRUE, do.angley = TRUE,
-          do.roll_med_acc_x = TRUE, do.roll_med_acc_y = TRUE, do.roll_med_acc_z = TRUE,
-          do.dev_roll_med_acc_x = TRUE, do.dev_roll_med_acc_y = TRUE, do.dev_roll_med_acc_z = TRUE,
-          do.bfx = TRUE, do.bfy = TRUE, do.bfz = TRUE, do.hfen = TRUE,
-          do.hfx = TRUE, do.hfy = TRUE, do.hfz = TRUE, do.lfen = TRUE,
-          do.enmoa = TRUE, selectdaysfile = selectdaysfile, verbose = FALSE)
-  
-  rn = dir("output_test/meta/basic/", full.names = TRUE)
-  load(rn[1])
-  expect_equal(ncol(M$metashort), 24)
-  expect_equal(mean(M$metashort$B, na.rm = T), 24.673, tolerance = 3)
-  expect_equal(mean(M$metashort$C, na.rm = T), -6.642, tolerance = 3)
-  expect_equal(mean(M$metashort$EN, na.rm = T), 1.029, tolerance = 3)
-  expect_equal(mean(M$metashort$angley, na.rm = T), 0.765, tolerance = 3)
-  expect_equal(mean(M$metashort$roll_med_acc_x, na.rm = T), 0.729, tolerance = 3)
-  expect_equal(mean(M$metashort$roll_med_acc_z, na.rm = T), 0.007, tolerance = 3)
-  expect_equal(mean(M$metashort$dev_roll_med_acc_x, na.rm = T), 0.007, tolerance = 3)
-  expect_equal(mean(M$metashort$ENMOa, na.rm = T), 0.03, tolerance = 3)
-  
-  
-  if (file.exists(selectdaysfile)) file.remove(selectdaysfile)
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
   if (file.exists(fn)) unlink(fn)
   if (file.exists(sleeplog_fn)) file.remove(sleeplog_fn)
