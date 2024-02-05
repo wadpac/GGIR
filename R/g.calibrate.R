@@ -111,7 +111,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
     options(warn = 0) #turn on warnings
     #process data as read from binary file
     if (length(accread$P) > 0) { # would have been set to zero if file was corrupt or empty
-      data = accread$P$data
+      data = as.matrix(accread$P$data[,which(colnames(accread$P$data) %in% c("x", "y", "z", "time", "temperature"))]) # convert to matrix b/c rbind is much faster on matrices
       if (exists("accread")) {
         rm(accread)
       }
@@ -123,11 +123,11 @@ g.calibrate = function(datafile, params_rawdata = c(),
       # current ActiGraph csv's are not with zeros but with last observation carried forward
       zeros = c()
       if (!(mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV)) {
-        zeros = which(data$x == 0 & data$y == 0 & data$z == 0)
+        zeros = which(data[, "x"] == 0 & data[, "y"] == 0 & data[, "z"] == 0)
       }
       if ((mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) || length(zeros) > 0) {
-        data = g.imputeTimegaps(x = data, sf = sf, impute = FALSE)
-        data = data$x
+        data = g.imputeTimegaps(x = as.data.frame(data), sf = sf, impute = FALSE)
+        data = as.matrix(data$x)
       }
       LD = nrow(data)
       #store data that could not be used for this block, but will be added to next block
@@ -140,15 +140,15 @@ g.calibrate = function(datafile, params_rawdata = c(),
           data = data[1:use,]
           LD = nrow(data) #redefine LD because there is less data
 
-          Gx = data$x
-          Gy = data$y
-          Gz = data$z
+          Gx = data[, "x"]
+          Gy = data[, "y"]
+          Gz = data[, "z"]
 
           if(use.temp) {
-            if (mean(data$temperature[1:10], na.rm = TRUE) > 120) {
+            if (mean(data[1:10, "temperature"], na.rm = TRUE) > 120) {
               warning("\ntemperature ignored for auto-calibration because values are too high\n")
               use.temp = FALSE
-            } else if (sd(data$temperature, na.rm = TRUE) < 0.01) {
+            } else if (sd(data[, "temperature"], na.rm = TRUE) < 0.01) {
               warning("\ntemperature ignored for auto-calibration because no variance in values\n")
               use.temp = FALSE
             }
@@ -164,7 +164,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
           D1 = g.downsample(Gy,sf,ws4,ws2); 	GyM2 = D1$var2
           D1 = g.downsample(Gz,sf,ws4,ws2); 	GzM2 = D1$var2
           if (use.temp == TRUE) {
-            D1 = g.downsample(data$temperature,sf,ws4,ws2);
+            D1 = g.downsample(data[, "temperature"],sf,ws4,ws2);
             TemperatureM2 = D1$var2
           }
           #sd acceleration
