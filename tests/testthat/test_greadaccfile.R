@@ -97,14 +97,14 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
 
   cat("\nAxivity .csv")
 
-  for (csvData in list(list(Ax3CsvFile, 2881, 2370.08, ax3_start_timestamp),
-                       list(Ax6CsvFile, 2875, 1064.66, ax6_start_timestamp))) {
+  for (csvData in list(list(Ax3CsvFile, 200, -11.80, ax3_start_timestamp),
+                       list(Ax6CsvFile, 200, 14.84, ax6_start_timestamp))) {
     IAxivityCsv = g.inspectfile(csvData[[1]], params_rawdata = params_rawdata, params_general = params_general)
     expect_equal(IAxivityCsv$monc, MONITOR$AXIVITY)
     expect_equal(IAxivityCsv$dformc, FORMAT$CSV)
 
-    csv_read = g.readaccfile(csvData[[1]], blocksize = 10, blocknumber = 1, filequality = filequality,
-                             dayborder = dayborder, ws = 2, 
+    csv_read = g.readaccfile(csvData[[1]], blocksize = 1, blocknumber = 1, filequality = filequality,
+                             dayborder = dayborder, ws = 1, 
                              PreviousEndPage = 1, inspectfileobject = IAxivityCsv,
                              params_rawdata = params_rawdata, params_general = params_general)
 
