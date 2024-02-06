@@ -46,9 +46,8 @@ detect_nonwear_clipping = function(data = c(), windowsizes = c(5, 900, 3600), sf
       }
       # ---
       if ("wear" %in% colnames(data)) {
-        wearcol = as.logical(data[, "wear"])
-        wearTable = table(wearcol[(1 + hoc1):hoc2], useNA = "no")
-        NWav[h] = as.logical(tail(names(sort(wearTable)), 1)) * 3 # times 3 to simulate heuristic approach
+        wearTable = table(data[(1 + hoc1):hoc2, "wear"], useNA = "no")
+        NWav[h] = as.numeric(tail(names(sort(wearTable)), 1)) * 3 # times 3 to simulate heuristic approach
       }
       xyzCol = which(colnames(data) %in% c("x", "y", "z"))
       for (jj in seq(3)) {
