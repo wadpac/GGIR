@@ -275,10 +275,6 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       #  as.POSIXlt() used to be slow but seems reasonably fast these days).
       P$data$time = as.POSIXlt(P$data$time, origin = "1970-01-01")
       P$data$time = as.POSIXct(P$data$time, tz=configtz, origin = "1970-01-01")
-
-      if (configtz != desiredtz) {
-        P$data$time = as.POSIXct(P$data$time, tz=desiredtz, origin = "1970-01-01")
-      }
     }
   } else if (mon == MONITOR$AD_HOC && dformat == FORMAT$AD_HOC_CSV) { # user-specified csv format
     # skip 1 more row only if rmc.firstrow.acc points at a row containing column names.
@@ -360,6 +356,23 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     if ((col %in% colnames(P$data)) && !is.numeric(P$data[, col])) {
       stop(paste0("Corrupt file. ", col, " column contains non-numeric data."))
     }
+  }
+
+  # the wear column should be logical, but we will coerse it to numeric right away,
+  # so that later it could be combined with the other numeric columns into a numeric matrix
+
+  if ("wear" %in% colnames(P$data)) {
+    if (!is.logical(P$data$wear)) {
+      stop("Corrupt file. The wear column should contail TRUE/FALSE values.")
+    }
+    P$data$wear = as.numeric(P$data$wear)
+  }
+
+  # the time column at this point will be either Unix timestamps or POSIXct objects.
+  # If POSIXct, we'll convert them to Unix timestamps, so that later this column 
+  # could be combined with the other numeric columns into a numeric matrix
+  if (("time" %in% colnames(P$data)) && !is.numeric(P$data$time)) { 
+    P$data$time = as.numeric(P$data$time)
   }
 
   invisible(list(P = P,
