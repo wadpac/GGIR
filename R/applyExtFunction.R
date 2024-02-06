@@ -1,8 +1,4 @@
 applyExtFunction = function(data, myfun, sf, ws3,interpolationType=1) {
-
-  # data should be a 3 column matrix with the x, y, and z acceleration
-  data = data[, c("x", "y", "z")]
-
   # check myfun object
   check_myfun(myfun, windowsizes=ws3) 
   # unit correction
