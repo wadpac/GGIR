@@ -38,8 +38,8 @@ detect_nonwear_clipping = function(data = c(), windowsizes = c(5, 900, 3600), sf
         NWflag = h:(h + window/window2 - 1)
         if (NWflag[length(NWflag)] > nmin) NWflag = NWflag[-which(NWflag > nmin)]
         # window to check (not aggregated values)
-        hoc1 = h * window2 - window2 + 1
-        hoc2 = hoc1 + window - 1
+        hoc1 = h * window2 - window2
+        hoc2 = hoc1 + window
         if (hoc2 > nrow(data)) {
           hoc2 = nrow(data)
         }
