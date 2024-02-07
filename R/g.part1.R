@@ -27,11 +27,23 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
   filesizes = file.size(fnamesfull) # in bytes
   bigEnough = which(filesizes/1e6 > params_rawdata[["minimumFileSizeMB"]])
   fnamesfull = fnamesfull[bigEnough]
+  
+  if (length(bigEnough) > 0) {
+    fnames_toosmall = fnames[-bigEnough]
+  } else {
+    fnames_toosmall = fnames
+  }
+  
   fnames = fnames[bigEnough]
+
+  if (verbose && length(fnames_toosmall) > 0) {
+    warning(paste0("\nSkipping files that are too small for analysis: ", toString(fnames_toosmall),
+                   " (configurable with parameter minimumFileSizeMB)."), call. = FALSE) 
+  }
 
   if (length(fnamesfull) == 0) {
     stop(paste0("\nNo files to analyse. Check that there are accelerometer files ",
-                "in the directory specified with argument datadir"))
+                "in the directory specified with argument datadir"), call. = FALSE)
   }
 
   # create output directory if it does not exist
