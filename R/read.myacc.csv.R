@@ -316,7 +316,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                          PreviousLastTime = PreviousLastTime, epochsize = NULL)
     P = P$x
     PreviousLastValue = P[nrow(P), c("x", "y", "z")]
-    PreviousLastTime = as.POSIXct(P[nrow(P), "time"])
+    PreviousLastTime = as.POSIXct(P[nrow(P), "time"], origin = "1970-01-01")
   }
   if (rmc.doresample == TRUE && ("time" %in% colnames(P))) { # resample
     rawTime = P$time
