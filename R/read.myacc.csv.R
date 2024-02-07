@@ -318,25 +318,15 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     PreviousLastValue = P[nrow(P), c("x", "y", "z")]
     PreviousLastTime = as.POSIXct(P[nrow(P), "time"])
   }
-  if (rmc.doresample == TRUE) { #resample
-    rawTime = as.numeric(as.POSIXct(P$time,tz = configtz))
+  if (rmc.doresample == TRUE && ("time" %in% colnames(P))) { # resample
+    rawTime = P$time
     rawAccel = as.matrix(P[,-c(which(colnames(P) == "time"))])
-    step = 1/sf
-    start = rawTime[1]
-    end = rawTime[length(rawTime)]
-    timeRes = seq(start, end, step)
-    nr = length(timeRes) - 1
-    timeRes = as.vector(timeRes[1:nr])
-    rawLast = nrow(rawAccel)
-    accelRes = GGIRread::resample(rawAccel, rawTime, timeRes, rawLast, interpolationType) # this is now the resampled acceleration data
-    colnamesP = colnames(P)
-    timeRes = as.POSIXct(timeRes, origin = rmc.origin, tz = configtz)
+    timeRes = seq(from = rawTime[1], to = rawTime[length(rawTime)], by = 1/sf)
+    accelRes = GGIRread::resample(rawAccel, rawTime, timeRes, nrow(rawAccel), interpolationType) # this is now the resampled acceleration data
+    colnamesP = colnames(P)[-which(colnames(P) == "time")]
     P = as.data.frame(accelRes, stringsAsFactors = FALSE)
-    P$time = timeRes
-    P = P[,c(ncol(P),1:(ncol(P) - 1))]
     colnames(P) = colnamesP
-    P$time = as.POSIXct(as.numeric(P$time),
-                             tz = desiredtz, origin = "1970-01-01")
+    P$time = timeRes
   }
   return(list(data = P, header = header, 
               PreviousLastValue = PreviousLastValue,

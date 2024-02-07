@@ -397,7 +397,7 @@ test_that("read.myacc.csv can handle gaps in time and irregular sample rate", {
                       rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID",
                       rmc.check4timegaps = TRUE, rmc.doresample = TRUE)
-  expect_that(nrow(D2$data), equals(169)) # because data expands with 5 seconds that are now imputed
+  expect_that(nrow(D2$data), equals(170)) # because data expands with 5 seconds that are now imputed
   expect_that(ncol(D2$data), equals(5))
   
   
