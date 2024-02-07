@@ -146,16 +146,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                      "The short windowsize has now been automatically adjusted to ",
                      ws3, " seconds in order to meet this criteria.\n"), call. = FALSE)
     }
-
-    ws4 = 10 #epoch for recalibration, don't change
-    if (ws/ws4 != round(ws/ws4)) {
-      ws = as.numeric(ws4 * ceiling(ws/ws4))
-      warning(paste0("The windowsize for assessing non-wear needs to be a multitude of ", ws4,
-                     "\n This windowsize has now been automatically adjusted to ",
-                     ws, " seconds in order to meet this criteria.\n"), call. = FALSE)
-    }
-  
-    params_general[["windowsizes"]] = c(ws3, ws2, ws, ws4)
+    params_general[["windowsizes"]] = c(ws3, ws2, ws)
   }
   #-----------------------------------------------------------------------------------
   # Check value combinations and apply corrections if not logical
