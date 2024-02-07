@@ -13,7 +13,7 @@
 }
 \usage{
   get_starttime_weekday_truncdata(monc, 
-  dformat, data, P, header, desiredtz, sf,
+  dformat, data, header, desiredtz, sf,
   datafile, ws2, starttime, wday, wdayname, configtz = NULL)
 }
 \arguments{
@@ -25,9 +25,6 @@
   }
   \item{data}{
     Data part of \link{g.readaccfile} output
-  }
-  \item{P}{
-    data loaded from accelerometer file with \link{g.readaccfile}
   }
   \item{header}{
     Header part of \link{g.readaccfile} output

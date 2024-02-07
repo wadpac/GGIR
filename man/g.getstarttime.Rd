@@ -9,15 +9,15 @@
   for direct use by package user
 }
 \usage{
-  g.getstarttime(datafile, P, mon, dformat, desiredtz,
+  g.getstarttime(datafile, data, mon, dformat, desiredtz,
   configtz = NULL)
 }
 \arguments{
   \item{datafile}{
    Full path to data file
   }
-  \item{P}{
-    Object extracted with \link{g.readaccfile}
+  \item{data}{
+    Data part of \link{g.readaccfile} output
   }
   \item{mon}{
     Same as in \link{g.dotorcomma}

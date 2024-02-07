@@ -1,5 +1,5 @@
 get_starttime_weekday_truncdata = function(monc, dformat, data, 
-                                           P, header, desiredtz, sf, datafile,
+                                           header, desiredtz, sf, datafile,
                                            ws2, starttime, wday, wdayname, configtz = NULL) {
   # ensures that first window starts at logical timepoint relative to its size
   # (15,30,45 or 60 minutes of each hour)
@@ -7,15 +7,12 @@ get_starttime_weekday_truncdata = function(monc, dformat, data,
   
   starttime = g.getstarttime( # this will return a POSIXlt object
     datafile = datafile,
-    P = P,
+    data = data,
     mon = monc,
     dformat = dformat,
     desiredtz = desiredtz,
     configtz = configtz
   )
-  if (exists("P")) {
-    rm(P); gc()
-  }
 
   # assess weekday
   wday = starttime$wday #day of the week 0-6 and 0 is Sunday

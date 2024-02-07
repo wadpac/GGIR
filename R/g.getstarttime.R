@@ -1,10 +1,10 @@
-g.getstarttime = function(datafile, P, mon, dformat, desiredtz, configtz = NULL) {
+g.getstarttime = function(datafile, data, mon, dformat, desiredtz, configtz = NULL) {
   starttime = NULL
   if (is.null(configtz)) {
     configtz = desiredtz
   }
-  if ("time" %in% colnames(P$data)) {
-    starttime = as.POSIXlt(P$data$time[1], tz = desiredtz, origin = "1970-01-01")
+  if ("time" %in% colnames(data)) {
+    starttime = as.POSIXlt(data[1, "time"], tz = desiredtz, origin = "1970-01-01")
   } else if (mon == MONITOR$MOVISENS) {
       starttime = unisensR::readUnisensStartTime(dirname(datafile))
 

@@ -246,6 +246,10 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         QClog = rbind(QClog, P$QClog)
       }
 
+      if (exists("P")) {
+        rm(P); gc()
+      }
+
       data = as.matrix(data, rownames.force = FALSE)
       #add leftover data from last time
       if (nrow(S) > 0) {
@@ -264,12 +268,11 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             }
           }
         }
-        data = suppressWarnings(rbind(S,data)) # suppress warnings about string as factor
+        data = rbind(S,data)
       }
       if (i == 1) {
         SWMT = get_starttime_weekday_truncdata(mon, dformat,
-                                               data,
-                                               P, header, desiredtz = params_general[["desiredtz"]],
+                                               data, header, desiredtz = params_general[["desiredtz"]],
                                                sf, datafile,  ws2,
                                                starttime, wday, wdayname, configtz = params_general[["configtz"]])
         starttime = SWMT$starttime
@@ -278,9 +281,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         
         rm(SWMT)
       }
-      if (i != 0 && exists("P")) {
-        rm(P); gc()
-      }
+
       LD = nrow(data)
       if (LD < (ws*sf) && i == 1) {
         warning('\nWarning data too short for doing non-wear detection 3\n')
