@@ -26,6 +26,10 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                           configtz = NULL,
                           header = NULL) {
 
+  if (length(rmc.col.time) > 0 && !(rmc.unit.time %in% c("POSIX", "character", "UNIXsec", "ActivPAL"))) {
+    stop("\nUnrecognized rmc.col.time value. The only accepted values are \"POSIX\", \"character\", \"UNIXsec\", and \"ActivPAL\".", call. = FALSE)
+  }
+
   if (!is.null(rmc.desiredtz) || !is.null(rmc.configtz)) {
     generalWarning = paste0("Argument rmc.desiredtz and rmc.configtz are scheduled to be deprecated",
                    " and will be replaced by the existing arguments desiredtz and configtz, respectively.")
@@ -248,8 +252,8 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
         }
       }
     } else if (rmc.unit.time == "character") {
-      P$time = as.POSIXct(P$time,format = rmc.format.time, tz = configtz)
-    } else if (rmc.unit.time == "UNIXsec") {
+      P$time = as.POSIXct(P$time, format = rmc.format.time, origin = rmc.origin, tz = configtz)
+    } else if (rmc.unit.time == "UNIXsec" && rmc.origin != "1970-01-01") {
       P$time = as.POSIXct(P$time, origin = rmc.origin, tz = desiredtz)
     } else if (rmc.unit.time == "ActivPAL") {
       # origin should be specified as: "1899-12-30"
@@ -263,9 +267,9 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     if (length(which(is.na(P$time) == FALSE)) == 0) {
       stop("\nExtraction of timestamps unsuccesful, check timestamp format arguments")
     }
-  }
-  if (!(rmc.unit.time %in% c("UNIXsec", "ActivPAL")) && (configtz != desiredtz)) {
-    P$time = as.POSIXct(P$time, tz = desiredtz, origin = "1970-01-01")
+    if(!is.numeric(P$time)) { # we'll return Unix timestamps
+      P$time = as.numeric(P$time)
+    }
   }
   
   # If acceleration is stored in mg units then convert to gravitational units
