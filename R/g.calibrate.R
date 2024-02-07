@@ -22,14 +22,26 @@ g.calibrate = function(datafile, params_rawdata = c(),
     params_cleaning = params$params_cleaning
     params_general = params$params_general
   }
-
+  #-----------------
+  # Define local functions:
+  rollMean = function(x, fs, epochSize) {
+    x = cumsum(c(0, x))
+    select = seq(1, length(x), by = fs * epochSize)
+    y = diff(x[round(select)]) / abs(diff(round(select[1:(length(select))])))
+    return(y)
+  }
+  rollSD = function(x, sf, epochSize) {
+    dim(x) = c(sf * epochSize, ceiling(length(x) / (sf * epochSize)))
+    y = apply(x, 2, sd)
+    return(y)
+  }
+  #-----------------
   use.temp = temp.available = TRUE
   
   filequality = data.frame(filetooshort = FALSE, filecorrupt = FALSE,
                            filedoesnotholdday = FALSE, stringsAsFactors = FALSE)
-  ws4 = params_general[["windowsizes"]][4] #epoch for recalibration
-  ws2 = params_general[["windowsizes"]][2] #dummy variable
-  ws =  params_general[["windowsizes"]][3] # window size for assessing non-wear time (seconds)
+  calibEpochSize = 10 # epoch for recalibration as used in the 2014 paper
+  blockResolution = 3600 # resolution at which raw data is loaded and processed (seconds)
   cal.error.start = cal.error.end = c()
   spheredata = c()
   tempoffset = c()
@@ -60,7 +72,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
   
   #creating matrices for storing output
   S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
-  NR = ceiling((90*10^6) / (sf*ws4)) + 1000 #NR = number of 'ws4' second rows (this is for 10 days at 80 Hz)
+  NR = ceiling((90*10^6) / (sf*calibEpochSize)) + 1000 #NR = number of rows to initialise features matrix with
 
   # setting size of blocks that are loaded (too low slows down the process)
   # the setting below loads blocks size of 12 hours (modify if causing memory problems)
@@ -91,7 +103,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
     #try to read data blocks based on monitor type and data format
     options(warn=-1) #turn off warnings (code complains about unequal rowlengths
     accread = g.readaccfile(filename = datafile, blocksize = blocksize, blocknumber = i,
-                            filequality = filequality, ws = ws,
+                            filequality = filequality, ws = blockResolution,
                             PreviousEndPage = PreviousEndPage, inspectfileobject = INFI,
                             params_rawdata = params_rawdata, params_general = params_general,
                             header = header)
@@ -102,9 +114,9 @@ g.calibrate = function(datafile, params_rawdata = c(),
     if (i == 1) {
       use.temp = temp.available = ("temperature" %in% colnames(accread$P$data))
       if (use.temp) {
-        meta = matrix(99999,NR,8) # for metadata
+        features = matrix(99999, NR, 8)
       } else {
-        meta = matrix(99999,NR,7)
+        features = matrix(99999, NR, 7)
       }
     }
 
@@ -131,7 +143,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
       }
       LD = nrow(data)
       #store data that could not be used for this block, but will be added to next block
-      use = (floor(LD / (ws*sf))) * (ws*sf) #number of datapoint to use
+      use = (floor(LD / (blockResolution*sf))) * (blockResolution*sf) #number of datapoint to use
       if (length(use) > 0) {
         if (use > 0) {
           if (use != LD) {
@@ -144,7 +156,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
           Gy = data[, "y"]
           Gz = data[, "z"]
 
-          if(use.temp) {
+          if (use.temp) {
             if (mean(data[1:10, "temperature"], na.rm = TRUE) > 120) {
               warning("\ntemperature ignored for auto-calibration because values are too high\n")
               use.temp = FALSE
@@ -154,41 +166,27 @@ g.calibrate = function(datafile, params_rawdata = c(),
             }
           }
           #=============================================
-          # non-integer sample frequency is a pain for deriving epoch based sd
-          # however, with an epoch of 10 seconds it is an integer number of samples per epoch
-          EN = sqrt(Gx^2 + Gy^2 + Gz^2)
-          D1 = g.downsample(EN,sf,ws4,ws2)
-          EN2 = D1$var2
-          # mean acceleration
-          D1 = g.downsample(Gx,sf,ws4,ws2); 	GxM2 = D1$var2
-          D1 = g.downsample(Gy,sf,ws4,ws2); 	GyM2 = D1$var2
-          D1 = g.downsample(Gz,sf,ws4,ws2); 	GzM2 = D1$var2
-          if (use.temp == TRUE) {
-            D1 = g.downsample(data[, "temperature"],sf,ws4,ws2);
-            TemperatureM2 = D1$var2
-          }
-          #sd acceleration
-          dim(Gx) = c(sf*ws4,ceiling(length(Gx)/(sf*ws4))); 	GxSD2 = apply(Gx,2,sd)
-          dim(Gy) = c(sf*ws4,ceiling(length(Gy)/(sf*ws4))); 	GySD2 = apply(Gy,2,sd)
-          dim(Gz) = c(sf*ws4,ceiling(length(Gz)/(sf*ws4))); 	GzSD2 = apply(Gz,2,sd)
-          #-----------------------------------------------------
           #expand 'out' if it is expected to be too short
-          if (count > (nrow(meta) - (2.5 * (3600/ws4) * 24))) {
-            extension = matrix(99999, ((3600/ws4) * 24), ncol(meta))
-            meta = rbind(meta,extension)
+          if (count > (nrow(features) - (2.5 * (3600/calibEpochSize) * 24))) {
+            extension = matrix(99999, ((3600/calibEpochSize) * 24), ncol(features))
+            features = rbind(features, extension)
           }
-          #storing in output matrix
-          meta[count:(count - 1 + length(EN2)), 1] = EN2
-          meta[count:(count - 1 + length(EN2)), 2] = GxM2
-          meta[count:(count - 1 + length(EN2)), 3] = GyM2
-          meta[count:(count - 1 + length(EN2)), 4] = GzM2
-          meta[count:(count - 1 + length(EN2)), 5] = GxSD2
-          meta[count:(count - 1 + length(EN2)), 6] = GySD2
-          meta[count:(count - 1 + length(EN2)), 7] = GzSD2
+          # mean acceleration for EN, x, y, and z
+          EN = sqrt(Gx^2 + Gy^2 + Gz^2)
+          EN2 = rollMean(EN, sf, calibEpochSize)
+          endCount = count - 1 + length(EN2)
+          features[count:endCount, 1] = EN2
+          features[count:endCount, 2] = rollMean(Gx, sf, calibEpochSize)
+          features[count:endCount, 3] = rollMean(Gy, sf, calibEpochSize)
+          features[count:endCount, 4] = rollMean(Gz, sf, calibEpochSize)
+          # sd acceleration
+          features[count:endCount, 5] = rollSD(Gx, sf, calibEpochSize)
+          features[count:endCount, 6] = rollSD(Gy, sf, calibEpochSize)
+          features[count:endCount, 7] = rollSD(Gz, sf, calibEpochSize)
           if (use.temp == TRUE) {
-            meta[count:(count - 1 + length(EN2)), 8] = TemperatureM2
+            features[count:endCount, 8] = rollMean(data[, "temperature"], sf, calibEpochSize)
           }
-          count = count + length(EN2) #increasing "count": the indicator of how many seconds have been read
+          count = endCount + 1 # increasing count, the indicator of how many timesteps (calibEpochSize) have been read
           rm(Gx); rm(Gy); rm(Gz)
           # Update blocksize depending on available memory:
           BlocksizeNew = updateBlocksize(blocksize = blocksize, bsc_qc = bsc_qc)
@@ -204,14 +202,14 @@ g.calibrate = function(datafile, params_rawdata = c(),
     if (isLastBlock) {
       LD = 0
     }
-    meta_temp = data.frame(V = meta, stringsAsFactors = FALSE)
-    cut = which(meta_temp[,1] == 99999)
+    features_temp = data.frame(V = features, stringsAsFactors = FALSE)
+    cut = which(features_temp[,1] == 99999)
     if (length(cut) > 0) {
-      meta_temp = meta_temp[-cut,]
+      features_temp = features_temp[-cut,]
     }
-    nhoursused = (nrow(meta_temp) * 10) / 3600
-    if (nrow(meta_temp) > (params_rawdata[["minloadcrit"]] - 21)) {  # enough data for the sphere?
-      meta_temp = meta_temp[-1,]
+    nhoursused = (nrow(features_temp) * 10) / 3600
+    if (nrow(features_temp) > (params_rawdata[["minloadcrit"]] - 21)) {  # enough data for the sphere?
+      features_temp = features_temp[-1,]
       #select parts with no movement
       if (mon == MONITOR$AD_HOC) {
         if (length(params_rawdata[["rmc.noise"]]) == 0) {
@@ -226,28 +224,28 @@ g.calibrate = function(datafile, params_rawdata = c(),
       } else {
         sdcriter = 0.013
       }
-      nomovement = which(meta_temp[,5] < sdcriter & meta_temp[,6] < sdcriter & meta_temp[,7] < sdcriter &
-                           abs(as.numeric(meta_temp[,2])) < 2 & abs(as.numeric(meta_temp[,3])) < 2 &
-                           abs(as.numeric(meta_temp[,4])) < 2) #the latter three are to reduce chance of including clipping periods
+      nomovement = which(features_temp[,5] < sdcriter & features_temp[,6] < sdcriter & features_temp[,7] < sdcriter &
+                           abs(as.numeric(features_temp[,2])) < 2 & abs(as.numeric(features_temp[,3])) < 2 &
+                           abs(as.numeric(features_temp[,4])) < 2) #the latter three are to reduce chance of including clipping periods
       if (length(nomovement) < 10) {
         # take only one row to trigger that autocalibration is skipped 
         # with the QCmessage that there is not enough data
-        meta_temp = meta_temp[1, ] 
+        features_temp = features_temp[1, ] 
       } else {
-        meta_temp = meta_temp[nomovement,]
+        features_temp = features_temp[nomovement,]
       }
-      dup = which(rowSums(meta_temp[1:(nrow(meta_temp) - 1), 2:7] == meta_temp[2:nrow(meta_temp), 2:7]) == 3) # remove duplicated values
-      if (length(dup) > 0) meta_temp = meta_temp[-dup,]
+      dup = which(rowSums(features_temp[1:(nrow(features_temp) - 1), 2:7] == features_temp[2:nrow(features_temp), 2:7]) == 3) # remove duplicated values
+      if (length(dup) > 0) features_temp = features_temp[-dup,]
       rm(nomovement, dup)
-      if (min(dim(meta_temp)) > 1) {
-        meta_temp = meta_temp[(is.na(meta_temp[,4]) == F & is.na(meta_temp[,1]) == F),]
-        npoints = nrow(meta_temp)
-        cal.error.start = sqrt(as.numeric(meta_temp[,2])^2 + as.numeric(meta_temp[,3])^2 + as.numeric(meta_temp[,4])^2)
+      if (min(dim(features_temp)) > 1) {
+        features_temp = features_temp[(is.na(features_temp[,4]) == F & is.na(features_temp[,1]) == F),]
+        npoints = nrow(features_temp)
+        cal.error.start = sqrt(as.numeric(features_temp[,2])^2 + as.numeric(features_temp[,3])^2 + as.numeric(features_temp[,4])^2)
         cal.error.start = round(mean(abs(cal.error.start - 1)), digits = 5)
         #check whether sphere is well populated
         tel = 0
         for (axis in 2:4) {
-          if ( min(meta_temp[,axis]) < -params_rawdata[["spherecrit"]] & max(meta_temp[,axis]) > params_rawdata[["spherecrit"]]) {
+          if ( min(features_temp[,axis]) < -params_rawdata[["spherecrit"]] & max(features_temp[,axis]) > params_rawdata[["spherecrit"]]) {
             tel = tel + 1
           }
         }
@@ -259,19 +257,19 @@ g.calibrate = function(datafile, params_rawdata = c(),
         }
       } else {
         QC = "recalibration not done because no non-movement data available"
-        meta_temp = c()
+        features_temp = c()
       }
     } else {
       QC = "recalibration not done because not enough data in the file or because file is corrupt"
     }
     if (spherepopulated == 1) { #only try to improve calibration if there are enough datapoints around the sphere
       #---------------------------------------------------------------------------
-      # START of Zhou Fang's code (slightly edited by vtv21 to use matrix meta_temp from above
+      # START of Zhou Fang's code (slightly edited by vtv21 to use matrix features_temp from above
       # instead the similar matrix generated by Zhou Fang's original code. This to allow for
-      # more data to be used as meta_temp can now be based on 10 or more days of raw data
-      input = meta_temp[,2:4]
+      # more data to be used as features_temp can now be based on 10 or more days of raw data
+      input = features_temp[,2:4]
       if (use.temp == TRUE) {
-        inputtemp = cbind(as.numeric(meta_temp[,8]),as.numeric(meta_temp[,8]),as.numeric(meta_temp[,8])) #temperature
+        inputtemp = cbind(as.numeric(features_temp[,8]),as.numeric(features_temp[,8]),as.numeric(features_temp[,8])) #temperature
       } else {
         inputtemp = matrix(0, nrow(input), ncol(input)) #temperature, here used as a dummy variable
       }
@@ -330,16 +328,16 @@ g.calibrate = function(datafile, params_rawdata = c(),
         if (abs(res[iter + 1] - res[iter]) < tol)  break
       }
       if (use.temp == FALSE) {
-        meta_temp2 = scale(as.matrix(meta_temp[,2:4]),center = -offset, scale = 1/scale)
+        features_temp2 = scale(as.matrix(features_temp[,2:4]),center = -offset, scale = 1/scale)
       } else {
-        yy = as.matrix(cbind(as.numeric(meta_temp[,8]),as.numeric(meta_temp[,8]),as.numeric(meta_temp[,8])))
-        meta_temp2 = scale(as.matrix(meta_temp[,2:4]),center = -offset, scale = 1/scale) +
+        yy = as.matrix(cbind(as.numeric(features_temp[,8]),as.numeric(features_temp[,8]),as.numeric(features_temp[,8])))
+        features_temp2 = scale(as.matrix(features_temp[,2:4]),center = -offset, scale = 1/scale) +
           scale(yy, center = rep(meantemp,3), scale = 1/tempoffset)
       }     #equals: D2[,axis] = (D[,axis] + offset[axis]) / (1/scale[axis])
       # END of Zhou Fang's code
       #-------------------------------------------
-      cal.error.end = sqrt(meta_temp2[,1]^2 + meta_temp2[,2]^2 + meta_temp2[,3]^2)
-      rm(meta_temp2)
+      cal.error.end = sqrt(features_temp2[,1]^2 + features_temp2[,2]^2 + features_temp2[,3]^2)
+      rm(features_temp2)
       cal.error.end = round(mean(abs(cal.error.end - 1)), digits = 5)
       # assess whether calibration error has sufficiently been improved
       if (cal.error.end < cal.error.start & cal.error.end < 0.01 & nhoursused > params_rawdata[["minloadcrit"]]) { #do not change scaling if there is no evidence that calibration improves
@@ -367,8 +365,8 @@ g.calibrate = function(datafile, params_rawdata = c(),
       QC = "recalibration not done because recalibration does not decrease error"
     }
   }
-  if (all(dim(meta_temp)) != 0) {  # change 2022-08-18 to handle when filetooshort = TRUE (7 columns, empty rows)
-    spheredata = meta_temp
+  if (all(dim(features_temp)) != 0) {  # change 2022-08-18 to handle when filetooshort = TRUE (7 columns, empty rows)
+    spheredata = features_temp
     if (use.temp == TRUE) {
       names(spheredata) = c("Euclidean Norm","meanx","meany","meanz","sdx","sdy","sdz","temperature")
     } else {
@@ -377,7 +375,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
   } else {
     spheredata = c()
   }
-  rm(meta_temp)
+  rm(features_temp)
   QCmessage = QC
   if (params_rawdata[["printsummary"]] == TRUE & verbose == TRUE) {
     cat("\nSummary of autocalibration procedure:")
