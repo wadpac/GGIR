@@ -52,7 +52,7 @@ test_that("cosinorAnalyses provides expected output", {
   
   # IV IS
   expect_equal(coef60$IVIS$InterdailyStability, 0.9945789, tolerance  = 0.01)
-  expect_equal(coef60$IVIS$IntradailyVariability, 1.14, tolerance  = 0.01)
+  expect_equal(coef60$IVIS$IntradailyVariability, 1.10, tolerance  = 0.01)
   
   fields_to_compare = c("minimum", "amp", "alpha", "beta", "acrotime", "DownMesor", "MESOR")
   expect_equal(coef60$coefext[fields_to_compare], coef300$coefext[fields_to_compare], tolerance = 0.1)

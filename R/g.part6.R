@@ -212,12 +212,16 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                             qcheck = ts$invalidepoch,
                                             midnightsi = nightsi,
                                             epochsizes = rep(epochSize, 2))
+        rm(acc4cos)
         # DFA
         if (params_247[["part6DFA"]] == TRUE) { 
           ssp = SSP(ts$ACC)
           abi = ABI(ssp)
         }
-        rm(acc4cos)
+        
+        # if (params_247[["part6IVIS"]] == TRUE) { 
+        # }
+        
       } else {
         cosinor_coef = NULL
         ssp = abi = NULL

@@ -1275,24 +1275,16 @@ GGIR(mode = 1:5,
         number of levels.}
 
       \item{IVIS_windowsize_minutes}{
-        Numeric (default = 60).
-        Window size of the Intradaily Variability (IV) and Interdaily
-        Stability (IS) metrics in minutes, needs to be able to add up to 24 hours.}
+        This argument is deprecated.}
 
       \item{IVIS_epochsize_seconds}{
-        Numeric (default = NULL).
         This argument is deprecated.}
 
       \item{IVIS.activity.metric}{
-        Numeric (default = 2).
-        Metric used for activity calculation.
-        Value = 1, uses continuous scaled acceleration.
-        Value = 2, tries to collapse acceleration into a binary score of rest
-        versus active to try to simulate the original approach.}
+        This argument is deprecated.}
 
       \item{IVIS_acc_threshold}{
-        Numeric (default = 20).
-        Acceleration threshold to distinguish inactive from active.}
+        This argument is deprecated.}
 
       \item{qM5L5}{
         Numeric (default = NULL).

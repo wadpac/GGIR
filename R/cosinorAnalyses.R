@@ -24,11 +24,8 @@ cosinorAnalyses = function(Xi, epochsize = 60, timeOffsetHours = 0) {
   if (coef$params$acr < 0) coef$params$acr = coef$params$acr + (k * 2 * pi)
   # Perform IVIS on the same input signal to allow for direct comparison
   IVIS = g.IVIS(Xi = Xi / 1000, # divide by 1000 because function g.IVIS internally multiplies by 1000 when IVIS.activity.metric = 2
-                epochsizesecondsXi = epochsize, 
-                IVIS_windowsize_minutes = 60,
-                IVIS.activity.metric = 2,
-                IVIS_acc_threshold = log(20 + 1),
-                IVIS_per_daypair = TRUE) # take log, because Xi is logtransformed with offset of 1
+                epochSize = epochsize, 
+                threshold = log(20 + 1)) # take log, because Xi is logtransformed with offset of 1
   
   coefext$params$R2 = cor(coefext$cosinor_ts$original, coefext$cosinor_ts$fittedYext)^2
   coef$params$R2 = cor(coefext$cosinor_ts$original, coefext$cosinor_ts$fittedY)^2

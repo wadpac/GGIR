@@ -105,11 +105,8 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
   # By using the metashort from the IMP we do not need to ignore segments, because data imputed
   Xi = IMP$metashort[fmn:lmn, acc.metric]
   # IV IS
-  IVISout = g.IVIS(Xi, epochsizesecondsXi = ws3, 
-                   IVIS_epochsize_seconds = params_247[["IVIS_epochsize_seconds"]], 
-                   IVIS_windowsize_minutes = params_247[["IVIS_windowsize_minutes"]],
-                   IVIS.activity.metric = params_247[["IVIS.activity.metric"]],
-                   IVIS_acc_threshold = params_247[["IVIS_acc_threshold"]])
+  IVISout = g.IVIS(Xi, epochSize = ws3,
+                   threshold = params_247[["IVIS_acc_threshold"]])
   InterdailyStability = IVISout$InterdailyStability
   IntradailyVariability = IVISout$IntradailyVariability
   rm(Xi)
