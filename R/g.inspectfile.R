@@ -351,10 +351,18 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       }
     }
   } 
+
+  # detect dot or comma separator in the data file
+  op <- options(warn = -1) # turn off warnings
+  on.exit(options(op))
+  suppressWarnings(expr = {decn = g.dotorcomma(datafile, dformat, mon,
+                                               rmc.dec = params_rawdata[["rmc.dec"]])})
+  options(warn = 0) # turn on warnings
+
   monc = mon
   monn = ifelse(mon > 0, monnames[mon], "unknown")
   dformc = dformat
   dformn = fornames[dformat]
   invisible(list(header = header, monc = monc, monn = monn,
-                 dformc = dformc, dformn = dformn, sf = sf, filename = filename))
+                 dformc = dformc, dformn = dformn, sf = sf, decn = decn, filename = filename))
 }

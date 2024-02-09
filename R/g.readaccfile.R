@@ -26,14 +26,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
   if (mon == MONITOR$VERISENSE) mon = MONITOR$ACTIGRAPH
   dformat = I$dformc
   sf = I$sf
+  decn = I$decn
 
-  # detect dot or comma separator in the data file
-  op <- options(warn = -1) # turn off warnings
-  on.exit(options(op))
-  suppressWarnings(expr = {decn = g.dotorcomma(filename, dformat, mon,
-                                               rmc.dec = params_rawdata[["rmc.dec"]])})
-  options(warn = 0) # turn on warnings
-  
   if ((mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) ||
       (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) || 
       dformat == FORMAT$AD_HOC_CSV) {
