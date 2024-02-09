@@ -164,7 +164,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   header = NULL
 
   while (LD > 1) {
-    P = c()
     if (verbose == TRUE) {
       if (i  == 1) {
         cat(paste0("\nLoading chunk: ", i))
@@ -187,35 +186,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       PreviousLastValue = accread$P$PreviousLastValue
       PreviousLastTime = accread$P$PreviousLastTime
     } 
-    P = accread$P
-    
-    if (i == 1) {
-      light.available = ("light" %in% colnames(P$data))
-
-      use.temp = ("temperature" %in% colnames(P$data))
-      if (use.temp) {
-        if (mean(P$data$temperature[1:10], na.rm = TRUE) > 50) {
-          warning("temperature value is unreaslistically high (> 50 Celcius) and will not be used.", call. = FALSE)
-          use.temp = FALSE
-        }
-      }
-
-      # output matrix for 15 minutes summaries
-      if (!use.temp && !light.available) {
-        metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 4)
-        metricnames_long = c("timestamp","nonwearscore","clippingscore","EN")
-      } else if (use.temp && !light.available) {
-        metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 5)
-        metricnames_long = c("timestamp","nonwearscore","clippingscore","temperaturemean","EN")
-      } else if (!use.temp && light.available) {
-        metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 6)
-        metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","EN")
-      } else if (use.temp && light.available) {
-        metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 7)
-        metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","temperaturemean","EN")
-      }
-    }
-    
+        
     filequality = accread$filequality
     filetooshort = filequality$filetooshort
     filecorrupt = filequality$filecorrupt
@@ -224,12 +195,39 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     isLastBlock = accread$isLastBlock
     PreviousEndPage = accread$endpage
     
-    rm(accread)
     #============
     #process data as read from binary file
-    if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
-      data = P$data
-      QClog = rbind(QClog, P$QClog)
+    if (length(accread$P) > 0) { # would have been set to zero if file was corrupt or empty
+      data = accread$P$data
+      QClog = rbind(QClog, accread$P$QClog)
+      rm(accread)
+
+      if (i == 1) {
+        light.available = ("light" %in% colnames(data))
+
+        use.temp = ("temperature" %in% colnames(data))
+        if (use.temp) {
+          if (mean(data$temperature[1:10], na.rm = TRUE) > 50) {
+            warning("temperature value is unreaslistically high (> 50 Celcius) and will not be used.", call. = FALSE)
+            use.temp = FALSE
+          }
+        }
+
+        # output matrix for 15 minutes summaries
+        if (!use.temp && !light.available) {
+          metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 4)
+          metricnames_long = c("timestamp","nonwearscore","clippingscore","EN")
+        } else if (use.temp && !light.available) {
+          metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 5)
+          metricnames_long = c("timestamp","nonwearscore","clippingscore","temperaturemean","EN")
+        } else if (!use.temp && light.available) {
+          metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 6)
+          metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","EN")
+        } else if (use.temp && light.available) {
+          metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 7)
+          metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","temperaturemean","EN")
+        }
+      }
 
       if (params_rawdata[["imputeTimegaps"]] && (dformat == FORMAT$CSV || dformat == FORMAT$GT3X)) {
         P = g.imputeTimegaps(data, sf = sf, k = 0.25,
@@ -244,11 +242,10 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           PreviousLastTime = NULL
         }
         QClog = rbind(QClog, P$QClog)
+        rm(P)
       }
 
-      if (exists("P")) {
-        rm(P); gc()
-      }
+      gc()
 
       data = as.matrix(data, rownames.force = FALSE)
       #add leftover data from last time
