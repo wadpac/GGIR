@@ -224,7 +224,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     isLastBlock = accread$isLastBlock
     PreviousEndPage = accread$endpage
     
-    rm(accread); gc()
+    rm(accread)
     #============
     #process data as read from binary file
     if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
@@ -438,7 +438,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           lightc = cumsum(c(0,light))
           select = seq(1, length(lightc), by = (ws2 * sf))
           lightmean = diff(lightc[round(select)]) / abs(diff(round(select)))
-          rm(lightc); gc()
+          rm(lightc)
           #light (running max)
           lightmax = matrix(0, length(lightmean), 1)
           for (li in 1:(length(light)/(ws2*sf))) {
@@ -461,7 +461,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           temperaturec = cumsum(c(0, temperature))
           select = seq(1, length(temperaturec), by = (ws2 * sf))
           temperatureb = diff(temperaturec[round(select)]) / abs(diff(round(select)))
-          rm(temperaturec); gc()
+          rm(temperaturec)
 
           metalong[(count2):((count2 - 1) + length(NWav)), col_mli] = round(temperatureb, digits = n_decimal_places)
           col_mli = col_mli + 1
@@ -471,7 +471,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         ENc = cumsum(c(0, EN))
         select = seq(1, length(ENc), by = (ws2 * sf)) #<= EN is derived from data, so it needs the new sf
         ENb = diff(ENc[round(select)]) / abs(diff(round(select)))
-        rm(ENc, EN); gc()
+        rm(ENc, EN)
         metalong[(count2):((count2 - 1) + length(NWav)), col_mli] = round(ENb, digits = n_decimal_places)
 
         if (exists("remaining_epochs")) {
