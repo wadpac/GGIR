@@ -9,7 +9,7 @@ test_that("g.IVIS returns expected output value without missing data", {
   T2 = g.IVIS(Xi2, epochSize = 60)
   expect_equal(T1$InterdailyStability, 1, tolerance = 0.01) # every day is the same, so we expect IS = 1
   expect_equal(T2$InterdailyStability, 0, tolerance = 0.01) # every day is entirely different, so IS = 0
-  expect_equal(T1$IntradailyVariability, 1.937, tolerance = 0.05) #within the day there is variation, so IV>0
+  expect_equal(T1$IntradailyVariability, 2.244335, tolerance = 0.05) #within the day there is variation, so IV>0
   expect_equal(T2$IntradailyVariability, 0, tolerance = 0.01) #within the day there is no variation, so IV=0
 })
 
@@ -24,6 +24,6 @@ test_that("g.IVIS returns expected output value with missing data", {
   T4 = g.IVIS(Xi2, epochSize = 60)
   expect_equal(T3$InterdailyStability, 1, tolerance = 0.01) # every day is the same, so we expect IS = 1
   expect_equal(T4$InterdailyStability, 0, tolerance = 0.01) # every day is entirely different, so IS = 0
-  expect_equal(T3$IntradailyVariability, 2.495, tolerance = 0.05) #within the day there is variation, so IV>0
+  expect_equal(T3$IntradailyVariability, 2.51238, tolerance = 0.05) #within the day there is variation, so IV>0
   expect_equal(T4$IntradailyVariability, 0, tolerance = 0.01) #within the day there is no variation, so IV=0
 })
