@@ -209,16 +209,17 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       # If timestamps in the csv file are formatted (Y-M-D h:m:s.f), data.table::fread assumes them to be
       # in the timezone of the current device (i.e. as if configtz == "").
       # If this is not the case, we need to force the correct timezone (force, as opposed to converting to that timezone).
-      # Converting to POSIXlt then back to POSIXct with the correct timezone
-      # seems to work fine as an equivalent of lubridate::force_tz().
-      #
+      if (!is.numeric(rawTime) && configtz != "") {
+        rawTime = lubridate::force_tz(rawTime, configtz)
+      }
+
       # A similar thing needs to be done if the csv file contains Unix timestamps as well.
       # OmGui converts device timestamps to Unix timestamps as if the timestamps were originally in UTC.
       # So we need to convert the Unix timestamp into a hh:mm:ss format, then force that timestamp
       # from  UTC into configtz timzone.
-      if (configtz != "" || is.numeric(rawTime)) {
-        rawTime = as.POSIXlt(rawTime, tz="UTC", origin = "1970-01-01")
-        rawTime = as.POSIXct(rawTime, tz=configtz, origin = "1970-01-01")
+      if (is.numeric(rawTime)) {
+        rawTime = as.POSIXct(rawTime, tz="UTC", origin = "1970-01-01")
+        rawTime = lubridate::force_tz(rawTime, configtz)
       }
 
       rawTime = as.numeric(rawTime)
@@ -270,11 +271,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       # read.gt3x::read.gt3x returns timestamps as POSIXct with GMT timezone, but they are actally in local time of the device.
       # Don't just convert timezones, instead force the correct local timezone of the device (configtz)
       # while keeping the same hh:mm:ss time.
-      # (Converting to POSIXlt then back to POSIXct with the correct timezone
-      #  seems to work fine as an equivalent of lubridate::force_tz().
-      #  as.POSIXlt() used to be slow but seems reasonably fast these days).
-      P$data$time = as.POSIXlt(P$data$time, origin = "1970-01-01")
-      P$data$time = as.POSIXct(P$data$time, tz=configtz, origin = "1970-01-01")
+      P$data$time = lubridate::force_tz(P$data$time, configtz)
     }
   } else if (mon == MONITOR$AD_HOC && dformat == FORMAT$AD_HOC_CSV) { # user-specified csv format
     # skip 1 more row only if rmc.firstrow.acc points at a row containing column names.

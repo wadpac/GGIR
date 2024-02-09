@@ -30,6 +30,6 @@ URL: https://github.com/wadpac/GGIR/, https://groups.google.com/forum/#!forum/Rp
 BugReports: https://github.com/wadpac/GGIR/issues
 License: Apache License (== 2.0) | file LICENSE
 Suggests: testthat, covr, knitr, rmarkdown, actilifecounts, ActCR, GGIRread, read.gt3x, readxl
-Imports: data.table, foreach, doParallel, signal, zoo, unisensR, ineq, methods, psych, irr
+Imports: data.table, foreach, doParallel, signal, zoo, unisensR, ineq, methods, psych, irr, lubridate
 Depends: stats, utils, R (>= 3.5)
 VignetteBuilder: knitr

@@ -15,11 +15,8 @@ g.getstarttime = function(datafile, data, mon, dformat, desiredtz, configtz = NU
       # the system timezone.
       # If configtz is different from the system timezone (""), we need to force the
       # correct timezone (force, while keeping the same hh:mm:ss time, not just convert to congigtz)
-      # (Converting to POSIXlt then back to POSIXct with the correct timezone
-      #  seems to work fine as an equivalent of lubridate::force_tz()).
       if (configtz != "") {
-        starttime = as.POSIXlt(starttime)
-        starttime = as.POSIXct(starttime, tz=configtz)
+        starttime = lubridate::force_tz(starttime, configtz)
       }
       starttime = as.POSIXlt(starttime, tz = desiredtz)
 
