@@ -96,7 +96,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   }
   
   if (length(nmetrics) == 0) {
-    if (verbose == TRUE) warning("No metrics selected.", call. = FALSE)
+    warning("No metrics selected.", call. = FALSE)
   }
 
   ws3 = params_general[["windowsizes"]][1]; ws2 = params_general[["windowsizes"]][2]; ws = params_general[["windowsizes"]][3]
