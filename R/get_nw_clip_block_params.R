@@ -29,7 +29,7 @@ get_nw_clip_block_params = function(chunksize, dynrange, monc, dformat, deviceSe
     }
   }
 
-  # Clipping threshold: estimate number of data points of clipping based on raw data at about 87 Hz
+  # Clipping threshold
   if (length(dynrange) > 0) {
     clipthres = dynrange - 0.5
   } else {
