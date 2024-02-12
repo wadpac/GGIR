@@ -15,7 +15,7 @@ test_that("timegaps are correctly imputed", {
   # So the duration of each gap is equal to the number of zeros + 1.
   ngaps = 4
   zeros = c(5:200, 6000:6500, 7000:7500, 8000:9500)
-  gaps_duration = length(zeros) + ngaps
+  gaps_duration = length(zeros) #+ ngaps
   gaps_duration = gaps_duration/sf/60
   
   # TEST THAT SAME FILE WITH DIFFERENT FORMATS IS IMPUTED IN THE SAME WAY ----
