@@ -350,7 +350,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     # a shorter chunk of data than expected was read
     isLastBlock = TRUE
 
-    if (blocknumber == 1) {
+    if (blocknumber == 1 || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA)) {
       # not enough data for analysis
       P = c()
       filequality$filetooshort = TRUE
