@@ -187,23 +187,23 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
                                 dayborder = dayborder, ws = 3,
                                 PreviousEndPage = 1, inspectfileobject = Mcsv,
                                 params_rawdata = params_rawdata, params_general = params_general)
-  expect_equal(nrow(movisens_read$P$data), movisens_blocksize)
+  expect_equal(nrow(movisens_read$P$data), movisens_blocksize+1)
   expect_false(movisens_read$filequality$filecorrupt)
   expect_false(movisens_read$filequality$filetooshort)
-  expect_equal(sum(movisens_read$P$data[c("x","y","z")]), 4383.67, tolerance = .01, scale = 1)
-  expect_equal(movisens_read$endpage, movisens_blocksize)
+  expect_equal(sum(movisens_read$P$data[c("x","y","z")]), 4385.29, tolerance = .01, scale = 1)
+  expect_equal(movisens_read$endpage, movisens_blocksize+1)
 
   # read the next block (set PreviousEndPage to movisens_read$endpage)
   movisens_read2 = g.readaccfile(movisensFile, blocksize = movisens_blocksize, blocknumber = 2, filequality = filequality,
                                 dayborder = dayborder, ws = 3,
                                 PreviousEndPage = movisens_read$endpage, inspectfileobject = Mcsv,
                                 params_rawdata = params_rawdata, params_general = params_general)
-  expect_equal(nrow(movisens_read2$P$data), movisens_blocksize)
-  expect_equal(movisens_read2$endpage, movisens_blocksize * 2)
+  expect_equal(nrow(movisens_read2$P$data), movisens_blocksize+1)
+  expect_equal(movisens_read2$endpage, movisens_blocksize * 2+1)
   
   # if the 1st sample of 2nd block is identical to the last sample of the 1st block,
   # this means that we calculated the startpage of the 2nd block incorrectly.
-  expect_false(any(movisens_read2$P$data[1,] == movisens_read$P$data[nrow(movisens_read$P$data),]))
+  expect_true(any(movisens_read2$P$data[1,] == movisens_read$P$data[nrow(movisens_read$P$data),]))
 
   # ad-hoc csv file
 

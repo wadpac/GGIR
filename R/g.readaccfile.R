@@ -40,8 +40,14 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
   # The next time (blocknumber > 1) the startpage will be derived from the previous
   # endpage and the blocksize.
 
-  if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) || dformat == FORMAT$GT3X ||
-      (mon == MONITOR$MOVISENS && dformat == FORMAT$BIN)) {
+  if ((mon == MONITOR$MOVISENS && dformat == FORMAT$BIN)) {
+    if (blocknumber > 1 && length(PreviousEndPage) != 0) {
+      startpage = PreviousEndPage
+    } else {
+      startpage = blocksize * (blocknumber - 1) + 1 # pages are numbered starting with page 1
+    }
+    endpage = startpage + blocksize
+  } else if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) || dformat == FORMAT$GT3X) {
     # for GENEActiv binary data, gt3x format data, and Movisens data,
     # page selection is defined from start to end **including end**
     if (blocknumber > 1 && length(PreviousEndPage) != 0) {
