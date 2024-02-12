@@ -5,29 +5,21 @@ g.readtemp_movisens = function(datafile, from = c(), to = c(), acc_sf, acc_lengt
 
     temp_sf = 1 # temperature is most likely sampled at 1Hz, but we'll double-check later
 
-    temp_from = ceiling(from / acc_sf * temp_sf)
-    temp_to = ceiling(to / acc_sf * temp_sf)
-
-    temperature = unisensR::readUnisensSignalEntry(dirname(datafile), "temp.bin", 
-                                                   startIndex = temp_from, endIndex = temp_to)
-    new_temp_sf = attr(temperature, "sampleRate")
-
-    # We had guessed that temperature was sampled at 1Hz. Let's check, and if we were wrong, then re-do.
-    if (temp_sf != new_temp_sf) {
-        temp_from = ceiling(from / acc_sf * new_temp_sf)
-        temp_to = ceiling(to / acc_sf * new_temp_sf)
-
-        temperature = unisensR::readUnisensSignalEntry(dirname(datafile), "temp.bin", 
-                                                       startIndex = temp_from, endIndex = temp_to)
-    }
-
+    temperature = unisensR::readUnisensSignalEntry(dirname(datafile), "temp.bin")
     temperature = temperature$temp
 
-    # we don't care about the exact timestamp values because we'll throw the timestamps away anyway.
-    rawTime = seq_len(length(temperature))
-    timeRes = seq(from = 1, to = rawTime[length(rawTime)], length.out = acc_length)
+    origin = unisensR::readUnisensStartTime(dirname(datafile))
+    rawTime = seq(origin, origin + length(temperature) - 1, by = 1)
+
+    acc_length = unisensR::getUnisensSignalSampleCount(dirname(datafile), "acc.bin")
+    step = (length(temperature) - 1) / acc_length   #ratio of temp sf to acc sf in movisens data
+    timeRes = seq(rawTime[1], rawTime[length(rawTime)], step)
+    timeRes = timeRes[-length(timeRes)]
 
     temperature = GGIRread::resample(as.matrix(temperature), rawTime, timeRes, length(temperature), type=interpolationType)
 
+    if(length(from) > 0 & length(to) > 0) {
+       temperature = temperature[from:to]
+    }
     invisible(temperature)
 }
