@@ -55,8 +55,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     } else {
       startpage = blocksize * (blocknumber - 1) + 1 # pages are numbered starting with page 1
     }
-    endpage = startpage + blocksize - 1 # -1 because both startpage and endpage will be read,
-                                        # and we want to read blocksize # of samples
+    endpage = startpage + blocksize
   } else {
     # for other monitor brands and data formats
     # page selection is defined from start to end **excluding end itself**,
