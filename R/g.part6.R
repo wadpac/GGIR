@@ -201,10 +201,8 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                            no = length(which(ts$invalidepoch == 0)) / ((3600 * 24) / epochSize))
       s_names[fi] = "N_valid_days"
       fi = fi + 1
-      
-
       if (do.cr == TRUE) {
-        # Cosinor analysis
+        # Cosinor analysis (which includes IVIS)
         colnames(ts)[which(colnames(ts) == "timenum")] = "time"
         acc4cos = ts[, c("time", "ACC")]
         acc4cos$ACC  = acc4cos$ACC / 1000 # convert to mg because that is what applyCosinorAnalyses expects
@@ -213,19 +211,10 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                             midnightsi = nightsi,
                                             epochsizes = rep(epochSize, 2))
         rm(acc4cos)
-        # DFA
-        if (params_247[["part6DFA"]] == TRUE) { 
-          ssp = SSP(ts$ACC)
-          abi = ABI(ssp)
-        }
-        
-        # if (params_247[["part6IVIS"]] == TRUE) { 
-        # }
-        
       } else {
         cosinor_coef = NULL
-        ssp = abi = NULL
       }
+      
       if (length(cosinor_coef) > 0) {
         summary[fi] = cosinor_coef$timeOffsetHours
         s_names[fi] = "cosinor_timeOffsetHours"
@@ -258,10 +247,11 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                   "cosinorExt_DownMesor", "cosinorExt_MESOR",
                                   "cosinorExt_ndays", "cosinorExt_F_pseudo", "cosinorExt_R2")
         fi = fi + 11
-        summary[fi:(fi + 1)] = c(cosinor_coef$IVIS$InterdailyStability,
-                                 cosinor_coef$IVIS$IntradailyVariability)
-        s_names[fi:(fi + 1)] = c("cosinorIS", "cosinorIV")
-        fi = fi + 2
+        summary[fi:(fi + 2)] = c(cosinor_coef$IVIS$InterdailyStability,
+                                 cosinor_coef$IVIS$IntradailyVariability,
+                                 cosinor_coef$IVIS$phi)
+        s_names[fi:(fi + 2)] = c("IS", "IV", "phi")
+        fi = fi + 3
       } else {
         cosinor_coef = c()
         s_names[fi:(fi + 19)] = c("cosinor_timeOffsetHours", "cosinor_mes", 
@@ -276,10 +266,14 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         fi = fi + 20
       }
       if (params_247[["part6DFA"]] == TRUE) {
+        ssp = SSP(ts$ACC)
+        abi = ABI(ssp)
+        
         summary[fi:(fi + 1)] = c(ssp, abi)
         s_names[fi:(fi + 1)] = c("SSP", "ABI")
         fi = fi + 2
       }
+      
       #=============================================
       # Store results in milestone data
       summary = summary[1:(fi - 1),]

@@ -15,7 +15,7 @@ g.IVIS = function(Xi, epochSize = 60, threshold = NULL) {
   # ts hourly time series, including NA values
   hour = (1:ceiling(length(Xi))) - 1
   ts = data.frame(Xi = Xi, hour = hour, stringsAsFactors = TRUE)
-  IS = IV = NA
+  IS = IV = phi = NA
   if (nrow(ts) > 1) {
     ts$day = floor(ts$hour/24) + 1
     ts$hour = ts$hour - (floor(ts$hour / 24) * 24) # 24 hour in a day
@@ -28,6 +28,10 @@ g.IVIS = function(Xi, epochSize = 60, threshold = NULL) {
       deltaXi = diff(Xi)^2
       N = length(Xi[!is.na(Xi)])
       
+      # phi
+      model = arima(Xi[!is.na(Xi)], order = c(1, 0, 0))
+      phi = model$coef[[1]]
+
       # IS: lower is less synchronized with the 24 hour zeitgeber
       ISnum = sum((Xh - Xm)^2, na.rm = TRUE) * N
       ISdenom = 24 * sum((Xi - Xm)^2, na.rm = TRUE)
@@ -39,5 +43,5 @@ g.IVIS = function(Xi, epochSize = 60, threshold = NULL) {
       IV = IVnum / IVdenom 
     }
   }
-  invisible(list(InterdailyStability = IS, IntradailyVariability = IV))
+  invisible(list(InterdailyStability = IS, IntradailyVariability = IV, phi = phi))
 }
