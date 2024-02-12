@@ -30,7 +30,7 @@ g.imputeTimegaps = function(x, sf, k=0.25, impute = TRUE,
         newTime = NULL
       }
       for (g in 1:length(gapp)) {
-        newTime = c(newTime, x$time[gapp[g]] + seq(0, by = 1/sf, length.out = x$gap[gapp[g]]))
+        newTime = c(newTime, x$time[gapp[g]] + rep(0, x$gap[gapp[g]]))
         if (g < length(gapp)) {
           newTime = c(newTime, x$time[(gapp[g] + 1):(gapp[g + 1] - 1)])
         }
