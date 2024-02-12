@@ -295,13 +295,13 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     # skip 1 more row only if rmc.firstrow.acc points at a row containing column names.
     # This is only relevant for the first chunk of data.
     if (blocknumber == 1) {
-      testheader =  data.table::fread(filename, nrows = 2, skip = params_rawdata[["rmc.firstrow.acc"]]-1,
-                                      dec = decn, showProgress = FALSE,
-                                      header = TRUE, data.table=FALSE, stringsAsFactors=FALSE)
-      if (suppressWarnings(is.na(as.numeric(colnames(testheader)[1])))) { # first value is *not* a number, so file starts with a header
+    #  testheader =  data.table::fread(filename, nrows = 2, skip = params_rawdata[["rmc.firstrow.acc"]]-1,
+    #                                  dec = decn, showProgress = FALSE,
+    #                                  header = TRUE, data.table=FALSE, stringsAsFactors=FALSE)
+    #  if (suppressWarnings(is.na(as.numeric(colnames(testheader)[1])))) { # first value is *not* a number, so file starts with a header
         startpage = startpage + 1
         endpage = endpage + 1
-      }
+    #  }
     }
 
     try(expr = {P = read.myacc.csv(rmc.file = filename,
