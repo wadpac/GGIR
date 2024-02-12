@@ -27,7 +27,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
   rollMean = function(x, fs, epochSize) {
     x = cumsum(c(0, x))
     select = seq(1, length(x), by = fs * epochSize)
-    y = diff(x[round(select)]) / abs(diff(round(select[1:(length(select))])))
+    y = diff(x[round(select)]) / abs(diff(round(select)))
     return(y)
   }
   rollSD = function(x, sf, epochSize) {
