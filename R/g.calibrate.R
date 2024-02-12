@@ -148,6 +148,11 @@ g.calibrate = function(datafile, params_rawdata = c(),
         if (use > 0) {
           if (use != LD) {
             S = data[(use + 1):LD,] # store leftover data
+
+            # if S is only one row, it gets coersed to a vector, and what we need is a 1-row matrix
+            if (is.vector(S)) {
+              S = t(S)
+            }
           }
           data = data[1:use,]
           LD = nrow(data) #redefine LD because there is less data
