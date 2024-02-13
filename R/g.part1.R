@@ -220,6 +220,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
         bcc.scalei = which(colnames(bcc.data) == "scale.x" | colnames(bcc.data) == "scale.y" | colnames(bcc.data) == "scale.z")
         bcc.offseti = which(colnames(bcc.data) == "offset.x" | colnames(bcc.data) == "offset.y" | colnames(bcc.data) == "offset.z")
         bcc.temp.offseti = which(colnames(bcc.data) == "temperature.offset.x" | colnames(bcc.data) == "temperature.offset.y" | colnames(bcc.data) == "temperature.offset.z")
+        bcc.meantempcali = which(colnames(bcc.data) == "meantempcal")
         bcc.QCmessagei = which(colnames(bcc.data) == "QCmessage")
         bcc.npointsi = which(colnames(bcc.data) == "n.10sec.windows")
         bcc.nhoursusedi = which(colnames(bcc.data) == "n.hours.considered")
@@ -227,12 +228,13 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
         C$scale = as.numeric(bcc.data[bcc.i[1],bcc.scalei])
         C$offset = as.numeric(bcc.data[bcc.i[1],bcc.offseti])
         C$tempoffset =  as.numeric(bcc.data[bcc.i[1],bcc.temp.offseti])
+        C$meantempcal = bcc.data[bcc.i[1], bcc.meantempcali]
         C$cal.error.start = as.numeric(bcc.data[bcc.i[1],bcc.cal.error.start])
         C$cal.error.end = as.numeric(bcc.data[bcc.i[1],bcc.cal.error.end])
         C$QCmessage = bcc.data[bcc.i[1],bcc.QCmessagei]
         C$npoints = bcc.data[bcc.i[1], bcc.npointsi]
         C$nhoursused = bcc.data[bcc.i[1], bcc.nhoursusedi]
-        C$use.temp = bcc.data[bcc.i[1], bcc.nhoursusedi]
+        C$use.temp = bcc.data[bcc.i[1], bcc.use.tempi]
         if (verbose == TRUE) {
           cat(paste0("\nRetrieved Calibration error (g) before: ",as.numeric(bcc.data[bcc.i[1],bcc.cal.error.start])))
           cat(paste0("\nRetrieved Callibration error (g) after: ",as.numeric(bcc.data[bcc.i[1],bcc.cal.error.end])))
