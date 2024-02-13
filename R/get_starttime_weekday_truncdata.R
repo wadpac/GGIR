@@ -28,7 +28,7 @@ get_starttime_weekday_truncdata = function(monc, dformat, data,
     starttime$min = starttime$min + 1 # shift in minutes needed (+1 one to account for seconds comp)
   }
 
-  minshift = start_meas - (starttime$min %% start_meas)
+  minshift = start_meas - (((starttime$min/start_meas) - floor(starttime$min/start_meas)) * start_meas)
   if (minshift == start_meas) {
     minshift = 0
   }
