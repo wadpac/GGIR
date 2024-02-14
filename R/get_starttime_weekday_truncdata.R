@@ -20,6 +20,8 @@ get_starttime_weekday_truncdata = function(monc, dformat, data,
   weekdays = c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
   wdayname = weekdays[wday]
 
+  starttime$sec = round(starttime$sec)
+
   # assess how much data to delete till next 15 minute period
   secshift = 60 - starttime$sec # shift in seconds needed
   if (secshift == 60) {
