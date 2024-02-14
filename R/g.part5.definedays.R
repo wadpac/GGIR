@@ -3,7 +3,7 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
                               Nwindows, qwindow, ID = NULL) {
   Nts = nrow(ts)
   # define local functions ----
-  qwindow2timestamp = function(qwindow, lastepoch) {
+  qwindow2timestamp = function(qwindow) {
     H = floor(qwindow)
     M = floor((qwindow - H) * 60)
     S = floor((qwindow - H - M/60) * 60 * 60)
@@ -12,15 +12,13 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
     M = ifelse(nchar(M) == 1, paste0("0", M), M)
     S = ifelse(nchar(S) == 1, paste0("0", S), S)
     HMS = paste(H, M, S, sep = ":")
-    if (HMS[length(HMS)] == "24:00:00") HMS[length(HMS)] = lastepoch
     if (HMS[1] != "00:00:00") HMS = c("00:00:00", HMS)
-    if (HMS[length(HMS)] != lastepoch) HMS = c(HMS, lastepoch)
     return(HMS)
   }
-  fixTime = function(x, epochSize) {
+  subtractEpochFromTimeName = function(x, epochSize) {
     hms = strptime(x, format = "%H:%M:%S")
     hms = hms - epochSize
-    hms = substr(as.character(hms), 12, 19)
+    hms = format(hms, format = "%H:%M:%S")
     return(hms)
   }
   # main script -----
@@ -36,10 +34,15 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
       # add extra nightsi to get the last day processed (as wi has been increased by 1)
       nightsi = c(nightsi, nightsi[length(nightsi)] + (24*(60/epochSize) * 60))
     }
+    NepochPerDay = ((24*3600) / epochSize)
     if (length(nightsi) >= wi) {
       if (wi == 1) {
-        qqq[1] = 1
         qqq[2] = nightsi[wi] - 1
+        if (qqq[2] > NepochPerDay)  {
+          qqq[1] = qqq[2] - NepochPerDay + 1
+        } else {
+          qqq[1] = 1
+        }
       } else if (wi <= length(nightsi)) {
         qqq[1] = nightsi[wi - 1]
         qqq[2] = nightsi[wi] - 1
@@ -101,7 +104,12 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
           qwindow = c(0, 24)
         }
       }
-      breaks = qwindow2timestamp(qwindow, lastepoch = lastepoch)
+      breaks = qwindow2timestamp(qwindow)
+      if (24 %in% qwindow) {
+        # 24:00:00: probably does not exist, replace by last timestamp in a day
+        latest_time_in_day = max(format(ts$time[fullQqq], format = "%H:%M:%S"))
+        breaks = gsub(pattern = "24:00:00", replacement = latest_time_in_day, x = breaks)
+      }
       breaks_i = c()
       for (bi in 1:length(breaks)) {
         if (any(grepl(breaks[bi], ts$time[fullQqq]))) {
@@ -126,7 +134,7 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
           minusOne = ifelse(breaks[bi + 1] == lastepoch, 0, 1)
           if (minusOne == 1) {
             segments[[si]] = c(breaks_i[bi], breaks_i[bi + 1] - 1)
-            endOfSegment = fixTime(breaks[bi + 1], epochSize)
+            endOfSegment = subtractEpochFromTimeName(breaks[bi + 1], epochSize)
           } else {
             segments[[si]] = c(breaks_i[bi], breaks_i[bi + 1])
             endOfSegment = breaks[bi + 1]
