@@ -78,13 +78,12 @@ test_that("the wear column is processed correctly", {
   filequality = data.frame(filetooshort = FALSE, filecorrupt = FALSE,
                            filedoesnotholdday = FALSE, NFilePagesSkipped = 0)
   
-  M_obj = g.getmeta(datafile = testfile, desiredtz = "", windowsizes = c(1,60,100),
+  M_obj = g.getmeta(datafile = testfile, desiredtz = "", windowsizes = c(1,60,120),
                     inspectfileobject = I_obj,
                     rmc.dec = ".",
                     rmc.firstrow.acc = 1, rmc.firstrow.header = c(), rmc.unit.time = "UNIXsec",
                     rmc.col.acc = 1:3, rmc.col.temp = c(), rmc.col.time = 4,
                     rmc.sf = sf, desiredtz = "",
                     rmc.col.wear = 5)
-
-  expect_equal(M_obj$metalong$nonwearscore, c(3,0,0,3,3))
+  expect_equal(M_obj$metalong$nonwearscore, c(3,0,3,3,3))
 })

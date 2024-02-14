@@ -146,6 +146,12 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                      "The short windowsize has now been automatically adjusted to ",
                      ws3, " seconds in order to meet this criteria.\n"), call. = FALSE)
     }
+    if (ws/ws2 != round(ws/ws2)) {
+      ws = ws2 * ceiling(ws/ws2)
+      warning(paste0("The third value of parameter windowsizes needs to be a multitude of the second value.\n",
+                     "The third value has been automatically adjusted to ",
+                     ws, " seconds in order to meet this criteria.\n"), call. = FALSE)
+    }    
     params_general[["windowsizes"]] = c(ws3, ws2, ws)
   }
   #-----------------------------------------------------------------------------------
