@@ -1275,24 +1275,16 @@ GGIR(mode = 1:5,
         number of levels.}
 
       \item{IVIS_windowsize_minutes}{
-        Numeric (default = 60).
-        Window size of the Intradaily Variability (IV) and Interdaily
-        Stability (IS) metrics in minutes, needs to be able to add up to 24 hours.}
+        This argument is deprecated.}
 
       \item{IVIS_epochsize_seconds}{
-        Numeric (default = NULL).
         This argument is deprecated.}
 
       \item{IVIS.activity.metric}{
-        Numeric (default = 2).
-        Metric used for activity calculation.
-        Value = 1, uses continuous scaled acceleration.
-        Value = 2, tries to collapse acceleration into a binary score of rest
-        versus active to try to simulate the original approach.}
+        This argument is deprecated.}
 
       \item{IVIS_acc_threshold}{
-        Numeric (default = 20).
-        Acceleration threshold to distinguish inactive from active.}
+        This argument is deprecated.}
 
       \item{qM5L5}{
         Numeric (default = NULL).
@@ -1328,10 +1320,14 @@ GGIR(mode = 1:5,
         over which L5M5 needs to be calculated. Now this is done with argument qwindow.}
 
       \item{cosinor}{
-        Boolean (default = FALSE). Whether to apply the cosinor analysis from the ActCR package.}
+        Boolean (default = FALSE). Whether to apply the cosinor analysis from the ActCR package in part 2.
+        In part 6 cosinor analysis is applied by default and cannot be turned off.}
         
       \item{part6CR}{
-        Boolean (default = FALSE) to indicate whether circadian rhythm analysis should be run by part 6.
+        Boolean (default = FALSE) to indicate whether circadian rhythm analysis should
+        be run by part 6, this includes: cosinor analysis, extended cosinor analysis,
+        IS, IV, and phi. Optionally this can be expanded with detrended fluctutation analysis
+        which is controlled by parameter `part6DFA`.
       }
       \item{part6HCA}{
         Boolean (default = FALSE) to indicate whether Household Co Analysis should 
@@ -1350,7 +1346,7 @@ GGIR(mode = 1:5,
       }
       \item{part6DFA}{
         Boolean (default = FALSE) to indicate whether to perform Detrended Fluctuation
-        Analysis. Turned off by default because it can be very time consuming.
+        Analysis. Turned off by default because it can be time consuming.
       }
     }
   }

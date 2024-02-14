@@ -201,28 +201,20 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                            no = length(which(ts$invalidepoch == 0)) / ((3600 * 24) / epochSize))
       s_names[fi] = "N_valid_days"
       fi = fi + 1
-      
-
+      #=================================================================
+      # Cosinor analysis which comes with IV IS estimtes
       if (do.cr == TRUE) {
-        # Cosinor analysis
+        # Note: applyCosinorAnalyses below uses column invalidepoch to turn
+        # imputed values to NA.
         colnames(ts)[which(colnames(ts) == "timenum")] = "time"
         acc4cos = ts[, c("time", "ACC")]
         acc4cos$ACC  = acc4cos$ACC / 1000 # convert to mg because that is what applyCosinorAnalyses expects
         cosinor_coef = applyCosinorAnalyses(ts = acc4cos,
                                             qcheck = ts$invalidepoch,
                                             midnightsi = nightsi,
-                                            epochsizes = rep(epochSize, 2))
-        # DFA
-        if (params_247[["part6DFA"]] == TRUE) { 
-          ssp = SSP(ts$ACC)
-          abi = ABI(ssp)
-        }
+                                            epochsizes = rep(epochSize, 2),
+                                            threshold = params_phyact[["threshold.lig"]])
         rm(acc4cos)
-      } else {
-        cosinor_coef = NULL
-        ssp = abi = NULL
-      }
-      if (length(cosinor_coef) > 0) {
         summary[fi] = cosinor_coef$timeOffsetHours
         s_names[fi] = "cosinor_timeOffsetHours"
         fi = fi + 1
@@ -254,13 +246,14 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                   "cosinorExt_DownMesor", "cosinorExt_MESOR",
                                   "cosinorExt_ndays", "cosinorExt_F_pseudo", "cosinorExt_R2")
         fi = fi + 11
-        summary[fi:(fi + 1)] = c(cosinor_coef$IVIS$InterdailyStability,
-                                 cosinor_coef$IVIS$IntradailyVariability)
-        s_names[fi:(fi + 1)] = c("cosinorIS", "cosinorIV")
-        fi = fi + 2
+        summary[fi:(fi + 2)] = c(cosinor_coef$IVIS$InterdailyStability,
+                                 cosinor_coef$IVIS$IntradailyVariability,
+                                 cosinor_coef$IVIS$phi)
+        s_names[fi:(fi + 2)] = c("IS", "IV", "phi")
+        fi = fi + 3
       } else {
-        cosinor_coef = c()
-        s_names[fi:(fi + 19)] = c("cosinor_timeOffsetHours", "cosinor_mes", 
+        cosinor_coef = NULL
+        s_names[fi:(fi + 20)] = c("cosinor_timeOffsetHours", "cosinor_mes", 
                                   "cosinor_amp", "cosinor_acrophase",
                                   "cosinor_acrotime", "cosinor_ndays", "cosinor_R2", 
                                   "cosinorExt_minimum", "cosinorExt_amp", 
@@ -268,14 +261,20 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                   "cosinorExt_acrotime", "cosinorExt_UpMesor",
                                   "cosinorExt_DownMesor", "cosinorExt_MESOR",
                                   "cosinorExt_ndays", "cosinorExt_F_pseudo", 
-                                  "cosinorExt_R2", "cosinorIS", "cosinorIV")
-        fi = fi + 20
+                                  "cosinorExt_R2", "IS", "IV", "phi")
+        fi = fi + 21
       }
-      if (params_247[["part6DFA"]] == TRUE) {
+      
+      #=======================================================================
+      # DFA analyses is used independent of do.cr because it is time consuming
+      if (params_247[["part6DFA"]] == TRUE && do.cr == TRUE) {
+        ssp = SSP(ts$ACC)
+        abi = ABI(ssp)
         summary[fi:(fi + 1)] = c(ssp, abi)
         s_names[fi:(fi + 1)] = c("SSP", "ABI")
         fi = fi + 2
       }
+      
       #=============================================
       # Store results in milestone data
       summary = summary[1:(fi - 1),]

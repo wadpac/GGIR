@@ -8,7 +8,7 @@
   before applying the cosinorAnlayses
 }
 \usage{
-  applyCosinorAnalyses(ts, qcheck, midnightsi, epochsizes)
+  applyCosinorAnalyses(ts, qcheck, midnightsi, epochsizes, threshold = NULL)
 }
 \arguments{
   \item{ts}{
@@ -23,6 +23,9 @@
   }
   \item{epochsizes}{
     Epoch size for ts and qcheck respectively
+  }
+  \item{threshold}{
+    See \link{cosinorAnalyses}
   }
 }
 \author{
