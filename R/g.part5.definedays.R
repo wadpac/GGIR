@@ -107,7 +107,7 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
       breaks = qwindow2timestamp(qwindow)
       if (24 %in% qwindow) {
         # 24:00:00: probably does not exist, replace by last timestamp in a day
-        latest_time_in_day = max(format(ts$time[fullQqq], format = "%H:%M:%S"))
+        latest_time_in_day = max(format(ts$time[1:pmin(Nts, NepochPerDay)], format = "%H:%M:%S"))
         breaks = gsub(pattern = "24:00:00", replacement = latest_time_in_day, x = breaks)
       }
       breaks_i = c()
