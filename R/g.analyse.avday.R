@@ -1,6 +1,6 @@
 g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
                            ws3, doiglevels, firstmidnighti, ws2, midnightsi, params_247 = c(), 
-                           qcheck = c(), acc.metric = c(), params_phyact, ...) {
+                           qcheck = c(), acc.metric = c(), params_phyact = NULL, ...) {
   #get input variables
   input = list(...)
   if (length(input) > 0 || length(params_247) == 0) {
