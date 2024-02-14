@@ -267,6 +267,11 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         }
         data = rbind(S,data)
       }
+      
+      if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) || mon == MONITOR$MOVISENS) {
+        meantempcal = mean(data[, "temperature"], na.rm = TRUE)
+      }
+
       if (i == 1) {
         SWMT = get_starttime_weekday_truncdata(mon, dformat,
                                                data, header, desiredtz = params_general[["desiredtz"]],
@@ -330,9 +335,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           yy = cbind(temperature,
                      temperature,
                      temperature)
-          if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) || mon == MONITOR$MOVISENS) {
-            meantempcal = mean(temperature, na.rm = TRUE)
-          }
           data[, c("x", "y", "z")] = data[, c("x", "y", "z")] + scale(yy, center = rep(meantempcal,3), scale = 1/tempoffset)
         }
 
