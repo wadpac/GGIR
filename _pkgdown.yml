@@ -47,10 +47,10 @@ navbar:
       menu:
         - text: 1. What is GGIR
           href: articles/chapterInProgress.html
-        - text: 2. The GGIR pipeline
+        - text: 2. The GGIR Pipeline
           href: articles/chapter2_Pipeline.html
-        - text: 3. Inspecting the Data Quality
-          href: articles/chapterInProgress.html
+        - text: 3. Data Quality Assurance
+          href: articles/chapter3_QualityAssessment.html
         - text: 4. From Raw Data to Acceleration Metrics
           href: articles/chapterInProgress.html
         - text: 5. Accounting for Study Protocol
