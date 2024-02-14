@@ -103,6 +103,11 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
         } else { # if ID/date not correctly matched with activity log
           qwindow = c(0, 24)
         }
+      } else {
+        qwindow = sort(qwindow)
+        if (qwindow[1] != 0) qwindow = c(0, qwindow)
+        if (qwindow[length(qwindow)] != 24) qwindow = c(qwindow, 24)
+        print(qwindow)
       }
       breaks = qwindow2timestamp(qwindow)
       if (24 %in% qwindow) {
