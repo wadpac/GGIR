@@ -29,7 +29,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-5</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -1286,7 +1286,7 @@ biased output.</p>
 <h4 class="unnumbered" id="dataformat">dataFormat<a class="anchor" aria-label="anchor" href="#dataformat"></a>
 </h4>
 <p>Character (default = “raw”). To indicate what the format is of the
-data in datadir. Current alternatives: ukbiobank_csv, actiwatch_csv,
+data in datadir. Alternatives: ukbiobank_csv, actiwatch_csv,
 actiwatch_awd, actigraph_csv, and sensewear_xls, which correspond to
 epoch level data files from, respecitively, UK Biobank in csv format,
 Actiwatch in csv format, Actiwatch in awd format, ActiGraph csv format,
@@ -1295,7 +1295,11 @@ epoch size for UK Biobank csvdata is 5 seconds. The epoch size for the
 other non-raw data formats is flexible, but make sure that you set first
 value of argument windowsizes accordingly. Also when working with
 non-raw data formats specify argument extEpochData_timeformat as
-documented below.</p>
+documented below. For ukbiobank_csv nonwear is a column in the data
+itself, for actiwatch_csv, actiwatch_awd, actigraph_csv, and
+sensewear_xls non-wear is detected as 60 minute rolling zeros. The
+length of this window can be modified with the third value of argument
+windowsizes expressed in seconds.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="maxrecordinginterval">maxRecordingInterval<a class="anchor" aria-label="anchor" href="#maxrecordinginterval"></a>

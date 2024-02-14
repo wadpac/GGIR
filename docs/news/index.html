@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-5</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,6 +83,12 @@
       <small>Source: <a href="https://github.com/wadpac/GGIR/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.0-5" id="changes-in-ggir-version-30-5">CHANGES IN GGIR VERSION 3.0-5<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-30-5"></a></h2><p class="text-muted">CRAN release: 2024-02-02</p>
+<ul><li><p>Part 5: Fix bug in functionality for Sensewear data (externally derived epoch data) <a href="https://github.com/wadpac/GGIR/issues/1030" class="external-link">#1030</a></p></li>
+<li><p>Part 1: For externally derived epoch data in dataFormat actiwatch_csv, actiwatch_awd, actigraph_csv, and sensewear_xls the non-wear detection is no longer done based on a hard-coded 60 minute rolling window but the window length is now modifiable with the third value of argument windowsizes (in seconds) as also used for raw data. <a href="https://github.com/wadpac/GGIR/issues/1026" class="external-link">#1026</a></p></li>
+<li><p>Part 5: Fix issue with defining days specific to when timewindow is MM, recordings starts at midnight and both first and last days are incomplete <a href="https://github.com/wadpac/GGIR/issues/1029" class="external-link">#1029</a></p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.0-4" id="changes-in-ggir-version-30-4">CHANGES IN GGIR VERSION 3.0-4<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-30-4"></a></h2>
 <ul><li><p>Part 5: Improved handling of inconsistent number of columns in part 5 milestone data <a href="https://github.com/wadpac/GGIR/issues/1002" class="external-link">#1002</a></p></li>

@@ -29,7 +29,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-5</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -142,7 +142,9 @@ output are:</p>
 participant ID.</li>
 <li>
 <strong>Per sequence of recordings</strong> with matching
-participant IDs which are optionally appended.</li>
+participant IDs which are optionally appended. For details on how to use
+this see documentation on parameter <code>maxRecordingInterval</code>
+and documentation how to use parameters as explained further down.</li>
 <li>
 <strong>Calendar day</strong> with option to specify the day border
 timing with midnight as default.</li>
@@ -453,7 +455,7 @@ analysis as arm angle is not exported.</caption>
 <td>Actiwatch</td>
 <td>.csv</td>
 <td>
-<code>dataFormat = actiwatch_csv</code>
+<code>dataFormat = "actiwatch_csv"</code>
 <code>extEpochData_timeformat = "%m/%d/%Y %H:%M:%S"</code>
 </td>
 </tr>
@@ -461,7 +463,7 @@ analysis as arm angle is not exported.</caption>
 <td>Actiwatch</td>
 <td>.awd</td>
 <td>
-<code>dataFormat = actiwatch_awd</code>
+<code>dataFormat = "actiwatch_awd"</code>
 <code>extEpochData_timeformat = "%m/%d/%Y %H:%M:%S"</code>
 </td>
 </tr>
@@ -469,14 +471,14 @@ analysis as arm angle is not exported.</caption>
 <td>ActiGraph</td>
 <td>.csv (count files, not be confused with csv raw data files)</td>
 <td>
-<code>dataFormat = actigraph_csv</code>
+<code>dataFormat = "actigraph_csv"</code>
 <code>extEpochData_timeformat = "%m/%d/%Y %H:%M:%S"</code>
 </td>
 </tr>
 <tr class="even">
 <td>Axivity</td>
 <td>UKBiobank csv export of epoch level data</td>
-<td><code>dataFormat = ukbiobank_csv</code></td>
+<td><code>dataFormat = "ukbiobank_csv"</code></td>
 </tr>
 </tbody>
 </table>
@@ -640,6 +642,7 @@ the files stored in the results folder, where the files in the QC
 subfolder offer complementary information to help with the quality
 check. For a full GGIR analyses we expect at least the following output
 files:</p>
+<p><strong><em>Output files in results subfolder:</em></strong></p>
 <table class="table">
 <caption>A detailed discussion of each output can be found in the other
 chapters.</caption>
@@ -655,72 +658,107 @@ chapters.</caption>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td>results/part2_summary.csv</td>
+<td>part2_summary.csv</td>
 <td>one row per recording</td>
 <td>2</td>
 </tr>
 <tr class="even">
-<td>results/part2_daysummary.csv</td>
+<td>part2_daysummary.csv</td>
 <td>one row per day</td>
 <td>2</td>
 </tr>
 <tr class="odd">
-<td>results/part4_summary_sleep_cleaned.csv</td>
+<td>part4_summary_sleep_cleaned.csv</td>
 <td>one row per recording</td>
 <td>4</td>
 </tr>
 <tr class="even">
-<td>results/part4_nightsummary_sleep_cleaned.csv</td>
+<td>part4_nightsummary_sleep_cleaned.csv</td>
 <td>one row per night</td>
 <td>4</td>
 </tr>
 <tr class="odd">
-<td>results/visualisation_sleep.pdf</td>
+<td>visualisation_sleep.pdf</td>
 <td>40 recordings per page</td>
 <td>4</td>
 </tr>
 <tr class="even">
-<td>results/part5_daysummary_WW_L40M100V400_T5A5.csv</td>
+<td>part5_daysummary_WW_L40M100V400_T5A5.csv</td>
 <td>one row per day</td>
 <td>5</td>
 </tr>
 <tr class="odd">
-<td>results/part5_personsummary_WW_L40M100V400_T5A5.csv</td>
+<td>part5_personsummary_WW_L40M100V400_T5A5.csv</td>
+<td>one row per recording</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+<p><strong><em>Output files in results/QC subfolder:</em></strong></p>
+<table class="table">
+<caption>A detailed discussion of each output can be found in the other
+chapters.</caption>
+<colgroup>
+<col width="52%">
+<col width="23%">
+<col width="23%">
+</colgroup>
+<thead><tr class="header">
+<th>File path</th>
+<th>Resolution</th>
+<th>GGIR part</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>data_quality_report.csv</td>
 <td>one row per recording</td>
 <td>5</td>
 </tr>
 <tr class="even">
-<td>results/QC/data_quality_report.csv</td>
-<td>one row per recording</td>
-<td>5</td>
-</tr>
-<tr class="odd">
-<td>results/QC/part4_summary_sleep_full.csv</td>
+<td>part4_summary_sleep_full.csv</td>
 <td>one row per recording</td>
 <td>4</td>
 </tr>
-<tr class="even">
-<td>results/QC/part4_nightsummary_sleep_full.csv</td>
+<tr class="odd">
+<td>part4_nightsummary_sleep_full.csv</td>
 <td>one row per night</td>
 <td>4</td>
 </tr>
-<tr class="odd">
-<td>results/QC/part5_daysummary_full_WW_L40M100V400_T5A5.csv</td>
+<tr class="even">
+<td>part5_daysummary_full_WW_L40M100V400_T5A5.csv</td>
 <td>one row per day</td>
 <td>5</td>
 </tr>
-<tr class="even">
-<td>results/QC/plots_to_check_data_quality_1.pdf</td>
+<tr class="odd">
+<td>plots_to_check_data_quality_1.pdf</td>
 <td>one recording per page</td>
 <td>2</td>
 </tr>
+</tbody>
+</table>
+<p><strong><em>Output files in meta/ms5.outraw
+subfolder:</em></strong></p>
+<table class="table">
+<caption>A detailed discussion of each output can be found in the other
+chapters.</caption>
+<colgroup>
+<col width="52%">
+<col width="23%">
+<col width="23%">
+</colgroup>
+<thead><tr class="header">
+<th>File path</th>
+<th>Resolution</th>
+<th>GGIR part</th>
+</tr></thead>
+<tbody>
 <tr class="odd">
-<td>meta/ms5.outraw/40_100_400</td>
+<td>40_100_400/</td>
 <td>one file with time series per recording</td>
 <td></td>
 </tr>
 <tr class="even">
-<td>meta/ms5.outraw/ behavioralcodes2023-11-06.csv</td>
+<td>behavioralcodes2023-11-06.csv</td>
 <td>dictionary for behavioural codes as used in the time series
 file</td>
 <td></td>

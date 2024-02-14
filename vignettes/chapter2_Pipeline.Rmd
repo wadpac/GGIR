@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 [GGIR](https://CRAN.R-project.org/package=GGIR) is an R-package primarily designed to process multi-day ***raw*** accelerometer data for physical activity, sleep, and circadian rhythm research. The term ***raw*** refers to data being expressed in m/s<sup>2</sup> or gravitational acceleration as opposed to the previous generation accelerometers which stored data in accelerometer brand specific units. Despite the focus on the raw data, GGIR also offers functionality to process previous generation accelerometer data. The signal processing for raw data includes automatic calibration to gravity, detection of abnormally high values., imputation of raw-level time gaps (only for specific sensor brands), and calculation of orientation angle and average magnitude acceleration based on a variety of metrics. Next, the signal processing for both raw and previous generation data continuous with the detection of non-wear and epoch level imputation. Finally, GGIR uses all this information to describe the data at multiple time resolutions on data quality and data summary metrics that could be interpreted as estimates of physical activity, inactivity, sleep, and circadian rhythm. The time resolutions of GGIR output are:
 
 -   **Per recording**, which typically matches to one participant ID.
--   **Per sequence of recordings** with matching participant IDs which are optionally appended.
+-   **Per sequence of recordings** with matching participant IDs which are optionally appended. For details on how to use this see documentation on parameter `maxRecordingInterval` and documentation how to use parameters as explained further down.
 -   **Calendar day** with option to specify the day border timing with midnight as default.
 -   **Night** defined from noon-noon, unless the person woke up after noon which is when the sleep algorithm will re-focus on the window 6pm-6pm.
 -   **Day segment**, which can be defined via code to indicate timing of the segments within a day standardised for all recordings and days in a dataset or via diary file where the segment definition is allowed to vary per recording and per day.
@@ -156,10 +156,10 @@ By default GGIR assumes that the data is raw as discussed at the start of this c
 
 | Sensor brand | Data format                                                 | Combine with parameter                                                       |
 |------------------------|-----------------------|-------------------------|
-| Actiwatch    | .csv                                                        | `dataFormat = actiwatch_csv` `extEpochData_timeformat = "%m/%d/%Y %H:%M:%S"` |
-| Actiwatch    | .awd                                                        | `dataFormat = actiwatch_awd` `extEpochData_timeformat = "%m/%d/%Y %H:%M:%S"` |
-| ActiGraph    | .csv (count files, not be confused with csv raw data files) | `dataFormat = actigraph_csv` `extEpochData_timeformat = "%m/%d/%Y %H:%M:%S"` |
-| Axivity      | UKBiobank csv export of epoch level data                    | `dataFormat = ukbiobank_csv`                                                 |
+| Actiwatch    | .csv                                                        | `dataFormat = "actiwatch_csv"` `extEpochData_timeformat = "%m/%d/%Y %H:%M:%S"` |
+| Actiwatch    | .awd                                                        | `dataFormat = "actiwatch_awd"` `extEpochData_timeformat = "%m/%d/%Y %H:%M:%S"` |
+| ActiGraph    | .csv (count files, not be confused with csv raw data files) | `dataFormat = "actigraph_csv"` `extEpochData_timeformat = "%m/%d/%Y %H:%M:%S"` |
+| Axivity      | UKBiobank csv export of epoch level data                    | `dataFormat = "ukbiobank_csv"`                                                 |
 
 : Note: For Actiwatch and ActiGraph, physical activity description and sleep classification needs to be tailored to count-specific algorithms: `do.neishabouricounts = TRUE`, `acc.metric = "NeishabouriCount_x"`, `HASPT.algo = "NotWorn"` `HASIB.algo = "NotWorn"`; Note 2: For UK Biobank csv epoch data GGIR does not facilitate sleep analysis as arm angle is not exported.
 
@@ -250,21 +250,39 @@ GGIR always creates an output folder in the location as specified with parameter
 
 Inside the output folder GGIR will create two subfolders: `meta` and `results` as discussed earlier in this chapter. Inside `results` you will find folder named `QC` (Quality Checks). The name QC (Quality Checks) is possibly somewhat confusing. Data quality checks are best started with the files stored in the results folder, where the files in the QC subfolder offer complementary information to help with the quality check. For a full GGIR analyses we expect at least the following output files:
 
+***Output files in results subfolder:***
+
 | File path                                                | Resolution                                                       | GGIR part |
 |--------------------------------------|-----------------|-----------------|
-| results/part2_summary.csv                                | one row per recording                                            | 2         |
-| results/part2_daysummary.csv                             | one row per day                                                  | 2         |
-| results/part4_summary_sleep_cleaned.csv                  | one row per recording                                            | 4         |
-| results/part4_nightsummary_sleep_cleaned.csv             | one row per night                                                | 4         |
-| results/visualisation_sleep.pdf                          | 40 recordings per page                                           | 4         |
-| results/part5_daysummary_WW_L40M100V400_T5A5.csv         | one row per day                                                  | 5         |
-| results/part5_personsummary_WW_L40M100V400_T5A5.csv      | one row per recording                                            | 5         |
-| results/QC/data_quality_report.csv                       | one row per recording                                            | 5         |
-| results/QC/part4_summary_sleep_full.csv                  | one row per recording                                            | 4         |
-| results/QC/part4_nightsummary_sleep_full.csv             | one row per night                                                | 4         |
-| results/QC/part5_daysummary_full_WW_L40M100V400_T5A5.csv | one row per day                                                  | 5         |
-| results/QC/plots_to_check_data_quality_1.pdf             | one recording per page                                           | 2         |
-| meta/ms5.outraw/40_100_400                               | one file with time series per recording                          |           |
-| meta/ms5.outraw/ behavioralcodes2023-11-06.csv           | dictionary for behavioural codes as used in the time series file |           |
+| part2_summary.csv                                | one row per recording                                            | 2         |
+| part2_daysummary.csv                             | one row per day                                                  | 2         |
+| part4_summary_sleep_cleaned.csv                  | one row per recording                                            | 4         |
+| part4_nightsummary_sleep_cleaned.csv             | one row per night                                                | 4         |
+| visualisation_sleep.pdf                          | 40 recordings per page                                           | 4         |
+| part5_daysummary_WW_L40M100V400_T5A5.csv         | one row per day                                                  | 5         |
+| part5_personsummary_WW_L40M100V400_T5A5.csv      | one row per recording                                            | 5         |
+
+: A detailed discussion of each output can be found in the other chapters.
+
+
+***Output files in results/QC subfolder:***
+
+| File path                                                | Resolution                                                       | GGIR part |
+|--------------------------------------|-----------------|-----------------|
+| data_quality_report.csv                       | one row per recording                                            | 5         |
+| part4_summary_sleep_full.csv                  | one row per recording                                            | 4         |
+| part4_nightsummary_sleep_full.csv             | one row per night                                                | 4         |
+| part5_daysummary_full_WW_L40M100V400_T5A5.csv | one row per day                                                  | 5         |
+| plots_to_check_data_quality_1.pdf             | one recording per page                                           | 2         |
+
+: A detailed discussion of each output can be found in the other chapters.
+
+
+***Output files in meta/ms5.outraw subfolder:***
+
+| File path                                                | Resolution                                                       | GGIR part |
+|--------------------------------------|-----------------|-----------------|
+| 40_100_400/                               | one file with time series per recording                          |           |
+| behavioralcodes2023-11-06.csv           | dictionary for behavioural codes as used in the time series file |           |
 
 : A detailed discussion of each output can be found in the other chapters.
