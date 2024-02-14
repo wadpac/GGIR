@@ -1,10 +1,9 @@
 g.IVIS = function(Xi, epochSize = 60, threshold = NULL) {
   if (!is.null(threshold)) {
-    if (max(Xi, na.rm = TRUE) < 8) Xi = Xi * 1000
     Xi = ifelse(Xi > threshold, 0, 1)  
   }
   if (epochSize < 3600) {
-    # Always aggregate Xi to 1 hour resolution
+    # Always aggregate Xi to 1 hour resolution if it is not provided at 1 hour resolution
     df = data.frame(Xi = Xi, time = numeric(length(Xi)))
     time = seq(0, length(Xi) * epochSize, by = epochSize)
     df$time = time[1:nrow(df)]
@@ -24,7 +23,6 @@ g.IVIS = function(Xi, epochSize = 60, threshold = NULL) {
       aveDay = aggregate(. ~ hour, data = ts, mean, na.action = na.omit)
       Xh = aveDay$Xi
       Xm = suppressWarnings(mean(Xh,na.rm = TRUE)) # Average acceleration per day
-      N = length(Xi[!is.na(Xi)])
       deltaXi = diff(Xi)^2
       N = length(Xi[!is.na(Xi)])
       

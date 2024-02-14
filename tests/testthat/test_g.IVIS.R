@@ -2,7 +2,7 @@ library(GGIR)
 context("g.IVIS")
 test_that("g.IVIS returns expected output value without missing data", {
   set.seed(1234)
-  xx = rnorm(n = 1440)
+  xx = rnorm(n = 1440) * 1000
   Xi1 = rep(xx, 7)
   Xi2 = rep(0:7, each = 1440)
   T1 = g.IVIS(Xi1, epochSize = 60)

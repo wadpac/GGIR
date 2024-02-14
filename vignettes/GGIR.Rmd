@@ -141,7 +141,7 @@ additional packages:
 -   If you want to derive Neishabouricounts (with `do.neishabouricounts = TRUE`),
     install the actilifecounts package with `install.packages("actilifecounts")`
 -   If you want to derive circadian rhythm indicators using the [Cosinor analysis and Extended Cosinor analysis] 
-    (with `cosinor = TRUE`), install the ActCR package with `install.packages("ActCR")`
+    (with `cosinor = TRUE` for part 2, in part 6 it is always performed), install the ActCR package with `install.packages("ActCR")`
 
 ## Prepare folder structure
 
@@ -725,10 +725,6 @@ Part 2 generates the following output:
 | 1to6am_ENMO_mg     | Average metric value ENMO between 1am and 6am        |
 | N valid WEdays     | Number of valid weekend days|
 | N valid WKdays     | Number of valid week days       |
-| IS\_interdailystability        | inter daily stability. The movement count that is derived for this was an attempt to follow the original approach by Eus J. W. Van Someren (Chronobiology International. 1999. Volume 16, issue 4).          |
-| IV_in tradailyvariability      | intra daily variability. In contrast to the original paper, we ignore the epoch transitions between the end of a day and the beginning of the next day for the numerator of the equation, this to make it a true measure of intradaily variability. Same note as for IS: The movement count that is derived for this was an attempt to follow the original approach.           |
-| IVIS\_windowsize_minutes       | Sizes of the windows based on which IV and IS are calculated (note that this is modifiable)    |
-| IVIS_epochsize_seconds         | Argument has been deprecated  |
 | `AD_` | All days (plain average of all available days, no weighting). The variable was calculated per day and then averaged over all the available days |
 | `WE_` | Weekend days (plain average of all available days, no weighting). The variable was calculated per day and then averaged over weekend days only        |
 | `WD_` | Week days (plain average of all available days, no weighting). The variable was calculated per day and then averaged over week days only     |
@@ -747,9 +743,9 @@ Part 2 generates the following output:
 | pdffilenumb        | Indicator of in which pdf-file the plot was stored  |
 | pdfpagecount       | Indicator of in which pdf-page the plot was stored|
 | `cosinor_`         | Cosinor analysis estimates such as mes, amp, acrophase, and acrotime, as documented in the [Ac tCR](https://CRAN.R-project.org/package=ActCR) package.   |
-| `cosinorExt_`      | Extended Cosinor analysis estimates such as minimum, amp, alpha, beta, acrotime, UpMesor, DownMesor, MESOR, and F_pseudo, as documented in the [Ac tCR](https://CRAN.R-project.org/package=ActCR) package.    |
-| `cosinorIV`        | Cosinor analysis compatible estimate of the Intradaily Variability (IV)        |
-| `cosinorIS`        | Cosinor analysis compatible estimate of Interdaily Stability (IS)  |
+| `cosinorExt_`      | Extended Cosinor analysis estimates such as minimum, amp, alpha, beta, acrotime, UpMesor, DownMesor, MESOR, and F_pseudo, as documented in the [Ac tCR](https://CRAN.R-project.org/package=ActCR) package.|
+| `IV`  | Intradaily Variability (IV) after Eus J. W. Van Someren (Chronobiology International. 1999. Volume 16, issue 4)      |
+| `IS`  | Interdaily Stability (IS) after Eus J. W. Van Someren (Chronobiology International. 1999. Volume 16, issue 4) |
 
 ### Day level summary
 
@@ -1927,50 +1923,20 @@ The implementation within GGIR part 2 is as follows:
 
 ### Intradaily Variability (IV) and Interdaily Stability (IS)
 
-#### IV and IS - Default
+The IV and IS implementation in GGIR was revised in 2024, where old arguments
+such as IVIS.activity.metric were deprecated. The revised calculation works as follows:
 
-The original implementation (argument IVIS.activity.metric = 1) uses the
-continuous numeric acceleration values. However, as we later realised
-this is not compatible with the original approach by van Someren and
-colleagues, which uses a binary distinction between active and inactive.
-Therefore, a second option was added (argument IVIS.activity.metric = 2),
-which needs to be used in combination with accelerometer metric ENMO,
-and collapses the acceleration values into a binary score of rest versus
-active. This is the current default.
-
-#### IV and IS - Cosinor analysis compatible
-
-Disclaimer: The following has been implemented 2022, but is currently 
-undergoing critical evaluation. As a result, we may update this algorithm 
-during the course of 2023.
+Accelerometer metric ENMO is collapsed into a binary score of inactive or active
+by using parameter `threshold.lig`, invalid time points (nonwear) are set to NA,
+next epochs are averaged per hour, which are then used as input to the algorithm
+as original described.
 
 IS is sometimes used as a measure of behavioural robustness when
 conducting Cosinor analysis. However, to work with the combination of
 the two outcomes it seems important that IS is calculated from the same
-time series. Therefore, when `cosinor = TRUE` IV and IS are calculated
-twice: Once as part of the default IV and IS analysis as discussed
-above, and once as part of the Cosinor analysis using the same log
-transformed time series. More specifically, the IV and IS algorithm is
-applied with `IVIS.activity.metric = 2` and
-`IVIS_acc_threshold = log(20 + 1)` to make the binary distinction
-between active and inactive, and `IVIS_per_daypair = TRUE`. The setting
-`IVIS_per_daypair` was specifically designed for this context to handle
-the potentially missing values in the time series as used for Cosinor
-analysis. Applying the default IVIS algorithm would not be able to
-handle the missing values and would result in a loss of information if
-all non-matching epochs across the entire recording were excluded.
-Instead, IV and IS are calculated as follows:
-
-1.  Per day pair based on matching valid epochs only IV and IS and
-    calculated. Here, a log is kept of the number of valid epoch per day
-    pair.
-2.  Omit day pairs where the fraction of valid epoch pairs is below 0.66
-    (0.66 is hard-coded at the moment).
-3.  Calculate average IS across days weighted by fraction of valid
-    epochs per day pairs.
-
-The new Cosinor-compatible IV and IS estimates are stored as output
-variables `cosinorIV` and `cosinorIS`.
+segment of the recording with the only difference that the values are not log
+transformed for IS and IV. Therefore, IV and IS are calculated as part of the Cosinor 
+analysis using the same segment of the time series.
 
 
 ## ActiGraph's idle sleep mode

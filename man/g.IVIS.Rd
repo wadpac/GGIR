@@ -31,6 +31,7 @@
 }
 \keyword{internal}
 \author{
+  Ian Meneghel Danilevicz <ian.meneghel-danilevicz@inserm.fr>
   Vincent T van Hees <v.vanhees@accelting.com>
 }
 \references{

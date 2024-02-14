@@ -87,7 +87,7 @@ test_that("Part 6 with household co-analysis", {
   expect_equal(output_part6$cosinor_mes, 2.451769, tolerance = 0.00001)
   expect_equal(output_part6$cosinorExt_minimum, 1.288636, tolerance = 0.00001)
   expect_equal(output_part6$cosinorExt_MESOR, 2.164644, tolerance = 0.00001)
-  expect_equal(sum(output_part6[5:26]), 327.9476, tolerance = 0.0001)
+  expect_equal(sum(output_part6[5:26]), 327.9062, tolerance = 0.0001)
   
   
   # Run Circadian rhythm analysis with non-default window
