@@ -292,14 +292,12 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           } else if ((length(params_sleep[["def.noc.sleep"]]) == 1 ||
                      length(params_sleep[["loglocation"]]) != 0) &&
                      length(SPTE_start) != 0) {
+            
             # use SPTE algorithm (inside the g.sib.det function) as backup for sleeplog OR if user
             # explicitely asks for it
             defaultSptOnset = SPTE_start[j]
             defaultSptWake = SPTE_end[j]
-            guider = "HDCZA"
-            if (params_sleep[["sleepwindowType"]] == "TimeInBed" & params_general[["sensor.location"]] == "hip") {
-              guider = "HorAngle"
-            }
+            guider = params_sleep[["HASPT.algo"]] # HDCZA, NotWorn, HorAngle
             if (is.na(defaultSptOnset) == TRUE) {
               # If SPTE was not derived for this night, use average estimate for other nights
               availableestimate = which(is.na(SPTE_start) == FALSE)
