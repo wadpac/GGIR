@@ -11,17 +11,9 @@ editor_options:
 <br/>
 
 [**GGIR**](https://CRAN.R-project.org/package=GGIR) is a widely used
-R-package designed for the processing of multi-day **raw accelerometer
+R-package designed for the processing of multi-day **accelerometer
 data**, specifically tailored for applications in physical activity,
 sleep, and circadian rhythm research.
-
-The term ***raw*** refers to data being expressed in m/s<sup>2</sup> or
-gravitational acceleration, as opposed to the previous generation
-accelerometers which stored data in brand-specific units aggregated per
-time interval, referred to as epochs, and typically lasting between 1
-and 60 seconds. In contrast, raw data accelerometry typically collects
-that with 10 to 100 values per second. GGIR can handle a variety of file
-formats from various sensor brands.
 
 ## Images usage
 

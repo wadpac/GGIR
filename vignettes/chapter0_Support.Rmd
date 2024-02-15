@@ -16,87 +16,88 @@ editor_options:
     wrap: 72
 ---
 
-GGIR is open-source software, and it does not come with service or
-support guarantees. However, as a user-community, you can collaborate
-and support each other through the [GGIR google
-group](https://groups.google.com/forum/#!forum/RpackageGGIR) or the
-[GitHub issue tracker](https://github.com/wadpac/GGIR/issues). Please
-use these public platforms rather than private e-mails such that other
-users can learn from the conversations.
+GGIR documentation is openly available for users in several places:
 
-Moreover, we provide online [training
-options](https://www.accelting.com/ggir-training/) for using GGIR, along
-with the flexibility of single-support sessions and [dedicated support]
-tailored to your specific needs.
+-   **This [dedicated website](https://wadpac.github.io/GGIR/)**
+    containing instructions to install, get started, and specific
+    documentation on the GGIR pipeline and functionalities.
 
-## Training options for GGIR
+-   **Vignettes available on
+    [CRAN](https://cran.r-project.org/web/packages/GGIR/index.html)**,
+    containing an overview of GGIR and dedicated vignettes for some
+    specific functionalities.
 
-Check our dedicated training
-[website](https://www.accelting.com/ggir-training/) with more details
-and the option to book your training. Do you have questions about the
-training or the booking process? Do not hesitate to contact us via:
-[training\@accelting.com](mailto:training@accelting.com){.email}.
+-   **The [GGIR configuration parameters
+    vignette](https://cran.r-project.org/web/packages/GGIR/vignettes/GGIRParameters.html)**
+    explains each of the parameters that can be used in GGIR and how to
+    use them.
 
-#### GGIR standard training
+-   The **GGIR function documentation**, to which you can get access to
+    directly from R:
 
-The [GGIR standard
-training](https://www.accelting.com/ggir-standard-training/) aims to
-train you in both the hands-on use and understanding of GGIR's key
-functionalities and algorithms for common use-cases. This is a 3-session
-x 2-hour training offered twice a year. We provide a detailed
-description of the pipeline that GGIR proposes for the analysis of
-accelerometer data. You can expect to learn about the origin and vision
-behind GGIR, how to configure it to your research needs, and the
-step-by-step functioning of the main algorithms used by GGIR to provide
-physical activity and sleep-related output.
+``` r
+library(GGIR)
+?GGIR
+```
 
-#### R essentials for GGIR
+## Question and problems
 
-The [R essentials for
-GGIR](https://www.accelting.com/r-essentials-for-ggir/) is designed to
-train you in the basic R skills that you will need for using GGIR. If
-you have no or limited experience with R then this course is for you.
-This eminently hands-on practice training will show you how to install
-R, RStudio, and GGIR, together with the commands that you will be using
-when interacting with GGIR. This is a 2-session x 2-hour training that
-is always offered the week before the GGIR standard training to help you
-out to get the most of the experience.
+For general questions and issues please report in the [GGIR google
+group](https://groups.google.com/forum/#!forum/RpackageGGIR)[.]{.underline}
 
-Also of interest may be the brief [free R introduction
-tutorial](https://www.accelting.com/updates/short-r-tutorial/).
+However, if you are familiar with GitHub you are also welcome to report
+your issue via the [GitHub issue
+tracker](https://github.com/wadpac/GGIR/issues).
 
-#### Private training in GGIR
+Note that support in these places is based on voluntary efforts and we
+encourage you to try and help other users with questions.
 
-Are you already involved in a (or various) research project(s)? Do you
-need a full training in GGIR with the flexibility to tailor the course
-to your specific interests and needs? Then check out our [private
-training in
-GGIR](https://www.accelting.com/ggir-private-training-info/)! Here, we
-can teach you how to use GGIR in line with the GGIR standard training,
-but focus strongly on the aspects relevant to you. This is a 3-session x
-2-hour training in which you and your lab colleagues are welcome to join
-the sessions. This training may include (but it is not limited to)
-discussions on the analysis plan for your dataset, revision or
-assistance to develop your R scripts, or explanations of specific GGIR
-algorithms that you might be using.
+Questions are valuable as they help us understand the challenges you run
+into and they occasionally help us to identify a bug in the code.
+However, to make this practical it would be great if you doNOT send us
+your questions via personal messages. Posting on public platforms
+enables others to learn from the conversations, it reduces the chance
+that we have to answer the same question multiple times, it increases
+the chance that someone else can answer your question when we are not
+available, and it gives recognition for the voluntary time people put
+into answering questions.
 
-#### Extra GGIR support session
+## Commercial training services
 
-In the case that you already have used GGIR and feel like you do not
-need a full training on it, but still you could benefit from some help,
-then consider the extra [GGIR support
-session](https://www.accelting.com/ggir-training/#:~:text=GGIR%20private%20training%22/%3E-,Extra%20GGIR%20support%20session,-Aim%3A%20Single%20session).
-This is a single 90-minute session in which we will discuss your use of
-GGIR, answer specific questions, or address the challenges you may run
-into. This service is usually intended for those who have already
-participated in the standard or private GGIR training and feel the need
-for an additional session.
+Accelting provides online [training
+options](https://www.accelting.com/ggir-training/) for using GGIR,
+please check out the website. Check the dedicated
+[website](https://www.accelting.com/ggir-training/) with all details? Do
+not hesitate to reach out via:
+[training\@accelting.com](mailto:training@accelting.com).
+
+At the moment, the available training services are:
+
+-   The [**GGIR standard
+    training**](https://www.accelting.com/ggir-standard-training/),
+    aimed to train you in both the hands-on use and understanding of
+    GGIR's key functionalities and algorithms for common use-cases.
+
+-   The [**R essentials for
+    GGIR**](https://www.accelting.com/r-essentials-for-ggir/), designed
+    to train you in the basic R skills that you will need for using
+    GGIR. Also of interest may be the brief [free R introduction
+    tutorial](https://www.accelting.com/updates/short-r-tutorial/).
+
+-   The [**Private training in
+    GGIR**](https://www.accelting.com/ggir-private-training-info/),
+    dedicated to teach you how to use GGIR with a strong focus on the
+    aspects relevant to you and to your research projects.
+
+-   The [**Extra GGIR support
+    session**](https://www.accelting.com/ggir-training/#:~:text=GGIR%20private%20training%22/%3E-,Extra%20GGIR%20support%20session,-Aim%3A%20Single%20session),
+    a single session aimed to answer specific questions or address the
+    challenges you may run into.
 
 ## Dedicated support
 
-If you need dedicated support with the use of GGIR, need someone to
-adapt GGIR to your needs, or would like a new functionality to be
-included in GGIR, then do not hesitate to contact us. [Vincent van
-Hees](https://www.accelting.com/) and [Jairo H
+If you need dedicated support with the use of GGIR, want GGIR to be
+modified or enhanced in line to your needs, then the maintainers
+[Vincent van Hees](https://www.accelting.com/) and [Jairo H
 Migueles](https://www.jhmigueles.com/) are available as independent
 consultants.

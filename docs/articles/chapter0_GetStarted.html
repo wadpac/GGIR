@@ -75,6 +75,9 @@
   </div>
 </li>
 <li class="nav-item">
+  <a class="nav-link" href="../articles/chapter0_Contributing.html">Contributing</a>
+</li>
+<li class="nav-item">
   <a class="nav-link" href="../articles/chapter0_Support.html">Need help?</a>
 </li>
       </ul>
@@ -116,102 +119,42 @@
 
     
     
-<p>This section will help you understand whether GGIR can assist in
-analyzing your accelerometer data. Additionally, it guides you through
-the process of configuring your work environment to initiate the use of
-GGIR with your own accelerometer data.</p>
+<p>This section will guide you through the process of configuring your
+work environment to initiate the use of GGIR. For this purpose, you will
+need at least one accelerometer file to be processed by GGIR, please
+feel free to download <a href="https://www.dropbox.com/t/VaB6voVoBoSpt1i2" class="external-link">this file</a> and
+follow the instructions below.</p>
 <div class="section level2">
-<h2 id="is-ggir-for-you">Is GGIR for you?<a class="anchor" aria-label="anchor" href="#is-ggir-for-you"></a>
+<h2 id="run-ggir-for-first-time">Run GGIR for first time<a class="anchor" aria-label="anchor" href="#run-ggir-for-first-time"></a>
 </h2>
-<p>First, is GGIR for you? GGIR tries to provide support to analyse
-accelerometer raw data independently of the monitor brand that was used
-for the recording. However, it is noteworthy that GGIR has in-built
-functionality to automatically read data from the following brands and
-format:</p>
+<ol style="list-style-type: decimal">
+<li><p>First, you will need to place your file(s) in a folder in your
+computer. Make sure that this folder does only contain accelerometer
+files.</p></li>
+<li><p>Use the following command to run GGIR over your data using all
+the default options.</p></li>
+</ol>
+<ul>
+<li><p>Datadir refers to the directory where you have located the
+accelerometer files.</p></li>
+<li><p>Outputdir refers to the directory where you want to store the
+GGIR’s output.</p></li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wadpac/GGIR/" class="external-link">GGIR</a></span><span class="op">)</span> </span>
+<span><span class="fu"><a href="../reference/GGIR.html">GGIR</a></span><span class="op">(</span>datadir<span class="op">=</span><span class="st">"C:/mystudy/mydata"</span>, outputdir<span class="op">=</span><span class="st">"D:/myresults"</span><span class="op">)</span></span></code></pre></div>
+<p>After some minutes, you should be able to see how your output
+directory gets populated with files, reports, and visualizations.</p>
+</div>
+<div class="section level2">
+<h2 id="related-links">Related links<a class="anchor" aria-label="anchor" href="#related-links"></a>
+</h2>
 <ul>
 <li>
-<a href="https://activinsights.com/" class="external-link">GENEActiv</a> .bin files</li>
-<li>
-<a href="https://axivity.com/" class="external-link">Axivity</a> AX3 and AX6 .cwa</li>
-<li>
-<a href="https://theactigraph.com" class="external-link">ActiGraph</a> .csv and .gt3x
-(.gt3x only the newer format generated with firmware versions above
-2.5.0. Serial numbers that start with “NEO” or “MRA” and have firmware
-version of 2.5.0 or earlier use an older format of the .gt3x file). Note
-for Actigraph users: If you want to work with .csv exports via the
-commercial ActiLife software then note that you have the option to
-export data with timestamps. Please do not do this as this causes memory
-issues for GGIR. To cope with the absence of timestamps GGIR will
-calculate timestamps from the sample frequency, the start time and start
-date as presented in the file header.</li>
-<li>
-<a href="https://www.movisens.com/en/" class="external-link">Movisens</a> with data stored
-in folders.</li>
+<a href="">Install R and GGIR</a>.</li>
+<li><a href="">Get support</a></li>
+<li><a href="">Suitable file formats for GGIR</a></li>
 </ul>
-<p>So, what if you are using any other device or your data come in a
-different format? GGIR might still be able to help you. Any other
-accelerometer brand that generates csv output can also be read by GGIR,
-see documentation for functions <code>read.myacc.csv</code> and argument
-<code>rmc.noise</code> in the <a href="https://CRAN.R-project.org/package=GGIR/GGIR.pdf" class="external-link">GGIR function
-documentation (pdf)</a>.</p>
-<p>Note that functionality for the following file formats was part of
-GGIR but has been deprecated as it required a significant maintenance
-effort without a clear use case or community support: (1) .bin for the
-GENEA monitor by Unilever Discover, an accelerometer that was used for
-some studies between 2007 and 2012) .bin, and (2) .wav files as can be
-exported by the Axivity Ltd OMGUI software. Please contact us if you
-think these data formats should be facilitated by GGIR again and if you
-are interested in supporting their ongoing maintenance.</p>
-</div>
-<div class="section level2">
-<h2 id="setting-up-your-work-environment">Setting up your work environment<a class="anchor" aria-label="anchor" href="#setting-up-your-work-environment"></a>
-</h2>
-<div class="section level3">
-<h3 id="prepare-folder-structure">Prepare folder structure<a class="anchor" aria-label="anchor" href="#prepare-folder-structure"></a>
-</h3>
-<ol style="list-style-type: decimal">
-<li>
-<strong>The data directory:</strong> This is referred to as
-<code>datadir</code> within GGIR. All accelerometer data that needs to
-be analysed should be stored in one folder, or subfolders of that
-folder. It is important that the data directory does only contain
-accelerometer raw data files, as any other file would trigger error when
-trying to run GGIR over this folder (and subfolders). Note that GGIR
-will use the name of the data directory to give a name to the folder
-that will store the output data, therefore you might want to give this
-folder an appropriate name, preferable with a reference to the study or
-project it is related to rather than just ‘data’.</li>
-<li>
-<strong>The output directory:</strong> This is referred to as
-<code>outputdir</code> within GGIR. This should be an existing directory
-in your maching in which GGIR will store all the output that it
-generates. The output directory cannot be a subdirectory of the data
-directory, as this would be problematic for GGIR.</li>
-</ol>
-</div>
-<div class="section level3">
-<h3 id="run-ggir-for-first-time">Run GGIR for first time<a class="anchor" aria-label="anchor" href="#run-ggir-for-first-time"></a>
-</h3>
-<p>Now that you have organized your data as explained above, you are
-able to run GGIR for first time. Use the following command to run GGIR
-over your data using all the default options.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wadpac/GGIR/" class="external-link">GGIR</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/GGIR.html">GGIR</a></span><span class="op">(</span>datadir<span class="op">=</span><span class="st">"C:/mystudy/mydata"</span>,</span>
-<span> outputdir<span class="op">=</span><span class="st">"D:/myresults"</span><span class="op">)</span></span></code></pre></div>
-<p>And now, after some minutes, you should be able to see how your
-output directory gets files, reports, and visualizations in it. You are
-now ready to have fun with GGIR!</p>
-</div>
-<div class="section level3">
-<h3 id="other-files">Other files<a class="anchor" aria-label="anchor" href="#other-files"></a>
-</h3>
-<p>Prepare any other additional file/s that you might want to use to
-guide GGIR with the data processing. Generally, GGIR will take csv files
-as input, so this is the format for your sleep logs, activity logs, or
-other files should. This digital book contains instructions for the use
-of these files.</p>
-</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

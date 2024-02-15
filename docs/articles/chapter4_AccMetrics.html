@@ -75,6 +75,9 @@
   </div>
 </li>
 <li class="nav-item">
+  <a class="nav-link" href="../articles/chapter0_Contributing.html">Contributing</a>
+</li>
+<li class="nav-item">
   <a class="nav-link" href="../articles/chapter0_Support.html">Need help?</a>
 </li>
       </ul>
@@ -200,11 +203,11 @@ To use the metrics, add the parameters to your GGIR call, e.g.:</p>
 <pre><code>GGIR(do.enmo = TRUE, do.mad = TRUE, do.bfen = TRUE, …)</code></pre>
 <table class="table">
 <colgroup>
-<col width="18%">
-<col width="28%">
-<col width="13%">
-<col width="21%">
-<col width="17%">
+<col width="20%">
+<col width="20%">
+<col width="20%">
+<col width="20%">
+<col width="20%">
 </colgroup>
 <thead><tr class="header">
 <th>Metric name</th>
@@ -255,52 +258,55 @@ of the Euclidean norm</td>
 </tr>
 <tr class="even">
 <td>anglex</td>
-<td>Rolling median of a 10 Hertz version of the signals followed by
-atan(x / (sqrt(y<sup>2</sup> + z<sup>2</sup>))) / (pi/180)</td>
+<td>5-second rolling median of a 10 Hertz version of the signals
+followed by atan(x / (sqrt(y<sup>2</sup> + z<sup>2</sup>))) /
+(pi/180)</td>
 <td>Average</td>
 <td>do.anglex</td>
 <td>Frequency</td>
 </tr>
 <tr class="odd">
 <td>angley</td>
-<td>Rolling median of a 10 Hertz version of the signals followed by
-atan(y / (sqrt(x<sup>2</sup> + z<sup>2</sup>))) / (pi/180)</td>
+<td>5-second rolling median of a 10 Hertz version of the signals
+followed by atan(y / (sqrt(x<sup>2</sup> + z<sup>2</sup>))) /
+(pi/180)</td>
 <td>Average</td>
 <td>do.angley</td>
 <td>Frequency</td>
 </tr>
 <tr class="even">
 <td>anglez</td>
-<td>Rolling median of a 10 Hertz version of the signals followed by
-atan(z/ (sqrt(x<sup>2</sup> + y<sup>2</sup>))) / (pi/180)</td>
+<td>5-second rolling median of a 10 Hertz version of the signals
+followed by atan(z/ (sqrt(x<sup>2</sup> + y<sup>2</sup>))) /
+(pi/180)</td>
 <td>Average</td>
 <td>do.anglez</td>
 <td>Frequency</td>
 </tr>
 <tr class="odd">
 <td>roll_med_acc_x</td>
-<td>Rolling median of a 10 Hertz version of x-axis</td>
+<td>5-second rolling median of a 10 Hertz version of x-axis</td>
 <td>Average</td>
 <td>do.roll_med_acc_x</td>
 <td>Frequency</td>
 </tr>
 <tr class="even">
 <td>roll_med_acc_y</td>
-<td>Rolling median of a 10 Hertz version of y-axis</td>
+<td>5-second rolling median of a 10 Hertz version of y-axis</td>
 <td>Average</td>
 <td>do.roll_med_acc_y</td>
 <td>Frequency</td>
 </tr>
 <tr class="odd">
 <td>roll_med_acc_z</td>
-<td>Rolling median of a 10 Hertz version of z-axis</td>
+<td>5-second rolling median of a 10 Hertz version of z-axis</td>
 <td>Average</td>
 <td>do.roll_med_acc_z</td>
 <td>Frequency</td>
 </tr>
 <tr class="even">
 <td>dev_roll_med_acc_x</td>
-<td>Absolute difference between x-axis and 5 second rolling median of a
+<td>Absolute difference between x-axis and 5-second rolling median of a
 10 Hertz version of x-axis</td>
 <td>Average</td>
 <td>do.dev_roll_med_acc_x</td>
@@ -308,7 +314,7 @@ atan(z/ (sqrt(x<sup>2</sup> + y<sup>2</sup>))) / (pi/180)</td>
 </tr>
 <tr class="odd">
 <td>dev_roll_med_acc_y</td>
-<td>Absolute difference between y-axis and 5 second rolling median of a
+<td>Absolute difference between y-axis and 5-second rolling median of a
 10 Hertz version of y-axis</td>
 <td>Average</td>
 <td>do.dev_roll_med_acc_y</td>
@@ -316,7 +322,7 @@ atan(z/ (sqrt(x<sup>2</sup> + y<sup>2</sup>))) / (pi/180)</td>
 </tr>
 <tr class="even">
 <td>dev_roll_med_acc_z</td>
-<td>Absolute difference between z-axis and 5 second rolling median of a
+<td>Absolute difference between z-axis and 5-second rolling median of a
 10 Hertz version of z-axis</td>
 <td>Average</td>
 <td>do.dev_roll_med_acc_z</td>
@@ -507,8 +513,8 @@ facilitate this we allow for external function embedding as discussed in
 the vignette <a href="https://cran.r-project.org/package=GGIR/vignettes/ExternalFunction.pdf" class="external-link">Embedding
 external functions in GGIR</a>. In fact, this allows you to include
 entire algorithms such as the <a href="https://github.com/ShimmerEngineering/Verisense-Toolbox/tree/master/Verisense_step_algorithm" class="external-link">step
-detection</a> or other <a href="https://github.com/wadpac/Sundararajan-SleepClassification-2021/tree/master/ggir_ext" class="external-link">sleep
-classification algorithms</a>.</p>
+detection</a> or a new sleep classification algorithm that you would
+like to test inside GGIR.</p>
 </div>
 <div class="section level2">
 <h2 id="related-output">Related output<a class="anchor" aria-label="anchor" href="#related-output"></a>
@@ -527,9 +533,10 @@ creating all of them for multiple metrics would be computationally
 expensive and substantially increase the complexity of the underlying
 code.</li>
 </ul>
-<div class="section level3">
-<h3 id="related-literature">Related literature<a class="anchor" aria-label="anchor" href="#related-literature"></a>
-</h3>
+</div>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
 <p>We are aware that this chapter could be made more informative if it
 had an even more detailed discussion on each of the metrics. However,
 given that our focus is on GGIR we have a compiled a list of related
@@ -560,7 +567,6 @@ activity: retrospective observational data analysis study.</p></li>
 Hees 2019</a> Ten Misunderstandings surrounding Information Extraction
 from Wearable Accelerometer data.</p></li>
 </ul>
-</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
