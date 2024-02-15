@@ -106,7 +106,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       skip = 0
     }
     if (params_general[["overwrite"]] == TRUE) skip = 0
-    
+    cosinor_coef = NULL
     if (skip == 0) {
       # Load time series:
       if (EXT == "RData") {
@@ -285,7 +285,12 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       names(output_part6) = s_names
       output_part6[, 4:ncol(output_part6)] = as.numeric(output_part6[, 4:ncol(output_part6)])
       if (length(output_part6) > 0) {
-        save(output_part6, file = paste0(metadatadir,
+        if (length(cosinor_coef) > 0) {
+          cosinor_ts = cosinor_coef$coefext$cosinor_ts
+        } else {
+          cosinor_ts = c()
+        }
+        save(output_part6, cosinor_ts, file = paste0(metadatadir,
                                          ms6.out, "/", gsub(pattern = "[.]csv|[.]RData",
                                                             replacement = "",
                                                             x = fnames.ms5raw[i]), ".RData"))
