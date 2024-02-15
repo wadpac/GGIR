@@ -331,7 +331,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
 
         # rescale data
         data[, c("x", "y", "z")] = scale(data[, c("x", "y", "z")], center = -offset, scale = 1/scale)
-        if (use.temp && length(meantempcal) > 0) {
+        if (mon != MONITOR$AXIVITY && use.temp && length(meantempcal) > 0) {
           yy = cbind(temperature,
                      temperature,
                      temperature)
