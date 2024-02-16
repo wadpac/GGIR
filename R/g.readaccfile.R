@@ -200,20 +200,39 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
 
       rawTime = rawData[,1]
 
-      # If timestamps in the csv file are formatted (Y-M-D h:m:s.f), data.table::fread assumes them to be
-      # in the timezone of the current device (i.e. as if configtz == "").
-      # If this is not the case, we need to force the correct timezone (force, as opposed to converting to that timezone).
-      if (!is.numeric(rawTime) && configtz != "") {
-        rawTime = lubridate::force_tz(rawTime, configtz)
-      }
+      if(class(rawTime)[1] == "character") {
+        # If timestamps in the csv file are formatted (Y-M-D h:m:s.f), but some of the dates are formatted poorly,
+        # data.table::fread() might have trouble parsing them as timestamps, and will instead return them as strings. 
+        # as.POSIXct() is less brittle and might still be able to parse such timestamps, but it will be a very slow process.
+        # For instance, one omGUI export contained timestamps like "2023-11-11 15:22:60.000" (which should normally be "2023-11-11 15:23:00.000").
+        # data.table::fread() couldn't parse this but as.POSIXct() could, albeit very slowly.
 
-      # A similar thing needs to be done if the csv file contains Unix timestamps as well.
-      # OmGui converts device timestamps to Unix timestamps as if the timestamps were originally in UTC.
-      # So we need to convert the Unix timestamp into a hh:mm:ss format, then force that timestamp
-      # from  UTC into configtz timzone.
-      if (is.numeric(rawTime)) {
-        rawTime = as.POSIXct(rawTime, tz="UTC", origin = "1970-01-01")
-        rawTime = lubridate::force_tz(rawTime, configtz)
+        rawTime = as.POSIXct(rawTime, tz=configtz, origin = "1970-01-01")
+
+        # if as.POSIXct() also failed to parse this data as timestamps, there's nothing else we can do.
+        if(class(rawTime)[1] != "POSIXct") {
+          stop(paste0("Corrupt timestamp data in ", filename),  call. = FALSE)
+        } else {
+          warning(paste0("Corrupt timestamp data in ", filename, 
+                         ". This will greatly slow down processing. To avoid this, use the original .cwa file, ",
+                         "or export your data with Unix timestamps instead."),  call. = FALSE)
+        }
+      } else {
+        # If timestamps in the csv file are formatted (Y-M-D h:m:s.f), data.table::fread assumes them to be
+        # in the timezone of the current device (i.e. as if configtz == "").
+        # If this is not the case, we need to force the correct timezone (force, as opposed to converting to that timezone).
+        if (!is.numeric(rawTime) && configtz != "") {
+          rawTime = lubridate::force_tz(rawTime, configtz)
+        }
+
+        # A similar thing needs to be done if the csv file contains Unix timestamps as well.
+        # OmGui converts device timestamps to Unix timestamps as if the timestamps were originally in UTC.
+        # So we need to convert the Unix timestamp into a hh:mm:ss format, then force that timestamp
+        # from  UTC into configtz timzone.
+        if (is.numeric(rawTime)) {
+          rawTime = as.POSIXct(rawTime, tz="UTC", origin = "1970-01-01")
+          rawTime = lubridate::force_tz(rawTime, configtz)
+        }
       }
 
       rawTime = as.numeric(rawTime)
