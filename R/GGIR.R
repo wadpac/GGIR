@@ -3,6 +3,11 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                 do.report = c(2, 4, 5, 6), configfile = c(),
                 myfun = c(), verbose = TRUE,
                 ...) {
+  
+  # Set language to English while using GGIR
+  LC_TIME_backup = Sys.getlocale("LC_TIME")
+  Sys.setlocale("LC_TIME", "C")
+  
   #get input variables
   input = list(...)
   # Check for duplicated arguments
@@ -453,4 +458,6 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
               verbose = TRUE)
     }
   }
+  # Reset langagues setting back to what they were4
+  Sys.setlocale("LC_TIME", LC_TIME_backup)
 }

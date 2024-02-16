@@ -4,7 +4,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                    params_cleaning = c(), params_output = c(),
                    params_general = c(), verbose = TRUE, ...) {
   options(encoding = "UTF-8")
-  Sys.setlocale("LC_TIME", "C") # set language to English
   # This function called by function GGIR
   # and aims to combine all the milestone output from the previous parts
   # in order to facilitate a varierty of analysis on time-use, interactions
