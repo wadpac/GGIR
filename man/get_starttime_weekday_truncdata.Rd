@@ -14,7 +14,7 @@
 \usage{
   get_starttime_weekday_truncdata(monc, 
   dformat, data, header, desiredtz, sf,
-  datafile, ws2, starttime, wday, wdayname, configtz = NULL)
+  datafile, ws2, configtz = NULL)
 }
 \arguments{
   \item{monc}{
@@ -40,18 +40,6 @@
   }
   \item{ws2}{
     Long epoch length
-  }
-  \item{starttime}{
-    Once calculate it is remembered and fed into this function again,
-    such that it does not have to be recalulated.
-  }
-  \item{wday}{
-    Once calculate it is remembered and fed into this function again,
-    such that it does not have to be recalulated.
-  }
-  \item{wdayname}{
-    Once calculate it is remembered and fed into this function again,
-    such that it does not have to be recalulated.
   }
    \item{configtz}{
     See \link{g.getmeta}

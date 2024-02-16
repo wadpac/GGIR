@@ -101,7 +101,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
 
   ws3 = params_general[["windowsizes"]][1]; ws2 = params_general[["windowsizes"]][2]; ws = params_general[["windowsizes"]][3]
 
-  PreviousEndPage = starttime = wday = wdayname = c()
+  PreviousEndPage = c()
   
   filequality = data.frame(filetooshort = FALSE, filecorrupt = FALSE,
                            filedoesnotholdday = FALSE, NFilePagesSkipped = 0)
@@ -271,7 +271,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         SWMT = get_starttime_weekday_truncdata(mon, dformat,
                                                data, header, desiredtz = params_general[["desiredtz"]],
                                                sf, datafile,  ws2,
-                                               starttime, wday, wdayname, configtz = params_general[["configtz"]])
+                                               configtz = params_general[["configtz"]])
         starttime = SWMT$starttime
         wday = SWMT$wday; wdayname = SWMT$wdayname
         data = SWMT$data
