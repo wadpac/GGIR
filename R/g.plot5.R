@@ -454,7 +454,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           xaxislabels = c("noon","2pm", "4pm", "6pm", "8pm", "10pm", "midnight",
                           "2am", "4am", "6am", "8am", "10am", "noon")
         }
-        if (length(nightsi) > 0 & nrow(summarysleep_tmp) > 0) {
+        if (length(nightsi) > 0 && nrow(summarysleep_tmp) > 0 && nrow(P2daysummary_tmp)) {
           # Do not attempt to create a plot when there is no midnight in the data,
           # because calculation of t1 will be complicated.
           nplots = length(nightsi) + 1
