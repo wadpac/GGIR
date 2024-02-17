@@ -1,14 +1,14 @@
 # CHANGES IN GGIR VERSION 3.0-6
 
-Part 1:
+- Part 1:
 
-- Improved readability and maintainability of the code #1027
+  - Improved readability and maintainability of the code #1027
 
-- Improved processing speed for Axivity .cwa, GENEActiv .bin, and Movisens files
+  - Improved processing speed for Axivity .cwa, GENEActiv .bin, and Movisens files
 
-- Made sure that g.readaccfile() reads timestamps in the correct timezone, configtz, for all monitor types
+  - Made sure that g.readaccfile() reads timestamps in the correct timezone, configtz, for all monitor types
 
-- Note: there will be small differences in both metalong and metashort metrics calculated by this GGIR version, compared to prior versions. This is due to small improvements in the management of timestamps, calibration coefficients, and input data block boundaries.
+  - Note: there will be small differences in both metalong and metashort metrics calculated by this GGIR version, compared to prior versions. This is due to small improvements in the management of timestamps, calibration coefficients, and input data block boundaries.
 
 # CHANGES IN GGIR VERSION 3.0-5
 
