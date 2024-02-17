@@ -64,6 +64,7 @@
   Gy = runif(n=10000,min=1,max=3)
   Gz = runif(n=10000,min=0,max=2)
   data = cbind(Gx, Gy, Gz)
+  colnames(data) = c("x", "y", "z")
   metrics2do = data.frame(do.bfen=TRUE,do.enmo=TRUE,do.lfenmo=FALSE,
   do.en=FALSE,do.hfen=FALSE,do.hfenplus=FALSE,do.mad=FALSE,do.anglex=FALSE,
   do.angley=FALSE,do.anglez=FALSE,do.roll_med_acc_x=FALSE,
