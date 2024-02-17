@@ -20,6 +20,12 @@ g.analyse.perfile = function(I, C, metrics_nav,
     ds_names = ds_names[-cut]
     daysummary = daysummary[,-cut]
   }
+  # for a very small file, there could be just one row in daysummary[-cut,], so it gets coerced to a vector.
+  # But what we actually need is a 1-row matrix. So we need to transpose it. 
+  if(is.vector(daysummary)) { 
+    daysummary = t(daysummary)
+  }
+
   # Person identification number
   filesummary[vi] = file_summary$ID
   # Identify which of the metrics are in g-units to aid deciding whether to multiply by 1000
