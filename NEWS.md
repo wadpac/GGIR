@@ -2,6 +2,16 @@
 
 - Part 5: Fix bug in MM = timewindow part specific to when first night(s) are not available in part 4 results #1039.
 
+- Part 1:
+
+  - Improved readability and maintainability of the code #1027
+
+  - Improved processing speed for Axivity .cwa, GENEActiv .bin, and Movisens files
+
+  - Made sure that g.readaccfile() reads timestamps in the correct timezone, configtz, for all monitor types
+
+  - Note: there will be small differences in both metalong and metashort metrics calculated by this GGIR version, compared to prior versions. This is due to small improvements in the management of timestamps, calibration coefficients, and input data block boundaries.
+
 # CHANGES IN GGIR VERSION 3.0-5
 
 - Part 5: Fix bug in functionality for Sensewear data (externally derived epoch data) #1030
