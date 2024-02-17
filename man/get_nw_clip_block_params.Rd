@@ -9,8 +9,8 @@
   Not designed for direct use by user.
 }
 \usage{
-  get_nw_clip_block_params(chunksize, dynrange, monc, rmc.noise=c(),
-  sf, dformat, rmc.dynamic_range)
+  get_nw_clip_block_params(chunksize, dynrange, monc, dformat, deviceSerialNumber,
+    rmc.noise=c(), sf, rmc.dynamic_range)
 }
 \arguments{
   \item{chunksize}{
@@ -22,6 +22,12 @@
   \item{monc}{
     See \link{g.inspectfile}
   }
+  \item{dformat}{
+    See \link{g.dotorcomma}
+  }
+  \item{deviceSerialNumber}{
+    As produced by \link{g.extractheadervars}
+  }
   \item{rmc.noise}{
     Noise level of acceleration signal in _g_-units, used when working ad-hoc .csv data formats
     using \link{read.myacc.csv}. The \link{read.myacc.csv} does not take rmc.noise as argument,
@@ -30,9 +36,6 @@
   }
    \item{sf}{
     Numeric, sample frequency in Hertz
-  }
-  \item{dformat}{
-    See \link{g.dotorcomma}
   }
   \item{rmc.dynamic_range}{
     Optional, please see \link{read.myacc.csv}

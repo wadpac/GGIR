@@ -245,9 +245,9 @@ GGIR(mode = 1:5,
       \item{dataFormat}{
         Character (default = "raw").
         To indicate what the format is of the data in datadir.
-        Current alternatives: ukbiobank_csv, actiwatch_csv, actiwatch_awd, 
+        Alternatives: ukbiobank_csv, actiwatch_csv, actiwatch_awd, 
         actigraph_csv, and sensewear_xls, which correspond to epoch level data 
-        files from, respecitively,  UK Biobank in csv format, Actiwatch in csv 
+        files from, respecitively, UK Biobank in csv format, Actiwatch in csv 
         format, Actiwatch in awd format, ActiGraph csv format, and Sensewear in
         xls format (also works with xlsx). Here, the assumed epoch size for
         UK Biobank csvdata is 5 seconds. 
@@ -255,7 +255,11 @@ GGIR(mode = 1:5,
         flexible, but make sure that you set first value of argument 
         \code{windowsizes} accordingly. Also when working with 
         non-raw data formats specify argument \code{extEpochData_timeformat} as
-        documented below.}
+        documented below. For ukbiobank_csv nonwear is a column in the data itself,
+        for actiwatch_csv, actiwatch_awd, actigraph_csv, and sensewear_xls non-wear 
+        is detected as 60 minute rolling zeros. The length of this window can be 
+        modified with the third value of argument \code{windowsizes} expressed in
+        seconds.}
         
        \item{maxRecordingInterval}{
         Numeric (default = NULL).

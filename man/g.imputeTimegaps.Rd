@@ -8,7 +8,7 @@
   imputes time  gaps by the last recorded value per axis normalised to 1 _g_
 }
 \usage{
-  g.imputeTimegaps(x, xyzCol, timeCol = c(), sf, k = 0.25, impute = TRUE, 
+  g.imputeTimegaps(x, sf, k = 0.25, impute = TRUE, 
                    PreviousLastValue = c(0,0,1), 
                    PreviousLastTime = NULL, epochsize = NULL)
 }
@@ -16,12 +16,6 @@
   \item{x}{
     Data.frame with raw accelerometer data, and a timestamp column with
     millisecond resolution.
-  }
-  \item{xyzCol}{
-    Columnnames or numbers for the x, y and z column
-  }
-  \item{timeCol}{
-    Column name or number for the timestamp column
   }
   \item{sf}{
     Sample frequency in Hertz

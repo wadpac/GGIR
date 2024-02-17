@@ -1,4 +1,4 @@
-g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", loadGENEActiv = "GGIRread", ...) {
+g.dotorcomma = function(inputfile, dformat, mon, ...) {
   #get input variables (relevant when read.myacc.csv is used)
   input = list(...)
   decn = getOption("OutDec") # extract system decimal separator
@@ -17,7 +17,7 @@ g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", loadGENEActiv =
   if (exists("rmc.dec") == FALSE) rmc.dec = decn
   if (length(rmc.firstrow.acc) == 1) {
     dformat = FORMAT$AD_HOC_CSV
-    mon = MONITOR$MOVISENS
+    mon = MONITOR$AD_HOC
     decn = rmc.dec
   }
   if (dformat == FORMAT$CSV) {
@@ -26,16 +26,17 @@ g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", loadGENEActiv =
     # lot of zeros, which makes it impossible to detect decimal separator
     # "." will then be the default, which is not correct for "," systems.
     while (skiprows < 1000000) { #foundnonzero == FALSE &
-      deci = as.matrix(read.csv(inputfile, skip = skiprows, nrow = 10))
+      tmp = try(expr = {as.matrix(read.csv(inputfile, skip = skiprows, nrow = 10))}, silent = TRUE)
+      if (inherits(tmp, "try-error")) break  # nothing left in the file to read
+      deci = tmp
+
       skiprows = skiprows + 10000
       if (length(unlist(strsplit(as.character(deci[2,2]), ","))) > 1) {
         decn = ","
-        break()
+        break
       }
       numtemp = as.numeric(deci[2,2])
-      if (is.na(numtemp) == FALSE) {
-        if (numtemp != 0) break()
-      }
+      if (is.na(numtemp) == FALSE && numtemp != 0) break
     }
     if (!exists("deci")) stop("Problem with reading .csv file in GGIR function dotorcomma")
     if (is.na(suppressWarnings(as.numeric(deci[2,2]))) == T & decn == ".") decn = ","
@@ -47,8 +48,8 @@ g.dotorcomma = function(inputfile, dformat, mon, desiredtz = "", loadGENEActiv =
       if (is.na(as.numeric(deci$data.out[2, 2])) == T & decn == ".") decn = ","
     }
   } else if (dformat == FORMAT$CWA) {
-    try(expr = {deci = GGIRread::readAxivity(filename = inputfile,start = 1, end = 10, desiredtz = desiredtz,
-                               interpolationType = 1)$data},silent = TRUE)
+    try(expr = {deci = GGIRread::readAxivity(filename = inputfile, start = 1, end = 10,
+                                             interpolationType = 1)$data}, silent = TRUE)
     if (!exists("deci")) stop("Problem with reading .cwa file in GGIR function dotorcomma")
     if (is.na(suppressWarnings(as.numeric(deci[2,2]))) == T & decn == ".") decn = ","
   } else if (dformat == FORMAT$GT3X) {

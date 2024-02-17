@@ -13,14 +13,24 @@ datadir2fnames = function(datadir,filelist) {
     }
   } else {
     if (ismovisens(datadir)) {
-      fnamesfull = dir(datadir, recursive = TRUE, pattern = "acc.bin", full.names = TRUE)
-      fnames = basename(dirname(fnamesfull))
-      nfolders = length(dir(datadir))
-      if (nfolders > length(fnamesfull)) { # meaning there are movisens data folder without acc.bin
-        # folders without acc.bin
-        allfolders = dir(datadir, full.names = TRUE)
-        foldersWithAccBin = dirname(fnamesfull)
-        noAccBin = allfolders[which(!allfolders %in% foldersWithAccBin)]
+      fnamesfull = dir(datadir, recursive = TRUE, pattern = "acc.bin$", full.names = TRUE)
+      foldersWithAccBin = dirname(fnamesfull)
+      fnames = basename(foldersWithAccBin)
+
+      allfolders = list.dirs(datadir, recursive=FALSE, full.names = TRUE)
+
+      # are there any folders that don't contain acc.bin (directly, or in any subfolders)?
+      noAccBin = c()
+      for (fld in allfolders) {
+        if (fld %in% foldersWithAccBin) next # folder contains acc.bin
+
+        # do any subfolders contain acc.bin?
+        if (!any(grepl(paste(fld, '/', sep = ''), foldersWithAccBin))) {
+          noAccBin = c(noAccBin, fld)
+        }
+      }
+      
+      if (length(noAccBin) > 0) {
         warning(paste0("The following movisens data folders do not contain the ",
                        "acc.bin file with the accelerometer recording, and ",
                        "therefore cannot be processed in GGIR: ",
