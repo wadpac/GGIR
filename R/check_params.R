@@ -72,6 +72,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     check_class("Raw data", params = params_rawdata, parnames = numeric_params, parclass = "numeric")
     check_class("Raw data", params = params_rawdata, parnames = boolean_params, parclass = "boolean")
     check_class("Raw data", params = params_rawdata, parnames = character_params, parclass = "character")
+
+    if (params_rawdata[["chunksize"]] > 1.5) params_rawdata[["chunksize"]] = 1.5
+    if (params_rawdata[["chunksize"]] < 0.2) params_rawdata[["chunksize"]] = 0.2
   }
   if (length(params_247) > 0) {
     # iglevels and qwindow can be numeric or character, so not tested
@@ -127,6 +130,29 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     check_class("general", params = params_general, parnames = numeric_params, parclass = "numeric")
     check_class("general", params = params_general, parnames = boolean_params, parclass = "boolean")
     check_class("general", params = params_general, parnames = character_params, parclass = "character")
+
+    ws3 = params_general[["windowsizes"]][1]; ws2 = params_general[["windowsizes"]][2]; ws = params_general[["windowsizes"]][3]
+    if (ws2/60 != round(ws2/60)) {
+      ws2 = as.numeric(60 * ceiling(ws2/60))
+      warning(paste0("The long windowsize needs to be a multitude of 1 minute periods.\n",
+                     "Long windowsize has now been automatically adjusted to ",
+                     ws2, " seconds in order to meet this criteria."), call. = FALSE)
+    }
+    if (ws2/ws3 != round(ws2/ws3)) {
+      def = c(1,5,10,15,20,30,60)
+      def2 = abs(def - ws3)
+      ws3 = as.numeric(def[which(def2 == min(def2))])
+      warning(paste0("The long windowsize needs to be a multitude of short windowsize.\n",
+                     "The short windowsize has now been automatically adjusted to ",
+                     ws3, " seconds in order to meet this criteria.\n"), call. = FALSE)
+    }
+    if (ws/ws2 != round(ws/ws2)) {
+      ws = ws2 * ceiling(ws/ws2)
+      warning(paste0("The third value of parameter windowsizes needs to be a multitude of the second value.\n",
+                     "The third value has been automatically adjusted to ",
+                     ws, " seconds in order to meet this criteria.\n"), call. = FALSE)
+    }    
+    params_general[["windowsizes"]] = c(ws3, ws2, ws)
   }
   #-----------------------------------------------------------------------------------
   # Check value combinations and apply corrections if not logical

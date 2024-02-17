@@ -9,7 +9,7 @@
   should be interpretted
 }
 \usage{
-  g.dotorcomma(inputfile,dformat,mon, desiredtz = "", loadGENEActiv = "GGIRread", ...)
+  g.dotorcomma(inputfile, dformat, mon, ...)
 }
 \arguments{
   \item{inputfile}{
@@ -22,12 +22,6 @@
   \item{mon}{
     Monitor code (accelorometer brand): 0=undefined, 1=GENEA, 2=GENEActiv,
     3=Actigraph, 4=Axivity, 5=Movisense, 6=Verisense
-  }
-  \item{desiredtz}{
-    Desired timezone, see documentation \link{g.getmeta}
-  }
-  \item{loadGENEActiv}{
-    See \link{GGIR}
   }
   \item{...}{
     Any input arguments needed for function \link{read.myacc.csv} if you
