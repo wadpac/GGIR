@@ -3,8 +3,10 @@ g.applymetrics = function(data, sf, ws3, metrics2do,
                           zc.lb = 0.25, zc.hb = 3, zc.sb = 0.01,
                           zc.order = 2, 
                           actilife_LFE = FALSE){
+  # data should be a 3 column matrix with the x, y, and z acceleration
+  data = data[, c("x", "y", "z")]
+  
   epochsize = ws3 #epochsize in seconds
-  # data is a 3 column matrix with the x, y, and z acceleration
   do.bfen = metrics2do$do.bfen
   do.enmo = metrics2do$do.enmo
   do.lfenmo = metrics2do$do.lfenmo
