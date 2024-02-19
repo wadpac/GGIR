@@ -2,6 +2,10 @@
 
 - Part 1: Need to specify rmc.firstrow.acc when working with ad-hoc csv file format now better documented and read.myacc.csv now produces an error when used directly and user forgets to specify rmc.firstrow.acc #1034.
 
+- Part 5: Behaviour parameter includedaycrit.part5 changed for values above 1, these
+are now interpreted as minimum number of valid waking hours during waking horus of a day.
+If you prefer to keep old functionality then divide your old value by 24 #1050.
+
 - Part 1:
 
   - Improved readability and maintainability of the code #1027

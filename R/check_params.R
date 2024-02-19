@@ -469,6 +469,17 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   
   # cleaning parameters for segments
   if (length(params_cleaning) > 0) {
+    if (is.null(params_cleaning[["includedaycrit.part5"]]) == TRUE) {
+      stop(paste0("\nSetting includedaycrit.part5 to an empty value is not allowed",
+                  ", please change."), call. = FALSE)
+    } else if (params_cleaning[["includedaycrit.part5"]] < 0) {
+      stop(paste0("\nNegative value of includedaycrit.part5 is not allowed",
+                     ", please change."), call. = FALSE)
+    } else if (params_cleaning[["includedaycrit.part5"]] > 25) {
+      stop(paste0("\nIncorrect value of includedaycrit.part5, this should ",
+                     "be a fraction of the day between zero and one or the ",
+                     "number of hours in a day."), call. = FALSE)
+    }
     if (is.null(params_cleaning[["segmentWEARcrit.part5"]])) {
       # if null, then assign default value
       params_cleaning[["segmentWEARcrit.part5"]] = 0.5
