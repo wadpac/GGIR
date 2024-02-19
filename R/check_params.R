@@ -308,6 +308,14 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         params_output[["save_ms5raw_format"]] = "csv"# specify as csv if user does not clearly specify format
       }
     }
+    if (params_output[["sep_reports"]] == params_output[["dec_reports"]]) {
+      stop(paste0("\nYou have set sep_reports and dec_reports both to ",
+                  params_output[["sep_reports"]], " this is ambiguous. Please fix."))
+    }
+    if (params_output[["sep_config"]] == params_output[["dec_config"]]) {
+      stop(paste0("\nYou have set sep_config and dec_config both to ",
+                  params_output[["sep_config"]], " this is ambiguous. Please fix."))
+    }
   }
   # params 247
   if (length(params_247) > 0) {
