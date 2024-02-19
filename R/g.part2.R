@@ -84,7 +84,6 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                         path, ms2.out, foldername, fullfilenames, folderstructure, referencefnames,
                         daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78, verbose) {
     # Set language to English while using GGIR
-    LC_TIME_backup = Sys.getlocale("LC_TIME")
     Sys.setlocale("LC_TIME", "C")
     Nappended = I_list = tail_expansion_log =  NULL
     if (length(ffdone) > 0) {
@@ -262,8 +261,6 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
       rm(M); rm(I)
     }
-    # Reset language
-    Sys.setlocale("LC_TIME", LC_TIME_backup)
   } # end of main_part2
   
   #--------------------------------------------------------------------------------
