@@ -5,6 +5,8 @@ working with ad-hoc csv file format and read.myacc.csv now produces an error whe
 
 - Part 2, 4, 5: Add parameter dec_reports and dec_config to ease tailoring GGIR to non-default UK/US machines #1048.
 
+- Part 2, 4, 5: Force language to "C" (UK/US English) to avoid issues on computer configured differently #1047.
+
 - Part 1:
 
   - Improved readability and maintainability of the code #1027
