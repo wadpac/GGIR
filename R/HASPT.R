@@ -12,6 +12,7 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
     }
     return(invalid)
   }
+  part3_guider = HASPT.algo
   if (HASPT.algo != "notused") {
     if (HASPT.algo == "HDCZA") { # original, default
       medabsdi = function(angle) {
@@ -20,7 +21,20 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
         return(angvar)
       }
       k1 = 5 * (60/ws3)
-      x = zoo::rollapply(angle, width=k1, FUN=medabsdi) # 5 minute rolling median of the absolute difference
+      # Consider invalid time as invariant angle --> nomov --> potential SPT
+      # ONLY if at least 1/3 of noon-to-noon is valid, to avoid defining SPTs in fully invalid days.
+      # This would help to better isolate day hours in part 5
+      if (HASPT.ignore.invalid == FALSE) {
+        frac_night_invalid = sum(invalid) / length(invalid)
+        if (frac_night_invalid < 2/3) {
+          angle[which(invalid == 1)] = NA
+          angle = data.table::nafill(angle, type = "locf")
+          if (any(is.na(angle))) {
+            angle[is.na(angle)] = 0
+          }
+        }
+      }
+      x = zoo::rollapply(angle, width = k1, FUN = medabsdi) # 5 minute rolling median of the absolute difference
       nomov = rep(0,length(x)) # no movement
       pp = quantile(x, probs = c(perc / 100)) * spt_threshold
       if (constrain2range == TRUE) {
@@ -87,7 +101,7 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
     if (length(sptblock) > 0) { #
       s2 = s1[sptblock] # only keep the sptblocks that are long enough
       e2 = e1[sptblock] # only keep the sptblocks that are long enough
-      for (j in 1:length(s2)){
+      for (j in 1:length(s2)) {
         inspttime[s2[j]:e2[j]] = 1 #record these blocks in the inspttime vector
       }
       # fill up gaps in time between spt blocks
@@ -101,12 +115,12 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
         s4 = s3[outofsptblock]
         e4 = e3[outofsptblock]
         if (length(s4) > 0) {
-          for (j in 1:length(s4)){
+          for (j in 1:length(s4)) {
             inspttime[ s4[j]:e4[j]] = 1
           }
         }
       }
-      if (length(inspttime) == (length(x)+1)) inspttime = inspttime[1:(length(inspttime)-1)]
+      if (length(inspttime) == (length(x) + 1)) inspttime = inspttime[1:(length(inspttime) - 1)]
       # keep indices for longest in spt block:
       inspttime2 = rep(1,length(inspttime))
       inspttime2[which(is.na(inspttime) == TRUE)] = 0
@@ -118,6 +132,11 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
       SPTE_start = s5[longestinspt] - 1
       SPTE_end = e5[longestinspt] - 1
       if (SPTE_start == 0) SPTE_start = 1
+      # redefine guider if any invalid period was used for the SPTE definition
+      invalid_spt = invalid[SPTE_start:SPTE_end]
+      if (any(invalid_spt == 1)) {
+        part3_guider = paste0(part3_guider, "+invalid")
+      }
     } else {
       SPTE_end = c()
       SPTE_start = c()
@@ -125,5 +144,6 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
     }
     tib.threshold = pp
   }
-  invisible(list(SPTE_start = SPTE_start, SPTE_end = SPTE_end, tib.threshold = tib.threshold))
+  invisible(list(SPTE_start = SPTE_start, SPTE_end = SPTE_end, tib.threshold = tib.threshold,
+                 part3_guider = part3_guider))
 }

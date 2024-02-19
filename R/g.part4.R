@@ -290,14 +290,14 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
               warning("Guider not identified in ID ", accid, ", falling back on 9pm-7am window", call. = FALSE)
             }
           } else if ((length(params_sleep[["def.noc.sleep"]]) == 1 ||
-                     length(params_sleep[["loglocation"]]) != 0) &&
+                      length(params_sleep[["loglocation"]]) != 0) &&
                      length(SPTE_start) != 0) {
             
             # use SPTE algorithm (inside the g.sib.det function) as backup for sleeplog OR if user
             # explicitely asks for it
             defaultSptOnset = SPTE_start[j]
             defaultSptWake = SPTE_end[j]
-            guider = params_sleep[["HASPT.algo"]] # HDCZA, NotWorn, HorAngle
+            guider = part3_guider[j] # HDCZA, NotWorn, HorAngle (or plus invalid)
             if (is.na(defaultSptOnset) == TRUE) {
               # If SPTE was not derived for this night, use average estimate for other nights
               availableestimate = which(is.na(SPTE_start) == FALSE)
@@ -560,7 +560,11 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   if (length(which(DaCleanFile$relyonguider_part4 == j &
                                    DaCleanFile$ID == accid)) > 0) {
                     relyonguider_thisnight = TRUE
+                    cleaningcode = 5 # user specified to rely on guider
                   }
+                }
+                if (grepl("+invalid", guider)) {
+                  relyonguider_thisnight = TRUE # rely on guider because some nonwear was used to help the slep identification
                 }
                 if (length(spo) == 0) {
                   # add empty spo object, in case it was removed above
@@ -576,7 +580,6 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                                  spo$end > SptOnset)) == 0 |
                     relyonguider_thisnight == TRUE) {
                   # If night is explicitely listed
-                  cleaningcode = 5
                   newlines = rbind(spo[1, ], spo[1, ])
                   newlines[1, 1:4] = c(nrow(spo) + 1, SptOnset, SptOnset + 1/60, 1)
                   newlines[2, 1:4] = c(nrow(spo) + 1, SptWake - 1/60, SptWake, 1)
