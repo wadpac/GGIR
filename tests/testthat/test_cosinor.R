@@ -17,7 +17,7 @@ test_that("cosinorAnalyses provides expected output", {
     # understand how dummy time series looks like.
     # x11()
     # plot(log((counts * 1000) + 1), type = "l")
-    mod = cosinorAnalyses(Xi = log((counts * 1000) + 1), epochsize = epochSizeSeconds, timeOffsetHours = timeOffsetHours)
+    mod = cosinorAnalyses(Xi = counts * 1000, epochsize = epochSizeSeconds, timeOffsetHours = timeOffsetHours)
     mod$coefext = mod$coefext[which(names(mod$coefext) != "cosinor_ts")]
     return(mod)
   }

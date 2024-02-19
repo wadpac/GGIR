@@ -208,7 +208,6 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         # imputed values to NA.
         colnames(ts)[which(colnames(ts) == "timenum")] = "time"
         acc4cos = ts[, c("time", "ACC")]
-        acc4cos$ACC  = acc4cos$ACC / 1000 # convert to mg because that is what applyCosinorAnalyses expects
         cosinor_coef = applyCosinorAnalyses(ts = acc4cos,
                                             qcheck = ts$invalidepoch,
                                             midnightsi = nightsi,

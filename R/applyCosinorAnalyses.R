@@ -59,13 +59,8 @@ applyCosinorAnalyses = function(ts, qcheck, midnightsi, epochsizes, threshold = 
     } else {
       epochsize = ws3
     }
-    notna = !is.na(Xi)
-    # transform data to millig if data is stored in g-units
-    if (max(Xi, na.rm = TRUE) < 8) Xi[notna] = Xi[notna] * 1000
-    # log transform, add 1 to avoid log(0)
-    Xi[notna] = log(Xi[notna] + 1)
     cosinor_coef = cosinorAnalyses(Xi = Xi, epochsize = epochsize, 
-                                   timeOffsetHours = timeOffsetHours, threshold = threshold) 
+                                   timeOffsetHours = timeOffsetHours, threshold = threshold)
     cosinor_coef$timeOffsetHours = timeOffsetHours
   } else {
     cosinor_coef = c()

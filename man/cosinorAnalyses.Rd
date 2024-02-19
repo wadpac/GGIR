@@ -12,7 +12,8 @@
 }
 \arguments{
   \item{Xi}{
-    Vector with time series of movement indicators
+    Vector with time series of movement indicators if the maximum < 8 and mean < 1
+    then input is assumed to be in g-units and is multiplied by 1000.
   }
   \item{epochsize}{
     Numeric epochsize in seconds
