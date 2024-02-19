@@ -108,6 +108,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         fnames.ms3, sleeplog, logs_diaries,
                         extractfilenames, referencefnames, folderstructure,
                         fullfilenames, foldername, ffdone, verbose) {
+    # Set language to English while using GGIR
+    LC_TIME_backup = Sys.getlocale("LC_TIME")
+    Sys.setlocale("LC_TIME", "C")
     tail_expansion_log =  NULL
     fnames.ms1 = dir(paste(metadatadir, "/meta/basic", sep = ""))
     fnames.ms2 = dir(paste(metadatadir, "/meta/ms2.out", sep = ""))
@@ -653,6 +656,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         rm(output, dsummary)
       }
     }
+    # Reset language
+    Sys.setlocale("LC_TIME", LC_TIME_backup)
   }
   #======================================================================
   # loop through milestone data-files or filenames stored in output of g.part2 and g.part4
