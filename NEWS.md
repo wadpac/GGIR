@@ -2,6 +2,8 @@
 
 - Part 5: Fix bug in MM = timewindow part specific to when first night(s) are not available in part 4 results #1039.
 
+- Part 1: Need to specify rmc.firstrow.acc when working with ad-hoc csv file format now better documented and read.myacc.csv now produces an error when used directly and user forgets to specify rmc.firstrow.acc #1034.
+
 - Part 1:
 
   - Improved readability and maintainability of the code #1027

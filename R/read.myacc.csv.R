@@ -1,5 +1,5 @@
 read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
-                          rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
+                          rmc.firstrow.acc = c(), rmc.firstrow.header=c(),
                           rmc.header.length = c(),
                           rmc.col.acc = 1:3, rmc.col.temp = c(), rmc.col.time=c(),
                           rmc.unit.acc = "g", rmc.unit.temp = "C", 
@@ -63,7 +63,8 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   }
   
   if (is.null(rmc.firstrow.acc) || rmc.firstrow.acc < 1) {
-    rmc.firstrow.acc = 1
+    stop(paste0("\nParameter rmc.firstrow.acc always need to be specified ",
+                "when working with ad-hoc csv format data"))
   }
   skip = rmc.firstrow.acc - 1
   if (!is.null(rmc.skip) && length(rmc.skip) > 0) {
