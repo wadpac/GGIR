@@ -116,7 +116,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "storefolderstructure", "dofirstpage", "visualreport", "week_weekend_aggregate.part5",
                        "do.part3.pdf", "outliers.only", "do.visual", "do.sibreport", "visualreport_without_invalid",
                        "do.part2.pdf")
-    character_params = c("save_ms5raw_format", "timewindow")
+    character_params = c("save_ms5raw_format", "timewindow", "sep_reports", "sep_config",
+                         "dec_reports", "dec_config")
     check_class("output", params = params_output, parnames = numeric_params, parclass = "numeric")
     check_class("output", params = params_output, parnames = boolean_params, parclass = "boolean")
     check_class("output", params = params_output, parnames = character_params, parclass = "character")

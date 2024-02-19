@@ -1462,12 +1462,19 @@ GGIR(mode = 1:5,
 
       \item{sep_reports}{
         Character (default = ",").
-        Value used as sep argument in \link[utils]{write.csv} for writing csv files containing
-        the GGIR reports.}
+        Value used as sep argument in \link[data.table]{fwrite} for writing csv reports.}
+        
+      \item{dec_reports}{
+        Character (default = ".").
+        Value used as dec argument in \link[data.table]{fwrite} for writing csv reports.}
 
       \item{sep_config}{
         Character (default = ",").
-        Value used as sep argument in \link[utils]{write.csv} for writing the GGIR config file.}
+        Value used as sep argument in \link[data.table]{fwrite} for writing csv config file.}
+        
+      \item{dec_config}{
+        Character (default = ".").
+        Value used as dec argument in \link[data.table]{fwrite} for writing csv config file.}
 
       \item{visualreport_without_invalid}{
           Boolean (default = TRUE).

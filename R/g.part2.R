@@ -190,7 +190,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         if (params_output[["epochvalues2csv"]] == TRUE) {
           if (length(IMP$metashort) > 0) {
             data.table::fwrite(IMP$metashort, paste0(metadatadir, "/", csvfolder, "/", RDname, ".csv"),
-                               row.names = FALSE, sep = params_output[["sep_reports"]])
+                               row.names = FALSE, sep = params_output[["sep_reports"]],
+                               dec = params_output[["dec_reports"]])
           }
         }
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {

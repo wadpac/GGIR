@@ -1,10 +1,9 @@
 g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
-                                  save_ms5raw_format = "csv",
-                                  save_ms5raw_without_invalid = TRUE,
                                   DaCleanFile = NULL,
                                   includedaycrit.part5 = 2/3, ID = NULL,
-                                  sep_reports = ",",
+                                  params_output,
                                   params_247 = NULL) {
+  
   ms5rawlevels = data.frame(date_time = ts$time, class_id = LEVELS,
                             # class_name = rep("",Nts),
                             stringsAsFactors = FALSE)
@@ -49,7 +48,7 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
     mdat$ACC = round(mdat$ACC, digits = 3)
     # round light data to 0 digits to reduce storage space
     if ("lightpeak" %in% names(mdat)) mdat$lightpeak = round(mdat$lightpeak)
-    if (save_ms5raw_without_invalid == TRUE) {
+    if (params_output[["save_ms5raw_without_invalid"]] == TRUE) {
       # Remove days based on data_cleaning_file
       if (length(DaCleanFile) > 0) { 
         if (ID %in% DaCleanFile$ID) {
@@ -80,12 +79,13 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
                                                                                       no = 0))))))
     mdat = mdat[,-which(names(mdat) %in% c("timestamp","time"))]
     # re-oder columns
-    if ("csv" %in% save_ms5raw_format) {
+    if ("csv" %in% params_output[["save_ms5raw_format"]]) {
       # save to csv file
       fname = rawlevels_fname[grep("*csv$", rawlevels_fname)]
-      data.table::fwrite(mdat, fname, row.names = F, sep = sep_reports)
+      data.table::fwrite(mdat, fname, row.names = F, sep = params_output[["sep_reports"]],
+                         dec = params_output[["dec_reports"]])
     }
-    if ("RData" %in% save_ms5raw_format || params_247[["part6HCA"]] == TRUE || params_247[["part6CR"]] == TRUE) {
+    if ("RData" %in% params_output[["save_ms5raw_format"]] || params_247[["part6HCA"]] == TRUE || params_247[["part6CR"]] == TRUE) {
       # only doing this for RData output, because it would affect file size too much in csv,
       # remember that this function can create many files: sample sizes times all combinations of thresholds.
       mdat$timestamp = as.POSIXct(mdat$timenum, origin = "1970-01-01",tz = desiredtz)

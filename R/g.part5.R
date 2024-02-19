@@ -333,7 +333,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_", shortendFname, "_",sibDef,".csv")
               if (length(sibreport) > 0) {
                 data.table::fwrite(x = sibreport, file = sibreport_fname, row.names = FALSE,
-                                   sep = params_output[["sep_reports"]])
+                                   sep = params_output[["sep_reports"]],
+                                   dec = params_output[["dec_reports"]])
               }
               # nap/sib/nonwear overlap analysis
               if (length(params_sleep[["nap_model"]]) > 0 & length(sibreport) > 0) {
@@ -559,7 +560,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     if (file.exists(legendfile) == FALSE) {
                       legendtable = data.frame(class_name = Lnames, class_id = 0:(length(Lnames) - 1), stringsAsFactors = FALSE)
                       data.table::fwrite(legendtable, file = legendfile, row.names = FALSE,
-                                         sep = params_output[["sep_reports"]])
+                                         sep = params_output[["sep_reports"]],
+                                         dec = params_output[["dec_reports"]])
                     }
                     # I moved this bit of code to the end, because we want guider to be included (VvH April 2020)
                     rawlevels_fname =  paste0(metadatadir, ms5.outraw, "/", TRLi, "_", TRMi, "_", TRVi, "/",
@@ -587,11 +589,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                            LEVELS = LEVELS,
                                            desiredtz = params_general[["desiredtz"]],
                                            rawlevels_fname = rawlevels_fname,
-                                           save_ms5raw_format = params_output[["save_ms5raw_format"]],
-                                           save_ms5raw_without_invalid = params_output[["save_ms5raw_without_invalid"]],
                                            DaCleanFile = DaCleanFile,
-                                           includedaycrit.part5 = params_cleaning[["includedaycrit.part5"]], ID = ID,
-                                           sep_reports = params_output[["sep_reports"]],
+                                           includedaycrit.part5 = params_cleaning[["includedaycrit.part5"]],
+                                           ID = ID,
+                                           params_output = params_output,
                                            params_247 = params_247)
                   }
                 }
