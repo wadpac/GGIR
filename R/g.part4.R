@@ -188,7 +188,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                                       x = colnames(nightsummary))
       }
       sumi = 1  # counter to keep track of where we are in filling the output matrix 'nightsummary'
-      ID  = SPTE_end = SPTE_start = L5list = sib.cla.sum = longitudinal_axis = c()
+      ID  = SPTE_end = SPTE_start = L5list = sib.cla.sum = longitudinal_axis = part3_guider = c()
       # load milestone 3 data (RData files), check whether there is data, identify id numbers...
       load(paste0(meta.sleep.folder, "/", fnames[i]))
       accid = c()
@@ -297,7 +297,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             # explicitely asks for it
             defaultSptOnset = SPTE_start[j]
             defaultSptWake = SPTE_end[j]
-            guider = part3_guider[j] # HDCZA, NotWorn, HorAngle (or plus invalid)
+            guider = params_sleep[["HASPT.algo"]] # HDCZA, NotWorn, HorAngle (or plus invalid)
+            defaultGuider = part3_guider[j]
             if (is.na(defaultSptOnset) == TRUE) {
               # If SPTE was not derived for this night, use average estimate for other nights
               availableestimate = which(is.na(SPTE_start) == FALSE)
@@ -563,7 +564,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                     cleaningcode = 5 # user specified to rely on guider
                   }
                 }
-                if (grepl("+invalid", guider)) {
+                if (grepl("+invalid", guider) | grepl("+invalid", defaultGuider)) {
                   relyonguider_thisnight = TRUE # rely on guider because some nonwear was used to help the slep identification
                 }
                 if (length(spo) == 0) {

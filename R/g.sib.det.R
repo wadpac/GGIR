@@ -299,7 +299,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                                        constrain2range = params_sleep[["constrain2range"]],
                                        perc = perc, spt_threshold = spt_threshold, sptblocksize = sptblocksize,
                                        spt_max_gap = spt_max_gap,
-                                       HASPT.algo = params_sleep[["HASPT.algo"]], invalid = invalid,
+                                       HASPT.algo = params_sleep[["HASPT.algo"]], invalid = invalid[newqqq1:newqqq2],
                                        HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
                                        activity = tmpACC[newqqq1:newqqq2])
               if (length(spt_estimate_tmp$SPTE_start) > 0) {
@@ -339,7 +339,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
     }
     metatmp = data.frame(time, invalid, night = night, sleep = sleep, stringsAsFactors = T)
   } else {
-    metatmp = L5list = SPTE_end = SPTE_start = tib.threshold = part3_guider = c()
+    metatmp = L5list = SPTE_end = SPTE_start = tib.threshold = c()
     detection.failed = TRUE
   }
   invisible(list(output = metatmp, detection.failed = detection.failed, L5list = L5list,
