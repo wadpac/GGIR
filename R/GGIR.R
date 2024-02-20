@@ -7,6 +7,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   # Set language to English while using GGIR
   LC_TIME_backup = Sys.getlocale("LC_TIME")
   Sys.setlocale("LC_TIME", "C")
+  on.exit({Sys.setlocale("LC_TIME", LC_TIME_backup)}, add = TRUE)
   
   #get input variables
   input = list(...)
@@ -458,6 +459,4 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
               verbose = TRUE)
     }
   }
-  # Reset langagues setting back to what they were4
-  Sys.setlocale("LC_TIME", LC_TIME_backup)
 }

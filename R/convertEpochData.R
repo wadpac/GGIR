@@ -3,8 +3,6 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
   # Function to convert externally derived epoch data
   # to a format that allows GGIR to process them as if they were part 1 output.
   
-  # Capture current local settings
-  Sys.setlocale("LC_TIME", "C") # set language to English
   tz = params_general[["desiredtz"]]
   epSizeShort = params_general[["windowsizes"]][1]
   epSizeLong = params_general[["windowsizes"]][2]
