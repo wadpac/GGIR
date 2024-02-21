@@ -4,6 +4,13 @@
 
 - Part 2 + 6: Revised and simplified IV and IS calculation which now ignores invalid timestamps and also comes with phi statistic (credits: Ian Meneghel Danilevicz). In part 2 we used to have 2 calculation, which is now replaced by just one and applied to all valid data points in the recordings. In part 6 this is repeated by for the time window as specified with parameter part6Window. Further, IVIS now uses argument threshold.lig as threshold to distinguish inactivity from active.
 
+- Part 1: Now better documentation for the need to specify rmc.firstrow.acc when
+working with ad-hoc csv file format and read.myacc.csv now produces an error when used directly while user forgets to specify rmc.firstrow.acc #1034.
+
+- Part 2, 4, 5: Add parameter dec_reports and dec_config to ease tailoring GGIR to non-default UK/US machines #1048.
+
+- Part 2, 4, 5: Force language to "C" (UK/US English) to avoid issues on computer configured differently #1047.
+
 - Part 1:
 
   - Improved readability and maintainability of the code #1027
