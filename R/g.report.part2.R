@@ -1,7 +1,5 @@
 g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
-                          selectdaysfile = c(), store.long = FALSE, do.part2.pdf = TRUE,
-                          sep_reports = ",",
-                          verbose = TRUE) {
+                          store.long = FALSE, params_output, verbose = TRUE) {
   ms2.out = "/meta/ms2.out"
   if (file.exists(paste0(metadatadir,ms2.out))) {
     if (length(dir(paste0(metadatadir,ms2.out))) == 0) {
@@ -41,9 +39,9 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       if (pdfpagecount == 301) { # generate new pdf for every 300 plots
         pdfpagecount = 1
         pdffilenumb = pdffilenumb + 1
-        if (do.part2.pdf == TRUE) dev.off()
+        if (params_output[["do.part2.pdf"]] == TRUE) dev.off()
       }
-      if (pdfpagecount == 1 & do.part2.pdf == TRUE) {
+      if (pdfpagecount == 1 & params_output[["do.part2.pdf"]] == TRUE) {
         pdf(paste0(metadatadir, "/results/QC/plots_to_check_data_quality_", pdffilenumb, ".pdf"),
             width = 7, height = 7)
       }
@@ -67,7 +65,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
         if (length(IMP) == 0) {
           warning(paste0("g.report2: Struggling to read: ",fname2read))
         }
-        if (do.part2.pdf == TRUE & length(IMP) > 0) {
+        if (params_output[["do.part2.pdf"]] == TRUE & length(IMP) > 0) {
           Ndays = (nrow(M$metalong) * M$windowsizes[2]) / (3600 * 24)
           g.plot(IMP, M, I, durplot = ifelse(test = Ndays > durplot, yes = Ndays, no = durplot))
         }
@@ -214,9 +212,18 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
           SUMMARY_clean = tidyup_df(SUMMARY)
           daySUMMARY_clean = tidyup_df(daySUMMARY)
           #store matrix temporarily to keep track of process
-          data.table::fwrite(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F, na = "", sep = sep_reports)
-          data.table::fwrite(x = daySUMMARY_clean, file = paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F, na = "", sep = sep_reports)
-          data.table::fwrite(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F, na = "", sep = sep_reports)
+          data.table::fwrite(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"),
+                             row.names = F, na = "",
+                             sep = params_output[["sep_reports"]],
+                             dec = params_output[["dec_reports"]])
+          data.table::fwrite(x = daySUMMARY_clean, file = paste0(metadatadir, "/results/part2_daysummary.csv"),
+                             row.names = F, na = "",
+                             sep = params_output[["sep_reports"]],
+                             dec = params_output[["dec_reports"]])
+          data.table::fwrite(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"),
+                             row.names = F, na = "",
+                             sep = params_output[["sep_reports"]],
+                             dec = params_output[["dec_reports"]])
         }
         pdfpagecount = pdfpagecount + 1
       }
@@ -224,7 +231,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     # tidy up memory
     if (M$filecorrupt == FALSE & M$filetooshort == FALSE & exists("IMP")) rm(IMP)
     rm(M); rm(I)
-    if (do.part2.pdf == TRUE) dev.off()
+    if (params_output[["do.part2.pdf"]] == TRUE) dev.off()
     if (length(SUMMARY) > 0 & length(daySUMMARY) > 0) {
       # tidy up data.frames
       SUMMARY_clean = tidyup_df(SUMMARY)
@@ -232,14 +239,23 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       
       #===============================================================================
       # store final matrices again
-      data.table::fwrite(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"), row.names = F, na = "", sep = sep_reports)
-      data.table::fwrite(x = daySUMMARY_clean, paste0(metadatadir, "/results/part2_daysummary.csv"), row.names = F, na = "", sep = sep_reports)
+      data.table::fwrite(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"),
+                         row.names = F, na = "", sep = params_output[["sep_reports"]],
+                         dec = params_output[["dec_reports"]])
+      data.table::fwrite(x = daySUMMARY_clean, paste0(metadatadir, "/results/part2_daysummary.csv"),
+                         row.names = F, na = "", sep = params_output[["sep_reports"]],
+                         dec = params_output[["dec_reports"]])
       if (store.long == TRUE) { # Convert daySUMMARY to long format if there are multiple segments per day
         df = g.convert.part2.long(daySUMMARY)
         df_clean = tidyup_df(df)
-        data.table::fwrite(x = df_clean, file = paste0(metadatadir, "/results/part2_daysummary_longformat.csv"), row.names = F, na = "", sep = sep_reports)
+        data.table::fwrite(x = df_clean, file = paste0(metadatadir, "/results/part2_daysummary_longformat.csv"),
+                           row.names = F, na = "", sep = params_output[["sep_reports"]],
+                           dec = params_output[["dec_reports"]])
       }
-      data.table::fwrite(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"), row.names = F, na = "", sep = sep_reports)
+      data.table::fwrite(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"),
+                         row.names = F, na = "",
+                         sep = params_output[["sep_reports"]],
+                         dec = params_output[["dec_reports"]])
     }
   }
 }

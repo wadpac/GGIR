@@ -147,6 +147,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                                 varlist = c(unclass(lsf.str(envir = asNamespace("GGIR"), all = T)),
                                             "MONITOR", "FORMAT"),
                                 envir = as.environment(asNamespace("GGIR")))
+        parallel::clusterEvalQ(cl, Sys.setlocale("LC_TIME", "C"))
         doParallel::registerDoParallel(cl)
       } else {
         # Don't process in parallel if only one core

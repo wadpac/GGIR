@@ -9,11 +9,9 @@
 }
 \usage{
   g.part5.savetimeseries(ts, LEVELS, desiredtz, rawlevels_fname,
-                              save_ms5raw_format = "csv",
-                              save_ms5raw_without_invalid = TRUE,
                               DaCleanFile = NULL,
                               includedaycrit.part5 = 2/3,
-                              ID = NULL, sep_reports = ",",
+                              ID = NULL, params_output,
                               params_247 = NULL)
 }
 \arguments{
@@ -28,12 +26,6 @@
   }
   \item{rawlevels_fname}{
     Path to the file where the output should be stored
-  }
-  \item{save_ms5raw_format}{
-    See \link{g.part5}
-  }
-  \item{save_ms5raw_without_invalid}{
-    See \link{g.part5}
   }
   \item{DaCleanFile}{
     Content of data_cleaning_file as documented in \link{g.report.part5}.
@@ -50,9 +42,8 @@
     If data_cleaning_file is used then this argument specifies
     which participant ID the data correspond with.
   }
-  \item{sep_reports}{
-    Character (default = ","). Value used as sep argument in \link[utils]{write.csv}
-    for writing csv files with the GGIR reports.
+  \item{params_output}{
+    Parameters object, see \link{GGIR}
   }
   \item{params_247}{
     See \link{GGIR}

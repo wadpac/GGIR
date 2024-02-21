@@ -1,4 +1,4 @@
-g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
+g.report.part5_dictionary = function(metadatadir, params_output) {
   # internal function to get class ------------------------------------------
   getclass = function(x) {
     if (length(x) == 0) return(NULL)
@@ -274,6 +274,7 @@ g.report.part5_dictionary = function(metadatadir, sep_reports = ",") {
     fn = unlist(strsplit(fn, "_MM|_WW|_OO"))[1]
     fn = paste0(fn, ".csv")
     data.table::fwrite(dictionary, file = file.path(directory, fn), 
-                       row.names = FALSE, na = "", sep = sep_reports)
+                       row.names = FALSE, na = "", sep = params_output[["sep_reports"]],
+                       dec = params_output[["dec_reports"]])
   }
 }

@@ -42,7 +42,7 @@ Internally GGIR loads csv files with accelerometer data and standardises the out
 
 # The read.myacc.csv function
 
-As for the rest of GGIR functions, `read.myacc.csv` is intended to be used within function `GGIR`. All the arguments of the `read.myacc.csv` can be easily recognized as they all start by "rmc". The GGIR function checks whether the argument rmc.firstrow.acc is provided by the user; in such case, GGIR will derive the reading of the data to the `read.myacc.csv`.
+As for the rest of GGIR functions, `read.myacc.csv` is intended to be used within function `GGIR`. All the arguments of the `read.myacc.csv` can be easily recognized as they all start by "rmc". The GGIR function checks whether the argument `rmc.firstrow.acc` is provided by the user; in such case, GGIR will attempt to read the data with `read.myacc.csv`. In other words you always need to specify `rmc.firstrow.acc` to use `read.myacc.csv`.
 
 ## Input arguments
 

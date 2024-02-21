@@ -83,7 +83,6 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                         params_phyact = c(), params_output = c(), params_general = c(),
                         path, ms2.out, foldername, fullfilenames, folderstructure, referencefnames,
                         daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78, verbose) {
-    
     Nappended = I_list = tail_expansion_log =  NULL
     if (length(ffdone) > 0) {
       if (length(which(ffdone == as.character(unlist(strsplit(fnames[i], "eta_"))[2]))) > 0) {
@@ -188,7 +187,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         if (params_output[["epochvalues2csv"]] == TRUE) {
           if (length(IMP$metashort) > 0) {
             data.table::fwrite(IMP$metashort, paste0(metadatadir, "/", csvfolder, "/", RDname, ".csv"),
-                               row.names = FALSE, sep = params_output[["sep_reports"]])
+                               row.names = FALSE, sep = params_output[["sep_reports"]],
+                               dec = params_output[["dec_reports"]])
           }
         }
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
@@ -275,6 +275,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                 varlist = c(unclass(lsf.str(envir = asNamespace("GGIR"), all = T)),
                                             "MONITOR", "FORMAT"),
                                 envir = as.environment(asNamespace("GGIR")))
+        parallel::clusterEvalQ(cl, Sys.setlocale("LC_TIME", "C"))
         doParallel::registerDoParallel(cl)
       } else {
         # Don't process in parallel if only one core

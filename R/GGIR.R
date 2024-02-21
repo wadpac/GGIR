@@ -3,6 +3,12 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                 do.report = c(2, 4, 5, 6), configfile = c(),
                 myfun = c(), verbose = TRUE,
                 ...) {
+  
+  # Set language to English while using GGIR
+  LC_TIME_backup = Sys.getlocale("LC_TIME")
+  Sys.setlocale("LC_TIME", "C")
+  on.exit({Sys.setlocale("LC_TIME", LC_TIME_backup)}, add = TRUE)
+  
   #get input variables
   input = list(...)
   # Check for duplicated arguments
@@ -355,7 +361,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   config.matrix$context[which(config.matrix$context == "")] = "not applicable"
   if (dir.exists(metadatadir)) {
     data.table::fwrite(config.matrix, file = paste0(metadatadir, "/config.csv"),
-                       row.names = FALSE, sep = params_output[["sep_config"]])
+                       row.names = FALSE, sep = params_output[["sep_config"]],
+                       dec = params_output[["dec_config"]])
   } else {
     warning("\nCould not write config file.")
   }
@@ -380,8 +387,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       }
       g.report.part2(metadatadir = metadatadir, f0 = f0, f1 = f1,
                      maxdur = params_cleaning[["maxdur"]],
-                     store.long = store.long, do.part2.pdf = params_output[["do.part2.pdf"]],
-                     verbose = verbose, sep_reports = params_output[["sep_reports"]])
+                     store.long = store.long, params_output,
+                     verbose = verbose)
     }
   }
   if (length(which(do.report == 4)) > 0) {
@@ -393,10 +400,10 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       if (f1 == 0) f1 = N.files.ms4.out
       g.report.part4(datadir = datadir, metadatadir = metadatadir, f0 = f0, f1 = f1,
                      loglocation = params_sleep[["loglocation"]],
-                     storefolderstructure = params_output[["storefolderstructure"]],
                      data_cleaning_file = params_cleaning[["data_cleaning_file"]],
                      sleepwindowType = params_sleep[["sleepwindowType"]],
-                     verbose = verbose, sep_reports = params_output[["sep_reports"]])
+                     params_output = params_output,
+                     verbose = verbose)
     }
   }
   if (length(which(do.report == 5)) > 0) {
@@ -409,10 +416,9 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       g.report.part5(metadatadir = metadatadir, f0 = f0, f1 = f1,
                      loglocation = params_sleep[["loglocation"]],
                      params_cleaning = params_cleaning,
-                     week_weekend_aggregate.part5 = params_output[["week_weekend_aggregate.part5"]],
-                     LUX_day_segments = params_247[["LUX_day_segments"]],
-                     verbose = verbose, sep_reports = params_output[["sep_reports"]])
-      g.report.part5_dictionary(metadatadir = metadatadir, sep_reports = params_output[["sep_reports"]])
+                     LUX_day_segments = params_247[["LUX_day_segments"]], params_output = params_output,
+                     verbose = verbose)
+      g.report.part5_dictionary(metadatadir = metadatadir, params_output = params_output)
     }
   }
   if (length(which(do.report == 6)) > 0) {
@@ -423,8 +429,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       if (N.files.ms6.out < f1) f1 = N.files.ms6.out
       if (f1 == 0) f1 = N.files.ms6.out
       g.report.part6(metadatadir = metadatadir, f0 = f0, f1 = f1,
-                     params_cleaning = params_cleaning,
-                     verbose = verbose, sep_reports = params_output[["sep_reports"]])
+                     params_cleaning = params_cleaning, params_output = params_output,
+                     verbose = verbose)
     }
   }
   if (params_output[["visualreport"]] == TRUE) {

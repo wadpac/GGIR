@@ -371,6 +371,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
                                             "MONITOR", "FORMAT"),
                                 envir = as.environment(asNamespace("GGIR"))
         )
+        parallel::clusterEvalQ(cl, Sys.setlocale("LC_TIME", "C"))
         doParallel::registerDoParallel(cl)
       } else {
         # Don't process in parallel if only one core
