@@ -142,7 +142,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
         # first see if maybe sf *is* in the header, just not under the rmc.headername.sf name
         sf = as.numeric(header[which(row.names(header) == "sample_rate"),1])
         # if sf isn't in the header under the default name either, then use the default value
-        if (is.na(sf)) {
+        if (is.na(sf) && !is.null(rmc.sf)) {
           sf = rmc.sf
           header = rbind(header, sf) # add it also to the header
           row.names(header)[nrow(header)] = "sample_rate"

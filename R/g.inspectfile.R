@@ -208,16 +208,15 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
                                     rmc.scalefactor.acc = params_rawdata[["rmc.scalefactor.acc"]],
                                     desiredtz = desiredtz,
                                     configtz = configtz)
-    if (Pusercsvformat$header == "no header" || is.null(Pusercsvformat$header$sample_rate)) {
-      
+    if (class(Pusercsvformat$header) == "character" && Pusercsvformat$header == "no header") {      
       sf = params_rawdata[["rmc.sf"]]
-      if (is.null(sf)) {
-        stop("\nFile header doesn't specify sample rate. Please provide rmc.sf value to process ", datafile)
-      } else if (sf == 0) {
-        stop("\nFile header doesn't specify sample rate. Please provide a non-zero rmc.sf value to process ", datafile)
-      }
     } else {
-      sf = Pusercsvformat$header$sample_rate
+      sf = as.numeric(Pusercsvformat$header["sample_rate",1])
+    }
+    if (is.null(sf) || is.na(sf)) {
+      stop("\nFile header doesn't specify sample rate. Please provide rmc.sf value to process ", datafile)
+    } else if (sf == 0) {
+      stop("\nFile header doesn't specify sample rate. Please provide a non-zero rmc.sf value to process ", datafile)
     }
   }
 
@@ -264,15 +263,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     H = PP$header
     
   } else if (dformat == FORMAT$AD_HOC_CSV) { # csv data in a user-specified format
-    
-    H = header = Pusercsvformat$header
-    if (Pusercsvformat$header != "no header") {
-      H = data.frame(name = row.names(header), value = header, stringsAsFactors = TRUE)
-    }
-    sf = params_rawdata[["rmc.sf"]]
-    if (sf == 0) {
-      stop("\nPlease provide a non-zero rmc.sf value to process ", datafile)
-    }
+    header = Pusercsvformat$header
   } else if (dformat == FORMAT$GT3X) { # gt3x
     info = try(expr = {read.gt3x::parse_gt3x_info(datafile, tz = desiredtz)},silent = TRUE)
     if (inherits(info, "try-error") == TRUE || is.null(info)) {
@@ -300,7 +291,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     stop(paste0("\nSample frequency not recognised in ", datafile), call. = FALSE)
   }
 
-  if (is.null(sf) == FALSE) {
+  if (dformat != FORMAT$AD_HOC_CSV && is.null(sf) == FALSE) {
     H = as.matrix(H)
     if (ncol(H) == 3 && dformat == FORMAT$CSV && mon == MONITOR$ACTIGRAPH) {
       if (length(which(is.na(H[,2]) == FALSE)) == 0) {
@@ -333,7 +324,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) || (mon == MONITOR$MOVISENS && length(H) > 0)) {
         varname = rownames(as.matrix(H))
         H = data.frame(varname = varname,varvalue = as.character(H), stringsAsFactors = TRUE)
-      } else {
+      } else if (dformat != FORMAT$AD_HOC_CSV) {
         if (length(H) > 1 && class(H)[1] == "matrix") H = data.frame(varname = H[,1],varvalue = H[,2], stringsAsFactors = TRUE)
       }
     }

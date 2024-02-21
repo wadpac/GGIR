@@ -1,6 +1,6 @@
 library(GGIR)
 context("g.readaccfile")
-test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity csv, and actigraph csv files correctly", {
+test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity csv, actigraph csv, and ad-hoc csv files correctly", {
   skip_on_cran()
   
   desiredtz = "Pacific/Auckland"
@@ -218,10 +218,24 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   timestamps = as.POSIXlt(x, origin="1970-1-1", tz = configtz)
   mydata = data.frame(Xcol = rnorm(N), timecol = timestamps, Ycol = rnorm(N), Zcol = rnorm(N),
             tempcol = rnorm(N) + 20)
-  testfile = "testcsv1.csv"
+  testfile = "testcsv.csv"
   on.exit({if (file.exists(testfile)) file.remove(testfile)}, add = TRUE)
 
   write.csv(mydata, file = testfile, row.names = FALSE)
+
+  # check that for files with no header, g.inspectfile() errors out if sampling rate is not specified as rmc.sf, or if rmc.sf == 0
+  expect_error(g.inspectfile(testfile, 
+                             rmc.dec=".", rmc.unit.time="POSIX",
+                             rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
+                             rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time=2,
+                             rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.origin = "1970-01-01"),
+              regexp = "File header doesn't specify sample rate. Please provide rmc.sf value to process")
+  expect_error(g.inspectfile(testfile, 
+                             rmc.dec=".", rmc.sf=0, rmc.unit.time="POSIX",
+                             rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
+                             rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time=2,
+                             rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.origin = "1970-01-01"),
+              regexp = "File header doesn't specify sample rate. Please provide a non-zero rmc.sf value to process")
 
   AHcsv = g.inspectfile(testfile, 
                         rmc.dec=".", rmc.sf=30, rmc.unit.time="POSIX",
@@ -288,6 +302,89 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
 
   expect_equal(nrow(csv_read4$P$data), 3000)
   expect_equal(sum(csv_read3$P$data[c("x","y","z")]), sum(csv_read4$P$data[c("x","y","z")]), tolerance = .01, scale = 1)
+
+  # Create test file: 2-column header, with time,
+  # but sample rate not specified in the header
+
+  N = 6000
+  sf = 30
+  x = Sys.time()+((0:(N-1))/sf)
+  timestamps = as.POSIXlt(x, origin="1970-1-1", tz = configtz)
+  mydata = data.frame(Xcol = rnorm(N), timecol = timestamps, Ycol = rnorm(N), Zcol = rnorm(N))
+  S1 = as.matrix(mydata)
+  
+  hd_NR = 10
+  hd = matrix("", hd_NR + 1, ncol(S1))
+  hd[1, 1:2] = c("ID","12345")
+  hd[2, 1:2] = c("serial_number","30")
+  hd[3, 1:2] = c("bit","8")
+  hd[4, 1:2] = c("dynamic_range","6")
+
+  S1 = rbind(hd, S1)
+  S1[hd_NR + 1,] = colnames(S1)
+  colnames(S1) = NULL
+
+  testfile = "testcsv.csv"
+  on.exit({if (file.exists(testfile)) file.remove(testfile)}, add = TRUE)
+  write.table(S1, file = testfile, col.names = FALSE, row.names = FALSE)
+
+  # check that for a file whose header doesn't specify sampling rate,
+  # g.inspectfile() errors out if sampling rate is not specified as rmc.sf, or if rmc.sf==0
+  expect_error(g.inspectfile(testfile, 
+                             rmc.dec=".", rmc.unit.time="POSIX",
+                             rmc.firstrow.acc = 11, rmc.firstrow.header = 1,
+                             rmc.col.acc = c(1,3,4), rmc.col.time=2,
+                             rmc.unit.acc = "g", rmc.origin = "1970-01-01"),
+              regexp = "File header doesn't specify sample rate. Please provide rmc.sf value to process")
+  expect_error(g.inspectfile(testfile, 
+                             rmc.dec=".", rmc.sf = 0, rmc.unit.time="POSIX",
+                             rmc.firstrow.acc = 11, rmc.firstrow.header = 1,
+                             rmc.col.acc = c(1,3,4), rmc.col.time=2,
+                             rmc.unit.acc = "g", rmc.origin = "1970-01-01"),
+              regexp = "File header doesn't specify sample rate. Please provide a non-zero rmc.sf value to process")
+
+  # check that for a file whose header doesn't specify sampling rate,
+  # g.inspectfile() returns sf == rmc.sf if the latter was specified
+  I = g.inspectfile(testfile, 
+                    rmc.dec=".", rmc.sf = 80, rmc.unit.time="POSIX",
+                    rmc.firstrow.acc = 11, rmc.firstrow.header = 1,
+                    rmc.col.acc = c(1,3,4), rmc.col.time=2,
+                    rmc.unit.acc = "g", rmc.origin = "1970-01-01")
+  expect_equal(I$sf, 80)
+
+  # Create test file: 2-column header, with temperature, with time,
+  # and sample rate correctly specified in the header
+  hd_NR = 10
+  hd = matrix("", hd_NR + 1, ncol(S1))
+  hd[1, 1:2] = c("ID","12345")
+  hd[2, 1:2] = c("sample_freq","30")
+  hd[3, 1:2] = c("serial_number","30")
+  hd[4, 1:2] = c("bit","8")
+  hd[5, 1:2] = c("dynamic_range","6")
+  S1 = as.matrix(mydata)
+  S1 = rbind(hd, S1)
+  S1[hd_NR + 1,] = colnames(S1)
+  colnames(S1) = NULL
+  testfile = "testcsv.csv"
+  write.table(S1, file = testfile, col.names = FALSE, row.names = FALSE)
+
+  # check that g.inspectfile() returns sf value that was specified in the header, even if rmc.sf was also specified
+  I = g.inspectfile(testfile, 
+                    rmc.dec=".", rmc.sf = 80, rmc.headername.sf = "sample_freq", 
+                    rmc.unit.time="POSIX",
+                    rmc.firstrow.acc = 11, rmc.firstrow.header=1,
+                    rmc.col.acc = c(1,3,4), rmc.col.time=2,
+                    rmc.unit.acc = "g", rmc.origin = "1970-01-01")
+  expect_equal(I$sf, 30)
+
+  # check that g.inspectfile() correctly reads the sf value from the header
+  I = g.inspectfile(testfile, 
+                    rmc.dec=".", rmc.headername.sf = "sample_freq",
+                    rmc.unit.time="POSIX",
+                    rmc.firstrow.acc = 11, rmc.firstrow.header=1,
+                    rmc.col.acc = c(1,3,4), rmc.col.time=2,
+                    rmc.unit.acc = "g", rmc.origin = "1970-01-01")
+  expect_equal(I$sf, 30)
 
   # test decimal separator recognition extraction
   decn =  g.dotorcomma(Ax3CwaFile,dformat = FORMAT$CWA, mon = MONITOR$AXIVITY, desiredtz = desiredtz)
