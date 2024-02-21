@@ -9,8 +9,8 @@
 }
 \usage{
 g.report.part4(datadir = c(), metadatadir = c(), loglocation = c(), f0 = c(),
-  f1 = c(), storefolderstructure = TRUE, data_cleaning_file = c(),
-  sleepwindowType = "SPT", verbose = TRUE, sep_reports = ",")
+  f1 = c(), data_cleaning_file = c(),
+  sleepwindowType = "SPT", params_output, verbose = TRUE)
 }
 \arguments{
   \item{datadir}{
@@ -34,20 +34,17 @@ g.report.part4(datadir = c(), metadatadir = c(), loglocation = c(), f0 = c(),
   \item{f1}{
     File index to finish with (defaults to number of files available, i.e., f1 = 0)
   }
-  \item{storefolderstructure}{
-    see \link{g.part4}
-  }
   \item{data_cleaning_file}{
-    see \link{g.part4}
+    see \link{GGIR}
   }
   \item{sleepwindowType}{
-    see \link{g.part4}
+    see \link{GGIR}
+  }
+  \item{params_output}{
+    Parameters object, see \link{GGIR}
   }
   \item{verbose}{
     See details in \link{GGIR}.
-  }
-  \item{sep_reports}{
-    Character (default = ","). Value used as sep argument in write.csv for writing csv files containing the GGIR reports.
   }
 }
 \value{

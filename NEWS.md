@@ -3,6 +3,12 @@
 - Part 5: Fix bug in MM = timewindow part specific to when first night(s) are not available in part 4 results #1039.
 
 - Part 1: Need to specify rmc.firstrow.acc when working with ad-hoc csv file format now better documented and read.myacc.csv now produces an error when used directly and user forgets to specify rmc.firstrow.acc #1034.
+- Part 1: Now better documentation for the need to specify rmc.firstrow.acc when
+working with ad-hoc csv file format and read.myacc.csv now produces an error when used directly while user forgets to specify rmc.firstrow.acc #1034.
+
+- Part 2, 4, 5: Add parameter dec_reports and dec_config to ease tailoring GGIR to non-default UK/US machines #1048.
+
+- Part 2, 4, 5: Force language to "C" (UK/US English) to avoid issues on computer configured differently #1047.
 
 - Part 1:
 

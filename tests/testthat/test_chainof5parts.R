@@ -146,7 +146,8 @@ test_that("chainof5parts", {
           maxdur = Ndays, includedaycrit = 0, qM5L5 = c(0.2,0.4), winhr = c(3,10),
           do.parallel = do.parallel, myfun = c(), qlevels = c(0.5, 0.9),
           cosinor = TRUE, verbose = FALSE)
-  g.report.part2(metadatadir = metadatadir, f0 = 1, f1 = 1, maxdur = Ndays)
+  params_output = load_params()$params_output
+  g.report.part2(metadatadir = metadatadir, f0 = 1, f1 = 1, maxdur = Ndays, params_output = params_output)
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -189,7 +190,7 @@ test_that("chainof5parts", {
   load(rn[1])
   vis_sleep_file = "output_test/results/visualisation_sleep.pdf"
   g.report.part4(datadir = fn, metadatadir = metadatadir, loglocation = sleeplog_fn,
-                 f0 = 1, f1 = 1, verbose = FALSE)
+                 f0 = 1, f1 = 1, params_output = params_output, verbose = FALSE)
   expect_true(dir.exists(dirname))
   expect_true(file.exists(vis_sleep_file))
   expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(6))
