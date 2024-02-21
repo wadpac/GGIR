@@ -866,15 +866,18 @@ GGIR(mode = 1:5,
 
       \item{ndayswindow}{
         Numeric (default = 7).
-        If \code{data_masking_strategy} is set to 3 or 5, then this is the size of the window as a
+        If \code{data_masking_strategy} is set to 3 or 5, then this is the size of 
+        the window as a
         number of days. For data_masking_strategy 3 value can be fractional, e.g. 7.5,
         while for data_masking_strategy 5 it needs to be an integer.}
 
       \item{includedaycrit.part5}{
         Numeric (default = 2/3).
         Inclusion criteria for number of valid hours during the waking hours of a day,
-        either as expressed as a ratio of 1 or as the number of hours,
-        which is converted by GGIR to a ratio. For example 16 become 16/24=2/3.}
+        when value is smaller than or equal to 1 used as fraction of waking hours, 
+        when value above 1 used as absolute number of valid hours required.
+        Do not confuse this argument with argument \code{includedaycrit} which is
+        only used in GGIR part 2 and applies to the entire day.}
 
       \item{segmentWEARcrit.part5}{
         Numeric (default = 0.5).
