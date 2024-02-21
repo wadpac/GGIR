@@ -208,12 +208,22 @@ g.calibrate = function(datafile, params_rawdata = c(),
       LD = 0
     }
     features_temp = data.frame(V = features, stringsAsFactors = FALSE)
-    cut = which(features_temp[,1] == 99999)
+    # remove 999999, missing values
+    cut = which(features_temp[,1] == 99999 |
+                  is.na(features_temp[,4]) == TRUE | is.na(features_temp[,1]) == TRUE)
     if (length(cut) > 0) {
       features_temp = features_temp[-cut,]
     }
-    nhoursused = (nrow(features_temp) * 10) / 3600
+    # remove duplicates, e.g. caused by periods of nonwear
+    if (nrow(features_temp) > 0) {
+      cut = which(rowSums(features_temp[1:(nrow(features_temp) - 1), 2:7] == features_temp[2:nrow(features_temp), 2:7]) == 3)
+      if (length(cut) > 0) {
+        features_temp = features_temp[-cut,]
+      }
+    }
+    nhoursused = 0
     if (nrow(features_temp) > (params_rawdata[["minloadcrit"]] - 21)) {  # enough data for the sphere?
+      nhoursused = (nrow(features_temp) * 10) / 3600
       features_temp = features_temp[-1,]
       #select parts with no movement
       if (mon == MONITOR$AD_HOC) {
@@ -240,10 +250,6 @@ g.calibrate = function(datafile, params_rawdata = c(),
         features_temp = features_temp[nomovement,]
       }
       if (min(dim(features_temp)) > 1) {
-        dup = which(rowSums(features_temp[1:(nrow(features_temp) - 1), 2:7] == features_temp[2:nrow(features_temp), 2:7]) == 3) # remove duplicated values
-        if (length(dup) > 0) features_temp = features_temp[-dup,]
-        rm(nomovement, dup)
-        features_temp = features_temp[(is.na(features_temp[,4]) == F & is.na(features_temp[,1]) == F),]
         npoints = nrow(features_temp)
         cal.error.start = sqrt(as.numeric(features_temp[,2])^2 + as.numeric(features_temp[,3])^2 + as.numeric(features_temp[,4])^2)
         cal.error.start = round(mean(abs(cal.error.start - 1)), digits = 5)
