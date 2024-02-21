@@ -1,8 +1,13 @@
-# CHANGES IN GGIR VERSION 3.0-6
+# CHANGES IN GGIR VERSION 3.0-7
+
 
 - Part 6: Add DFA functionality #839 (credits: Ian Meneghel Danilevicz and Victor Barreto Mesquita)
 
 - Part 2 + 6: Revised and simplified IV and IS calculation which now ignores invalid timestamps and also comes with phi statistic (credits: Ian Meneghel Danilevicz). In part 2 we used to have 2 calculation, which is now replaced by just one and applied to all valid data points in the recordings. In part 6 this is repeated by for the time window as specified with parameter part6Window. Further, IVIS now uses argument threshold.lig as threshold to distinguish inactivity from active.
+
+# CHANGES IN GGIR VERSION 3.0-6
+
+- Part 1: Improve g.calibrate to better handle scenario when no non-movement periods are found in the entire recording #1032
 
 - Part 1: Now better documentation for the need to specify rmc.firstrow.acc when
 working with ad-hoc csv file format and read.myacc.csv now produces an error when used directly while user forgets to specify rmc.firstrow.acc #1034.
