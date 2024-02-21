@@ -10,6 +10,10 @@ working with ad-hoc csv file format and read.myacc.csv now produces an error whe
 
 - Part 2, 4, 5: Force language to "C" (UK/US English) to avoid issues on computer configured differently #1047.
 
+- Part 5: Behaviour parameter includedaycrit.part5 changed for values above 1, these
+are now interpreted as minimum number of valid waking hours during waking horus of a day.
+If you prefer to keep old functionality then divide your old value by 24 #1050.
+
 - Part 1:
 
   - Improved readability and maintainability of the code #1027
