@@ -9,11 +9,11 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
   if (params_cleaning[["includedaycrit.part5"]] > 1) {
     # I put this warning here, and not in check_params because that would generate
     # the warning every time the check_params is used across GGIR.
-    warning(paste0("\nNote that that behaviour of parameter includedaycrit.part5 has changed for ",
-                   "values above 1. These are now treated as the mimimum ",
+    warning(paste0("\nNote that the behaviour of parameter includedaycrit.part5 ",
+                   "has changed for values above 1. These are now treated as the mimimum ",
                    "absolute number of valid hours during the waking hours of a day.",
-                   "If you prefer to keep old functionality then divide ",
-                   "your current value by 24"), call. = FALSE)
+                   "If you prefer to keep the old functionality then divide ",
+                   "your current value (which is above 1) by 24."), call. = FALSE)
   }
   getValidDayIndices = function(x, window, params_cleaning) {
     if (window != "Segments") {
