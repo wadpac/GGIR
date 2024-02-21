@@ -9,8 +9,8 @@
 }
 \usage{
   g.report.part6(metadatadir = c(), f0 = c(), f1 = c(),
-                          params_cleaning = NULL,
-                          verbose = TRUE, sep_reports = ",")
+                          params_cleaning = NULL, params_output, 
+                          verbose = TRUE)
 }
 \arguments{
   \item{metadatadir}{
@@ -29,12 +29,12 @@
   \item{params_cleaning}{
     See details in \link{GGIR}.
   }
+  \item{params_output}{
+    Parameters object, see \link{GGIR}
+  }
   \item{verbose}{
     See details in \link{GGIR}.
   }
-  \item{sep_reports}{
-    Character (default = ","). Value used as sep argument in write.csv for writing csv files containing the GGIR reports.
-  }  
 }
 \value{
   Function does not produce data, but only writes reports
