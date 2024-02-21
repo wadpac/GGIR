@@ -9,8 +9,7 @@
 }
 \usage{
   g.report.part2(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
-                store.long = FALSE, do.part2.pdf = TRUE, myfun = c(),
-                sep_reports = ",", verbose = TRUE)
+  store.long = FALSE, params_output, myfun = c(), verbose = TRUE)
 }
 \arguments{
   \item{metadatadir}{
@@ -34,16 +33,13 @@
     format in addition to default wide format. Automatically turned
     to TRUE if using day segmentation with qwindow.
   }
-  \item{do.part2.pdf}{
-    Boolean, see \link{g.part2}
+  \item{params_output}{
+    Parameters object, see \link{GGIR}
   }
   \item{myfun}{
    (Optional) List as documented in \link{GGIR}. g.report.part2 uses this object
    to extract the name of the external function being used, such that this
    can be reused in the output filenames.
-  }
-  \item{sep_reports}{
-    Character (default = ","). Value used as sep argument in write.csv for writing csv files containing the GGIR reports.
   }
   \item{verbose}{
     See details in \link{GGIR}.
