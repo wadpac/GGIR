@@ -28,8 +28,8 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   # the output of this function for the original datafile is stored inside the RData file in the form of object I
   getbrand = function(filename = c(), datafile = c()) {
     sf = c(); isitageneactive = c(); mon = c(); dformat = c() #generating empty variables
-    extension = unlist(strsplit(filename,"[.]"))[2]
-    
+    extension = unlist(strsplit(filename,"[.]"))
+    extension = extension[length(extension)]
     switch(extension,
             "bin" = { dformat = FORMAT$BIN },
             "cwa" = ,

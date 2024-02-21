@@ -1,6 +1,14 @@
 # CHANGES IN GGIR VERSION 3.0-6
 
-- Part 1: Fixed minor bug in g.calibrate when no non-movement periods are found #1032
+
+- Part 1: Improve g.calibrate to better handle scenario when no non-movement periods are found in the entire recording #1032
+
+- Part 1: Now better documentation for the need to specify rmc.firstrow.acc when
+working with ad-hoc csv file format and read.myacc.csv now produces an error when used directly while user forgets to specify rmc.firstrow.acc #1034.
+
+- Part 2, 4, 5: Add parameter dec_reports and dec_config to ease tailoring GGIR to non-default UK/US machines #1048.
+
+- Part 2, 4, 5: Force language to "C" (UK/US English) to avoid issues on computer configured differently #1047.
 
 - Part 1:
 

@@ -10,7 +10,7 @@
   for direct use by package user.
 }
 \usage{
-g.report.part5_dictionary(metadatadir, sep_reports = ",")
+g.report.part5_dictionary(metadatadir, params_output)
 }
 \arguments{
   \item{metadatadir}{
@@ -19,10 +19,9 @@ g.report.part5_dictionary(metadatadir, sep_reports = ",")
     is normally created by \link{g.part1} and \link{GGIR} will recognise what
     the value of metadatadir is.
   }
-  \item{sep_reports}{
-    Character (default = ",").
-    Value used as sep argument in \link[utils]{write.csv} for writing 
-    csv files containing the GGIR reports.}
+  \item{params_output}{
+    Parameters object, see \link{GGIR}
+  }
 }
 \value{
   Function does not produce data, but only writes data dictionaries for the
