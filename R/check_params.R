@@ -116,7 +116,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "storefolderstructure", "dofirstpage", "visualreport", "week_weekend_aggregate.part5",
                        "do.part3.pdf", "outliers.only", "do.visual", "do.sibreport", "visualreport_without_invalid",
                        "do.part2.pdf")
-    character_params = c("save_ms5raw_format", "timewindow")
+    character_params = c("save_ms5raw_format", "timewindow", "sep_reports", "sep_config",
+                         "dec_reports", "dec_config")
     check_class("output", params = params_output, parnames = numeric_params, parclass = "numeric")
     check_class("output", params = params_output, parnames = boolean_params, parclass = "boolean")
     check_class("output", params = params_output, parnames = character_params, parclass = "character")
@@ -306,6 +307,14 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       } else {
         params_output[["save_ms5raw_format"]] = "csv"# specify as csv if user does not clearly specify format
       }
+    }
+    if (params_output[["sep_reports"]] == params_output[["dec_reports"]]) {
+      stop(paste0("\nYou have set sep_reports and dec_reports both to ",
+                  params_output[["sep_reports"]], " this is ambiguous. Please fix."))
+    }
+    if (params_output[["sep_config"]] == params_output[["dec_config"]]) {
+      stop(paste0("\nYou have set sep_config and dec_config both to ",
+                  params_output[["sep_config"]], " this is ambiguous. Please fix."))
     }
   }
   # params 247
