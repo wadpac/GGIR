@@ -13,17 +13,6 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     rm(params)
   }
   
-  #get input variables (relevant when read.myacc.csv is used
-  if (length(input) > 0) {
-    for (i in 1:length(names(input))) {
-      txt = paste0(names(input)[i], "=", input[i])
-      if (is(unlist(input[i]), "character")) {
-        txt = paste0(names(input)[i], "='", unlist(input[i]), "'")
-      }
-      eval(parse(text = txt))
-    }
-  }
-  
   # note that if the file is an RData file then this function will not be called
   # the output of this function for the original datafile is stored inside the RData file in the form of object I
   getbrand = function(filename = c(), datafile = c()) {
