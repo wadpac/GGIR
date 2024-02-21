@@ -230,7 +230,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     # tidy up memory
     if (M$filecorrupt == FALSE & M$filetooshort == FALSE & exists("IMP")) rm(IMP)
     rm(M); rm(I)
-    if (do.part2.pdf == TRUE) dev.off()
+    if (params_output[["do.part2.pdf"]] == TRUE) dev.off()
     
     #--------------------------------------
     # Store Event reports
