@@ -50,7 +50,6 @@ CalcSleepRegularityIndex = function(data = c(), epochsize = c(), desiredtz= c())
     SleepRegularityIndex = data.frame(day = 1:NR, SleepRegularityIndex = numeric(NR),
                                       weekday = character(NR), frac_valid = numeric(NR), 
                                       date = character(NR), stringsAsFactors = FALSE)
-    Sys.setlocale("LC_TIME", "C")  # set language to English because that is what we use elsewhere in GGIR
     for (i in 1:NR) { # Loop over all days
       thisday = which(data$date == uniqueDates[i] & data$SecInDay < (24*3600))
       nextday = which(data$date == uniqueDates[i + 1] & data$SecInDay < (24*3600))

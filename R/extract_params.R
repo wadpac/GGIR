@@ -108,7 +108,7 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
                               "argNames", "dupArgNames","do.sgAccEN", "do.sgAnglex", 
                               "do.sgAngley", "do.sgAnglez", "frag.classes.spt", "i", 
                               "isna", "tmp", "vecchar", "dupi", "GGIRread_version",
-                              "closedbout", "bout.metric", "sleeplogidnum")
+                              "closedbout", "bout.metric", "sleeplogidnum", "LC_TIME_backup")
           # Find argument in the various parameter objects
           if (newValue[1] != "notfound" & varName %in% ArgNames2Ignore == FALSE) {
             if (varName %in% names(params_general)) {

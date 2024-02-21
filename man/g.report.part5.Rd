@@ -10,9 +10,8 @@
 \usage{
   g.report.part5(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c(),
                           params_cleaning = NULL,
-                          week_weekend_aggregate.part5 = FALSE,
-                          LUX_day_segments = c(), 
-                          verbose = TRUE, sep_reports = ",")
+                          LUX_day_segments = c(), params_output,
+                          verbose = TRUE)
 }
 \arguments{
   \item{metadatadir}{
@@ -34,20 +33,15 @@
   \item{params_cleaning}{
    See details in \link{GGIR}.
   }
-  \item{week_weekend_aggregate.part5}{
-   Boolean to indicate whether week and weekend-days aggregates
-   should be stored. This is turned off by default as it generates a 
-   large number of extra columns in the output report.
-  }
   \item{LUX_day_segments}{
    see \link{g.part5}
+  }
+  \item{params_output}{
+    Parameters object, see \link{GGIR}
   }
   \item{verbose}{
     See details in \link{GGIR}.
   }
-  \item{sep_reports}{
-    Character (default = ","). Value used as sep argument in write.csv for writing csv files containing the GGIR reports.
-  }  
 }
 \value{
   Function does not produce data, but only writes reports
