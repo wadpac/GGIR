@@ -312,6 +312,12 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]], (f1 - f0) + 1))
         if (Ncores2use > 1) {
           cl <- parallel::makeCluster(Ncores2use) # not to overload your computer
+          parallel::clusterExport(cl = cl, 
+                                  varlist = c(unclass(lsf.str(envir = asNamespace("GGIR"), all = T)),
+                                              "MONITOR", "FORMAT"),
+                                  envir = as.environment(asNamespace("GGIR"))
+          )
+          parallel::clusterEvalQ(cl, Sys.setlocale("LC_TIME", "C"))
           doParallel::registerDoParallel(cl)
         } else {
           # Don't process in parallel if only one core
