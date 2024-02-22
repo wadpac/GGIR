@@ -56,7 +56,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     numeric_params = c("chunksize", "spherecrit", "minloadcrit", "minimumFileSizeMB", "dynrange",
                        "rmc.col.acc", "interpolationType",
                        "rmc.firstrow.acc", "rmc.firstrow.header", "rmc.header.length",
-                       "rmc.col.temp", "rmc.col.time", "rmc.dynamic_range",
+                       "rmc.col.temp", "rmc.col.time",
                        "rmc.sf", "rmc.col.wear", "rmc.noise", "frequency_tol", "rmc.scalefactor.acc")
     boolean_params = c("printsummary", "do.cal", "rmc.unsignedbit", "rmc.check4timegaps", "rmc.doresample",
                        "imputeTimegaps")
