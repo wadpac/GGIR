@@ -46,6 +46,9 @@
   \item{ID}{
     ID of participant
   }
+  \item{dayborder}{
+    dayborder argument
+  }
 }
 \value{
   List of qqq and qqq_backup 

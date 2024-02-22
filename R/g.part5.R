@@ -459,7 +459,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                       defdays = g.part5.definedays(nightsi, wi, indjump,
                                                    nightsi_bu, epochSize = ws3new, qqq_backup, ts, 
                                                    timewindowi, Nwindows, qwindow = params_247[["qwindow"]],
-                                                   ID = ID)
+                                                   ID = ID, dayborder = params_general[["dayborder"]])
                       qqq = defdays$qqq
                       qqq_backup = defdays$qqq_backup
                       segments = defdays$segments

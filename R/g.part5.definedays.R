@@ -1,6 +1,7 @@
 g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
                               epochSize, qqq_backup = c(), ts, timewindowi, 
-                              Nwindows, qwindow, ID = NULL) {
+                              Nwindows, qwindow, ID = NULL,
+                              dayborder = 0) {
   Nts = nrow(ts)
   lastDay = FALSE
   # define local functions ----
@@ -30,29 +31,36 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
   # in the data for this day.
   if (timewindowi == "MM") {
     # if recording starts at midnight, adjust wi and nightsi
-    if (nightsi[1] == 1) {
-      wi = wi + 1
-      # add extra nightsi to get the last day processed (as wi has been increased by 1)
-      nightsi = c(nightsi, nightsi[length(nightsi)] + (24*(60/epochSize) * 60))
-    }
+    # if (nightsi[1] == 1) {
+    #   wi = wi + 1
+    #   # add extra nightsi to get the last day processed (as wi has been increased by 1)
+    #   nightsi = c(nightsi, nightsi[length(nightsi)] + (24*(60/epochSize) * 60))
+    # }
     NepochPerDay = ((24*3600) / epochSize)
     # if (length(nightsi) >= wi) {
-      # offset from prev midnight
-      t0 = ts$time[1]
-      NepochFromPrevNight = (t0$hour*60*60 + t0$min*60 + t0$sec) / epochSize
-      if (wi == 1) {
-        qqq[1] = 1
-        qqq[2] = NepochPerDay - NepochFromPrevNight
-      } else {
-        qqq[1] = ((wi - 1) * NepochPerDay) - NepochFromPrevNight + 1
-        qqq[2] = (wi * NepochPerDay) - NepochFromPrevNight
-      }
-      # is this the last day?
-      if (qqq[2] >= Nts) {
-        qqq[2] = Nts
-        lastDay = TRUE
-      }
-      qqq_backup = qqq
+    # offset from prev midnight
+    t0 = format(ts$time[1], "%H:%M:%S")
+    hms = as.numeric(unlist(strsplit(t0, ":")))
+    NepochFromPrevMidnight = (hms[1]*60*60 + hms[2]*60 + hms[3]) / epochSize
+    if (dayborder == 0) {
+      NepochFromDayborder2Midnight = 0
+    } else {
+      NepochFromDayborder2Midnight = (24 - dayborder)*60*60 / epochSize
+    }
+    NepochFromPrevNight = NepochFromPrevMidnight + NepochFromDayborder2Midnight
+    if (wi == 1) {
+      qqq[1] = 1
+      qqq[2] = NepochPerDay - NepochFromPrevNight
+    } else {
+      qqq[1] = ((wi - 1) * NepochPerDay) - NepochFromPrevNight + 1
+      qqq[2] = (wi * NepochPerDay) - NepochFromPrevNight
+    }
+    # is this the last day?
+    if (qqq[2] >= Nts) {
+      qqq[2] = Nts
+      lastDay = TRUE
+    }
+    qqq_backup = qqq
     # in MM, also define segments of the day based on qwindow
     if (!is.na(qqq[1]) & !is.na(qqq[2])) {
       if (qqq[2] > Nts) qqq[2] = Nts
@@ -126,7 +134,6 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
     if (wi <= (Nwindows - 1)) { # all full windows
       qqq[1] = which(diff(ts$diur) == windowEdge)[wi] + 1
       qqq[2] = which(diff(ts$diur) == windowEdge)[wi + 1]
-      if (wi == (Nwindows - 1)) lastDay = TRUE
     } else {
       # time after last reliable waking up or onset (this can be more than 24 hours)
       # ignore this window, because if the night was ignored for sleep analysis
@@ -142,6 +149,7 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
       names(segments) = paste(start, end, sep = "-")
       segments_names = timewindowi
     }
+    if (wi == Nwindows) lastDay = TRUE
   }
   return(invisible(list(qqq = qqq, qqq_backup = qqq_backup, lastDay = lastDay,
                         segments = segments, segments_names = segments_names)))
