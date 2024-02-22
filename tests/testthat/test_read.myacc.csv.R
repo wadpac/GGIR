@@ -265,7 +265,6 @@ test_that("read.myacc.csv can handle header and bit-value acceleration", {
                       rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
                       desiredtz = "Europe/London",
-                      rmc.sf = sf,
                       rmc.headername.sf = "sample_frequency",
                       rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID")
