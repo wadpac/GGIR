@@ -299,6 +299,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             defaultSptWake = SPTE_end[j]
             guider = params_sleep[["HASPT.algo"]] # HDCZA, NotWorn, HorAngle (or plus invalid)
             defaultGuider = part3_guider[j]
+            if (is.null(defaultGuider)) defaultGuider = guider #this ensures compatibility with previous versions in which part3_guider was not stored
             if (is.na(defaultSptOnset) == TRUE) {
               # If SPTE was not derived for this night, use average estimate for other nights
               availableestimate = which(is.na(SPTE_start) == FALSE)

@@ -2,8 +2,8 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
                  sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
                  constrain2range = FALSE, HASPT.algo="HDCZA", invalid,
                  HASPT.ignore.invalid=FALSE, activity = NULL) {
-  tib.threshold = SPTE_start = SPTE_end = c()
-  
+  tib.threshold = SPTE_start = SPTE_end = part3_guider = c()
+  # internal functions ---------
   adjustlength = function(x, invalid) {
     if (length(invalid) > length(x)) {
       invalid = invalid[1:length(x)]
@@ -12,8 +12,11 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
     }
     return(invalid)
   }
+  # main code -----------------
   if (HASPT.algo != "notused") {
     if (HASPT.algo == "HDCZA") { # original, default
+      # x = 5-min rolling median of abs differences
+      # threshold = 10th percentile (constrained to 0.13-0.5 if required)
       medabsdi = function(angle) {
         #50th percentile, do not use mean because that will be outlier sensitive
         angvar = stats::median(abs(diff(angle))) 
@@ -21,35 +24,18 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
       }
       k1 = 5 * (60/ws3)
       x = zoo::rollapply(angle, width = k1, FUN = medabsdi) # 5 minute rolling median of the absolute difference
-      nomov = rep(0,length(x)) # no movement
-      pp = quantile(x, probs = c(perc / 100)) * spt_threshold
+      threshold = quantile(x, probs = c(perc / 100)) * spt_threshold
       if (constrain2range == TRUE) {
-        if (pp < 0.13) pp = 0.13
-        if (pp > 0.50) pp = 0.50
+        if (threshold < 0.13) threshold = 0.13
+        if (threshold > 0.50) threshold = 0.50
       } else {
-        if (pp == 0) pp = 0.20
+        if (threshold == 0) threshold = 0.20
       }
-      invalid = adjustlength(x, invalid)
-      nomov[which(x < pp & invalid == 0)] = 1
-      # if (HASPT.ignore.invalid == TRUE) {
-      #   invalid = adjustlength(x, invalid)
-      #   nomov[which(x < pp & invalid == 0)] = 1
-      # } else {
-      #   nomov[which(x < pp)] = 1
-      # }
     } else if (HASPT.algo == "HorAngle") {  # if hip, then require horizontal angle
+      # x = angle
+      # threshold = 45º
       x = angle
-      if (HASPT.ignore.invalid == TRUE) {
-        invalid = adjustlength(x, invalid)
-        horizontal = which(abs(x) < 45 & invalid == 0)
-      } else {
-        horizontal = which(abs(x) < 45)
-      }
-      nomov = rep(0,length(x)) # no movement
-      pp = NA
-      if (length(horizontal) > 0) {
-        nomov[horizontal] = 1
-      }
+      threshold = 45
     } else if (HASPT.algo == "NotWorn") {  
       # When protocol is to not wear sensor during the night,
       # and data is collected in count units we do not know angle
@@ -60,37 +46,31 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
       # However, we need to take into account that there may be some
       # noise in the data, so threshold needs to be above zero
       x = activity
-      
       # smooth x to 5 minute rolling average to reduce sensitivity to sudden peaks
       ma <- function(x, n = 300 / ws3){stats::filter(x, rep(1 / n, n), sides = 2, circular = TRUE)}
       x = ma(x)
-      activityThreshold = sd(x, na.rm = TRUE) * 0.2
+      threshold = sd(x, na.rm = TRUE) * 0.2
       # For sensewear external data this will not work as it mostly has values of 1 and up.
-      if (activityThreshold < min(activity)) {
-        activityThreshold = quantile(x, probs = 0.1)  
+      if (threshold < min(activity)) {
+        threshold = quantile(x, probs = 0.1)  
       }
-      if (HASPT.ignore.invalid == TRUE) {
-        invalid = adjustlength(x, invalid)
-        zeroMovement = which(x <= activityThreshold & invalid == 0)
-      } else {
-        zeroMovement = which(x <= activityThreshold)
-      }
-      nomov = rep(0,length(x)) # no movement
-      pp = NA
-      if (length(zeroMovement) > 0) {
-        nomov[zeroMovement] = 1
-      }
+      # this algorithm looked for x <= threshold, now a minimum quantity is added
+      # to the threshold to allow for consistent definition of nomov below
+      # i.e., x < threshold
+      threshold = threshold + 0.001 
     }
+    # Now define nomov periods with the selected strategy for invalid time
+    nomov = rep(0,length(x)) # no movement
+    invalid = adjustlength(x, invalid)
+    if (is.na(HASPT.ignore.invalid)) { # all invalid = no movement
+      nomov[which(x < threshold | invalid == 1)] = 1
+    } else if (HASPT.ignore.invalid == FALSE) { # calculate no movement over the imputed angle
+      nomov[which(x < threshold)] = 1
+    } else if (HASPT.ignore.invalid == TRUE) {  # all invalid = movement
+      nomov[which(x < threshold & invalid == 0)] = 1
+    }
+    # apply steps (assumptions on sleep)
     inspttime = rep(NA,length(x))
-    if (HASPT.ignore.invalid == FALSE) {
-      is1 = which(diff(c(0, invalid)) == 1) #start of blocks in invalid
-      ie1 = which(diff(c(invalid, 0)) == -1) #end of blocks in invalid
-      if (length(is1) > 0) {
-        for (j in 1:length(is1)) {
-          nomov[is1[j]:ie1[j]] = 1 #record these blocks in the nomov vector
-        }
-      }
-    }
     nomov = c(0,nomov,0)
     s1 = which(diff(nomov) == 1) #start of blocks in spt
     e1 = which(diff(nomov) == -1) #end of blocks in spt
@@ -145,7 +125,9 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
       SPTE_end = e5[longestinspt] - 1
       if (SPTE_start == 0) SPTE_start = 1
       # investigate if invalid time was included in the SPT definition, 
-      # and if so, keep track of that in the guider
+      # and if so, keep track of that in the guider. This is needed in the 
+      # case that sleeplog is used, to inform part 4 that it should
+      # trust the sleeplog times for this specific night.
       spt_long = rep(0, length(invalid))
       spt_long[SPTE_start:SPTE_end] = 1
       invalid_in_spt = which(invalid == 1 & spt_long == 1)
@@ -160,7 +142,7 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
       tib.threshold = c()
       part3_guider = "none"
     }
-    tib.threshold = pp
+    tib.threshold = threshold
   }
   invisible(list(SPTE_start = SPTE_start, SPTE_end = SPTE_end, tib.threshold = tib.threshold,
                  part3_guider = part3_guider))
