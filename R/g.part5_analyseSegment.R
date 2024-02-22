@@ -53,7 +53,6 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     date = date + 1
     add_one_day_to_next_date = FALSE
   }
-  Sys.setlocale("LC_TIME", "C")
   weekday = weekdays(date, abbreviate = FALSE)
   dsummary[si,fi:(fi + 1)] = c(weekday, as.character(date))
   ds_names[fi:(fi + 1)] = c("weekday", "calendar_date"); fi = fi + 2
@@ -96,7 +95,6 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
   ds_names[fi:(fi + 1)] = c("wakeup", "wakeup_ts");      fi = fi + 2
   # extract date and use this to retrieve corresponding part 4 information about the nights:
   options(encoding = "UTF-8")
-  Sys.setlocale("LC_TIME", "C") # set language to English
   # look up matching part4 entry:
   recDates = as.Date(sumSleep$calendar_date, format = "%d/%m/%Y", origin = "1970-01-01")
   dsummary[si, fi] = sibDef
