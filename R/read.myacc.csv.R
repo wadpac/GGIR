@@ -92,6 +92,9 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                                      dec = rmc.dec, showProgress = FALSE, header = FALSE,
                                      blank.lines.skip = TRUE,
                                      data.table=FALSE, stringsAsFactors=FALSE)
+      validrows = which(is.na(header_tmp[,1]) == FALSE & header_tmp[,1] != "")
+      header_tmp = header_tmp[validrows,1:2]
+      
       options(warn = 0)
       if (length(rmc.header.structure) != 0) { # header is stored in 1 column, with strings that need to be split
         if (length(header_tmp) == 1) { # one header item
@@ -119,8 +122,6 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
         header = header_tmp2
       } else { # column 1 is header name, column 2 is header value
         colnames(header_tmp) = NULL
-        validrows = which(is.na(header_tmp[,1]) == FALSE & header_tmp[,1] != "")
-        header_tmp = header_tmp[validrows,1:2]
         header_tmp2 = as.data.frame(header_tmp[,2], stringsAsFactors = FALSE)
         row.names(header_tmp2) = header_tmp[,1]
         colnames(header_tmp2) = NULL
@@ -142,7 +143,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
         # first see if maybe sf *is* in the header, just not under the rmc.headername.sf name
         sf = as.numeric(header[which(row.names(header) == "sample_rate"),1])
         # if sf isn't in the header under the default name either, then use the default value
-        if (is.na(sf)) {
+        if (is.na(sf) && !is.null(rmc.sf)) {
           sf = rmc.sf
           header = rbind(header, sf) # add it also to the header
           row.names(header)[nrow(header)] = "sample_rate"

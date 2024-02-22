@@ -165,5 +165,5 @@ test_that("Neighbouring recordings are correctly appended", {
   expect_equal(nrow(M$metashort), 10)
   expect_equal(nrow(M$metalong), 2)
   expect_equal(unique(M$metashort$accmetric), 4)
-  if (file.exists(dn))  unlink(dn, recursive = TRUE)
+  if (dir.exists("./testfolder"))  unlink("./testfolder", recursive = TRUE)
 })

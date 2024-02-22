@@ -265,7 +265,6 @@ test_that("read.myacc.csv can handle header and bit-value acceleration", {
                       rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
                       desiredtz = "Europe/London",
-                      rmc.sf = sf,
                       rmc.headername.sf = "sample_frequency",
                       rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID")
@@ -273,6 +272,8 @@ test_that("read.myacc.csv can handle header and bit-value acceleration", {
   expect_that(ncol(D1$data), equals(5))
   expect_that(nrow(D1$header), equals(5))
   expect_that(ncol(D1$header), equals(1))
+  expect_equal(as.numeric(D1$header["sample_rate",1]), 30)
+  
   # Test 2 - 2 column header, bit-valued acceleration
   D2 = read.myacc.csv(rmc.file = testfile[2], rmc.nrow = 20, rmc.dec = ".",
                       rmc.firstrow.acc = 11, rmc.firstrow.header = 1,
