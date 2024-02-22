@@ -25,16 +25,6 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     params_general = params$params_general
     params_cleaning = params$params_cleaning
   }
-  #get input variables
-  if (length(input) > 0) {
-    for (i in 1:length(names(input))) {
-      txt = paste0(names(input)[i], "=", input[i])
-      if (is(unlist(input[i]), "character")) {
-        txt = paste0(names(input)[i], "='", unlist(input[i]), "'")
-      }
-      eval(parse(text = txt))
-    }
-  }
   
   metrics2do = data.frame(do.bfen = params_metrics[["do.bfen"]],
                           do.enmo = params_metrics[["do.enmo"]],
