@@ -1,5 +1,6 @@
 # CHANGES IN GGIR VERSION 3.0-6
 
+- Part 1: Fix handling of ad hoc csv file header in g.inspectfile() #1057
 
 - Part 1: Improve g.calibrate to better handle scenario when no non-movement periods are found in the entire recording #1032
 
