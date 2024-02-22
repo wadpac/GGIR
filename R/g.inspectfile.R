@@ -197,7 +197,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
                                     rmc.scalefactor.acc = params_rawdata[["rmc.scalefactor.acc"]],
                                     desiredtz = desiredtz,
                                     configtz = configtz)
-    if (class(Pusercsvformat$header) == "character" && Pusercsvformat$header == "no header") {      
+    if (inherits(Pusercsvformat$header, "character") && Pusercsvformat$header == "no header") {      
       sf = params_rawdata[["rmc.sf"]]
     } else {
       sf = as.numeric(Pusercsvformat$header["sample_rate",1])
