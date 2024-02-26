@@ -558,6 +558,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                 # part 5 we are only interested in the edges of the SPT and not what happens in
                 # it.
                 relyonguider_thisnight = FALSE
+                # user specified to rely on guider in data cleaning file:
+                # relyonguider_thisnight = TRUE and cleaningcode = 5
                 if (length(params_cleaning[["data_cleaning_file"]]) > 0) {
                   if (length(which(DaCleanFile$relyonguider_part4 == j &
                                    DaCleanFile$ID == accid)) > 0) {
@@ -565,9 +567,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                     cleaningcode = 5 # user specified to rely on guider
                   }
                 }
-                if (grepl("+invalid", guider) | grepl("+invalid", defaultGuider)) {
-                  relyonguider_thisnight = TRUE # rely on guider because some nonwear was used to help the slep identification
-                }
+                # No SIBs overlap with SPT window
+                # relyonguider_thisnight = TRUE and cleaningcode = 5
                 if (length(spo) == 0) {
                   # add empty spo object, in case it was removed above
                   # we do this because code below assumes that spo is a matrix
@@ -577,11 +578,18 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   spo[1, 2:4] = 0
                   spo$def[1] = k
                 }
-                # If no SIBs overlap with the SPT window
                 if (length(which(spo$start < SptWake &
-                                 spo$end > SptOnset)) == 0 |
-                    relyonguider_thisnight == TRUE) {
-                  # If night is explicitely listed
+                                 spo$end > SptOnset)) == 0) {
+                  relyonguider_thisnight = TRUE
+                  cleaningcode = 5 
+                }
+                # if invalid time was used in part3 with HASPT.ignore.invalid,
+                # then rely on guider, but cleaningcode should not be 5
+                if (grepl("+invalid", guider) | grepl("+invalid", defaultGuider)) {
+                  relyonguider_thisnight = TRUE # rely on guider because some nonwear was used to help the slep identification
+                }
+                # If no SIBs overlap with the SPT window
+                if (relyonguider_thisnight == TRUE) {
                   newlines = rbind(spo[1, ], spo[1, ])
                   newlines[1, 1:4] = c(nrow(spo) + 1, SptOnset, SptOnset + 1/60, 1)
                   newlines[2, 1:4] = c(nrow(spo) + 1, SptWake - 1/60, SptWake, 1)
