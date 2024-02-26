@@ -25,29 +25,12 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       # threshold = 0.2
       k1 = 5 * (60/ws3)
       x = zoo::rollapply(angle, width = k1, FUN = medabsdi) # 5 minute rolling median of the absolute difference
-      nomov = rep(0,length(x)) # no movement
-      if (HASPT.ignore.invalid == TRUE) {
-        invalid = adjustlength(x, invalid)
-        nomov[which(x < HDCZA_threshold & invalid == 0)] = 1
-      } else {
-        nomov[which(x < HDCZA_threshold)] = 1
-      }
       threshold = HDCZA_threshold
     } else if (HASPT.algo == "HorAngle") {  # if hip, then require horizontal angle
       # x = absolute angle
       # threshold = 45º
       x = abs(angle)
-      if (HASPT.ignore.invalid == TRUE) {
-        invalid = adjustlength(x, invalid)
-        horizontal = which(x < 45 & invalid == 0)
-      } else {
-        horizontal = which(x < 45)
-      }
-      nomov = rep(0,length(x)) # no movement
-      HDCZA_threshold = NA
-      if (length(horizontal) > 0) {
-        nomov[horizontal] = 1
-      }
+      threshold = 45
     } else if (HASPT.algo == "NotWorn") {  
       # When protocol is to not wear sensor during the night,
       # and data is collected in count units we do not know angle
@@ -61,26 +44,15 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       # smooth x to 5 minute rolling average to reduce sensitivity to sudden peaks
       ma <- function(x, n = 300 / ws3){stats::filter(x, rep(1 / n, n), sides = 2, circular = TRUE)}
       x = ma(x)
-      threshold = sd(x, na.rm = TRUE) * 0.2
+      activityThreshold = sd(x, na.rm = TRUE) * 0.2
       # For sensewear external data this will not work as it mostly has values of 1 and up.
       if (activityThreshold < min(activity)) {
         activityThreshold = quantile(x, probs = 0.1)  
       }
-      if (HASPT.ignore.invalid == TRUE) {
-        invalid = adjustlength(x, invalid)
-        zeroMovement = which(x <= activityThreshold & invalid == 0)
-      } else {
-        zeroMovement = which(x <= activityThreshold)
-      }
-      nomov = rep(0,length(x)) # no movement
-      HDCZA_threshold = NA
-      if (length(zeroMovement) > 0) {
-        nomov[zeroMovement] = 1
-      }
       # this algorithm looked for x <= threshold, now a minimum quantity is added
       # to the threshold to allow for consistent definition of nomov below
       # i.e., x < threshold
-      threshold = threshold + 0.001 
+      threshold = activityThreshold + 0.001 
     }
     # Now define nomov periods with the selected strategy for invalid time
     nomov = rep(0,length(x)) # no movement
