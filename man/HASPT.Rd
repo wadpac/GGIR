@@ -8,21 +8,12 @@
   by GGIR user.
 }
 \usage{
-HASPT(angle, perc = 10, spt_threshold = 15, sptblocksize = 30, 
-      spt_max_gap = 60, ws3 = 5, constrain2range = FALSE,
+HASPT(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5, 
       HASPT.algo="HDCZA", invalid, HASPT.ignore.invalid=FALSE, activity)
 }
 \arguments{
   \item{angle}{
     Vector of epoch level estimates of angle
-  }
-  \item{perc}{
-    Number to indicate percentage threshold (default 10 corresponds to 2018
-    paper)
-  }
-  \item{spt_threshold}{
-    Numeric threshold used in HASPT algorithm (default 15 corresponds to 
-    2018 paper)
   }
   \item{sptblocksize}{
     Number to indicate minimum SPT block size (minutes)
@@ -32,9 +23,6 @@ HASPT(angle, perc = 10, spt_threshold = 15, sptblocksize = 30,
   }
   \item{ws3}{
     Number representing epoch length in seconds
-  }
-  \item{constrain2range}{
-    Bolean to indicate whether threshold should be constrained to a range
   }
   \item{HASPT.algo}{
     Character to indicate what algortihm should be used. Default "HDCZA" is 

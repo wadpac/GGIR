@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.0-7
+
+- Part 3: Deprecate parameter constrain2range and simplified HDCZA algorithm by replacing time series specific  threshold by constant threshold of 0.2 #1062.
+
 # CHANGES IN GGIR VERSION 3.0-6
 
 - Part 2, 4, 5: Add parameter dec_reports and dec_config to ease tailoring GGIR to non-default UK/US machines #1048.

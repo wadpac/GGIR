@@ -1,6 +1,5 @@
-HASPT = function(angle, perc = 10, spt_threshold = 15,
-                 sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
-                 constrain2range = FALSE, HASPT.algo="HDCZA", invalid,
+HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
+                 HASPT.algo="HDCZA", invalid,
                  HASPT.ignore.invalid=FALSE, activity = NULL) {
   tib.threshold = SPTE_start = SPTE_end = part3_guider = c()
   # internal functions ---------
@@ -22,17 +21,13 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
         angvar = stats::median(abs(diff(angle))) 
         return(angvar)
       }
+      # x = angle
+      # threshold = 0.2
       k1 = 5 * (60/ws3)
       x = zoo::rollapply(angle, width = k1, FUN = medabsdi) # 5 minute rolling median of the absolute difference
-      threshold = quantile(x, probs = c(perc / 100)) * spt_threshold
-      if (constrain2range == TRUE) {
-        if (threshold < 0.13) threshold = 0.13
-        if (threshold > 0.50) threshold = 0.50
-      } else {
-        if (threshold == 0) threshold = 0.20
-      }
+      threshold = 0.2
     } else if (HASPT.algo == "HorAngle") {  # if hip, then require horizontal angle
-      # x = angle
+      # x = absolute angle
       # threshold = 45º
       x = abs(angle)
       threshold = 45

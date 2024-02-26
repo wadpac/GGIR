@@ -267,8 +267,6 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         }
         if (length(params_sleep[["def.noc.sleep"]]) == 1) {
           spt_estimate = HASPT(angle = tmpANGLE, ws3 = ws3,
-                               constrain2range = params_sleep[["constrain2range"]],
-                               perc = perc, spt_threshold = spt_threshold,
                                sptblocksize = sptblocksize, spt_max_gap = spt_max_gap,
                                HASPT.algo = params_sleep[["HASPT.algo"]],
                                invalid = invalid[qqq1:qqq2], # load only invalid time in the night of interest (i.e., qqq1:qqq2)
@@ -296,8 +294,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                 }
               }
               spt_estimate_tmp = HASPT(angle = tmpANGLE, ws3 = ws3,
-                                       constrain2range = params_sleep[["constrain2range"]],
-                                       perc = perc, spt_threshold = spt_threshold, sptblocksize = sptblocksize,
+                                       sptblocksize = sptblocksize,
                                        spt_max_gap = spt_max_gap,
                                        HASPT.algo = params_sleep[["HASPT.algo"]], invalid = invalid[newqqq1:newqqq2],
                                        HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],

@@ -12,7 +12,7 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
   # } else {
   if ("sleep" %in% topic) {
     params_sleep = list(anglethreshold = 5, timethreshold = 5,
-                        ignorenonwear = TRUE, constrain2range = TRUE,
+                        ignorenonwear = TRUE,
                         HASPT.algo = "HDCZA",
                         HASIB.algo = "vanHees2015", Sadeh_axis = "Y",
                         longitudinal_axis = c(),
