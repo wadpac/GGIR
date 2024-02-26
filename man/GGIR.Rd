@@ -1125,7 +1125,14 @@ GGIR(mode = 1:5,
       \item{HASPT.ignore.invalid}{
         Boolean (default = FALSE).
         To indicate whether invalid time segments should be ignored in the
-        Sleep Period Time detection.}
+        Sleep Period Time detection. If \code{FALSE} (default), the imputed 
+        angle or activity metric during the invalid time segments is used 
+        in the Sleep Period Time detection. If \code{TRUE}, invalid time 
+        segments are ignored for the Sleep Period Time detection 
+        (i.e., considered to be out of the Sleep Period Time). 
+        If \code{NA}, then invalid time segments are considered to be no movement
+        segments.
+        }
 
       \item{HASIB.algo}{
         Character (default = "vanHees2015").
