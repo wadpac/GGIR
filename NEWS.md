@@ -3,6 +3,8 @@
 - Part 3: Algorithm HDCZA simplified by replacing time series specific threshold in step 6 of the description in the 2018 paper by a constant threshold that can be set by the user. This means that
 we have a new parameter HDCZA_threshold and parameter constrain2range is now deprecated #1062.
 
+- Part 1: Fix bug introduced with release 3.0-6 affecting the use of external function embedding #1065
+
 # CHANGES IN GGIR VERSION 3.0-6
 
 - Part 2, 4, 5: Add parameter dec_reports and dec_config to ease tailoring GGIR to non-default UK/US machines #1048.
