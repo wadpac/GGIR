@@ -14,16 +14,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-[GGIR](https://CRAN.R-project.org/package=GGIR) is an R-package primarily designed to process multi-day ***raw*** accelerometer data for physical activity, sleep, and circadian rhythm research. The term ***raw*** refers to data being expressed in m/s<sup>2</sup> or gravitational acceleration as opposed to the previous generation accelerometers which stored data in accelerometer brand specific units. Despite the focus on the raw data, GGIR also offers functionality to process previous generation accelerometer data. The signal processing for raw data includes automatic calibration to gravity, detection of abnormally high values., imputation of raw-level time gaps (only for specific sensor brands), and calculation of orientation angle and average magnitude acceleration based on a variety of metrics. Next, the signal processing for both raw and previous generation data continuous with the detection of non-wear and epoch level imputation. Finally, GGIR uses all this information to describe the data at multiple time resolutions on data quality and data summary metrics that could be interpreted as estimates of physical activity, inactivity, sleep, and circadian rhythm. The time resolutions of GGIR output are:
-
--   **Per recording**, which typically matches to one participant ID.
--   **Per sequence of recordings** with matching participant IDs which are optionally appended. For details on how to use this see documentation on parameter `maxRecordingInterval` and documentation how to use parameters as explained further down.
--   **Calendar day** with option to specify the day border timing with midnight as default.
--   **Night** defined from noon-noon, unless the person woke up after noon which is when the sleep algorithm will re-focus on the window 6pm-6pm.
--   **Day segment**, which can be defined via code to indicate timing of the segments within a day standardised for all recordings and days in a dataset or via diary file where the segment definition is allowed to vary per recording and per day.
--   **Window between Waking-up to Waking-up** the following day.
--   **Window between Sleep onset to sleep onset** the following day.
--   **Epoch by epoch time series**, where an epoch length is set by the user at for example 5 seconds.
 
 ## The GGIR function
 
