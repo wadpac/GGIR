@@ -1106,7 +1106,7 @@ GGIR(mode = 1:5,
         confusion between monitor non-wear time and sustained inactivity.}
 
       \item{constrain2range}{
-        Boolean (default = TRUE).
+        Deprecated, used to be a Boolean (default = TRUE)
         Whether or not to constrain the range of
         threshold used in the diary free sleep period time window detection.}
 
@@ -1121,6 +1121,15 @@ GGIR(mode = 1:5,
         between -45 and +45 degrees. And "NotWorn" which is also the same as HDCZA
         but looks for time segments when the 5 minute rolling average of counts is
         below 20 per cent of its standard deviation.}
+    
+      \item{HDCZA_threshold}{
+        Numeric (default = 0.2)
+        If \code{HASPT.algo} is set to "HDCZA" then HDCZA_threshold will be used
+        as threshold instead of 6th step in the diagram of Figure 1 in
+        van Hees et al. 2018 Scientific Report (doi: 10.1038/s41598-018-31266-z). We have
+        now simplified this step to a constant number, which can be modified via 
+        HDCZA_threshold.
+      }
 
       \item{HASPT.ignore.invalid}{
         Boolean (default = FALSE).

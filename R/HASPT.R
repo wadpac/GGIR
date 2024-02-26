@@ -1,5 +1,5 @@
 HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
-                 HASPT.algo="HDCZA", invalid,
+                 HASPT.algo="HDCZA", HDCZA_threshold = 0.2, invalid,
                  HASPT.ignore.invalid=FALSE, activity = NULL) {
   tib.threshold = SPTE_start = SPTE_end = part3_guider = c()
   # internal functions ---------
@@ -25,7 +25,7 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       # threshold = 0.2
       k1 = 5 * (60/ws3)
       x = zoo::rollapply(angle, width = k1, FUN = medabsdi) # 5 minute rolling median of the absolute difference
-      threshold = 0.2
+      threshold = HDCZA_threshold
     } else if (HASPT.algo == "HorAngle") {  # if hip, then require horizontal angle
       # x = absolute angle
       # threshold = 45º
@@ -44,15 +44,15 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       # smooth x to 5 minute rolling average to reduce sensitivity to sudden peaks
       ma <- function(x, n = 300 / ws3){stats::filter(x, rep(1 / n, n), sides = 2, circular = TRUE)}
       x = ma(x)
-      threshold = sd(x, na.rm = TRUE) * 0.2
+      activityThreshold = sd(x, na.rm = TRUE) * 0.2
       # For sensewear external data this will not work as it mostly has values of 1 and up.
-      if (threshold < min(activity)) {
-        threshold = quantile(x, probs = 0.1)  
+      if (activityThreshold < min(activity)) {
+        activityThreshold = quantile(x, probs = 0.1)  
       }
       # this algorithm looked for x <= threshold, now a minimum quantity is added
       # to the threshold to allow for consistent definition of nomov below
       # i.e., x < threshold
-      threshold = threshold + 0.001 
+      threshold = activityThreshold + 0.001 
     }
     # Now define nomov periods with the selected strategy for invalid time
     nomov = rep(0,length(x)) # no movement

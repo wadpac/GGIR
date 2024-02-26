@@ -1,6 +1,9 @@
 # CHANGES IN GGIR VERSION 3.0-7
 
-- Part 3: Deprecate parameter constrain2range and simplified HDCZA algorithm by replacing time series specific  threshold by constant threshold of 0.2 #1062.
+- Part 3: Algorithm HDCZA simplified by replacing time series specific threshold in step 6 of the description in the 2018 paper by a constant threshold that can be set by the user. This means that
+we have a new parameter HDCZA_threshold and parameter constrain2range is now deprecated #1062.
+
+- Part 1: Fix bug introduced with release 3.0-6 affecting the use of external function embedding #1065
 
 - Part 3: Added option for HSPT.ignore.invalid = NA, which would consider invalid
 time segments as no movement for the Sleep Period Time definition.
