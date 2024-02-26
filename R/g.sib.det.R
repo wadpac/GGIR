@@ -270,6 +270,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                                sptblocksize = sptblocksize, spt_max_gap = spt_max_gap,
                                HASPT.algo = params_sleep[["HASPT.algo"]],
                                invalid = invalid[qqq1:qqq2], # load only invalid time in the night of interest (i.e., qqq1:qqq2)
+                               HDCZA_threshold = params_sleep[["HDCZA_threshold"]],
                                HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
                                activity = tmpACC)
         } else {

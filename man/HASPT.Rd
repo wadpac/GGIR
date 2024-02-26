@@ -9,7 +9,8 @@
 }
 \usage{
 HASPT(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5, 
-      HASPT.algo="HDCZA", invalid, HASPT.ignore.invalid=FALSE, activity)
+      HASPT.algo="HDCZA", HDCZA_threshold = 0.2, invalid, 
+      HASPT.ignore.invalid = FALSE, activity)
 }
 \arguments{
   \item{angle}{
@@ -25,13 +26,10 @@ HASPT(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
     Number representing epoch length in seconds
   }
   \item{HASPT.algo}{
-    Character to indicate what algortihm should be used. Default "HDCZA" is 
-    Heuristic algorithm looking at Distribution of Change in Z-Angle as
-    described in van Hees et al. 2018. Other options included:
-    "HorAngle", which is based on HDCZA but replaces non-movement detection of 
-    the HDCZA algorithm by looking for time segments where the angle of the 
-    longitudinal sensor axis has an angle relative to the horizontal plane
-    between -45 and +45 degrees.
+    See \link{GGIR}
+  }
+  \item{HDCZA_threshold}{
+    See \link{GGIR}
   }
   \item{invalid}{
     Integer vector with per epoch an indicator of valid(=0) or invalid(=1) epoch.

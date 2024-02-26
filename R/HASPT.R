@@ -1,5 +1,5 @@
 HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
-                 HASPT.algo="HDCZA", invalid,
+                 HASPT.algo="HDCZA", HDCZA_threshold = 0.2, invalid,
                  HASPT.ignore.invalid=FALSE, activity = NULL) {
   tib.threshold = SPTE_start = SPTE_end = part3_guider = c()
   # internal functions ---------
@@ -25,12 +25,29 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       # threshold = 0.2
       k1 = 5 * (60/ws3)
       x = zoo::rollapply(angle, width = k1, FUN = medabsdi) # 5 minute rolling median of the absolute difference
-      threshold = 0.2
+      nomov = rep(0,length(x)) # no movement
+      if (HASPT.ignore.invalid == TRUE) {
+        invalid = adjustlength(x, invalid)
+        nomov[which(x < HDCZA_threshold & invalid == 0)] = 1
+      } else {
+        nomov[which(x < HDCZA_threshold)] = 1
+      }
+      threshold = HDCZA_threshold
     } else if (HASPT.algo == "HorAngle") {  # if hip, then require horizontal angle
       # x = absolute angle
       # threshold = 45º
       x = abs(angle)
-      threshold = 45
+      if (HASPT.ignore.invalid == TRUE) {
+        invalid = adjustlength(x, invalid)
+        horizontal = which(x < 45 & invalid == 0)
+      } else {
+        horizontal = which(x < 45)
+      }
+      nomov = rep(0,length(x)) # no movement
+      HDCZA_threshold = NA
+      if (length(horizontal) > 0) {
+        nomov[horizontal] = 1
+      }
     } else if (HASPT.algo == "NotWorn") {  
       # When protocol is to not wear sensor during the night,
       # and data is collected in count units we do not know angle
@@ -46,8 +63,19 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       x = ma(x)
       threshold = sd(x, na.rm = TRUE) * 0.2
       # For sensewear external data this will not work as it mostly has values of 1 and up.
-      if (threshold < min(activity)) {
-        threshold = quantile(x, probs = 0.1)  
+      if (activityThreshold < min(activity)) {
+        activityThreshold = quantile(x, probs = 0.1)  
+      }
+      if (HASPT.ignore.invalid == TRUE) {
+        invalid = adjustlength(x, invalid)
+        zeroMovement = which(x <= activityThreshold & invalid == 0)
+      } else {
+        zeroMovement = which(x <= activityThreshold)
+      }
+      nomov = rep(0,length(x)) # no movement
+      HDCZA_threshold = NA
+      if (length(zeroMovement) > 0) {
+        nomov[zeroMovement] = 1
       }
       # this algorithm looked for x <= threshold, now a minimum quantity is added
       # to the threshold to allow for consistent definition of nomov below
