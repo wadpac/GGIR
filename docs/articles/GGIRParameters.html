@@ -29,7 +29,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,11 +42,11 @@
   <a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a>
 </li>
 <li class="nav-item">
-  <a class="nav-link" href="../articles/chapter0_GetStarted.html">Get Started</a>
+  <a class="nav-link" href="../articles/chapter0_GetStarted.html">Get started</a>
 </li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-chapters">Chapters</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-chapters">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-the-book">The book</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-the-book">
     <a class="dropdown-item" href="../articles/chapterInProgress.html">1. What is GGIR</a>
     <a class="dropdown-item" href="../articles/chapter2_Pipeline.html">2. The GGIR Pipeline</a>
     <a class="dropdown-item" href="../articles/chapter3_QualityAssessment.html">3. Data Quality Assurance</a>
@@ -58,6 +58,16 @@
     <a class="dropdown-item" href="../articles/chapterInProgress.html">9. Physical Behaviours Analysis</a>
     <a class="dropdown-item" href="../articles/chapterInProgress.html">10. Circadian Rhythms</a>
     <a class="dropdown-item" href="../articles/chapterInProgress.html">11. Household Co-Analysis</a>
+  </div>
+</li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-annexes">Annexes</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-annexes">
+    <a class="dropdown-item" href="../articles/readmyacccsv.html">Reading csv files with raw data</a>
+    <a class="dropdown-item" href="../articles/ExternalFunction.html">Embedding external functions in GGIR</a>
+    <a class="dropdown-item" href="../articles/CutPoints.html">Published cut-points and how to use them</a>
+    <a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a>
+    <a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a>
   </div>
 </li>
 <li class="nav-item dropdown">
@@ -542,511 +552,526 @@ arguments.</p>
 <td>params_rawdata</td>
 </tr>
 <tr class="odd">
-<td>selectdaysfile</td>
-<td>1, 2</td>
-<td>params_cleaning</td>
-</tr>
-<tr class="even">
 <td>dayborder</td>
 <td>1, 2, 5</td>
 <td>params_general</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>dynrange</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>configtz</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>minimumFileSizeMB</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>interpolationType</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>expand_tail_max_hours</td>
 <td>deprecated</td>
 <td>params_general</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>recordingEndSleepHour</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>maxRecordingInterval</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>nonwear_approach</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>dataFormat</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>extEpochData_timeformat</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>metadatadir</td>
 <td>2, 3, 4, 5</td>
 <td>not in parameter objects</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>minimum_MM_length.part5</td>
 <td>5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>strategy</td>
 <td>2, 5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>hrs.del.start</td>
 <td>2, 5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>hrs.del.end</td>
 <td>2, 5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>maxdur</td>
 <td>2, 5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>max_calendar_days</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>includedaycrit</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>nonWearEdgeCorrection</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>L5M5window</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>M5L5res</td>
 <td>2, 5</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>winhr</td>
 <td>2, 5</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>qwindow</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>qlevels</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>ilevels</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>mvpathreshold</td>
 <td>2</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>boutcriter</td>
 <td>2</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>ndayswindow</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>idloc</td>
 <td>2, 4</td>
 <td>params_general</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.imp</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>storefolderstructure</td>
 <td>2, 4, 5</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>epochvalues2csv</td>
 <td>2</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>do.part2.pdf</td>
 <td>2</td>
 <td>params_output</td>
 </tr>
+<tr class="odd">
+<td>sep_reports</td>
+<td>2, 4, 5</td>
+<td>params_output</td>
+</tr>
 <tr class="even">
+<td>dec_reports</td>
+<td>2, 4, 5</td>
+<td>params_output</td>
+</tr>
+<tr class="odd">
+<td>sep_config</td>
+<td>1, 2, 3, 4, 5</td>
+<td>params_output</td>
+</tr>
+<tr class="even">
+<td>dec_config</td>
+<td>1, 2, 3, 4, 5</td>
+<td>params_output</td>
+</tr>
+<tr class="odd">
 <td>mvpadur</td>
 <td>2</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>bout.metric</td>
 <td>2, 5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>closedbout</td>
 <td>2</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>IVIS_windowsize_minutes</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>IVIS_epochsize_seconds</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>IVIS.activity.metric</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>iglevels</td>
 <td>2, 5</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>TimeSegments2ZeroFile</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>qM5L5</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>MX.ig.min.dur</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>qwindow_dateformat</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>anglethreshold</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>timethreshold</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>acc.metric</td>
 <td>3, 5</td>
 <td>params_general</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>ignorenonwear</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>constrain2range</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.part3.pdf</td>
 <td>3</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>sensor.location</td>
 <td>3, 4</td>
 <td>params_general</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>HASPT.algo</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>HASIB.algo</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Sadeh_axis</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>longitudinal_axis</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>HASPT.ignore.invalid</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>loglocation</td>
 <td>4, 5</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>colid</td>
 <td>4</td>
 <td>params_sleep</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>coln1</td>
 <td>4</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>possible_nap_window</td>
 <td>5</td>
 <td>params_sleep</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>possible_nap_dur</td>
 <td>5</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.visual</td>
 <td>4</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>outliers.only</td>
 <td>4</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>excludefirstlast</td>
 <td>4</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>criterror</td>
 <td>4</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>includenightcrit</td>
 <td>4</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>relyonguider</td>
 <td>4</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>relyonsleeplog</td>
 <td>4</td>
 <td>deprecated</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>sleepefficiency.metric</td>
 <td>4</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>def.noc.sleep</td>
 <td>4</td>
 <td>params_sleep</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>data_cleaning_file</td>
 <td>4, 5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>excludefirst.part4</td>
 <td>4</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>excludelast.part4</td>
 <td>4</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>sleepwindowType</td>
 <td>4</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>excludefirstlast.part5</td>
 <td>5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>boutcriter.mvpa</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>boutcriter.in</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>boutcriter.lig</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>threshold.lig</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>threshold.mod</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>threshold.vig</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>boutdur.mvpa</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>boutdur.in</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>boutdur.lig</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>save_ms5rawlevels</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>part5_agg2_60seconds</td>
 <td>5</td>
 <td>params_general</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>includedaycrit.part5</td>
 <td>5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>frag.metrics</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>LUXthresholds</td>
 <td>5</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>LUX_cal_constant</td>
 <td>5</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>LUX_cal_exponent</td>
 <td>5</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>LUX_day_segments</td>
 <td>5</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>timewindow</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>save_ms5raw_format</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>save_ms5raw_without_invalid</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.sibreport</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>visualreport_without_invalid</td>
 <td>visualreport</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>dofirstpage</td>
 <td>visualreport</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>visualreport</td>
 <td>visualreport</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>viewingwindow</td>
 <td>visualreport</td>
 <td>params_output</td>
@@ -1970,9 +1995,11 @@ when data_masking_strategy = 1.</p>
 <h4 class="unnumbered" id="includedaycrit-part5">includedaycrit.part5<a class="anchor" aria-label="anchor" href="#includedaycrit-part5"></a>
 </h4>
 <p>Numeric (default = 2/3). Inclusion criteria for number of valid hours
-during the waking hours of a day, either as expressed as a ratio of 1 or
-as the number of hours, which is converted by GGIR to a ratio. For
-example 16 become 16/24=2/3.</p>
+during the waking hours of a day, when value is smaller than or equal to
+1 used as fraction of waking hours, when value above 1 used as absolute
+number of valid hours required. Do not confuse this argument with
+argument includedaycrit which is only used in GGIR part 2 and applies to
+the entire day.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="excludefirstlast-part5">excludefirstlast.part5<a class="anchor" aria-label="anchor" href="#excludefirstlast-part5"></a>
@@ -2760,13 +2787,25 @@ g.part2.</p>
 <h4 class="unnumbered" id="sep_reports">sep_reports<a class="anchor" aria-label="anchor" href="#sep_reports"></a>
 </h4>
 <p>Character (default = “,”). Value used as sep argument in
-[utils]write.csv for writing csv files containing the GGIR reports.</p>
+[data.table]fwrite for writing csv reports.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="sep_config">sep_config<a class="anchor" aria-label="anchor" href="#sep_config"></a>
 </h4>
 <p>Character (default = “,”). Value used as sep argument in
-[utils]write.csv for writing the GGIR config file.</p>
+[data.table]fwrite for writing csv config file.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="dec_reports">dec_reports<a class="anchor" aria-label="anchor" href="#dec_reports"></a>
+</h4>
+<p>Character (default = “.”). Value used as dec argument in
+[data.table]fwrite for writing csv reports.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="dec_config">dec_config<a class="anchor" aria-label="anchor" href="#dec_config"></a>
+</h4>
+<p>Character (default = “.”). Value used as dec argument in
+[data.table]fwrite for writing csv config file.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="visualreport_without_invalid">visualreport_without_invalid<a class="anchor" aria-label="anchor" href="#visualreport_without_invalid"></a>

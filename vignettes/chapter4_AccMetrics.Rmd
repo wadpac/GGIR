@@ -2,7 +2,7 @@
 title: "4. From Raw Data to Acceleration Metrics"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{3. From Raw Data to Acceleration Metrics}
+  %\VignetteIndexEntry{4. From Raw Data to Acceleration Metrics}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

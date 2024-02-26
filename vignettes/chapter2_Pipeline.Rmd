@@ -2,7 +2,7 @@
 title: "2. The GGIR pipeline"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{1. The GGIR pipeline}
+  %\VignetteIndexEntry{2. The GGIR pipeline}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

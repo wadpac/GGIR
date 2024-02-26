@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,11 +22,11 @@
   <a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a>
 </li>
 <li class="nav-item">
-  <a class="nav-link" href="../articles/chapter0_GetStarted.html">Get Started</a>
+  <a class="nav-link" href="../articles/chapter0_GetStarted.html">Get started</a>
 </li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-chapters">Chapters</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-chapters">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-the-book">The book</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-the-book">
     <a class="dropdown-item" href="../articles/chapterInProgress.html">1. What is GGIR</a>
     <a class="dropdown-item" href="../articles/chapter2_Pipeline.html">2. The GGIR Pipeline</a>
     <a class="dropdown-item" href="../articles/chapter3_QualityAssessment.html">3. Data Quality Assurance</a>
@@ -38,6 +38,16 @@
     <a class="dropdown-item" href="../articles/chapterInProgress.html">9. Physical Behaviours Analysis</a>
     <a class="dropdown-item" href="../articles/chapterInProgress.html">10. Circadian Rhythms</a>
     <a class="dropdown-item" href="../articles/chapterInProgress.html">11. Household Co-Analysis</a>
+  </div>
+</li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-annexes">Annexes</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-annexes">
+    <a class="dropdown-item" href="../articles/readmyacccsv.html">Reading csv files with raw data</a>
+    <a class="dropdown-item" href="../articles/ExternalFunction.html">Embedding external functions in GGIR</a>
+    <a class="dropdown-item" href="../articles/CutPoints.html">Published cut-points and how to use them</a>
+    <a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a>
+    <a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a>
   </div>
 </li>
 <li class="active nav-item dropdown">
@@ -86,6 +96,22 @@
       <small>Source: <a href="https://github.com/wadpac/GGIR/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.0-6" id="changes-in-ggir-version-30-6">CHANGES IN GGIR VERSION 3.0-6<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-30-6"></a></h2><p class="text-muted">CRAN release: 2024-02-22</p>
+<ul><li><p>Part 2, 4, 5: Add parameter dec_reports and dec_config to ease tailoring GGIR to non-default UK/US machines <a href="https://github.com/wadpac/GGIR/issues/1048" class="external-link">#1048</a>.</p></li>
+<li><p>Part 2, 4, 5: Force language to “C” (UK/US English) to avoid issues on computer configured differently <a href="https://github.com/wadpac/GGIR/issues/1047" class="external-link">#1047</a>.</p></li>
+<li><p>Part 5: Behaviour parameter includedaycrit.part5 changed for values above 1, these are now interpreted as minimum number of valid waking hours during waking horus of a day. If you prefer to keep old functionality then divide your old value by 24 <a href="https://github.com/wadpac/GGIR/issues/1050" class="external-link">#1050</a>.</p></li>
+<li>
+<p>Part 1:</p>
+<ul><li><p>Improved readability and maintainability of the code <a href="https://github.com/wadpac/GGIR/issues/1027" class="external-link">#1027</a></p></li>
+<li><p>Improved processing speed for Axivity .cwa, GENEActiv .bin, and Movisens files</p></li>
+<li><p>Made sure that g.readaccfile() reads timestamps in the correct timezone, configtz, for all monitor types</p></li>
+<li><p>Note: there will be small differences in both metalong and metashort metrics calculated by this GGIR version, compared to prior versions. This is due to small improvements in the management of timestamps, calibration coefficients, and input data block boundaries.</p></li>
+<li><p>Fix handling of ad hoc csv file header in g.inspectfile() <a href="https://github.com/wadpac/GGIR/issues/1057" class="external-link">#1057</a></p></li>
+<li><p>Improved g.calibrate to better handle scenario when no non-movement periods are found in the entire recording <a href="https://github.com/wadpac/GGIR/issues/1032" class="external-link">#1032</a></p></li>
+<li><p>Improved documentation for the need to specify rmc.firstrow.acc when working with ad-hoc csv file format and read.myacc.csv now produces an error when used directly while user forgets to specify rmc.firstrow.acc <a href="https://github.com/wadpac/GGIR/issues/1034" class="external-link">#1034</a>.</p></li>
+</ul></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.0-5" id="changes-in-ggir-version-30-5">CHANGES IN GGIR VERSION 3.0-5<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-30-5"></a></h2><p class="text-muted">CRAN release: 2024-02-02</p>
 <ul><li><p>Part 5: Fix bug in functionality for Sensewear data (externally derived epoch data) <a href="https://github.com/wadpac/GGIR/issues/1030" class="external-link">#1030</a></p></li>

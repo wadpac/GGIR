@@ -18,7 +18,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,11 +30,11 @@
   <a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a>
 </li>
 <li class="nav-item">
-  <a class="nav-link" href="../articles/chapter0_GetStarted.html">Get Started</a>
+  <a class="nav-link" href="../articles/chapter0_GetStarted.html">Get started</a>
 </li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-chapters">Chapters</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-chapters">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-the-book">The book</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-the-book">
     <a class="dropdown-item" href="../articles/chapterInProgress.html">1. What is GGIR</a>
     <a class="dropdown-item" href="../articles/chapter2_Pipeline.html">2. The GGIR Pipeline</a>
     <a class="dropdown-item" href="../articles/chapter3_QualityAssessment.html">3. Data Quality Assurance</a>
@@ -46,6 +46,16 @@
     <a class="dropdown-item" href="../articles/chapterInProgress.html">9. Physical Behaviours Analysis</a>
     <a class="dropdown-item" href="../articles/chapterInProgress.html">10. Circadian Rhythms</a>
     <a class="dropdown-item" href="../articles/chapterInProgress.html">11. Household Co-Analysis</a>
+  </div>
+</li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-annexes">Annexes</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-annexes">
+    <a class="dropdown-item" href="../articles/readmyacccsv.html">Reading csv files with raw data</a>
+    <a class="dropdown-item" href="../articles/ExternalFunction.html">Embedding external functions in GGIR</a>
+    <a class="dropdown-item" href="../articles/CutPoints.html">Published cut-points and how to use them</a>
+    <a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a>
+    <a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a>
   </div>
 </li>
 <li class="nav-item dropdown">
@@ -1068,7 +1078,8 @@
 
       <dt>ndayswindow</dt>
 <dd><p>Numeric (default = 7).
-        If <code>data_masking_strategy</code> is set to 3 or 5, then this is the size of the window as a
+        If <code>data_masking_strategy</code> is set to 3 or 5, then this is the size of 
+        the window as a
         number of days. For data_masking_strategy 3 value can be fractional, e.g. 7.5,
         while for data_masking_strategy 5 it needs to be an integer.</p></dd>
 
@@ -1076,8 +1087,10 @@
       <dt>includedaycrit.part5</dt>
 <dd><p>Numeric (default = 2/3).
         Inclusion criteria for number of valid hours during the waking hours of a day,
-        either as expressed as a ratio of 1 or as the number of hours,
-        which is converted by GGIR to a ratio. For example 16 become 16/24=2/3.</p></dd>
+        when value is smaller than or equal to 1 used as fraction of waking hours, 
+        when value above 1 used as absolute number of valid hours required.
+        Do not confuse this argument with argument <code>includedaycrit</code> which is
+        only used in GGIR part 2 and applies to the entire day.</p></dd>
 
 
       <dt>segmentWEARcrit.part5</dt>
@@ -1733,13 +1746,22 @@
 
       <dt>sep_reports</dt>
 <dd><p>Character (default = ",").
-        Value used as sep argument in <a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a> for writing csv files containing
-        the GGIR reports.</p></dd>
+        Value used as sep argument in <a href="https://rdatatable.gitlab.io/data.table/reference/fwrite.html" class="external-link">fwrite</a> for writing csv reports.</p></dd>
+
+        
+      <dt>dec_reports</dt>
+<dd><p>Character (default = ".").
+        Value used as dec argument in <a href="https://rdatatable.gitlab.io/data.table/reference/fwrite.html" class="external-link">fwrite</a> for writing csv reports.</p></dd>
 
 
       <dt>sep_config</dt>
 <dd><p>Character (default = ",").
-        Value used as sep argument in <a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a> for writing the GGIR config file.</p></dd>
+        Value used as sep argument in <a href="https://rdatatable.gitlab.io/data.table/reference/fwrite.html" class="external-link">fwrite</a> for writing csv config file.</p></dd>
+
+        
+      <dt>dec_config</dt>
+<dd><p>Character (default = ".").
+        Value used as dec argument in <a href="https://rdatatable.gitlab.io/data.table/reference/fwrite.html" class="external-link">fwrite</a> for writing csv config file.</p></dd>
 
 
       <dt>visualreport_without_invalid</dt>

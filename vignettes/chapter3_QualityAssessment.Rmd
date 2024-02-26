@@ -2,7 +2,7 @@
 title: "3. Data Quality Assurance"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{2. Inspecting the Data Quality}
+  %\VignetteIndexEntry{3. Data Quality Assurance}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

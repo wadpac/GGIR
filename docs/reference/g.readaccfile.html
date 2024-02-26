@@ -14,7 +14,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,11 +26,11 @@
   <a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a>
 </li>
 <li class="nav-item">
-  <a class="nav-link" href="../articles/chapter0_GetStarted.html">Get Started</a>
+  <a class="nav-link" href="../articles/chapter0_GetStarted.html">Get started</a>
 </li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-chapters">Chapters</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-chapters">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-the-book">The book</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-the-book">
     <a class="dropdown-item" href="../articles/chapterInProgress.html">1. What is GGIR</a>
     <a class="dropdown-item" href="../articles/chapter2_Pipeline.html">2. The GGIR Pipeline</a>
     <a class="dropdown-item" href="../articles/chapter3_QualityAssessment.html">3. Data Quality Assurance</a>
@@ -42,6 +42,16 @@
     <a class="dropdown-item" href="../articles/chapterInProgress.html">9. Physical Behaviours Analysis</a>
     <a class="dropdown-item" href="../articles/chapterInProgress.html">10. Circadian Rhythms</a>
     <a class="dropdown-item" href="../articles/chapterInProgress.html">11. Household Co-Analysis</a>
+  </div>
+</li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-annexes">Annexes</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-annexes">
+    <a class="dropdown-item" href="../articles/readmyacccsv.html">Reading csv files with raw data</a>
+    <a class="dropdown-item" href="../articles/ExternalFunction.html">Embedding external functions in GGIR</a>
+    <a class="dropdown-item" href="../articles/CutPoints.html">Published cut-points and how to use them</a>
+    <a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a>
+    <a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a>
   </div>
 </li>
 <li class="nav-item dropdown">
@@ -102,7 +112,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">g.readaccfile</span><span class="op">(</span><span class="va">filename</span>, <span class="va">blocksize</span>, <span class="va">blocknumber</span>, <span class="va">filequality</span>,</span>
 <span>                           <span class="va">ws</span>, PreviousEndPage <span class="op">=</span> <span class="fl">1</span>, inspectfileobject <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>                           PreviousLastValue <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>, PreviousLastTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>                           params_rawdata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>, params_general <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span>                           params_rawdata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>, params_general <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>, header <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -114,7 +124,7 @@
 <dd><p>Size of blocks (in file pages) to be read</p></dd>
 
   <dt>blocknumber</dt>
-<dd><p>Block number relative to start of file</p></dd>
+<dd><p>Block number relative to start of file, starting with 1.</p></dd>
 
   <dt>filequality</dt>
 <dd><p>Single row dataframe with columns: filetooshort, filecorrupt,
@@ -142,6 +152,10 @@
   <dt>params_general</dt>
 <dd><p>See <a href="g.part1.html">g.part1</a></p></dd>
 
+  <dt>header</dt>
+<dd><p>Header information that was extracted the previous time this file was read,
+    to be re-used instead of being extracted again.</p></dd>
+
   <dt>...</dt>
 <dd><p>Any input arguments needed for function <a href="read.myacc.csv.html">read.myacc.csv</a> if you
     are working with a non-standard csv formatted files. Furter,
@@ -155,8 +169,7 @@
 <ul><li><p><code>P</code> Block object extracted from file with format specific to
     accelerometer brand</p></li>
 <li><p><code>filequality</code> Same as in function arguments</p></li>
-<li><p><code>switchoffLD</code> Boolean to indicate whether it is worth
-    continueing to read the next block of data or not</p></li>
+<li><p><code>isLastBlock</code> Boolean indicating whether this was the last block to read</p></li>
 <li><p><code>endpage</code> Page number on which blocked ends, this will be
     used as input for argument PreviousEndPage when reading the next block.</p></li>
 </ul></div>

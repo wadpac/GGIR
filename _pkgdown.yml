@@ -30,7 +30,7 @@ home:
 navbar:
   components:
     intro:
-      text: Get Started
+      text: Get started
       href: articles/chapter0_GetStarted.html
     installation:
       text: Installation
@@ -46,7 +46,7 @@ navbar:
       href: https://twitter.com/RpackageGGIR
       aria-label: Twitter
     chapters:
-      text: Chapters
+      text: The book
       menu:
         - text: 1. What is GGIR
           href: articles/chapterInProgress.html
@@ -70,9 +70,21 @@ navbar:
           href: articles/chapterInProgress.html
         - text: 11. Household Co-Analysis
           href: articles/chapterInProgress.html
-  
+    annexes:
+      text: Annexes
+      menu:
+        - text: Reading csv files with raw data
+          href: articles/readmyacccsv.html
+        - text: Embedding external functions in GGIR
+          href: articles/ExternalFunction.html
+        - text: Published cut-points and how to use them
+          href: articles/CutPoints.html
+        - text: Day-segment analyses
+          href: articles/TutorialDaySegmentAnalyses.html
+        - text: Household co-analysis
+          href: articles/HouseHoldCoanalysis.html
   structure:
-    left:  [installation, intro, chapters, news, contributing, help]
+    left:  [installation, intro, chapters, annexes, news, contributing, help]
     right: [search, github, twitter]
 
 news:
