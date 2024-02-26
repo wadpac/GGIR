@@ -124,18 +124,20 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
       SPTE_start = s5[longestinspt] - 1
       SPTE_end = e5[longestinspt] - 1
       if (SPTE_start == 0) SPTE_start = 1
-      # investigate if invalid time was included in the SPT definition, 
-      # and if so, keep track of that in the guider. This is needed in the 
-      # case that sleeplog is used, to inform part 4 that it should
-      # trust the sleeplog times for this specific night.
-      spt_long = rep(0, length(invalid))
-      spt_long[SPTE_start:SPTE_end] = 1
-      invalid_in_spt = which(invalid == 1 & spt_long == 1)
-      if (length(invalid_in_spt)) {
-        part3_guider = paste0(HASPT.algo, "+invalid")
-      } else {
-        part3_guider = HASPT.algo
+      part3_guider = HASPT.algo
+      if (is.na(HASPT.ignore.invalid)) {
+        # investigate if invalid time was included in the SPT definition, 
+        # and if so, keep track of that in the guider. This is needed in the 
+        # case that sleeplog is used, to inform part 4 that it should
+        # trust the sleeplog times for this specific night.
+        spt_long = rep(0, length(invalid))
+        spt_long[SPTE_start:SPTE_end] = 1
+        invalid_in_spt = which(invalid == 1 & spt_long == 1)
+        if (length(invalid_in_spt)) {
+          part3_guider = paste0(HASPT.algo, "+invalid")
+        }
       }
+      
     } else {
       SPTE_end = c()
       SPTE_start = c()
