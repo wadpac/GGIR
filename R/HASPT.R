@@ -1,5 +1,5 @@
 HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
-                 HASPT.algo="HDCZA", invalid,
+                 HASPT.algo="HDCZA", HDCZA_threshold = 0.2, invalid,
                  HASPT.ignore.invalid=FALSE, activity = NULL) {
   tib.threshold = SPTE_start = SPTE_end = c()
   
@@ -19,14 +19,13 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
         return(angvar)
       }
       k1 = 5 * (60/ws3)
-      x = zoo::rollapply(angle, width=k1, FUN=medabsdi) # 5 minute rolling median of the absolute difference
+      x = zoo::rollapply(angle, width = k1, FUN = medabsdi) # 5 minute rolling median of the absolute difference
       nomov = rep(0,length(x)) # no movement
-      pp = 0.2
       if (HASPT.ignore.invalid == TRUE) {
         invalid = adjustlength(x, invalid)
-        nomov[which(x < pp & invalid == 0)] = 1
+        nomov[which(x < HDCZA_threshold & invalid == 0)] = 1
       } else {
-        nomov[which(x < pp)] = 1
+        nomov[which(x < HDCZA_threshold)] = 1
       }
     } else if (HASPT.algo == "HorAngle") {  # if hip, then require horizontal angle
       x = angle
@@ -37,7 +36,7 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
         horizontal = which(abs(x) < 45)
       }
       nomov = rep(0,length(x)) # no movement
-      pp = NA
+      HDCZA_threshold = NA
       if (length(horizontal) > 0) {
         nomov[horizontal] = 1
       }
@@ -67,7 +66,7 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
         zeroMovement = which(x <= activityThreshold)
       }
       nomov = rep(0,length(x)) # no movement
-      pp = NA
+      HDCZA_threshold = NA
       if (length(zeroMovement) > 0) {
         nomov[zeroMovement] = 1
       }
@@ -116,7 +115,7 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       SPTE_start = c()
       tib.threshold = c()
     }
-    tib.threshold = pp
+    tib.threshold = HDCZA_threshold
   }
   invisible(list(SPTE_start = SPTE_start, SPTE_end = SPTE_end, tib.threshold = tib.threshold))
 }

@@ -269,6 +269,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
           spt_estimate = HASPT(angle = tmpANGLE, ws3 = ws3,
                                sptblocksize = sptblocksize, spt_max_gap = spt_max_gap,
                                HASPT.algo = params_sleep[["HASPT.algo"]],
+                               HDCZA_threshold = params_sleep[["HDCZA_threshold"]],
                                invalid = invalid,
                                HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
                                activity = tmpACC)
