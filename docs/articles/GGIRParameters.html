@@ -807,19 +807,19 @@ arguments.</p>
 <td>params_sleep</td>
 </tr>
 <tr class="even">
-<td>acc.metric</td>
-<td>3, 5</td>
-<td>params_general</td>
-</tr>
-<tr class="odd">
 <td>ignorenonwear</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
-<td>constrain2range</td>
+<tr class="odd">
+<td>HDCZA_threshold</td>
 <td>3</td>
 <td>params_sleep</td>
+</tr>
+<tr class="even">
+<td>acc.metric</td>
+<td>3, 5</td>
+<td>params_general</td>
 </tr>
 <tr class="odd">
 <td>do.part3.pdf</td>
@@ -2178,12 +2178,6 @@ non-wear periods to avoid confusion between monitor non-wear time and
 sustained inactivity.</p>
 </div>
 <div class="section level4">
-<h4 class="unnumbered" id="constrain2range">constrain2range<a class="anchor" aria-label="anchor" href="#constrain2range"></a>
-</h4>
-<p>Boolean (default = TRUE). Whether or not to constrain the range of
-threshold used in the diary free sleep period time window detection.</p>
-</div>
-<div class="section level4">
 <h4 class="unnumbered" id="haspt-algo">HASPT.algo<a class="anchor" aria-label="anchor" href="#haspt-algo"></a>
 </h4>
 <p>Character (default = “HDCZA”). To indicate what algorithm should be
@@ -2324,6 +2318,15 @@ when argument sleepwindowType = “TimeInBed”</p>
 <p>Numeric (default = Inf). Maximum acceleration before or after the SIB
 for the nap to be considered. By default this will allow all possible
 naps.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="hdcza_threshold">HDCZA_threshold<a class="anchor" aria-label="anchor" href="#hdcza_threshold"></a>
+</h4>
+<p>Numeric (default = 0.2) If HASPT.algo is set to “HDCZA” then
+HDCZA_threshold will be used as threshold instead of 6th step in the
+diagram of Figure 1 in van Hees et al. 2018 Scientific Report (doi:
+10.1038/s41598-018-31266-z). We have now simplified this step to a
+constant number, which can be modified via HDCZA_threshold.</p>
 </div>
 </div>
 <div class="section level3">
