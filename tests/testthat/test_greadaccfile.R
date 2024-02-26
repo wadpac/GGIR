@@ -337,7 +337,6 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   hd[3, 1:2] = c("bit: 8", "")
   hd[4, 1:2] = c("dynamic_range: 6", "")
 
-  S1 = as.matrix(mydata)
   S1 = rbind(hd, S1)
   S1[hd_NR + 1,] = colnames(S1)
   colnames(S1) = NULL
@@ -346,29 +345,33 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   on.exit({if (file.exists(testfile_one_col)) file.remove(testfile_one_col)}, add = TRUE)
   write.table(S1, file = testfile_one_col, col.names = FALSE, row.names = FALSE)
 
-  for (testfile in c(testfile_one_col, testfile_two_col)) {
+  for (csvData in list(list(testfile_one_col, ": "),
+                       list(testfile_two_col, c()))) {
     # check that for a file whose header doesn't specify sampling rate,
     # g.inspectfile() errors out if sampling rate is not specified as rmc.sf, or if rmc.sf==0
-    expect_error(g.inspectfile(testfile, 
+    expect_error(g.inspectfile(csvData[[1]], 
                                rmc.dec=".", rmc.unit.time="POSIX",
                                rmc.firstrow.acc = 11, rmc.firstrow.header = 1,
                                rmc.col.acc = c(1,3,4), rmc.col.time=2,
-                               rmc.unit.acc = "g", rmc.origin = "1970-01-01"),
+                               rmc.unit.acc = "g", rmc.origin = "1970-01-01",
+                               rmc.header.structure = csvData[[2]]),
                 regexp = "File header doesn't specify sample rate. Please provide rmc.sf value to process")
-    expect_error(g.inspectfile(testfile, 
+    expect_error(g.inspectfile(csvData[[1]], 
                                rmc.dec=".", rmc.sf = 0, rmc.unit.time="POSIX",
                                rmc.firstrow.acc = 11, rmc.firstrow.header = 1,
                                rmc.col.acc = c(1,3,4), rmc.col.time=2,
-                               rmc.unit.acc = "g", rmc.origin = "1970-01-01"),
+                               rmc.unit.acc = "g", rmc.origin = "1970-01-01",
+                               rmc.header.structure = csvData[[2]]),
                 regexp = "File header doesn't specify sample rate. Please provide a non-zero rmc.sf value to process")
 
     # check that for a file whose header doesn't specify sampling rate,
     # g.inspectfile() returns sf == rmc.sf if the latter was specified
-    I = g.inspectfile(testfile, 
+    I = g.inspectfile(csvData[[1]], 
                       rmc.dec=".", rmc.sf = 80, rmc.unit.time="POSIX",
                       rmc.firstrow.acc = 11, rmc.firstrow.header = 1,
                       rmc.col.acc = c(1,3,4), rmc.col.time=2,
-                      rmc.unit.acc = "g", rmc.origin = "1970-01-01")
+                      rmc.unit.acc = "g", rmc.origin = "1970-01-01",
+                      rmc.header.structure = csvData[[2]])
     expect_equal(I$sf, 80)
   }
 
@@ -382,7 +385,6 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   hd[3, 1:2] = c("serial_number","9876")
   hd[4, 1:2] = c("bit","8")
   hd[5, 1:2] = c("dynamic_range","6")
-  S1 = as.matrix(mydata)
   S1 = rbind(hd, S1)
   S1[hd_NR + 1,] = colnames(S1)
   colnames(S1) = NULL
