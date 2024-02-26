@@ -34,7 +34,7 @@ HASPT = function(angle, perc = 10, spt_threshold = 15,
     } else if (HASPT.algo == "HorAngle") {  # if hip, then require horizontal angle
       # x = angle
       # threshold = 45º
-      x = angle
+      x = abs(angle)
       threshold = 45
     } else if (HASPT.algo == "NotWorn") {  
       # When protocol is to not wear sensor during the night,
