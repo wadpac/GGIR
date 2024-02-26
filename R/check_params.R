@@ -56,7 +56,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     numeric_params = c("chunksize", "spherecrit", "minloadcrit", "minimumFileSizeMB", "dynrange",
                        "rmc.col.acc", "interpolationType",
                        "rmc.firstrow.acc", "rmc.firstrow.header", "rmc.header.length",
-                       "rmc.col.temp", "rmc.col.time", "rmc.bitrate", "rmc.dynamic_range",
+                       "rmc.col.temp", "rmc.col.time",
                        "rmc.sf", "rmc.col.wear", "rmc.noise", "frequency_tol", "rmc.scalefactor.acc")
     boolean_params = c("printsummary", "do.cal", "rmc.unsignedbit", "rmc.check4timegaps", "rmc.doresample",
                        "imputeTimegaps")
@@ -72,6 +72,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     check_class("Raw data", params = params_rawdata, parnames = numeric_params, parclass = "numeric")
     check_class("Raw data", params = params_rawdata, parnames = boolean_params, parclass = "boolean")
     check_class("Raw data", params = params_rawdata, parnames = character_params, parclass = "character")
+
+    if (params_rawdata[["chunksize"]] > 1.5) params_rawdata[["chunksize"]] = 1.5
+    if (params_rawdata[["chunksize"]] < 0.2) params_rawdata[["chunksize"]] = 0.2
   }
   if (length(params_247) > 0) {
     # iglevels and qwindow can be numeric or character, so not tested
@@ -113,7 +116,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "storefolderstructure", "dofirstpage", "visualreport", "week_weekend_aggregate.part5",
                        "do.part3.pdf", "outliers.only", "do.visual", "do.sibreport", "visualreport_without_invalid",
                        "do.part2.pdf")
-    character_params = c("save_ms5raw_format", "timewindow")
+    character_params = c("save_ms5raw_format", "timewindow", "sep_reports", "sep_config",
+                         "dec_reports", "dec_config")
     check_class("output", params = params_output, parnames = numeric_params, parclass = "numeric")
     check_class("output", params = params_output, parnames = boolean_params, parclass = "boolean")
     check_class("output", params = params_output, parnames = character_params, parclass = "character")
@@ -127,6 +131,29 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     check_class("general", params = params_general, parnames = numeric_params, parclass = "numeric")
     check_class("general", params = params_general, parnames = boolean_params, parclass = "boolean")
     check_class("general", params = params_general, parnames = character_params, parclass = "character")
+
+    ws3 = params_general[["windowsizes"]][1]; ws2 = params_general[["windowsizes"]][2]; ws = params_general[["windowsizes"]][3]
+    if (ws2/60 != round(ws2/60)) {
+      ws2 = as.numeric(60 * ceiling(ws2/60))
+      warning(paste0("The long windowsize needs to be a multitude of 1 minute periods.\n",
+                     "Long windowsize has now been automatically adjusted to ",
+                     ws2, " seconds in order to meet this criteria."), call. = FALSE)
+    }
+    if (ws2/ws3 != round(ws2/ws3)) {
+      def = c(1,5,10,15,20,30,60)
+      def2 = abs(def - ws3)
+      ws3 = as.numeric(def[which(def2 == min(def2))])
+      warning(paste0("The long windowsize needs to be a multitude of short windowsize.\n",
+                     "The short windowsize has now been automatically adjusted to ",
+                     ws3, " seconds in order to meet this criteria.\n"), call. = FALSE)
+    }
+    if (ws/ws2 != round(ws/ws2)) {
+      ws = ws2 * ceiling(ws/ws2)
+      warning(paste0("The third value of parameter windowsizes needs to be a multitude of the second value.\n",
+                     "The third value has been automatically adjusted to ",
+                     ws, " seconds in order to meet this criteria.\n"), call. = FALSE)
+    }    
+    params_general[["windowsizes"]] = c(ws3, ws2, ws)
   }
   #-----------------------------------------------------------------------------------
   # Check value combinations and apply corrections if not logical
@@ -280,6 +307,14 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       } else {
         params_output[["save_ms5raw_format"]] = "csv"# specify as csv if user does not clearly specify format
       }
+    }
+    if (params_output[["sep_reports"]] == params_output[["dec_reports"]]) {
+      stop(paste0("\nYou have set sep_reports and dec_reports both to ",
+                  params_output[["sep_reports"]], " this is ambiguous. Please fix."))
+    }
+    if (params_output[["sep_config"]] == params_output[["dec_config"]]) {
+      stop(paste0("\nYou have set sep_config and dec_config both to ",
+                  params_output[["sep_config"]], " this is ambiguous. Please fix."))
     }
   }
   # params 247
@@ -443,6 +478,17 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   
   # cleaning parameters for segments
   if (length(params_cleaning) > 0) {
+    if (is.null(params_cleaning[["includedaycrit.part5"]]) == TRUE) {
+      stop(paste0("\nSetting includedaycrit.part5 to an empty value is not allowed",
+                  ", please change."), call. = FALSE)
+    } else if (params_cleaning[["includedaycrit.part5"]] < 0) {
+      stop(paste0("\nNegative value of includedaycrit.part5 is not allowed",
+                     ", please change."), call. = FALSE)
+    } else if (params_cleaning[["includedaycrit.part5"]] > 25) {
+      stop(paste0("\nIncorrect value of includedaycrit.part5, this should ",
+                     "be a fraction of the day between zero and one or the ",
+                     "number of hours in a day."), call. = FALSE)
+    }
     if (is.null(params_cleaning[["segmentWEARcrit.part5"]])) {
       # if null, then assign default value
       params_cleaning[["segmentWEARcrit.part5"]] = 0.5

@@ -13,23 +13,12 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     rm(params)
   }
   
-  #get input variables (relevant when read.myacc.csv is used
-  if (length(input) > 0) {
-    for (i in 1:length(names(input))) {
-      txt = paste0(names(input)[i], "=", input[i])
-      if (is(unlist(input[i]), "character")) {
-        txt = paste0(names(input)[i], "='", unlist(input[i]), "'")
-      }
-      eval(parse(text = txt))
-    }
-  }
-  
   # note that if the file is an RData file then this function will not be called
   # the output of this function for the original datafile is stored inside the RData file in the form of object I
   getbrand = function(filename = c(), datafile = c()) {
     sf = c(); isitageneactive = c(); mon = c(); dformat = c() #generating empty variables
-    extension = unlist(strsplit(filename,"[.]"))[2]
-    
+    extension = unlist(strsplit(filename,"[.]"))
+    extension = extension[length(extension)]
     switch(extension,
             "bin" = { dformat = FORMAT$BIN },
             "cwa" = ,
@@ -140,7 +129,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       } else if (mon == MONITOR$AXIVITY) {
         # sample frequency is not stored
         tmp = read.csv(datafile, nrow = 100000, skip = 0)
-        tmp = as.numeric(as.POSIXlt(tmp[, 1]))
+        tmp = as.numeric(as.POSIXct(tmp[, 1], origin = "1970-01-01"))
         sf = length(tmp) / (tmp[length(tmp)] - tmp[1])
         sf = floor((sf) / 5 ) * 5 # round down to nearest integer of 5, we never want to assume that there is more frequency content in a signal than there truly is
       }
@@ -208,16 +197,25 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
                                     rmc.scalefactor.acc = params_rawdata[["rmc.scalefactor.acc"]],
                                     desiredtz = desiredtz,
                                     configtz = configtz)
-    if (Pusercsvformat$header == "no header" || is.null(Pusercsvformat$header$sample_rate)) {
-      
+    if (inherits(Pusercsvformat$header, "character") && Pusercsvformat$header == "no header") {      
       sf = params_rawdata[["rmc.sf"]]
-      if (is.null(sf)) {
-        stop("\nFile header doesn't specify sample rate. Please provide rmc.sf value to process ", datafile)
-      }
     } else {
-      sf = Pusercsvformat$header$sample_rate
+      sf = as.numeric(Pusercsvformat$header["sample_rate",1])
+    }
+    if (is.null(sf) || is.na(sf)) {
+      stop("\nFile header doesn't specify sample rate. Please provide rmc.sf value to process ", datafile)
+    } else if (sf == 0) {
+      stop("\nFile header doesn't specify sample rate. Please provide a non-zero rmc.sf value to process ", datafile)
     }
   }
+
+  if (mon == MONITOR$GENEACTIV && dformat == FORMAT$CSV) {
+    stop(paste0("The GENEActiv csv reading functionality is deprecated in",
+                " GGIR from version 2.6-4 onwards. Please, use either",
+                " the GENEActiv bin files or try to read the csv files with",
+                " GGIR::read.myacc.csv"), call. = FALSE)
+  }
+
   if (dformat == FORMAT$BIN) {
     if (mon == MONITOR$GENEACTIV) {
       H = GGIRread::readGENEActiv(filename = datafile, start = 0, end = 1)$header
@@ -244,10 +242,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       }
     }
   } else if (dformat == FORMAT$CSV) {
-    if (mon == MONITOR$GENEACTIV) {
-      H = read.csv(datafile,nrow = 20, skip = 0) #note that not the entire header is copied
-      # cat("\nGENEACTIV csv files support is deprecated in GGIR v2.6-2 onwards. Please, either use the GENEACTIV bin files or the read.myacc.csv function on the csv files")
-    } else if (mon == MONITOR$ACTIGRAPH) {
+    if (mon == MONITOR$ACTIGRAPH) {
       H = read.csv(datafile, nrow = 9, skip = 0)
     } else if (mon == MONITOR$AXIVITY) {
       H = "file does not have header" # these files have no header
@@ -257,12 +252,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     H = PP$header
     
   } else if (dformat == FORMAT$AD_HOC_CSV) { # csv data in a user-specified format
-    
-    H = header = Pusercsvformat$header
-    if (Pusercsvformat$header != "no header") {
-      H = data.frame(name = row.names(header), value = header, stringsAsFactors = TRUE)
-    }
-    sf = params_rawdata[["rmc.sf"]]
+    header = Pusercsvformat$header
   } else if (dformat == FORMAT$GT3X) { # gt3x
     info = try(expr = {read.gt3x::parse_gt3x_info(datafile, tz = desiredtz)},silent = TRUE)
     if (inherits(info, "try-error") == TRUE || is.null(info)) {
@@ -285,7 +275,12 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       sf = as.numeric(H[which(H[,1] == "Sample Rate"), 2])
     }
   }
-  if (is.null(sf) == FALSE) {
+
+  if (sf == 0) {
+    stop(paste0("\nSample frequency not recognised in ", datafile), call. = FALSE)
+  }
+
+  if (dformat != FORMAT$AD_HOC_CSV && is.null(sf) == FALSE) {
     H = as.matrix(H)
     if (ncol(H) == 3 && dformat == FORMAT$CSV && mon == MONITOR$ACTIGRAPH) {
       if (length(which(is.na(H[,2]) == FALSE)) == 0) {
@@ -318,7 +313,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) || (mon == MONITOR$MOVISENS && length(H) > 0)) {
         varname = rownames(as.matrix(H))
         H = data.frame(varname = varname,varvalue = as.character(H), stringsAsFactors = TRUE)
-      } else {
+      } else if (dformat != FORMAT$AD_HOC_CSV) {
         if (length(H) > 1 && class(H)[1] == "matrix") H = data.frame(varname = H[,1],varvalue = H[,2], stringsAsFactors = TRUE)
       }
     }
@@ -336,10 +331,18 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       }
     }
   } 
+
+  # detect dot or comma separator in the data file
+  op <- options(warn = -1) # turn off warnings
+  on.exit(options(op))
+  suppressWarnings(expr = {decn = g.dotorcomma(datafile, dformat, mon,
+                                               rmc.dec = params_rawdata[["rmc.dec"]])})
+  options(warn = 0) # turn on warnings
+
   monc = mon
   monn = ifelse(mon > 0, monnames[mon], "unknown")
   dformc = dformat
   dformn = fornames[dformat]
   invisible(list(header = header, monc = monc, monn = monn,
-                 dformc = dformc, dformn = dformn, sf = sf, filename = filename))
+                 dformc = dformc, dformn = dformn, sf = sf, decn = decn, filename = filename))
 }

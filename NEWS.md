@@ -1,3 +1,30 @@
+# CHANGES IN GGIR VERSION 3.0-6
+
+- Part 2, 4, 5: Add parameter dec_reports and dec_config to ease tailoring GGIR to non-default UK/US machines #1048.
+
+- Part 2, 4, 5: Force language to "C" (UK/US English) to avoid issues on computer configured differently #1047.
+
+- Part 5: Behaviour parameter includedaycrit.part5 changed for values above 1, these
+are now interpreted as minimum number of valid waking hours during waking horus of a day.
+If you prefer to keep old functionality then divide your old value by 24 #1050.
+
+- Part 1:
+
+  - Improved readability and maintainability of the code #1027
+
+  - Improved processing speed for Axivity .cwa, GENEActiv .bin, and Movisens files
+
+  - Made sure that g.readaccfile() reads timestamps in the correct timezone, configtz, for all monitor types
+
+  - Note: there will be small differences in both metalong and metashort metrics calculated by this GGIR version, compared to prior versions. This is due to small improvements in the management of timestamps, calibration coefficients, and input data block boundaries.
+
+  - Fix handling of ad hoc csv file header in g.inspectfile() #1057
+
+  - Improved g.calibrate to better handle scenario when no non-movement periods are found in the entire recording #1032
+
+  - Improved documentation for the need to specify rmc.firstrow.acc when working with ad-hoc csv file format and read.myacc.csv now produces an error when used directly while user forgets to specify rmc.firstrow.acc #1034.
+
+
 # CHANGES IN GGIR VERSION 3.0-5
 
 - Part 5: Fix bug in functionality for Sensewear data (externally derived epoch data) #1030

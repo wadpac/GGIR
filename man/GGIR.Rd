@@ -866,15 +866,18 @@ GGIR(mode = 1:5,
 
       \item{ndayswindow}{
         Numeric (default = 7).
-        If \code{data_masking_strategy} is set to 3 or 5, then this is the size of the window as a
+        If \code{data_masking_strategy} is set to 3 or 5, then this is the size of 
+        the window as a
         number of days. For data_masking_strategy 3 value can be fractional, e.g. 7.5,
         while for data_masking_strategy 5 it needs to be an integer.}
 
       \item{includedaycrit.part5}{
         Numeric (default = 2/3).
         Inclusion criteria for number of valid hours during the waking hours of a day,
-        either as expressed as a ratio of 1 or as the number of hours,
-        which is converted by GGIR to a ratio. For example 16 become 16/24=2/3.}
+        when value is smaller than or equal to 1 used as fraction of waking hours, 
+        when value above 1 used as absolute number of valid hours required.
+        Do not confuse this argument with argument \code{includedaycrit} which is
+        only used in GGIR part 2 and applies to the entire day.}
 
       \item{segmentWEARcrit.part5}{
         Numeric (default = 0.5).
@@ -1462,12 +1465,19 @@ GGIR(mode = 1:5,
 
       \item{sep_reports}{
         Character (default = ",").
-        Value used as sep argument in \link[utils]{write.csv} for writing csv files containing
-        the GGIR reports.}
+        Value used as sep argument in \link[data.table]{fwrite} for writing csv reports.}
+        
+      \item{dec_reports}{
+        Character (default = ".").
+        Value used as dec argument in \link[data.table]{fwrite} for writing csv reports.}
 
       \item{sep_config}{
         Character (default = ",").
-        Value used as sep argument in \link[utils]{write.csv} for writing the GGIR config file.}
+        Value used as sep argument in \link[data.table]{fwrite} for writing csv config file.}
+        
+      \item{dec_config}{
+        Character (default = ".").
+        Value used as dec argument in \link[data.table]{fwrite} for writing csv config file.}
 
       \item{visualreport_without_invalid}{
           Boolean (default = TRUE).

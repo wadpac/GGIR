@@ -1660,10 +1660,10 @@ correspond to the date of analysis.
 | invalidepoch         | Is 1 if epoch was detect as invalid (e.g. non-wear), 0 if not.       |
 | guider   | Number to indicate what guider type was used, where 1=sleeplog, 2=HDCZA, 3=swetwindow, 4=L512, 5=HorAngle, 6=NotWorn |
 | window   | Numeric indicator of the analysis window in the recording. If timewindow = "MM" then these correspond to calendar days, if timewindow = "WW" then these correspond to which wakingup-wakingup window in the recording, if timewindow = "OO" then these correspond to which sleeponset-sleeponset window in the recording. So, in a recording of one week you may find window numbers 1, 2, 3, 4, 5 and 6.|
-| class_id | The behavioural class codes are documented in the exported csv file meta/ms5outraw/behaviouralcodes.csv. Class codes above class 8 will be analysis specific, because it depends on the number time variants of the bouts used. For example, if you look at MVPA lasting 1-10, 10-20, 30-40 then all of them will have their own class_id. |
-| invalid_fullwindow   | Fraction of the window (see above) that represents invalid data. I added this to make it easier to filter the timeseries based on whether days are valid or not.         |
-| invalid_sleepperiod  | Fraction of SPT within the current window that represents invalid data.          |
-| invalid_wakinghours  | Fraction of SPT within the current window that represents invalid data.          |
+| class_id | The behavioural class codes are documented in the exported csv file meta/ms5outraw/behaviouralcodes.csv. Class codes above class 8 will be analysis specific, because it depends on the number time variants of the bouts used. For example, if you look at MVPA lasting 1-10, 10-20, 30-40 then all of them will have their own class_id. In behaviouralcodes.csv you will find a column with class_names which match the behavioural classes as reported in the part 5 report. |
+| invalid_fullwindow   | Percentage of the window (see above) that represents invalid data, included to ease filtering the timeseries based on whether windows are valid or not.         |
+| invalid_sleepperiod  | Percentage of SPT within the current window that represents invalid data.          |
+| invalid_wakinghours  | Percentage of waking hours within the current window that represents invalid data. |
 | timestamp      | Time stamp derived from converting the column timenum, only available if `save_ms5raw_format = TRUE`.|
 | angle | anglez by default. If `sensor.location = "hip"` or `HASPT.algo = "HorAngle"` then angle represents the angle for the longitudinal axis as provided by argument longitudinal_axis or estimated if no angle was provided. If more angles were extracted in part 1 then these will be add with their letter appended. }
 

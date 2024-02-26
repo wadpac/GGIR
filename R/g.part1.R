@@ -27,11 +27,23 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
   filesizes = file.size(fnamesfull) # in bytes
   bigEnough = which(filesizes/1e6 > params_rawdata[["minimumFileSizeMB"]])
   fnamesfull = fnamesfull[bigEnough]
+  
+  if (length(bigEnough) > 0) {
+    fnames_toosmall = fnames[-bigEnough]
+  } else {
+    fnames_toosmall = fnames
+  }
+  
   fnames = fnames[bigEnough]
+
+  if (verbose && length(fnames_toosmall) > 0) {
+    warning(paste0("\nSkipping files that are too small for analysis: ", toString(fnames_toosmall),
+                   " (configurable with parameter minimumFileSizeMB)."), call. = FALSE) 
+  }
 
   if (length(fnamesfull) == 0) {
     stop(paste0("\nNo files to analyse. Check that there are accelerometer files ",
-                "in the directory specified with argument datadir"))
+                "in the directory specified with argument datadir"), call. = FALSE)
   }
 
   # create output directory if it does not exist
@@ -208,6 +220,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
         bcc.scalei = which(colnames(bcc.data) == "scale.x" | colnames(bcc.data) == "scale.y" | colnames(bcc.data) == "scale.z")
         bcc.offseti = which(colnames(bcc.data) == "offset.x" | colnames(bcc.data) == "offset.y" | colnames(bcc.data) == "offset.z")
         bcc.temp.offseti = which(colnames(bcc.data) == "temperature.offset.x" | colnames(bcc.data) == "temperature.offset.y" | colnames(bcc.data) == "temperature.offset.z")
+        bcc.meantempcali = which(colnames(bcc.data) == "meantempcal")
         bcc.QCmessagei = which(colnames(bcc.data) == "QCmessage")
         bcc.npointsi = which(colnames(bcc.data) == "n.10sec.windows")
         bcc.nhoursusedi = which(colnames(bcc.data) == "n.hours.considered")
@@ -215,12 +228,13 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
         C$scale = as.numeric(bcc.data[bcc.i[1],bcc.scalei])
         C$offset = as.numeric(bcc.data[bcc.i[1],bcc.offseti])
         C$tempoffset =  as.numeric(bcc.data[bcc.i[1],bcc.temp.offseti])
+        C$meantempcal = bcc.data[bcc.i[1], bcc.meantempcali]
         C$cal.error.start = as.numeric(bcc.data[bcc.i[1],bcc.cal.error.start])
         C$cal.error.end = as.numeric(bcc.data[bcc.i[1],bcc.cal.error.end])
         C$QCmessage = bcc.data[bcc.i[1],bcc.QCmessagei]
         C$npoints = bcc.data[bcc.i[1], bcc.npointsi]
         C$nhoursused = bcc.data[bcc.i[1], bcc.nhoursusedi]
-        C$use.temp = bcc.data[bcc.i[1], bcc.nhoursusedi]
+        C$use.temp = bcc.data[bcc.i[1], bcc.use.tempi]
         if (verbose == TRUE) {
           cat(paste0("\nRetrieved Calibration error (g) before: ",as.numeric(bcc.data[bcc.i[1],bcc.cal.error.start])))
           cat(paste0("\nRetrieved Callibration error (g) after: ",as.numeric(bcc.data[bcc.i[1],bcc.cal.error.end])))
@@ -357,6 +371,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
                                             "MONITOR", "FORMAT"),
                                 envir = as.environment(asNamespace("GGIR"))
         )
+        parallel::clusterEvalQ(cl, Sys.setlocale("LC_TIME", "C"))
         doParallel::registerDoParallel(cl)
       } else {
         # Don't process in parallel if only one core
@@ -384,7 +399,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
                            "g.getstarttime", "POSIXtime2iso8601",
                            "iso8601chartime2POSIX", "datadir2fnames", "read.myacc.csv",
                            "get_nw_clip_block_params",
-                           "get_starttime_weekday_meantemp_truncdata", "ismovisens",
+                           "get_starttime_weekday_truncdata", "ismovisens",
                            "g.extractheadervars", "g.imputeTimegaps", "extract_params",
                            "load_params",
                            "check_params", "detect_nonwear_clipping")

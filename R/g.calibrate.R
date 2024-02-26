@@ -22,16 +22,26 @@ g.calibrate = function(datafile, params_rawdata = c(),
     params_cleaning = params$params_cleaning
     params_general = params$params_general
   }
-
-  use.temp = TRUE
-  filename = unlist(strsplit(as.character(datafile),"/"))
-  filename = filename[length(filename)]
-  # set parameters
+  #-----------------
+  # Define local functions:
+  rollMean = function(x, fs, epochSize) {
+    x = cumsum(c(0, x))
+    select = seq(1, length(x), by = fs * epochSize)
+    y = diff(x[round(select)]) / abs(diff(round(select)))
+    return(y)
+  }
+  rollSD = function(x, sf, epochSize) {
+    dim(x) = c(sf * epochSize, ceiling(length(x) / (sf * epochSize)))
+    y = apply(x, 2, sd)
+    return(y)
+  }
+  #-----------------
+  use.temp = temp.available = TRUE
+  
   filequality = data.frame(filetooshort = FALSE, filecorrupt = FALSE,
-                           filedoesnotholdday = FALSE, stringsAsFactors = TRUE)
-  ws4 = 10 #epoch for recalibration, don't change
-  ws2 = params_general[["windowsizes"]][2] #dummy variable
-  ws =  params_general[["windowsizes"]][3] # window size for assessing non-wear time (seconds)
+                           filedoesnotholdday = FALSE, stringsAsFactors = FALSE)
+  calibEpochSize = 10 # epoch for recalibration as used in the 2014 paper
+  blockResolution = 3600 # resolution at which raw data is loaded and processed (seconds)
   cal.error.start = cal.error.end = c()
   spheredata = c()
   tempoffset = c()
@@ -60,27 +70,10 @@ g.calibrate = function(datafile, params_rawdata = c(),
     return()
   }
   
-  # if GENEActiv csv, deprecated function
-  if (mon == MONITOR$GENEACTIV && dformat == FORMAT$CSV && length(params_rawdata[["rmc.firstrow.acc"]]) == 0) {
-    stop(paste0("The GENEActiv csv reading functionality is deprecated in",
-                " GGIR from the version 2.6-4 onwards. Please, use either",
-                " the GENEActiv bin files or try to read the csv files with",
-                " GGIR::read.myacc.csv"), call. = FALSE)
-  }
-  if (sf == 0) {
-    stop(paste0("\nSample frequency not recognised in ", datafile,
-                " calibration procedure stopped."), call. = FALSE)
-  }
   #creating matrices for storing output
   S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
-  NR = ceiling((90*10^6) / (sf*ws4)) + 1000 #NR = number of 'ws4' second rows (this is for 10 days at 80 Hz)
-  if (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) ||
-      mon == MONITOR$MOVISENS || (mon == MONITOR$AD_HOC && length(params_rawdata[["rmc.col.temp"]]) > 0)) {
-    meta = matrix(99999,NR,8) #for meta data
-  } else if (mon == MONITOR$ACTIGRAPH || (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) || 
-             (mon == MONITOR$AD_HOC && length(params_rawdata[["rmc.col.temp"]]) == 0)) {
-    meta = matrix(99999,NR,7)
-  }
+  NR = ceiling((90*10^6) / (sf*calibEpochSize)) + 1000 #NR = number of rows to initialise features matrix with
+
   # setting size of blocks that are loaded (too low slows down the process)
   # the setting below loads blocks size of 12 hours (modify if causing memory problems)
   blocksize = round((14512 * (sf/50)) * (params_rawdata[["chunksize"]]*0.5))
@@ -97,9 +90,9 @@ g.calibrate = function(datafile, params_rawdata = c(),
   i = 1 #counter to keep track of which binary block is being read
   count = 1 #counter to keep track of the number of seconds that have been read
   LD = 2 #dummy variable used to identify end of file and to make the process stop
-  switchoffLD = 0 #dummy variable part of "end of loop mechanism"
+  isLastBlock = FALSE # dummy variable part of "end of loop mechanism"
+  header = NULL
   while (LD > 1) {
-    P = c()
     if (verbose == TRUE) {
       if (i == 1) {
         cat(paste("\nLoading chunk: ",i,sep=""))
@@ -110,180 +103,95 @@ g.calibrate = function(datafile, params_rawdata = c(),
     #try to read data blocks based on monitor type and data format
     options(warn=-1) #turn off warnings (code complains about unequal rowlengths
     accread = g.readaccfile(filename = datafile, blocksize = blocksize, blocknumber = i,
-                            filequality = filequality, ws = ws,
+                            filequality = filequality, ws = blockResolution,
                             PreviousEndPage = PreviousEndPage, inspectfileobject = INFI,
-                            params_rawdata = params_rawdata, params_general = params_general)
-    P = accread$P
-    switchoffLD = accread$switchoffLD
+                            params_rawdata = params_rawdata, params_general = params_general,
+                            header = header)
+    header = accread$header
+    isLastBlock = accread$isLastBlock
     PreviousEndPage = accread$endpage
-    PreviousStartPage = accread$startpage
-    rm(accread);
+
+    if (i == 1) {
+      use.temp = temp.available = ("temperature" %in% colnames(accread$P$data))
+      if (use.temp) {
+        features = matrix(99999, NR, 8)
+      } else {
+        features = matrix(99999, NR, 7)
+      }
+    }
+
     options(warn = 0) #turn on warnings
     #process data as read from binary file
-    if (length(P) > 0) { #would have been set to zero if file was corrupt or empty
-      if (mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) {
-        data = P$data.out
-      } else if (dformat == FORMAT$CSV || mon == MONITOR$MOVISENS) {
-        data = as.matrix(P)
-      } else if (dformat == FORMAT$CWA) {
-        if (P$header$hardwareType == "AX6") { # cwa AX6
-          # Note 18-Feb-2020: For the moment GGIR ignores the AX6 gyroscope signals until robust sensor
-          # fusion algorithms and gyroscope metrics have been prepared.
-          # Note however that while AX6 is able to collect gyroscope data, it can also be configured
-          # to only collect accelerometer data, so only remove gyro data if it's present.
-          if (ncol(P$data) == 10) {
-            data = P$data[,-c(2:4)]
-          } else {
-            data = P$data
-          }
-        } else {
-          # cwa AX3
-          data = P$data
-        }
-      } else if (dformat == FORMAT$AD_HOC_CSV) {
-        if ("timestamp" %in% colnames(P$data)) {
-          columns_to_use = 2:4
-        } else {
-          columns_to_use = 1:3
-        }
-        if ("temperature" %in% colnames(P$data)) {
-          columns_to_use = c(columns_to_use, which(colnames(P$data) == "temperature"))
-          use.temp = TRUE
-        } else {
-          use.temp = FALSE
-        }
-        data = P$data[, columns_to_use]
-      } else if (dformat == FORMAT$GT3X) {
-        data = as.matrix(P[,2:4])
+    if (length(accread$P) > 0) { # would have been set to zero if file was corrupt or empty
+      data = as.matrix(accread$P$data[,which(colnames(accread$P$data) %in% c("x", "y", "z", "time", "temperature"))]) # convert to matrix b/c rbind is much faster on matrices
+      if (exists("accread")) {
+        rm(accread)
       }
-      rm(P)
-      #add left over data from last time
+      # add leftover data from last time
       if (min(dim(S)) > 1) {
         data = rbind(S,data)
       }
       # remove 0s if ActiGraph csv (idle sleep mode) OR if similar imputation done in ad-hoc csv
       # current ActiGraph csv's are not with zeros but with last observation carried forward
-      zeros = which(data[,1] == 0 & data[,2] == 0 & data[,3] == 0)
+      zeros = c()
+      if (!(mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV)) {
+        zeros = which(data[, "x"] == 0 & data[, "y"] == 0 & data[, "z"] == 0)
+      }
       if ((mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) || length(zeros) > 0) {
-        data = g.imputeTimegaps(x = as.data.frame(data), xyzCol = 1:3, timeCol = c(), sf = sf, impute = FALSE)
+        data = g.imputeTimegaps(x = as.data.frame(data), sf = sf, impute = FALSE)
         data = as.matrix(data$x)
       }
       LD = nrow(data)
       #store data that could not be used for this block, but will be added to next block
-      use = (floor(LD / (ws*sf))) * (ws*sf) #number of datapoint to use
+      use = (floor(LD / (blockResolution*sf))) * (blockResolution*sf) #number of datapoint to use
       if (length(use) > 0) {
         if (use > 0) {
           if (use != LD) {
-            S = as.matrix(data[(use + 1):LD,]) #store left over # as.matrix removed on 22May2019 because redundant
-            #S = data[(use+1):LD,] #store left over
-          }
-          data = as.matrix(data[1:use,])
-          LD = nrow(data) #redefine LD because there is less data
-          ##==================================================
-          # Initialization of variables
-          if (dformat != FORMAT$AD_HOC_CSV) {
-            suppressWarnings(storage.mode(data) <- "numeric")
-          }
-          if (dformat == FORMAT$CWA && mon == MONITOR$AXIVITY) {
-            Gx = data[,2]; Gy = data[,3]; Gz = data[,4]
-            use.temp = TRUE
-          } else if (dformat == FORMAT$CSV && mon == MONITOR$AXIVITY) {
-            Gx = data[,2]; Gy = data[,3]; Gz = data[,4]
-            use.temp = FALSE
-          } else if (dformat == FORMAT$GT3X && mon == MONITOR$ACTIGRAPH) {
-            Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
-            use.temp = FALSE
-          } else if (mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) {
-            Gx = data[,2]; Gy = data[,3]; Gz = data[,4]
-            use.temp = TRUE
-          } else if (mon == MONITOR$MOVISENS) {
-            Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
-            use.temp = TRUE
-          } else if (dformat == FORMAT$AD_HOC_CSV) {
-            Gx = as.numeric(data[,1]); Gy = as.numeric(data[,2]); Gz = as.numeric(data[,3])
-          } else if (dformat == FORMAT$CSV && mon != MONITOR$AXIVITY) { # csv and not AX (so, GENEAcitv)
-            data2 = matrix(NA,nrow(data),3)
-            if (ncol(data) == 3) extra = 0
-            if (ncol(data) >= 4) extra = 1
-            for (jij in 1:3) {
-              data2[,jij] = data[,(jij+extra)]
-            }
-            Gx = data[,1]; Gy = data[,2]; Gz = data[,3]
-          }
+            S = data[(use + 1):LD,] # store leftover data
 
-          if (mon == MONITOR$GENEACTIV) {
-            if ("temperature" %in% colnames(data)) {
-              temperaturecolumn = which(colnames(data) == "temperature") #GGIRread
-            } else {
-              temperaturecolumn = 7
+            # if S is only one row, it gets coersed to a vector, and what we need is a 1-row matrix
+            if (is.vector(S)) {
+              S = t(S)
             }
-            temperature = as.numeric(data[,temperaturecolumn])
-          } else if (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) {
-            temperaturecolumn = 5
-            temperature = as.numeric(data[,temperaturecolumn])
-          } else if (dformat == FORMAT$AD_HOC_CSV && use.temp == TRUE) {
-            temperaturecolumn = 4
-            temperature = as.numeric(data[,temperaturecolumn])
-          } else if (mon == MONITOR$ACTIGRAPH) {
-            use.temp = FALSE
-          } else if (mon == MONITOR$MOVISENS) {
-            temperature = g.readtemp_movisens(datafile, params_general[["desiredtz"]], PreviousStartPage, PreviousEndPage,
-                                              interpolationType = params_rawdata[["interpolationType"]])
-            data = cbind(data, temperature[1:nrow(data)])
-            colnames(data)[4] = "temp"
-            temperaturecolumn = 4
           }
-          if ((mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) || mon == MONITOR$MOVISENS || mon == MONITOR$AD_HOC) && 
-              use.temp == TRUE) {
-            # ignore temperature if the values are unrealisticly high or NA
-            if (length(which(is.na(mean(as.numeric(data[1:10,temperaturecolumn]))) == T)) > 0) {
-              warning("\ntemperature ignored for auto-calibration because values are NA\n")
-              use.temp = FALSE
-            } else if (length(which(mean(as.numeric(data[1:10,temperaturecolumn])) > 120)) > 0) {
+          data = data[1:use,]
+          LD = nrow(data) #redefine LD because there is less data
+
+          Gx = data[, "x"]
+          Gy = data[, "y"]
+          Gz = data[, "z"]
+
+          if (use.temp) {
+            if (mean(data[1:10, "temperature"], na.rm = TRUE) > 120) {
               warning("\ntemperature ignored for auto-calibration because values are too high\n")
               use.temp = FALSE
-            } else if (sd(data[,temperaturecolumn], na.rm = TRUE) == 0) {
+            } else if (sd(data[, "temperature"], na.rm = TRUE) < 0.01) {
               warning("\ntemperature ignored for auto-calibration because no variance in values\n")
               use.temp = FALSE
             }
           }
           #=============================================
-          # non-integer sample frequency is a pain for deriving epoch based sd
-          # however, with an epoch of 10 seconds it is an integer number of samples per epoch
-          EN = sqrt(Gx^2 + Gy^2 + Gz^2)
-          D1 = g.downsample(EN,sf,ws4,ws2)
-          EN2 = D1$var2
-          #mean acceleration
-          D1 = g.downsample(Gx,sf,ws4,ws2); 	GxM2 = D1$var2
-          D1 = g.downsample(Gy,sf,ws4,ws2); 	GyM2 = D1$var2
-          D1 = g.downsample(Gz,sf,ws4,ws2); 	GzM2 = D1$var2
-          if (use.temp == TRUE) {
-            D1 = g.downsample(temperature,sf,ws4,ws2);
-            TemperatureM2 = D1$var2
-          }
-          #sd acceleration
-          dim(Gx) = c(sf*ws4,ceiling(length(Gx)/(sf*ws4))); 	GxSD2 = apply(Gx,2,sd)
-          dim(Gy) = c(sf*ws4,ceiling(length(Gy)/(sf*ws4))); 	GySD2 = apply(Gy,2,sd)
-          dim(Gz) = c(sf*ws4,ceiling(length(Gz)/(sf*ws4))); 	GzSD2 = apply(Gz,2,sd)
-          #-----------------------------------------------------
           #expand 'out' if it is expected to be too short
-          if (count > (nrow(meta) - (2.5 * (3600/ws4) * 24))) {
-            extension = matrix(99999, ((3600/ws4) * 24), ncol(meta))
-            meta = rbind(meta,extension)
-            if (verbose == TRUE) cat("\nvariabel meta extended\n")
+          if (count > (nrow(features) - (2.5 * (3600/calibEpochSize) * 24))) {
+            extension = matrix(99999, ((3600/calibEpochSize) * 24), ncol(features))
+            features = rbind(features, extension)
           }
-          #storing in output matrix
-          meta[count:(count - 1 + length(EN2)), 1] = EN2
-          meta[count:(count - 1 + length(EN2)), 2] = GxM2
-          meta[count:(count - 1 + length(EN2)), 3] = GyM2
-          meta[count:(count - 1 + length(EN2)), 4] = GzM2
-          meta[count:(count - 1 + length(EN2)), 5] = GxSD2
-          meta[count:(count - 1 + length(EN2)), 6] = GySD2
-          meta[count:(count - 1 + length(EN2)), 7] = GzSD2
+          # mean acceleration for EN, x, y, and z
+          EN = sqrt(Gx^2 + Gy^2 + Gz^2)
+          EN2 = rollMean(EN, sf, calibEpochSize)
+          endCount = count - 1 + length(EN2)
+          features[count:endCount, 1] = EN2
+          features[count:endCount, 2] = rollMean(Gx, sf, calibEpochSize)
+          features[count:endCount, 3] = rollMean(Gy, sf, calibEpochSize)
+          features[count:endCount, 4] = rollMean(Gz, sf, calibEpochSize)
+          # sd acceleration
+          features[count:endCount, 5] = rollSD(Gx, sf, calibEpochSize)
+          features[count:endCount, 6] = rollSD(Gy, sf, calibEpochSize)
+          features[count:endCount, 7] = rollSD(Gz, sf, calibEpochSize)
           if (use.temp == TRUE) {
-            meta[count:(count - 1 + length(EN2)), 8] = TemperatureM2
+            features[count:endCount, 8] = rollMean(data[, "temperature"], sf, calibEpochSize)
           }
-          count = count + length(EN2) #increasing "count": the indicator of how many seconds have been read
+          count = endCount + 1 # increasing count, the indicator of how many timesteps (calibEpochSize) have been read
           rm(Gx); rm(Gy); rm(Gz)
           # Update blocksize depending on available memory:
           BlocksizeNew = updateBlocksize(blocksize = blocksize, bsc_qc = bsc_qc)
@@ -294,20 +202,29 @@ g.calibrate = function(datafile, params_rawdata = c(),
       }
     } else {
       LD = 0 #once LD < 1 the analysis stops, so this is a trick to stop it
-      # cat("\nstop reading because there is not enough data in this block\n")
     }
     spherepopulated = 0
-    if (switchoffLD == 1) {
+    if (isLastBlock) {
       LD = 0
     }
-    meta_temp = data.frame(V = meta, stringsAsFactors = FALSE)
-    cut = which(meta_temp[,1] == 99999)
+    features_temp = data.frame(V = features, stringsAsFactors = FALSE)
+    # remove 999999, missing values
+    cut = which(features_temp[,1] == 99999 |
+                  is.na(features_temp[,4]) == TRUE | is.na(features_temp[,1]) == TRUE)
     if (length(cut) > 0) {
-      meta_temp = meta_temp[-cut,]
+      features_temp = features_temp[-cut,]
     }
-    nhoursused = (nrow(meta_temp) * 10) / 3600
-    if (nrow(meta_temp) > (params_rawdata[["minloadcrit"]] - 21)) {  # enough data for the sphere?
-      meta_temp = meta_temp[-1,]
+    # remove duplicates, e.g. caused by periods of nonwear
+    if (nrow(features_temp) > 0) {
+      cut = which(rowSums(features_temp[1:(nrow(features_temp) - 1), 2:7] == features_temp[2:nrow(features_temp), 2:7]) == 3)
+      if (length(cut) > 0) {
+        features_temp = features_temp[-cut,]
+      }
+    }
+    nhoursused = 0
+    if (nrow(features_temp) > (params_rawdata[["minloadcrit"]] - 21)) {  # enough data for the sphere?
+      nhoursused = (nrow(features_temp) * 10) / 3600
+      features_temp = features_temp[-1,]
       #select parts with no movement
       if (mon == MONITOR$AD_HOC) {
         if (length(params_rawdata[["rmc.noise"]]) == 0) {
@@ -322,28 +239,24 @@ g.calibrate = function(datafile, params_rawdata = c(),
       } else {
         sdcriter = 0.013
       }
-      nomovement = which(meta_temp[,5] < sdcriter & meta_temp[,6] < sdcriter & meta_temp[,7] < sdcriter &
-                           abs(as.numeric(meta_temp[,2])) < 2 & abs(as.numeric(meta_temp[,3])) < 2 &
-                           abs(as.numeric(meta_temp[,4])) < 2) #the latter three are to reduce chance of including clipping periods
+      nomovement = which(features_temp[,5] < sdcriter & features_temp[,6] < sdcriter & features_temp[,7] < sdcriter &
+                           abs(as.numeric(features_temp[,2])) < 2 & abs(as.numeric(features_temp[,3])) < 2 &
+                           abs(as.numeric(features_temp[,4])) < 2) #the latter three are to reduce chance of including clipping periods
       if (length(nomovement) < 10) {
         # take only one row to trigger that autocalibration is skipped 
         # with the QCmessage that there is not enough data
-        meta_temp = meta_temp[1, ] 
+        features_temp = features_temp[1, ] 
       } else {
-        meta_temp = meta_temp[nomovement,]
+        features_temp = features_temp[nomovement,]
       }
-      dup = which(rowSums(meta_temp[1:(nrow(meta_temp) - 1), 2:7] == meta_temp[2:nrow(meta_temp), 2:7]) == 3) # remove duplicated values
-      if (length(dup) > 0) meta_temp = meta_temp[-dup,]
-      rm(nomovement, dup)
-      if (min(dim(meta_temp)) > 1) {
-        meta_temp = meta_temp[(is.na(meta_temp[,4]) == F & is.na(meta_temp[,1]) == F),]
-        npoints = nrow(meta_temp)
-        cal.error.start = sqrt(as.numeric(meta_temp[,2])^2 + as.numeric(meta_temp[,3])^2 + as.numeric(meta_temp[,4])^2)
+      if (min(dim(features_temp)) > 1) {
+        npoints = nrow(features_temp)
+        cal.error.start = sqrt(as.numeric(features_temp[,2])^2 + as.numeric(features_temp[,3])^2 + as.numeric(features_temp[,4])^2)
         cal.error.start = round(mean(abs(cal.error.start - 1)), digits = 5)
         #check whether sphere is well populated
         tel = 0
         for (axis in 2:4) {
-          if ( min(meta_temp[,axis]) < -params_rawdata[["spherecrit"]] & max(meta_temp[,axis]) > params_rawdata[["spherecrit"]]) {
+          if ( min(features_temp[,axis]) < -params_rawdata[["spherecrit"]] & max(features_temp[,axis]) > params_rawdata[["spherecrit"]]) {
             tel = tel + 1
           }
         }
@@ -354,22 +267,20 @@ g.calibrate = function(datafile, params_rawdata = c(),
           QC = "recalibration not done because not enough points on all sides of the sphere"
         }
       } else {
-        if (verbose == TRUE) cat(" No non-movement found\n")
         QC = "recalibration not done because no non-movement data available"
-        meta_temp = c()
+        features_temp = c()
       }
     } else {
       QC = "recalibration not done because not enough data in the file or because file is corrupt"
     }
     if (spherepopulated == 1) { #only try to improve calibration if there are enough datapoints around the sphere
       #---------------------------------------------------------------------------
-      # START of Zhou Fang's code (slightly edited by vtv21 to use matrix meta_temp from above
+      # START of Zhou Fang's code (slightly edited by vtv21 to use matrix features_temp from above
       # instead the similar matrix generated by Zhou Fang's original code. This to allow for
-      # more data to be used as meta_temp can now be based on 10 or more days of raw data
-      input = meta_temp[,2:4] #as.matrix()
-      if (use.temp == TRUE) { #at the moment i am always using temperature if mon == MONITOR$GENEACTIV
-        # mon == MONITOR$GENEACTIV & removed 19-11-2014 because it is redundant and would not allow for newer monitors to use it
-        inputtemp = cbind(as.numeric(meta_temp[,8]),as.numeric(meta_temp[,8]),as.numeric(meta_temp[,8])) #temperature
+      # more data to be used as features_temp can now be based on 10 or more days of raw data
+      input = features_temp[,2:4]
+      if (use.temp == TRUE) {
+        inputtemp = cbind(as.numeric(features_temp[,8]),as.numeric(features_temp[,8]),as.numeric(features_temp[,8])) #temperature
       } else {
         inputtemp = matrix(0, nrow(input), ncol(input)) #temperature, here used as a dummy variable
       }
@@ -388,7 +299,6 @@ g.calibrate = function(datafile, params_rawdata = c(),
           scale(inputtemp, center = F, scale = 1/tempoffset)}, silent = TRUE)
         if (length(curr) == 0) {
           # set coefficients to default, because it did not work.
-          if (verbose == TRUE) cat("\nObject curr has length zero.")
           break
         }
         closestpoint = curr / sqrt(rowSums(curr^2))
@@ -429,28 +339,23 @@ g.calibrate = function(datafile, params_rawdata = c(),
         if (abs(res[iter + 1] - res[iter]) < tol)  break
       }
       if (use.temp == FALSE) {
-        meta_temp2 = scale(as.matrix(meta_temp[,2:4]),center = -offset, scale = 1/scale)
+        features_temp2 = scale(as.matrix(features_temp[,2:4]),center = -offset, scale = 1/scale)
       } else {
-        yy = as.matrix(cbind(as.numeric(meta_temp[,8]),as.numeric(meta_temp[,8]),as.numeric(meta_temp[,8])))
-        meta_temp2 = scale(as.matrix(meta_temp[,2:4]),center = -offset, scale = 1/scale) +
+        yy = as.matrix(cbind(as.numeric(features_temp[,8]),as.numeric(features_temp[,8]),as.numeric(features_temp[,8])))
+        features_temp2 = scale(as.matrix(features_temp[,2:4]),center = -offset, scale = 1/scale) +
           scale(yy, center = rep(meantemp,3), scale = 1/tempoffset)
       }     #equals: D2[,axis] = (D[,axis] + offset[axis]) / (1/scale[axis])
       # END of Zhou Fang's code
       #-------------------------------------------
-      cal.error.end = sqrt(meta_temp2[,1]^2 + meta_temp2[,2]^2 + meta_temp2[,3]^2)
-      rm(meta_temp2)
+      cal.error.end = sqrt(features_temp2[,1]^2 + features_temp2[,2]^2 + features_temp2[,3]^2)
+      rm(features_temp2)
       cal.error.end = round(mean(abs(cal.error.end - 1)), digits = 5)
       # assess whether calibration error has sufficiently been improved
       if (cal.error.end < cal.error.start & cal.error.end < 0.01 & nhoursused > params_rawdata[["minloadcrit"]]) { #do not change scaling if there is no evidence that calibration improves
-        if (use.temp == TRUE && (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) ||
-                                mon == MONITOR$MOVISENS || (mon == MONITOR$AD_HOC && use.temp == FALSE))) {
+        if (use.temp == temp.available) {
           QC = "recalibration done, no problems detected"
-        } else if (use.temp == FALSE && (mon == MONITOR$GENEACTIV || (mon == MONITOR$AXIVITY && dformat == FORMAT$CWA) ||
-                                         (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) || mon == MONITOR$MOVISENS ||
-                                         (mon == MONITOR$AD_HOC && use.temp == TRUE)))  {
+        } else {
           QC = "recalibration done, but temperature values not used"
-        } else if (mon != MONITOR$GENEACTIV)  {
-          QC = "recalibration done, no problems detected"
         }
         LD = 0 #stop loading
       } else {
@@ -471,8 +376,8 @@ g.calibrate = function(datafile, params_rawdata = c(),
       QC = "recalibration not done because recalibration does not decrease error"
     }
   }
-  if (all(dim(meta_temp)) != 0) {  # change 2022-08-18 to handle when filetooshort = TRUE (7 columns, empty rows)
-    spheredata = data.frame(A = meta_temp, stringsAsFactors = TRUE)
+  if (!is.null(features_temp) && all(dim(features_temp)) != 0) {
+    spheredata = features_temp
     if (use.temp == TRUE) {
       names(spheredata) = c("Euclidean Norm","meanx","meany","meanz","sdx","sdy","sdz","temperature")
     } else {
@@ -481,7 +386,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
   } else {
     spheredata = c()
   }
-  rm(meta_temp)
+  rm(features_temp)
   QCmessage = QC
   if (params_rawdata[["printsummary"]] == TRUE & verbose == TRUE) {
     cat("\nSummary of autocalibration procedure:")
