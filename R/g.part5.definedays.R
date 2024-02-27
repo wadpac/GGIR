@@ -30,24 +30,16 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
   # Check that it is possible to find both windows (WW and MM)
   # in the data for this day.
   if (timewindowi == "MM") {
-    # if recording starts at midnight, adjust wi and nightsi
-    # if (nightsi[1] == 1) {
-    #   wi = wi + 1
-    #   # add extra nightsi to get the last day processed (as wi has been increased by 1)
-    #   nightsi = c(nightsi, nightsi[length(nightsi)] + (24*(60/epochSize) * 60))
-    # }
     NepochPerDay = ((24*3600) / epochSize)
-    # if (length(nightsi) >= wi) {
     # offset from prev midnight
     t0 = format(ts$time[1], "%H:%M:%S")
     hms = as.numeric(unlist(strsplit(t0, ":")))
     NepochFromPrevMidnight = (hms[1]*60*60 + hms[2]*60 + hms[3]) / epochSize
-    if (dayborder == 0) {
-      NepochFromDayborder2Midnight = 0
-    } else {
-      NepochFromDayborder2Midnight = (24 - dayborder)*60*60 / epochSize
-    }
+    NepochFromDayborder2Midnight = (-dayborder*60*60) / epochSize
     NepochFromPrevNight = NepochFromPrevMidnight + NepochFromDayborder2Midnight
+    if (NepochFromPrevNight < 0) {
+      NepochFromPrevNight = NepochPerDay + NepochFromPrevNight
+    }
     if (wi == 1) {
       qqq[1] = 1
       qqq[2] = NepochPerDay - NepochFromPrevNight
