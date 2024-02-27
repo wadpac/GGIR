@@ -395,7 +395,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
       # packages2passon = 'Rcpp'
       functions2passon = c("g.inspectfile", "g.calibrate","g.getmeta", "g.dotorcomma",
                            "g.applymetrics",
-                           "g.readaccfile", "g.downsample", "updateBlocksize",
+                           "g.readaccfile", "updateBlocksize",
                            "g.getstarttime", "POSIXtime2iso8601",
                            "iso8601chartime2POSIX", "datadir2fnames", "read.myacc.csv",
                            "get_nw_clip_block_params",

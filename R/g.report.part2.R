@@ -30,6 +30,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     
     if (length(f0) ==  0) f0 = 1
     if (length(f1) ==  0) f1 = length(fnames)
+    if (f0 > length(fnames)) f0 = 1
     if (f1 > length(fnames)) f1 = length(fnames)
     
     #-----------------------------

@@ -164,9 +164,9 @@ find a description and default value for all the arguments.
 | qwindow_dateformat          | 2                 | params_247               |
 | anglethreshold              | 3                 | params_sleep             |
 | timethreshold               | 3                 | params_sleep             |
-| acc.metric                  | 3, 5              | params_general           |
 | ignorenonwear               | 3                 | params_sleep             |
-| constrain2range             | 3                 | params_sleep             |
+| HDCZA_threshold             | 3                 | params_sleep             |
+| acc.metric                  | 3, 5              | params_general           |
 | do.part3.pdf                | 3                 | params_output            |
 | sensor.location             | 3, 4              | params_general           |
 | HASPT.algo                  | 3                 | params_sleep             |

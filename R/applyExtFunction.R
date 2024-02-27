@@ -1,4 +1,5 @@
 applyExtFunction = function(data, myfun, sf, ws3,interpolationType=1) {
+  data = data[, c("x", "y", "z")] # Needed because code below is not able to handle time column yet
   # check myfun object
   check_myfun(myfun, windowsizes=ws3) 
   # unit correction

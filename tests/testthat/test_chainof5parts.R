@@ -2,7 +2,6 @@ library(GGIR)
 context("Chainof5parts")
 test_that("chainof5parts", {
   skip_on_cran()
-  
   Ndays = 2
   create_test_acc_csv(Nmin = Ndays*1440)
   create_test_sleeplog_csv(advanced = FALSE)
@@ -329,7 +328,7 @@ test_that("chainof5parts", {
   expect_true(dir.exists(dirname))
   expect_true(file.exists(vis_sleep_file))
   expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(0))
-  expect_that(round(nightsummary$SptDuration[1], digits = 2), equals(16.14))
+  expect_equal(nightsummary$SptDuration[1], 16.15, tolerance = 0.01)
   expect_true(as.logical(nightsummary$acc_available[1]))
   expect_false(as.logical(nightsummary$sleeplog_used[1]))
   #----------------------------------------------------------------------

@@ -2,12 +2,13 @@ library(GGIR)
 context("loading and checking params")
 test_that("load_params can load parameters", {
   skip_on_cran()
+  
   params = load_params()
   expect_equal(params$params_sleep[[1]], 5)
   expect_equal(params$params_sleep[[3]], TRUE)
-  expect_equal(params$params_sleep[[7]], "Y")
-  expect_equal(params$params_cleaning[[6]], 0)
-
+  expect_equal(params$params_cleaning[[5]], 0)
+  expect_equal(params$params_sleep[[6]], "Y")
+  
   # Test length of objects
   expect_equal(length(params), 8)
   expect_equal(length(params$params_sleep), 22)

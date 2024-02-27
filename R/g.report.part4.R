@@ -186,6 +186,12 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(),
             DaCleanFile = data.table::fread(data_cleaning_file, data.table = FALSE)
             if ("night_part4" %in% colnames(DaCleanFile)) {
               days2exclude = which(nightsummary$ID %in% DaCleanFile$ID & nightsummary$night %in% DaCleanFile$night_part4)
+              if (length(days2exclude) == 0 & inherits(x = nightsummary$ID, "character")) {
+                # Try again by now attempt to read ID as numeric
+                options(warn = -1)
+                days2exclude = which(as.numeric(nightsummary$ID) %in% DaCleanFile$ID & nightsummary$night %in% DaCleanFile$night_part4)
+                options(warn = 0)
+              }
               if (length(days2exclude) > 0) {
                 nightsummary = nightsummary[-days2exclude, ]
               }
