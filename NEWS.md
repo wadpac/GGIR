@@ -1,8 +1,15 @@
-# CHANGES IN GGIR VERSION 3.0-7
+# CHANGES IN GGIR VERSION 3.0-8
 
 - Part 6: Add DFA functionality #839 (credits: Ian Meneghel Danilevicz and Victor Barreto Mesquita)
 
 - Part 2 + 6: Revised and simplified IV and IS calculation which now ignores invalid timestamps and also comes with phi statistic (credits: Ian Meneghel Danilevicz). In part 2 we used to have 2 calculation, which is now replaced by just one and applied to all valid data points in the recordings. In part 6 this is repeated by for the time window as specified with parameter part6Window. Further, IVIS now uses argument threshold.lig as threshold to distinguish inactivity from active.
+
+# CHANGES IN GGIR VERSION 3.0-7
+
+- Part 3: Algorithm HDCZA simplified by replacing time series specific threshold in step 6 of the description in the 2018 paper by a constant threshold that can be set by the user. This means that
+we have a new parameter HDCZA_threshold and parameter constrain2range is now deprecated #1062.
+
+- Part 1: Fix bug introduced with release 3.0-6 affecting the use of external function embedding #1065
 
 # CHANGES IN GGIR VERSION 3.0-6
 
