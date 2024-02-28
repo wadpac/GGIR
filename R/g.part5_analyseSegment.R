@@ -93,6 +93,11 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     dsummary[si,fi:(fi + 1)] = rep(NA, 2)
   }
   ds_names[fi:(fi + 1)] = c("wakeup", "wakeup_ts");      fi = fi + 2
+  # if skiponset and skipwake and "MM", then set full window as awake
+  if (skiponset == TRUE & skipwake == TRUE & timewindowi == "MM") {
+    ts$diur_bu = ts$diur
+    ts$diur[qqq[1]:qqq[2]] = 0
+  }
   # extract date and use this to retrieve corresponding part 4 information about the nights:
   options(encoding = "UTF-8")
   # look up matching part4 entry:
@@ -494,6 +499,11 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     }
   } else {
     doNext = TRUE
+  }
+  # if skiponset and skipwake and "MM", then reset ts$diur
+  if (skiponset == TRUE & skipwake == TRUE & timewindowi == "MM") {
+    ts$diur = ts$diur_bu
+    ts = ts[, -which(colnames(ts) == "diur_bu")]
   }
   # group categories of object back into lists
   indexlog = list(fileIndex = fileIndex,

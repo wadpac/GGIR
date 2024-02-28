@@ -188,7 +188,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                                       x = colnames(nightsummary))
       }
       sumi = 1  # counter to keep track of where we are in filling the output matrix 'nightsummary'
-      ID  = SPTE_end = SPTE_start = L5list = sib.cla.sum = longitudinal_axis = c()
+      ID  = SPTE_end = SPTE_start = L5list = sib.cla.sum = longitudinal_axis = part3_guider = c()
       # load milestone 3 data (RData files), check whether there is data, identify id numbers...
       load(paste0(meta.sleep.folder, "/", fnames[i]))
       accid = c()
@@ -290,14 +290,16 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
               warning("Guider not identified in ID ", accid, ", falling back on 9pm-7am window", call. = FALSE)
             }
           } else if ((length(params_sleep[["def.noc.sleep"]]) == 1 ||
-                     length(params_sleep[["loglocation"]]) != 0) &&
+                      length(params_sleep[["loglocation"]]) != 0) &&
                      length(SPTE_start) != 0) {
             
             # use SPTE algorithm (inside the g.sib.det function) as backup for sleeplog OR if user
             # explicitely asks for it
             defaultSptOnset = SPTE_start[j]
             defaultSptWake = SPTE_end[j]
-            guider = params_sleep[["HASPT.algo"]] # HDCZA, NotWorn, HorAngle
+            guider = params_sleep[["HASPT.algo"]] # HDCZA, NotWorn, HorAngle (or plus invalid)
+            defaultGuider = part3_guider[j]
+            if (is.null(defaultGuider)) defaultGuider = guider #this ensures compatibility with previous versions in which part3_guider was not stored
             if (is.na(defaultSptOnset) == TRUE) {
               # If SPTE was not derived for this night, use average estimate for other nights
               availableestimate = which(is.na(SPTE_start) == FALSE)
@@ -556,12 +558,17 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                 # part 5 we are only interested in the edges of the SPT and not what happens in
                 # it.
                 relyonguider_thisnight = FALSE
+                # user specified to rely on guider in data cleaning file:
+                # relyonguider_thisnight = TRUE and cleaningcode = 5
                 if (length(params_cleaning[["data_cleaning_file"]]) > 0) {
                   if (length(which(DaCleanFile$relyonguider_part4 == j &
                                    DaCleanFile$ID == accid)) > 0) {
                     relyonguider_thisnight = TRUE
+                    cleaningcode = 5 # user specified to rely on guider
                   }
                 }
+                # No SIBs overlap with SPT window
+                # relyonguider_thisnight = TRUE and cleaningcode = 5
                 if (length(spo) == 0) {
                   # add empty spo object, in case it was removed above
                   # we do this because code below assumes that spo is a matrix
@@ -571,12 +578,18 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   spo[1, 2:4] = 0
                   spo$def[1] = k
                 }
-                # If no SIBs overlap with the SPT window
                 if (length(which(spo$start < SptWake &
-                                 spo$end > SptOnset)) == 0 |
-                    relyonguider_thisnight == TRUE) {
-                  # If night is explicitely listed
-                  cleaningcode = 5
+                                 spo$end > SptOnset)) == 0) {
+                  relyonguider_thisnight = TRUE
+                  cleaningcode = 5 
+                }
+                # if invalid time was used in part3 with HASPT.ignore.invalid,
+                # then rely on guider, but cleaningcode should not be 5
+                if (grepl("+invalid", guider) | grepl("+invalid", defaultGuider)) {
+                  relyonguider_thisnight = TRUE # rely on guider because some nonwear was used to help the slep identification
+                }
+                # If no SIBs overlap with the SPT window
+                if (relyonguider_thisnight == TRUE) {
                   newlines = rbind(spo[1, ], spo[1, ])
                   newlines[1, 1:4] = c(nrow(spo) + 1, SptOnset, SptOnset + 1/60, 1)
                   newlines[2, 1:4] = c(nrow(spo) + 1, SptWake - 1/60, SptWake, 1)

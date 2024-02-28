@@ -312,7 +312,9 @@ test_that("chainof5parts", {
   sib.cla.sum = rbind(sib.cla.sum, newrow)
   sib.cla.sum = sib.cla.sum[order(sib.cla.sum$sib.onset.time),]
   sib.cla.sum$sib.period[1:11] = 1:11
-  save(L5list, SPTE_end, SPTE_start, sib.cla.sum, tib.threshold, file = rn3[1])
+  part3_guider = "HDCZA"
+  save(L5list, SPTE_end, SPTE_start, sib.cla.sum, tib.threshold, part3_guider,
+       file = rn3[1])
   g.part4(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           idloc = 2, loglocation = c(), do.visual = TRUE,
           outliers.only = FALSE, excludefirstlast = FALSE,
