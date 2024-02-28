@@ -5,7 +5,7 @@ we have a new parameter HDCZA_threshold and parameter constrain2range is now dep
 
 - Part 1: Fix bug introduced with release 3.0-6 affecting the use of external function embedding #1065
 
-- Part 5: Fix bug in MM = timewindow part specific to when first night(s) are not available in part 4 results #1039.
+- Part 5: Fix bug in MM = timewindow part specific to when first night(s) are not available in part 4 results. This bug also affected the time series as stored by part 5 #1039.
 
 - Part 1: Need to specify rmc.firstrow.acc when working with ad-hoc csv file format now better documented and read.myacc.csv now produces an error when used directly and user forgets to specify rmc.firstrow.acc #1034.
 
