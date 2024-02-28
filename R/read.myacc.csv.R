@@ -199,8 +199,8 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
       }
       first_chunk_time = P$time[1:pmin(nrow(P), 1000)]
       checkMissingDecPlaces = unlist(lapply(first_chunk_time, FUN = checkdec))
-      if (all(checkMissingDecPlaces) &
-          !is.null(rmc.sf) &
+      if (all(checkMissingDecPlaces) &&
+          !is.null(rmc.sf) && rmc.sf != 0 &&
           length(which(duplicated(first_chunk_time) == TRUE)) > 0) {
         # decimal places are not present and there are duplicated timestamps,
         # so insert decimal places
