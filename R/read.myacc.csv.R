@@ -177,13 +177,13 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   }
   # select relevant columns, add standard column names
   P = P[,c(rmc.col.time, rmc.col.acc, rmc.col.temp)]
-  if (length(rmc.col.time) > 0 & length(rmc.col.temp) > 0) {
+  if (length(rmc.col.time) > 0 && length(rmc.col.temp) > 0) {
     colnames(P) = c("time","x","y","z","temperature")
-  } else if (length(rmc.col.time) > 0 & length(rmc.col.temp) == 0) {
+  } else if (length(rmc.col.time) > 0 && length(rmc.col.temp) == 0) {
     colnames(P) = c("time","x","y","z")
-  } else if (length(rmc.col.time) == 0 & length(rmc.col.temp) > 0) {
+  } else if (length(rmc.col.time) == 0 && length(rmc.col.temp) > 0) {
     colnames(P) = c("x","y","z","temperature")
-  } else if (length(rmc.col.time) == 0 & length(rmc.col.temp) == 0) {
+  } else if (length(rmc.col.time) == 0 && length(rmc.col.temp) == 0) {
     colnames(P) = c("x","y","z")
   }
   # acceleration and temperature as numeric
@@ -288,7 +288,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     P$z = P$z * rmc.scalefactor.acc
   }
   # If acceleration is stored in bit values then convert to gravitational unit
-  if (length(rmc.bitrate) > 0 & length(rmc.dynamic_range) > 0 & rmc.unit.acc == "bit") {
+  if (length(rmc.bitrate) > 0 && length(rmc.dynamic_range) > 0 && rmc.unit.acc == "bit") {
     if (rmc.unsignedbit == TRUE) {
       P$x = ((P$x / (2^rmc.bitrate)) - 0.5) * 2 * rmc.dynamic_range
       P$y = ((P$y / (2^rmc.bitrate)) - 0.5) * 2 * rmc.dynamic_range
