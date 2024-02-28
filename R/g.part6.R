@@ -106,14 +106,25 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       skip = 0
     }
     if (params_general[["overwrite"]] == TRUE) skip = 0
-    cosinor_coef = NULL
+    Lnames = cosinor_coef = mdat = NULL
     if (skip == 0) {
       # Load time series:
       if (EXT == "RData") {
         load(file = paste0(metadatadir, "/meta/ms5.outraw/",
                            params_phyact[["part6_threshold_combi"]], "/", fnames.ms5raw[i]))
+        if (is.null(Lnames)) stop("Part 5 was processed with an older version of GGIR, reprocess part 5")
         mdat$time = mdat$timestamp # duplicate column because cosinor function expect columntime
       } else {
+        # use behavioural codes files to derive Lnames object (names of behavioural classes)
+        legendfile = dir(path = paste0(metadatadir, "/meta/ms5.outraw"), pattern = "behavioralcodes", full.names = TRUE)
+        if (length(legendfile) > 1) {
+          df <- file.info(legendfile)
+          legendfile = rownames(df)[which.max(df$mtime)]
+        } else if (length(legendfile) == 0) {
+          stop(paste0("behaviouralcodes file could not be found in ",
+                      paste0(metadatadir, "/meta/ms5.outraw")))
+        }
+        Lnames = data.table::fread(file = legendfile)$class_name
         mdat = data.table::fread(file = paste0(metadatadir, "/meta/ms5.outraw/", 
                                                params_phyact[["part6_threshold_combi"]],  "/", fnames.ms5raw[i]), data.table = FALSE)
       }
@@ -264,18 +275,18 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           s_names[fi:(fi + (length(frag.out) - 1))] = paste0("FRAG_", names(frag.out), "_", fragmode)
           fi = fi + length(frag.out)
         }
-      } else {
-        cosinor_coef = NULL
-        s_names[fi:(fi + 20)] = c("cosinor_timeOffsetHours", "cosinor_mes", 
-                                  "cosinor_amp", "cosinor_acrophase",
-                                  "cosinor_acrotime", "cosinor_ndays", "cosinor_R2", 
-                                  "cosinorExt_minimum", "cosinorExt_amp", 
-                                  "cosinorExt_alpha", "cosinorExt_beta", 
-                                  "cosinorExt_acrotime", "cosinorExt_UpMesor",
-                                  "cosinorExt_DownMesor", "cosinorExt_MESOR",
-                                  "cosinorExt_ndays", "cosinorExt_F_pseudo", 
-                                  "cosinorExt_R2", "IS", "IV", "phi")
-        fi = fi + 21
+      # } else {
+      #   cosinor_coef = NULL
+      #   s_names[fi:(fi + 20)] = c("cosinor_timeOffsetHours", "cosinor_mes", 
+      #                             "cosinor_amp", "cosinor_acrophase",
+      #                             "cosinor_acrotime", "cosinor_ndays", "cosinor_R2", 
+      #                             "cosinorExt_minimum", "cosinorExt_amp", 
+      #                             "cosinorExt_alpha", "cosinorExt_beta", 
+      #                             "cosinorExt_acrotime", "cosinorExt_UpMesor",
+      #                             "cosinorExt_DownMesor", "cosinorExt_MESOR",
+      #                             "cosinorExt_ndays", "cosinorExt_F_pseudo", 
+      #                             "cosinorExt_R2", "IS", "IV", "phi")
+      #   fi = fi + 21
       }
       
       #=======================================================================
