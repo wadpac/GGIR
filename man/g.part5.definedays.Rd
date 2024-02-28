@@ -10,7 +10,8 @@
 \usage{
   g.part5.definedays(nightsi, wi, indjump, nightsi_bu, 
                      epochSize, qqq_backup = c(), ts,
-                     timewindowi, Nwindows, qwindow, ID = NULL)
+                     timewindowi, Nwindows, qwindow, ID = NULL,
+                     dayborder = 0)
 }
 \arguments{
   \item{nightsi}{
@@ -45,6 +46,9 @@
   }
   \item{ID}{
     ID of participant
+  }
+  \item{dayborder}{
+    dayborder argument
   }
 }
 \value{
