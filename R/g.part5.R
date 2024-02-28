@@ -452,16 +452,19 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                               epochSize = ws3new)
                       # This will be an object with numeric qwindow values for all individuals and days
                     }
-                    for (wi in 1:Nwindows) { #loop through 7 windows (+1 to include the data after last awakening)
+                    lastDay = FALSE
+                    wi = 1
+                    while (lastDay == FALSE) { #loop through 7 windows (+1 to include the data after last awakening)
                       # Define indices of start and end of the day window (e.g. midnight-midnight, or waking-up or wakingup
                       defdays = g.part5.definedays(nightsi, wi, indjump,
                                                    nightsi_bu, epochSize = ws3new, qqq_backup, ts, 
                                                    timewindowi, Nwindows, qwindow = params_247[["qwindow"]],
-                                                   ID = ID)
+                                                   ID = ID, dayborder = params_general[["dayborder"]])
                       qqq = defdays$qqq
                       qqq_backup = defdays$qqq_backup
                       segments = defdays$segments
                       segments_names = defdays$segments_names
+                      lastDay = defdays$lastDay
                       if (length(which(is.na(qqq) == TRUE)) == 0) { #if it is a meaningful day then none of the values in qqq should be NA
                         if ((qqq[2] - qqq[1]) * ws3new > 900) {
                           ts$window[qqq[1]:qqq[2]] = wi
@@ -550,6 +553,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         }
                       }
                       di = di + 1
+                      wi = wi + 1
                     }
                   }
                   if (params_output[["save_ms5rawlevels"]] == TRUE || params_247[["part6HCA"]] == TRUE || params_247[["part6CR"]] == TRUE) {

@@ -1,7 +1,9 @@
 g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
                               epochSize, qqq_backup = c(), ts, timewindowi, 
-                              Nwindows, qwindow, ID = NULL) {
+                              Nwindows, qwindow, ID = NULL,
+                              dayborder = 0) {
   Nts = nrow(ts)
+  lastDay = FALSE
   # define local functions ----
   qwindow2timestamp = function(qwindow) {
     H = floor(qwindow)
@@ -28,65 +30,29 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
   # Check that it is possible to find both windows (WW and MM)
   # in the data for this day.
   if (timewindowi == "MM") {
-    # if recording starts at midnight, adjust wi and nightsi
-    if (nightsi[1] == 1) {
-      wi = wi + 1
-      # add extra nightsi to get the last day processed (as wi has been increased by 1)
-      nightsi = c(nightsi, nightsi[length(nightsi)] + (24*(60/epochSize) * 60))
-    }
     NepochPerDay = ((24*3600) / epochSize)
-    if (length(nightsi) >= wi) {
-      if (wi == 1) {
-        qqq[2] = nightsi[wi] - 1
-        if (qqq[2] > NepochPerDay)  {
-          qqq[1] = qqq[2] - NepochPerDay + 1
-        } else {
-          qqq[1] = 1
-        }
-      } else if (wi <= length(nightsi)) {
-        qqq[1] = nightsi[wi - 1]
-        qqq[2] = nightsi[wi] - 1
-        qqq_backup = qqq
-      } else if (wi > length(nightsi)) {
-        qqq[1] = qqq_backup[2] + 1
-        if (wi - indjump <= length(nightsi)) {
-          tmp1 = which(nightsi_bu == nightsi[wi - indjump])
-          qqq[2] = nightsi_bu[tmp1 + indjump] - 1
-          indjump = indjump + 1 # in case there are multiple days beyond nightsi
-          if (is.na(qqq[2])) { # if that does not work use last midnight and add 24 hours
-            index_lastmidn = which(nightsi_bu == nightsi[wi - (indjump - 1)]) + (indjump - 1)
-            if (length(index_lastmidn) > 0) {
-              qqq[2] = nightsi_bu[index_lastmidn] + (24*(60/epochSize) * 60) - 1
-            } else {
-              qqq[2] = NA
-            }
-          }
-        } else {
-          qqq[2] = NA
-        }
-        if (is.na(qqq[2])) { # if that does not work use last midnight and add 24 hours
-          qqq[2] = qqq_backup[2] + (24*(60/epochSize) * 60) - 1
-        }
-        if (qqq[1] == qqq[2]) {
-          qqq[2] = qqq[2] + (24*(60/epochSize) * 60) - 1
-        }
-        if (is.na(qqq[2]) == TRUE | Nts < qqq[2]) {
-          qqq[2] = Nts
-        }
-      }
-    } else {
-      qqq = c(NA, NA)
-      if (length(qqq_backup) > 1) {
-        # If there is remaining time after previous day...
-        # but only do this if there is less than 24 hours.
-        # This is necessary if sleep is ignored for last night.
-        # In that case the last two calendar days should be ignored
-        # as no sleep onset will be available.
-        if (Nts - qqq_backup[2] < 24 * (60 / epochSize) * 60) {
-          qqq = c(qqq_backup[2] + 1, Nts)
-        }
-      }
+    # offset from prev midnight
+    t0 = format(ts$time[1], "%H:%M:%S")
+    hms = as.numeric(unlist(strsplit(t0, ":")))
+    NepochFromPrevMidnight = (hms[1]*60*60 + hms[2]*60 + hms[3]) / epochSize
+    NepochFromDayborder2Midnight = (-dayborder*60*60) / epochSize
+    NepochFromPrevNight = NepochFromPrevMidnight + NepochFromDayborder2Midnight
+    if (NepochFromPrevNight < 0) {
+      NepochFromPrevNight = NepochPerDay + NepochFromPrevNight
     }
+    if (wi == 1) {
+      qqq[1] = 1
+      qqq[2] = NepochPerDay - NepochFromPrevNight
+    } else {
+      qqq[1] = ((wi - 1) * NepochPerDay) - NepochFromPrevNight + 1
+      qqq[2] = (wi * NepochPerDay) - NepochFromPrevNight
+    }
+    # is this the last day?
+    if (qqq[2] >= Nts) {
+      qqq[2] = Nts
+      lastDay = TRUE
+    }
+    qqq_backup = qqq
     # in MM, also define segments of the day based on qwindow
     if (!is.na(qqq[1]) & !is.na(qqq[2])) {
       if (qqq[2] > Nts) qqq[2] = Nts
@@ -175,8 +141,8 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
       names(segments) = paste(start, end, sep = "-")
       segments_names = timewindowi
     }
-    
+    if (wi == Nwindows) lastDay = TRUE
   }
-  return(invisible(list(qqq = qqq, qqq_backup = qqq_backup, 
+  return(invisible(list(qqq = qqq, qqq_backup = qqq_backup, lastDay = lastDay,
                         segments = segments, segments_names = segments_names)))
 }
