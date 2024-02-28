@@ -145,7 +145,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
         # if sf isn't in the header under the default name either, then use the default value
         if (is.na(sf)) {
           sf = rmc.sf # this could be null, that's fine. At least we can only end up with a null, not either null or NA
-          if (!is.null(rmc.sf)) {
+          if (!is.null(sf)) {
             header = rbind(header, sf) # also add it to the header
             row.names(header)[nrow(header)] = "sample_rate"
           }
@@ -202,31 +202,31 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
       first_chunk_time = P$time[1:pmin(nrow(P), 1000)]
       checkMissingDecPlaces = unlist(lapply(first_chunk_time, FUN = checkdec))
       if (all(checkMissingDecPlaces) &&
-          !is.null(rmc.sf) && rmc.sf != 0 &&
+          !is.null(sf) && sf != 0 &&
           length(which(duplicated(first_chunk_time) == TRUE)) > 0) {
         # decimal places are not present and there are duplicated timestamps,
         # so insert decimal places
         #-----
         # dummy data, to test the following code:
         # ttt = as.POSIXlt("2022-11-02 14:46:50", tz = "Europe/Amsterdam")
-        # rmc.sf = 10
+        # sf = 10
         # P = data.frame(timestamps = c(rep(ttt - 1, 3), rep(ttt, 10), rep(ttt + 1, 9), rep(ttt + 2, 10), rep(ttt + 3, 4)))
         #------
         trans = unique(c(1, which(diff(P$time) > 0), nrow(P)))
         sf_tmp = diff(trans)
-        timeIncrement = seq(0, 1 - (1/rmc.sf), by = 1/rmc.sf) # expected time increment per second
+        timeIncrement = seq(0, 1 - 1/sf, by = 1/sf) # expected time increment per second
         
         # All seconds with exactly the sample frequency
-        trans_1 = trans[which(sf_tmp == rmc.sf)]
-        indices_1 = sort(unlist(lapply(trans_1, FUN = function(x){x + (1:rmc.sf)})))
+        trans_1 = trans[which(sf_tmp == sf)]
+        indices_1 = sort(unlist(lapply(trans_1, FUN = function(x){x + (1:sf)})))
         P$time[indices_1] =  P$time[indices_1] + rep(timeIncrement, length(trans_1))
         # First second
-        if (sf_tmp[1] != rmc.sf) {
+        if (sf_tmp[1] != sf) {
           indices_2 = 1:trans[2]
-          P$time[indices_2] = P$time[indices_2] + seq(1 - (trans[2]/rmc.sf), 1 - (1/rmc.sf), by = 1/rmc.sf)
+          P$time[indices_2] = P$time[indices_2] + seq(1 - (trans[2]/sf), 1 - 1/sf, by = 1/sf)
         }
         # Last second
-        if (sf_tmp[length(sf_tmp)] != rmc.sf) {
+        if (sf_tmp[length(sf_tmp)] != sf) {
           indices_3 = (trans[length(trans)-1] + 1):trans[length(trans)]
           P$time[indices_3] = P$time[indices_3] + timeIncrement[1:length(indices_3)]
         }
@@ -239,7 +239,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
         if (length(trans) > 4) {
           trans_cut = trans[2:(length(trans)-1)]
           sf_tmp_cut = sf_tmp[2:(length(sf_tmp)-1)]
-          sf_tmp_odd = unique(sf_tmp_cut[which(sf_tmp_cut != rmc.sf)])
+          sf_tmp_odd = unique(sf_tmp_cut[which(sf_tmp_cut != sf)])
           if (length(sf_tmp_odd) > 0) {
             for (ji in 1:length(sf_tmp_odd)) {
               sf2 = sf_tmp_odd[ji]
@@ -248,7 +248,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
               if (length(timeIncrement) > sf2) {
                 timeIncrement2 = timeIncrement[1:sf2]
               } else if (length(timeIncrement) < sf2) {
-                timeIncrement2 = c(timeIncrement, rep(timeIncrement[rmc.sf], sf2 - rmc.sf))
+                timeIncrement2 = c(timeIncrement, rep(timeIncrement[sf], sf2 - sf))
               }
               P$time[indices_4] =  P$time[indices_4] + rep(timeIncrement2, length(trans_4))
             }
