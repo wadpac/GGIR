@@ -594,7 +594,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                            includedaycrit.part5 = params_cleaning[["includedaycrit.part5"]],
                                            ID = ID,
                                            params_output = params_output,
-                                           params_247 = params_247)
+                                           params_247 = params_247,
+                                           Lnames = Lnames)
                   }
                 }
               }
