@@ -111,6 +111,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
         SPTE_start = SLE$SPTE_start
         tib.threshold = SLE$tib.threshold
         longitudinal_axis = SLE$longitudinal_axis
+        part3_guider = SLE$part3_guider
         if (length(SLE$output) > 0 & SLE$detection.failed == FALSE) {
           ID = SUM$summary$ID
           datename = as.character(unlist(strsplit(format(as.matrix(M$metashort[1]))," "))[1])
@@ -129,7 +130,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
           ms3out_filename = paste(metadatadir, "/meta/ms3.out/", fname, ".RData",sep = "")
           save(sib.cla.sum, L5list, SPTE_end, SPTE_start, tib.threshold, rec_starttime, ID,
                longitudinal_axis, SleepRegularityIndex, tail_expansion_log,
-               file = ms3out_filename)
+               file = ms3out_filename, part3_guider)
         }
       }
     }

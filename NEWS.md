@@ -14,6 +14,9 @@ we have a new parameter HDCZA_threshold and parameter constrain2range is now dep
 - Part 5: Fix bug in MM = timewindow part specific to when first night(s) are not available in part 4 results. This bug also affected the time series as stored by part 5 #1039.
 
 
+- Part 3: Added option for HSPT.ignore.invalid = NA, which would consider invalid
+time segments as no movement for the Sleep Period Time definition.
+
 # CHANGES IN GGIR VERSION 3.0-6
 
 - Part 2, 4, 5: Add parameter dec_reports and dec_config to ease tailoring GGIR to non-default UK/US machines #1048.
