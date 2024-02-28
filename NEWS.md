@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.0-8
+
+- Part 2: Fixed issue where g.convert.part2.long() was throwing an error when attempting to process data where every day had insufficient number of valid hours #1070.
+
 # CHANGES IN GGIR VERSION 3.0-7
 
 - Part 1:
