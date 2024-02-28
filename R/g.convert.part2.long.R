@@ -160,10 +160,13 @@ g.convert.part2.long = function(daySUMMARY) {
     }
   }
   df = df[, -which(colnames(df) %in% c("qwindow_names"))]
-  redundant_rows = which(df$N_valid_hours_in_window == "" & df$N_hours_in_window  == "" & 
-                           apply(df[16:ncol(df)],1,FUN=function(x) any(x=="")) &
-                           df[,ncol(df)-1] == "" & df[,ncol(df)] == "" | df$qwindow_timestamps =="not_calculated")
-  if (length(redundant_rows) > 0) df = df[-redundant_rows,]
+  
+  first_feature_col = which(colnames(df) == "timesegment2") + 1
+  if (first_feature_col <= ncol(df)) {
+    redundant_rows = which(df$N_valid_hours_in_window == "" & df$N_hours_in_window  == "" & 
+                             apply(df[first_feature_col:ncol(df)], 1, FUN = function(x) all(x=="")) | df$qwindow_timestamps =="not_calculated")
+    if (length(redundant_rows) > 0) df = df[-redundant_rows,]
+  }
   colnames(df)[which(colnames(df) == "timesegment2")] = "qwindow_name"
   if (skip.qwindow_name.conversion == FALSE) {
     if (qwindownumeric == FALSE) {
