@@ -12,7 +12,8 @@
                               DaCleanFile = NULL,
                               includedaycrit.part5 = 2/3,
                               ID = NULL, params_output,
-                              params_247 = NULL)
+                              params_247 = NULL,
+                              Lnames = NULL)
 }
 \arguments{
   \item{ts}{
@@ -47,6 +48,10 @@
   }
   \item{params_247}{
     See \link{GGIR}
+  }
+  \item{Lnames}{
+    Level names as passed on from \link{identify_levels}, these are the names
+    corresponding the ID of the behavioural classes as stored in column class_id.
   }
 }
 \value{

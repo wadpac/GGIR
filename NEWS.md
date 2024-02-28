@@ -4,6 +4,8 @@
 
 - Part 2 + 6: Revised and simplified IV and IS calculation which now ignores invalid timestamps and also comes with phi statistic (credits: Ian Meneghel Danilevicz). In part 2 we used to have 2 calculation, which is now replaced by just one and applied to all valid data points in the recordings. In part 6 this is repeated by for the time window as specified with parameter part6Window. Further, IVIS now uses argument threshold.lig as threshold to distinguish inactivity from active.
 
+- Part 6: Add fragmentation metrics, same function as in part 5 but now applied at recording level #839
+
 # CHANGES IN GGIR VERSION 3.0-7
 
 - Part 1:
