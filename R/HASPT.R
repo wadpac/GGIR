@@ -83,7 +83,8 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       outofspt = c(0,outofspt,0)
       s3 = which(diff(outofspt) == 1) #start of blocks out of spt?
       e3 = which(diff(outofspt) == -1) #end blocks out of spt?
-      # starting gap not to be filled
+      # starting block not to be filled, which will be a movement block at
+      # the start of the recording less than 60 minutes in length
       if (length(s3) > 0) {
         if (s3[1] == 1) {
           s3 = s3[-1]
@@ -92,7 +93,8 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       }
       if (length(e3) > 0) {
         if (e3[length(e3)] > length(x)) {
-          # ending gap not to be filled
+          # ending block not to be filled, which will be a movement block at
+          # the end the recording less than 60 minutes in length
           s3 = s3[-length(s3)]
           e3 = e3[-length(e3)]
         }
