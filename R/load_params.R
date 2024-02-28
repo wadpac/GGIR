@@ -12,7 +12,7 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
   # } else {
   if ("sleep" %in% topic) {
     params_sleep = list(anglethreshold = 5, timethreshold = 5,
-                        ignorenonwear = TRUE, constrain2range = TRUE,
+                        ignorenonwear = TRUE,
                         HASPT.algo = "HDCZA",
                         HASIB.algo = "vanHees2015", Sadeh_axis = "Y",
                         longitudinal_axis = c(),
@@ -25,7 +25,8 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                         possible_nap_window = c(9, 18),
                         possible_nap_dur = c(15, 240),
                         nap_model = c(), sleepefficiency.metric = 1,
-                        possible_nap_edge_acc = Inf)
+                        possible_nap_edge_acc = Inf,
+                        HDCZA_threshold = 0.2)
   }
   if ("metrics" %in% topic) {
     params_metrics = list(do.anglex = FALSE, do.angley = FALSE, do.anglez = TRUE,

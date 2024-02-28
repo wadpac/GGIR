@@ -474,7 +474,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             current_segment_i = si - next_si + 1
                             segStart = segments[[current_segment_i]][1]
                             segEnd = segments[[current_segment_i]][2]
-                            if (si > nrow(dsummary)) dsummary = rbind(dsummary, matrix(data = "", nrow = 1, ncol = ncol(dsummary)))
+                            if (any(c(si, di) > nrow(dsummary))) dsummary = rbind(dsummary, matrix(data = "", nrow = 1, ncol = ncol(dsummary)))
                             if (timewindowi == "MM" & si > 1) { # because first segment is always full window
                               if (("segment" %in% colnames(ts)) == FALSE) ts$segment = NA
                               ts$segment[segStart:segEnd] = si

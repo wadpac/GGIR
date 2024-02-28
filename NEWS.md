@@ -1,4 +1,9 @@
-# CHANGES IN GGIR VERSION 3.0-6
+# CHANGES IN GGIR VERSION 3.0-7
+
+- Part 3: Algorithm HDCZA simplified by replacing time series specific threshold in step 6 of the description in the 2018 paper by a constant threshold that can be set by the user. This means that
+we have a new parameter HDCZA_threshold and parameter constrain2range is now deprecated #1062.
+
+- Part 1: Fix bug introduced with release 3.0-6 affecting the use of external function embedding #1065
 
 - Part 5: Fix bug in MM = timewindow part specific to when first night(s) are not available in part 4 results #1039.
 
@@ -8,6 +13,8 @@
 
 - Part 1: Now better documentation for the need to specify rmc.firstrow.acc when
 working with ad-hoc csv file format and read.myacc.csv now produces an error when used directly while user forgets to specify rmc.firstrow.acc #1034.
+
+# CHANGES IN GGIR VERSION 3.0-6
 
 - Part 2, 4, 5: Add parameter dec_reports and dec_config to ease tailoring GGIR to non-default UK/US machines #1048.
 
@@ -26,6 +33,13 @@ If you prefer to keep old functionality then divide your old value by 24 #1050.
   - Made sure that g.readaccfile() reads timestamps in the correct timezone, configtz, for all monitor types
 
   - Note: there will be small differences in both metalong and metashort metrics calculated by this GGIR version, compared to prior versions. This is due to small improvements in the management of timestamps, calibration coefficients, and input data block boundaries.
+
+  - Fix handling of ad hoc csv file header in g.inspectfile() #1057
+
+  - Improved g.calibrate to better handle scenario when no non-movement periods are found in the entire recording #1032
+
+  - Improved documentation for the need to specify rmc.firstrow.acc when working with ad-hoc csv file format and read.myacc.csv now produces an error when used directly while user forgets to specify rmc.firstrow.acc #1034.
+
 
 # CHANGES IN GGIR VERSION 3.0-5
 
