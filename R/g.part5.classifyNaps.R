@@ -5,6 +5,7 @@ g.part5.classifyNaps = function(sibreport=c(), desiredtz="",
 
   # possible_nap_window: window of clock hours during which naps are assumed to take place
   # possible_nap_dur: mininum and maximum nap duration in minutes
+  sibreport$probability_nap = 0 # initialize variable
   if (length(sibreport) > 0 & nap_model %in% "hip3yr" & HASIB.algo %in% "vanHees2015") {
     sibs = which(sibreport$type == "sib")
     if (length(sibs) > 1) {
