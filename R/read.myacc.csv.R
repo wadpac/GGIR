@@ -322,7 +322,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     PreviousLastValue = P[nrow(P), c("x", "y", "z")]
     PreviousLastTime = as.POSIXct(P[nrow(P), "time"], origin = "1970-01-01")
   }
-  if (rmc.doresample == TRUE && ("time" %in% colnames(P))) { # resample
+  if (rmc.doresample == TRUE && ("time" %in% colnames(P)) && !is.null(sf) && sf != 0) { # resample
     rawTime = P$time
     rawAccel = as.matrix(P[,-c(which(colnames(P) == "time"))])
     timeRes = seq(from = rawTime[1], to = rawTime[length(rawTime)], by = 1/sf)
