@@ -310,6 +310,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   }
   # check for jumps in time and impute
   if (rmc.check4timegaps == TRUE && ("time" %in% colnames(P))) {
+    sfBackup = sf
     if (is.null(sf) || sf == 0) { # estimate sample frequency if not given in header
       deltatime = abs(diff(as.numeric(P$time)))
       gapsi = which(deltatime > 0.25)
@@ -318,6 +319,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     P = g.imputeTimegaps(P, sf = sf, k = 0.25, 
                          PreviousLastValue = PreviousLastValue,
                          PreviousLastTime = PreviousLastTime, epochsize = NULL)
+    sf = sfBackup
     P = P$x
     PreviousLastValue = P[nrow(P), c("x", "y", "z")]
     PreviousLastTime = as.POSIXct(P[nrow(P), "time"], origin = "1970-01-01")
