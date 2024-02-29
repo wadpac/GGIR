@@ -226,10 +226,8 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                             epochsizes = rep(epochSize, 2),
                                             threshold = params_phyact[["threshold.lig"]])
         rm(acc4cos)
-        summary[fi] = cosinor_coef$timeOffsetHours
-        s_names[fi] = "cosinor_timeOffsetHours"
-        fi = fi + 1
-        try(expr = {summary[fi:(fi + 5)] = c(cosinor_coef$coef$params$mes,
+        try(expr = {summary[fi:(fi + 6)] = c(cosinor_coef$timeOffsetHours,
+                                             cosinor_coef$coef$params$mes,
                                              cosinor_coef$coef$params$amp,
                                              cosinor_coef$coef$params$acr,
                                              cosinor_coef$coef$params$acrotime,
@@ -237,9 +235,9 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                              cosinor_coef$coef$params$R2)},
             silent = TRUE)
         
-        s_names[fi:(fi + 5)] = c("cosinor_mes", "cosinor_amp", "cosinor_acrophase",
+        s_names[fi:(fi + 6)] = c("cosinor_timeOffsetHours", "cosinor_mes", "cosinor_amp", "cosinor_acrophase",
                                  "cosinor_acrotime", "cosinor_ndays", "cosinor_R2")
-        fi = fi + 6
+        fi = fi + 7
         try(expr = {summary[fi:(fi + 10)] = c(cosinor_coef$coefext$params$minimum,
                                               cosinor_coef$coefext$params$amp,
                                               cosinor_coef$coefext$params$alpha,
@@ -257,9 +255,10 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                   "cosinorExt_DownMesor", "cosinorExt_MESOR",
                                   "cosinorExt_ndays", "cosinorExt_F_pseudo", "cosinorExt_R2")
         fi = fi + 11
-        summary[fi:(fi + 2)] = c(cosinor_coef$IVIS$InterdailyStability,
+        try(expr = {summary[fi:(fi + 2)] = c(cosinor_coef$IVIS$InterdailyStability,
                                  cosinor_coef$IVIS$IntradailyVariability,
-                                 cosinor_coef$IVIS$phi)
+                                 cosinor_coef$IVIS$phi)},
+            silent = TRUE)
         s_names[fi:(fi + 2)] = c("IS", "IV", "phi")
         fi = fi + 3
         # Transition probabilities
