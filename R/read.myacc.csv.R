@@ -309,7 +309,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     P$wear = wearIndicator
   }
   # check for jumps in time and impute
-  if (rmc.check4timegaps == TRUE) {
+  if (rmc.check4timegaps == TRUE && ("time" %in% colnames(P))) {
     if (is.null(sf) || sf == 0) { # estimate sample frequency if not given in header
       deltatime = abs(diff(as.numeric(P$time)))
       gapsi = which(deltatime > 0.25)
