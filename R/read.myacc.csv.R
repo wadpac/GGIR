@@ -310,7 +310,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   }
   # check for jumps in time and impute
   if (rmc.check4timegaps == TRUE) {
-    if (length(sf) == 0) { # estimate sample frequency if not given in header
+    if (is.null(sf) || sf == 0) { # estimate sample frequency if not given in header
       deltatime = abs(diff(as.numeric(P$time)))
       gapsi = which(deltatime > 0.25)
       sf = (P$time[gapsi[1]] - P$time[1]) / (gapsi[1] - 1)
