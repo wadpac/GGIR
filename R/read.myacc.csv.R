@@ -214,7 +214,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
         #------
         trans = unique(c(1, which(diff(P$time) > 0), nrow(P)))
         sf_tmp = diff(trans)
-        timeIncrement = seq(0, 1 - 1/sf, by = 1/sf) # expected time increment per second
+        timeIncrement = seq(from = 0, length.out = sf, by = 1/sf) # expected time increment per second
         
         # All seconds with exactly the sample frequency
         trans_1 = trans[which(sf_tmp == sf)]
