@@ -437,7 +437,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                           nightsi <= (startend_sleep[length(startend_sleep)] + Nepochsin12Hours)]  # newly added on 25-11-2019
                     }
                     if (timewindowi == "MM") {
-                      Nwindows = length(nightsi) + 1
+                      Nwindows = length(nightsi) + 1  # +1 to include the data after last awakening
                     } else if (timewindowi == "WW") {
                       Nwindows = length(which(diff(ts$diur) == -1))
                     } else if (timewindowi == "OO") {
@@ -452,9 +452,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                               epochSize = ws3new)
                       # This will be an object with numeric qwindow values for all individuals and days
                     }
-                    lastDay = FALSE
+                    lastDay = ifelse(Nwindows > 0, yes = FALSE, no = TRUE) # skip while loop if there are no days to analyses
                     wi = 1
-                    while (lastDay == FALSE) { #loop through 7 windows (+1 to include the data after last awakening)
+                    while (lastDay == FALSE) { #loop through windows
                       # Define indices of start and end of the day window (e.g. midnight-midnight, or waking-up or wakingup
                       defdays = g.part5.definedays(nightsi, wi, indjump,
                                                    nightsi_bu, epochSize = ws3new, qqq_backup, ts, 
