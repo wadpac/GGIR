@@ -1,5 +1,9 @@
 # CHANGES IN GGIR VERSION 3.0-7
 
+- Part 5: Fix bug introduced with 3.0-7 causing WW window to not handle well scenario of zero windows #1078.
+
+# CHANGES IN GGIR VERSION 3.0-7
+
 - Part 1:
 
   - Fix bug introduced with release 3.0-6 affecting the use of external function embedding #1065
