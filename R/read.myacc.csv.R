@@ -143,10 +143,12 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
         # first see if maybe sf *is* in the header, just not under the rmc.headername.sf name
         sf = as.numeric(header[which(row.names(header) == "sample_rate"),1])
         # if sf isn't in the header under the default name either, then use the default value
-        if (is.na(sf) && !is.null(rmc.sf)) {
-          sf = rmc.sf
-          header = rbind(header, sf) # add it also to the header
-          row.names(header)[nrow(header)] = "sample_rate"
+        if (is.na(sf)) {
+          sf = rmc.sf # this could be null, that's fine. At least we can only end up with a null, not either null or NA
+          if (!is.null(sf)) {
+            header = rbind(header, sf) # also add it to the header
+            row.names(header)[nrow(header)] = "sample_rate"
+          }
         }
       }
 
@@ -175,13 +177,13 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   }
   # select relevant columns, add standard column names
   P = P[,c(rmc.col.time, rmc.col.acc, rmc.col.temp)]
-  if (length(rmc.col.time) > 0 & length(rmc.col.temp) > 0) {
+  if (length(rmc.col.time) > 0 && length(rmc.col.temp) > 0) {
     colnames(P) = c("time","x","y","z","temperature")
-  } else if (length(rmc.col.time) > 0 & length(rmc.col.temp) == 0) {
+  } else if (length(rmc.col.time) > 0 && length(rmc.col.temp) == 0) {
     colnames(P) = c("time","x","y","z")
-  } else if (length(rmc.col.time) == 0 & length(rmc.col.temp) > 0) {
+  } else if (length(rmc.col.time) == 0 && length(rmc.col.temp) > 0) {
     colnames(P) = c("x","y","z","temperature")
-  } else if (length(rmc.col.time) == 0 & length(rmc.col.temp) == 0) {
+  } else if (length(rmc.col.time) == 0 && length(rmc.col.temp) == 0) {
     colnames(P) = c("x","y","z")
   }
   # acceleration and temperature as numeric
@@ -199,32 +201,32 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
       }
       first_chunk_time = P$time[1:pmin(nrow(P), 1000)]
       checkMissingDecPlaces = unlist(lapply(first_chunk_time, FUN = checkdec))
-      if (all(checkMissingDecPlaces) &
-          !is.null(rmc.sf) &
+      if (all(checkMissingDecPlaces) &&
+          !is.null(sf) && sf != 0 &&
           length(which(duplicated(first_chunk_time) == TRUE)) > 0) {
         # decimal places are not present and there are duplicated timestamps,
         # so insert decimal places
         #-----
         # dummy data, to test the following code:
         # ttt = as.POSIXlt("2022-11-02 14:46:50", tz = "Europe/Amsterdam")
-        # rmc.sf = 10
+        # sf = 10
         # P = data.frame(timestamps = c(rep(ttt - 1, 3), rep(ttt, 10), rep(ttt + 1, 9), rep(ttt + 2, 10), rep(ttt + 3, 4)))
         #------
         trans = unique(c(1, which(diff(P$time) > 0), nrow(P)))
         sf_tmp = diff(trans)
-        timeIncrement = seq(0, 1 - (1/rmc.sf), by = 1/rmc.sf) # expected time increment per second
+        timeIncrement = seq(from = 0, length.out = sf, by = 1/sf) # expected time increment per second
         
         # All seconds with exactly the sample frequency
-        trans_1 = trans[which(sf_tmp == rmc.sf)]
-        indices_1 = sort(unlist(lapply(trans_1, FUN = function(x){x + (1:rmc.sf)})))
+        trans_1 = trans[which(sf_tmp == sf)]
+        indices_1 = sort(unlist(lapply(trans_1, FUN = function(x){x + (1:sf)})))
         P$time[indices_1] =  P$time[indices_1] + rep(timeIncrement, length(trans_1))
         # First second
-        if (sf_tmp[1] != rmc.sf) {
+        if (sf_tmp[1] != sf) {
           indices_2 = 1:trans[2]
-          P$time[indices_2] = P$time[indices_2] + seq(1 - (trans[2]/rmc.sf), 1 - (1/rmc.sf), by = 1/rmc.sf)
+          P$time[indices_2] = P$time[indices_2] + seq(1 - (trans[2]/sf), 1 - 1/sf, by = 1/sf)
         }
         # Last second
-        if (sf_tmp[length(sf_tmp)] != rmc.sf) {
+        if (sf_tmp[length(sf_tmp)] != sf) {
           indices_3 = (trans[length(trans)-1] + 1):trans[length(trans)]
           P$time[indices_3] = P$time[indices_3] + timeIncrement[1:length(indices_3)]
         }
@@ -237,7 +239,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
         if (length(trans) > 4) {
           trans_cut = trans[2:(length(trans)-1)]
           sf_tmp_cut = sf_tmp[2:(length(sf_tmp)-1)]
-          sf_tmp_odd = unique(sf_tmp_cut[which(sf_tmp_cut != rmc.sf)])
+          sf_tmp_odd = unique(sf_tmp_cut[which(sf_tmp_cut != sf)])
           if (length(sf_tmp_odd) > 0) {
             for (ji in 1:length(sf_tmp_odd)) {
               sf2 = sf_tmp_odd[ji]
@@ -246,7 +248,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
               if (length(timeIncrement) > sf2) {
                 timeIncrement2 = timeIncrement[1:sf2]
               } else if (length(timeIncrement) < sf2) {
-                timeIncrement2 = c(timeIncrement, rep(timeIncrement[rmc.sf], sf2 - rmc.sf))
+                timeIncrement2 = c(timeIncrement, rep(timeIncrement[sf], sf2 - sf))
               }
               P$time[indices_4] =  P$time[indices_4] + rep(timeIncrement2, length(trans_4))
             }
@@ -286,7 +288,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     P$z = P$z * rmc.scalefactor.acc
   }
   # If acceleration is stored in bit values then convert to gravitational unit
-  if (length(rmc.bitrate) > 0 & length(rmc.dynamic_range) > 0 & rmc.unit.acc == "bit") {
+  if (length(rmc.bitrate) > 0 && length(rmc.dynamic_range) > 0 && rmc.unit.acc == "bit") {
     if (rmc.unsignedbit == TRUE) {
       P$x = ((P$x / (2^rmc.bitrate)) - 0.5) * 2 * rmc.dynamic_range
       P$y = ((P$y / (2^rmc.bitrate)) - 0.5) * 2 * rmc.dynamic_range
@@ -307,8 +309,9 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     P$wear = wearIndicator
   }
   # check for jumps in time and impute
-  if (rmc.check4timegaps == TRUE) {
-    if (length(sf) == 0) { # estimate sample frequency if not given in header
+  if (rmc.check4timegaps == TRUE && ("time" %in% colnames(P))) {
+    sfBackup = sf
+    if (is.null(sf) || sf == 0) { # estimate sample frequency if not given in header
       deltatime = abs(diff(as.numeric(P$time)))
       gapsi = which(deltatime > 0.25)
       sf = (P$time[gapsi[1]] - P$time[1]) / (gapsi[1] - 1)
@@ -316,11 +319,12 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     P = g.imputeTimegaps(P, sf = sf, k = 0.25, 
                          PreviousLastValue = PreviousLastValue,
                          PreviousLastTime = PreviousLastTime, epochsize = NULL)
+    sf = sfBackup
     P = P$x
     PreviousLastValue = P[nrow(P), c("x", "y", "z")]
     PreviousLastTime = as.POSIXct(P[nrow(P), "time"], origin = "1970-01-01")
   }
-  if (rmc.doresample == TRUE && ("time" %in% colnames(P))) { # resample
+  if (rmc.doresample == TRUE && ("time" %in% colnames(P)) && !is.null(sf) && sf != 0) { # resample
     rawTime = P$time
     rawAccel = as.matrix(P[,-c(which(colnames(P) == "time"))])
     timeRes = seq(from = rawTime[1], to = rawTime[length(rawTime)], by = 1/sf)
