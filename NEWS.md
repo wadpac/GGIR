@@ -1,4 +1,4 @@
-# CHANGES IN GGIR VERSION 3.0-7
+# CHANGES IN GGIR VERSION 3.0-8
 
 - Part 5: Fix bug introduced with 3.0-7 causing WW window to not handle well scenario of zero windows #1078.
 
