@@ -555,15 +555,17 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                  params_general[["dataFormat"]] == "actigraph_csv" |
                  params_general[["dataFormat"]] == "sensewear_xls") {
         # Using rolling long window sum to indicate whether it is nonwear
-        nonwearscore = rep(0, length(imp))
+        nonwearscore = rep(0, LML)
+        ni = 1
         for (g in seq(from = 1, to = length(imp), by = epSizeLong / epSizeShort)) {
           iend = g + (epSizeNonWear / epSizeShort) - 1
           indices = g:iend
           if (iend <= length(imp)) {
-            if (sum(imp[indices]) == 0) {
-              nonwearscore[indices] = 3
+            if (sum(imp[indices], na.rm = TRUE) == 0) {
+              nonwearscore[ni] = 3
             }
           }
+          ni = ni + 1
         }
         if (length(nonwearscore) > length(time_longEp_8601)) nonwearscore = nonwearscore[1:length(time_longEp_8601)]
         nonwearscore = round(nonwearscore)
