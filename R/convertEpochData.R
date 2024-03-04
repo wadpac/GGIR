@@ -554,14 +554,17 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
       } else if (length(grep(pattern = "actiwatch", x = params_general[["dataFormat"]], ignore.case = TRUE)) > 0 |
                  params_general[["dataFormat"]] == "actigraph_csv" |
                  params_general[["dataFormat"]] == "sensewear_xls") {
-        # Using rolling 60 minute sum to indicate whether it is nonwear
-        imp2 = zoo::rollapply(imp, width = ceiling(epSizeNonWear / epSizeShort), FUN = sum, fill = 0)
-        imp4 = imp2
-        imp4[which(imp2 > 0)] = 0
-        imp4[which(imp2 == 0)] = 3 # If rolling average is zero then consider it nonwear
-        imp5 = cumsum(imp4)
-        step = (60/epSizeShort) * (epSizeLong/60)
-        imp4 = diff(imp5[seq(1, length(imp5) + step, by = step)]) / step # rolling mean
+        # Using rolling long window sum to indicate whether it is nonwear
+        imp4 = rep(0, length(imp)) # non-wear indicator
+        for (g in seq(from = 1, to = length(imp), by = epSizeLong / epSizeShort)) {
+          iend = g + (epSizeNonWear / epSizeShort) - 1
+          indices = g:iend
+          if (iend <= length(imp)) {
+            if (sum(imp[indices]) == 0) {
+              imp4[indices] = 3
+            }
+          }
+        }
         if (length(imp4) > length(time_longEp_8601)) imp4 = imp4[1:length(time_longEp_8601)]
         imp4 = round(imp4)
         if (any(is.na(imp4))) imp4[which(is.na(imp4))] = 3

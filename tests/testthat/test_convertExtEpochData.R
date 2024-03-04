@@ -37,6 +37,7 @@ test_that("External epoch data is correctly converted", {
   
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
   load(paste0(QCbasis, "/meta_Actiwatch.AWD.RData"))
+  expect_equal(sum(M$metalong$nonwearscore), 99)
   expect_equal(nrow(M$metashort), 329)
   expect_equal(ncol(M$metashort), 2)
   expect_equal(colnames(M$metashort), c("timestamp", "ZCY"))
@@ -56,6 +57,7 @@ test_that("External epoch data is correctly converted", {
                    params_general = params_general)
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
   load(paste0(QCbasis, "/meta_Actiwatch.csv.RData"))
+  expect_equal(sum(M$metalong$nonwearscore), 0)
   expect_equal(nrow(M$metashort), 860)
   expect_equal(ncol(M$metashort), 2)
   expect_equal(colnames(M$metashort), c("timestamp", "ZCY"))
@@ -71,6 +73,7 @@ test_that("External epoch data is correctly converted", {
                    params_general = params_general)
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
   load(paste0(QCbasis, "/meta_ukbiobank.csv.RData"))
+  expect_equal(sum(M$metalong$nonwearscore), 0)
   expect_equal(nrow(M$metashort), 492)
   expect_equal(ncol(M$metashort), 2)
   expect_equal(colnames(M$metashort), c("timestamp", "LFENMO"))
@@ -87,6 +90,7 @@ test_that("External epoch data is correctly converted", {
                    params_general = params_general)
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
   load(paste0(QCbasis, "/meta_ActiGraph61.csv.RData"))
+  expect_equal(sum(M$metalong$nonwearscore), 210)
   expect_equal(nrow(M$metashort), 984)
   expect_equal(ncol(M$metashort), 5)
   expect_true(all(c("timestamp", "NeishabouriCount_x", "NeishabouriCount_y", 
@@ -104,6 +108,7 @@ test_that("External epoch data is correctly converted", {
                    params_general = params_general)
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
   load(paste0(QCbasis, "/meta_ActiGraph13.csv.RData"))
+  expect_equal(sum(M$metalong$nonwearscore), 540)
   expect_equal(nrow(M$metashort), 988)
   expect_equal(ncol(M$metashort), 5)
   expect_true(all(c("timestamp", "NeishabouriCount_x", "NeishabouriCount_y", 
@@ -125,6 +130,7 @@ test_that("External epoch data is correctly converted", {
                    params_general = params_general)
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
   load(paste0(QCbasis, "/meta_sensewear.xls.RData"))
+  expect_equal(sum(M$metalong$nonwearscore), 0)
   expect_equal(nrow(M$metashort), 60)
   expect_equal(ncol(M$metashort), 4)
   expect_true(all(c("timestamp", "ExtAct", "ExtStep",
