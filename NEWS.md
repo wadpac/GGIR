@@ -1,4 +1,4 @@
-# CHANGES IN GGIR VERSION 3.0-8
+# CHANGES IN GGIR VERSION 3.0-??
 
 - Part 6: Add DFA functionality #839 (credits: Ian Meneghel Danilevicz and Victor Barreto Mesquita)
 
@@ -6,7 +6,9 @@
 
 - Part 6: Add fragmentation metrics, same function as in part 5 but now applied at recording level #839
 
-# CHANGES IN GGIR VERSION 3.0-7
+# CHANGES IN GGIR VERSION 3.0-8
+
+- Part 2: Fixed issue where g.convert.part2.long() was throwing an error when attempting to process data where every day had insufficient number of valid hours #1070.
 
 - Part 5: Fix bug introduced with 3.0-7 causing WW window to not handle well scenario of zero windows #1078.
 
