@@ -141,7 +141,7 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
       names(segments) = paste(start, end, sep = "-")
       segments_names = timewindowi
     }
-    if (wi == Nwindows) lastDay = TRUE
+    if (wi >= Nwindows) lastDay = TRUE
   }
   return(invisible(list(qqq = qqq, qqq_backup = qqq_backup, lastDay = lastDay,
                         segments = segments, segments_names = segments_names)))

@@ -37,7 +37,7 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y", epochSize = 5) 
   dim(actlog_vec) = c(nrow(actlog),ncol(actlog))
   # create new qwindow object to archive all extracted information
   qwindow = data.frame(ID = rep(0,Ndates), date =  rep("",Ndates))
-  qwindow$qwindow_times = qwindow$qwindow_values = qwindow$qwindow_numes = c()
+  qwindow$qwindow_times = qwindow$qwindow_values = qwindow$qwindow_names = c()
   cnt = 1
   for (i in 1:nrow(actlog)) { # loop over rows in activity log = recordings
     datei = which(actlog_vec[i,] == TRUE)

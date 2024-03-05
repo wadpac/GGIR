@@ -1,3 +1,9 @@
+# CHANGES IN GGIR VERSION 3.0-8
+
+- Part 2: Fixed issue where g.convert.part2.long() was throwing an error when attempting to process data where every day had insufficient number of valid hours #1070.
+
+- Part 5: Fix bug introduced with 3.0-7 causing WW window to not handle well scenario of zero windows #1078.
+
 # CHANGES IN GGIR VERSION 3.0-7
 
 - Part 1:
@@ -11,11 +17,11 @@
 - Part 3: Algorithm HDCZA simplified by replacing time series specific threshold in step 6 of the description in the 2018 paper by a constant threshold that can be set by the user. This means that
 we have a new parameter HDCZA_threshold and parameter constrain2range is now deprecated #1062.
 
-- Part 5: Fix bug in MM = timewindow part specific to when first night(s) are not available in part 4 results. This bug also affected the time series as stored by part 5 #1039.
-
-
 - Part 3: Added option for HSPT.ignore.invalid = NA, which would consider invalid
 time segments as no movement for the Sleep Period Time definition.
+
+- Part 5: Fix bug in MM = timewindow part specific to when first night(s) are not available in part 4 results. #1039.
+
 
 # CHANGES IN GGIR VERSION 3.0-6
 

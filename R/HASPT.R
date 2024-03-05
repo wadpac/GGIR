@@ -28,7 +28,7 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       threshold = HDCZA_threshold
     } else if (HASPT.algo == "HorAngle") {  # if hip, then require horizontal angle
       # x = absolute angle
-      # threshold = 45º
+      # threshold = 45 degrees
       x = abs(angle)
       threshold = 45
     } else if (HASPT.algo == "NotWorn") {  
