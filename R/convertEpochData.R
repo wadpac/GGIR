@@ -550,24 +550,29 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         imp2 = cumsum(imp)
         imp3 = diff(imp2[seq(1, length(imp2),
                              by = ((60/epSizeShort) * (epSizeLong/60)))]) / ((60/epSizeShort) * (epSizeLong/60)) # rolling mean
-        imp4 = round(imp3 * 3) # create three level nonwear score from it, not really necessary for GGIR, but helps to retain some of the information
+        nonwearscore = round(imp3 * 3) # create three level nonwear score from it, not really necessary for GGIR, but helps to retain some of the information
       } else if (length(grep(pattern = "actiwatch", x = params_general[["dataFormat"]], ignore.case = TRUE)) > 0 |
                  params_general[["dataFormat"]] == "actigraph_csv" |
                  params_general[["dataFormat"]] == "sensewear_xls") {
-        # Using rolling 60 minute sum to indicate whether it is nonwear
-        imp2 = zoo::rollapply(imp, width = ceiling(epSizeNonWear / epSizeShort), FUN = sum, fill = 0)
-        imp4 = imp2
-        imp4[which(imp2 > 0)] = 0
-        imp4[which(imp2 == 0)] = 3 # If rolling average is zero then consider it nonwear
-        imp5 = cumsum(imp4)
-        step = (60/epSizeShort) * (epSizeLong/60)
-        imp4 = diff(imp5[seq(1, length(imp5) + step, by = step)]) / step # rolling mean
-        if (length(imp4) > length(time_longEp_8601)) imp4 = imp4[1:length(time_longEp_8601)]
-        imp4 = round(imp4)
-        if (any(is.na(imp4))) imp4[which(is.na(imp4))] = 3
+        # Using rolling long window sum to indicate whether it is nonwear
+        nonwearscore = rep(0, LML)
+        ni = 1
+        for (g in seq(from = 1, to = length(imp), by = epSizeLong / epSizeShort)) {
+          iend = g + (epSizeNonWear / epSizeShort) - 1
+          indices = g:iend
+          if (iend <= length(imp)) {
+            if (sum(imp[indices], na.rm = TRUE) == 0) {
+              nonwearscore[ni] = 3
+            }
+          }
+          ni = ni + 1
+        }
+        if (length(nonwearscore) > length(time_longEp_8601)) nonwearscore = nonwearscore[1:length(time_longEp_8601)]
+        nonwearscore = round(nonwearscore)
+        if (any(is.na(nonwearscore))) nonwearscore[which(is.na(nonwearscore))] = 3
       }
-      if (length(imp4) < LML) {
-        imp4 = c(imp4, rep(0, LML - length(imp4)))
+      if (length(nonwearscore) < LML) {
+        nonwearscore = c(nonwearscore, rep(0, LML - length(nonwearscore)))
       }
       if (params_general[["dataFormat"]] == "sensewear_xls") {
         # Create myfun object, this to trigger outcome type specific analysis
@@ -584,7 +589,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                      reporttype = c("scalar", "event", "type"))
       }
       # create data.frame for metalong, note that light and temperature are just set at zero
-      M$metalong = data.frame(timestamp = time_longEp_8601,nonwearscore = imp4, #rep(0,LML)
+      M$metalong = data.frame(timestamp = time_longEp_8601,nonwearscore = nonwearscore, #rep(0,LML)
                               clippingscore = rep(0,LML), lightmean = rep(0,LML),
                               lightpeak = rep(0,LML), temperaturemean = rep(0,LML), EN = rep(0,LML))
       
