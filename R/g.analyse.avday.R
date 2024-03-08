@@ -106,7 +106,7 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
     cosinor_coef = applyCosinorAnalyses(ts = IMP$metashort[, c("timestamp", acc.metric)],
                                         qcheck = qcheck,
                                         midnightsi, epochsizes = c(ws3, ws2),
-                                        threshold = params_phyact[["threshold.lig"]])
+                                        threshold = params_phyact[["threshold.lig"]][1]) # only use one threshold
   } else {
     cosinor_coef = c()
   }
