@@ -5,7 +5,11 @@ cosinorAnalyses = function(Xi, epochsize = 60, timeOffsetHours = 0, threshold = 
   
   # transform data to millig if data is stored in g-units
   notna = !is.na(Xi)
-  if (max(Xi, na.rm = TRUE) < 8 && mean(Xi, na.rm = TRUE) < 1) {
+  if (max(Xi, na.rm = TRUE) < 13 && mean(Xi, na.rm = TRUE) < 1) {
+    # 13 because a typical 8g accelerometer could in theory measure 7.5 in each axis without
+    # being considered clipping, which results in a vector of 13
+    # as soon as the time series has values above 13 then it is most likely that
+    # it is either expressed in counts or in mg.
     Xi[notna] = Xi[notna] * 1000
   }
   # log transform data for ActCosinor, IV IS further down will use the non-transformed signal
