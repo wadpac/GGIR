@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.0-9
+
+- Part 4: Allow handling sleeplog with only one record #1083
+
 # CHANGES IN GGIR VERSION 3.0-8
 
 - Part 1: In the handling of externally derived epoch data, the code and algorithm for nonwear detection is now simplified to better match expected behaviour #1080.
