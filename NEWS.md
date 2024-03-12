@@ -2,7 +2,7 @@
 
 - Part 5: Temperature (if available) added to time series output #1085.
 
-- Part 5: Fix minor bug in merging night level sleep variables into part 5 report #1086.
+- Part 5: Fix minor bug in merging night level sleep variables into part 5 report, this does not affect the main part 5 estimates such as time spent in intensity ranges #1086.
 
 - Part 4: Allow handling sleeplog with only one record #1083
 
