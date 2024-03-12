@@ -527,6 +527,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             dsummary = gas$dsummary
                             timeList = gas$timeList
                             doNext = gas$doNext
+                            add_one_day_to_next_date = gas$add_one_day_to_next_date
                             # indexlog
                             qqq = indexlog$winStartEnd
                             si = indexlog$segIndex1

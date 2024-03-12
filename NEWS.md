@@ -2,6 +2,8 @@
 
 - Part 5: Temperature (if available) added to time series output #1085.
 
+- Part 5: Fix minor bug in merging night level sleep variables into part 5 report #1086.
+
 # CHANGES IN GGIR VERSION 3.0-8
 
 - Part 1: In the handling of externally derived epoch data, the code and algorithm for nonwear detection is now simplified to better match expected behaviour #1080.
