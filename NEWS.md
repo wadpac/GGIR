@@ -8,6 +8,10 @@
 
 - Part 2: Increase sensitivity clipping detection from 80% to 30% of a window. If the long epoch has more than 30% of its values close to the dynamic range of the sensor then it will be labelled as clipping.
 
+# CHANGES IN GGIR VERSION 3.0-9
+
+- Part 4: Allow handling sleeplog with only one record #1083
+
 # CHANGES IN GGIR VERSION 3.0-8
 
 - Part 1: In the handling of externally derived epoch data, the code and algorithm for nonwear detection is now simplified to better match expected behaviour #1080.
