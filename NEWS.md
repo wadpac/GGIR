@@ -6,6 +6,7 @@
 
 - Part 4: Allow handling sleeplog with only one record #1083
 
+- General: simplify installation for typical use cases by moving GGIRread, ActCR and read.gt3x to imports.
 
 # CHANGES IN GGIR VERSION 3.0-8
 
