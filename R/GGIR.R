@@ -179,13 +179,6 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       }
     }
   }
-  
-  if (params_247$cosinor == TRUE) {
-    is_ActCR_installed = is.element('ActCR', installed.packages()[,1])
-    if (is_ActCR_installed == FALSE) {
-      stop("If you want to derive circadian rhythm indicators, please install package: ActCR.", call. = FALSE)
-    }
-  }
   if (1 %in% mode) {
     checkFormat = TRUE
     if (all(dir.exists(datadir)) == TRUE) {
@@ -195,28 +188,16 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     } else {
       checkFormat = FALSE
     }
-    
     if (checkFormat == TRUE) {
-      is_GGIRread_installed = is.element('GGIRread', installed.packages()[,1])
-      is_read.gt3x_installed = is.element('read.gt3x', installed.packages()[,1])
-      # skip this check if GGIRread and read.gt3x are both available
-      if (is_GGIRread_installed == FALSE | is_read.gt3x_installed == FALSE) {
+      is_readxl_installed = is.element('readxl', installed.packages()[,1])
+      if (is_readxl_installed == FALSE) {
         getExt = function(x) {
           tmp = unlist(strsplit(x, "[.]"))
           return(tmp[length(tmp)])
         }
         rawaccfiles_formats = unique(unlist(lapply(rawaccfiles, FUN = getExt)))
-        # axivity (cwa, wav), geneactive (bin), genea (bin):
-        if (any(grepl("cwa|wav|bin", rawaccfiles_formats))) {
-          if (is_GGIRread_installed == FALSE) {
-            stop("If you are working with axivity, geneactiv, or genea files, please install package: GGIRread.", call. = FALSE)
-          }
-        }
-        # actigraph (gt3x)
-        if (any(grepl("gt3x", rawaccfiles_formats))) {
-          if (is_read.gt3x_installed == FALSE) {
-            stop(paste0("If you are working with actigraph files, please install package: read.gt3x.", call. = FALSE))
-          }
+        if (any(grepl("xls", rawaccfiles_formats))) {
+          stop("If you are working with xls data for Sensewear, please install package: readxl.", call. = FALSE)
         }
       }
     }

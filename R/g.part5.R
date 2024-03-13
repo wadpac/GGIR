@@ -540,6 +540,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             dsummary = gas$dsummary
                             timeList = gas$timeList
                             doNext = gas$doNext
+                            add_one_day_to_next_date = gas$add_one_day_to_next_date
                             # indexlog
                             qqq = indexlog$winStartEnd
                             si = indexlog$segIndex1
@@ -603,9 +604,14 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     if (length(angle_col) == 0) {
                       angle_col = NULL
                     }
+                    temperature_col = grep(pattern = "temperature", x = names(ts), value = TRUE)
+                    if (length(temperature_col) == 0) {
+                      temperature_col = NULL
+                    }
                     g.part5.savetimeseries(ts = ts[, c("time", "ACC", "diur", "nonwear",
                                                        "guider", "window", "sibdetection", napNonwear_col,
-                                                       lightpeak_col, selfreported_col, angle_col)],
+                                                       lightpeak_col, selfreported_col, angle_col,
+                                                       temperature_col)],
                                            LEVELS = LEVELS,
                                            desiredtz = params_general[["desiredtz"]],
                                            rawlevels_fname = rawlevels_fname,

@@ -1665,12 +1665,13 @@ correspond to the date of analysis.
 | invalid_sleepperiod  | Percentage of SPT within the current window that represents invalid data.          |
 | invalid_wakinghours  | Percentage of waking hours within the current window that represents invalid data. |
 | timestamp      | Time stamp derived from converting the column timenum, only available if `save_ms5raw_format = TRUE`.|
-| angle | anglez by default. If `sensor.location = "hip"` or `HASPT.algo = "HorAngle"` then angle represents the angle for the longitudinal axis as provided by argument longitudinal_axis or estimated if no angle was provided. If more angles were extracted in part 1 then these will be add with their letter appended. }
+| angle | anglez by default. If `sensor.location = "hip"` or `HASPT.algo = "HorAngle"` then angle represents the angle for the longitudinal axis as provided by argument longitudinal_axis or estimated if no angle was provided. If more angles were extracted in part 1 then these will be add with their letter appended.
+| lightpeak | If lux sensor data is available in the data file then it was summarised at an epoch length defined by the second value of parameter `windowsizes` (defaults to 900 seconds = 15 minutes), to add this value to the time series it is interpolated, so the original time resolution is not necessarily reflected in this column.
+| temperature | If temperature was available in the data file then it was summarised at an epoch length defined by the second value of parameter `windowsizes` (defaults to 900 seconds = 15 minutes), to add this value to the time series it is interpolated, so the original time resolution is not necessarily reflected in this column.
 
-To familiarize yourself with how the variables it can be helpful to plot
-them yourself.
 
-For users we also want to export the time serie sof multiple metric
+
+For users we also want to export the time series of multiple metric
 values see argument `epochvalues2csv` which relates to the storage of
 time series in GGIR part 2.
 

@@ -1,11 +1,11 @@
 \name{g.part5.savetimeseries}
 \alias{g.part5.savetimeseries}
 \title{
-  Saves oart 5 time series to csv files
+  Saves part 5 time series to csv files
 }
 \description{
   Not intended for direct use by GGIR users.
-  Saves oart 5 time series to csv files as part of \link{g.part5}.
+  Saves part 5 time series to csv files as part of \link{g.part5}.
 }
 \usage{
   g.part5.savetimeseries(ts, LEVELS, desiredtz, rawlevels_fname,
@@ -51,7 +51,7 @@
 }
 \value{
   Function does not provide output, it only prepare data for saving
-  and saves it to a file.
+  and saves it to a file. For documention on columns see main vignette.
 }
 \keyword{internal}
 \author{
