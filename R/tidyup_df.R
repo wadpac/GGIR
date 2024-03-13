@@ -8,10 +8,10 @@ tidyup_df = function(df = c(), digits = 3) {
     # at 4 or 5 decimal places
     for (fragCols in c(TRUE, FALSE)) {
       if (fragCols == TRUE) {
-        colsID = grep(pattern = "FRAG_", x = colnames(df), invert = FALSE)
+        colsID = grep(pattern = "FRAG_|ABI|SSP", x = colnames(df), invert = FALSE)
         digitsRound = 6
       } else {
-        colsID = grep(pattern = "FRAG_", x = colnames(df), invert = TRUE)
+        colsID = grep(pattern = "FRAG_|ABI|SSP", x = colnames(df), invert = TRUE)
         digitsRound = digits
       }
       myRoundFun = function(x) {
