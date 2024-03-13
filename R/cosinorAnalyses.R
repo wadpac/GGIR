@@ -1,4 +1,8 @@
 cosinorAnalyses = function(Xi, epochsize = 60, timeOffsetHours = 0, threshold = NULL) {
+  if (length(threshold) > 1) {
+    threshold = threshold[1]
+    warning("Multiple threshold values supplied to cosinor analysis, only first value used.")
+  }
   # Apply Cosinor function from ActRC
   N = 1440 * (60 / epochsize) # Number of epochs per day
   Xi = Xi[1:(N * floor(length(Xi) / N))] # ActCR expects integer number of days

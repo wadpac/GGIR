@@ -220,11 +220,12 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         # imputed values to NA.
         colnames(ts)[which(colnames(ts) == "timenum")] = "time"
         acc4cos = ts[, c("time", "ACC")]
+        threshold = as.numeric(unlist(strsplit( params_phyact[["part6_threshold_combi"]], "_"))[1])
         cosinor_coef = applyCosinorAnalyses(ts = acc4cos,
                                             qcheck = ts$invalidepoch,
                                             midnightsi = nightsi,
                                             epochsizes = rep(epochSize, 2),
-                                            threshold = params_phyact[["threshold.lig"]])
+                                            threshold = threshold)
         rm(acc4cos)
         try(expr = {summary[fi:(fi + 6)] = c(cosinor_coef$timeOffsetHours,
                                              cosinor_coef$coef$params$mes,
@@ -265,7 +266,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         for (fragmode in c("day", "spt")) {
           ts_temp = ts
           # turn other half of data to NA
-          ts_temp[which(ts$diur == ifelse(fragmode == "spt", 0, 1))] = NA
+          ts_temp$class_id[which(ts$SleepPeriodTime == ifelse(fragmode == "spt", yes = 0, no = 1))] = NA
           frag.out = g.fragmentation(frag.metrics = params_phyact[["frag.metrics"]],
                                      LEVELS = ts_temp$class_id,
                                      Lnames = Lnames, xmin = 60/epochSize, mode = fragmode)
@@ -274,18 +275,6 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           s_names[fi:(fi + (length(frag.out) - 1))] = paste0("FRAG_", names(frag.out), "_", fragmode)
           fi = fi + length(frag.out)
         }
-      # } else {
-      #   cosinor_coef = NULL
-      #   s_names[fi:(fi + 20)] = c("cosinor_timeOffsetHours", "cosinor_mes", 
-      #                             "cosinor_amp", "cosinor_acrophase",
-      #                             "cosinor_acrotime", "cosinor_ndays", "cosinor_R2", 
-      #                             "cosinorExt_minimum", "cosinorExt_amp", 
-      #                             "cosinorExt_alpha", "cosinorExt_beta", 
-      #                             "cosinorExt_acrotime", "cosinorExt_UpMesor",
-      #                             "cosinorExt_DownMesor", "cosinorExt_MESOR",
-      #                             "cosinorExt_ndays", "cosinorExt_F_pseudo", 
-      #                             "cosinorExt_R2", "IS", "IV", "phi")
-      #   fi = fi + 21
       }
       
       #=======================================================================
