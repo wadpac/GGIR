@@ -8,9 +8,9 @@
   before storing the output in a dataframe
 }
 \usage{
-  g.loadlog(loglocation=c(),coln1=c(),colid=c(),
-    sleeplogsep=",", meta.sleep.folder = c(),
-  desiredtz="")
+  g.loadlog(loglocation = c(), coln1 = c(), colid = c(),
+          meta.sleep.folder = c(),
+          desiredtz = "", impute_sleeplog_onsetwake = FALSE)
 }
 \arguments{
   \item{loglocation}{
@@ -19,22 +19,20 @@
   }
   \item{coln1}{
     Column number in the sleep log spreadsheet where the onset of the first
-  night starts
+    night starts
   }
   \item{colid}{
       Column number in the sleep log spreadsheet in which the participant
-  ID code is stored (default = 1)
-
-  }
-  \item{sleeplogsep}{
-    Value used as sep argument for reading sleeplog csv file, usually "," or ";".
-    This argument has been deprecated.
+      ID code is stored (default = 1)
   }
   \item{meta.sleep.folder}{
     Path to part3 milestone data, only specify if sleeplog is in advanced format.
   }
   \item{desiredtz}{
-    See \link{g.part4}
+    See \link{GGIR}
+  }
+  \item{impute_sleeplog_onsetwake}{
+    Boolean, see \link{GGIR}
   }
 }
 \value{
@@ -42,10 +40,9 @@
   format. See GGIR package vignette for discussion of these two formats.
 }
 \examples{
-\dontrun{
-  sleeplog = g.loadlog(loglocation="C:/mysleeplog.csv",coln1=2,
-  colid=1)
-}
+  \dontrun{
+    sleeplog = g.loadlog(loglocation = "C:/mysleeplog.csv", coln1 = 2, colid = 1)
+  }
 }
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>

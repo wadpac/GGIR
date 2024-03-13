@@ -4,12 +4,13 @@
   Creates csv sleeplog file for testing purposes
 }
 \description{
-  Creates sleeplog file in the format as expected by g.part4
-with dummy data (23:00 onset, 07:00 waking time for every night).
+  Creates sleeplog file in the format as expected by g.part4 with dummy data
+  (23:00 onset, 07:00 waking time for every night).
 }
 \usage{
   create_test_sleeplog_csv(Nnights = 7, storagelocation = c(),
-                            advanced = FALSE, sep = ",")
+                            advanced = FALSE, sep = ",", missingOnset = FALSE,
+                            missingWake = FALSE)
 }
 \arguments{
   \item{Nnights}{
@@ -26,6 +27,12 @@ with dummy data (23:00 onset, 07:00 waking time for every night).
   }
   \item{sep}{
     Character to indicate the column separator of the csv file.
+  }
+  \item{missingOnset}{
+    Boolean to indicate whether the first onset should be missing.
+  }
+  \item{missingWake}{
+    Boolean to indicate whether the first wake should be missing.
   }
 }
 \value{

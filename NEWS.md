@@ -2,6 +2,8 @@
 
 - Part 4: Allow handling sleeplog with only one record #1083
 
+ - Part 4: Added option to impute missing sleeplog entries for sleep onset and wakeup by median of the valid values, controlled with new parameter impute_sleeplog_onsetwake which defaults to FALSE #1088
+
 # CHANGES IN GGIR VERSION 3.0-8
 
 - Part 1: In the handling of externally derived epoch data, the code and algorithm for nonwear detection is now simplified to better match expected behaviour #1080.

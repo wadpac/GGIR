@@ -1,5 +1,6 @@
 g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), 
-                     sleeplogsep = ",", meta.sleep.folder = c(), desiredtz="") {
+                     meta.sleep.folder = c(), desiredtz = "",
+                     impute_sleeplog_onsetwake = FALSE) {
   
   dateformat_correct = "%Y-%m-%d" # set default value
   deltadate = 0
@@ -227,6 +228,26 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
   sli = coln1
   wki = sli + 1
   night = 1
+  
+  calcDuration = function(tonset, twake) {
+    SLN = as.numeric(unlist(strsplit(tonset,":")))
+    WKN = as.numeric(unlist(strsplit(twake,":")))
+    #add seconds when they are not stored
+    if (length(SLN) == 2) SLN = c(SLN,0) 
+    if (length(WKN) == 2) WKN = c(WKN,0)
+    tonset = paste0(SLN[1], ":", SLN[2], ":", SLN[3])
+    twake = paste0(WKN[1], ":", WKN[2], ":", WKN[3])
+    SLN2 = SLN[1] * 3600 + SLN[2] * 60 + SLN[3]
+    WKN2 = WKN[1] * 3600 + WKN[2] * 60  + WKN[3]
+    if (WKN2 > SLN2) { #e.g. 01:00 - 07:00
+      dur = WKN2 - SLN2
+    } else if (WKN2 < SLN2) { #e.g. 22:00 - 07:00
+      dur = ((24*3600) - SLN2) + WKN2
+    }
+    dur = dur / 3600
+    invisible(list(dur = dur, tonset = tonset, twake = twake))
+  }
+  
   while (wki <= ncol(S)) { #loop through nights
     SL = as.character(S[,sli])
     WK = as.character(S[,wki])
@@ -234,20 +255,10 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
     for (j in 1:length(SL)) { #loop through participant
       # idtmp = S[j,colid]
       if (is.na(WK[j]) == FALSE & is.na(SL[j]) == FALSE & WK[j] != "" & SL[j] != "") {
-        SLN = as.numeric(unlist(strsplit(SL[j],":")))
-        WKN = as.numeric(unlist(strsplit(WK[j],":")))
-        if (length(SLN) == 2) SLN = c(SLN,0) #add seconds when they are not stored
-        if (length(WKN) == 2) WKN = c(WKN,0) #add seconds when they are not stored
-        SL[j] = paste0(SLN[1], ":", SLN[2], ":", SLN[3])
-        WK[j] = paste0(WKN[1], ":", WKN[2], ":", WKN[3])
-        SLN2 = SLN[1] * 3600 + SLN[2] * 60 + SLN[3]
-        WKN2 = WKN[1] * 3600 + WKN[2] * 60  + WKN[3]
-        if (WKN2 > SLN2) { #e.g. 01:00 - 07:00
-          dur = WKN2 - SLN2
-        } else if (WKN2 < SLN2) { #e.g. 22:00 - 07:00
-          dur = ((24*3600) - SLN2) + WKN2
-        }
-        dur = dur / 3600
+        out = calcDuration(tonset = SL[j], twake = WK[j])
+        SL[j] = out$tonset
+        WK[j] = out$twake
+        dur = out$dur
       } else {
         cnt_time_notrecognise = cnt_time_notrecognise + 1
         dur = 0
@@ -280,6 +291,59 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
   names(sleeplog) = c("ID","night","duration")
   sleeplog$sleeponset = sleeplog_times[,1]
   sleeplog$sleepwake = sleeplog_times[,2]
+  
+  #------------------------------------------------------
+  # Optionally impute missing values
+  if (impute_sleeplog_onsetwake == TRUE) {
+    # Note that this imputation assumes that time runs continuous across midnight
+    id_onset_missing = sleeplog$ID[which(sleeplog$sleeponset == "")]
+    id_wake_missing = sleeplog$ID[which(sleeplog$sleepwake == "")]
+    imputeTime = function(Col_Time) {
+      valid = which(Col_Time != "")
+      invalid = which(Col_Time == "")
+      # Function only imputes the time if there are also valid times
+      if (length(valid) > 0 && length(invalid) > 0) {
+        # Express time as hour since the previous noon
+        timeHR = rep(NA, length(valid))
+        for (i in 1:length(valid)) {
+          time = as.numeric(unlist(strsplit(Col_Time[valid[i]],":")))
+          time[1] = ifelse(time[1] <= 12, yes = time[1] + 24, no = time[1])
+          timeHR[i] = sum(time / c(1, 60, 3600))
+        }
+        # Calculate median
+        med_time = median(timeHR)
+        # Convert back to clock time
+        med_time = ifelse(med_time >= 24, yes = med_time - 24, no = med_time)
+        hr = floor(med_time)
+        min = floor((med_time - hr) * 60)
+        sec = round((med_time - (hr + (min / 60))) * 3600, digits = 2)
+        newvalue = paste0(hr, ":", min, ":", sec)
+        # impute missing values
+        Col_Time[invalid] = newvalue
+      }
+      return(Col_Time)
+    }
+    if (length(id_onset_missing) > 0) {
+      for (ido in id_onset_missing) {
+        sleeplog$sleeponset[which(sleeplog$ID == ido)] = imputeTime(sleeplog$sleeponset[which(sleeplog$ID == ido)])
+      }
+    }
+    if (length(id_wake_missing) > 0) {
+      for (idw in id_wake_missing) {
+        sleeplog$sleepwake[which(sleeplog$ID == idw)] = imputeTime(sleeplog$sleepwake[which(sleeplog$ID == idw)])
+      }
+    }
+    missing_duration = which(is.na(sleeplog$duration) & sleeplog$sleeponset != "" & sleeplog$sleepwake != "")
+    if (length(missing_duration) > 0) {
+      applyCalcDur = function(x) {
+        dur = as.numeric(calcDuration(tonset = x[1],
+                           twake = x[2])$dur)
+        return(dur)
+      }
+      sleeplog$duration[missing_duration] = apply(X = sleeplog[missing_duration, c("sleeponset", "sleepwake")],
+                                                  MARGIN = 1, FUN = applyCalcDur)
+    }
+  }
   # keep only the non-empty rows as they can only lead to confusion later on
   sleeplog = sleeplog[which(is.na(sleeplog$duration) == FALSE),]
   invisible(list(sleeplog = sleeplog, nonwearlog = nonwearlog, naplog = naplog,
