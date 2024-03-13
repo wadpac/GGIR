@@ -3,7 +3,6 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
                            LEVELS = c(),
                            Lnames=c(), xmin=1,
                            mode = "day") { 
-  
   # This function is loosely inspired by R package ActFrag by Junrui Di.
   # In contrast to R package ActFrag this function assumes
   # that non-wear and missing values have already been taken care of (imputed)
@@ -102,6 +101,7 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     #====================================================
     # Convert LEVELS in three classes: Inactivity (1), Light = LIPA (2), and MVPA (3)
     y = rep(0, Nepochs)
+    is.na(y[is.na(LEVELS)]) = TRUE
     y[which(LEVELS %in% class.in.ids)] = 1
     y[which(LEVELS %in% class.lig.ids)] = 2
     y[which(LEVELS %in% class.mvpa.ids)] = 3
@@ -137,6 +137,7 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   
   if (mode == "day") {
     x = rep(0,Nepochs)
+    is.na(x[is.na(LEVELS)]) = TRUE
     x[which(LEVELS %in% class.in.ids)] = 1 # inactivity becomes 1 because this is behaviour of interest
     x = as.integer(x)
     
@@ -225,6 +226,7 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     # Binary fragmentation metrics for spt:
     # Active - Rest transitions during SPT:
     x = rep(0, Nepochs)
+    is.na(x[is.na(LEVELS)]) = TRUE
     # convert to class names to numeric class ids for inactive, LIPA and MVPA:
     classes.pa = c("spt_wake_LIG", "spt_wake_MOD", "spt_wake_VIG")
     class.pa = which(Lnames %in% classes.pa) - 1
@@ -239,6 +241,7 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     output[["TP_PA2IN"]] = out$TPba
     # Wake - Sleep transitions during SPT:
     x = rep(0, Nepochs)
+    is.na(x[is.na(LEVELS)]) = TRUE
     classes.wake = c("spt_wake_IN", "spt_wake_LIG", "spt_wake_MOD", "spt_wake_VIG")
     class.wake = which(Lnames %in% classes.wake) - 1 
     wakei = which(LEVELS %in% class.wake)
