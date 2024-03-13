@@ -50,8 +50,19 @@ g.part5_initialise_ts = function(IMP, M, params_247, params_general, longitudina
   }
   ts$nonwear = 0 # initialise column
   ts$nonwear = nonwear
+  
+  # Add temperature and light, if present
   lightpeak_available = "lightpeak" %in% colnames(M$metalong)
-  # Check if temperature and light are availble
+  temperature_available = "temperaturemean" %in% colnames(M$metalong)
+  repeatvalues = function(x, windowsizes, Nts) {
+    x = rep(x, each = (windowsizes[2]/windowsizes[1]))
+    if (length(x) > Nts) {
+      x = x[1:Nts]
+    } else if (length(x) < Nts) {
+      x = c(x, rep(0, (Nts - length(x))))
+    }
+    return(x)
+  }
   if (lightpeak_available == TRUE) {
     luz = M$metalong$lightpeak
     if (length(params_247[["LUX_cal_constant"]]) > 0 &
@@ -62,20 +73,16 @@ g.part5_initialise_ts = function(IMP, M, params_247, params_general, longitudina
     luz = handle_luz_extremes$lux
     correction_log = handle_luz_extremes$correction_log
     # repeate values to match resolution of other data
-    repeatvalues = function(x, windowsizes, Nts) {
-      x = rep(x, each = (windowsizes[2]/windowsizes[1]))
-      if (length(x) > Nts) {
-        x = x[1:Nts]
-      } else if (length(x) < Nts) {
-        x = c(x, rep(0, (Nts - length(x))))
-      }
-      return(x)
-    }
     luz = repeatvalues(x = luz, windowsizes = IMP$windowsizes, Nts)
     correction_log = repeatvalues(x = correction_log, windowsizes = IMP$windowsizes, Nts)
     ts$lightpeak_imputationcode = ts$lightpeak = 0 # initialise column
     ts$lightpeak = luz
     ts$lightpeak_imputationcode = correction_log
+  }
+  if (temperature_available == TRUE) {
+    temperature = M$metalong$temperaturemean
+    # repeate values to match resolution of other data
+    ts$temperature = repeatvalues(x = temperature, windowsizes = IMP$windowsizes, Nts)
   }
   return(ts)
 }
