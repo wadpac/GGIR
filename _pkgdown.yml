@@ -59,7 +59,7 @@ navbar:
         - text: 5. Accounting for Study Protocol
           href: articles/chapter5_StudyProtocol.html
         - text: 6. How GGIR Deals with Invalid Data
-          href: articles/chapterInProgress.html
+          href: articles/chapter6_DataImputation.html
         - text: 7. Sleep Analysis
           href: articles/chapterInProgress.html
         - text: 8. The 24-hour time use analysis
