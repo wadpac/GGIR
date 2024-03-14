@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -97,9 +97,29 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.0-9" id="changes-in-ggir-version-30-9">CHANGES IN GGIR VERSION 3.0-9<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-30-9"></a></h2>
+<ul><li><p>Part 5: Temperature (if available) added to time series output <a href="https://github.com/wadpac/GGIR/issues/1085" class="external-link">#1085</a>.</p></li>
+<li><p>Part 5: Fix minor bug in merging night level sleep variables into part 5 report, this does not affect the main part 5 estimates such as time spent in intensity ranges <a href="https://github.com/wadpac/GGIR/issues/1086" class="external-link">#1086</a>.</p></li>
+<li><p>Part 4: Allow handling sleeplog with only one record <a href="https://github.com/wadpac/GGIR/issues/1083" class="external-link">#1083</a></p></li>
+<li><p>General: simplify installation for typical use cases by moving GGIRread, ActCR and read.gt3x to imports.</p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.0-8" id="changes-in-ggir-version-30-8">CHANGES IN GGIR VERSION 3.0-8<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-30-8"></a></h2>
+<ul><li><p>Part 1: In the handling of externally derived epoch data, the code and algorithm for nonwear detection is now simplified to better match expected behaviour <a href="https://github.com/wadpac/GGIR/issues/1080" class="external-link">#1080</a>.</p></li>
+<li><p>Part 2: Fixed issue where g.convert.part2.long() was throwing an error when attempting to process data where every day had insufficient number of valid hours <a href="https://github.com/wadpac/GGIR/issues/1070" class="external-link">#1070</a>.</p></li>
+<li><p>Part 5: Fix bug introduced with 3.0-7 causing WW window to not handle well scenario of zero windows <a href="https://github.com/wadpac/GGIR/issues/1078" class="external-link">#1078</a>.</p></li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.0-7" id="changes-in-ggir-version-30-7">CHANGES IN GGIR VERSION 3.0-7<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-30-7"></a></h2>
-<ul><li><p>Part 3: Algorithm HDCZA simplified by replacing time series specific threshold in step 6 of the description in the 2018 paper by a constant threshold that can be set by the user. This means that we have a new parameter HDCZA_threshold and parameter constrain2range is now deprecated <a href="https://github.com/wadpac/GGIR/issues/1062" class="external-link">#1062</a>.</p></li>
-<li><p>Part 1: Fix bug introduced with release 3.0-6 affecting the use of external function embedding <a href="https://github.com/wadpac/GGIR/issues/1065" class="external-link">#1065</a></p></li>
+<ul><li>
+<p>Part 1:</p>
+<ul><li><p>Fix bug introduced with release 3.0-6 affecting the use of external function embedding <a href="https://github.com/wadpac/GGIR/issues/1065" class="external-link">#1065</a></p></li>
+<li><p>Need to specify rmc.firstrow.acc when working with ad-hoc csv file format now better documented and read.myacc.csv now produces an error when used directly and user forgets to specify rmc.firstrow.acc <a href="https://github.com/wadpac/GGIR/issues/1034" class="external-link">#1034</a>.</p></li>
+<li><p>Improve g.calibrate to better handle scenario when no non-movement periods are found in the entire recording <a href="https://github.com/wadpac/GGIR/issues/1032" class="external-link">#1032</a></p></li>
+</ul></li>
+<li><p>Part 3: Algorithm HDCZA simplified by replacing time series specific threshold in step 6 of the description in the 2018 paper by a constant threshold that can be set by the user. This means that we have a new parameter HDCZA_threshold and parameter constrain2range is now deprecated <a href="https://github.com/wadpac/GGIR/issues/1062" class="external-link">#1062</a>.</p></li>
+<li><p>Part 3: Added option for HSPT.ignore.invalid = NA, which would consider invalid time segments as no movement for the Sleep Period Time definition.</p></li>
+<li><p>Part 5: Fix bug in MM = timewindow part specific to when first night(s) are not available in part 4 results. <a href="https://github.com/wadpac/GGIR/issues/1039" class="external-link">#1039</a>.</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.0-6" id="changes-in-ggir-version-30-6">CHANGES IN GGIR VERSION 3.0-6<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-30-6"></a></h2><p class="text-muted">CRAN release: 2024-02-22</p>

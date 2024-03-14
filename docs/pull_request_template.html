@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,12 +103,29 @@
 <li>
 <input type="checkbox">Added tests (if you added functionality) or fixed existing test (if you fixed a bug).</li>
 <li>
-<input type="checkbox">Updated or expanded the documentation.</li>
+<input type="checkbox">Clean code has been attempted, e.g. intuitive object names and no code redundancy.</li>
+<li>
+<input type="checkbox">Documentation updated:
+<ul class="task-list"><li>
+<input type="checkbox">Function documentation</li>
+<li>
+<input type="checkbox">Chapter vignettes for GitHub IO</li>
+<li>
+<input type="checkbox">Vignettes for CRAN</li>
+</ul></li>
+<li>
+<input type="checkbox">Corresponding issue tagged in PR message. If no issue exist, please create an issue and tag it.</li>
 <li>
 <input type="checkbox">Updated release notes in <code>inst/NEWS.Rd</code> with a user-readable summary. Please, include references to relevant issues or PR discussions.</li>
 <li>
 <input type="checkbox">Added your name to the contributors lists in the <code>DESCRIPTION</code> file, if you think you made a significant contribution.</li>
-</ul></main></div>
+<li>
+<input type="checkbox">GGIR parameters were added/removed. If yes, please also complete checklist below.</li>
+</ul><p>If NEW GGIR parameter(s) were added then these NEW parameter(s) are : - [ ] documented in <code>man/GGIR.Rd</code> - [ ] included with a default in <code>R/load_params.R</code> - [ ] included with value class check in <code>R/check_params.R</code> - [ ] included in table of <code>vignettes/GGIRParameters.Rmd</code> with references to the GGIR parts the parameter is used in. - [ ] mentioned in NEWS.Rd as NEW parameter</p>
+<p>If GGIR parameter(s) were deprecated these parameter(s) are: - [ ] documented as deprecated in <code>man/GGIR.Rd</code> - [ ] removed from <code>R/load_params.R</code> - [ ] removed from <code>R/check_params.R</code> - [ ] removed from table in <code>vignettes/GGIRParameters.Rmd</code> - [ ] mentioned as deprecated parameter in NEWS.Rd - [ ] added to the list in <code>R/extract_params.R</code> with deprecated parameters such that these do not produce warnings when found in old config.csv files.</p>
+
+
+  </main></div>
 
 
     <footer><div class="pkgdown-footer-left">

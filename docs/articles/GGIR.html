@@ -29,7 +29,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -2980,13 +2980,27 @@ available if <code>save_ms5raw_format = TRUE</code>.</td>
 <code>HASPT.algo = "HorAngle"</code> then angle represents the angle for
 the longitudinal axis as provided by argument longitudinal_axis or
 estimated if no angle was provided. If more angles were extracted in
-part 1 then these will be add with their letter appended. }</td>
+part 1 then these will be add with their letter appended.</td>
+</tr>
+<tr class="odd">
+<td>lightpeak</td>
+<td>If lux sensor data is available in the data file then it was
+summarised at an epoch length defined by the second value of parameter
+<code>windowsizes</code> (defaults to 900 seconds = 15 minutes), to add
+this value to the time series it is interpolated, so the original time
+resolution is not necessarily reflected in this column.</td>
+</tr>
+<tr class="even">
+<td>temperature</td>
+<td>If temperature was available in the data file then it was summarised
+at an epoch length defined by the second value of parameter
+<code>windowsizes</code> (defaults to 900 seconds = 15 minutes), to add
+this value to the time series it is interpolated, so the original time
+resolution is not necessarily reflected in this column.</td>
 </tr>
 </tbody>
 </table>
-<p>To familiarize yourself with how the variables it can be helpful to
-plot them yourself.</p>
-<p>For users we also want to export the time serie sof multiple metric
+<p>For users we also want to export the time series of multiple metric
 values see argument <code>epochvalues2csv</code> which relates to the
 storage of time series in GGIR part 2.</p>
 </div>

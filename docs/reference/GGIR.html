@@ -18,7 +18,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -974,6 +974,7 @@
         ID, day_part5, relyonguider_part4, and night_part4. ID should hold the
         participant ID. Columns day_part5 and night_part4 allow you to specify which
         day(s) and night(s) need to be excluded from <a href="g.part5.html">g.part5</a> and <a href="g.part4.html">g.part4</a>, respectively.
+        When including multiple day(s)/night(s) create a new line for each day/night.
         So, this will be done regardless of whether the rest of GGIR thinks those day(s)/night(s)
         are valid. Column relyonguider_part4 allows you to specify for which nights
         <a href="g.part4.html">g.part4</a> should fully rely on the guider. See also package vignette.</p></dd>
@@ -1372,7 +1373,13 @@
       <dt>HASPT.ignore.invalid</dt>
 <dd><p>Boolean (default = FALSE).
         To indicate whether invalid time segments should be ignored in the
-        Sleep Period Time detection.</p></dd>
+        Sleep Period Time detection. If <code>FALSE</code> (default), the imputed 
+        angle or activity metric during the invalid time segments is used 
+        in the Sleep Period Time detection. If <code>TRUE</code>, invalid time 
+        segments are ignored for the Sleep Period Time detection 
+        (i.e., considered to be out of the Sleep Period Time). 
+        If <code>NA</code>, then invalid time segments are considered to be no movement
+        segments.</p></dd>
 
 
       <dt>HASIB.algo</dt>
