@@ -5,7 +5,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
   deltadate = 0
   #===============================
   # Load sleep log data...
-  S = data.table::fread(loglocation, stringsAsFactors = FALSE, data.table = FALSE,
+  S = data.table::fread(file = loglocation, stringsAsFactors = FALSE, data.table = FALSE,
                         check.names = TRUE, colClasses = "character")
   nnights = (ncol(S) - coln1 + 1) / 2
   cnt_time_notrecognise = 0
@@ -273,8 +273,8 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
   # delete id-numbers that are unrecognisable
   empty_rows = which(as.character(sleeplog[,1]) == "0")
   if (length(empty_rows) > 0) {
-    sleeplog = sleeplog[-empty_rows,]
-    sleeplog_times = sleeplog_times[-empty_rows,]
+    sleeplog = sleeplog[-empty_rows, , drop = FALSE]
+    sleeplog_times = sleeplog_times[-empty_rows, , drop = FALSE]
   }
   sleeplog = as.data.frame(sleeplog, stringsAsFactors = FALSE)
   names(sleeplog) = c("ID","night","duration")

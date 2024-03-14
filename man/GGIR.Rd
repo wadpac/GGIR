@@ -776,6 +776,7 @@ GGIR(mode = 1:5,
         ID, day_part5, relyonguider_part4, and night_part4. ID should hold the
         participant ID. Columns day_part5 and night_part4 allow you to specify which
         day(s) and night(s) need to be excluded from \link{g.part5} and \link{g.part4}, respectively.
+        When including multiple day(s)/night(s) create a new line for each day/night.
         So, this will be done regardless of whether the rest of GGIR thinks those day(s)/night(s)
         are valid. Column relyonguider_part4 allows you to specify for which nights
         \link{g.part4} should fully rely on the guider. See also package vignette.}
@@ -1134,7 +1135,14 @@ GGIR(mode = 1:5,
       \item{HASPT.ignore.invalid}{
         Boolean (default = FALSE).
         To indicate whether invalid time segments should be ignored in the
-        Sleep Period Time detection.}
+        Sleep Period Time detection. If \code{FALSE} (default), the imputed 
+        angle or activity metric during the invalid time segments is used 
+        in the Sleep Period Time detection. If \code{TRUE}, invalid time 
+        segments are ignored for the Sleep Period Time detection 
+        (i.e., considered to be out of the Sleep Period Time). 
+        If \code{NA}, then invalid time segments are considered to be no movement
+        segments.
+        }
 
       \item{HASIB.algo}{
         Character (default = "vanHees2015").

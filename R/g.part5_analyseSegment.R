@@ -46,7 +46,7 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
   
   #==========================
   # The following is to avoid issue with merging sleep variables from part 4
-  # This code extract them the time series (ts) object create in g.part5
+  # This code extract them the time series (ts) object created in g.part5
   # Note that this means that for MM windows there can be multiple or no wake or onsets
   date = as.Date(ts$time[segStart + 1], tz = params_general[["desiredtz"]])
   if (add_one_day_to_next_date == TRUE & timewindowi %in% c("WW", "OO")) { # see below for explanation
@@ -93,24 +93,29 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     dsummary[si,fi:(fi + 1)] = rep(NA, 2)
   }
   ds_names[fi:(fi + 1)] = c("wakeup", "wakeup_ts");      fi = fi + 2
+  # if skiponset and skipwake and "MM", then set full window as awake
+  if (skiponset == TRUE & skipwake == TRUE & timewindowi == "MM") {
+    ts$diur_bu = ts$diur
+    ts$diur[qqq[1]:qqq[2]] = 0
+  }
   # extract date and use this to retrieve corresponding part 4 information about the nights:
   options(encoding = "UTF-8")
   # look up matching part4 entry:
   recDates = as.Date(sumSleep$calendar_date, format = "%d/%m/%Y", origin = "1970-01-01")
   dsummary[si, fi] = sibDef
   ds_names[fi] = "sleepparam";      fi = fi + 1
-  dayofinterst = which(recDates == date)
-  if (length(dayofinterst) > 0) {
-    dayofinterst = dayofinterst[1]
-    dsummary[si,fi:(fi + 5)] = c(sumSleep$night[dayofinterst],
-                                 sumSleep$daysleeper[dayofinterst],
-                                 sumSleep$cleaningcode[dayofinterst],
-                                 sumSleep$guider[dayofinterst],
-                                 sumSleep$sleeplog_used[dayofinterst],
-                                 sumSleep$acc_available[dayofinterst])
+  dayofinterest = which(recDates == date)
+  if (length(dayofinterest) > 0) {
+    dayofinterest = dayofinterest[1]
+    dsummary[si,fi:(fi + 5)] = c(sumSleep$night[dayofinterest],
+                                 sumSleep$daysleeper[dayofinterest],
+                                 sumSleep$cleaningcode[dayofinterest],
+                                 sumSleep$guider[dayofinterest],
+                                 sumSleep$sleeplog_used[dayofinterest],
+                                 sumSleep$acc_available[dayofinterest])
     ds_names[fi:(fi + 5)] = c("night_number", "daysleeper", "cleaningcode",
                               "guider", "sleeplog_used", "acc_available");      fi = fi + 6
-    ts$guider[segStart:segEnd] = sumSleep$guider[dayofinterst] # add guider also to timeseries
+    ts$guider[segStart:segEnd] = sumSleep$guider[dayofinterest] # add guider also to timeseries
   } else {
     dsummary[si,fi:(fi + 5)] = rep(NA, 6)
     ds_names[fi:(fi + 5)] = c("night_number",
@@ -299,8 +304,8 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
         if (length(unlist(strsplit(M5HOUR," "))) == 1) M5HOUR = paste0(M5HOUR," 00:00:00")
         if (L5HOUR != "not detected") {
           time_num = sum(as.numeric(unlist(strsplit(unlist(strsplit(L5HOUR," "))[2], ":"))) * c(3600, 60, 1)) / 3600
-          if (!is.null(dayofinterst) && length(sumSleep$daysleeper[dayofinterst]) == 1) {
-            daysleeper_value = sumSleep$daysleeper[dayofinterst]
+          if (!is.null(dayofinterest) && length(sumSleep$daysleeper[dayofinterest]) == 1) {
+            daysleeper_value = sumSleep$daysleeper[dayofinterest]
           } else {
             daysleeper_value = 0
           }
@@ -495,6 +500,11 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
   } else {
     doNext = TRUE
   }
+  # if skiponset and skipwake and "MM", then reset ts$diur
+  if (skiponset == TRUE & skipwake == TRUE & timewindowi == "MM") {
+    ts$diur = ts$diur_bu
+    ts = ts[, -which(colnames(ts) == "diur_bu")]
+  }
   # group categories of object back into lists
   indexlog = list(fileIndex = fileIndex,
                   winStartEnd = qqq,
@@ -509,6 +519,7 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     ds_names = ds_names,
     dsummary = dsummary,
     timeList = timeList,
-    doNext = doNext
+    doNext = doNext,
+    add_one_day_to_next_date = add_one_day_to_next_date
   ))
 }

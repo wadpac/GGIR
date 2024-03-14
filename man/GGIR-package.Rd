@@ -21,8 +21,8 @@
   \tabular{ll}{
   Package: \tab GGIR\cr
   Type: \tab Package\cr
-  Version: \tab 3.0-6\cr
-  Date: \tab 2023-02-22\cr
+  Version: \tab 3.0-8\cr
+  Date: \tab 2023-03-05\cr
   License: \tab Apache License (== 2.0)\cr
   Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
   }
