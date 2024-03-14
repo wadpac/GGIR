@@ -3,21 +3,21 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
                            LEVELS = c(),
                            Lnames=c(), xmin=1,
                            mode = "day") { 
-  # This function is loosely inspired by R package ActFrag by Junrui Di.
+  # This function was originally loosely inspired by R package ActFrag by Junrui Di.
   # In contrast to R package ActFrag this function assumes
   # that non-wear and missing values have already been taken care of (imputed)
-  # outside this function. Further, the algorithms are not all exactly the same,
+  # outside this function or set to NA. Further, the algorithms are not all exactly the same,
   # and there are some additional metrics.
-  # This function is called from GGIR g.part5 function and applied per waking
+  # This function is either called from GGIR g.part5 function and applied per waking
   # hours of a day (by default, alternative option spt, see mode).
-  # This avoids the issue of dealing with gaps between days,
-  # and allows us to test for behavioural differences between days of the week.
-  # It is well known that human behaviour can be driven by weekly rhythm. 
+  # This allows us to test for behavioural differences between days of the week.
   # Knowing fragmentation per day of the week allows us to account for this
   # variation.
   # Further, I am avoiding the term sedentary because sedentary implies
   # that the activity type sitting  was classified, which is generally
   # difficult to justify.
+  # Additionally, this function is called from GGIR g.part6 function and applied
+  # to the entire recording with either SPT set to NA or daytime set to NA.
   
   # LEVELS: vector with behavioural classes produced by GGIR
   # Lnames: Names of brehavioural classes.
@@ -39,11 +39,31 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
                      frag$value[2:Nsegments] %in% a)
         Nab = length(ab)
         Nba = length(ba)
-        totDur_a = sum(frag$length[which(frag$value %in% a)]) - ifelse(frag$value[Nsegments] %in% a,1,0)
-        totDur_b = sum(frag$length[which(frag$value %in% b)]) - ifelse(frag$value[Nsegments] %in% b,1,0)
-        delta = 1e-6
-        TPab = (Nab + delta) / (totDur_a + delta)
-        TPba = (Nba + delta) / (totDur_b + delta)
+        
+        # In GGIR part 6 we set day or spt to NA, by which the series is split in parts
+        # separate by strings of NA values. In GGIR part 5 this would not happen
+        # and we only need the last item of the time series for that day. However,
+        # if last value is NA then ignore it.
+        lastitems = which(is.na(frag$value[1:(Nsegments - 1)]) == FALSE &
+                                      is.na(frag$value[2:Nsegments] == TRUE))
+        if (!is.na(frag$value[Nsegments])) {
+          lastitems = unique(c(lastitems, Nsegments))
+        }
+        # Next use this to detect how often last value of each string is reference class (a or b)
+        if (length(lastitems) > 0) {
+          count_a_ending = sum(ifelse(frag$value[lastitems] %in% a,1,0))
+          count_b_ending = sum(ifelse(frag$value[lastitems] %in% b,1,0))
+        } else {
+          count_a_ending = 0
+          count_b_ending = 0
+        }
+        # Total duration from a to b
+        totDur_ab = sum(frag$length[which(frag$value %in% a)]) - count_a_ending
+        totDur_ba = sum(frag$length[which(frag$value %in% b)]) - count_b_ending
+        epsilon = 1e-6
+        TPab = (Nab + epsilon) / (totDur_ab + epsilon)
+        TPba = (Nba + epsilon) / (totDur_ba + epsilon)
+
         # Round to 6 digits because preceding step introduces bias at 7 decimal places
         TPab = round(TPab, digits = 6)
         TPba = round(TPba, digits = 6)
@@ -77,13 +97,11 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
                    totDur_ba = totDur_ba))
   }
   
-  
   if ("all" %in% frag.metrics) {
     frag.metrics = c("mean", "TP", "Gini", "power",
                      "CoV", "NFragPM", "all")
   }
   output = list()
-
   Nepochs = length(LEVELS)
   if (mode == "day") {
     # convert to class names to numeric class ids for inactive, LIPA and MVPA:
@@ -96,7 +114,6 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   } else {
     do.frag = FALSE
   }
-
   if (Nepochs > 1 & mode == "day") { # metrics that require more than just binary
     #====================================================
     # Convert LEVELS in three classes: Inactivity (1), Light = LIPA (2), and MVPA (3)
@@ -121,17 +138,16 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
       out = TransProb(y, a = 1, b = 3) #IN to MVPA
       output[["TP_IN2MVPA"]] = out$TPab
       output[["Nfrag_IN2MVPA"]] = out$Nab
-      
+
       out = TransProb(y, a = 2, b = c(1, 3)) #LIPA <-> rest
       output[["Nfrag_LIPA"]] = out$Nab
       output[["mean_dur_LIPA"]] = out$totDur_ab / out$Nab
-      
+
       out = TransProb(y, a = 3, b = c(1, 2)) #MVPA <-> rest
       output[["Nfrag_MVPA"]] = out$Nab
       output[["mean_dur_MVPA"]] = out$totDur_ab / out$Nab
     }
   }
-
   #====================================================
   # Binary fragmentation for the metrics that do not depend on multiple classes
   
@@ -141,10 +157,8 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     x[which(LEVELS %in% class.in.ids)] = 1 # inactivity becomes 1 because this is behaviour of interest
     x = as.integer(x)
     
-   
     frag2levels = rle(x)
     Nfrag2levels = length(frag2levels$lengths)
-    
     out = TransProb(x, a = 1, b = 0) #IN <-> PA
     output[["Nfrag_PA"]] = out$Nba
     output[["Nfrag_IN"]] = out$Nab
@@ -180,7 +194,6 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
         # Identify to metric named fragmentation by Chastin,
         # but renamed into Number of Fragments Per Minutes to be 
         # a better reflection of the calculation
-
         output[["NFragPM_PA"]] = output[["Nfrag_PA"]] / out$totDur_ba
         output[["NFragPM_IN"]] = output[["Nfrag_IN"]] / out$totDur_ab
       }
@@ -221,7 +234,6 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
         }
       }
     }
-
   } else if (mode == "spt") {
     # Binary fragmentation metrics for spt:
     # Active - Rest transitions during SPT:
