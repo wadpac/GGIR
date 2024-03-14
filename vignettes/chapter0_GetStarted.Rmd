@@ -23,7 +23,7 @@ knitr::opts_chunk$set(echo = TRUE)
 This section will guide you through the process of configuring your work
 environment to initiate the use of GGIR. For this purpose, you will need
 at least one accelerometer file to be processed by GGIR, please feel
-free to download [this file](https://www.dropbox.com/t/VaB6voVoBoSpt1i2)
+free to download [this .gt3x file](https://www.dropbox.com/t/VaB6voVoBoSpt1i2) or [this .cwa file](https://github.com/wadpac/GGIR/issues/biobank.ctsu.ox.ac.uk/ukb/ukb/examples/accsamp.zip)
 and follow the instructions below.
 
 ## Run GGIR for first time
@@ -35,10 +35,10 @@ and follow the instructions below.
 2.  Use the following command to run GGIR over your data using all the
     default options.
 
-    -   Datadir refers to the directory where you have located the
+    -   datadir refers to the directory where you have located the
         accelerometer files.
 
-    -   Outputdir refers to the directory where you want to store the
+    -   outputdir refers to the directory where you want to store the
         GGIR’s output.
 
 ``` r
