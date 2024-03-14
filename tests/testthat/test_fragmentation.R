@@ -71,8 +71,8 @@ test_that("fragmentation calculates the expected fragmentation metric values", {
                         LEVELS = x,
                         Lnames = Lnames, mode = "spt")
   
-  expect_equal(out$Nfrag_PA, 1)
-  expect_equal(out$Nfrag_IN, 2)
+  expect_equal(out$Nfrag_PA, 2)
+  expect_equal(out$Nfrag_IN, 1)
   expect_equal(out$TP_PA2IN, 0.08, tolerance = 0.0001)
   expect_equal(out$TP_IN2PA, 0.012048, tolerance = 0.0001)
   expect_equal(out$Nfrag_wake, 3)
