@@ -49,10 +49,11 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
         if (!is.na(frag$value[Nsegments])) {
           lastitems = unique(c(lastitems, Nsegments))
         }
+        tmp = frag$value[-lastitems]
         # Next use this to detect how often last value of each string is reference class (a or b)
-        if (length(lastitems) > 0) {
-          count_a_ending = sum(ifelse(frag$value[lastitems] %in% a,1,0))
-          count_b_ending = sum(ifelse(frag$value[lastitems] %in% b,1,0))
+        if (length(lastitems) > 0 & length(which(is.na(tmp) == FALSE)) > 1) {
+          count_a_ending = sum(ifelse(frag$value[lastitems] %in% a, frag$length[lastitems], 0))
+          count_b_ending = sum(ifelse(frag$value[lastitems] %in% b, frag$length[lastitems], 0))
         } else {
           count_a_ending = 0
           count_b_ending = 0
@@ -63,7 +64,6 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
         epsilon = 1e-6
         TPab = (Nab + epsilon) / (totDur_ab + epsilon)
         TPba = (Nba + epsilon) / (totDur_ba + epsilon)
-
         # Round to 6 digits because preceding step introduces bias at 7 decimal places
         TPab = round(TPab, digits = 6)
         TPba = round(TPba, digits = 6)
@@ -156,7 +156,6 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     is.na(x[is.na(LEVELS)]) = TRUE
     x[which(LEVELS %in% class.in.ids)] = 1 # inactivity becomes 1 because this is behaviour of interest
     x = as.integer(x)
-    
     frag2levels = rle(x)
     Nfrag2levels = length(frag2levels$lengths)
     out = TransProb(x, a = 1, b = 0) #IN <-> PA
