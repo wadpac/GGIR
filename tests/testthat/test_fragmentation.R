@@ -37,9 +37,9 @@ test_that("fragmentation calculates the expected fragmentation metric values", {
   expect_equal(out$x0.5_dur_PA, 1.928897, tolerance = 0.0001)
   expect_equal(out$W0.5_dur_IN, 0.9629121, tolerance = 0.0001)
   
-  expect_equal(out$TP_IN2MVPA, 0.005517, tolerance = 0.0001)
-  expect_equal(out$TP_IN2LIPA, 0.06069, tolerance = 0.0001)
-  expect_equal(out$TP_IN2PA, 0.066207, tolerance = 0.0001)
+  expect_equal(out$TP_IN2MVPA, 0.005502, tolerance = 0.0001)
+  expect_equal(out$TP_IN2LIPA, 0.060523, tolerance = 0.0001)
+  expect_equal(out$TP_IN2PA, 0.066025, tolerance = 0.0001)
   expect_equal(out$Nfrag_PA, 49)
   expect_equal(out$Nfrag_IN2LIPA, 44)
   expect_equal(out$Nfrag_IN2MVPA, 4)
@@ -55,7 +55,7 @@ test_that("fragmentation calculates the expected fragmentation metric values", {
                         Lnames = Lnames, mode = "spt")
   expect_equal(out$Nfrag_wake, 3)
   expect_equal(out$Nfrag_sleep, 3)
-  expect_equal(out$TP_wake2sleep, 0.046154, tolerance = 0.0001) # 3+epsilon / 65+epsilon
+  expect_equal(out$TP_wake2sleep, 0.040541, tolerance = 0.0001) # 3+epsilon / 65+epsilon
   expect_equal(out$TP_sleep2wake, 0.06, tolerance = 0.0001) # 3+epsilon / 50+epsilon
 
   # SPT: Test ability to handle NA blocks as needed for g.part6
@@ -67,10 +67,10 @@ test_that("fragmentation calculates the expected fragmentation metric values", {
   out = g.fragmentation(frag.metrics = "all",
                         LEVELS = x,
                         Lnames = Lnames, mode = "spt")
-  expect_equal(out$Nfrag_sleep, 4) # 4+epsilon/20+epsilon
-  expect_equal(out$Nfrag_wake, 5) # 5+epsilon/25+epsilon
-  expect_equal(out$TP_sleep2wake, 0.2, tolerance = 0.0001)
-  expect_equal(out$TP_wake2sleep, 0.2, tolerance = 0.0001)
+  expect_equal(out$Nfrag_sleep, 4)
+  expect_equal(out$Nfrag_wake, 5)
+  expect_equal(out$TP_sleep2wake, 0.142857, tolerance = 0.0001)
+  expect_equal(out$TP_wake2sleep, 0.172414, tolerance = 0.0001)
   
   
   # day: Test ability to handle NA blocks as needed for g.part6
@@ -84,8 +84,8 @@ test_that("fragmentation calculates the expected fragmentation metric values", {
                         Lnames = Lnames, mode = "day")
   expect_equal(out$Nfrag_PA2IN, 4) # 4+epsilon/20+epsilon
   expect_equal(out$Nfrag_IN2PA, 5) # 5+epsilon/25+epsilon
-  expect_equal(out$TP_PA2IN, 0.2, tolerance = 0.0001)
-  expect_equal(out$TP_IN2PA, 0.2, tolerance = 0.0001)
+  expect_equal(out$TP_PA2IN, 0.142857, tolerance = 0.0001)
+  expect_equal(out$TP_IN2PA, 0.172414, tolerance = 0.0001)
   
   
   # same but now with more variation in segment length
@@ -98,7 +98,7 @@ test_that("fragmentation calculates the expected fragmentation metric values", {
                         Lnames = Lnames, mode = "day")
   expect_equal(out$Nfrag_PA2IN, 4) # 4+epsilon/20+epsilon
   expect_equal(out$Nfrag_IN2PA, 5) # 5+epsilon/25+epsilon
-  expect_equal(out$TP_PA2IN, 0.210526, tolerance = 0.0001)
-  expect_equal(out$TP_IN2PA, 0.178571, tolerance = 0.0001)
+  expect_equal(out$TP_PA2IN, 0.153846, tolerance = 0.0001)
+  expect_equal(out$TP_IN2PA, 0.106383, tolerance = 0.0001)
   
 })

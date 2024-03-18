@@ -52,8 +52,8 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
         tmp = frag$value[-lastitems]
         # Next use this to detect how often last value of each string is reference class (a or b)
         if (length(lastitems) > 0 & length(which(is.na(tmp) == FALSE)) > 1) {
-          count_a_ending = sum(ifelse(frag$value[lastitems] %in% a, frag$length[lastitems], 0))
-          count_b_ending = sum(ifelse(frag$value[lastitems] %in% b, frag$length[lastitems], 0))
+          count_a_ending = sum(ifelse(frag$value[lastitems] %in% a, 1, 0))
+          count_b_ending = sum(ifelse(frag$value[lastitems] %in% b, 1, 0))
         } else {
           count_a_ending = 0
           count_b_ending = 0
@@ -157,7 +157,7 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     x[which(LEVELS %in% class.in.ids)] = 1 # inactivity becomes 1 because this is behaviour of interest
     x = as.integer(x)
     frag2levels = rle(x)
-    Nfrag2levels = length(frag2levels$lengths)
+    Nfrag2levels = length(which(is.na(frag2levels$values) == FALSE))
     out = TransProb(x, a = 1, b = 0) #IN <-> PA
     output[["Nfrag_PA"]] = out$Nba
     output[["Nfrag_IN"]] = out$Nab
@@ -202,8 +202,8 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
       if (Nfrag2levels >= 10) {
         DurationIN = frag2levels$length[which(frag2levels$value == 1)]
         DurationPA = frag2levels$length[which(frag2levels$value == 0)]
-        SD0 = sd(DurationPA)
-        SD1 = sd(DurationIN)
+        SD0 = sd(DurationPA, na.rm = TRUE)
+        SD1 = sd(DurationIN, na.rm = TRUE)
         output[["SD_dur_PA"]] = SD0 # maybe not a fragmentation metric, but helpful to understand other metrics
         output[["SD_dur_IN"]] = SD1
         if ("Gini" %in% frag.metrics) {
