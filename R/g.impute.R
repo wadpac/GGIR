@@ -372,10 +372,12 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
       if (length(imp3) < wpd)  {
         dcomplscore = dcomplscore * (length(imp3)/wpd)
       }
+      # for those part of the data where there is no single data point for a
+      #certain part of the day (this is CRITICAL)
       if (ENi == mi) { #replace missing values for EN by 1
         imp3[which(is.nan(imp3) == T | is.na(imp3) == T)] = 1
       } else { #replace missing values for other metrics by 0
-        imp3[which(is.nan(imp3) == T | is.na(imp3) == T)] = 0 # for those part of the data where there is no single data point for a certain part of the day (this is CRITICAL)
+        imp3[which(is.nan(imp3) == T | is.na(imp3) == T)] = 0 
       }
       averageday[, (mi - 1)] = imp3
       for (j in 1:ndays) {
@@ -385,9 +387,21 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
         }
       }
       dim(imp) = c(length(imp),1)
-      #      imp = imp[-c(which(is.na(as.numeric(as.character(imp))) == T))]
       toimpute = which(r5long != -1)       # do not impute the expanded time with expand_tail_max_hours
-      metashort[toimpute, mi] = as.numeric(imp[toimpute]) #to cut off the latter part of the last day used as a dummy data
+      if (length(toimpute) > 0) {
+        if (is.na(params_cleaning[["do.imp"]])) {
+          # if do.imp = NA then impute EN by 1 and all other metrics by 0
+          if (ENi == mi) {
+            metashort[toimpute, mi] = 1
+          } else {
+            metashort[toimpute, mi] = 0
+          }
+        } else {
+          # standard scenario where we impute by average of same time point on
+          # other days of the recording
+          metashort[toimpute, mi] = as.numeric(imp[toimpute])
+        }
+      }
     } else {
       dcomplscore = length(which(r5long == 0))/wpd
     }

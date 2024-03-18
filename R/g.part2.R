@@ -157,9 +157,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                        acc.metric = params_general[["acc.metric"]],
                        ID = ID)
         
-        if (params_cleaning[["do.imp"]] == FALSE) { #for those interested in sensisitivity analysis
+        if (!is.na(params_cleaning[["do.imp"]]) && params_cleaning[["do.imp"]] == FALSE) { #for those interested in sensisitivity analysis
           IMP$metashort = M$metashort
-          # IMP$metalong = M$metalong
         }
         # do not use expanded time with expand_tail_max_hours in summary reports
         if (length(tail_expansion_log) != 0) {
