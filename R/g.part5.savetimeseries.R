@@ -2,7 +2,8 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
                                   DaCleanFile = NULL,
                                   includedaycrit.part5 = 2/3, ID = NULL,
                                   params_output,
-                                  params_247 = NULL) {
+                                  params_247 = NULL,
+                                  Lnames = NULL) {
   
   ms5rawlevels = data.frame(date_time = ts$time, class_id = LEVELS,
                             # class_name = rep("",Nts),
@@ -91,7 +92,7 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
       mdat$timestamp = as.POSIXct(mdat$timenum, origin = "1970-01-01",tz = desiredtz)
       rawlevels_fname = gsub(pattern = ".csv", replacement = ".RData", x = rawlevels_fname)
       fname = unique(rawlevels_fname[grep("*RData$", rawlevels_fname)])
-      save(mdat, file = fname)
+      save(mdat, Lnames, file = fname)
     }
     #===============================
     rm(mdat)

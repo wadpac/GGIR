@@ -1,3 +1,13 @@
+# CHANGES IN GGIR VERSION 3.0-??
+
+- Part 6: Add DFA functionality #839 (credits: Ian Meneghel Danilevicz and Victor Barreto Mesquita)
+
+- Part 2 + 6: Revised and simplified IV and IS calculation which now ignores invalid timestamps and also comes with phi statistic (credits: Ian Meneghel Danilevicz). In part 2 we used to have 2 calculation, which is now replaced by just one and applied to all valid data points in the recordings. In part 6 this is repeated by for the time window as specified with parameter part6Window. Further, IVIS now uses argument threshold.lig as threshold to distinguish inactivity from active.
+
+- Part 6: Add fragmentation metrics, same function as in part 5 but now applied at recording level #839
+
+- Part 2: Increase sensitivity clipping detection from 80% to 30% of a window. If the long epoch has more than 30% of its values close to the dynamic range of the sensor then it will be labelled as clipping.
+
 # CHANGES IN GGIR VERSION 3.0-9
 
 - Part 5: Temperature (if available) added to time series output #1085.

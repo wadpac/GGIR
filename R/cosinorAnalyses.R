@@ -1,12 +1,28 @@
-cosinorAnalyses = function(Xi, epochsize = 60, timeOffsetHours = 0) {
+cosinorAnalyses = function(Xi, epochsize = 60, timeOffsetHours = 0, threshold = NULL) {
+  if (length(threshold) > 1) {
+    threshold = threshold[1]
+    warning("Multiple threshold values supplied to cosinor analysis, only first value used.")
+  }
   # Apply Cosinor function from ActRC
   N = 1440 * (60 / epochsize) # Number of epochs per day
   Xi = Xi[1:(N * floor(length(Xi) / N))] # ActCR expects integer number of days
-  coef = ActCR::ActCosinor(x = Xi, window = 1440 / N)
+  
+  # transform data to millig if data is stored in g-units
+  notna = !is.na(Xi)
+  if (max(Xi, na.rm = TRUE) < 13 && mean(Xi, na.rm = TRUE) < 1) {
+    # 13 because a typical 8g accelerometer could in theory measure 7.5 in each axis without
+    # being considered clipping, which results in a vector of 13
+    # as soon as the time series has values above 13 then it is most likely that
+    # it is either expressed in counts or in mg.
+    Xi[notna] = Xi[notna] * 1000
+  }
+  # log transform data for ActCosinor, IV IS further down will use the non-transformed signal
+  Xi_log = Xi
+  Xi_log[notna] = log(Xi[notna] + 1)
+  coef = ActCR::ActCosinor(x = Xi_log, window = 1440 / N)
 
   # Apply Extended Cosinor function from ActRC (now temporarily turned of to apply my own version)
-  # ActCR::
-  coefext = ActCR::ActExtendCosinor(x = Xi, window = 1440 / N, export_ts = TRUE) # need to set lower and upper argument?
+  coefext = ActCR::ActExtendCosinor(x = Xi_log, window = 1440 / N, export_ts = TRUE)
   # Correct time estimates by offset in start of recording
   add24ifneg = function(x) {
     if (x < 0) x = x + 24
@@ -23,12 +39,9 @@ cosinorAnalyses = function(Xi, epochsize = 60, timeOffsetHours = 0) {
   k = ceiling(abs(coef$params$acr) / (pi * 2))
   if (coef$params$acr < 0) coef$params$acr = coef$params$acr + (k * 2 * pi)
   # Perform IVIS on the same input signal to allow for direct comparison
-  IVIS = g.IVIS(Xi = Xi / 1000, # divide by 1000 because function g.IVIS internally multiplies by 1000 when IVIS.activity.metric = 2
-                epochsizesecondsXi = epochsize, 
-                IVIS_windowsize_minutes = 60,
-                IVIS.activity.metric = 2,
-                IVIS_acc_threshold = log(20 + 1),
-                IVIS_per_daypair = TRUE) # take log, because Xi is logtransformed with offset of 1
+  IVIS = g.IVIS(Xi = Xi,
+                epochSize = epochsize, 
+                threshold = threshold) # take log, because Xi is logtransformed with offset of 1
   
   coefext$params$R2 = cor(coefext$cosinor_ts$original, coefext$cosinor_ts$fittedYext)^2
   coef$params$R2 = cor(coefext$cosinor_ts$original, coefext$cosinor_ts$fittedY)^2

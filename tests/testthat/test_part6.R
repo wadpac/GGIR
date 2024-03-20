@@ -2,7 +2,6 @@ library(GGIR)
 context("g.part6")
 
 test_that("Part 6 with household co-analysis", {
-
   # Create test files for household co-analysis
   metadatadir = "./output_testpart6"
   part6_threshold_combi = "40_120_400"
@@ -17,15 +16,20 @@ test_that("Part 6 with household co-analysis", {
   save(M, file = paste0(dn2, "/meta_800-900-003_left wrist.bin.RData"))
   
   # Use time shifts to simulate three household members
-  
   data(data.ts)
   mdat = data.ts
+  
+  Lnames = c("spt_sleep", "spt_wake_IN", "spt_wake_LIG", "spt_wake_MOD",
+             "spt_wake_VIG", "day_IN_unbt", "day_LIG_unbt", "day_MOD_unbt",
+             "day_VIG_unbt", "day_MVPA_bts_10", "day_IN_bts_30",
+             "day_IN_bts_10_30", "day_LIG_bts_10")
+  
   mdat$timenum = mdat$timenum - (5 * 60) 
-  save(mdat, file = paste0(dn, "/800-900-001_left wrist.RData"))
+  save(mdat, Lnames, file = paste0(dn, "/800-900-001_left wrist.RData"))
   mdat$timenum = mdat$timenum + (7 * 60)
-  save(mdat, file = paste0(dn, "/800-900-002_left wrist.RData"))
+  save(mdat, Lnames, file = paste0(dn, "/800-900-002_left wrist.RData"))
   mdat$timenum = mdat$timenum + (14 * 60)
-  save(mdat, file = paste0(dn, "/800-900-003_left wrist.RData"))
+  save(mdat, Lnames, file = paste0(dn, "/800-900-003_left wrist.RData"))
   
   # Run household co-analysis  
   # Update parameters to align with datset
@@ -81,16 +85,15 @@ test_that("Part 6 with household co-analysis", {
           params_247 = params_247,
           verbose = FALSE)
   path_to_ms6 = paste0(metadatadir, "/meta/ms6.out/800-900-001_left wrist.RData")
-  
   expect_true(file.exists(path_to_ms6))
   
   load(path_to_ms6)
-  expect_equal(ncol(output_part6), 25)
+  expect_equal(ncol(output_part6), 38)
   expect_equal(output_part6$starttime, "2022-06-02 03:00:00")
   expect_equal(output_part6$cosinor_mes, 2.451769, tolerance = 0.00001)
   expect_equal(output_part6$cosinorExt_minimum, 1.288636, tolerance = 0.00001)
   expect_equal(output_part6$cosinorExt_MESOR, 2.164644, tolerance = 0.00001)
-  expect_equal(sum(output_part6[5:25]), 327.5437, tolerance = 0.0001)
+  expect_equal(sum(output_part6[5:26]), 327.9062, tolerance = 0.0001)
   
   
   # Run Circadian rhythm analysis with non-default window
@@ -105,12 +108,12 @@ test_that("Part 6 with household co-analysis", {
   expect_true(file.exists(path_to_ms6))
   
   load(path_to_ms6)
-  expect_equal(ncol(output_part6), 25)
+  expect_equal(ncol(output_part6), 38)
   expect_equal(output_part6$starttime, "2022-06-03 01:41:00")
   expect_equal(output_part6$cosinor_mes, 2.448485, tolerance = 0.00001)
   expect_equal(output_part6$cosinorExt_minimum, 0, tolerance = 0.00001)
   expect_equal(output_part6$cosinorExt_MESOR, 1.6977, tolerance = 0.00001)
-  expect_equal(sum(output_part6[5:25]), 154.1642, tolerance = 0.0001)
+  expect_equal(sum(output_part6[5:26]), 154.5886, tolerance = 0.0001)
   
   # Remove test files
   if (file.exists(metadatadir))  unlink(metadatadir, recursive = TRUE)

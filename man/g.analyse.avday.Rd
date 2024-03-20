@@ -10,7 +10,8 @@
 \usage{
   g.analyse.avday(doquan, averageday, M, IMP, t_TWDI, quantiletype,
                    ws3, doiglevels, firstmidnighti, ws2, midnightsi,
-                   params_247 = c(), qcheck = c(), acc.metric = c(), ...)
+                   params_247 = c(), qcheck = c(), acc.metric = c(),
+                   params_phyact = NULL, ...)
 }
 \arguments{
   \item{doquan}{Boolean whether quantile analysis should be done}
@@ -25,14 +26,17 @@
   \item{ws2}{see \link{g.weardec}}
   \item{midnightsi}{see \link{g.detecmidnight}}
   \item{params_247}{
-    See \link{g.part2}
+    See \link{GGIR}
   }
   \item{qcheck}{
     Vector with indicators of when data is valid (value=0) or invalid (value=1).
   }
   \item{acc.metric}{
-    Character, see \link{g.part1}. Here, it is used to decided which acceleration metric
+    Character, see \link{GGIR}. Here, it is used to decided which acceleration metric
     to use for IVIS and cosinor analyses.
+  }
+  \item{params_phyact}{
+    See \link{GGIR}
   }
   \item{...}{
    Any argument used in the previous version of g.analyse.avday, which will now
@@ -40,12 +44,10 @@
   }
 }
 \value{
-  \item{\code{InterdailyStability}}{}
-  \item{\code{IntradailyVariability}}{}
-  \item{\code{igfullr_names}}{}
-  \item{\code{igfullr}}{}
-  \item{\code{QUAN}}{}
-  \item{\code{qlevels_names}}{}
+  \item{\code{igfullr_names}}{Intensity gradient variable names}
+  \item{\code{igfullr}}{Intensity gradient values}
+  \item{\code{QUAN}}{Quantiles}
+  \item{\code{qlevels_names}}{Quantile level names}
   \item{\code{ML5AD}}{}
   \item{\code{ML5AD_names}}{}
 }

@@ -41,7 +41,8 @@ export(g.analyse, g.calibrate,
        convertEpochData, appendRecords, extractID,
        g.part5_analyseSegment, g.part5_initialise_ts,
        g.part5.analyseRest, part6AlignIndividuals,
-       part6PairwiseAggregation, g.part6, g.report.part6, check_log, g.report.part5_dictionary)
+       part6PairwiseAggregation, g.part6, g.report.part6, 
+       check_log, g.report.part5_dictionary, DFA, ABI, SSP)
 
 
 importFrom("grDevices", "colors", "dev.off", "pdf",
@@ -55,8 +56,8 @@ importFrom("utils", "read.csv", "sessionInfo", "write.csv",
            "memory.limit", "memory.size", "tail", "unzip", "lsf.str")
 importFrom("stats", "aggregate.data.frame", "weighted.mean",
            "rnorm","median","aggregate","C", "lm.wfit",
-           "quantile", "sd","coef", "lm", "embed", "na.pass",
-            "residuals", "fitted", "reshape", "cor")
+           "quantile", "sd","coef", "lm", "embed", "na.pass", "na.omit",
+            "residuals", "fitted", "reshape", "cor", "arima")
 import(data.table)
 importFrom("methods", "is")
 importFrom("utils", "available.packages", "packageVersion", "help", "read.table")

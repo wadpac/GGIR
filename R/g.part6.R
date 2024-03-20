@@ -106,18 +106,29 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       skip = 0
     }
     if (params_general[["overwrite"]] == TRUE) skip = 0
-    
+    Lnames = cosinor_coef = mdat = NULL
     if (skip == 0) {
       # Load time series:
       if (EXT == "RData") {
         load(file = paste0(metadatadir, "/meta/ms5.outraw/",
                            params_phyact[["part6_threshold_combi"]], "/", fnames.ms5raw[i]))
+        if (is.null(Lnames)) stop("Part 5 was processed with an older version of GGIR, reprocess part 5")
         mdat$time = mdat$timestamp # duplicate column because cosinor function expect columntime
       } else {
+        # use behavioural codes files to derive Lnames object (names of behavioural classes)
+        legendfile = dir(path = paste0(metadatadir, "/meta/ms5.outraw"), pattern = "behavioralcodes", full.names = TRUE)
+        if (length(legendfile) > 1) {
+          df <- file.info(legendfile)
+          legendfile = rownames(df)[which.max(df$mtime)]
+        } else if (length(legendfile) == 0) {
+          stop(paste0("behaviouralcodes file could not be found in ",
+                      paste0(metadatadir, "/meta/ms5.outraw")))
+        }
+        Lnames = data.table::fread(file = legendfile)$class_name
         mdat = data.table::fread(file = paste0(metadatadir, "/meta/ms5.outraw/", 
                                                params_phyact[["part6_threshold_combi"]],  "/", fnames.ms5raw[i]), data.table = FALSE)
       }
-      nfeatures = 50
+      nfeatures = 200
       summary = matrix(NA, nfeatures, 1)
       s_names = rep("", nfeatures)
       fi = 1
@@ -201,25 +212,23 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                            no = length(which(ts$invalidepoch == 0)) / ((3600 * 24) / epochSize))
       s_names[fi] = "N_valid_days"
       fi = fi + 1
-      
-      # Cosinor analysis
+      #=================================================================
+      # Circadian rhythm analysis
       if (do.cr == TRUE) {
+        # Cosinor analysis which comes with IV IS estimtes
+        # Note: applyCosinorAnalyses below uses column invalidepoch to turn
+        # imputed values to NA.
         colnames(ts)[which(colnames(ts) == "timenum")] = "time"
         acc4cos = ts[, c("time", "ACC")]
-        acc4cos$ACC  = acc4cos$ACC / 1000 # convert to mg because that is what applyCosinorAnalyses expects
+        threshold = as.numeric(unlist(strsplit( params_phyact[["part6_threshold_combi"]], "_"))[1])
         cosinor_coef = applyCosinorAnalyses(ts = acc4cos,
                                             qcheck = ts$invalidepoch,
                                             midnightsi = nightsi,
-                                            epochsizes = rep(epochSize, 2))
+                                            epochsizes = rep(epochSize, 2),
+                                            threshold = threshold)
         rm(acc4cos)
-      } else {
-        cosinor_coef = NULL
-      }
-      if (length(cosinor_coef) > 0) {
-        summary[fi] = cosinor_coef$timeOffsetHours
-        s_names[fi] = "cosinor_timeOffsetHours"
-        fi = fi + 1
-        try(expr = {summary[fi:(fi + 5)] = c(cosinor_coef$coef$params$mes,
+        try(expr = {summary[fi:(fi + 6)] = c(cosinor_coef$timeOffsetHours,
+                                             cosinor_coef$coef$params$mes,
                                              cosinor_coef$coef$params$amp,
                                              cosinor_coef$coef$params$acr,
                                              cosinor_coef$coef$params$acrotime,
@@ -227,9 +236,9 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                              cosinor_coef$coef$params$R2)},
             silent = TRUE)
         
-        s_names[fi:(fi + 5)] = c("cosinor_mes", "cosinor_amp", "cosinor_acrophase",
+        s_names[fi:(fi + 6)] = c("cosinor_timeOffsetHours", "cosinor_mes", "cosinor_amp", "cosinor_acrophase",
                                  "cosinor_acrotime", "cosinor_ndays", "cosinor_R2")
-        fi = fi + 6
+        fi = fi + 7
         try(expr = {summary[fi:(fi + 10)] = c(cosinor_coef$coefext$params$minimum,
                                               cosinor_coef$coefext$params$amp,
                                               cosinor_coef$coefext$params$alpha,
@@ -247,23 +256,37 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                   "cosinorExt_DownMesor", "cosinorExt_MESOR",
                                   "cosinorExt_ndays", "cosinorExt_F_pseudo", "cosinorExt_R2")
         fi = fi + 11
-        summary[fi:(fi + 1)] = c(cosinor_coef$IVIS$InterdailyStability,
-                                 cosinor_coef$IVIS$IntradailyVariability)
-        s_names[fi:(fi + 1)] = c("cosinorIS", "cosinorIV")
-        fi = fi + 2
-      } else {
-        cosinor_coef = c()
-        s_names[fi:(fi + 19)] = c("cosinor_timeOffsetHours", "cosinor_mes", 
-                                  "cosinor_amp", "cosinor_acrophase",
-                                  "cosinor_acrotime", "cosinor_ndays", "cosinor_R2", 
-                                  "cosinorExt_minimum", "cosinorExt_amp", 
-                                  "cosinorExt_alpha", "cosinorExt_beta", 
-                                  "cosinorExt_acrotime", "cosinorExt_UpMesor",
-                                  "cosinorExt_DownMesor", "cosinorExt_MESOR",
-                                  "cosinorExt_ndays", "cosinorExt_F_pseudo", 
-                                  "cosinorExt_R2", "cosinorIS", "cosinorIV")
-        fi = fi + 20
+        try(expr = {summary[fi:(fi + 2)] = c(cosinor_coef$IVIS$InterdailyStability,
+                                 cosinor_coef$IVIS$IntradailyVariability,
+                                 cosinor_coef$IVIS$phi)},
+            silent = TRUE)
+        s_names[fi:(fi + 2)] = c("IS", "IV", "phi")
+        fi = fi + 3
+        # Transition probabilities
+        for (fragmode in c("day", "spt")) {
+          ts_temp = ts
+          # turn other half of data to NA
+          ts_temp$class_id[which(ts$SleepPeriodTime == ifelse(fragmode == "spt", yes = 0, no = 1))] = NA
+          frag.out = g.fragmentation(frag.metrics = params_phyact[["frag.metrics"]],
+                                     LEVELS = ts_temp$class_id,
+                                     Lnames = Lnames, xmin = 60/epochSize, mode = fragmode)
+          # fragmentation values can come with a lot of decimal places
+          summary[fi:(fi + (length(frag.out) - 1))] = round(as.numeric(frag.out), digits = 6)
+          s_names[fi:(fi + (length(frag.out) - 1))] = paste0("FRAG_", names(frag.out), "_", fragmode)
+          fi = fi + length(frag.out)
+        }
       }
+      
+      #=======================================================================
+      # DFA analyses is used independent of do.cr because it is time consuming
+      if (params_247[["part6DFA"]] == TRUE && do.cr == TRUE) {
+        ssp = SSP(ts$ACC)
+        abi = ABI(ssp)
+        summary[fi:(fi + 1)] = c(ssp, abi)
+        s_names[fi:(fi + 1)] = c("SSP", "ABI")
+        fi = fi + 2
+      }
+      
       #=============================================
       # Store results in milestone data
       summary = summary[1:(fi - 1),]
@@ -274,10 +297,15 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       names(output_part6) = s_names
       output_part6[, 4:ncol(output_part6)] = as.numeric(output_part6[, 4:ncol(output_part6)])
       if (length(output_part6) > 0) {
-        save(output_part6, file = paste0(metadatadir,
-                                         ms6.out, "/", gsub(pattern = "[.]csv|[.]RData",
-                                                            replacement = "",
-                                                            x = fnames.ms5raw[i]), ".RData"))
+        if (length(cosinor_coef) > 0) {
+          cosinor_ts = cosinor_coef$coefext$cosinor_ts
+        } else {
+          cosinor_ts = c()
+        }
+        save(output_part6, cosinor_ts, file = paste0(metadatadir,
+                                                     ms6.out, "/", gsub(pattern = "[.]csv|[.]RData",
+                                                                        replacement = "",
+                                                                        x = fnames.ms5raw[i]), ".RData"))
       }
       rm(output_part6, summary)
     }
@@ -297,6 +325,12 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]], (f1 - f0) + 1))
         if (Ncores2use > 1) {
           cl <- parallel::makeCluster(Ncores2use) # not to overload your computer
+          parallel::clusterExport(cl = cl, 
+                                  varlist = c(unclass(lsf.str(envir = asNamespace("GGIR"), all = T)),
+                                              "MONITOR", "FORMAT"),
+                                  envir = as.environment(asNamespace("GGIR"))
+          )
+          parallel::clusterEvalQ(cl, Sys.setlocale("LC_TIME", "C"))
           doParallel::registerDoParallel(cl)
         } else {
           # Don't process in parallel if only one core

@@ -1,4 +1,4 @@
-applyCosinorAnalyses = function(ts, qcheck, midnightsi, epochsizes) {
+applyCosinorAnalyses = function(ts, qcheck, midnightsi, epochsizes, threshold = NULL) {
   # qcheck - vector of length ts to indicate invalid values
   ws2 = epochsizes[2]
   ws3 = epochsizes[1]
@@ -59,11 +59,8 @@ applyCosinorAnalyses = function(ts, qcheck, midnightsi, epochsizes) {
     } else {
       epochsize = ws3
     }
-    # log transform of data in millig
-    notna = !is.na(Xi)
-    Xi[notna] = log((Xi[notna]*1000) + 1)
-  
-    cosinor_coef = cosinorAnalyses(Xi = Xi, epochsize = epochsize, timeOffsetHours = timeOffsetHours) 
+    cosinor_coef = cosinorAnalyses(Xi = Xi, epochsize = epochsize, 
+                                   timeOffsetHours = timeOffsetHours, threshold = threshold)
     cosinor_coef$timeOffsetHours = timeOffsetHours
   } else {
     cosinor_coef = c()
