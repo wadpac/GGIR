@@ -65,15 +65,15 @@ test_that("g.part5.definedays considers qwindow to generate segments", {
                                             "work-travelhome", 
                                             "travelhome-home", "home-dayend"))
   
-  # With times not multiple of epoch size
+  # With times not multiple of epoch size and date format %Y-%m-%d
   actlog = data.frame(id = c("1RAW"),
-                      date = c("01/01/2022"),
+                      date = c("2022-01-01"),
                       work = c("08:09:59"),
                       travelhome = c("16:30:43"),
                       home = c("17:30:00"))
   fn = "testactlog.csv"
   write.csv(x = actlog, file = fn, row.names = FALSE)
-  LOG = g.conv.actlog(qwindow = fn, qwindow_dateformat = "%d/%m/%Y")
+  LOG = g.conv.actlog(qwindow = fn, qwindow_dateformat = "%Y-%m-%d")
   
   # definedays
   definedays = g.part5.definedays(nightsi = nightsi, wi = 1, indjump = 1, 
