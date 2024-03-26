@@ -5,10 +5,21 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
   Nts = nrow(ts)
   lastDay = FALSE
   # define local functions ----
-  qwindow2timestamp = function(qwindow) {
+  qwindow2timestamp = function(qwindow, epochSize) {
     H = floor(qwindow)
     M = floor((qwindow - H) * 60)
     S = floor((qwindow - H - M/60) * 60 * 60)
+    expected_S = seq(0, 60, by = epochSize)
+    if (any(!S %in% expected_S)) {
+      revise = which(!S %in% expected_S)
+      for (si in revise) {
+        S[si] = expected_S[which.min(abs(expected_S - S[si]))]
+        if (S[si] == 60) { # shift minute if S == 60
+          M[si] = M[si] + 1
+          S[si] = 0
+        }
+      }
+    }
     H = as.character(H); M = as.character(M); S = as.character(S)
     H = ifelse(nchar(H) == 1, paste0("0", H), H)
     M = ifelse(nchar(M) == 1, paste0("0", M), M)
@@ -74,7 +85,7 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
         if (qwindow[1] != 0) qwindow = c(0, qwindow)
         if (qwindow[length(qwindow)] != 24) qwindow = c(qwindow, 24)
       }
-      breaks = qwindow2timestamp(qwindow)
+      breaks = qwindow2timestamp(qwindow, epochSize)
       if (24 %in% qwindow) {
         # 24:00:00: probably does not exist, replace by last timestamp in a day
         latest_time_in_day = max(format(ts$time[1:pmin(Nts, NepochPerDay)], format = "%H:%M:%S"))
