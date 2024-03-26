@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.0-10
+
+- Day segmentation: Fix minor bugs in conversion of activity log timestamps #1090 and #1093.
+
 # CHANGES IN GGIR VERSION 3.0-9
 
 - Part 5: Temperature (if available) added to time series output #1085.
