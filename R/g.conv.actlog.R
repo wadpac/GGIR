@@ -22,7 +22,7 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y", epochSize = 5) 
   # main function code
   
   # Read content of activity diary file
-  actlog = data.table::fread(file = qwindow, data.table = FALSE)
+  actlog = data.table::fread(file = qwindow, data.table = FALSE, colClasses = "character")
   
   # check ID and date cols in actlog
   actlog = check_log(actlog, dateformat = qwindow_dateformat,
