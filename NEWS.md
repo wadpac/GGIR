@@ -1,6 +1,6 @@
 # CHANGES IN GGIR VERSION 3.0-10
 
-- Part 4: Fixes issue #1095 introduced in 3.0-9 that causes GGIR to stop when processing
+- Part 4: Fixes issue #1095 introduced in 3.0-7 that causes GGIR part 4 to stop when processing
 data without non-default sleep algorithms.
 
 # CHANGES IN GGIR VERSION 3.0-9
