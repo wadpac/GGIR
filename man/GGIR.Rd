@@ -245,9 +245,9 @@ GGIR(mode = 1:5,
       \item{dataFormat}{
         Character (default = "raw").
         To indicate what the format is of the data in datadir.
-        Current alternatives: ukbiobank_csv, actiwatch_csv, actiwatch_awd, 
+        Alternatives: ukbiobank_csv, actiwatch_csv, actiwatch_awd, 
         actigraph_csv, and sensewear_xls, which correspond to epoch level data 
-        files from, respecitively,  UK Biobank in csv format, Actiwatch in csv 
+        files from, respecitively, UK Biobank in csv format, Actiwatch in csv 
         format, Actiwatch in awd format, ActiGraph csv format, and Sensewear in
         xls format (also works with xlsx). Here, the assumed epoch size for
         UK Biobank csvdata is 5 seconds. 
@@ -255,7 +255,11 @@ GGIR(mode = 1:5,
         flexible, but make sure that you set first value of argument 
         \code{windowsizes} accordingly. Also when working with 
         non-raw data formats specify argument \code{extEpochData_timeformat} as
-        documented below.}
+        documented below. For ukbiobank_csv nonwear is a column in the data itself,
+        for actiwatch_csv, actiwatch_awd, actigraph_csv, and sensewear_xls non-wear 
+        is detected as 60 minute rolling zeros. The length of this window can be 
+        modified with the third value of argument \code{windowsizes} expressed in
+        seconds.}
         
        \item{maxRecordingInterval}{
         Numeric (default = NULL).
@@ -772,6 +776,7 @@ GGIR(mode = 1:5,
         ID, day_part5, relyonguider_part4, and night_part4. ID should hold the
         participant ID. Columns day_part5 and night_part4 allow you to specify which
         day(s) and night(s) need to be excluded from \link{g.part5} and \link{g.part4}, respectively.
+        When including multiple day(s)/night(s) create a new line for each day/night.
         So, this will be done regardless of whether the rest of GGIR thinks those day(s)/night(s)
         are valid. Column relyonguider_part4 allows you to specify for which nights
         \link{g.part4} should fully rely on the guider. See also package vignette.}
@@ -862,15 +867,18 @@ GGIR(mode = 1:5,
 
       \item{ndayswindow}{
         Numeric (default = 7).
-        If \code{data_masking_strategy} is set to 3 or 5, then this is the size of the window as a
+        If \code{data_masking_strategy} is set to 3 or 5, then this is the size of 
+        the window as a
         number of days. For data_masking_strategy 3 value can be fractional, e.g. 7.5,
         while for data_masking_strategy 5 it needs to be an integer.}
 
       \item{includedaycrit.part5}{
         Numeric (default = 2/3).
         Inclusion criteria for number of valid hours during the waking hours of a day,
-        either as expressed as a ratio of 1 or as the number of hours,
-        which is converted by GGIR to a ratio. For example 16 become 16/24=2/3.}
+        when value is smaller than or equal to 1 used as fraction of waking hours, 
+        when value above 1 used as absolute number of valid hours required.
+        Do not confuse this argument with argument \code{includedaycrit} which is
+        only used in GGIR part 2 and applies to the entire day.}
 
       \item{segmentWEARcrit.part5}{
         Numeric (default = 0.5).
@@ -1099,7 +1107,7 @@ GGIR(mode = 1:5,
         confusion between monitor non-wear time and sustained inactivity.}
 
       \item{constrain2range}{
-        Boolean (default = TRUE).
+        Deprecated, used to be a Boolean (default = TRUE)
         Whether or not to constrain the range of
         threshold used in the diary free sleep period time window detection.}
 
@@ -1114,11 +1122,27 @@ GGIR(mode = 1:5,
         between -45 and +45 degrees. And "NotWorn" which is also the same as HDCZA
         but looks for time segments when the 5 minute rolling average of counts is
         below 20 per cent of its standard deviation.}
+    
+      \item{HDCZA_threshold}{
+        Numeric (default = 0.2)
+        If \code{HASPT.algo} is set to "HDCZA" then HDCZA_threshold will be used
+        as threshold instead of 6th step in the diagram of Figure 1 in
+        van Hees et al. 2018 Scientific Report (doi: 10.1038/s41598-018-31266-z). We have
+        now simplified this step to a constant number, which can be modified via 
+        HDCZA_threshold.
+      }
 
       \item{HASPT.ignore.invalid}{
         Boolean (default = FALSE).
         To indicate whether invalid time segments should be ignored in the
-        Sleep Period Time detection.}
+        Sleep Period Time detection. If \code{FALSE} (default), the imputed 
+        angle or activity metric during the invalid time segments is used 
+        in the Sleep Period Time detection. If \code{TRUE}, invalid time 
+        segments are ignored for the Sleep Period Time detection 
+        (i.e., considered to be out of the Sleep Period Time). 
+        If \code{NA}, then invalid time segments are considered to be no movement
+        segments.
+        }
 
       \item{HASIB.algo}{
         Character (default = "vanHees2015").
@@ -1458,12 +1482,19 @@ GGIR(mode = 1:5,
 
       \item{sep_reports}{
         Character (default = ",").
-        Value used as sep argument in \link[utils]{write.csv} for writing csv files containing
-        the GGIR reports.}
+        Value used as sep argument in \link[data.table]{fwrite} for writing csv reports.}
+        
+      \item{dec_reports}{
+        Character (default = ".").
+        Value used as dec argument in \link[data.table]{fwrite} for writing csv reports.}
 
       \item{sep_config}{
         Character (default = ",").
-        Value used as sep argument in \link[utils]{write.csv} for writing the GGIR config file.}
+        Value used as sep argument in \link[data.table]{fwrite} for writing csv config file.}
+        
+      \item{dec_config}{
+        Character (default = ".").
+        Value used as dec argument in \link[data.table]{fwrite} for writing csv config file.}
 
       \item{visualreport_without_invalid}{
           Boolean (default = TRUE).

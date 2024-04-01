@@ -188,7 +188,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
     midnights = detemout$midnights
     midnightsi = detemout$midnightsi
     countmidn = length(midnightsi)
-    tib.threshold = SPTE_end = SPTE_start = L5list = rep(NA,countmidn)
+    tib.threshold = SPTE_end = SPTE_start = L5list = part3_guider = rep(NA,countmidn)
     if (countmidn != 0) {
       if (countmidn == 1) {
         tooshort = 1
@@ -267,15 +267,14 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         }
         if (length(params_sleep[["def.noc.sleep"]]) == 1) {
           spt_estimate = HASPT(angle = tmpANGLE, ws3 = ws3,
-                               constrain2range = params_sleep[["constrain2range"]],
-                               perc = perc, spt_threshold = spt_threshold,
                                sptblocksize = sptblocksize, spt_max_gap = spt_max_gap,
                                HASPT.algo = params_sleep[["HASPT.algo"]],
-                               invalid = invalid,
+                               invalid = invalid[qqq1:qqq2], # load only invalid time in the night of interest (i.e., qqq1:qqq2)
+                               HDCZA_threshold = params_sleep[["HDCZA_threshold"]],
                                HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
                                activity = tmpACC)
         } else {
-          spt_estimate = list(SPTE_end = NULL, SPTE_start = NULL, tib.threshold = NULL)
+          spt_estimate = list(SPTE_end = NULL, SPTE_start = NULL, tib.threshold = NULL, part3_guider = NULL)
         }
         if (length(spt_estimate$SPTE_end) != 0 & length(spt_estimate$SPTE_start) != 0) {
           if (spt_estimate$SPTE_end + qqq1 >= qqq2 - (1 * (3600 / ws3))) {
@@ -296,10 +295,9 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                 }
               }
               spt_estimate_tmp = HASPT(angle = tmpANGLE, ws3 = ws3,
-                                       constrain2range = params_sleep[["constrain2range"]],
-                                       perc = perc, spt_threshold = spt_threshold, sptblocksize = sptblocksize,
+                                       sptblocksize = sptblocksize,
                                        spt_max_gap = spt_max_gap,
-                                       HASPT.algo = params_sleep[["HASPT.algo"]], invalid = invalid,
+                                       HASPT.algo = params_sleep[["HASPT.algo"]], invalid = invalid[newqqq1:newqqq2],
                                        HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
                                        activity = tmpACC[newqqq1:newqqq2])
               if (length(spt_estimate_tmp$SPTE_start) > 0) {
@@ -326,9 +324,10 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
             SPTE_start[sptei] = (spt_estimate$SPTE_start / (3600 / ws3)) + 12 + daysleep_offset
           }
           SPTE_end[sptei] = dstime_handling_check(tmpTIME = tmpTIME, spt_estimate = spt_estimate,
-                                              tz = desiredtz, calc_SPTE_end = SPTE_end[sptei],
-                                              calc_SPTE_start = SPTE_start[sptei])
+                                                  tz = desiredtz, calc_SPTE_end = SPTE_end[sptei],
+                                                  calc_SPTE_start = SPTE_start[sptei])
           tib.threshold[sptei] = spt_estimate$tib.threshold
+          part3_guider[sptei] = spt_estimate$part3_guider
         }
       }
       detection.failed = FALSE
@@ -343,5 +342,6 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
   }
   invisible(list(output = metatmp, detection.failed = detection.failed, L5list = L5list,
                  SPTE_end = SPTE_end, SPTE_start = SPTE_start,
-                 tib.threshold = tib.threshold, longitudinal_axis = params_sleep[["longitudinal_axis"]]))
+                 tib.threshold = tib.threshold, longitudinal_axis = params_sleep[["longitudinal_axis"]],
+                 part3_guider = part3_guider))
 }

@@ -115,8 +115,8 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
   # Evaluate with decimal places in seconds
   expect_equal(nrow(D1$data), 20)
   expect_equal(ncol(D1$data), 5)
-  expect_equal(strftime(D1$data$time[1:5], format = '%Y-%m-%d %H:%M:%OS2',
-                        tz = "Europe/London"), 
+  expect_equal(strftime(as.POSIXct(D1$data$time[1:5], tz = "Europe/London", origin = "1970-01-01"),
+                        format = '%Y-%m-%d %H:%M:%OS2', tz = "Europe/London"), 
                c("2022-11-02 13:01:16.00",
                  "2022-11-02 13:01:16.03",
                  "2022-11-02 13:01:16.06",
@@ -138,8 +138,8 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
                       rmc.headername.recordingid = "ID")
   expect_equal(nrow(D2$data), 20)
   expect_equal(ncol(D2$data), 5)
-  expect_equal(strftime(D2$data$time[1:5], format = '%Y-%m-%d %H:%M:%OS2',
-                        tz = "Europe/London"),
+  expect_equal(strftime(as.POSIXct(D2$data$time[1:5], tz = "Europe/London", origin = "1970-01-01"), 
+                        format = '%Y-%m-%d %H:%M:%OS2', tz = "Europe/London"),
                c("2022-11-02 18:01:16.50", "2022-11-02 18:01:16.53",
                  "2022-11-02 18:01:16.56", "2022-11-02 18:01:16.59",
                  "2022-11-02 18:01:16.63"))
@@ -265,7 +265,6 @@ test_that("read.myacc.csv can handle header and bit-value acceleration", {
                       rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                       rmc.origin = "1970-01-01",
                       desiredtz = "Europe/London",
-                      rmc.sf = sf,
                       rmc.headername.sf = "sample_frequency",
                       rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID")
@@ -273,6 +272,8 @@ test_that("read.myacc.csv can handle header and bit-value acceleration", {
   expect_that(ncol(D1$data), equals(5))
   expect_that(nrow(D1$header), equals(5))
   expect_that(ncol(D1$header), equals(1))
+  expect_equal(as.numeric(D1$header["sample_rate",1]), 30)
+  
   # Test 2 - 2 column header, bit-valued acceleration
   D2 = read.myacc.csv(rmc.file = testfile[2], rmc.nrow = 20, rmc.dec = ".",
                       rmc.firstrow.acc = 11, rmc.firstrow.header = 1,
@@ -397,7 +398,7 @@ test_that("read.myacc.csv can handle gaps in time and irregular sample rate", {
                       rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID",
                       rmc.check4timegaps = TRUE, rmc.doresample = TRUE)
-  expect_that(nrow(D2$data), equals(169)) # because data expands with 5 seconds that are now imputed
+  expect_that(nrow(D2$data), equals(170)) # because data expands with 5 seconds that are now imputed
   expect_that(ncol(D2$data), equals(5))
   
   

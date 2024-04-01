@@ -5,7 +5,7 @@ test_that("Different routines of part 1 work properly", {
   
   # 0) Generate data for tests -----------------------------------------
   # Using sf = 8 Hertz because metric zc filters at 4 Hertz 
-  create_test_acc_csv(Nmin = 2 * 1440, sf = 8)
+  create_test_acc_csv(Nmin = 720, sf = 8)
   fn = "123A_testaccfile.csv"
   metadatadir = paste0(getwd(), "/output_test")
   desiredtz = "Europe/London"

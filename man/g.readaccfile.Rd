@@ -12,7 +12,7 @@
   g.readaccfile(filename, blocksize, blocknumber, filequality,
                            ws, PreviousEndPage = 1, inspectfileobject = c(),
                            PreviousLastValue = c(0,0,1), PreviousLastTime = NULL,
-                           params_rawdata = c(), params_general = c(), ...)
+                           params_rawdata = c(), params_general = c(), header = NULL, ...)
 }
 \arguments{
   \item{filename}{
@@ -22,7 +22,7 @@
     Size of blocks (in file pages) to be read
   }
   \item{blocknumber}{
-    Block number relative to start of file
+    Block number relative to start of file, starting with 1.
   }
   \item{filequality}{
     Single row dataframe with columns: filetooshort, filecorrupt,
@@ -50,6 +50,10 @@
   \item{params_general}{
     See \link{g.part1}
   }
+  \item{header}{
+    Header information that was extracted the previous time this file was read,
+    to be re-used instead of being extracted again.
+  }
   \item{...}{
     Any input arguments needed for function \link{read.myacc.csv} if you
     are working with a non-standard csv formatted files. Furter,
@@ -62,8 +66,7 @@
     \item \code{P} Block object extracted from file with format specific to
     accelerometer brand
     \item \code{filequality} Same as in function arguments
-    \item \code{switchoffLD} Boolean to indicate whether it is worth
-    continueing to read the next block of data or not
+    \item \code{isLastBlock} Boolean indicating whether this was the last block to read
     \item \code{endpage} Page number on which blocked ends, this will be
     used as input for argument PreviousEndPage when reading the next block.
   }

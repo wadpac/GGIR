@@ -1,3 +1,75 @@
+# CHANGES IN GGIR VERSION 3.0-9
+
+- Part 5: Temperature (if available) added to time series output #1085.
+
+- Part 5: Fix minor bug in merging night level sleep variables into part 5 report, this does not affect the main part 5 estimates such as time spent in intensity ranges #1086.
+
+- Part 4: Allow handling sleeplog with only one record #1083
+
+- General: simplify installation for typical use cases by moving GGIRread, ActCR and read.gt3x to imports.
+
+# CHANGES IN GGIR VERSION 3.0-8
+
+- Part 1: In the handling of externally derived epoch data, the code and algorithm for nonwear detection is now simplified to better match expected behaviour #1080.
+
+- Part 2: Fixed issue where g.convert.part2.long() was throwing an error when attempting to process data where every day had insufficient number of valid hours #1070.
+
+- Part 5: Fix bug introduced with 3.0-7 causing WW window to not handle well scenario of zero windows #1078.
+
+# CHANGES IN GGIR VERSION 3.0-7
+
+- Part 1:
+
+  - Fix bug introduced with release 3.0-6 affecting the use of external function embedding #1065
+
+  - Need to specify rmc.firstrow.acc when working with ad-hoc csv file format now better documented and read.myacc.csv now produces an error when used directly and user forgets to specify rmc.firstrow.acc #1034.
+
+  - Improve g.calibrate to better handle scenario when no non-movement periods are found in the entire recording #1032
+
+- Part 3: Algorithm HDCZA simplified by replacing time series specific threshold in step 6 of the description in the 2018 paper by a constant threshold that can be set by the user. This means that
+we have a new parameter HDCZA_threshold and parameter constrain2range is now deprecated #1062.
+
+- Part 3: Added option for HSPT.ignore.invalid = NA, which would consider invalid
+time segments as no movement for the Sleep Period Time definition.
+
+- Part 5: Fix bug in MM = timewindow part specific to when first night(s) are not available in part 4 results. #1039.
+
+
+# CHANGES IN GGIR VERSION 3.0-6
+
+- Part 2, 4, 5: Add parameter dec_reports and dec_config to ease tailoring GGIR to non-default UK/US machines #1048.
+
+- Part 2, 4, 5: Force language to "C" (UK/US English) to avoid issues on computer configured differently #1047.
+
+- Part 5: Behaviour parameter includedaycrit.part5 changed for values above 1, these
+are now interpreted as minimum number of valid waking hours during waking horus of a day.
+If you prefer to keep old functionality then divide your old value by 24 #1050.
+
+- Part 1:
+
+  - Improved readability and maintainability of the code #1027
+
+  - Improved processing speed for Axivity .cwa, GENEActiv .bin, and Movisens files
+
+  - Made sure that g.readaccfile() reads timestamps in the correct timezone, configtz, for all monitor types
+
+  - Note: there will be small differences in both metalong and metashort metrics calculated by this GGIR version, compared to prior versions. This is due to small improvements in the management of timestamps, calibration coefficients, and input data block boundaries.
+
+  - Fix handling of ad hoc csv file header in g.inspectfile() #1057
+
+  - Improved g.calibrate to better handle scenario when no non-movement periods are found in the entire recording #1032
+
+  - Improved documentation for the need to specify rmc.firstrow.acc when working with ad-hoc csv file format and read.myacc.csv now produces an error when used directly while user forgets to specify rmc.firstrow.acc #1034.
+
+
+# CHANGES IN GGIR VERSION 3.0-5
+
+- Part 5: Fix bug in functionality for Sensewear data (externally derived epoch data) #1030
+
+- Part 1: For externally derived epoch data in dataFormat actiwatch_csv, actiwatch_awd, actigraph_csv, and sensewear_xls the non-wear detection is no longer done based on a hard-coded 60 minute rolling window but the window length is now modifiable with the third value of argument windowsizes (in seconds) as also used for raw data. #1026
+
+- Part 5: Fix issue with defining days specific to when timewindow is MM, recordings starts at midnight and both first and last days are incomplete #1029
+
 # CHANGES IN GGIR VERSION 3.0-4
 
 - Part 5: Improved handling of inconsistent number of columns in part 5 milestone data #1002

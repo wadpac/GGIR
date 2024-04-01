@@ -113,7 +113,6 @@ find a description and default value for all the arguments.
 | rmc.col.wear                | 1                 | params_rawdata           |
 | rmc.doresample              | 1                 | params_rawdata           |
 | imputeTimegaps              | 1                 | params_rawdata           |
-| selectdaysfile              | 1, 2              | params_cleaning          |
 | dayborder                   | 1, 2, 5           | params_general           |
 | dynrange                    | 1                 | params_rawdata           |
 | configtz                    | 1                 | params_general           |
@@ -148,6 +147,10 @@ find a description and default value for all the arguments.
 | storefolderstructure        | 2, 4, 5           | params_output            |
 | epochvalues2csv             | 2                 | params_output            |
 | do.part2.pdf                | 2                 | params_output            |
+| sep_reports                 | 2, 4, 5           | params_output            |
+| dec_reports                 | 2, 4, 5           | params_output            |
+| sep_config                  | 1, 2, 3, 4, 5     | params_output            |
+| dec_config                  | 1, 2, 3, 4, 5     | params_output            |
 | mvpadur                     | 2                 | params_phyact            |
 | bout.metric                 | 2, 5              | params_phyact            |
 | closedbout                  | 2                 | params_phyact            |
@@ -161,9 +164,9 @@ find a description and default value for all the arguments.
 | qwindow_dateformat          | 2                 | params_247               |
 | anglethreshold              | 3                 | params_sleep             |
 | timethreshold               | 3                 | params_sleep             |
-| acc.metric                  | 3, 5              | params_general           |
 | ignorenonwear               | 3                 | params_sleep             |
-| constrain2range             | 3                 | params_sleep             |
+| HDCZA_threshold             | 3                 | params_sleep             |
+| acc.metric                  | 3, 5              | params_general           |
 | do.part3.pdf                | 3                 | params_output            |
 | sensor.location             | 3, 4              | params_general           |
 | HASPT.algo                  | 3                 | params_sleep             |

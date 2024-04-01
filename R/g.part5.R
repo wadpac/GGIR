@@ -4,7 +4,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                    params_cleaning = c(), params_output = c(),
                    params_general = c(), verbose = TRUE, ...) {
   options(encoding = "UTF-8")
-  Sys.setlocale("LC_TIME", "C") # set language to English
   # This function called by function GGIR
   # and aims to combine all the milestone output from the previous parts
   # in order to facilitate a varierty of analysis on time-use, interactions
@@ -331,7 +330,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               sibreport_fname =  paste0(metadatadir,ms5.sibreport,"/sib_report_", shortendFname, "_",sibDef,".csv")
               if (length(sibreport) > 0) {
                 data.table::fwrite(x = sibreport, file = sibreport_fname, row.names = FALSE,
-                                   sep = params_output[["sep_reports"]])
+                                   sep = params_output[["sep_reports"]],
+                                   dec = params_output[["dec_reports"]])
               }
               # nap/sib/nonwear overlap analysis
               if (length(params_sleep[["nap_model"]]) > 0 & length(sibreport) > 0) {
@@ -437,7 +437,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                           nightsi <= (startend_sleep[length(startend_sleep)] + Nepochsin12Hours)]  # newly added on 25-11-2019
                     }
                     if (timewindowi == "MM") {
-                      Nwindows = length(nightsi) + 1
+                      Nwindows = length(nightsi) + 1  # +1 to include the data after last awakening
                     } else if (timewindowi == "WW") {
                       Nwindows = length(which(diff(ts$diur) == -1))
                     } else if (timewindowi == "OO") {
@@ -452,16 +452,19 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                               epochSize = ws3new)
                       # This will be an object with numeric qwindow values for all individuals and days
                     }
-                    for (wi in 1:Nwindows) { #loop through 7 windows (+1 to include the data after last awakening)
+                    lastDay = ifelse(Nwindows > 0, yes = FALSE, no = TRUE) # skip while loop if there are no days to analyses
+                    wi = 1
+                    while (lastDay == FALSE) { #loop through windows
                       # Define indices of start and end of the day window (e.g. midnight-midnight, or waking-up or wakingup
                       defdays = g.part5.definedays(nightsi, wi, indjump,
                                                    nightsi_bu, epochSize = ws3new, qqq_backup, ts, 
                                                    timewindowi, Nwindows, qwindow = params_247[["qwindow"]],
-                                                   ID = ID)
+                                                   ID = ID, dayborder = params_general[["dayborder"]])
                       qqq = defdays$qqq
                       qqq_backup = defdays$qqq_backup
                       segments = defdays$segments
                       segments_names = defdays$segments_names
+                      lastDay = defdays$lastDay
                       if (length(which(is.na(qqq) == TRUE)) == 0) { #if it is a meaningful day then none of the values in qqq should be NA
                         if ((qqq[2] - qqq[1]) * ws3new > 900) {
                           ts$window[qqq[1]:qqq[2]] = wi
@@ -471,7 +474,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             current_segment_i = si - next_si + 1
                             segStart = segments[[current_segment_i]][1]
                             segEnd = segments[[current_segment_i]][2]
-                            if (si > nrow(dsummary)) dsummary = rbind(dsummary, matrix(data = "", nrow = 1, ncol = ncol(dsummary)))
+                            extraRowsNeeded = max(c(si, di)) - nrow(dsummary)
+                            if (extraRowsNeeded > 0) {
+                              dsummary = rbind(dsummary, matrix(data = "", nrow = extraRowsNeeded, ncol = ncol(dsummary)))
+                            }
                             if (timewindowi == "MM" & si > 1) { # because first segment is always full window
                               if (("segment" %in% colnames(ts)) == FALSE) ts$segment = NA
                               ts$segment[segStart:segEnd] = si
@@ -524,6 +530,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             dsummary = gas$dsummary
                             timeList = gas$timeList
                             doNext = gas$doNext
+                            add_one_day_to_next_date = gas$add_one_day_to_next_date
                             # indexlog
                             qqq = indexlog$winStartEnd
                             si = indexlog$segIndex1
@@ -550,6 +557,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         }
                       }
                       di = di + 1
+                      wi = wi + 1
                     }
                   }
                   if (params_output[["save_ms5rawlevels"]] == TRUE || params_247[["part6HCA"]] == TRUE || params_247[["part6CR"]] == TRUE) {
@@ -557,7 +565,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     if (file.exists(legendfile) == FALSE) {
                       legendtable = data.frame(class_name = Lnames, class_id = 0:(length(Lnames) - 1), stringsAsFactors = FALSE)
                       data.table::fwrite(legendtable, file = legendfile, row.names = FALSE,
-                                         sep = params_output[["sep_reports"]])
+                                         sep = params_output[["sep_reports"]],
+                                         dec = params_output[["dec_reports"]])
                     }
                     # I moved this bit of code to the end, because we want guider to be included (VvH April 2020)
                     rawlevels_fname =  paste0(metadatadir, ms5.outraw, "/", TRLi, "_", TRMi, "_", TRVi, "/",
@@ -579,17 +588,20 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     if (length(angle_col) == 0) {
                       angle_col = NULL
                     }
+                    temperature_col = grep(pattern = "temperature", x = names(ts), value = TRUE)
+                    if (length(temperature_col) == 0) {
+                      temperature_col = NULL
+                    }
                     g.part5.savetimeseries(ts = ts[, c("time", "ACC", "diur", "nonwear",
                                                        "guider", "window", napNonwear_col,
-                                                       lightpeak_col, angle_col)],
+                                                       lightpeak_col, angle_col, temperature_col)],
                                            LEVELS = LEVELS,
                                            desiredtz = params_general[["desiredtz"]],
                                            rawlevels_fname = rawlevels_fname,
-                                           save_ms5raw_format = params_output[["save_ms5raw_format"]],
-                                           save_ms5raw_without_invalid = params_output[["save_ms5raw_without_invalid"]],
                                            DaCleanFile = DaCleanFile,
-                                           includedaycrit.part5 = params_cleaning[["includedaycrit.part5"]], ID = ID,
-                                           sep_reports = params_output[["sep_reports"]],
+                                           includedaycrit.part5 = params_cleaning[["includedaycrit.part5"]],
+                                           ID = ID,
+                                           params_output = params_output,
                                            params_247 = params_247)
                   }
                 }
@@ -670,6 +682,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                 varlist = c(unclass(lsf.str(envir = asNamespace("GGIR"), all = T)),
                                             "MONITOR", "FORMAT"),
                                 envir = as.environment(asNamespace("GGIR")))
+        parallel::clusterEvalQ(cl, Sys.setlocale("LC_TIME", "C"))
         doParallel::registerDoParallel(cl)
       } else {
         # Don't process in parallel if only one core

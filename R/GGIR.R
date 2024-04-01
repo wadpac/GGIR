@@ -3,6 +3,12 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                 do.report = c(2, 4, 5, 6), configfile = c(),
                 myfun = c(), verbose = TRUE,
                 ...) {
+  
+  # Set language to English while using GGIR
+  LC_TIME_backup = Sys.getlocale("LC_TIME")
+  Sys.setlocale("LC_TIME", "C")
+  on.exit({Sys.setlocale("LC_TIME", LC_TIME_backup)}, add = TRUE)
+  
   #get input variables
   input = list(...)
   # Check for duplicated arguments
@@ -173,13 +179,6 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       }
     }
   }
-  
-  if (params_247$cosinor == TRUE) {
-    is_ActCR_installed = is.element('ActCR', installed.packages()[,1])
-    if (is_ActCR_installed == FALSE) {
-      stop("If you want to derive circadian rhythm indicators, please install package: ActCR.", call. = FALSE)
-    }
-  }
   if (1 %in% mode) {
     checkFormat = TRUE
     if (all(dir.exists(datadir)) == TRUE) {
@@ -189,28 +188,16 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     } else {
       checkFormat = FALSE
     }
-    
     if (checkFormat == TRUE) {
-      is_GGIRread_installed = is.element('GGIRread', installed.packages()[,1])
-      is_read.gt3x_installed = is.element('read.gt3x', installed.packages()[,1])
-      # skip this check if GGIRread and read.gt3x are both available
-      if (is_GGIRread_installed == FALSE | is_read.gt3x_installed == FALSE) {
+      is_readxl_installed = is.element('readxl', installed.packages()[,1])
+      if (is_readxl_installed == FALSE) {
         getExt = function(x) {
           tmp = unlist(strsplit(x, "[.]"))
           return(tmp[length(tmp)])
         }
         rawaccfiles_formats = unique(unlist(lapply(rawaccfiles, FUN = getExt)))
-        # axivity (cwa, wav), geneactive (bin), genea (bin):
-        if (any(grepl("cwa|wav|bin", rawaccfiles_formats))) {
-          if (is_GGIRread_installed == FALSE) {
-            stop("If you are working with axivity, geneactiv, or genea files, please install package: GGIRread.", call. = FALSE)
-          }
-        }
-        # actigraph (gt3x)
-        if (any(grepl("gt3x", rawaccfiles_formats))) {
-          if (is_read.gt3x_installed == FALSE) {
-            stop(paste0("If you are working with actigraph files, please install package: read.gt3x.", call. = FALSE))
-          }
+        if (any(grepl("xls", rawaccfiles_formats))) {
+          stop("If you are working with xls data for Sensewear, please install package: readxl.", call. = FALSE)
         }
       }
     }
@@ -347,7 +334,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                           "print_console_header", "configfile_csv", "myfun", "ex",
                           "GGIRversion",  "dupArgValues", "verbose", "is_GGIRread_installed", 
                           "is_read.gt3x_installed", "is_ActCR_installed", 
-                          "is_actilifecounts_installed", "rawaccfiles", 
+                          "is_actilifecounts_installed", "rawaccfiles", "is_readxl_installed", 
                           "checkFormat", "getExt") == FALSE)]
   
   config.parameters = mget(LS)
@@ -355,7 +342,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   config.matrix$context[which(config.matrix$context == "")] = "not applicable"
   if (dir.exists(metadatadir)) {
     data.table::fwrite(config.matrix, file = paste0(metadatadir, "/config.csv"),
-                       row.names = FALSE, sep = params_output[["sep_config"]])
+                       row.names = FALSE, sep = params_output[["sep_config"]],
+                       dec = params_output[["dec_config"]])
   } else {
     warning("\nCould not write config file.")
   }
@@ -380,8 +368,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       }
       g.report.part2(metadatadir = metadatadir, f0 = f0, f1 = f1,
                      maxdur = params_cleaning[["maxdur"]],
-                     store.long = store.long, do.part2.pdf = params_output[["do.part2.pdf"]],
-                     verbose = verbose, sep_reports = params_output[["sep_reports"]])
+                     store.long = store.long, params_output,
+                     verbose = verbose)
     }
   }
   if (length(which(do.report == 4)) > 0) {
@@ -393,10 +381,10 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       if (f1 == 0) f1 = N.files.ms4.out
       g.report.part4(datadir = datadir, metadatadir = metadatadir, f0 = f0, f1 = f1,
                      loglocation = params_sleep[["loglocation"]],
-                     storefolderstructure = params_output[["storefolderstructure"]],
                      data_cleaning_file = params_cleaning[["data_cleaning_file"]],
                      sleepwindowType = params_sleep[["sleepwindowType"]],
-                     verbose = verbose, sep_reports = params_output[["sep_reports"]])
+                     params_output = params_output,
+                     verbose = verbose)
     }
   }
   if (length(which(do.report == 5)) > 0) {
@@ -409,10 +397,9 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       g.report.part5(metadatadir = metadatadir, f0 = f0, f1 = f1,
                      loglocation = params_sleep[["loglocation"]],
                      params_cleaning = params_cleaning,
-                     week_weekend_aggregate.part5 = params_output[["week_weekend_aggregate.part5"]],
-                     LUX_day_segments = params_247[["LUX_day_segments"]],
-                     verbose = verbose, sep_reports = params_output[["sep_reports"]])
-      g.report.part5_dictionary(metadatadir = metadatadir, sep_reports = params_output[["sep_reports"]])
+                     LUX_day_segments = params_247[["LUX_day_segments"]], params_output = params_output,
+                     verbose = verbose)
+      g.report.part5_dictionary(metadatadir = metadatadir, params_output = params_output)
     }
   }
   if (length(which(do.report == 6)) > 0) {
@@ -423,8 +410,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       if (N.files.ms6.out < f1) f1 = N.files.ms6.out
       if (f1 == 0) f1 = N.files.ms6.out
       g.report.part6(metadatadir = metadatadir, f0 = f0, f1 = f1,
-                     params_cleaning = params_cleaning,
-                     verbose = verbose, sep_reports = params_output[["sep_reports"]])
+                     params_cleaning = params_cleaning, params_output = params_output,
+                     verbose = verbose)
     }
   }
   if (params_output[["visualreport"]] == TRUE) {
