@@ -1,6 +1,6 @@
 library(GGIR)
 context("Part 1 function")
-test_that("Different routines of part 1 work properly", {
+test_that("Metrics generation works properly", {
   skip_on_cran()
   
   # 0) Generate data for tests -----------------------------------------
@@ -30,14 +30,6 @@ test_that("Different routines of part 1 work properly", {
                 outputtype = "numeric", #"numeric" (averaging is possible), "category" (majority vote)
                 aggfunction = mean,
                 timestamp = as.numeric(Sys.time())) # for unit test only
-  
-  # create selectdaysfile
-  SDF = matrix("", 1, 3)
-  SDF[1, 1] = "MOS2D12345678"
-  SDF[1, 2:3] =  c("23-05-2016", "24-05-2016")
-  colnames(SDF) = c("Monitor", "Day1", "Day2")
-  selectdaysfile = "selectdaysfile.csv"
-  write.csv(SDF, file = selectdaysfile)
   
   # run part 1
   g.part1(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1, overwrite = TRUE, desiredtz = desiredtz,
@@ -74,10 +66,12 @@ test_that("Different routines of part 1 work properly", {
   expect_equal(round(mean(M$metashort$roll_med_acc_z, na.rm = T), 3),  0.025)
   expect_equal(round(mean(M$metashort$dev_roll_med_acc_x, na.rm = T), 3),  0.016)
   expect_equal(round(mean(M$metashort$ENMOa, na.rm = T), 3),  0.054)
-  
-  # 2) Detect nonwear and clipping ------------------
+})
+
+test_that("Nonwear and clipping detection", {
+  skip_on_cran()
   # new data
-  create_test_acc_csv(Nmin = 2*1440, sf = 3)
+  create_test_acc_csv(Nmin = 2*1440, sf = 3, starts_at_midnight = TRUE)
   fn = "123A_testaccfile.csv"
   metadatadir = paste0(getwd(), "/output_test")
   desiredtz = "Europe/London"
@@ -111,9 +105,44 @@ test_that("Different routines of part 1 work properly", {
   
   # Expect six ws2 windows with some clipping (values over 1.7 in this test)
   expect_equal(CW, 6)
- 
-  # end ----------
+})
+
+test_that("Test recordings that start at midnight and recording sleep hour work properly", {
+  skip_on_cran()
+  fn = "123A_testaccfile.csv"
+  create_test_sleeplog_csv(advanced = FALSE)
+  sleeplog_fn = "testsleeplogfile.csv"
+  dn = "output_test"
+  if (file.exists(dn)) unlink(dn, recursive = TRUE)
+  minimumFileSizeMB = 0
+  #--------------------------------------------
+  # run GGIR
+  GGIR(datadir = fn, outputdir = getwd(), studyname = "test",
+       verbose = FALSE, desiredtz = "Europe/London",
+       loglocation = sleeplog_fn, colid = 1, coln1 = 2, 
+       nnights = 7, timewindow = "MM")
+  #--------------------------------------------
+  # part 1 milestone data starts at midnight
+  expect_true(dir.exists(dn))
+  rn = dir("output_test/meta/basic/",full.names = TRUE)
+  load(rn[1])
+  expect_true(grepl("T00:00:00", M$metashort$timestamp[1]))
+  expect_true(grepl("T00:00:00", M$metalong$timestamp[1]))
+  #-------------------------
+  # part 2 data contains 2 complete days
+  rn = "output_test/results/part2_daysummary.csv"
+  out2 = read.csv(rn)
+  expect_equal(nrow(out2), 2)
+  expect_true(all(out2$N.hours == 24))
+  
+  #--------------------------------------------
+  # part 5 data contains 2 complete days
+  rn = "output_test/results/part5_daysummary_MM_L40M100V400_T5A5.csv"
+  out5 = read.csv(rn)
+  expect_equal(nrow(out5), 2)
+  expect_true(all(out5$dur_day_spt_min == 1440))
+  
+  if (dir.exists(dn))  unlink(dn, recursive = TRUE)
+  if (file.exists(sleeplog_fn)) file.remove(sleeplog_fn)
   if (file.exists(fn)) file.remove(fn)
-  if (file.exists(selectdaysfile)) file.remove(selectdaysfile)
-  if (dir.exists("output_test"))  unlink("output_test", recursive = TRUE)
 })
