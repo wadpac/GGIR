@@ -10,7 +10,7 @@
 \usage{
    create_part1_meta(desired_outputdir = "output_test",
                      Ndays = 2, windowsizes = c(5, 900, 3600),
-                     lux = FALSE)
+                     lux = FALSE, start_time = NULL)
 }
 \arguments{
   \item{desired_outputdir}{

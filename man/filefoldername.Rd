@@ -1,5 +1,5 @@
 \name{filefoldername}
-\alias{data.filefoldername}
+\alias{filefoldername}
 \docType{data}
 \title{
 Example output from g.part1
