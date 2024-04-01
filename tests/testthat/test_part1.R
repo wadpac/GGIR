@@ -5,7 +5,7 @@ test_that("Different routines of part 1 work properly", {
   
   # 0) Generate data for tests -----------------------------------------
   # Using sf = 8 Hertz because metric zc filters at 4 Hertz 
-  create_test_acc_csv(Nmin = 720, sf = 8)
+  create_test_acc_csv(Nmin = 2*60, sf = 8)
   fn = "123A_testaccfile.csv"
   metadatadir = paste0(getwd(), "/output_test")
   desiredtz = "Europe/London"
@@ -41,7 +41,7 @@ test_that("Different routines of part 1 work properly", {
   
   # run part 1
   g.part1(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1, overwrite = TRUE, desiredtz = desiredtz,
-          do.cal = FALSE, windowsizes = c(60,3600,3600),
+          do.cal = FALSE, windowsizes = c(60,1800,1800),
           # We are not doing all the metrics, because Travis-CI cannot allocate enough memory
           myfun = myfun, do.anglex = TRUE, do.angley = TRUE,
           do.en = TRUE, do.enmo = TRUE,do.lfenmo = TRUE,
@@ -58,36 +58,45 @@ test_that("Different routines of part 1 work properly", {
   rn = dir("output_test/meta/basic/",full.names = TRUE)
   load(rn[1])
   expect_equal(ncol(M$metashort), 29)
-  expect_true(nrow(M$metashort) == 2820)
-  expect_equal(mean(M$metashort$B, na.rm = T), 24.673, tolerance = 3)
-  expect_equal(mean(M$metashort$C, na.rm = T), -6.642, tolerance = 3)
-  expect_equal(mean(M$metashort$BFEN),  0.0458, tolerance = 4)
-  expect_equal(mean(M$metashort$LFENMO),  0.0447, tolerance = 4)
-  expect_equal(mean(M$metashort$HFENplus),  0.0914, tolerance = 4)
-  expect_equal(mean(M$metashort$MAD),  0.0073, tolerance = 4)
-  expect_equal(mean(M$metashort$anglex),  57.4683, tolerance = 4)
-  expect_equal(mean(M$metashort$anglez),  0.3522, tolerance = 4)
-  expect_equal(mean(M$metashort$ZCX),  14.94, tolerance = 2)
-  expect_equal(mean(M$metashort$EN, na.rm = T), 1.029, tolerance = 3)
-  expect_equal(mean(M$metashort$angley, na.rm = T), 0.765, tolerance = 3)
-  expect_equal(mean(M$metashort$roll_med_acc_x, na.rm = T), 0.729, tolerance = 3)
-  expect_equal(mean(M$metashort$roll_med_acc_z, na.rm = T), 0.007, tolerance = 3)
-  expect_equal(mean(M$metashort$dev_roll_med_acc_x, na.rm = T), 0.007, tolerance = 3)
-  expect_equal(mean(M$metashort$ENMOa, na.rm = T), 0.03, tolerance = 3)
+  expect_true(nrow(M$metashort) == 90)
+  expect_equal(round(mean(M$metashort$B, na.rm = T), 3), 34.964)
+  expect_equal(round(mean(M$metashort$C, na.rm = T), 3), 24.856)
+  expect_equal(round(mean(M$metashort$BFEN, na.rm = T), 3),  0.107)
+  expect_equal(round(mean(M$metashort$LFENMO, na.rm = T), 3),  0.052)
+  expect_equal(round(mean(M$metashort$HFENplus, na.rm = T), 3),  0.168)
+  expect_equal(round(mean(M$metashort$MAD, na.rm = T), 3),  0.017)
+  expect_equal(round(mean(M$metashort$anglex, na.rm = T), 3),  87.347)
+  expect_equal(round(mean(M$metashort$anglez, na.rm = T), 3),  1.360)
+  expect_equal(round(mean(M$metashort$ZCX, na.rm = T), 3),  163.178)
+  expect_equal(round(mean(M$metashort$EN, na.rm = T), 3),  1.054)
+  expect_equal(round(mean(M$metashort$angley, na.rm = T), 3),  1.916)
+  expect_equal(round(mean(M$metashort$roll_med_acc_x, na.rm = T), 3),  1.045)
+  expect_equal(round(mean(M$metashort$roll_med_acc_z, na.rm = T), 3),  0.025)
+  expect_equal(round(mean(M$metashort$dev_roll_med_acc_x, na.rm = T), 3),  0.016)
+  expect_equal(round(mean(M$metashort$ENMOa, na.rm = T), 3),  0.054)
   
   # 2) Detect nonwear and clipping ------------------
+  # new data
+  create_test_acc_csv(Nmin = 2*1440, sf = 3)
+  fn = "123A_testaccfile.csv"
+  metadatadir = paste0(getwd(), "/output_test")
+  desiredtz = "Europe/London"
+  dn = "output_test"
+  if (file.exists(dn))  unlink(dn, recursive = TRUE)
+  
   data = as.matrix(read.csv(fn, skip = 10))
+  colnames(data) = c("x", "y", "z")
   
   # 2013 algorithm ------
   # clipthres to 1.7 to test the clipping detection
   NWCW = detect_nonwear_clipping(data = data, nonwear_approach = "2013", 
-                                 sf = 8, clipthres = 1.7)
+                                 sf = 3, clipthres = 1.7)
   CW = NWCW$CWav; NW = NWCW$NWav
   NW_rle_2013 = rle(NW)
   CW = sum(NWCW$CWav > 0)
   
   # 2023 algorithm ------
-  NWCW = detect_nonwear_clipping(data = data, nonwear_approach = "2023", sf = 8)
+  NWCW = detect_nonwear_clipping(data = data, nonwear_approach = "2023", sf = 3)
   NW = NWCW$NWav
   NW_rle_2023 = rle(NW)
   # tests ----------------
