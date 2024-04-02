@@ -1,7 +1,7 @@
 create_test_sleeplog_csv = function(Nnights = 7,
                                     storagelocation = c(),
                                     advanced = FALSE, sep = ",",
-                                    missingOnset = FALSE, missingWake = FALSE) {
+                                    missingOnset1 = FALSE, missingWake1 = FALSE) {
   
   # function to create a test sleeplog file needed for testing GGIR
   # Nnights is the number of nights the sleeplog has
@@ -16,8 +16,8 @@ create_test_sleeplog_csv = function(Nnights = 7,
       # let's add one night where the person slept untill the afternoon
       sleeplog[, 4:5] = c("03:00:00", "17:00:00") 
     }
-    if (missingOnset == TRUE) sleeplog[, 2] = ""
-    if (missingWake == TRUE) sleeplog[, 3] = ""
+    if (missingOnset1 == TRUE) sleeplog[, 2] = ""
+    if (missingWake1 == TRUE) sleeplog[, 3] = ""
     colnames(sleeplog) = c("ID",rep(c("onset","wakeup"),Nnights))
     write.table(
       sleeplog,
@@ -54,8 +54,8 @@ create_test_sleeplog_csv = function(Nnights = 7,
                                                                x = times)
       }
       if (di == 1) {
-        if (missingOnset == TRUE) times2[1] = ""
-        if (missingWake == TRUE) times2[2] = ""
+        if (missingOnset1 == TRUE) times2[1] = ""
+        if (missingWake1 == TRUE) times2[2] = ""
       }
       log = c(log, as.character(dates[di]), times2)
       names = c(names, c(paste0("D",di,"_date"),paste0("D",di, Cnames)))

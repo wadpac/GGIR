@@ -9,8 +9,8 @@
 }
 \usage{
   create_test_sleeplog_csv(Nnights = 7, storagelocation = c(),
-                            advanced = FALSE, sep = ",", missingOnset = FALSE,
-                            missingWake = FALSE)
+                            advanced = FALSE, sep = ",", missingOnset1 = FALSE,
+                            missingWake1 = FALSE)
 }
 \arguments{
   \item{Nnights}{
@@ -28,10 +28,10 @@
   \item{sep}{
     Character to indicate the column separator of the csv file.
   }
-  \item{missingOnset}{
+  \item{missingOnset1}{
     Boolean to indicate whether the first onset should be missing.
   }
-  \item{missingWake}{
+  \item{missingWake1}{
     Boolean to indicate whether the first wake should be missing.
   }
 }

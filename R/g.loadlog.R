@@ -295,7 +295,8 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
   #------------------------------------------------------
   # Optionally impute missing values
   if (impute_sleeplog_onsetwake == TRUE) {
-    # Note that this imputation assumes that time runs continuous across midnight
+    # Note that this imputation assumes that time is expressed on a 
+    # scale that runs continuous across midnight as in 3am is 27
     id_onset_missing = sleeplog$ID[which(sleeplog$sleeponset == "")]
     id_wake_missing = sleeplog$ID[which(sleeplog$sleepwake == "")]
     imputeTime = function(Col_Time) {

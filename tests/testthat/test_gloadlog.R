@@ -59,7 +59,7 @@ test_that("gloadlog is able to load different log formats", {
   # Imputation of sleeplog data
   
   # Test imputation for basic sleeplog with only onset missing for first night:
-  create_test_sleeplog_csv(Nnights = 7, advanced = FALSE, sep = ",", missingOnset = TRUE)
+  create_test_sleeplog_csv(Nnights = 7, advanced = FALSE, sep = ",", missingOnset1 = TRUE)
   fn = "testsleeplogfile.csv"
   expect_true(file.exists(fn))
   rec_starttime = format(as.POSIXct("2016-06-25 20:20:20"), "%Y-%m-%dT%H:%M:%S%z")
@@ -78,7 +78,7 @@ test_that("gloadlog is able to load different log formats", {
   
   # Test imputation for basic sleeplog with both onset and wake missing for first night:
   create_test_sleeplog_csv(Nnights = 7, advanced = FALSE, sep = ",",
-                           missingOnset = TRUE,  missingWake = TRUE)
+                           missingOnset1 = TRUE,  missingWake1 = TRUE)
   fn = "testsleeplogfile.csv"
   expect_true(file.exists(fn))
   rec_starttime = format(as.POSIXct("2016-06-25 20:20:20"), "%Y-%m-%dT%H:%M:%S%z")
@@ -98,7 +98,7 @@ test_that("gloadlog is able to load different log formats", {
   
   # Test imputation for advanced sleeplog with both onset and wake missing for first night::
   create_test_sleeplog_csv(Nnights = 7, advanced = TRUE, sep = ",",
-                           missingOnset = TRUE, missingWake = TRUE)
+                           missingOnset1 = TRUE, missingWake1 = TRUE)
   fn = "testsleeplogfile.csv"
   expect_true(file.exists(fn))
   rec_starttime = format(as.POSIXct("2016-06-25 20:20:20"), "%Y-%m-%dT%H:%M:%S%z")
