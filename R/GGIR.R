@@ -334,7 +334,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                           "print_console_header", "configfile_csv", "myfun", "ex",
                           "GGIRversion",  "dupArgValues", "verbose", "is_GGIRread_installed", 
                           "is_read.gt3x_installed", "is_ActCR_installed", 
-                          "is_actilifecounts_installed", "rawaccfiles", 
+                          "is_actilifecounts_installed", "rawaccfiles", "is_readxl_installed", 
                           "checkFormat", "getExt") == FALSE)]
   
   config.parameters = mget(LS)
