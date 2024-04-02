@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.0-10
+
+- Part 1: Improve handling of failure to extract sampling frequency from gt3x file #1098
+
 # CHANGES IN GGIR VERSION 3.0-9
 
 - Part 5: Temperature (if available) added to time series output #1085.
