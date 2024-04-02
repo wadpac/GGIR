@@ -1218,7 +1218,8 @@ GGIR(mode = 1:5,
       \item{impute_sleeplog_onsetwake}{
         Boolean (default = FALSE).
         To indicate whether missing sleeplog entries for onset or wake
-        should be imputed by the median of the other available times.
+        should be imputed by the median of the other available times. This works for both
+        basic and advanced sleeplog.
       }
     }
   }
