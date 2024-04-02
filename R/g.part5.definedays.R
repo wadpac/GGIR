@@ -5,15 +5,26 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
   Nts = nrow(ts)
   lastDay = FALSE
   # define local functions ----
-  qwindow2timestamp = function(qwindow) {
-    H = floor(qwindow)
-    M = floor((qwindow - H) * 60)
-    S = floor((qwindow - H - M/60) * 60 * 60)
-    H = as.character(H); M = as.character(M); S = as.character(S)
-    H = ifelse(nchar(H) == 1, paste0("0", H), H)
-    M = ifelse(nchar(M) == 1, paste0("0", M), M)
-    S = ifelse(nchar(S) == 1, paste0("0", S), S)
-    HMS = paste(H, M, S, sep = ":")
+  qwindow2timestamp = function(qwindow, epochSize) {
+    hour = floor(qwindow)
+    minute = floor((qwindow - hour) * 60)
+    second = floor((qwindow - hour - minute/60) * 60 * 60)
+    expected_seconds = seq(0, 60, by = epochSize)
+    seconds_tobe_revised = which(!second %in% expected_seconds)
+    if (length(seconds_tobe_revised) > 0) {
+      for (si in seconds_tobe_revised) {
+        second[si] = expected_seconds[which.min(abs(expected_seconds - second[si]))]
+        if (second[si] == 60) { # shift minute if second == 60
+          minute[si] = minute[si] + 1
+          second[si] = 0
+        }
+      }
+    }
+    hour = as.character(hour); minute = as.character(minute); second = as.character(second)
+    hour = ifelse(nchar(hour) == 1, paste0("0", hour), hour)
+    minute = ifelse(nchar(minute) == 1, paste0("0", minute), minute)
+    second = ifelse(nchar(second) == 1, paste0("0", second), second)
+    HMS = paste(hour, minute, second, sep = ":")
     if (HMS[1] != "00:00:00") HMS = c("00:00:00", HMS)
     return(HMS)
   }
@@ -74,7 +85,7 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
         if (qwindow[1] != 0) qwindow = c(0, qwindow)
         if (qwindow[length(qwindow)] != 24) qwindow = c(qwindow, 24)
       }
-      breaks = qwindow2timestamp(qwindow)
+      breaks = qwindow2timestamp(qwindow, epochSize)
       if (24 %in% qwindow) {
         # 24:00:00: probably does not exist, replace by last timestamp in a day
         latest_time_in_day = max(format(ts$time[1:pmin(Nts, NepochPerDay)], format = "%H:%M:%S"))
