@@ -2,6 +2,10 @@
 
 - Part 1: Improve handling of failure to extract sampling frequency from gt3x file #1098
 
+- Part 2 and 5: qwindow functionality enhanced to also consider fractions of minutes, #1093
+
+- Part 2 and 5: Fix minor bug in activity diary loading when date format is %Y-%m-%d, #1090
+
 # CHANGES IN GGIR VERSION 3.0-9
 
 - Part 5: Temperature (if available) added to time series output #1085.
