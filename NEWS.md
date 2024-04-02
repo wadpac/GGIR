@@ -1,5 +1,8 @@
 # CHANGES IN GGIR VERSION 3.0-10
 
+- Part 4: Fixes issue #1095 introduced in 3.0-7 that causes GGIR part 4 to stop when processing
+data without non-default sleep algorithms.
+
 - Part 2 and 5: qwindow functionality enhanced to also consider fractions of minutes, #1093
 
 - Part 2 and 5: Fix minor bug in activity diary loading when date format is %Y-%m-%d, #1090
