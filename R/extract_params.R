@@ -72,7 +72,7 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
           } else if (numi == FALSE & logi == FALSE) {
             if (length(config[ci,2]) > 0 & !is.na(config[ci,2])) {
               if (config[ci,2] == 'c()') {
-                if (config[ci,1] == "def.no.sleep") def.no.sleep = c()
+                if (config[ci,1] == "def.noc.sleep") def.noc.sleep = c()
                 if (config[ci,1] == "backup.cal.coef") backup.cal.coef = c()
                 # Note that we do not re-assign the c(), because they are the default for most arguments that
                 # can hold a c() anyway. def.noc.sleep is the only exception.
@@ -109,7 +109,7 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
                               "do.sgAngley", "do.sgAnglez", "frag.classes.spt", "i",
                               "isna", "tmp", "vecchar", "dupi", "GGIRread_version",
                               "closedbout", "bout.metric", "sleeplogidnum", "LC_TIME_backup",
-                              "constrain2range")
+                              "constrain2range", "is_readxl_installed")
           # Find argument in the various parameter objects
           if (newValue[1] != "notfound" & varName %in% ArgNames2Ignore == FALSE) {
             if (varName %in% names(params_general)) {
