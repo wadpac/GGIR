@@ -289,6 +289,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
               defaultSptWake = 31
               warning("Guider not identified in ID ", accid, ", falling back on 9pm-7am window", call. = FALSE)
             }
+            defaultGuider = guider
           } else if ((length(params_sleep[["def.noc.sleep"]]) == 1 ||
                       length(params_sleep[["loglocation"]]) != 0) &&
                      length(SPTE_start) != 0) {
@@ -326,7 +327,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             # use constant onset and waking time as specified with def.noc.sleep argument
             defaultSptOnset = params_sleep[["def.noc.sleep"]][1]  #onset
             defaultSptWake = params_sleep[["def.noc.sleep"]][2]  #wake
-            guider = "setwindow"
+            defaultGuider = guider = "setwindow"
           }
           if (defaultSptOnset >= 24) {
             defaultSptOnset = defaultSptOnset - 24
