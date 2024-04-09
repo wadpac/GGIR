@@ -178,6 +178,8 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
         if (i == 1 | i == f0) {
           QCout = QC
         } else {
+          # fill up missing columns with NA
+          QC[setdiff(names(QCout), names(QC))] <- NA
           QCout = rbind(QCout, QC)
         }
         next()

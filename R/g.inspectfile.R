@@ -275,9 +275,8 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       sf = as.numeric(H[which(H[,1] == "Sample Rate"), 2])
     }
   }
-
-  if (sf == 0) {
-    stop(paste0("\nSample frequency not recognised in ", datafile), call. = FALSE)
+  if (is.null(sf) || sf == 0) {
+    warning(paste0("\nSample frequency not recognised in ", basename(datafile)), call. = FALSE)
   }
 
   if (dformat != FORMAT$AD_HOC_CSV && is.null(sf) == FALSE) {
@@ -331,14 +330,16 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       }
     }
   } 
-
-  # detect dot or comma separator in the data file
-  op <- options(warn = -1) # turn off warnings
-  on.exit(options(op))
-  suppressWarnings(expr = {decn = g.dotorcomma(datafile, dformat, mon,
-                                               rmc.dec = params_rawdata[["rmc.dec"]])})
-  options(warn = 0) # turn on warnings
-
+  if (!is.null(sf)) {
+    # detect dot or comma separator in the data file
+    op <- options(warn = -1) # turn off warnings
+    on.exit(options(op))
+    suppressWarnings(expr = {decn = g.dotorcomma(datafile, dformat, mon,
+                                                 rmc.dec = params_rawdata[["rmc.dec"]])})
+    options(warn = 0) # turn on warnings
+  } else {
+    decn = "."
+  }
   monc = mon
   monn = ifelse(mon > 0, monnames[mon], "unknown")
   dformc = dformat
