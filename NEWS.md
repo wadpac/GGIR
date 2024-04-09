@@ -2,6 +2,9 @@
 
 - Part 1: Change default for parameter minloadcrit to 168, see #1101.
 
+- Part 1-6: GGIR version now store in each milestone data file to ease tracing back
+what release was used for each GGIR part, see #1101.
+
 - Part 4: Fixes issue #1095 introduced in 3.0-7 that causes GGIR part 4 to stop when processing
 data without non-default sleep algorithms.
 

@@ -1083,7 +1083,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           nightsummary = nightsummary[, which(colnames(nightsummary) %in% c("sleeplatency", "sleepefficiency") ==
                                                 FALSE)]
         }
-        save(nightsummary, tail_expansion_log, file = paste0(metadatadir, ms4.out, "/", fnames[i]))
+        GGIRversion = utils::packageVersion("GGIR")
+        save(nightsummary, tail_expansion_log, GGIRversion, file = paste0(metadatadir, ms4.out, "/", fnames[i]))
       }
     }
   }  #end of loop through acc files
