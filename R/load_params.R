@@ -48,7 +48,7 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
   }
   if ("rawdata" %in% topic) {
     params_rawdata = list(
-      chunksize = 1, spherecrit = 0.3, minloadcrit = 72, printsummary = FALSE,
+      chunksize = 1, spherecrit = 0.3, minloadcrit = 168, printsummary = FALSE,
       do.cal = TRUE, backup.cal.coef = "retrieve", dynrange = c(),
       minimumFileSizeMB = 2, rmc.dec = ".",
       rmc.firstrow.acc = c(), rmc.firstrow.header = c(),

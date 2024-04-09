@@ -319,9 +319,10 @@ GGIR(mode = 1:5,
       \item{minimumFileSizeMB}{
         Numeric (default = 2).
         Minimum File size in MB required to enter processing.
-        This argument can help to avoid having short uninformative files to enter the analyses.
-        Given that a typical accelerometer collects several MBs per hour,
-        the default setting should only skip the very tiny files.}
+        This argument can help to avoid having short uninformative 
+        files to enter the analyses. Given that a typical accelerometer 
+        collects several MBs per hour, the default setting should only skip 
+        the very tiny files.}
 
       \item{do.cal}{
         Boolean (default = TRUE).
@@ -340,15 +341,17 @@ GGIR(mode = 1:5,
         for each axis. Used to judge whether the sphere is sufficiently populated}
 
       \item{minloadcrit}{
-        Numeric (default = 72).
+        Numeric (default = 168).
         The minimum number of hours the code needs to read for the
-        autocalibration procedure to be effective (only sensitive to multitudes of 12 hrs,
-        other values will be ceiled). After loading these hours only extra data is loaded
-        if calibration error has not been reduced to under 0.01 g.}
+        autocalibration procedure to be effective (only sensitive to
+        multitudes of 12 hrs, other values will be ceiled).
+        After loading these hours only extra data is loaded if 
+        calibration error has not been reduced to under 0.01 g.}
 
       \item{printsummary}{
         Boolean (default = FALSE).
-        If TRUE will print a summary of the calibration procedure in the console when done.}
+        If TRUE will print a summary of the calibration procedure in
+        the console when done.}
 
       \item{chunksize}{
         Numeric (default = 1).

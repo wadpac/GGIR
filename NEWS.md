@@ -1,5 +1,7 @@
 # CHANGES IN GGIR VERSION 3.0-10
 
+- Part 1: Change default for parameter minloadcrit to 168, see #1101.
+
 - Part 4: Fixes issue #1095 introduced in 3.0-7 that causes GGIR part 4 to stop when processing
 data without non-default sleep algorithms.
 
