@@ -763,26 +763,38 @@ GGIR(mode = 1:5,
 
       \item{do.imp}{
         Boolean (default = TRUE).
-        Whether to impute missing values (e.g., suspected of monitor non-wear or clippling)
-        or not by \link{g.impute} in GGIR \link{g.part2}. Recommended setting is TRUE.}
+        Whether to impute missing values (e.g., suspected of monitor non-wear 
+        or clippling) or not by \link{g.impute} in GGIR \link{g.part2}.
+        Recommended setting is TRUE.}
 
       \item{TimeSegments2ZeroFile}{
-        Data frame (default = NULL).
-        Optional data.frame to specify which time segments need to be ignored for the imputation,
-        and acceleration metrics to be imputed by zeros. The data.frame is expected
-        to contain two columns named windowstart and windowend, with the start- and end
-        time of the time segment in POSIXlt class.}
+        Character (default = NULL).
+        Functionality developed in 2019, with hindsight not generic enough and 
+        possibly in need for revision. For now this parameter takes a csv file 
+        with columns windowstart and windowend to refer to the start and end time 
+        of a time window in format 2024-10-12 20:00:00, and filename of the GGIR
+        milestone data without the "meta_" segment of the name. GGIR uses this 
+        to set all acceleration values to zero and the non-wear classification 
+        to zero (sensor worn). The idea behind it is that nights when the 
+        accelerometer is not worn are automatically labelled as invalid, while
+        user may like to treat them as zero movement. Unfortunately, this 
+        functionality was not implemented with generic use in mind. Please contact
+        GGIR maintainers if you would like us to invest time in improving this 
+        functionality.
+        }
 
       \item{data_cleaning_file}{
         Character (default = NULL).
         Optional path to a csv file you create that holds four columns:
         ID, day_part5, relyonguider_part4, and night_part4. ID should hold the
         participant ID. Columns day_part5 and night_part4 allow you to specify which
-        day(s) and night(s) need to be excluded from \link{g.part5} and \link{g.part4}, respectively.
-        When including multiple day(s)/night(s) create a new line for each day/night.
-        So, this will be done regardless of whether the rest of GGIR thinks those day(s)/night(s)
-        are valid. Column relyonguider_part4 allows you to specify for which nights
-        \link{g.part4} should fully rely on the guider. See also package vignette.}
+        day(s) and night(s) need to be excluded from \link{g.part5} and 
+        \link{g.part4}, respectively. When including multiple day(s)/night(s) 
+        create a new line for each day/night.
+        So, this will be done regardless of whether the rest of GGIR thinks 
+        those day(s)/night(s) are valid. Column relyonguider_part4 allows you 
+        to specify for which nights \link{g.part4} should fully rely on the
+        guider. See also package vignette.}
 
       \item{excludefirstlast.part5}{
         Boolean (default = FALSE).
