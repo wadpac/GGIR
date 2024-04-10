@@ -960,7 +960,7 @@ GGIR(mode = 1:5,
       \item{mvpathreshold}{
         Numeric (default = 100).
         Acceleration threshold for MVPA estimation in GGIR \link{g.part2}.
-        This can be a single number or an array of numbers,
+        This can be a single number or an vector of numbers,
         e.g., \code{mvpathreshold = c(100, 120)}.
         In the latter case the code will estimate MVPA separately for each threshold.
         If this variable is left blank, e.g., \code{mvpathreshold = c()}, then
@@ -978,7 +978,7 @@ GGIR(mode = 1:5,
       \item{threshold.lig}{
         Numeric (default = 40).
         In \link{g.part5}: Threshold for light physical activity to
-        separate inactivity from light. Value can be one number or an array of multiple
+        separate inactivity from light. Value can be one number or an vector of multiple
         numbers, e.g., \code{threshold.lig =c(30,40)}. If multiple numbers are entered then
         analysis will be repeated for each combination of threshold values. Threshold is
         applied to the first metric in the milestone data, so if you have only specified
@@ -987,7 +987,7 @@ GGIR(mode = 1:5,
       \item{threshold.mod}{
         Numeric (default = 100).
         In \link{g.part5}: Threshold for moderate physical activity
-        to separate light from moderate. Value can be one number or an array of
+        to separate light from moderate. Value can be one number or an vector of
         multiple numbers, e.g., \code{threshold.mod = c(100, 120)}.
         If multiple numbers are entered then analysis will be repeated for each
         combination of threshold values. Threshold is applied to the first metric in the
@@ -997,7 +997,7 @@ GGIR(mode = 1:5,
       \item{threshold.vig}{
         Numeric (default = 400).
         In \link{g.part5}: Threshold for vigorous physical activity
-        to separate moderate from vigorous. Value can be one number or an array of
+        to separate moderate from vigorous. Value can be one number or an vector of
         multiple numbers, e.g., \code{threshold.vig =c(400,500)}. If multiple numbers are
         entered then analysis will be repeated for each combination of threshold values.
         Threshold is applied to the first metric in the milestone data, so if you
@@ -1284,7 +1284,7 @@ GGIR(mode = 1:5,
 
       \item{qlevels}{
         Numeric (default = NULL).
-        Array of percentiles for which value needs to be extracted. These need to 
+        Vector of percentiles for which value needs to be extracted. These need to 
         be expressed as a fraction of 1, e.g., c(0.1, 0.5, 0.75). There is no limit 
         to the number of percentiles. If left empty then percentiles will not be extracted. 
         Distribution will be derived from short epoch metric data. Argument qlevels 
