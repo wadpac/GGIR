@@ -1,8 +1,8 @@
 # CHANGES IN GGIR VERSION 3.0-10
 
-- Part 1: Change default for parameter minloadcrit to 168, see #1101.
+- Part 1: Change default for parameter minloadcrit to 168 hours, see #1101.
 
-- Part 1-6: GGIR version now store in each milestone data file to ease tracing back
+- Part 1-6: GGIR release number now stored in each milestone data file to ease tracing
 what release was used for each GGIR part, see #1101.
 
 - Part 1: Improve handling of failure to extract sampling frequency from gt3x file #1098
