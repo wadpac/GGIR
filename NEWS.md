@@ -2,8 +2,8 @@
 
 - Part 1: Change default for parameter minloadcrit to 168 hours, see #1101.
 
-- Part 1-6: GGIR release number now stored in each milestone data file to ease tracing
-what release was used for each GGIR part, see #1101.
+- Part 1-6: GGIR release number now stored in each milestone data file and in each
+reports to ease tracing what release was used per recording and per GGIR part, see #1101.
 
 - Part 1: Improve handling of failure to extract sampling frequency from gt3x file #1098
 
