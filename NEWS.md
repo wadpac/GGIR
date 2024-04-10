@@ -2,6 +2,11 @@
 
 - Part 3: Revert change to HDCZA in 3.0-7, see issue #1102
 
+- Part 1: Change default for parameter minloadcrit to 168 hours, see #1101.
+
+- Part 1-6: GGIR release number now stored in each milestone data file and in each
+reports to ease tracing what release was used per recording and per GGIR part, see #1101.
+
 - Part 1: Improve handling of failure to extract sampling frequency from gt3x file #1098
 
 - Part 4: Fixes issue #1095 introduced in 3.0-7 that causes GGIR part 4 to stop when processing
