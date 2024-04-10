@@ -21,11 +21,19 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
         angvar = stats::median(abs(diff(angle))) 
         return(angvar)
       }
-      # x = angle
-      # threshold = 0.2
       k1 = 5 * (60/ws3)
+      
       x = zoo::rollapply(angle, width = k1, FUN = medabsdi) # 5 minute rolling median of the absolute difference
-      threshold = HDCZA_threshold
+      if (is.null(HDCZA_threshold)) {
+        threshold = quantile(x, probs = 0.1) * 15
+        if (threshold < 0.13) {
+          threshold = 0.13
+        } else if (threshold > 0.50) {
+          threshold = 0.50
+        }
+      } else {
+        threshold = HDCZA_threshold
+      }
     } else if (HASPT.algo == "HorAngle") {  # if hip, then require horizontal angle
       # x = absolute angle
       # threshold = 45 degrees
