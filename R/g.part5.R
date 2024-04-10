@@ -658,8 +658,13 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           }
           if (length(output) > 0) {
             if (nrow(output) > 0) {
-              GGIRversion = utils::packageVersion("GGIR")
-              save(output, tail_expansion_log, GGIRversion,
+              GGIRversion = "GGIR not used"
+              if (is.element('GGIR', installed.packages()[,1])) {
+                GGIRversion = as.character(utils::packageVersion("GGIR"))
+                if (length(GGIRversion) != 1) GGIRversion = sessionInfo()$otherPkgs$GGIR$Version
+              }
+              output$GGIRversion = GGIRversion
+              save(output, tail_expansion_log,
                    file = paste(metadatadir, ms5.out, "/", fnames.ms3[i], sep = ""))
             }
           }

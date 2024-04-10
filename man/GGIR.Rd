@@ -780,8 +780,7 @@ GGIR(mode = 1:5,
         Disclaimer: This functionality was developed in 2019. With hindsight it
         is not generic enough and in need for revision. Please contact GGIR 
         maintainers if you would like us to invest time in improving this 
-        functionality.
-        }
+        functionality.}
 
       \item{data_cleaning_file}{
         Character (default = NULL).
