@@ -769,17 +769,17 @@ GGIR(mode = 1:5,
 
       \item{TimeSegments2ZeroFile}{
         Character (default = NULL).
-        Functionality developed in 2019, with hindsight not generic enough and 
-        possibly in need for revision. For now this parameter takes a csv file 
-        with columns windowstart and windowend to refer to the start and end time 
-        of a time window in format 2024-10-12 20:00:00, and filename of the GGIR
-        milestone data without the "meta_" segment of the name. GGIR uses this 
-        to set all acceleration values to zero and the non-wear classification 
-        to zero (sensor worn). The idea behind it is that nights when the 
-        accelerometer is not worn are automatically labelled as invalid, while
-        user may like to treat them as zero movement. Unfortunately, this 
-        functionality was not implemented with generic use in mind. Please contact
-        GGIR maintainers if you would like us to invest time in improving this 
+        Takes path to a csv file that has columns "windowstart" and "windowend"
+        to refer to the start and end time of a time windows in format
+        "2024-10-12 20:00:00", and "filename" of the GGIR
+        milestone data file without the "meta_" segment of the name. GGIR part 2
+        uses this to set all acceleration values to zero and the non-wear classification 
+        to zero (meaning sensor worn). Motivation: When the 
+        accelerometer is not worn during the night GGIR automatically labels them
+        as invalid, while the user may like to treat them as zero movement.
+        Disclaimer: This functionality was developed in 2019. With hindsight it
+        is not generic enough and in need for revision. Please contact GGIR 
+        maintainers if you would like us to invest time in improving this 
         functionality.
         }
 
