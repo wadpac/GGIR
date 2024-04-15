@@ -23,7 +23,7 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       }
       k1 = 5 * (60/ws3)
       
-      x = zoo::rollapply(angle, width = k1, FUN = medabsdi) # 5 minute rolling median of the absolute difference
+      x = zoo::rollapply(angle, width = k1, FUN = medabsdi, fill = 0) # 5 minute rolling median of the absolute difference
       if (is.null(HDCZA_threshold)) {
         threshold = quantile(x, probs = 0.1) * 15
         if (threshold < 0.13) {
