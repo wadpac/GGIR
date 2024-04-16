@@ -11,6 +11,9 @@ data without non-default sleep algorithms.
 
 - Part 4: Added option to impute missing sleeplog entries for sleep onset and wakeup by median of the valid values, controlled with new parameter impute_sleeplog_onsetwake which defaults to FALSE #1088
 
+- Part 1: Fix bug introduced in 3.0-6 affecting handling of time gaps, #1104
+
+- Part 5 and 6: Correct algorithm for coefficient of variance (CoV) in g.fragmentation, #1105
 
 # CHANGES IN GGIR VERSION 3.0-9
 
