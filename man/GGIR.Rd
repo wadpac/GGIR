@@ -1138,12 +1138,12 @@ GGIR(mode = 1:5,
         below 20 per cent of its standard deviation.}
     
       \item{HDCZA_threshold}{
-        Numeric (default = 0.2)
-        If \code{HASPT.algo} is set to "HDCZA" then HDCZA_threshold will be used
-        as threshold instead of 6th step in the diagram of Figure 1 in
-        van Hees et al. 2018 Scientific Report (doi: 10.1038/s41598-018-31266-z). We have
-        now simplified this step to a constant number, which can be modified via 
-        HDCZA_threshold.
+        Numeric (default = c())
+        If \code{HASPT.algo} is set to "HDCZA" and HDCZA_threshold is not NULL then
+        it will be used as threshold instead of 6th step in the diagram of Figure 1 in
+        van Hees et al. 2018 Scientific Report (doi: 10.1038/s41598-018-31266-z). This
+        is not the default but facilitates a simplification of the algorithm (WARNING:
+        not supported by research yet).
       }
 
       \item{HASPT.ignore.invalid}{
