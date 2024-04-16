@@ -197,8 +197,8 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
           output[["Gini_dur_IN"]] = ineq::Gini(DurationIN,corr = T)
         }
         if ("CoV" %in% frag.metrics) { #coefficient of variation as described by Blikman 2015
-          output[["CoV_dur_PA"]] = sd(DurationPA) / mean(log(DurationPA))
-          output[["CoV_dur_IN"]] = sd(DurationIN) / mean(log(DurationIN))
+          output[["CoV_dur_PA"]] = sd(log(DurationPA)) / mean(log(DurationPA))
+          output[["CoV_dur_IN"]] = sd(log(DurationIN)) / mean(log(DurationIN))
         }
         if ("power" %in% frag.metrics) {
           calc_alpha = function(x, xmin) {
