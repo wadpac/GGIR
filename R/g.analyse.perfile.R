@@ -292,7 +292,7 @@ g.analyse.perfile = function(I, C, metrics_nav,
                                           "n days of measurement after which all data is ignored (if data_masking_strategy=1)",
                                           "epoch size to which acceleration was averaged (seconds)",
                                           "if_hip_long_axis_id", "GGIR version"))
-    vi = vi + 6
+    vi = vi + 7
   }
   # tidy up daysummary object
   mw = which(is.na(daysummary) == T)
