@@ -14,6 +14,10 @@ data without non-default sleep algorithms.
 
 - Part 2 and 5: Fix minor bug in activity diary loading when date format is %Y-%m-%d, #1090
 
+- Part 1: Fix bug introduced in 3.0-6 affecting handling of time gaps, #1104
+
+- Part 5 and 6: Correct algorithm for coefficient of variance (CoV) in g.fragmentation, #1105
+
 # CHANGES IN GGIR VERSION 3.0-9
 
 - Part 5: Temperature (if available) added to time series output #1085.
