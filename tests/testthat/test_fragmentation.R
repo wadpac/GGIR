@@ -36,6 +36,9 @@ test_that("fragmentation calculates the expected fragmentation metric values", {
   expect_equal(out$x0.5_dur_PA, 1.928897, tolerance = 0.0001)
   expect_equal(out$W0.5_dur_IN, 0.9629121, tolerance = 0.0001)
   
+  expect_equal(out$CoV_dur_IN, 1.035708, tolerance = 0.0001)
+  expect_equal(out$CoV_dur_PA, 0.9859804, tolerance = 0.0001)
+  
   expect_equal(out$TP_IN2MVPA, 0.005502, tolerance = 0.0001)
   expect_equal(out$TP_IN2LIPA, 0.060523, tolerance = 0.0001)
   expect_equal(out$TP_IN2PA, 0.066025, tolerance = 0.0001)

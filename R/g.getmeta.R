@@ -245,13 +245,13 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             if (ncol(S) == (ncol(data) - 1)) {
               # this block has time gaps while the previous block did not
               S = cbind(S, 1)
-              colnames(S)[4] = "remaining_epochs"
+              colnames(S)[ncol(S)] = "remaining_epochs"
             }
           } else if ("remaining_epochs" %in% colnames(S)) {
             if ((ncol(S) - 1) == ncol(data)) {
               # this block does not have time gaps while the previous blog did
               data = cbind(data, 1)
-              colnames(data)[4] = "remaining_epochs"
+              colnames(data)[ncol(S)] = "remaining_epochs"
             }
           }
         }
