@@ -193,6 +193,6 @@ create_test_acc_csv = function(sf = 3, Nmin = 2000, storagelocation = c(),
   testfile[1:10,1] = header
   testfile[11,1:3] = variablenames
   testfile[12:(Nrows + 11), 1:3] = testdata
-  write.table(testfile, file = paste0(storagelocation,"/123A_testaccfile.csv"),
-              row.names = FALSE, col.names = FALSE, sep = ",", fileEncoding = "UTF-8")
+  data.table::fwrite(x = testfile, file = paste0(storagelocation,"/123A_testaccfile.csv"),
+              row.names = FALSE, col.names = FALSE)
 }
