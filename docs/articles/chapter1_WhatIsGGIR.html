@@ -47,7 +47,7 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-the-book">The book</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-the-book">
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">1. What is GGIR</a>
+    <a class="dropdown-item" href="../articles/Chapter1_WhatIsGGIR.html">1. What is GGIR</a>
     <a class="dropdown-item" href="../articles/chapter2_Pipeline.html">2. The GGIR Pipeline</a>
     <a class="dropdown-item" href="../articles/chapter3_QualityAssessment.html">3. Data Quality Assurance</a>
     <a class="dropdown-item" href="../articles/chapter4_AccMetrics.html">4. From Raw Data to Acceleration Metrics</a>
@@ -142,16 +142,16 @@ generation accelerometers which stored data in accelerometer brand
 specific units. Despite the focus on the raw data, GGIR also offers
 functionality to process previous generation accelerometer data. The
 signal processing for raw data includes automatic calibration to
-gravity, detection of abnormally high values., imputation of raw-level
+gravity, detection of abnormally high values, imputation of raw-level
 time gaps (only for specific sensor brands), and calculation of
 orientation angle and average magnitude acceleration based on a variety
-of metrics. Next, the signal processing for both raw and previous
-generation data continuous with the detection of non-wear and epoch
-level imputation. Finally, GGIR uses all this information to describe
-the data at multiple time resolutions on data quality and data summary
-metrics that could be interpreted as estimates of physical activity,
-inactivity, sleep, and circadian rhythm. The time resolutions of GGIR
-output are:</p>
+of metrics. Next, the signal processing for both raw and
+previous-generation data continue with the detection of non-wear and
+epoch level imputation. Finally, GGIR uses all this information to
+describe the data at multiple time resolutions on data quality and data
+summary metrics that could be interpreted as estimates of physical
+activity, inactivity, sleep, and circadian rhythm. The time resolutions
+of GGIR output are:</p>
 <ul>
 <li>
 <strong>Per recording</strong>, which typically matches to one
@@ -185,6 +185,41 @@ is set by the user at for example 5 seconds.</li>
 </ul>
 </div>
 <div class="section level2">
+<h2 id="key-strengths">Key strengths<a class="anchor" aria-label="anchor" href="#key-strengths"></a>
+</h2>
+<ol style="list-style-type: decimal">
+<li>GGIR has a permissive open-source software license to maximize
+re-use and collaboration.</li>
+<li>GGIR is applicable to data from multiple sensor brands and file
+formats.</li>
+<li>GGIR facilitates sleep, physical activity, and circadian rhythm
+research.</li>
+<li>GGIR has extensive quantitative output designed for use in
+quantitative research.</li>
+<li>GGIR is designed to be computationally efficient such as the option
+to store and re-use intermediate milestone data and the option to
+process multiple files in parallel on the same computer as discussed in
+Chapter 2.</li>
+<li>GGIR is designed to be accessible for new users without R or
+programming experience such as the fact that GGIR requires only one
+function call and comes with elaborate open-access documentation.
+Additionally, paid training courses are offered to maximize the
+opportunity for users to learn about GGIR and for us to learn from
+users.</li>
+<li>GGIR has had over a <a href="https://github.com/wadpac/GGIR/graphs/contributors" class="external-link">dozen code
+contributors</a>.</li>
+<li>GGIR has been available on the CRAN archive, meaning that it meets
+CRAN standards and that each release has gone through a series of
+automated checks.</li>
+<li>We have public email list (google group) for users to reach out to
+each other and the maintainers.</li>
+<li>Over <a href="https://github.com/wadpac/GGIR/wiki/Publication-list" class="external-link">hundreds of
+publications</a> have used GGIR, which has been a powerful way to
+identify problems and improve the code and it has provided us with a
+wide range of reference values.</li>
+</ol>
+</div>
+<div class="section level2">
 <h2 id="history">History<a class="anchor" aria-label="anchor" href="#history"></a>
 </h2>
 <p>An elaborate reflection on GGIR’s first 10 years of existence can be
@@ -202,12 +237,16 @@ without all their efforts.</p>
 <div class="section level3">
 <h3 id="flexible-and-accessible">Flexible and accessible<a class="anchor" aria-label="anchor" href="#flexible-and-accessible"></a>
 </h3>
-<p>The research field is heterogeneous in the choice of sensor brand and
-data format, the study protocols used, and the research questions it
-tries to answer. At the same time many within the field lack the time or
-skills to write their own custom data processing software. GGIR aims to
-be flexible to handle all these different scenarios and at the same time
-remain accessible to those with limited time and software skills.</p>
+<p>The research field is highly heterogeneous in: the choice of sensor
+brand,, data format, the study protocols used, and the research
+questions it tries to answer. At the same time many within the field
+lack the time or skills to write their own custom data processing
+software. GGIR aims to be flexible to handle all these different
+scenarios and at the same time remain accessible to those who lack time
+or skills to write software. Further, we hope GGIR is of use to those
+without the financial resources for commercial software, although we
+would like stress that we are not a charity and depend on paid or unpaid
+voluntary efforts from contributors.</p>
 </div>
 <div class="section level3">
 <h3 id="algorithm-design">Algorithm design<a class="anchor" aria-label="anchor" href="#algorithm-design"></a>
@@ -235,28 +274,23 @@ if appropriately used and interpreted.</p>
 on the availability of reliable criterion methods. It is argued that
 such reliable criterion methods do not exist:</p>
 <ol style="list-style-type: decimal">
-<li><p>Indirect calorimetry and the indicators of energy metabolism that
+<li>Indirect calorimetry and the indicators of energy metabolism that
 can be derived from it are unable to account for the activity type
 specific role of body weight on energy metabolism. This makes it
 impossible to make a standardised comparison of the energy cost of
 different activity types across individuals that differ in body weight.
 See also reflections in <a href="https://www.accelting.com/updates/why-does-ggir-facilitate-cut-points/" class="external-link">this
-blog post</a>.</p></li>
-<li>
-<p>Polysomnography offers a physiological definition of sleep that
-is impossible to capture with a movement sensor forcing us to simplify
-our definition of ‘sleep’ towards a definition a movement sensor can
+blog post</a>.</li>
+<li>Polysomnography offers a physiological definition of sleep that is
+impossible to capture with a movement sensor forcing us to simplify our
+definition of ‘sleep’ towards a definition a movement sensor can
 capture, by which ‘validation’ with polysomnography becomes somewhat
 meaningless as we already know that we are not measuring the same
-construct anymore.</p>
-<ol start="3" style="list-style-type: decimal">
-<li>
-</ol>
-</li>
-<li><p>Activity types are ambiguous to define given the high number of
-ways they can be performed. This introduces a fundamental level of
+construct anymore.</li>
+<li>Activity types are ambiguous to define given the high number of ways
+they can be performed. This introduces a fundamental level of
 uncertainty about the robustness of models outside the datasets and
-context they were developed in.</p></li>
+context they were developed in.</li>
 </ol>
 <p>As a result, it is essential to put strong emphasis on algorithms
 that have descriptive value on their own regardless of whether they
