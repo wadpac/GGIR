@@ -1,0 +1,33 @@
+---
+title: "6. Sleep analysis"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{6. Sleep analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Work in progress...
+
+## Sustained Inactivity Bouts (SIB)
+
+## Sleep Period Time (SPT)
+
+## Sleep metrics available in GGIR
+
+## Nap detection
+
+## Working with sleeplog
+
+## The cleaning code
+
+## Key arguments
+
+## Related output
