@@ -60,8 +60,8 @@ navbar:
           href: articles/chapter5_StudyProtocol.html
         - text: 6. How GGIR Deals with Invalid Data
           href: articles/chapter6_DataImputation.html
-        - text: 7. Sleep Analysis
-          href: articles/chapterInProgress.html
+        - text: 7. Describing the Data Without Knowing Sleep
+          href: articles/chapter7_DescribingDataWithoutKnowingSleep.html
         - text: 8. The 24-hour time use analysis
           href: articles/chapterInProgress.html
         - text: 9. Physical Behaviours Analysis
