@@ -253,8 +253,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         SUM$summary[noID] = char2num_df(SUM$summary[noID])
         noIDday = which(colnames(SUM$daysummary) != "ID")
         SUM$daysummary[noIDday] = char2num_df(SUM$daysummary[noIDday])
-        # save milestone data
-        save(SUM, IMP, tail_expansion_log, file = paste0(metadatadir, ms2.out, "/", RDname)) #IMP is needed for g.plot in g.report.part2
+        GGIRversion = utils::packageVersion("GGIR")
+        save(SUM, IMP, tail_expansion_log, GGIRversion, file = paste0(metadatadir, ms2.out, "/", RDname)) #IMP is needed for g.plot in g.report.part2
       }
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
       rm(M); rm(I)

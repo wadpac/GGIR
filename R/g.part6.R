@@ -274,10 +274,16 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       names(output_part6) = s_names
       output_part6[, 4:ncol(output_part6)] = as.numeric(output_part6[, 4:ncol(output_part6)])
       if (length(output_part6) > 0) {
-        save(output_part6, file = paste0(metadatadir,
-                                         ms6.out, "/", gsub(pattern = "[.]csv|[.]RData",
-                                                            replacement = "",
-                                                            x = fnames.ms5raw[i]), ".RData"))
+        GGIRversion = "GGIR not used"
+        if (is.element('GGIR', installed.packages()[,1])) {
+          GGIRversion = as.character(utils::packageVersion("GGIR"))
+          if (length(GGIRversion) != 1) GGIRversion = sessionInfo()$otherPkgs$GGIR$Version
+        }
+        output_part6$GGIRversion = GGIRversion
+        save(output_part6, GGIRversion, file = paste0(metadatadir, ms6.out, "/",
+                                         gsub(pattern = "[.]csv|[.]RData",
+                                              replacement = "",
+                                              x = fnames.ms5raw[i]), ".RData"))
       }
       rm(output_part6, summary)
     }
