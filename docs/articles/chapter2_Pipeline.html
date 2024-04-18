@@ -602,8 +602,13 @@ chapter. Inside <code>results</code> you will find folder named
 possibly somewhat confusing. Data quality checks are best started with
 the files stored in the results folder, where the files in the QC
 subfolder offer complementary information to help with the quality
-check. For a full GGIR analyses we expect at least the following output
-files:</p>
+check.</p>
+<p>GGIR generates reports in the parts 2, 4, 5, and 6 of the pipeline.
+With parameter <code>do.report</code> you can specify for which of these
+parts you want the reports to be generated. For example,
+<code>do.report = c(2, 5)</code> will only generated the report for
+parts 2 and 5. For a full GGIR analyses we expect at least the following
+output files:</p>
 <p><strong><em>Output files in results subfolder:</em></strong></p>
 <table class="table">
 <caption>A detailed discussion of each output can be found in the other

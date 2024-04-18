@@ -14,7 +14,7 @@ articles:
   chapter4_AccMetrics: chapter4_AccMetrics.html
   chapter5_StudyProtocol: chapter5_StudyProtocol.html
   chapter6_DataImputation: chapter6_DataImputation.html
-  chapter7_SleepAnalysis: chapter7_SleepAnalysis.html
+  chapter7_DescribingDataWithoutKnowingSleep: chapter7_DescribingDataWithoutKnowingSleep.html
   chapter8_24hTimeUseAnalysis: chapter8_24hTimeUseAnalysis.html
   chapter9_PhysicalBehavioursAnalysis: chapter9_PhysicalBehavioursAnalysis.html
   chapterInProgress: chapterInProgress.html
@@ -26,5 +26,5 @@ articles:
   HouseHoldCoanalysis: HouseHoldCoanalysis.html
   readmyacccsv: readmyacccsv.html
   TutorialDaySegmentAnalyses: TutorialDaySegmentAnalyses.html
-last_built: 2024-04-17T09:10Z
+last_built: 2024-04-18T06:36Z
 

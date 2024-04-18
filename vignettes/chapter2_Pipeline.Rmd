@@ -238,7 +238,9 @@ Some tips on how you may be able to address this:
 
 GGIR always creates an output folder in the location as specified with parameter `outputdir`. The output folder name is constructed as `output_` followed by the name of the dataset which is derived from the most distal folder name of the data directory as specified with `datadir`. We recommend this approach because it ensures that output folder name and data directory have matching names. However, it is possible to use `datadir` to specify a vector with paths to individual files, which may helpful if you want to process a set of files but are not in a position to move them to a new folder. In that scenario you will need to set parameter `studyname` to tell GGIR what the dataset name is.
 
-Inside the output folder GGIR will create two subfolders: `meta` and `results` as discussed earlier in this chapter. Inside `results` you will find folder named `QC` (Quality Checks). The name QC (Quality Checks) is possibly somewhat confusing. Data quality checks are best started with the files stored in the results folder, where the files in the QC subfolder offer complementary information to help with the quality check. For a full GGIR analyses we expect at least the following output files:
+Inside the output folder GGIR will create two subfolders: `meta` and `results` as discussed earlier in this chapter. Inside `results` you will find folder named `QC` (Quality Checks). The name QC (Quality Checks) is possibly somewhat confusing. Data quality checks are best started with the files stored in the results folder, where the files in the QC subfolder offer complementary information to help with the quality check.
+
+GGIR generates reports in the parts 2, 4, 5, and 6 of the pipeline. With parameter  `do.report` you can specify for which of these parts you want the reports to be generated. For example, `do.report = c(2, 5)` will only generated the report for parts 2 and 5. For a full GGIR analyses we expect at least the following output files:
 
 ***Output files in results subfolder:***
 
