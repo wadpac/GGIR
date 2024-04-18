@@ -440,9 +440,10 @@
       <dt>minimumFileSizeMB</dt>
 <dd><p>Numeric (default = 2).
         Minimum File size in MB required to enter processing.
-        This argument can help to avoid having short uninformative files to enter the analyses.
-        Given that a typical accelerometer collects several MBs per hour,
-        the default setting should only skip the very tiny files.</p></dd>
+        This argument can help to avoid having short uninformative 
+        files to enter the analyses. Given that a typical accelerometer 
+        collects several MBs per hour, the default setting should only skip 
+        the very tiny files.</p></dd>
 
 
       <dt>do.cal</dt>
@@ -465,16 +466,18 @@
 
 
       <dt>minloadcrit</dt>
-<dd><p>Numeric (default = 72).
+<dd><p>Numeric (default = 168).
         The minimum number of hours the code needs to read for the
-        autocalibration procedure to be effective (only sensitive to multitudes of 12 hrs,
-        other values will be ceiled). After loading these hours only extra data is loaded
-        if calibration error has not been reduced to under 0.01 g.</p></dd>
+        autocalibration procedure to be effective (only sensitive to
+        multitudes of 12 hrs, other values will be ceiled).
+        After loading these hours only extra data is loaded if 
+        calibration error has not been reduced to under 0.01 g.</p></dd>
 
 
       <dt>printsummary</dt>
 <dd><p>Boolean (default = FALSE).
-        If TRUE will print a summary of the calibration procedure in the console when done.</p></dd>
+        If TRUE will print a summary of the calibration procedure in
+        the console when done.</p></dd>
 
 
       <dt>chunksize</dt>
@@ -957,16 +960,25 @@
 <p>A list of parameters used across all GGIR parts releated to masking or
     imputing data, abbreviated as "cleaning".</p><dl><dt>do.imp</dt>
 <dd><p>Boolean (default = TRUE).
-        Whether to impute missing values (e.g., suspected of monitor non-wear or clippling)
-        or not by <a href="g.impute.html">g.impute</a> in GGIR <a href="g.part2.html">g.part2</a>. Recommended setting is TRUE.</p></dd>
+        Whether to impute missing values (e.g., suspected of monitor non-wear 
+        or clippling) or not by <a href="g.impute.html">g.impute</a> in GGIR <a href="g.part2.html">g.part2</a>.
+        Recommended setting is TRUE.</p></dd>
 
 
       <dt>TimeSegments2ZeroFile</dt>
-<dd><p>Data frame (default = NULL).
-        Optional data.frame to specify which time segments need to be ignored for the imputation,
-        and acceleration metrics to be imputed by zeros. The data.frame is expected
-        to contain two columns named windowstart and windowend, with the start- and end
-        time of the time segment in POSIXlt class.</p></dd>
+<dd><p>Character (default = NULL).
+        Takes path to a csv file that has columns "windowstart" and "windowend"
+        to refer to the start and end time of a time windows in format
+        "2024-10-12 20:00:00", and "filename" of the GGIR
+        milestone data file without the "meta_" segment of the name. GGIR part 2
+        uses this to set all acceleration values to zero and the non-wear classification 
+        to zero (meaning sensor worn). Motivation: When the 
+        accelerometer is not worn during the night GGIR automatically labels them
+        as invalid, while the user may like to treat them as zero movement.
+        Disclaimer: This functionality was developed in 2019. With hindsight it
+        is not generic enough and in need for revision. Please contact GGIR 
+        maintainers if you would like us to invest time in improving this 
+        functionality.</p></dd>
 
 
       <dt>data_cleaning_file</dt>
@@ -974,11 +986,13 @@
         Optional path to a csv file you create that holds four columns:
         ID, day_part5, relyonguider_part4, and night_part4. ID should hold the
         participant ID. Columns day_part5 and night_part4 allow you to specify which
-        day(s) and night(s) need to be excluded from <a href="g.part5.html">g.part5</a> and <a href="g.part4.html">g.part4</a>, respectively.
-        When including multiple day(s)/night(s) create a new line for each day/night.
-        So, this will be done regardless of whether the rest of GGIR thinks those day(s)/night(s)
-        are valid. Column relyonguider_part4 allows you to specify for which nights
-        <a href="g.part4.html">g.part4</a> should fully rely on the guider. See also package vignette.</p></dd>
+        day(s) and night(s) need to be excluded from <a href="g.part5.html">g.part5</a> and 
+        <a href="g.part4.html">g.part4</a>, respectively. When including multiple day(s)/night(s) 
+        create a new line for each day/night.
+        So, this will be done regardless of whether the rest of GGIR thinks 
+        those day(s)/night(s) are valid. Column relyonguider_part4 allows you 
+        to specify for which nights <a href="g.part4.html">g.part4</a> should fully rely on the
+        guider. See also package vignette.</p></dd>
 
 
       <dt>excludefirstlast.part5</dt>
@@ -1163,7 +1177,7 @@
 <p>A list of parameters releated to physical activity as used in GGIR <a href="g.part2.html">g.part2</a> and GGIR <a href="g.part5.html">g.part5</a>.</p><dl><dt>mvpathreshold</dt>
 <dd><p>Numeric (default = 100).
         Acceleration threshold for MVPA estimation in GGIR <a href="g.part2.html">g.part2</a>.
-        This can be a single number or an array of numbers,
+        This can be a single number or an vector of numbers,
         e.g., <code>mvpathreshold = c(100, 120)</code>.
         In the latter case the code will estimate MVPA separately for each threshold.
         If this variable is left blank, e.g., <code>mvpathreshold = c()</code>, then
@@ -1184,7 +1198,7 @@
       <dt>threshold.lig</dt>
 <dd><p>Numeric (default = 40).
         In <a href="g.part5.html">g.part5</a>: Threshold for light physical activity to
-        separate inactivity from light. Value can be one number or an array of multiple
+        separate inactivity from light. Value can be one number or an vector of multiple
         numbers, e.g., <code>threshold.lig =c(30,40)</code>. If multiple numbers are entered then
         analysis will be repeated for each combination of threshold values. Threshold is
         applied to the first metric in the milestone data, so if you have only specified
@@ -1194,7 +1208,7 @@
       <dt>threshold.mod</dt>
 <dd><p>Numeric (default = 100).
         In <a href="g.part5.html">g.part5</a>: Threshold for moderate physical activity
-        to separate light from moderate. Value can be one number or an array of
+        to separate light from moderate. Value can be one number or an vector of
         multiple numbers, e.g., <code>threshold.mod = c(100, 120)</code>.
         If multiple numbers are entered then analysis will be repeated for each
         combination of threshold values. Threshold is applied to the first metric in the
@@ -1205,7 +1219,7 @@
       <dt>threshold.vig</dt>
 <dd><p>Numeric (default = 400).
         In <a href="g.part5.html">g.part5</a>: Threshold for vigorous physical activity
-        to separate moderate from vigorous. Value can be one number or an array of
+        to separate moderate from vigorous. Value can be one number or an vector of
         multiple numbers, e.g., <code>threshold.vig =c(400,500)</code>. If multiple numbers are
         entered then analysis will be repeated for each combination of threshold values.
         Threshold is applied to the first metric in the milestone data, so if you
@@ -1363,12 +1377,14 @@
 
     
       <dt>HDCZA_threshold</dt>
-<dd><p>Numeric (default = 0.2)
-        If <code>HASPT.algo</code> is set to "HDCZA" then HDCZA_threshold will be used
-        as threshold instead of 6th step in the diagram of Figure 1 in
-        van Hees et al. 2018 Scientific Report (doi: 10.1038/s41598-018-31266-z). We have
-        now simplified this step to a constant number, which can be modified via 
-        HDCZA_threshold.</p></dd>
+<dd><p>Numeric (default = c())
+        If <code>HASPT.algo</code> is set to "HDCZA" and HDCZA_threshold is NOT NULL,
+        (e.g., HDCZA_threshold = 0.2), then that value will be used as threshold
+        in the 6th step in the diagram of Figure 1 in van Hees
+        et al. 2018 Scientific Report (doi: 10.1038/s41598-018-31266-z). However,
+        doing so has not been supported by research yet and is only intended to
+        facilitate methodological research, so we advise sticking with the default in
+        line with the publication.</p></dd>
 
 
       <dt>HASPT.ignore.invalid</dt>
@@ -1521,7 +1537,7 @@
 
       <dt>qlevels</dt>
 <dd><p>Numeric (default = NULL).
-        Array of percentiles for which value needs to be extracted. These need to 
+        Vector of percentiles for which value needs to be extracted. These need to 
         be expressed as a fraction of 1, e.g., c(0.1, 0.5, 0.75). There is no limit 
         to the number of percentiles. If left empty then percentiles will not be extracted. 
         Distribution will be derived from short epoch metric data. Argument qlevels 
