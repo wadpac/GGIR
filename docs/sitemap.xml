@@ -4,7 +4,61 @@
     <loc>/404.html</loc>
   </url>
   <url>
+    <loc>/articles/chapter0_contributing.html</loc>
+  </url>
+  <url>
+    <loc>/articles/chapter0_GetStarted.html</loc>
+  </url>
+  <url>
+    <loc>/articles/chapter0_Installation.html</loc>
+  </url>
+  <url>
+    <loc>/articles/chapter0_Support.html</loc>
+  </url>
+  <url>
+    <loc>/articles/chapter10_CircadianRhythms.html</loc>
+  </url>
+  <url>
+    <loc>/articles/chapter11_HouseholdCoanalysis.html</loc>
+  </url>
+  <url>
+    <loc>/articles/chapter1_WhatIsGGIR.html</loc>
+  </url>
+  <url>
+    <loc>/articles/chapter2_Pipeline.html</loc>
+  </url>
+  <url>
+    <loc>/articles/chapter3_QualityAssessment.html</loc>
+  </url>
+  <url>
+    <loc>/articles/chapter4_AccMetrics.html</loc>
+  </url>
+  <url>
+    <loc>/articles/chapter5_StudyProtocol.html</loc>
+  </url>
+  <url>
+    <loc>/articles/chapter6_DataImptutation.html</loc>
+  </url>
+  <url>
+    <loc>/articles/chapter6_DataImputation.html</loc>
+  </url>
+  <url>
+    <loc>/articles/chapter7_DescribingDataWithoutKnowingSleep.html</loc>
+  </url>
+  <url>
+    <loc>/articles/chapter7_SleepAnalysis.html</loc>
+  </url>
+  <url>
+    <loc>/articles/chapter8_24hTimeUseAnalysis.html</loc>
+  </url>
+  <url>
+    <loc>/articles/chapter9_PhysicalBehavioursAnalysis.html</loc>
+  </url>
+  <url>
     <loc>/articles/chapterInProgress.html</loc>
+  </url>
+  <url>
+    <loc>/articles/copy-of-GGIR.html</loc>
   </url>
   <url>
     <loc>/articles/CutPoints.html</loc>
@@ -305,6 +359,9 @@
   </url>
   <url>
     <loc>/reference/get_starttime_weekday_meantemp_truncdata.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_starttime_weekday_truncdata.html</loc>
   </url>
   <url>
     <loc>/reference/GGIR-package.html</loc>
