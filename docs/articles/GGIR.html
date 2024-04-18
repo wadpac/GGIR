@@ -8,8 +8,8 @@
 <meta name="description" content="GGIR">
 <title>Accelerometer data processing with GGIR • GGIR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Accelerometer data processing with GGIR">
 <meta property="og:description" content="GGIR">
@@ -29,7 +29,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-9</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,27 +39,43 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item">
-  <a class="nav-link" href="../articles/chapterInProgress.html">Get Started</a>
+  <a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../articles/chapter0_GetStarted.html">Get started</a>
 </li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">1. The GGIR pipeline</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">2. Inspecting the Data Quality in GGIR</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">3. From Raw Data to Acceleration Metrics</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">4. Accounting for Study Protocol</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">5. How GGIR Deals with Invalid Data</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">6. Characterizing Human Behaviour with GGIR</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">7. The 24-hour time use analysis</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">8. Cleaning the Data</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">9. Inspecting the results</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">10. Motivation and Clarification</a>
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-the-book">The book</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-the-book">
+    <a class="dropdown-item" href="../articles/chapter1_WhatIsGGIR.html">1. What is GGIR</a>
+    <a class="dropdown-item" href="../articles/chapter2_Pipeline.html">2. The GGIR Pipeline</a>
+    <a class="dropdown-item" href="../articles/chapter3_QualityAssessment.html">3. Data Quality Assurance</a>
+    <a class="dropdown-item" href="../articles/chapter4_AccMetrics.html">4. From Raw Data to Acceleration Metrics</a>
+    <a class="dropdown-item" href="../articles/chapter5_StudyProtocol.html">5. Accounting for Study Protocol</a>
+    <a class="dropdown-item" href="../articles/chapter6_DataImputation.html">6. How GGIR Deals with Invalid Data</a>
+    <a class="dropdown-item" href="../articles/chapter7_DescribingDataWithoutKnowingSleep.html">7. Describing the Data Without Knowing Sleep</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">8. Sleep Fundamentals - Guiding Sleep Detection</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">9. Sleep Fundamentals - Sustained Inactivity Bout Detection (SIB)</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">10. Sleep Analysis</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">11. Describing the Data with Cut-Points</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">12. Time-Use Analyses</a>
+  </div>
+</li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-annexes">Annexes</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-annexes">
+    <a class="dropdown-item" href="../articles/readmyacccsv.html">Reading csv files with raw data</a>
+    <a class="dropdown-item" href="../articles/ExternalFunction.html">Embedding external functions in GGIR</a>
+    <a class="dropdown-item" href="../articles/CutPoints.html">Published cut-points and how to use them</a>
+    <a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a>
+    <a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a>
   </div>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-0-0/">Version 3.0-0</a>
     <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-9-0/">Version 2.9-0</a>
     <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-8-0/">Version 2.8-0</a>
     <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-7-1/">Version 2.7-1</a>
@@ -68,6 +84,12 @@
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../news/index.html">Changelog</a>
   </div>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../articles/chapter0_Contributing.html">Contributing</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../articles/chapter0_Support.html">Need help?</a>
 </li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
@@ -240,8 +262,9 @@ issues for GGIR. To cope with the absence of timestamps GGIR will
 calculate timestamps from the sample frequency, the start time and start
 date as presented in the file header.</li>
 <li>
-<a href="https://www.movisens.com/en/" class="external-link">Movisens</a> with data stored
-in folders.</li>
+<a href="https://www.movisens.com/en/" class="external-link">Movisens</a> .bin files with
+data stored in folders. GGIR expects that each participant’s folder
+contains at least a file named acc.bin.</li>
 <li>Any other accelerometer brand that generates csv output, see
 documentation for functions <code>read.myacc.csv</code> and argument
 <code>rmc.noise</code> in the <a href="https://CRAN.R-project.org/package=GGIR/GGIR.pdf" class="external-link">GGIR function
@@ -370,7 +393,7 @@ manual for that.</p>
 <ul>
 <li>
 <code>mode</code> - which part of GGIR to run, GGIR is constructed
-in five parts.</li>
+in five parts with a sixth part under development.</li>
 <li>
 <code>overwrite</code> - whether to overwrite previously produced
 milestone output. Between each GGIR part, GGIR stores milestone output
@@ -1023,7 +1046,10 @@ modifiable by argument <code>winhr</code>)</td>
 </tr>
 <tr class="even">
 <td>L5hr_A_mg_0-24</td>
-<td>Starting time in hours and fractions of hours of L5_A_mg_0-24</td>
+<td>Starting time in hours and fractions of hours of L5_A_mg_0-24, where
+hours below 12 are incremented with 24 to create a continuous scale
+throughout the night (e.g. 36 = 6am) in line with numeric timeing of
+sleep variables in GGIR part 4 output.</td>
 </tr>
 <tr class="odd">
 <td>M5hr_A_mg_0-24</td>
@@ -1733,8 +1759,8 @@ meaning may not be obvious:</p>
 calculated as the ratio between acc_SleepDurationInSpt and
 guider_SptDuration (denominator) or acc_SleepDurationInSpt and
 acc_SptDuration + latency (denominator), as defined with
-relyonguider_SleepEfficiency. Only available at person level, because at
-night level the user can calculate this from existing variables.</td>
+sleepefficiency.metric. Only available at person level, because at night
+level the user can calculate this from existing variables.</td>
 </tr>
 <tr class="even">
 <td>n_nights_acc</td>
@@ -2883,6 +2909,18 @@ columns:</strong></p>
 </tr></thead>
 <tbody>
 <tr class="odd">
+<td>timenum</td>
+<td>Time stamp in UTC time format (i.e., seconds since 1970-01-01). To
+convert timenum to time stamp format, you need to specify your desired
+time zone, e.g.,
+<code>as.POSIXct(mdat$timenum, tz = "Europe/London")</code>.</td>
+</tr>
+<tr class="even">
+<td>ACC</td>
+<td>Average acceleration metric selected by <code>acc.metric</code>,
+default = “ENMO”.</td>
+</tr>
+<tr class="odd">
 <td>SleepPeriodTime</td>
 <td>Is 1 if SPT is detected, 0 if not. Note that this refers to the
 combined usage of guider and detected sustained inactivity bouts (rest
@@ -2894,9 +2932,8 @@ periods).</td>
 </tr>
 <tr class="odd">
 <td>guider</td>
-<td>Is 1 if guider method detect epoch as SPT (e.g. sleeplog, HDCZA), 0
-if not. You will not find here which guider is used, for this see other
-GGIR output.</td>
+<td>Number to indicate what guider type was used, where 1=sleeplog,
+2=HDCZA, 3=swetwindow, 4=L512, 5=HorAngle, 6=NotWorn</td>
 </tr>
 <tr class="even">
 <td>window</td>
@@ -2913,29 +2950,58 @@ week you may find window numbers 1, 2, 3, 4, 5 and 6.</td>
 meta/ms5outraw/behaviouralcodes.csv. Class codes above class 8 will be
 analysis specific, because it depends on the number time variants of the
 bouts used. For example, if you look at MVPA lasting 1-10, 10-20, 30-40
-then all of them will have their own class_id.</td>
+then all of them will have their own class_id. In behaviouralcodes.csv
+you will find a column with class_names which match the behavioural
+classes as reported in the part 5 report.</td>
 </tr>
 <tr class="even">
 <td>invalid_fullwindow</td>
-<td>Fraction of the window (see above) that represents invalid data. I
-added this to make it easier to filter the timeseries based on whether
-days are valid or not.</td>
+<td>Percentage of the window (see above) that represents invalid data,
+included to ease filtering the timeseries based on whether windows are
+valid or not.</td>
 </tr>
 <tr class="odd">
 <td>invalid_sleepperiod</td>
-<td>Fraction of SPT within the current window that represents invalid
+<td>Percentage of SPT within the current window that represents invalid
 data.</td>
 </tr>
 <tr class="even">
 <td>invalid_wakinghours</td>
-<td>Fraction of SPT within the current window that represents invalid
-data.</td>
+<td>Percentage of waking hours within the current window that represents
+invalid data.</td>
+</tr>
+<tr class="odd">
+<td>timestamp</td>
+<td>Time stamp derived from converting the column timenum, only
+available if <code>save_ms5raw_format = TRUE</code>.</td>
+</tr>
+<tr class="even">
+<td>angle</td>
+<td>anglez by default. If <code>sensor.location = "hip"</code> or
+<code>HASPT.algo = "HorAngle"</code> then angle represents the angle for
+the longitudinal axis as provided by argument longitudinal_axis or
+estimated if no angle was provided. If more angles were extracted in
+part 1 then these will be add with their letter appended.</td>
+</tr>
+<tr class="odd">
+<td>lightpeak</td>
+<td>If lux sensor data is available in the data file then it was
+summarised at an epoch length defined by the second value of parameter
+<code>windowsizes</code> (defaults to 900 seconds = 15 minutes), to add
+this value to the time series it is interpolated, so the original time
+resolution is not necessarily reflected in this column.</td>
+</tr>
+<tr class="even">
+<td>temperature</td>
+<td>If temperature was available in the data file then it was summarised
+at an epoch length defined by the second value of parameter
+<code>windowsizes</code> (defaults to 900 seconds = 15 minutes), to add
+this value to the time series it is interpolated, so the original time
+resolution is not necessarily reflected in this column.</td>
 </tr>
 </tbody>
 </table>
-<p>To familiarize yourself with how the variables it can be helpful to
-plot them yourself.</p>
-<p>For users we also want to export the time serie sof multiple metric
+<p>For users we also want to export the time series of multiple metric
 values see argument <code>epochvalues2csv</code> which relates to the
 storage of time series in GGIR part 2.</p>
 </div>
