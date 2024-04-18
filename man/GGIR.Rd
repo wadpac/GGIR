@@ -319,9 +319,10 @@ GGIR(mode = 1:5,
       \item{minimumFileSizeMB}{
         Numeric (default = 2).
         Minimum File size in MB required to enter processing.
-        This argument can help to avoid having short uninformative files to enter the analyses.
-        Given that a typical accelerometer collects several MBs per hour,
-        the default setting should only skip the very tiny files.}
+        This argument can help to avoid having short uninformative 
+        files to enter the analyses. Given that a typical accelerometer 
+        collects several MBs per hour, the default setting should only skip 
+        the very tiny files.}
 
       \item{do.cal}{
         Boolean (default = TRUE).
@@ -340,15 +341,17 @@ GGIR(mode = 1:5,
         for each axis. Used to judge whether the sphere is sufficiently populated}
 
       \item{minloadcrit}{
-        Numeric (default = 72).
+        Numeric (default = 168).
         The minimum number of hours the code needs to read for the
-        autocalibration procedure to be effective (only sensitive to multitudes of 12 hrs,
-        other values will be ceiled). After loading these hours only extra data is loaded
-        if calibration error has not been reduced to under 0.01 g.}
+        autocalibration procedure to be effective (only sensitive to
+        multitudes of 12 hrs, other values will be ceiled).
+        After loading these hours only extra data is loaded if 
+        calibration error has not been reduced to under 0.01 g.}
 
       \item{printsummary}{
         Boolean (default = FALSE).
-        If TRUE will print a summary of the calibration procedure in the console when done.}
+        If TRUE will print a summary of the calibration procedure in
+        the console when done.}
 
       \item{chunksize}{
         Numeric (default = 1).
@@ -760,26 +763,37 @@ GGIR(mode = 1:5,
 
       \item{do.imp}{
         Boolean (default = TRUE).
-        Whether to impute missing values (e.g., suspected of monitor non-wear or clippling)
-        or not by \link{g.impute} in GGIR \link{g.part2}. Recommended setting is TRUE.}
+        Whether to impute missing values (e.g., suspected of monitor non-wear 
+        or clippling) or not by \link{g.impute} in GGIR \link{g.part2}.
+        Recommended setting is TRUE.}
 
       \item{TimeSegments2ZeroFile}{
-        Data frame (default = NULL).
-        Optional data.frame to specify which time segments need to be ignored for the imputation,
-        and acceleration metrics to be imputed by zeros. The data.frame is expected
-        to contain two columns named windowstart and windowend, with the start- and end
-        time of the time segment in POSIXlt class.}
+        Character (default = NULL).
+        Takes path to a csv file that has columns "windowstart" and "windowend"
+        to refer to the start and end time of a time windows in format
+        "2024-10-12 20:00:00", and "filename" of the GGIR
+        milestone data file without the "meta_" segment of the name. GGIR part 2
+        uses this to set all acceleration values to zero and the non-wear classification 
+        to zero (meaning sensor worn). Motivation: When the 
+        accelerometer is not worn during the night GGIR automatically labels them
+        as invalid, while the user may like to treat them as zero movement.
+        Disclaimer: This functionality was developed in 2019. With hindsight it
+        is not generic enough and in need for revision. Please contact GGIR 
+        maintainers if you would like us to invest time in improving this 
+        functionality.}
 
       \item{data_cleaning_file}{
         Character (default = NULL).
         Optional path to a csv file you create that holds four columns:
         ID, day_part5, relyonguider_part4, and night_part4. ID should hold the
         participant ID. Columns day_part5 and night_part4 allow you to specify which
-        day(s) and night(s) need to be excluded from \link{g.part5} and \link{g.part4}, respectively.
-        When including multiple day(s)/night(s) create a new line for each day/night.
-        So, this will be done regardless of whether the rest of GGIR thinks those day(s)/night(s)
-        are valid. Column relyonguider_part4 allows you to specify for which nights
-        \link{g.part4} should fully rely on the guider. See also package vignette.}
+        day(s) and night(s) need to be excluded from \link{g.part5} and 
+        \link{g.part4}, respectively. When including multiple day(s)/night(s) 
+        create a new line for each day/night.
+        So, this will be done regardless of whether the rest of GGIR thinks 
+        those day(s)/night(s) are valid. Column relyonguider_part4 allows you 
+        to specify for which nights \link{g.part4} should fully rely on the
+        guider. See also package vignette.}
 
       \item{excludefirstlast.part5}{
         Boolean (default = FALSE).
@@ -946,7 +960,7 @@ GGIR(mode = 1:5,
       \item{mvpathreshold}{
         Numeric (default = 100).
         Acceleration threshold for MVPA estimation in GGIR \link{g.part2}.
-        This can be a single number or an array of numbers,
+        This can be a single number or an vector of numbers,
         e.g., \code{mvpathreshold = c(100, 120)}.
         In the latter case the code will estimate MVPA separately for each threshold.
         If this variable is left blank, e.g., \code{mvpathreshold = c()}, then
@@ -964,7 +978,7 @@ GGIR(mode = 1:5,
       \item{threshold.lig}{
         Numeric (default = 40).
         In \link{g.part5}: Threshold for light physical activity to
-        separate inactivity from light. Value can be one number or an array of multiple
+        separate inactivity from light. Value can be one number or an vector of multiple
         numbers, e.g., \code{threshold.lig =c(30,40)}. If multiple numbers are entered then
         analysis will be repeated for each combination of threshold values. Threshold is
         applied to the first metric in the milestone data, so if you have only specified
@@ -973,7 +987,7 @@ GGIR(mode = 1:5,
       \item{threshold.mod}{
         Numeric (default = 100).
         In \link{g.part5}: Threshold for moderate physical activity
-        to separate light from moderate. Value can be one number or an array of
+        to separate light from moderate. Value can be one number or an vector of
         multiple numbers, e.g., \code{threshold.mod = c(100, 120)}.
         If multiple numbers are entered then analysis will be repeated for each
         combination of threshold values. Threshold is applied to the first metric in the
@@ -983,7 +997,7 @@ GGIR(mode = 1:5,
       \item{threshold.vig}{
         Numeric (default = 400).
         In \link{g.part5}: Threshold for vigorous physical activity
-        to separate moderate from vigorous. Value can be one number or an array of
+        to separate moderate from vigorous. Value can be one number or an vector of
         multiple numbers, e.g., \code{threshold.vig =c(400,500)}. If multiple numbers are
         entered then analysis will be repeated for each combination of threshold values.
         Threshold is applied to the first metric in the milestone data, so if you
@@ -1124,12 +1138,14 @@ GGIR(mode = 1:5,
         below 20 per cent of its standard deviation.}
     
       \item{HDCZA_threshold}{
-        Numeric (default = 0.2)
-        If \code{HASPT.algo} is set to "HDCZA" then HDCZA_threshold will be used
-        as threshold instead of 6th step in the diagram of Figure 1 in
-        van Hees et al. 2018 Scientific Report (doi: 10.1038/s41598-018-31266-z). We have
-        now simplified this step to a constant number, which can be modified via 
-        HDCZA_threshold.
+        Numeric (default = c())
+        If \code{HASPT.algo} is set to "HDCZA" and HDCZA_threshold is NOT NULL,
+        (e.g., HDCZA_threshold = 0.2), then that value will be used as threshold
+        in the 6th step in the diagram of Figure 1 in van Hees
+        et al. 2018 Scientific Report (doi: 10.1038/s41598-018-31266-z). However,
+        doing so has not been supported by research yet and is only intended to
+        facilitate methodological research, so we advise sticking with the default in
+        line with the publication.
       }
 
       \item{HASPT.ignore.invalid}{
@@ -1270,7 +1286,7 @@ GGIR(mode = 1:5,
 
       \item{qlevels}{
         Numeric (default = NULL).
-        Array of percentiles for which value needs to be extracted. These need to 
+        Vector of percentiles for which value needs to be extracted. These need to 
         be expressed as a fraction of 1, e.g., c(0.1, 0.5, 0.75). There is no limit 
         to the number of percentiles. If left empty then percentiles will not be extracted. 
         Distribution will be derived from short epoch metric data. Argument qlevels 

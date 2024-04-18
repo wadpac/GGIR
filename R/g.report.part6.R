@@ -40,6 +40,12 @@ g.report.part6 = function(metadatadir = c(), f0 = c(), f1 = c(),
         colnames(tmp) = expectedCols
         out = base::merge(tmp, out, all = TRUE)
       }
+      if (any(c("cosinorIS", "cosinorIV", "GGIRversion") %in% colnames(out) == FALSE)) {
+        out = as.data.frame(out)
+        out$cosinorIS = NA
+        out$cosinorIV = NA
+        out$GGIRversion = ""
+      }
       return(out)
     }
     out_try = myfun(fnames.ms6[f0])
@@ -47,6 +53,7 @@ g.report.part6 = function(metadatadir = c(), f0 = c(), f1 = c(),
     outputfinal = as.data.frame(do.call(rbind,
                                         lapply(fnames.ms6[f0:f1], myfun, expectedCols)),
                                 stringsAsFactors = FALSE)
+    outputfinal = outputfinal[,which(colnames(outputfinal) %in% c("cosinorIS", "cosinorIV") == FALSE)]
     # Find columns filled with missing values
     cut = which(sapply(outputfinal, function(x) all(x == "")) == TRUE)
     if (length(cut) > 0) {

@@ -51,6 +51,6 @@ gets populated with files, reports, and visualizations.
 
 ## Related links
 
--   [Install R and GGIR]().
--   [Get support]()
--   [Suitable file formats for GGIR]()
+-   [Install R and GGIR](https://wadpac.github.io/GGIR/articles/chapter0_Installation.html).
+-   [Get support](https://wadpac.github.io/GGIR/articles/chapter0_Support.html)
+-   [Suitable file formats for GGIR](https://wadpac.github.io/GGIR/articles/chapter2_Pipeline.html#input-files)

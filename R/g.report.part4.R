@@ -63,6 +63,9 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(),
       if (length(tail_expansion_log) != 0) {
         nightsummary = nightsummary[-which(nightsummary$night == max(nightsummary$night)),] # remove last row because it may not be trustworthy
       }
+      if ("GGIRversion" %in% colnames(nightsummary) == FALSE) {
+        nightsummary$GGIRversion = "" #before 3.0-10 this column did not exist
+      }
       out = as.matrix(nightsummary)
     }
     nightsummary2 = as.data.frame(do.call(rbind, lapply(fnames.ms4, myfun)), stringsAsFactors = FALSE)
@@ -490,13 +493,17 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(),
                   }
                 }
               }
-              personSummarynames_backup = personSummarynames  #if (length(personSummarynames) >= 29)
+              personSummary[i, cnt + 1] = as.character(nightsummary$GGIRversion[this_file[1]])
+              cnt = cnt + 1
+              personSummarynames = c(personSummarynames, "GGIRversion")
+              personSummarynames_backup = personSummarynames
             }
           }
           # replace matrix values 'NA' and 'NaN' by empty cells
           for (colli in 1:ncol(personSummary)) {
-            missingv = which(is.na(personSummary[, colli]) == TRUE | personSummary[, colli] == "NA" | personSummary[,
-                                                                                                                    colli] == "NaN")
+            missingv = which(is.na(personSummary[, colli]) == TRUE |
+                               personSummary[, colli] == "NA" |
+                               personSummary[, colli] == "NaN")
             if (length(missingv) > 0) {
               personSummary[missingv, colli] = ""
             }

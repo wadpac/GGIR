@@ -350,7 +350,8 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
     if (length(unlist(strsplit(fnames[1], "[.]RD"))) == 1) { # to avoid getting .RData.RData
       filename = paste0(filename,".RData")
     }
-    save(M, I, C, filename_dir, filefoldername, tail_expansion_log,
+    GGIRversion = utils::packageVersion("GGIR")
+    save(M, I, C, filename_dir, filefoldername, tail_expansion_log, GGIRversion,
          file = paste0(metadatadir, "/meta/basic/meta_", filename))
     rm(M); rm(I); rm(C)
   } # end of main_part1

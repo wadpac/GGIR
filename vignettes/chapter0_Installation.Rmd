@@ -42,8 +42,8 @@ might include additional bug fixes and functionalities. To get the
 development version, please use:
 
 ```{R,eval=FALSE}
-install.packages("remotes")
-remotes::install_github("wadpac/GGIR")
+install.packages("remotes", dependencies = TRUE)
+remotes::install_github("wadpac/GGIR", dependencies = TRUE)
 library(GGIR)
 ```
 
@@ -53,13 +53,9 @@ Additionally, in some use-cases you will need to install one or multiple
 additional packages. Note these packages are not installed by default,
 so please follow the instructions if:
 
--   You are working with Axivity or GENEActiv files, install the
-    GGIRread package with `install.packages("GGIRread")`
--   You are working with ActiGraph gt3x files, install the read.gt3x
-    package with `install.packages("read.gt3x")`
 -   You want to derive Neishabouricounts (with
     `do.neishabouricounts = TRUE`), install the actilifecounts package
     with `install.packages("actilifecounts")`
--   You want to derive circadian rhythm indicators using the [Cosinor
-    analysis and Extended Cosinor analysis] (with `cosinor = TRUE`),
-    install the ActCR package with `install.packages("ActCR")`
+-   You want to process Sensewear xlsx files (with
+    `dataFormat = "sensewear"`), install the readxl package
+    with `install.packages("readxl")`
