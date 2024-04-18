@@ -30,42 +30,69 @@ home:
 navbar:
   components:
     intro:
-      text: Get Started
-      href: articles/chapterInProgress.html
+      text: Get started
+      href: articles/chapter0_GetStarted.html
+    installation:
+      text: Installation
+      href: articles/chapter0_Installation.html
+    help:
+      text: Need help?
+      href: articles/chapter0_Support.html
+    contributing:
+      text: Contributing
+      href: articles/chapter0_Contributing.html
     twitter:
       icon: fa-twitter
       href: https://twitter.com/RpackageGGIR
       aria-label: Twitter
-    articles:
-      text: Articles
+    chapters:
+      text: The book
       menu:
-        - text: 1. The GGIR pipeline
+        - text: 1. What is GGIR
+          href: articles/Chapter1_WhatIsGGIR.html
+        - text: 2. The GGIR Pipeline
+          href: articles/chapter2_Pipeline.html
+        - text: 3. Data Quality Assurance
+          href: articles/chapter3_QualityAssessment.html
+        - text: 4. From Raw Data to Acceleration Metrics
+          href: articles/chapter4_AccMetrics.html
+        - text: 5. Accounting for Study Protocol
+          href: articles/chapter5_StudyProtocol.html
+        - text: 6. How GGIR Deals with Invalid Data
+          href: articles/chapter6_DataImputation.html
+        - text: 7. Describing the Data Without Knowing Sleep
+          href: articles/chapter7_DescribingDataWithoutKnowingSleep.html
+        - text: 8. Sleep Fundamentals - Guiding Sleep Detection
           href: articles/chapterInProgress.html
-        - text: 2. Inspecting the Data Quality in GGIR
+        - text: 9. Sleep Fundamentals - Sustained Inactivity Bout Detection (SIB)
           href: articles/chapterInProgress.html
-        - text: 3. From Raw Data to Acceleration Metrics
+        - text: 10. Sleep Analysis
           href: articles/chapterInProgress.html
-        - text: 4. Accounting for Study Protocol
+        - text: 11. Describing the Data with Cut-Points
           href: articles/chapterInProgress.html
-        - text: 5. How GGIR Deals with Invalid Data
+        - text: 12. Time-Use Analyses
           href: articles/chapterInProgress.html
-        - text: 6. Characterizing Human Behaviour with GGIR
-          href: articles/chapterInProgress.html
-        - text: 7. The 24-hour time use analysis
-          href: articles/chapterInProgress.html
-        - text: 8. Cleaning the Data
-          href: articles/chapterInProgress.html
-        - text: 9. Inspecting the results
-          href: articles/chapterInProgress.html
-        - text: 10. Motivation and Clarification
-          href: articles/chapterInProgress.html
-  
+    annexes:
+      text: Annexes
+      menu:
+        - text: Reading csv files with raw data
+          href: articles/readmyacccsv.html
+        - text: Embedding external functions in GGIR
+          href: articles/ExternalFunction.html
+        - text: Published cut-points and how to use them
+          href: articles/CutPoints.html
+        - text: Day-segment analyses
+          href: articles/TutorialDaySegmentAnalyses.html
+        - text: Household co-analysis
+          href: articles/HouseHoldCoanalysis.html
   structure:
-    left:  [intro, articles, news]
+    left:  [installation, intro, chapters, annexes, news, contributing, help]
     right: [search, github, twitter]
 
 news:
   releases:
+  - text: "Version 3.0-0"
+    href: https://www.accelting.com/updates/ggir-release-3-0-0/
   - text: "Version 2.9-0"
     href: https://www.accelting.com/updates/ggir-release-2-9-0/
   - text: "Version 2.8-0"

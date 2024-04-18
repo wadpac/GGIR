@@ -15,3 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 ## Work in progress
+
+
+<img src="GGIR-MASTERLOGO-RGB.png">
+

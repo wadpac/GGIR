@@ -3,15 +3,16 @@ title: "Embedding external functions in GGIR"
 author: "Vincent van Hees"
 date: "March 7 2023"
 output:
-  pdf_document:
-    toc: true
-    toc_depth: 3
+   html_document:
+    toc : true
     number_sections: true
+    toc_depth: 3
+    toc_float: true #by turning this on, the table of contents moves to the left of the page.
 urlcolor: blue
 vignette: >
   %\VignetteIndexEntry{Embedding external functions in GGIR}
-  %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
 header-includes:
   - \usepackage{titling}
   - \pretitle{\begin{center}
