@@ -57,5 +57,5 @@ so please follow the instructions if:
     `do.neishabouricounts = TRUE`), install the actilifecounts package
     with `install.packages("actilifecounts")`
 -   You want to process Sensewear xlsx files (with
-    `dataFormat = "sensewear"`), install the actilifecounts package
+    `dataFormat = "sensewear"`), install the readxl package
     with `install.packages("readxl")`
