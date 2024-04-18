@@ -23,7 +23,7 @@ knitr::opts_chunk$set(echo = TRUE)
 This section will guide you through the process of configuring your work
 environment to initiate the use of GGIR. For this purpose, you will need
 at least one accelerometer file to be processed by GGIR, please feel
-free to download [this .gt3x file](https://www.dropbox.com/s/covfyj31sarfaw0/GGIR01.gt3x?dl=0) or [this .cwa file](https://github.com/wadpac/GGIR/issues/biobank.ctsu.ox.ac.uk/ukb/ukb/examples/accsamp.zip)
+free to download [this .gt3x file](https://www.dropbox.com/s/covfyj31sarfaw0/GGIR01.gt3x?dl=0) or [this .cwa file](https://biobank.ndph.ox.ac.uk/ukb/refer.cgi?id=131620)
 and follow the instructions below.
 
 ## Run GGIR for first time
