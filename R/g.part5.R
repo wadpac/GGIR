@@ -665,7 +665,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                 if (length(GGIRversion) != 1) GGIRversion = sessionInfo()$otherPkgs$GGIR$Version
               }
               output$GGIRversion = GGIRversion
-              save(output, tail_expansion_log,
+              save(output, tail_expansion_log, GGIRversion,
                    file = paste(metadatadir, ms5.out, "/", fnames.ms3[i], sep = ""))
             }
           }

@@ -308,7 +308,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           if (length(GGIRversion) != 1) GGIRversion = sessionInfo()$otherPkgs$GGIR$Version
         }
         output_part6$GGIRversion = GGIRversion
-        save(output_part6, cosinor_ts, file = paste0(metadatadir,
+        save(output_part6, cosinor_ts, GGIRversion, file = paste0(metadatadir,
                                                      ms6.out, "/", gsub(pattern = "[.]csv|[.]RData",
                                                                         replacement = "",
                                                                         x = fnames.ms5raw[i]), ".RData"))
