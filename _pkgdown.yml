@@ -49,7 +49,7 @@ navbar:
       text: The book
       menu:
         - text: 1. What is GGIR
-          href: articles/Chapter1_WhatIsGGIR.html
+          href: articles/chapter1_WhatIsGGIR.html
         - text: 2. The GGIR Pipeline
           href: articles/chapter2_Pipeline.html
         - text: 3. Data Quality Assurance
