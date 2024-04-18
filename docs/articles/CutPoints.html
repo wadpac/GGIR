@@ -8,8 +8,8 @@
 <meta name="description" content="GGIR">
 <title>Published cut-points and how to use them in GGIR • GGIR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Published cut-points and how to use them in GGIR">
 <meta property="og:description" content="GGIR">
@@ -29,7 +29,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-9</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,27 +39,43 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item">
-  <a class="nav-link" href="../articles/chapterInProgress.html">Get Started</a>
+  <a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../articles/chapter0_GetStarted.html">Get started</a>
 </li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">1. The GGIR pipeline</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">2. Inspecting the Data Quality in GGIR</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">3. From Raw Data to Acceleration Metrics</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">4. Accounting for Study Protocol</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">5. How GGIR Deals with Invalid Data</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">6. Characterizing Human Behaviour with GGIR</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">7. The 24-hour time use analysis</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">8. Cleaning the Data</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">9. Inspecting the results</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">10. Motivation and Clarification</a>
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-the-book">The book</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-the-book">
+    <a class="dropdown-item" href="../articles/Chapter1_WhatIsGGIR.html">1. What is GGIR</a>
+    <a class="dropdown-item" href="../articles/chapter2_Pipeline.html">2. The GGIR Pipeline</a>
+    <a class="dropdown-item" href="../articles/chapter3_QualityAssessment.html">3. Data Quality Assurance</a>
+    <a class="dropdown-item" href="../articles/chapter4_AccMetrics.html">4. From Raw Data to Acceleration Metrics</a>
+    <a class="dropdown-item" href="../articles/chapter5_StudyProtocol.html">5. Accounting for Study Protocol</a>
+    <a class="dropdown-item" href="../articles/chapter6_DataImputation.html">6. How GGIR Deals with Invalid Data</a>
+    <a class="dropdown-item" href="../articles/chapter7_DescribingDataWithoutKnowingSleep.html">7. Describing the Data Without Knowing Sleep</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">8. Sleep Fundamentals - Guiding Sleep Detection</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">9. Sleep Fundamentals - Sustained Inactivity Bout Detection (SIB)</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">10. Sleep Analysis</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">11. Describing the Data with Cut-Points</a>
+    <a class="dropdown-item" href="../articles/chapterInProgress.html">12. Time-Use Analyses</a>
+  </div>
+</li>
+<li class="active nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-annexes">Annexes</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-annexes">
+    <a class="dropdown-item" href="../articles/readmyacccsv.html">Reading csv files with raw data</a>
+    <a class="dropdown-item" href="../articles/ExternalFunction.html">Embedding external functions in GGIR</a>
+    <a class="dropdown-item" href="../articles/CutPoints.html">Published cut-points and how to use them</a>
+    <a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a>
+    <a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a>
   </div>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-0-0/">Version 3.0-0</a>
     <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-9-0/">Version 2.9-0</a>
     <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-8-0/">Version 2.8-0</a>
     <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-7-1/">Version 2.7-1</a>
@@ -68,6 +84,12 @@
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../news/index.html">Changelog</a>
   </div>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../articles/chapter0_Contributing.html">Contributing</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../articles/chapter0_Support.html">Need help?</a>
 </li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
@@ -121,10 +143,12 @@ ad-hoc csv file formats</a>.</p>
 <p>The physical activity research field has used so called cut-points to
 segment accelerometer time series based on level of intensity. In this
 vignette we have compiled a list of published cut-points with
-instructions on how to use them with GGIR. As newer cut-points are
-frequently published the list below may not be up to date.
-<strong>Please let us know if you are aware of any published cut-points
-that we missed!</strong></p>
+instructions on how to use them with GGIR. Please note that GGIR refers
+to cut-points as thresholds, but we are referring to the same thing: A
+value or a set of values to help split levels of movement intensity. As
+newer cut-points are frequently published the list below may not be up
+to date. <strong>Please let us know if you are aware of any published
+cut-points that we missed!</strong></p>
 <div class="section level3">
 <h3 id="cut-points-expressed-in-gravitational-units-this-vignette">Cut-points expressed in gravitational units (this vignette)<a class="anchor" aria-label="anchor" href="#cut-points-expressed-in-gravitational-units-this-vignette"></a>
 </h3>
@@ -734,14 +758,73 @@ Moderate: 14<br>
 Vigorous: N/A</td>
 </tr>
 <tr class="even">
-<td align="left">Fraysse 2020<sup>†</sup>
+<td align="left">Bammann 2021</td>
+<td align="left">ActiGraph<br>
+Hip</td>
+<td align="left">62.9 (SD=3.6) yr</td>
+<td align="left">
+<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
 </td>
-<td colspan="4" align="left">GENEActiv  | ≥70 yr   |
-<code>do.enmoa = TRUE</code>  | Light: 42.5  | Non-dominant wrist |
-(mean: 77 yr) | <code>do.enmo = FALSE</code>  | Moderate: 98<br>
-| | <code>acc.metric = "ENMOa"</code> | Vigorous: N/A</td>
+<td align="left">Moderate: 94<br>
+Vigorous: 230</td>
 </tr>
 <tr class="odd">
+<td align="left">Bammann 2021</td>
+<td align="left">ActiGraph<br>
+Dominant Wrist</td>
+<td align="left">62.9 (SD=3.6) yr</td>
+<td align="left">
+<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
+</td>
+<td align="left">Moderate: 122<br>
+Vigorous: 234</td>
+</tr>
+<tr class="even">
+<td align="left">Bammann 2021</td>
+<td align="left">ActiGraph<br>
+Non-dominant Wrist</td>
+<td align="left">62.9 (SD=3.6) yr</td>
+<td align="left">
+<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
+</td>
+<td align="left">Moderate: 100<br>
+Vigorous: 245</td>
+</tr>
+<tr class="odd">
+<td align="left">Bammann 2021</td>
+<td align="left">ActiGraph<br>
+Dominant Ankle</td>
+<td align="left">62.9 (SD=3.6) yr</td>
+<td align="left">
+<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
+</td>
+<td align="left">Moderate: 342</td>
+</tr>
+<tr class="even">
+<td align="left">Bammann 2021</td>
+<td align="left">ActiGraph<br>
+Non-dominant Ankle</td>
+<td align="left">62.9 (SD=3.6) yr</td>
+<td align="left">
+<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
+</td>
+<td align="left">Moderate: 331</td>
+</tr>
+<tr class="odd">
+<td align="left">Fraysse 2020<sup>†</sup>
+</td>
+<td align="left">GENEActiv<br>
+Non-dominant wrist</td>
+<td align="left">≥70 yr<br>
+(mean: 77 yr)</td>
+<td align="left">
+<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
+</td>
+<td align="left">Light: 42.5<br>
+Moderate: 98<br>
+Vigorous: N/A</td>
+</tr>
+<tr class="even">
 <td align="left">Fraysse 2020<sup>†</sup>
 </td>
 <td align="left">GENEActiv<br>
@@ -755,7 +838,7 @@ Dominant wrist</td>
 Moderate: 92.5<br>
 Vigorous: N/A</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Dibben 2020<sup>‡</sup>
 </td>
 <td align="left">GENEActiv<br>
@@ -768,7 +851,7 @@ Right wrist</td>
 Moderate: 45.5<br>
 Vigorous: N/A</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Dibben 2020<sup>‡</sup>
 </td>
 <td align="left">GENEActiv<br>
@@ -781,7 +864,7 @@ Right wrist</td>
 Moderate: 26.2<br>
 Vigorous: N/A</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Dibben 2020<sup>‡</sup>
 </td>
 <td align="left">GENEActiv<br>
@@ -794,7 +877,7 @@ Left wrist</td>
 Moderate: 43.6<br>
 Vigorous: N/A</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Dibben 2020<sup>‡</sup>
 </td>
 <td align="left">GENEActiv<br>
@@ -807,7 +890,7 @@ Left wrist</td>
 Moderate: 22.8<br>
 Vigorous: N/A</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Dibben 2020<sup>‡</sup>
 </td>
 <td align="left">GENEActiv<br>
@@ -820,7 +903,7 @@ Hip</td>
 Moderate: 40.6<br>
 Vigorous: N/A</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Dibben 2020<sup>‡</sup>
 </td>
 <td align="left">GENEActiv<br>
@@ -875,31 +958,33 @@ a motivation why cut-points still have value in GGIR see: <a href="https://www.a
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <ul>
+<li>Aittasalo 2015: <a href="https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-015-0010-0" class="external-link uri">https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-015-0010-0</a>
+</li>
+<li>Bammann 2021: <a href="https://doi.org/10.1371/journal.pone.0252615" class="external-link uri">https://doi.org/10.1371/journal.pone.0252615</a>
+</li>
+<li>Dibben 2020: <a href="https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7" class="external-link uri">https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7</a>
+</li>
+<li>Dillon 2016: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4858250/" class="external-link uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4858250/</a>
+</li>
 <li>Esliger 2011: <a href="https://journals.lww.com/acsm-msse/Fulltext/2011/06000/Validation_of_the_GENEA_Accelerometer.22.aspx" class="external-link uri">https://journals.lww.com/acsm-msse/Fulltext/2011/06000/Validation_of_the_GENEA_Accelerometer.22.aspx</a>
 </li>
-<li>Phillips 2013: <a href="https://doi.org/10.1016/j.jsams.2012.05.013" class="external-link uri">https://doi.org/10.1016/j.jsams.2012.05.013</a>
-</li>
-<li>Schaefer 2014: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3960318/" class="external-link uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3960318/</a>
+<li>Fraysse 2020: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7843957/" class="external-link uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7843957/</a>
 </li>
 <li>Hildebrand 2014: <a href="https://journals.lww.com/acsm-msse/Fulltext/2014/09000/Age_Group_Comparability_of_Raw_Accelerometer.17.aspx" class="external-link uri">https://journals.lww.com/acsm-msse/Fulltext/2014/09000/Age_Group_Comparability_of_Raw_Accelerometer.17.aspx</a>
 </li>
 <li>Hildebrand 2016: <a href="https://doi.org/10.1111/sms.12795" class="external-link uri">https://doi.org/10.1111/sms.12795</a>
 </li>
-<li>Vähä-Ypyä 2015: <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0134813" class="external-link uri">https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0134813</a>
+<li>Migueles 2021: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8150960/" class="external-link uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8150960/</a>
 </li>
-<li>Aittasalo 2015: <a href="https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-015-0010-0" class="external-link uri">https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-015-0010-0</a>
-</li>
-<li>Roscoe 2017: <a href="https://link.springer.com/article/10.1007/s00431-017-2948-2" class="external-link uri">https://link.springer.com/article/10.1007/s00431-017-2948-2</a>
+<li>Phillips 2013: <a href="https://doi.org/10.1016/j.jsams.2012.05.013" class="external-link uri">https://doi.org/10.1016/j.jsams.2012.05.013</a>
 </li>
 <li>Sanders 2018: <a href="https://doi.org/10.1080/02640414.2018.1555904" class="external-link uri">https://doi.org/10.1080/02640414.2018.1555904</a>
 </li>
-<li>Migueles 2021: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8150960/" class="external-link uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8150960/</a>
+<li>Schaefer 2014: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3960318/" class="external-link uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3960318/</a>
 </li>
-<li>Fraysse 2020: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7843957/" class="external-link uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7843957/</a>
+<li>Roscoe 2017: <a href="https://link.springer.com/article/10.1007/s00431-017-2948-2" class="external-link uri">https://link.springer.com/article/10.1007/s00431-017-2948-2</a>
 </li>
-<li>Dibben 2020: <a href="https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7" class="external-link uri">https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7</a>
-</li>
-<li>Dillon 2016: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4858250/" class="external-link uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4858250/</a>
+<li>Vähä-Ypyä 2015: <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0134813" class="external-link uri">https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0134813</a>
 </li>
 </ul>
 </div>
