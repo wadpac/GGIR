@@ -1,11 +1,23 @@
 # CHANGES IN GGIR VERSION 3.0-10
 
-- Part 4: Fixes issue #1095 introduced in 3.0-7 that causes GGIR part 4 to stop when processing
-data without non-default sleep algorithms.
+- Part 3: Revert change to HDCZA in 3.0-7, see issue #1102
+
+- Part 1: Change default for parameter minloadcrit to 168 hours, see #1101.
+
+- Part 1-6: GGIR release number now stored in each milestone data file and in each
+reports to ease tracing what release was used per recording and per GGIR part, see #1101.
+
+- Part 1: Improve handling of failure to extract sampling frequency from gt3x file #1098
+
+- Part 4: Fixes issue #1095 introduced in 3.0-7 that causes GGIR part 4 to stop when processing data without non-default sleep algorithms.
 
 - Part 2 and 5: qwindow functionality enhanced to also consider fractions of minutes, #1093
 
 - Part 2 and 5: Fix minor bug in activity diary loading when date format is %Y-%m-%d, #1090
+
+- Part 1: Fix bug introduced in 3.0-6 affecting handling of time gaps, #1104
+
+- Part 5 and 6: Correct algorithm for coefficient of variance (CoV) in g.fragmentation, #1105
 
 # CHANGES IN GGIR VERSION 3.0-9
 

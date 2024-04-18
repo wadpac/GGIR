@@ -128,8 +128,9 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                                   desiredtz = params_general[["desiredtz"]])
           rec_starttime = IMP$metashort[1,1] # this may be used in g.loadlog to align sleeplog with recording
           ms3out_filename = paste(metadatadir, "/meta/ms3.out/", fname, ".RData",sep = "")
+          GGIRversion = utils::packageVersion("GGIR")
           save(sib.cla.sum, L5list, SPTE_end, SPTE_start, tib.threshold, rec_starttime, ID,
-               longitudinal_axis, SleepRegularityIndex, tail_expansion_log,
+               longitudinal_axis, SleepRegularityIndex, tail_expansion_log, GGIRversion,
                file = ms3out_filename, part3_guider)
         }
       }

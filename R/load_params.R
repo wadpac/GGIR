@@ -26,7 +26,7 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                         possible_nap_dur = c(15, 240),
                         nap_model = c(), sleepefficiency.metric = 1,
                         possible_nap_edge_acc = Inf,
-                        HDCZA_threshold = 0.2)
+                        HDCZA_threshold = c())
   }
   if ("metrics" %in% topic) {
     params_metrics = list(do.anglex = FALSE, do.angley = FALSE, do.anglez = TRUE,
@@ -48,7 +48,7 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
   }
   if ("rawdata" %in% topic) {
     params_rawdata = list(
-      chunksize = 1, spherecrit = 0.3, minloadcrit = 72, printsummary = FALSE,
+      chunksize = 1, spherecrit = 0.3, minloadcrit = 168, printsummary = FALSE,
       do.cal = TRUE, backup.cal.coef = "retrieve", dynrange = c(),
       minimumFileSizeMB = 2, rmc.dec = ".",
       rmc.firstrow.acc = c(), rmc.firstrow.header = c(),
