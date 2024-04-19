@@ -29,7 +29,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-10</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,7 +86,7 @@
   </div>
 </li>
 <li class="nav-item">
-  <a class="nav-link" href="../articles/chapter0_Contributing.html">Contributing</a>
+  <a class="nav-link" href="../articles/chapter0_contributing.html">Contributing</a>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../articles/chapter0_Support.html">Need help?</a>
@@ -1380,11 +1380,11 @@ is sufficiently populated</p>
 <div class="section level4">
 <h4 class="unnumbered" id="minloadcrit">minloadcrit<a class="anchor" aria-label="anchor" href="#minloadcrit"></a>
 </h4>
-<p>Numeric (default = 72). The minimum number of hours the code needs to
-read for the autocalibration procedure to be effective (only sensitive
-to multitudes of 12 hrs, other values will be ceiled). After loading
-these hours only extra data is loaded if calibration error has not been
-reduced to under 0.01 g.</p>
+<p>Numeric (default = 168). The minimum number of hours the code needs
+to read for the autocalibration procedure to be effective (only
+sensitive to multitudes of 12 hrs, other values will be ceiled). After
+loading these hours only extra data is loaded if calibration error has
+not been reduced to under 0.01 g.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="printsummary">printsummary<a class="anchor" aria-label="anchor" href="#printsummary"></a>
@@ -2012,11 +2012,18 @@ g.part5.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="timesegments2zerofile">TimeSegments2ZeroFile<a class="anchor" aria-label="anchor" href="#timesegments2zerofile"></a>
 </h4>
-<p>Data frame (default = NULL). Optional data.frame to specify which
-time segments need to be ignored for the imputation, and acceleration
-metrics to be imputed by zeros. The data.frame is expected to contain
-two columns named windowstart and windowend, with the start- and end
-time of the time segment in POSIXlt class.</p>
+<p>Character (default = NULL). Takes path to a csv file that has columns
+“windowstart” and “windowend” to refer to the start and end time of a
+time windows in format “2024-10-12 20:00:00”, and “filename” of the GGIR
+milestone data file without the “meta_” segment of the name. GGIR part 2
+uses this to set all acceleration values to zero and the non-wear
+classification to zero (meaning sensor worn). Motivation: When the
+accelerometer is not worn during the night GGIR automatically labels
+them as invalid, while the user may like to treat them as zero movement.
+Disclaimer: This functionality was developed in 2019. With hindsight it
+is not generic enough and in need for revision. Please contact GGIR
+maintainers if you would like us to invest time in improving this
+functionality.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="do-imp">do.imp<a class="anchor" aria-label="anchor" href="#do-imp"></a>
@@ -2330,11 +2337,13 @@ naps.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="hdcza_threshold">HDCZA_threshold<a class="anchor" aria-label="anchor" href="#hdcza_threshold"></a>
 </h4>
-<p>Numeric (default = 0.2) If HASPT.algo is set to “HDCZA” then
-HDCZA_threshold will be used as threshold instead of 6th step in the
-diagram of Figure 1 in van Hees et al. 2018 Scientific Report (doi:
-10.1038/s41598-018-31266-z). We have now simplified this step to a
-constant number, which can be modified via HDCZA_threshold.</p>
+<p>Numeric (default = c()) If HASPT.algo is set to “HDCZA” and
+HDCZA_threshold is NOT NULL, (e.g., HDCZA_threshold = 0.2), then that
+value will be used as threshold in the 6th step in the diagram of Figure
+1 in van Hees et al. 2018 Scientific Report (doi:
+10.1038/s41598-018-31266-z). However, doing so has not been supported by
+research yet and is only intended to facilitate methodological research,
+so we advise sticking with the default in line with the publication.</p>
 </div>
 </div>
 <div class="section level3">
@@ -2344,7 +2353,7 @@ constant number, which can be modified via HDCZA_threshold.</p>
 <h4 class="unnumbered" id="mvpathreshold">mvpathreshold<a class="anchor" aria-label="anchor" href="#mvpathreshold"></a>
 </h4>
 <p>Numeric (default = 100). Acceleration threshold for MVPA estimation
-in GGIR g.part2. This can be a single number or an array of numbers,
+in GGIR g.part2. This can be a single number or an vector of numbers,
 e.g., mvpathreshold = c(100, 120). In the latter case the code will
 estimate MVPA separately for each threshold. If this variable is left
 blank, e.g., mvpathreshold = c(), then MVPA is not estimated.</p>
@@ -2386,18 +2395,18 @@ fraction of a bout needs to be above the threshold.mod.</p>
 </h4>
 <p>Numeric (default = 40). In g.part5: Threshold for light physical
 activity to separate inactivity from light. Value can be one number or
-an array of multiple numbers, e.g., threshold.lig =c(30,40). If multiple
-numbers are entered then analysis will be repeated for each combination
-of threshold values. Threshold is applied to the first metric in the
-milestone data, so if you have only specified do.enmo = TRUE then it
-will be applied to ENMO.</p>
+an vector of multiple numbers, e.g., threshold.lig =c(30,40). If
+multiple numbers are entered then analysis will be repeated for each
+combination of threshold values. Threshold is applied to the first
+metric in the milestone data, so if you have only specified do.enmo =
+TRUE then it will be applied to ENMO.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="threshold-mod">threshold.mod<a class="anchor" aria-label="anchor" href="#threshold-mod"></a>
 </h4>
 <p>Numeric (default = 100). In g.part5: Threshold for moderate physical
 activity to separate light from moderate. Value can be one number or an
-array of multiple numbers, e.g., threshold.mod = c(100, 120). If
+vector of multiple numbers, e.g., threshold.mod = c(100, 120). If
 multiple numbers are entered then analysis will be repeated for each
 combination of threshold values. Threshold is applied to the first
 metric in the milestone data, so if you have only specified do.enmo =
@@ -2408,7 +2417,7 @@ TRUE then it will be applied to ENMO.</p>
 </h4>
 <p>Numeric (default = 400). In g.part5: Threshold for vigorous physical
 activity to separate moderate from vigorous. Value can be one number or
-an array of multiple numbers, e.g., threshold.vig =c(400,500). If
+an vector of multiple numbers, e.g., threshold.vig =c(400,500). If
 multiple numbers are entered then analysis will be repeated for each
 combination of threshold values. Threshold is applied to the first
 metric in the milestone data, so if you have only specified do.enmo =
@@ -2505,7 +2514,7 @@ research needs.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="qlevels">qlevels<a class="anchor" aria-label="anchor" href="#qlevels"></a>
 </h4>
-<p>Numeric (default = NULL). Array of percentiles for which value needs
+<p>Numeric (default = NULL). Vector of percentiles for which value needs
 to be extracted. These need to be expressed as a fraction of 1, e.g.,
 c(0.1, 0.5, 0.75). There is no limit to the number of percentiles. If
 left empty then percentiles will not be extracted. Distribution will be

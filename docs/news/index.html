@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-10</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@
   </div>
 </li>
 <li class="nav-item">
-  <a class="nav-link" href="../articles/chapter0_Contributing.html">Contributing</a>
+  <a class="nav-link" href="../articles/chapter0_contributing.html">Contributing</a>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../articles/chapter0_Support.html">Need help?</a>
@@ -99,14 +99,21 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.0-10" id="changes-in-ggir-version-30-10">CHANGES IN GGIR VERSION 3.0-10<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-30-10"></a></h2>
-<ul><li><p>Part 3: Revert change to HDCZA in 3.0-7, see issue <a href="https://github.com/wadpac/GGIR/issues/1102" class="external-link">#1102</a></p></li>
-<li><p>Part 1: Change default for parameter minloadcrit to 168 hours, see <a href="https://github.com/wadpac/GGIR/issues/1101" class="external-link">#1101</a>.</p></li>
-<li><p>Part 1-6: GGIR release number now stored in each milestone data file and in each reports to ease tracing what release was used per recording and per GGIR part, see <a href="https://github.com/wadpac/GGIR/issues/1101" class="external-link">#1101</a>.</p></li>
-<li><p>Part 1: Improve handling of failure to extract sampling frequency from gt3x file <a href="https://github.com/wadpac/GGIR/issues/1098" class="external-link">#1098</a></p></li>
+<ul><li>
+<p>Part 1:</p>
+<ul><li><p>Change default for parameter “minloadcrit” to 168 hours, see <a href="https://github.com/wadpac/GGIR/issues/1101" class="external-link">#1101</a>.</p></li>
+<li><p>Improve handling of failure to extract sampling frequency from gt3x file <a href="https://github.com/wadpac/GGIR/issues/1098" class="external-link">#1098</a></p></li>
+<li><p>Fix bug in handling ad-hoc csv format data expressed in mg units <a href="https://github.com/wadpac/GGIR/issues/1110" class="external-link">#1110</a></p></li>
+<li><p>Fix bug introduced in 3.0-6 affecting handling of time gaps, <a href="https://github.com/wadpac/GGIR/issues/1104" class="external-link">#1104</a></p></li>
+</ul></li>
+<li><p>Part 1-6: GGIR release number now stored in each milestone data file and in each report to ease tracing what release was used per recording and per GGIR part, see <a href="https://github.com/wadpac/GGIR/issues/1101" class="external-link">#1101</a>.</p></li>
+<li><p>Part 3: Revert change to HDCZA in 3.0-7, see issue <a href="https://github.com/wadpac/GGIR/issues/1102" class="external-link">#1102</a></p></li>
 <li><p>Part 4: Fixes issue <a href="https://github.com/wadpac/GGIR/issues/1095" class="external-link">#1095</a> introduced in 3.0-7 that causes GGIR part 4 to stop when processing data without non-default sleep algorithms.</p></li>
-<li><p>Part 2 and 5: qwindow functionality enhanced to also consider fractions of minutes, <a href="https://github.com/wadpac/GGIR/issues/1093" class="external-link">#1093</a></p></li>
-<li><p>Part 2 and 5: Fix minor bug in activity diary loading when date format is %Y-%m-%d, <a href="https://github.com/wadpac/GGIR/issues/1090" class="external-link">#1090</a></p></li>
-<li><p>Part 1: Fix bug introduced in 3.0-6 affecting handling of time gaps, <a href="https://github.com/wadpac/GGIR/issues/1104" class="external-link">#1104</a></p></li>
+<li>
+<p>Part 2 and 5:</p>
+<ul><li><p>qwindow functionality enhanced to also consider fractions of minutes, <a href="https://github.com/wadpac/GGIR/issues/1093" class="external-link">#1093</a></p></li>
+<li><p>Fix minor bug in activity diary loading when date format is %Y-%m-%d, <a href="https://github.com/wadpac/GGIR/issues/1090" class="external-link">#1090</a></p></li>
+</ul></li>
 <li><p>Part 5 and 6: Correct algorithm for coefficient of variance (CoV) in g.fragmentation, <a href="https://github.com/wadpac/GGIR/issues/1105" class="external-link">#1105</a></p></li>
 </ul></div>
     <div class="section level2">
