@@ -51,12 +51,30 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
   D1 = read.myacc.csv(rmc.file = testfile[1], rmc.nrow = 20, rmc.dec = ".",
                       rmc.firstrow.acc = 1, rmc.firstrow.header = c(),
                       rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time = 2,
-                      rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.format.time = "%Y-%m-%d %H:%M:%OS",
-                      rmc.origin = "1970-01-01",
+                      rmc.unit.acc = "g", rmc.unit.temp = "C",
+                      rmc.format.time = "%Y-%m-%d %H:%M:%OS", rmc.origin = "1970-01-01",
                       desiredtz = "Europe/London", rmc.sf = sf,
                       rmc.headername.sf = "sample_frequency",
                       rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID")
+  
+  expect_equal(mean(D1$data$x), 0.1078671, tol = 0.0001)
+  expect_equal(mean(D1$data$y), -0.06675716, tol = 0.0001)
+  
+  # attempt to load as if values are in mg and scale by 100
+  D1B = read.myacc.csv(rmc.file = testfile[1], rmc.nrow = 20, rmc.dec = ".",
+                      rmc.firstrow.acc = 1, rmc.firstrow.header = c(),
+                      rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time = 2,
+                      rmc.unit.acc = "mg", rmc.unit.temp = "C",
+                      rmc.format.time = "%Y-%m-%d %H:%M:%OS", rmc.origin = "1970-01-01",
+                      rmc.scalefactor.acc = 100,
+                      desiredtz = "Europe/London", rmc.sf = sf,
+                      rmc.headername.sf = "sample_frequency",
+                      rmc.headername.sn = "serial_number",
+                      rmc.headername.recordingid = "ID")
+  
+  expect_equal(mean(D1B$data$x), 0.01078671, tol = 0.0001)
+  expect_equal(mean(D1B$data$y), -0.006675716, tol = 0.0001)
   
   #------------------------
   # Warnings and errors related to desiredtz and configtz

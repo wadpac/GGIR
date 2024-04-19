@@ -9,6 +9,8 @@ reports to ease tracing what release was used per recording and per GGIR part, s
 
 - Part 1: Improve handling of failure to extract sampling frequency from gt3x file #1098
 
+- Part 1: Fix bug in handling ad-hoc csv format data expressed in mg units #1110
+
 - Part 4: Fixes issue #1095 introduced in 3.0-7 that causes GGIR part 4 to stop when processing data without non-default sleep algorithms.
 
 - Part 2 and 5: qwindow functionality enhanced to also consider fractions of minutes, #1093
