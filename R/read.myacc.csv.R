@@ -278,9 +278,9 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   
   # If acceleration is stored in mg units then convert to gravitational units
   if (rmc.unit.acc == "mg") {
-    P$x = P$x * 1000
-    P$y = P$y * 1000
-    P$z = P$z * 1000
+    P$x = P$x / 1000
+    P$y = P$y / 1000
+    P$z = P$z / 1000
   }
   if (rmc.scalefactor.acc != 1) {
     P$x = P$x * rmc.scalefactor.acc
