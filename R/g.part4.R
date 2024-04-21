@@ -1088,7 +1088,9 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           GGIRversion = as.character(utils::packageVersion("GGIR"))
           if (length(GGIRversion) != 1) GGIRversion = sessionInfo()$otherPkgs$GGIR$Version
         }
-        nightsummary$GGIRversion = GGIRversion
+        if (nrow(nightsummary) > 0) {
+          nightsummary$GGIRversion = GGIRversion
+        }
         save(nightsummary, tail_expansion_log, GGIRversion, file = paste0(metadatadir, ms4.out, "/", fnames[i]))
       }
     }
