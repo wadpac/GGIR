@@ -64,7 +64,13 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(),
         nightsummary = nightsummary[-which(nightsummary$night == max(nightsummary$night)),] # remove last row because it may not be trustworthy
       }
       if ("GGIRversion" %in% colnames(nightsummary) == FALSE) {
-        nightsummary$GGIRversion = "" #before 3.0-10 this column did not exist
+        if (nrow(nightsummary) > 0) {
+          nightsummary$GGIRversion = "" #before 3.0-10 this column did not exist
+        } else {
+          nightsummary[1, ] = NA
+          nightsummary$GGIRversion = NA
+          nightsummary = nightsummary[0, ]
+        }
       }
       out = as.matrix(nightsummary)
     }
@@ -335,7 +341,6 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(),
                 relevant_rows = this_sleepparam[Seli]
                 if (length(relevant_rows) > 0) {
                   for (gdni in 1:length(gdn)) {
-                    print(mean(nightsummary.tmp[relevant_rows, gdn[gdni]], na.rm = TRUE))
                     personSummary[i, cnt + 1] = mean(nightsummary.tmp[relevant_rows, gdn[gdni]], na.rm = TRUE)
                     personSummary[i, cnt + 2] = sd(nightsummary.tmp[relevant_rows, gdn[gdni]], na.rm = TRUE)
                     personSummarynames = c(personSummarynames, paste(gdn[gdni], "_", TW, "_mn", sep = ""),
