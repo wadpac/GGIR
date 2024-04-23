@@ -435,7 +435,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
               threshold.mod = params_phyact[["threshold.mod"]],
               threshold.vig = params_phyact[["threshold.vig"]],
               visualreport_without_invalid = params_output[["visualreport_without_invalid"]],
-              includedaycrit = params_cleaning[["includedaycrit"]],
+              includedaycrit = params_cleaning[["includedaycrit"]][1],
               includenightcrit = params_cleaning[["includenightcrit"]],
               verbose = TRUE)
     }

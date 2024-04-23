@@ -1,6 +1,5 @@
 # CHANGES IN GGIR VERSION 3.1-??
 
-
 - Part 6: Add DFA functionality #839 (credits: Ian Meneghel Danilevicz and Victor Barreto Mesquita)
 
 - Part 2 + 6: Revised and simplified IV and IS calculation which now ignores invalid timestamps and also comes with phi statistic (credits: Ian Meneghel Danilevicz). In part 2 we used to have 2 calculation, which is now replaced by just one and applied to all valid data points in the recordings. In part 6 this is repeated by for the time window as specified with parameter part6Window. Further, IVIS now uses argument threshold.lig as threshold to distinguish inactivity from active.
@@ -13,6 +12,9 @@
 # CHANGES IN GGIR VERSION 3.0-??
 
 - Minor issue fixes introduced in 3.0-10 related to handling nights without sustained inactivity bouts, handling recordings without midnight and storage of GGIR version in the part 4 output when there are no valid nights.
+
+- Part 5 report: Add option to filter part 5 windows based on parameter includedaycrit originally used in part 2, for details see documentation of parameter includedaycrit and #1113
+
 
 # CHANGES IN GGIR VERSION 3.0-10
 
