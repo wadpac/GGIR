@@ -54,7 +54,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
       
       minimumValidMinutesMM = 0 # default
       if (length(params_cleaning[["includedaycrit"]]) == 2) {
-        minimumValidMinutesMM = params_cleaning[["includedaycrit"]] * 60
+        minimumValidMinutesMM = params_cleaning[["includedaycrit"]][2] * 60
       }
       if (window == "WW" | window == "OO") {
         indices = which(x$wear_perc_day >= includeday_wearPercentage &
