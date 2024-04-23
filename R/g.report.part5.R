@@ -54,21 +54,21 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
       
       minimumValidHoursMM = 0 # default
       if (length(params_cleaning[["includedaycrit"]]) == 2) {
-        minimumValidHoursMM = params_cleaning[["includedaycrit"]]
+        minimumValidMinutesMM = params_cleaning[["includedaycrit"]] * 60
       }
       if (window == "WW" | window == "OO") {
         indices = which(x$wear_perc_day >= includeday_wearPercentage &
                           x$wear_min_day >= includeday_absolute &
                           x$dur_spt_min > 0 & x$dur_day_min > 0 &
                           include_window == TRUE &
-                          x$wear_min_day_spt >= minimumValidHoursMM)
+                          x$wear_min_day_spt >= minimumValidMinutesMM)
       } else if (window == "MM") {
         indices = which(x$wear_perc_day >= includeday_wearPercentage &
                           x$wear_min_day >= includeday_absolute &
                           x$dur_spt_min > 0 & x$dur_day_min > 0 &
                           x$dur_day_spt_min >= (params_cleaning[["minimum_MM_length.part5"]] * 60) &
                           include_window == TRUE &
-                          x$wear_min_day_spt >= minimumValidHoursMM)
+                          x$wear_min_day_spt >= minimumValidMinutesMM)
         # Note: By default for MM analysis only full days are interesting (23 hours for one day in the year)
       }
     } else if (window == "Segments") {
