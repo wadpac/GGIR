@@ -1,4 +1,5 @@
-# CHANGES IN GGIR VERSION 3.0-??
+# CHANGES IN GGIR VERSION 3.1-??
+
 
 - Part 6: Add DFA functionality #839 (credits: Ian Meneghel Danilevicz and Victor Barreto Mesquita)
 
@@ -7,6 +8,11 @@
 - Part 6: Add fragmentation metrics, same function as in part 5 but now applied at recording level #839
 
 - Part 2: Increase sensitivity clipping detection from 80% to 30% of a window. If the long epoch has more than 30% of its values close to the dynamic range of the sensor then it will be labelled as clipping.
+
+
+# CHANGES IN GGIR VERSION 3.0-??
+
+- Minor issue fixes introduced in 3.0-10 related to handling nights without sustained inactivity bouts, handling recordings without midnight and storage of GGIR version in the part 4 output when there are no valid nights.
 
 # CHANGES IN GGIR VERSION 3.0-10
 
