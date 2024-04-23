@@ -1,3 +1,9 @@
+# CHANGES IN GGIR VERSION 3.0-??
+
+- Minor issue fixes introduced in 3.0-10 related to handling nights without sustained inactivity bouts, handling recordings without midnight and storage of GGIR version in the part 4 output when there are no valid nights.
+
+- Part 5 report: Add option to filter part 5 windows based on parameter includedaycrit originally used in part 2, for details see documentation of parameter includedaycrit and #1113
+
 # CHANGES IN GGIR VERSION 3.0-10
 
 - Part 1:
