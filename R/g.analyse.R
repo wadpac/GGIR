@@ -23,6 +23,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
     params_cleaning = params$params_cleaning
     rm(params)
   }
+  # TEST ONLY
   params_247[["L5M5window"]] = c(0,24) # as of version 1.6-0 this is hardcoded because argument qwindow now
   # specifies the window over which L5M5 analysis is done. So, L5M5window is a depricated
   # argument and this is also clarified in the documentation
