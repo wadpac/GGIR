@@ -131,7 +131,7 @@ find a description and default value for all the arguments.
 | hrs.del.end                 | 2, 5              | params_cleaning          |
 | maxdur                      | 2, 5              | params_cleaning          |
 | max_calendar_days           | 2                 | params_cleaning          |
-| includedaycrit              | 2                 | params_cleaning          |
+| includedaycrit              | 2, 5              | params_cleaning          |
 | nonWearEdgeCorrection       | 2                 | params_cleaning          |
 | L5M5window                  | 2                 | params_247               |
 | M5L5res                     | 2, 5              | params_247               |
