@@ -86,13 +86,12 @@ g.part5.wakesleepwindows = function(ts, part4_output, desiredtz, nightsi,
       s1 = nrow(ts)
     }
     
-    if (length(s1) != 0 & length(s0) != 0 & is.na(s0) == FALSE & is.na(s1) == FALSE) {
+    if (length(s1) != 0 & length(s0) != 0 & is.na(s0) == FALSE & is.na(s1) == FALSE && length(nightsi) > 0) {
       distance2midnight = abs(nightsi - s1) + abs(nightsi - s0)
       closestmidnighti = which.min(distance2midnight)
       closestmidnight = nightsi[closestmidnighti]
       noon0 = closestmidnight - (12 * (60/epochSize) * 60)
       noon1 = closestmidnight + (12 * (60/epochSize) * 60)
-      
       if (noon0 < 1) noon0 = 1
       if (noon1 > Nts) noon1 = Nts
       nonwearpercentage = mean(ts$nonwear[noon0:noon1])

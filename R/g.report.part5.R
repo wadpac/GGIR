@@ -44,19 +44,31 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
       # the night time we only need start and end of the SPT window.
       
       # Add extra columns to ease the check
+      x$nonwear_perc_day_spt = as.numeric(x$nonwear_perc_day_spt)
+      x$nonwear_perc_day = as.numeric(x$nonwear_perc_day)
+      x$nonwear_perc_spt = as.numeric(x$nonwear_perc_spt)
+      x$wear_min_day_spt = (1 - (x$nonwear_perc_day_spt / 100)) * x$dur_day_spt_min #valid minute during waking hours
+      
       x$wear_min_day = (1 - (x$nonwear_perc_day / 100)) * x$dur_day_min #valid minute during waking hours
       x$wear_perc_day = 100 - (x$nonwear_perc_day / 100) #wear percentage during waking hours
+      
+      minimumValidMinutesMM = 0 # default
+      if (length(params_cleaning[["includedaycrit"]]) == 2) {
+        minimumValidMinutesMM = params_cleaning[["includedaycrit"]][2] * 60
+      }
       if (window == "WW" | window == "OO") {
         indices = which(x$wear_perc_day >= includeday_wearPercentage &
                           x$wear_min_day >= includeday_absolute &
                           x$dur_spt_min > 0 & x$dur_day_min > 0 &
-                          include_window == TRUE)
+                          include_window == TRUE &
+                          x$wear_min_day_spt >= minimumValidMinutesMM)
       } else if (window == "MM") {
         indices = which(x$wear_perc_day >= includeday_wearPercentage &
                           x$wear_min_day >= includeday_absolute &
                           x$dur_spt_min > 0 & x$dur_day_min > 0 &
                           x$dur_day_spt_min >= (params_cleaning[["minimum_MM_length.part5"]] * 60) &
-                          include_window == TRUE)
+                          include_window == TRUE &
+                          x$wear_min_day_spt >= minimumValidMinutesMM)
         # Note: By default for MM analysis only full days are interesting (23 hours for one day in the year)
       }
     } else if (window == "Segments") {

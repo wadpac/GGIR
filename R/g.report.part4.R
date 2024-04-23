@@ -64,7 +64,13 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(),
         nightsummary = nightsummary[-which(nightsummary$night == max(nightsummary$night)),] # remove last row because it may not be trustworthy
       }
       if ("GGIRversion" %in% colnames(nightsummary) == FALSE) {
-        nightsummary$GGIRversion = "" #before 3.0-10 this column did not exist
+        if (nrow(nightsummary) > 0) {
+          nightsummary$GGIRversion = "" #before 3.0-10 this column did not exist
+        } else {
+          nightsummary[1, ] = NA
+          nightsummary$GGIRversion = NA
+          nightsummary = nightsummary[0, ]
+        }
       }
       out = as.matrix(nightsummary)
     }
@@ -333,12 +339,14 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(),
                   Seli = which(weekday == "Friday" | weekday == "Saturday")
                 }
                 relevant_rows = this_sleepparam[Seli]
-                for (gdni in 1:length(gdn)) {
-                  personSummary[i, cnt + 1] = mean(nightsummary.tmp[relevant_rows, gdn[gdni]], na.rm = TRUE)
-                  personSummary[i, cnt + 2] = sd(nightsummary.tmp[relevant_rows, gdn[gdni]], na.rm = TRUE)
-                  personSummarynames = c(personSummarynames, paste(gdn[gdni], "_", TW, "_mn", sep = ""),
-                                         paste(gdn[gdni], "_", TW, "_sd", sep = ""))
-                  cnt = cnt + 2
+                if (length(relevant_rows) > 0) {
+                  for (gdni in 1:length(gdn)) {
+                    personSummary[i, cnt + 1] = mean(nightsummary.tmp[relevant_rows, gdn[gdni]], na.rm = TRUE)
+                    personSummary[i, cnt + 2] = sd(nightsummary.tmp[relevant_rows, gdn[gdni]], na.rm = TRUE)
+                    personSummarynames = c(personSummarynames, paste(gdn[gdni], "_", TW, "_mn", sep = ""),
+                                           paste(gdn[gdni], "_", TW, "_sd", sep = ""))
+                    cnt = cnt + 2
+                  }
                 }
                 if ("nonwear_perc_spt" %in% colnames(nightsummary.tmp)) {
                   personSummary[i, cnt + 1] = mean(nightsummary.tmp$nonwear_perc_spt[this_sleepparam[Seli]], na.rm = TRUE)

@@ -148,11 +148,11 @@ g.analyse.perfile = function(I, C, metrics_nav,
     columnWithAlwaysData = which(ds_names == "N hours" | ds_names == "N_hours")
     NVHcolumn = which(ds_names == "N valid hours" | ds_names == "N_valid_hours" ) #only count in the days for which the inclusion criteria is met
     v1 = which(is.na(as.numeric(daysummary[wkend, columnWithAlwaysData])) == F &
-                 as.numeric(daysummary[wkend, NVHcolumn]) >= params_cleaning[["includedaycrit"]])
+                 as.numeric(daysummary[wkend, NVHcolumn]) >= params_cleaning[["includedaycrit"]][1])
     wkend = wkend[v1]
     wkday  = which(daysummary[,which(ds_names == "weekday")] != "Saturday" & daysummary[,which(ds_names == "weekday")] != "Sunday")
     v2 = which(is.na(as.numeric(daysummary[wkday, columnWithAlwaysData])) == F  &
-                 as.numeric(daysummary[wkday, NVHcolumn]) >= params_cleaning[["includedaycrit"]])
+                 as.numeric(daysummary[wkday, NVHcolumn]) >= params_cleaning[["includedaycrit"]][1])
     wkday = wkday[v2]
     # Add number of weekend and weekdays to filesummary
     filesummary[vi:(vi + 1)] = c(length(wkend),  length(wkday)) # number of weekend days & weekdays

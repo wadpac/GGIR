@@ -270,7 +270,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
       return(fi)
     }
     if (tooshort == 0) {
-      if (nvalidhours >= includedaycrit) {
+      if (nvalidhours >= includedaycrit[1]) {
         #--------------------------------------
         # Features per day and per segment of the day
         # guided by qwindow, which is a vector of indices to slice up the day

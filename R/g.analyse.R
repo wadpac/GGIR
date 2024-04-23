@@ -29,7 +29,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   
   desiredtz = params_general[["desiredtz"]]
   idloc = params_general[["idloc"]]
-  includedaycrit = params_cleaning[["includedaycrit"]]
+  includedaycrit = params_cleaning[["includedaycrit"]][1]
   acc.metric = params_general[["acc.metric"]]
   
   fname = I$filename

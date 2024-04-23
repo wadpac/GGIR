@@ -845,8 +845,8 @@ GGIR(mode = 1:5,
         by \link[base]{strptime}.}
         
       \item{strategy}{
-        Numeric (default = 1).
-        See \code{data_masking_strategy} below.}
+        Deprecated and replaced by \code{data_masking_strategy}. If \code{strategy} 
+        is specified then its value is passed on and used for \code{data_masking_strategy}.}
         
       \item{data_masking_strategy}{
         Numeric (default = 1).
@@ -888,7 +888,8 @@ GGIR(mode = 1:5,
 
       \item{includedaycrit.part5}{
         Numeric (default = 2/3).
-        Inclusion criteria for number of valid hours during the waking hours of a day,
+        Inclusion criteria used in part 5 for number of valid hours during the 
+        waking hours of a day,
         when value is smaller than or equal to 1 used as fraction of waking hours, 
         when value above 1 used as absolute number of valid hours required.
         Do not confuse this argument with argument \code{includedaycrit} which is
@@ -921,10 +922,12 @@ GGIR(mode = 1:5,
       }
       \item{includedaycrit}{
         Numeric (default = 16).
-        Minimum required number of valid hours in day specific analysis
-        (NOTE: there is no minimum required number of hours per day in the summary of
-        an entire measurement, every available hour is used to make the best possible
-        inference on average metric value per average day).}
+        Minimum required number of valid hours in calendar day specific to analysis 
+        in part 2. If you specify two values as in c(16, 16) then the first value 
+        will be used in part 2 and the second value will be used in part 5 and 
+        applied as a criterion on the full part 5 window. Note that this is then 
+        applied in addition to parameter includedaycrit.part5 which only looks 
+        at valid data during waking hours.}
 
       \item{max_calendar_days}{
       Numeric (default = 0).

@@ -16,3 +16,4 @@ RELEASE_CYCLE.md
 ^doc$
 .chapterInProgress.Rmd
 codecov.yml
+index.md
