@@ -1,4 +1,4 @@
-HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
+HASPT = function(angle = NULL, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
                  HASPT.algo="HDCZA", HDCZA_threshold = 0.2, invalid,
                  HASPT.ignore.invalid=FALSE, activity = NULL) {
   tib.threshold = SPTE_start = SPTE_end = part3_guider = c()

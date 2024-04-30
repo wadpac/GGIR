@@ -207,7 +207,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "so GGIR now auto-sets arguments do.anglex, do.angley, and do.anglez to TRUE."), call. = FALSE)
         params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = params_metrics[["do.anglez"]] = TRUE
       }
-      if (params_sleep[["HASPT.algo"]] != "HorAngle") {
+      if (params_sleep[["HASPT.algo"]] %in% c("NotWorn", "HorAngle") == FALSE) {
         warning("\nChanging HASPT.algo value to HorAngle, because sensor.location is set as hip", call. = FALSE)
         params_sleep[["HASPT.algo"]] = "HorAngle"; params_sleep[["def.noc.sleep"]] = 1
       }
@@ -236,7 +236,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_sleep[["sleepwindowType"]] = "TimeInBed"
     }
     
-    if (length(params_sleep[["loglocation"]]) == 0 & params_sleep[["HASPT.algo"]] != "HorAngle" & params_sleep[["sleepwindowType"]] != "SPT") {
+    if (length(params_sleep[["loglocation"]]) == 0 & 
+        params_sleep[["HASPT.algo"]] %in% c("HorAngle", "NotWorn") == FALSE &
+        params_sleep[["sleepwindowType"]] != "SPT") {
       warning("\nAuto-updating sleepwindowType to SPT because no sleeplog used and neither HASPT.algo HorAngle used.", call. = FALSE)
       params_sleep[["sleepwindowType"]] = "SPT"
     }
