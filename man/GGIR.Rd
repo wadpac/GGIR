@@ -953,6 +953,13 @@ GGIR(mode = 1:5,
         in the centre of the mediumsize window, while in the 2023 method the longsizewindow 
         is aligned with its left edge to the left edge of the mediumsize window.
       }
+      
+      \item{includecrit.part6}{
+        Numeric (default = c(33.33, 33.33))
+        Vector of two with the maximum percentage of invalid data allowed for day
+        and spt time, respectively. This criteria is only used for fragmentation and DFA
+        analysis.
+      }
     }
   }
 

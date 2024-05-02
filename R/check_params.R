@@ -104,7 +104,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   if (length(params_cleaning) > 0) {
     numeric_params = c("includedaycrit", "ndayswindow", "data_masking_strategy", "maxdur", "hrs.del.start",
                        "hrs.del.end", "includedaycrit.part5", "minimum_MM_length.part5",
-                       "includenightcrit", "max_calendar_days")
+                       "includenightcrit", "max_calendar_days", "includecrit.part6")
     boolean_params = c("excludefirstlast.part5", "do.imp", "excludefirstlast",
                        "excludefirst.part4", "excludelast.part4", "nonWearEdgeCorrection")
     character_params = c("data_cleaning_file", "TimeSegments2ZeroFile")
