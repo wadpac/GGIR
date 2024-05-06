@@ -88,7 +88,7 @@ test_that("Part 6 with household co-analysis", {
   expect_true(file.exists(path_to_ms6))
   
   load(path_to_ms6)
-  expect_equal(ncol(output_part6), 39)
+  expect_equal(ncol(output_part6), 47)
   expect_equal(output_part6$starttime, "2022-06-02 03:00:00")
   expect_equal(output_part6$cosinor_mes, 2.451769, tolerance = 0.00001)
   expect_equal(output_part6$cosinorExt_minimum, 1.288636, tolerance = 0.00001)
@@ -108,7 +108,7 @@ test_that("Part 6 with household co-analysis", {
   expect_true(file.exists(path_to_ms6))
   
   load(path_to_ms6)
-  expect_equal(ncol(output_part6), 39)
+  expect_equal(ncol(output_part6), 47)
   expect_equal(output_part6$starttime, "2022-06-03 01:41:00")
   expect_equal(output_part6$cosinor_mes, 2.448485, tolerance = 0.00001)
   expect_equal(output_part6$cosinorExt_minimum, 0, tolerance = 0.00001)

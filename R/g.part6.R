@@ -1,5 +1,6 @@
 g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                    params_general = c(), params_phyact = c(), params_247 = c(),
+                   params_cleaning = c(),
                    verbose = TRUE, ...) {
   
   # This function called by function GGIR
@@ -191,6 +192,15 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         ts = mdat[1,]
       }
       
+      # Set windows to missing that do not have enough valid data in either spt or day.
+      # Note that columns invalid_wakinghours and invalid_sleepperiod here
+      # are constants per window, we use this to identify the entire window as valid/invalid
+      invalidWindows = which(ts$invalid_wakinghours > params_cleaning[["includecrit.part6"]][1] | 
+                               ts$invalid_sleepperiod > params_cleaning[["includecrit.part6"]][2])
+      if (length(invalidWindows) > 0) {
+        ts[invalidWindows,c("class_id", "ACC")] = NA
+        ts$invalidepoch[invalidWindows] = 1
+      }
       # Include basic information in the summary
       summary[fi] = unlist(strsplit(fnames.ms5raw[i], "_"))[1]
       s_names[fi] = "ID"
@@ -207,14 +217,15 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                            no = nrow(ts) / ((3600 * 24) / epochSize))
       s_names[fi] = "N_days"
       fi = fi + 1
-      summary[fi] = ifelse(test = nrow(ts) == 1,
-                           yes = 0,
-                           no = length(which(ts$invalidepoch == 0)) / ((3600 * 24) / epochSize))
+      N_valid_days = ifelse(test = nrow(ts) == 1,
+                            yes = 0,
+                            no = length(which(ts$invalidepoch == 0)) / ((3600 * 24) / epochSize))
+      summary[fi] = N_valid_days
       s_names[fi] = "N_valid_days"
       fi = fi + 1
       #=================================================================
       # Circadian rhythm analysis
-      if (do.cr == TRUE) {
+      if (do.cr == TRUE & N_valid_days > 2) {
         # Cosinor analysis which comes with IV IS estimtes
         # Note: applyCosinorAnalyses below uses column invalidepoch to turn
         # imputed values to NA.
@@ -257,8 +268,8 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                   "cosinorExt_ndays", "cosinorExt_F_pseudo", "cosinorExt_R2")
         fi = fi + 11
         try(expr = {summary[fi:(fi + 2)] = c(cosinor_coef$IVIS$InterdailyStability,
-                                 cosinor_coef$IVIS$IntradailyVariability,
-                                 cosinor_coef$IVIS$phi)},
+                                             cosinor_coef$IVIS$IntradailyVariability,
+                                             cosinor_coef$IVIS$phi)},
             silent = TRUE)
         s_names[fi:(fi + 2)] = c("IS", "IV", "phi")
         fi = fi + 3
@@ -275,18 +286,157 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           s_names[fi:(fi + (length(frag.out) - 1))] = paste0("FRAG_", names(frag.out), "_", fragmode)
           fi = fi + length(frag.out)
         }
+        
+        #===============================================
+        # LXMX: code copied from g.part 5
+        # To be refactored as a central generic function once
+        # new MXLX function is merged
+        window_number = unique(ts$window)
+        dsummary = matrix(NA, 100, length(params_247[["winhr"]]) * 80)
+        ds_names = rep("", ncol(dsummary))
+        lightpeak_available = "lightpeak" %in% names(ts)
+        si = 1
+        for (wi in window_number) {
+          gi = 1
+          sse = which(ts$window == wi)
+          if (is.na(ts$ACC[sse[1]])) break
+          ts$time_num = ts$time
+          ts$time = ts$timestamp
+          WLH = length(sse)/((60/epochSize) * 60)
+          if (WLH <= 1) WLH = 1.001
+          for (wini in params_247[["winhr"]]) {
+            reso = params_247[["M5L5res"]] #resolution at 5 minutes
+            endd = floor(WLH * 10) / 10 # rounding needed for non-integer window lengths
+            nwindow_f = (endd - wini) #number of windows for L5M5 analyses
+            ignore = FALSE
+            if (endd <= wini | nwindow_f < 1) ignore = TRUE # day is shorter then time window, so ignore this
+            nwindow_f = nwindow_f * (60/reso)
+            if (ignore == FALSE) {
+              # Calculate running window variables
+              ACCrunwin = matrix(0, nwindow_f, 1)
+              TIMErunwin = matrix("", nwindow_f, 1)
+              for (hri in 0:floor((((endd - wini) * (60/reso)) - 1))) {
+                e1 = (hri * reso * (60/epochSize)) + 1
+                e2 = (hri + (wini * (60/reso))) * reso * (60/epochSize)
+                if (e2 > length(sse)) e2 = length(sse)
+                ACCrunwin[(hri + 1), 1] = mean(ts$ACC[sse[e1:e2]])
+                TIMErunwin[(hri + 1), 1] = format(ts$time[sse[e1]])
+              }
+              ACCrunwin = ACCrunwin[is.na(ACCrunwin) == F]
+              TIMErunwin = TIMErunwin[is.na(ACCrunwin) == F]
+              if (length(ACCrunwin) > 0 & length(TIMErunwin) > 0) {
+                # Derive day level variables
+                L5HOUR = TIMErunwin[which(ACCrunwin == min(ACCrunwin))[1]]
+                L5VALUE = min(ACCrunwin)
+                M5HOUR = TIMErunwin[which(ACCrunwin == max(ACCrunwin))[1]]
+                M5VALUE = max(ACCrunwin)
+                if (lightpeak_available == TRUE) {
+                  if (length(unlist(strsplit(M5HOUR, " |T"))) == 1) M5HOUR = paste0(M5HOUR, " 00:00:00")
+                  startM5 = which(format(ts$time) == M5HOUR)
+                  M5_mean_peakLUX = round(mean(ts$lightpeak[startM5[1]:(startM5[1] + (wini*60*(60/epochSize)))], na.rm = TRUE), digits = 1)
+                  M5_max_peakLUX = round(max(ts$lightpeak[startM5[1]:(startM5[1] + (wini*60*(60/epochSize)))], na.rm = TRUE), digits = 1)
+                }
+              } else {
+                L5HOUR = M5HOUR = "not detected"
+                L5VALUE = M5VALUE = ""
+                if (lightpeak_available == TRUE) {
+                  M5_mean_peakLUX = M5_max_peakLUX = ""
+                }
+              }
+            }
+            # Add variables calculated above to the output matrix
+            if (ignore == FALSE) {
+              dsummary[si, gi:(gi + 1)] = c(L5VALUE, M5VALUE)
+            }
+            ds_names[gi:(gi + 1)] = c(paste0("L", wini, "VALUE"),
+                                      paste0("M", wini, "VALUE"))
+            gi = gi + 2
+            if ("lightpeak" %in% colnames(ts)) {
+              if (ignore == FALSE) {
+                dsummary[si,gi] = M5_mean_peakLUX
+                dsummary[si,gi + 1] = M5_max_peakLUX
+              }
+              ds_names[gi] = paste("M", wini, "_mean_peakLUX", sep = "")
+              ds_names[gi + 1] = paste("M", wini,"_max_peakLUX", sep = "")
+              gi = gi + 2
+            }
+            if (ignore == FALSE) {
+              # Add also numeric time
+              if (is.ISO8601(L5HOUR)) { # only do this for ISO8601 format
+                L5HOUR = format(iso8601chartime2POSIX(L5HOUR, tz = params_general[["desiredtz"]]))
+                M5HOUR = format(iso8601chartime2POSIX(M5HOUR, tz = params_general[["desiredtz"]]))
+              }
+              if (length(unlist(strsplit(L5HOUR," "))) == 1) L5HOUR = paste0(L5HOUR," 00:00:00") #added because on some OS timestamps are deleted for midnight
+              if (length(unlist(strsplit(M5HOUR," "))) == 1) M5HOUR = paste0(M5HOUR," 00:00:00")
+              if (L5HOUR != "not detected") {
+                time_num = sum(as.numeric(unlist(strsplit(unlist(strsplit(L5HOUR," "))[2], ":"))) * c(3600, 60, 1)) / 3600
+                endTime = as.numeric(unlist(strsplit(format(ts$timestamp[sse[length(sse)]], format = "%H:%M:%S"), ":")))
+                endTime = sum(endTime * c(1, 1/60, 1/3600))
+                if (time_num < endTime) {
+                  time_num = time_num + 24
+                }
+                dsummary[si,gi] = time_num
+              } else {
+                dsummary[si,gi] = NA
+              }
+            }
+            ds_names[gi] = paste("L", wini, "TIME_num", sep = "");      gi = gi + 1
+            if (ignore == FALSE) {
+              if (M5HOUR != "not detected") {
+                time_num = sum(as.numeric(unlist(strsplit(unlist(strsplit(M5HOUR," "))[2], ":"))) * c(3600, 60, 1)) / 3600
+                dsummary[si, gi] = time_num
+              } else {
+                dsummary[si, gi] = NA
+              }
+            }
+            ds_names[gi] = paste("M", wini, "TIME_num", sep = "");      gi = gi + 1
+            
+          }
+          si = si + 1
+          if (si > nrow(dsummary)) {
+            dsummary[nrow(dsummary) + 1, ] = NA
+            ds_names = c(ds_names, "")
+          }
+        }
+        gi = which(ds_names == "")[1]
+        dsummary = dsummary[1:(si - 1), 1:(gi - 1)]
+        ds_names = ds_names[1:(gi - 1)]
+        dsummary = as.data.frame(x = dsummary)
+        colnames(dsummary) = ds_names
+        # aggregate across recording
+        MXLXsummary = colMeans(x = dsummary)
+        
+        # Add to summary
+        summary[fi:(fi + length(MXLXsummary) - 1)] = as.numeric(MXLXsummary)
+        s_names[fi:(fi + length(MXLXsummary) - 1)] = names(MXLXsummary)
+        fi = fi + length(MXLXsummary)
+        # Translate times to clock time and add to summary
+        cols2convert = grep(pattern = "TIME_num", x = names(MXLXsummary), value = FALSE)
+        if (length(cols2convert) > 0) {
+          for (cvi in cols2convert) {
+            s_names[fi] = gsub(pattern = "_num", replacement = "_clock", x = names(MXLXsummary)[cvi])
+            hr = as.numeric(floor(MXLXsummary[cvi]))
+            min = as.numeric(floor((MXLXsummary[cvi] - hr) * 60))
+            sec = as.numeric(floor((MXLXsummary[cvi] - hr - (min / 60)) * 3600))
+            if (!is.na(hr) && !is.na(min) && !is.na(sec)) {
+              clock_time = paste0(hr, ":", min, ":", sec)
+            } else {
+              clock_time = NA
+            }
+            summary[fi] = clock_time 
+            fi = fi + 1
+          }
+        }
+        #=======================================================================
+        # DFA analyses is used independent of do.cr because it is time consuming
+        if (params_247[["part6DFA"]] == TRUE) {
+          ssp = SSP(ts$ACC[!is.na(ts$ACC)])
+          abi = ABI(ssp)
+          summary[fi:(fi + 1)] = c(ssp, abi)
+          s_names[fi:(fi + 1)] = c("SSP", "ABI")
+          fi = fi + 2
+        }
       }
-      
-      #=======================================================================
-      # DFA analyses is used independent of do.cr because it is time consuming
-      if (params_247[["part6DFA"]] == TRUE && do.cr == TRUE) {
-        ssp = SSP(ts$ACC)
-        abi = ABI(ssp)
-        summary[fi:(fi + 1)] = c(ssp, abi)
-        s_names[fi:(fi + 1)] = c("SSP", "ABI")
-        fi = fi + 2
-      }
-      
       #=============================================
       # Store results in milestone data
       summary = summary[1:(fi - 1),]
@@ -295,7 +445,9 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       s_names = s_names[which(s_names != "")]
       output_part6 = data.frame(t(summary), stringsAsFactors = FALSE)
       names(output_part6) = s_names
-      output_part6[, 4:ncol(output_part6)] = as.numeric(output_part6[, 4:ncol(output_part6)])
+      nonnumeric = grep(pattern = "TIME_clock", x = s_names, invert = TRUE)
+      nonnumeric = nonnumeric[nonnumeric %in% 1:3 == FALSE]
+      output_part6[, nonnumeric] = as.numeric(output_part6[, nonnumeric])
       if (length(output_part6) > 0) {
         if (length(cosinor_coef) > 0) {
           cosinor_ts = cosinor_coef$coefext$cosinor_ts
@@ -309,9 +461,9 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         }
         output_part6$GGIRversion = GGIRversion
         save(output_part6, cosinor_ts, GGIRversion, file = paste0(metadatadir,
-                                                     ms6.out, "/", gsub(pattern = "[.]csv|[.]RData",
-                                                                        replacement = "",
-                                                                        x = fnames.ms5raw[i]), ".RData"))
+                                                                  ms6.out, "/", gsub(pattern = "[.]csv|[.]RData",
+                                                                                     replacement = "",
+                                                                                     x = fnames.ms5raw[i]), ".RData"))
       }
       rm(output_part6, summary)
     }
