@@ -1,4 +1,4 @@
-# CHANGES IN GGIR VERSION 3.0-??
+# CHANGES IN GGIR VERSION 3.1-0
 
 - Minor issue fixes introduced in 3.0-10 related to handling nights without sustained inactivity bouts, handling recordings without midnight and storage of GGIR version in the part 4 output when there are no valid nights.
 

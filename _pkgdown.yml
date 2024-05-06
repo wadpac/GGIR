@@ -14,13 +14,6 @@ template:
       card: summary_large_image
       
 authors:
-  Vincent T van Hees:
-    href: https://www.accelting.com/
-  Jairo H Migueles:
-    href: https://www.jhmigueles.com/
-  footer:
-    roles: [aut]
-    text: "Developed by"
   sidebar:
     roles: [aut]
 

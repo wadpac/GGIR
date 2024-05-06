@@ -23,12 +23,12 @@ GGIR documentation is openly available for users in several places:
     documentation on the GGIR pipeline and functionalities.
 
 -   **Vignettes available on
-    [CRAN](https://cran.r-project.org/web/packages/GGIR/index.html)**,
+    [CRAN](https://cran.r-project.org/package=GGIR/index.html)**,
     containing an overview of GGIR and dedicated vignettes for some
     specific functionalities.
 
 -   **The [GGIR configuration parameters
-    vignette](https://cran.r-project.org/web/packages/GGIR/vignettes/GGIRParameters.html)**
+    vignette](https://cran.r-project.org/package=GGIR/vignettes/GGIRParameters.html)**
     explains each of the parameters that can be used in GGIR and how to
     use them.
 
@@ -96,8 +96,4 @@ At the moment, the available training services are:
 
 ## Dedicated support
 
-If you need dedicated support with the use of GGIR, want GGIR to be
-modified or enhanced in line to your needs, then the maintainers
-[Vincent van Hees](https://www.accelting.com/) and [Jairo H
-Migueles](https://www.jhmigueles.com/) are available as independent
-consultants.
+If you need dedicated support with the use of GGIR, want GGIR to be modified or enhanced in line to your needs, then please contact [Vincent van Hees](https://www.accelting.com/). 
