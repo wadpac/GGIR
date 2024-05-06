@@ -214,6 +214,12 @@ find a description and default value for all the arguments.
 | save_ms5raw_format          | 5                 | params_output            |
 | save_ms5raw_without_invalid | 5                 | params_output            |
 | do.sibreport                | 5                 | params_output            |
+| includecrit.part6           | 6                 | params_cleaning          |
+| part6_threshold_combi       | 6                 | params_phyact            |
+| part6CR                     | 6                 | params_247               |
+| part6HCA                    | 6                 | params_247               |
+| part6Window                 | 6                 | params_247               |
+| part6DFA                    | 6                 | params_247               |
 | visualreport_without_invalid| visualreport      | params_output            |
 | dofirstpage                 | visualreport      | params_output            |
 | visualreport                | visualreport      | params_output            |
