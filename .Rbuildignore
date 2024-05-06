@@ -17,3 +17,4 @@ RELEASE_CYCLE.md
 .chapterInProgress.Rmd
 codecov.yml
 index.md
+^inst/doc/*.html
