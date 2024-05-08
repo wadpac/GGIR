@@ -223,6 +223,17 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       summary[fi] = N_valid_days
       s_names[fi] = "N_valid_days"
       fi = fi + 1
+      CountWeekDays = table(weekdays(ts$time[which(ts$invalidepoch == 0)]))
+      CountWeekDays = CountWeekDays / (1440 * (60 / epochSize))
+      CountWeekDays = CountWeekDays[which(CountWeekDays > 0.66)]
+      if (length(CountWeekDays) > 0) {
+        Nweekendays = length(which(names(CountWeekDays) %in% c("Saturday", "Sunday")))
+      } else {
+        Nweekendays = 0
+      }
+      summary[fi] = Nweekendays
+      s_names[fi] = "N_valid_weekend_days"
+      fi = fi + 1
       #=================================================================
       # Circadian rhythm analysis
       if (do.cr == TRUE & N_valid_days > 2) {

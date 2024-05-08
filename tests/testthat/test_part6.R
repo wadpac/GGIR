@@ -2,6 +2,9 @@ library(GGIR)
 context("g.part6")
 
 test_that("Part 6 with household co-analysis", {
+  
+  library(testthat)
+  devtools::load_all(".")
   # Create test files for household co-analysis
   metadatadir = "./output_testpart6"
   part6_threshold_combi = "40_120_400"
@@ -88,12 +91,12 @@ test_that("Part 6 with household co-analysis", {
   expect_true(file.exists(path_to_ms6))
   
   load(path_to_ms6)
-  expect_equal(ncol(output_part6), 47)
+  expect_equal(ncol(output_part6), 48)
   expect_equal(output_part6$starttime, "2022-06-02 03:00:00")
   expect_equal(output_part6$cosinor_mes, 2.451769, tolerance = 0.00001)
   expect_equal(output_part6$cosinorExt_minimum, 1.288636, tolerance = 0.00001)
   expect_equal(output_part6$cosinorExt_MESOR, 2.164644, tolerance = 0.00001)
-  expect_equal(sum(output_part6[5:26]), 327.9062, tolerance = 0.0001)
+  expect_equal(sum(output_part6[5:27]), 329.9058, tolerance = 0.0001)
   
   
   # Run Circadian rhythm analysis with non-default window
@@ -108,12 +111,12 @@ test_that("Part 6 with household co-analysis", {
   expect_true(file.exists(path_to_ms6))
   
   load(path_to_ms6)
-  expect_equal(ncol(output_part6), 47)
+  expect_equal(ncol(output_part6), 48)
   expect_equal(output_part6$starttime, "2022-06-03 01:41:00")
   expect_equal(output_part6$cosinor_mes, 2.393491, tolerance = 0.00001)
   expect_equal(output_part6$cosinorExt_minimum, 1.233231, tolerance = 0.00001)
   expect_equal(output_part6$cosinorExt_MESOR, 2.106111, tolerance = 0.00001)
-  expect_equal(sum(output_part6[5:26]), 538.7481, tolerance = 0.0001)
+  expect_equal(sum(output_part6[5:27]), 540.7481, tolerance = 0.0001)
   
   # Remove test files
   if (file.exists(metadatadir))  unlink(metadatadir, recursive = TRUE)
