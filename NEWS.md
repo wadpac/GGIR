@@ -4,6 +4,8 @@
 
 - Part 5 report: Add option to filter part 5 windows based on parameter includedaycrit originally used in part 2, for details see documentation of parameter includedaycrit and #1113
 
+- Part 1: Fix bug in identifying and naming the vector magnitude column #1122
+
 # CHANGES IN GGIR VERSION 3.0-10
 
 - Part 1:
