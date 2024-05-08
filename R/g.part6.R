@@ -135,8 +135,8 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       fi = 1
       epochSize = diff(mdat$timenum[1:2])
       # Select relevant section of the time series
-      wakeuptimes = which(diff(c(1, mdat$SleepPeriodTime)) == -1)
-      onsettimes = which(diff(c(1, mdat$SleepPeriodTime)) == 1) 
+      wakeuptimes = which(diff(c(1, mdat$SleepPeriodTime, 0)) == -1)
+      onsettimes = which(diff(c(0, mdat$SleepPeriodTime, 1)) == 1) 
       getIndex = function(x, ts, wakeuptimes, onsettimes, epochSize) {
         if (x == "start") {
           y = 1 # simply the start of the time series
@@ -147,14 +147,14 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           if (ni > 0) { # nth Wakeup after the start
             y = wakeuptimes[ni]
           } else if (ni < 0) { # nth Wakeup before the end
-            y = wakeuptimes[length(wakeuptimes) + ni] # + because it already is -
+            y = wakeuptimes[length(wakeuptimes) + ni + 1] # + because it already is -
           }
         } else if (substr(x, start = 1, stop = 1) == "O") {
           ni = as.numeric(substr(x, start = 2, stop = 5))
           if (ni > 0) { # nth Onset after the start
             y = onsettimes[ni]
           } else if (ni < 0) { # nth Onset before the end
-            y = onsettimes[length(wakeuptimes) + ni] # + because it already is -
+            y = onsettimes[length(onsettimes) + ni + 1] # + because it already is -
           }
         } else if (substr(x, start = 1, stop = 1) == "H") {
           ni = as.numeric(substr(x, start = 2, stop = 5))
@@ -399,7 +399,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           }
         }
         gi = which(ds_names == "")[1]
-        dsummary = dsummary[1:(si - 1), 1:(gi - 1)]
+        dsummary = dsummary[1:(si - 1), 1:(gi - 1), drop = FALSE]
         ds_names = ds_names[1:(gi - 1)]
         dsummary = as.data.frame(x = dsummary)
         colnames(dsummary) = ds_names

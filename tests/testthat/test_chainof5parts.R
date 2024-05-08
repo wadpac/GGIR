@@ -226,7 +226,7 @@ test_that("chainof5parts", {
   rn2 = dir(dirname_raw,full.names = TRUE, recursive = T)
   expect_true(file.exists(rn2[1]))
   TSFILE = read.csv(rn2[1])
-  expect_that(nrow(TSFILE),equals(1150))
+  expect_that(nrow(TSFILE),equals(2820))
   expect_equal(ncol(TSFILE), 12)
   expect_equal(length(unique(TSFILE$class_id)), 10)
   #GGIR
