@@ -1,5 +1,5 @@
 library(GGIR)
-context("cosinorAnalyses")
+context("cosinor_IS_IV_Analyses")
 
 test_that("cosinorAnalyses provides expected output", {
   ActCosDummy = function(epochSizeSeconds, missingdata = FALSE, timeOffsetHours = 0) {
@@ -17,7 +17,7 @@ test_that("cosinorAnalyses provides expected output", {
     # understand how dummy time series looks like.
     # x11()
     # plot(log((counts * 1000) + 1), type = "l")
-    mod = cosinorAnalyses(Xi = counts * 1000, epochsize = epochSizeSeconds, timeOffsetHours = timeOffsetHours)
+    mod = cosinor_IS_IV_Analyses(Xi = counts * 1000, epochsize = epochSizeSeconds, timeOffsetHours = timeOffsetHours)
     mod$coefext = mod$coefext[which(names(mod$coefext) != "cosinor_ts")]
     return(mod)
   }

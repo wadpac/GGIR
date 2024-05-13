@@ -1,5 +1,5 @@
-\name{cosinorAnalyses}
-\alias{cosinorAnalyses}
+\name{cosinor_IS_IV_Analyses}
+\alias{cosinor_IS_IV_Analyses}
 \title{
   Apply cosinor anlaysis and extended cosinor analysis
 }
@@ -8,7 +8,7 @@
   as IV, IS and phi estimates.
 }
 \usage{
-  cosinorAnalyses(Xi, epochsize = 60, timeOffsetHours = 0, threshold = NULL)
+  cosinor_IS_IV_Analyses(Xi, epochsize = 60, timeOffsetHours = 0, threshold = NULL)
 }
 \arguments{
   \item{Xi}{

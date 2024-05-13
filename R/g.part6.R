@@ -243,11 +243,11 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         colnames(ts)[which(colnames(ts) == "timenum")] = "time"
         acc4cos = ts[, c("time", "ACC")]
         threshold = as.numeric(unlist(strsplit( params_phyact[["part6_threshold_combi"]], "_"))[1])
-        cosinor_coef = applyCosinorAnalyses(ts = acc4cos,
-                                            qcheck = ts$invalidepoch,
-                                            midnightsi = nightsi,
-                                            epochsizes = rep(epochSize, 2),
-                                            threshold = threshold)
+        cosinor_coef = apply_cosinor_IS_IV_Analyses(ts = acc4cos,
+                                                    qcheck = ts$invalidepoch,
+                                                    midnightsi = nightsi,
+                                                    epochsizes = rep(epochSize, 2),
+                                                    threshold = threshold)
         rm(acc4cos)
         try(expr = {summary[fi:(fi + 6)] = c(cosinor_coef$timeOffsetHours,
                                              cosinor_coef$coef$params$mes,

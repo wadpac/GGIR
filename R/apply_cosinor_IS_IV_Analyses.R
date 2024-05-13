@@ -1,4 +1,4 @@
-applyCosinorAnalyses = function(ts, qcheck, midnightsi, epochsizes, threshold = NULL) {
+apply_cosinor_IS_IV_Analyses = function(ts, qcheck, midnightsi, epochsizes, threshold = NULL) {
   # qcheck - vector of length ts to indicate invalid values
   ws2 = epochsizes[2]
   ws3 = epochsizes[1]
@@ -59,7 +59,7 @@ applyCosinorAnalyses = function(ts, qcheck, midnightsi, epochsizes, threshold = 
     } else {
       epochsize = ws3
     }
-    cosinor_coef = cosinorAnalyses(Xi = Xi, epochsize = epochsize, 
+    cosinor_coef = cosinor_IS_IV_Analyses(Xi = Xi, epochsize = epochsize, 
                                    timeOffsetHours = timeOffsetHours, threshold = threshold)
     cosinor_coef$timeOffsetHours = timeOffsetHours
   } else {

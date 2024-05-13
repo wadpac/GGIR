@@ -1,4 +1,4 @@
-cosinorAnalyses = function(Xi, epochsize = 60, timeOffsetHours = 0, threshold = NULL) {
+cosinor_IS_IV_Analyses = function(Xi, epochsize = 60, timeOffsetHours = 0, threshold = NULL) {
   if (length(threshold) > 1) {
     threshold = threshold[1]
     warning("Multiple threshold values supplied to cosinor analysis, only first value used.")
