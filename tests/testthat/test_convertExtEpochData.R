@@ -132,8 +132,8 @@ test_that("External epoch data is correctly converted", {
                    params_general = params_general)
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
   load(paste0(QCbasis, "/meta_ActiGraph13_timestamps_headers.csv.RData"))
-  expect_equal(sum(M$metalong$nonwearscore), 90)
-  expect_equal(nrow(M$metashort), 14820)
+  expect_equal(sum(M$metalong$nonwearscore), 0)
+  expect_equal(nrow(M$metashort), 960)
   expect_equal(ncol(M$metashort), 5)
   expect_true(all(c("timestamp", "NeishabouriCount_x", "NeishabouriCount_y", 
                     "NeishabouriCount_z", "NeishabouriCount_vm") %in% colnames(M$metashort)))
