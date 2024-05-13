@@ -1,6 +1,8 @@
 g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
                                   DaCleanFile = NULL,
-                                  includedaycrit.part5 = 2/3, ID = NULL,
+                                  includedaycrit.part5 = 2/3,
+                                  includenightcrit.part5 = 0,
+                                  ID = NULL,
                                   params_output,
                                   params_247 = NULL,
                                   Lnames = NULL) {
@@ -66,9 +68,18 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
       } else if (includedaycrit.part5 > 1 & includedaycrit.part5 <= 25) { # if includedaycrit.part5 is used like includedaycrit as a number of hours
         includedaycrit.part5 = (includedaycrit.part5 / 24) * 100
       }
+      # Reformat includenightcrit.part5 to maximum percentage non-wear during waking hours:
+      if (includenightcrit.part5 >= 0 & includenightcrit.part5 <= 1) { # if includenightcrit.part5 is used as a ratio
+        includenightcrit.part5 = includenightcrit.part5 * 100
+      } else if (includenightcrit.part5 > 1 & includenightcrit.part5 <= 25) { # if includenightcrit.part5 is used like includedaycrit as a number of hours
+        includenightcrit.part5 = (includenightcrit.part5 / 24) * 100
+      }
       maxpernwday = 100 - includedaycrit.part5
+      maxpernwnight = 100 - includenightcrit.part5
       # Exclude days that have 100% nonwear over the full window or 100% over wakinghours
-      cut = which(mdat$invalid_fullwindow == 100 | mdat$invalid_wakinghours > maxpernwday)
+      cut = which(mdat$invalid_fullwindow == 100 |
+                    mdat$invalid_wakinghours > maxpernwday |
+                    mdat$invalid_sleepperiod > maxpernwnight)
       if (length(cut) > 0) mdat = mdat[-cut,] # remove days from which we already know that they are not going to be included (first and last day)
     }
     mdat$guider = ifelse(mdat$guider == 'sleeplog', yes = 1, # digitize guider to save storage space

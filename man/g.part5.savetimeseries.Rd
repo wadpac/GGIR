@@ -11,6 +11,7 @@
   g.part5.savetimeseries(ts, LEVELS, desiredtz, rawlevels_fname,
                               DaCleanFile = NULL,
                               includedaycrit.part5 = 2/3,
+                              includenightcrit.part5 = 0,
                               ID = NULL, params_output,
                               params_247 = NULL,
                               Lnames = NULL)
@@ -35,8 +36,13 @@
     series files stored.
   }
   \item{includedaycrit.part5}{
-    See \link{g.report.part5}. Only used in this function if
+    See \link{GGIR}. Only used in this function if
     save_ms5rawlevels is TRUE,  and it only affects the time 
+    series files stored.
+  }
+  \item{includenightcrit.part5}{
+    See \link{GGIR}. Only used in this function if
+    save_ms5rawlevels is TRUE, and it only affects the time 
     series files stored.
   }
   \item{ID}{

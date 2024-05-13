@@ -104,7 +104,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   if (length(params_cleaning) > 0) {
     numeric_params = c("includedaycrit", "ndayswindow", "data_masking_strategy", "maxdur", "hrs.del.start",
                        "hrs.del.end", "includedaycrit.part5", "minimum_MM_length.part5",
-                       "includenightcrit", "max_calendar_days", "includecrit.part6")
+                       "includenightcrit", "max_calendar_days", "includecrit.part6", "includenightcrit.part5")
     boolean_params = c("excludefirstlast.part5", "do.imp", "excludefirstlast",
                        "excludefirst.part4", "excludelast.part4", "nonWearEdgeCorrection")
     character_params = c("data_cleaning_file", "TimeSegments2ZeroFile")
@@ -274,11 +274,21 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                                                      replacement = "/", x = params_cleaning[["data_cleaning_file"]])
     }
     if (params_cleaning[["includedaycrit.part5"]] < 0) {
-      warning("\nNegative value of includedaycrit.part5 is not allowed, please change.")
+      stop("\nNegative value of includedaycrit.part5 is not allowed, please change.")
     } else if (params_cleaning[["includedaycrit.part5"]]  > 24) {
-      warning(paste0("\nIncorrect value of includedaycrit.part5, this should be",
+      stop(paste0("\nIncorrect value of includedaycrit.part5, this should be",
                      " a fraction of the day between zero and one or the number ",
                      "of hours in a day."))
+    }
+    if (params_cleaning[["includenightcrit.part5"]] < 0) {
+      stop("\nNegative value of includenightcrit.part5 is not allowed, please change.")
+    } else if (params_cleaning[["includenightcrit.part5"]]  > 24) {
+      stop(paste0("\nIncorrect value of includenightcrit.part5, this should be",
+                     " a fraction of the day between zero and one or the number ",
+                     "of hours in a day."))
+    }
+    if (any(params_cleaning[["includecrit.part6"]] < 0) | any(params_cleaning[["includecrit.part6"]] > 1)) {
+      stop("Values of includecrit.part6 are not in the range [0, 1]. Please fix.")
     }
   }
   if (length(params_phyact) > 0) {

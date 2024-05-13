@@ -195,8 +195,8 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       # Set windows to missing that do not have enough valid data in either spt or day.
       # Note that columns invalid_wakinghours and invalid_sleepperiod here
       # are constants per window, we use this to identify the entire window as valid/invalid
-      invalidWindows = which(ts$invalid_wakinghours > params_cleaning[["includecrit.part6"]][1] | 
-                               ts$invalid_sleepperiod > params_cleaning[["includecrit.part6"]][2])
+      invalidWindows = which(ts$invalid_wakinghours > (1 - params_cleaning[["includecrit.part6"]][1]) * 100 | 
+                               ts$invalid_sleepperiod > (1 - params_cleaning[["includecrit.part6"]][2]) * 100)
       if (length(invalidWindows) > 0) {
         ts[invalidWindows,c("class_id", "ACC")] = NA
         ts$invalidepoch[invalidWindows] = 1
