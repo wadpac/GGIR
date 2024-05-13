@@ -139,23 +139,23 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
             }
           }
         }
-        if (length(myfun) > 0) {
-          for (mi in 1:length(myfun$outputtype)) {
-            if (myfun$outputtype[mi] == "character") {
-              # At the moment we do not have a strategy in place on how to impute categorical variables
-              # produced by external functions. Therefore, for the moment ignore these variables until
-              # there is a plan.
-              M$metashort = M$metashort[,-which(names(M$metashort) %in% myfun$colnames == TRUE)]
-            }
-          }
-        }
+        # if (length(myfun) > 0) {
+        #   for (mi in 1:length(myfun$outputtype)) {
+        #     if (myfun$outputtype[mi] == "character") {
+        #       # At the moment we do not have a strategy in place on how to impute categorical variables
+        #       # produced by external functions. Therefore, for the moment ignore these variables until
+        #       # there is a plan.
+        #       M$metashort = M$metashort[,-which(names(M$metashort) %in% myfun$colnames == TRUE)]
+        #     }
+        #   }
+        # }
         IMP = g.impute(M, I,
                        params_cleaning = params_cleaning,
                        dayborder = params_general[["dayborder"]],
                        desiredtz = params_general[["desiredtz"]],
                        TimeSegments2Zero = TimeSegments2Zero,
                        acc.metric = params_general[["acc.metric"]],
-                       ID = ID)
+                       ID = ID, myfun = myfun)
         
         if (params_cleaning[["do.imp"]] == FALSE) { #for those interested in sensisitivity analysis
           IMP$metashort = M$metashort

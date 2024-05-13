@@ -1,6 +1,6 @@
 g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
                     dayborder = 0, TimeSegments2Zero = c(), acc.metric = "ENMO", 
-                    ID, ...) {
+                    ID, myfun = NULL, ...) {
   
   #get input variables
   input = list(...)
@@ -352,49 +352,68 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   averageday = matrix(0,wpd,(ncol(metashort) - 1))
   
   for (mi in 2:ncol(metashort)) {# generate 'average' day for each variable
-    # The average day is used for imputation and defined relative to the starttime of the measurement
-    # irrespective of dayborder as used in other parts of GGIR
-    metrimp = metr = as.numeric(as.matrix(metashort[, mi]))
+    # if external function and type == character, temporarily not to impute
+    # as we do not have a strategy in place on how to impute categorical variables.
+    # leave as NA (missing data) and warn users that they are responsible for 
+    # data imputation at post-processing
+    is_metric_character = FALSE
+    if (!is.null(myfun)) {
+      if (colnames(metashort)[mi] %in% myfun$colnames) {
+        if (myfun$outputtype == "character") {
+          is_metric_character = TRUE
+        }
+      }
+    } 
+    if (is_metric_character == TRUE) {
+      metrimp = metr = as.matrix(metashort[, mi])
+    } else {
+      # The average day is used for imputation and defined relative to the starttime of the measurement
+      # irrespective of dayborder as used in other parts of GGIR
+      metrimp = metr = as.numeric(as.matrix(metashort[, mi]))
+    }
     is.na(metr[which(r5long != 0)]) = T #turn all values of metr to na if r5long is different to 0 (it now leaves the expanded time with expand_tail_max out of the averageday calculation)
     imp = matrix(NA,wpd,ceiling(length(metr)/wpd)) #matrix used for imputation of seconds
     ndays = ncol(imp) #number of days (rounded upwards)
     nvalidsec = matrix(0,wpd,1)
     dcomplscore = length(which(r5 == 0)) / length(r5)
-    if (ndays > 1 ) { # only do imputation if there is more than 1 day of data #& length(which(r5 == 1)) > 1
-      for (j in 1:(ndays - 1)) {
-        imp[,j] = as.numeric(metr[(((j - 1)*wpd) + 1):(j*wpd)])
-      }
-      lastday = metr[(((ndays - 1)*wpd) + 1):length(metr)]
-      imp[1:length(lastday),ndays] = as.numeric(lastday)
-      imp3 = rowMeans(imp, na.rm = TRUE)
-      dcomplscore = length(which(is.nan(imp3) == F | is.na(imp3) == F)) / length(imp3)
-      
-      if (length(imp3) < wpd)  {
-        dcomplscore = dcomplscore * (length(imp3)/wpd)
-      }
-      if (ENi == mi) { #replace missing values for EN by 1
-        imp3[which(is.nan(imp3) == T | is.na(imp3) == T)] = 1
-      } else { #replace missing values for other metrics by 0
-        imp3[which(is.nan(imp3) == T | is.na(imp3) == T)] = 0 # for those part of the data where there is no single data point for a certain part of the day (this is CRITICAL)
-      }
-      averageday[, (mi - 1)] = imp3
-      for (j in 1:ndays) {
-        missing = which(is.na(imp[,j]) == T)
-        if (length(missing) > 0) {
-          imp[missing,j] = imp3[missing]
+    if (is_metric_character == TRUE) {
+      metashort[, mi] = metr
+    }
+    if (is_metric_character == FALSE) {
+      if (ndays > 1 ) { # only do imputation if there is more than 1 day of data #& length(which(r5 == 1)) > 1
+        for (j in 1:(ndays - 1)) {
+          imp[,j] = as.numeric(metr[(((j - 1)*wpd) + 1):(j*wpd)])
         }
+        lastday = metr[(((ndays - 1)*wpd) + 1):length(metr)]
+        imp[1:length(lastday),ndays] = as.numeric(lastday)
+        imp3 = rowMeans(imp, na.rm = TRUE)
+        dcomplscore = length(which(is.nan(imp3) == F | is.na(imp3) == F)) / length(imp3)
+        
+        if (length(imp3) < wpd)  {
+          dcomplscore = dcomplscore * (length(imp3)/wpd)
+        }
+        if (ENi == mi) { #replace missing values for EN by 1
+          imp3[which(is.nan(imp3) == T | is.na(imp3) == T)] = 1
+        } else { #replace missing values for other metrics by 0
+          imp3[which(is.nan(imp3) == T | is.na(imp3) == T)] = 0 # for those part of the data where there is no single data point for a certain part of the day (this is CRITICAL)
+        }
+        averageday[, (mi - 1)] = imp3
+        for (j in 1:ndays) {
+          missing = which(is.na(imp[,j]) == T)
+          if (length(missing) > 0) {
+            imp[missing,j] = imp3[missing]
+          }
+        }
+        dim(imp) = c(length(imp),1)
+        #      imp = imp[-c(which(is.na(as.numeric(as.character(imp))) == T))]
+        toimpute = which(r5long != -1)       # do not impute the expanded time with expand_tail_max_hours
+        metashort[toimpute, mi] = as.numeric(imp[toimpute]) #to cut off the latter part of the last day used as a dummy data
+      } else {
+        dcomplscore = length(which(r5long == 0))/wpd
       }
-      dim(imp) = c(length(imp),1)
-      #      imp = imp[-c(which(is.na(as.numeric(as.character(imp))) == T))]
-      toimpute = which(r5long != -1)       # do not impute the expanded time with expand_tail_max_hours
-      metashort[toimpute, mi] = as.numeric(imp[toimpute]) #to cut off the latter part of the last day used as a dummy data
-    } else {
-      dcomplscore = length(which(r5long == 0))/wpd
     }
   }
-  n_decimal_places = 4
-  
-  metashort[,2:ncol(metashort)] = round(metashort[,2:ncol(metashort)], digits = n_decimal_places)
+  metashort = tidyup_df(metashort, digits = 4)
   rout = data.frame(r1 = r1, r2 = r2, r3 = r3, r4 = r4, r5 = r5, stringsAsFactors = TRUE)
   invisible(list(metashort = metashort, rout = rout, r5long = r5long, dcomplscore = dcomplscore,
                  averageday = averageday, windowsizes = windowsizes, data_masking_strategy = params_cleaning[["data_masking_strategy"]],

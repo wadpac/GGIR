@@ -11,7 +11,7 @@
 }
 \usage{
   g.impute(M, I, params_cleaning = c(),
-  desiredtz="", dayborder= 0, TimeSegments2Zero =c(), acc.metric = "ENMO", ID, ...)
+  desiredtz="", dayborder= 0, TimeSegments2Zero =c(), acc.metric = "ENMO", ID, myfun = NULL,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -41,6 +41,9 @@
   }
   \item{ID}{
     ID extracted in g.part2.
+  }
+  \item{myfun}{
+    See \link{GGIR}
   }
   \item{...}{
      Any argument used in the previous version of g.impute, which will now

@@ -255,26 +255,34 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
     for (h in 1:length(lookat)) {
       average24h = matrix(0,n_ws3_perday,1)
       average24hc = matrix(0,n_ws3_perday,1)
-      if (floor(ND) != 0) {
-        for (j in 1:floor(ND)) {
-          dataOneDay = as.numeric(as.matrix(metashort[(((j - 1) * n_ws3_perday) + 1):(j * n_ws3_perday),lookat[h]]))
+      is_metric_character = FALSE
+      if (!is.null(myfun)) {
+        if (colnames(metashort)[lookat[h]] %in% myfun$colnames & myfun$outputtype == "character") {
+          is_metric_character = TRUE
+        }
+      }
+      if (is_metric_character == FALSE) {
+        if (floor(ND) != 0) {
+          for (j in 1:floor(ND)) {
+            dataOneDay = as.numeric(as.matrix(metashort[(((j - 1) * n_ws3_perday) + 1):(j * n_ws3_perday),lookat[h]]))
+            val = which(is.na(dataOneDay) == F)
+            average24h[val,1] = average24h[val,1] + dataOneDay[val] #mean acceleration
+            average24hc[val,1] = average24hc[val,1] + 1
+          }
+        }
+        if (floor(ND) < ND) {
+          if (floor(ND) == 0) {
+            dataOneDay = as.numeric(as.matrix(metashort[,lookat[h]]))
+          } else {
+            dataOneDay = as.numeric(as.matrix(metashort[((floor(ND) * n_ws3_perday) + 1):nrow(metashort), lookat[h]]))
+          }
           val = which(is.na(dataOneDay) == F)
-          average24h[val,1] = average24h[val,1] + dataOneDay[val] #mean acceleration
+          average24h[val,1] = average24h[val,1] + dataOneDay[val]  #mean acceleration
           average24hc[val,1] = average24hc[val,1] + 1
         }
+        average24h = average24h / average24hc
+        AveAccAve24hr[h] = mean(average24h) #average acceleration in an average 24 hour cycle
       }
-      if (floor(ND) < ND) {
-        if (floor(ND) == 0) {
-          dataOneDay = as.numeric(as.matrix(metashort[,lookat[h]]))
-        } else {
-          dataOneDay = as.numeric(as.matrix(metashort[((floor(ND) * n_ws3_perday) + 1):nrow(metashort), lookat[h]]))
-        }
-        val = which(is.na(dataOneDay) == F)
-        average24h[val,1] = average24h[val,1] + dataOneDay[val]  #mean acceleration
-        average24hc[val,1] = average24hc[val,1] + 1
-      }
-      average24h = average24h / average24hc
-      AveAccAve24hr[h] = mean(average24h) #average acceleration in an average 24 hour cycle
     }
   }
   rm(metalong); rm(metashort)

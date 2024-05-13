@@ -331,16 +331,30 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               # important to account for imbalance in day length, which we do below.
               # In part 5, however, GGIR forces the user to only work with complete 
               # days and by that the day length is less of a problem and not accounted for.
-              
-              NRV = length(which(is.na(as.numeric(as.matrix(vari[,mi]))) == FALSE))
+              is_metric_character = FALSE
+              if (!is.null(myfun)) {
+                if (colnames(vari)[mi] %in% myfun$colnames & myfun$outputtype == "character") {
+                  is_metric_character = TRUE
+                }
+              }
+              if (is_metric_character == TRUE) {
+                NRV = length(vari[, mi])
+                varnum = vari[,mi] # Note: varnum is one column of vari
+              } else {
+                NRV = length(which(is.na(as.numeric(as.matrix(vari[,mi]))) == FALSE))
+                varnum = as.numeric(as.matrix(vari[,mi])) # Note: varnum is one column of vari
+              }
               # Note: vari equals the imputed time series (metahsort) data from one day
-              varnum = as.numeric(as.matrix(vari[,mi])) # Note: varnum is one column of vari
               deltaLength = NRV - length(averageday[, (mi - 1)])
               if (deltaLength < 0) {
                 # Less than 24 hours: Append data from averageday
                 if (di == 1) {
                   # On first day of recording append the average day to the start
-                  varnum = c(averageday[1:abs(deltaLength), (mi - 1)], varnum)
+                  if (is_metric_character == FALSE) {
+                    varnum = c(averageday[1:abs(deltaLength), (mi - 1)], varnum)
+                  } else {
+                    varnum = c(rep(NA, abs(deltaLength)), varnum)
+                  }
                   # readjust anwi indices in case that varnum has been imputed
                   if (max(anwi_t1) < length(varnum)) { # since GGIR always calculates full window, max(anwi_t1) should always equals length(varnum)
                     anwi_t0 = anwi_t0 + abs(deltaLength)
@@ -351,17 +365,26 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   }
                 } else {
                   # When it is not the first day of recording 
-                  if (NRV == 23) { # day has 23 hours (assuming DST)
+                  if (NRV == 23*60*60/ws3) { # day has 23 hours (assuming DST)
                     # Append data after 2nd hour
                     startMissingHour = 2 * 60 * (60/ws3) + 1
                     enMissingHour = 3 * 60 * (60/ws3)
-                    varnum = c(varnum[1:(startMissingHour - 1)], averageday[startMissingHour:enMissingHour, (mi - 1)],
-                               varnum[startMissingHour, length(varnum)])
+                    if (is_metric_character == TRUE) {
+                      varnum = c(varnum[1:(startMissingHour - 1)], rep(NA, length(startMissingHour:enMissingHour)),
+                                 varnum[startMissingHour, length(varnum)])
+                    } else {
+                      varnum = c(varnum[1:(startMissingHour - 1)], averageday[startMissingHour:enMissingHour, (mi - 1)],
+                                 varnum[startMissingHour, length(varnum)])
+                    }
                   } else { # day has less than 24 hours for another reason
                     # Append the average day to the end
                     a56 = length(averageday[,(mi - 1)]) - abs(deltaLength) + 1
                     a57 = length(averageday[, (mi - 1)])
-                    varnum = c(varnum,averageday[a56:a57, (mi - 1)])
+                    if (is_metric_character == TRUE) {
+                      varnum = c(varnum,rep(NA, length(a56:a57)))
+                    } else {
+                      varnum = c(varnum,averageday[a56:a57, (mi - 1)])
+                    }
                   }
                 }
               } else if (deltaLength > 0) { # 25 hour days, assuming DST
@@ -378,7 +401,11 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   if (max(anwindices) > length(varnum)) {
                     anwindices = anwindices[which(anwindices <= length(varnum))]
                   }
-                  varnum = as.numeric(varnum[anwindices]) #cut short varnum to match day segment of interest
+                  if (is_metric_character) {
+                    varnum = varnum[anwindices] #cut short varnum to match day segment of interest
+                  } else {
+                    varnum = as.numeric(varnum[anwindices]) #cut short varnum to match day segment of interest
+                  }
                 } else {
                   varnum = c()
                 }
@@ -602,7 +629,17 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   daysummary[di,fi] = mean(varnum)
                   ds_names[fi] = varnamescalar; fi = fi + 1
                 } else if (myfun$reporttype[rti] == "type") { # For type we calculate time spent in each class 
-                  # Not implemented yet
+                  tableVarnum = table(varnum)
+                  # when tabulating a character vector, it might be that the categories
+                  # are in a different order from day to day, so matching to previously-generated
+                  # ds_names is crucial
+                  varnameType = paste0(colnames(metashort)[mi], "_", names(tableVarnum), 
+                                       "_min", anwi_nameindices[anwi_index])
+                  for (vi in 1:length(varnameType)) {
+                    fi = correct_fi(di, ds_names, fi, varname = varnameType[vi])
+                    daysummary[di,fi] = tableVarnum[vi]*(ws3/60)
+                    ds_names[fi] = varnameType[vi]; fi = fi + 1
+                  }
                 }
               }
             }
