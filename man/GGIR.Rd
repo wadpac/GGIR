@@ -894,6 +894,16 @@ GGIR(mode = 1:5,
         when value above 1 used as absolute number of valid hours required.
         Do not confuse this argument with argument \code{includedaycrit} which is
         only used in GGIR part 2 and applies to the entire day.}
+        
+      \item{includenightcrit.part5}{
+        Numeric (default = 0).
+        Inclusion criteria used in part 5 for number of valid hours during the 
+        sleep period hours of a day (the night),
+        when value is smaller than or equal to 1 used as fraction of sleep period hours, 
+        when value above 1 used as absolute number of valid hours required.
+        Do not confuse this argument with argument \code{includenightcrit} which is
+        only used in GGIR part 4 and applies to the entire 24 hour window from 
+        noon to noon or 6pm to 6pm.}
 
       \item{segmentWEARcrit.part5}{
         Numeric (default = 0.5).
@@ -955,10 +965,9 @@ GGIR(mode = 1:5,
       }
       
       \item{includecrit.part6}{
-        Numeric (default = c(33.33, 33.33))
-        Vector of two with the maximum percentage of invalid data allowed for day
-        and spt time, respectively. This criteria is only used for fragmentation and DFA
-        analysis.
+        Numeric (default = c(2/3, 2/3))
+        Vector of two with the minimum fraction of valid data required for day
+        and spt time, respectively. This criteria is only used for circadian rhythm analysis.
       }
     }
   }

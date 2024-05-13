@@ -19,7 +19,10 @@
   - Moving LXMX from part 5 to part 6 as these are circadian rhythm analysis.
   
   - Omitted fragmentation metrics for spt window as not meaningful given that part 5 only focusses on valid daytime behaviours.
+  - includenightcrit.part5 added to allow for controlling inclusion of windows in part 5 based on their amount of valid data during spt window. Default remains the same.
 
+  - Fix incorrect usage of part 5 inclusion criteria testing, which used fraction as percentage.
+  
 # CHANGES IN GGIR VERSION 3.1-0
 
 - Minor issue fixes introduced in 3.0-10 related to handling nights without sustained inactivity bouts, handling recordings without midnight and storage of GGIR version in the part 4 output when there are no valid nights.
