@@ -520,7 +520,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         errhand = 'pass'
       } else {
         # pass on functions
-        functions2passon = c("cosinorAnalyses", "applyCosinorAnalyses", "g.IVIS")
+        functions2passon = c("cosinor_IS_IV_Analyses", "apply_cosinor_IS_IV_Analyses", "g.IVIS")
         errhand = 'stop'
       }
       i = 0 # declare i because foreach uses it, without declaring it
