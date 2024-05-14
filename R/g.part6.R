@@ -415,8 +415,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         dsummary = as.data.frame(x = dsummary)
         colnames(dsummary) = ds_names
         # aggregate across recording
-        MXLXsummary = colMeans(x = dsummary)
-        
+        MXLXsummary = colMeans(x = dsummary, na.rm = TRUE)
         # Add to summary
         summary[fi:(fi + length(MXLXsummary) - 1)] = as.numeric(MXLXsummary)
         s_names[fi:(fi + length(MXLXsummary) - 1)] = names(MXLXsummary)
