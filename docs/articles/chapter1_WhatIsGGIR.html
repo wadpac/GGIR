@@ -139,16 +139,16 @@ R-package primarily designed to process multi-day
 sleep, and circadian rhythm research. The term
 <strong><em>raw</em></strong> refers to data being expressed in
 m/s<sup>2</sup> or gravitational acceleration as opposed to the previous
-generation accelerometers which stored data in accelerometer brand
-specific units. Despite the focus on the raw data, GGIR also offers
-functionality to process previous generation accelerometer data. The
-signal processing for raw data includes automatic calibration to
+generation of accelerometers which stored data in accelerometer
+brand-specific units. Despite the focus on the raw data, GGIR also
+offers functionality to process previous-generation accelerometer data.
+The signal processing for raw data includes automatic calibration to
 gravity, detection of abnormally high values, imputation of raw-level
 time gaps (only for specific sensor brands), and calculation of
 orientation angle and average magnitude acceleration based on a variety
 of metrics. Next, the signal processing for both raw and
 previous-generation data continue with the detection of non-wear and
-epoch level imputation. Finally, GGIR uses all this information to
+epoch-level imputation. Finally, GGIR uses all this information to
 describe the data at multiple time resolutions on data quality and data
 summary metrics that could be interpreted as estimates of physical
 activity, inactivity, sleep, and circadian rhythm. The time resolutions
@@ -159,21 +159,22 @@ of GGIR output are:</p>
 participant ID.</li>
 <li>
 <strong>Per sequence of recordings</strong> with matching
-participant IDs which are optionally appended. For details on how to use
-this see documentation on parameter <code>maxRecordingInterval</code>
-and documentation how to use parameters as explained further down.</li>
+participant IDs, which are optionally appended. For details on how to
+use this, see documentation on parameter
+<code>maxRecordingInterval</code> and documentation on how to use
+parameters as explained further down.</li>
 <li>
-<strong>Calendar day</strong> with option to specify the day border
-timing with midnight as default.</li>
+<strong>Calendar day</strong> with an option to specify the day
+border timing with midnight as default.</li>
 <li>
 <strong>Night</strong> defined from noon-noon, unless the person
-woke up after noon which is when the sleep algorithm will re-focus on
+woke up after noon, which is when the sleep algorithm will re-focus on
 the window 6pm-6pm.</li>
 <li>
 <strong>Day segment</strong>, which can be defined via code to
 indicate timing of the segments within a day standardised for all
-recordings and days in a dataset or via diary file where the segment
-definition is allowed to vary per recording and per day.</li>
+recordings and days in a dataset or via diary file, where the segment
+definition is allowed to vary per recording and day.</li>
 <li>
 <strong>Window between Waking-up to Waking-up</strong> the following
 day.</li>
@@ -189,7 +190,7 @@ is set by the user at for example 5 seconds.</li>
 <h2 id="key-strengths">Key strengths<a class="anchor" aria-label="anchor" href="#key-strengths"></a>
 </h2>
 <ol style="list-style-type: decimal">
-<li>GGIR has a permissive open-source software license to maximize
+<li>GGIR has a permissive open-source software license to maximise
 re-use and collaboration.</li>
 <li>GGIR is applicable to data from multiple sensor brands and file
 formats.</li>
@@ -201,19 +202,18 @@ quantitative research.</li>
 to store and re-use intermediate milestone data and the option to
 process multiple files in parallel on the same computer as discussed in
 Chapter 2.</li>
-<li>GGIR is designed to be accessible for new users without R or
-programming experience such as the fact that GGIR requires only one
-function call and comes with elaborate open-access documentation.
-Additionally, paid training courses are offered to maximize the
-opportunity for users to learn about GGIR and for us to learn from
-users.</li>
+<li>GGIR is designed to be accessible for new users without experience
+in R or programming. GGIR requires only one function call and comes with
+elaborate open-access documentation. Additionally, paid training courses
+are offered to maximise the opportunity for users to learn about GGIR
+and for us to learn from users.</li>
 <li>GGIR has had over a <a href="https://github.com/wadpac/GGIR/graphs/contributors" class="external-link">dozen code
 contributors</a>.</li>
 <li>GGIR has been available on the CRAN archive, meaning that it meets
 CRAN standards and that each release has gone through a series of
 automated checks.</li>
-<li>We have public email list (google group) for users to reach out to
-each other and the maintainers.</li>
+<li>We have public email list (<a href="https://groups.google.com/g/rpackageggir/" class="external-link">google group</a>) for
+users to reach out to each other and the maintainers.</li>
 <li>Over <a href="https://github.com/wadpac/GGIR/wiki/Publication-list" class="external-link">hundreds of
 publications</a> have used GGIR, which has been a powerful way to
 identify problems and improve the code and it has provided us with a
@@ -226,7 +226,7 @@ wide range of reference values.</li>
 <p>An elaborate reflection on GGIR’s first 10 years of existence can be
 found in <a href="https://www.accelting.com/updates/10th-anniversary-of-ggir/" class="external-link">this
 blog post</a>. In short, GGIR evolved from a series of R scripts used in
-research around 2010-2012 to a first release in 2013. A key factor in
+research around 2010-2012 to a first release in 2013. A key factor for
 the growth of GGIR has been its adoption by the research community and
 the willingness of a variety of researchers to invest in GGIR either in
 terms of time investment or financially. GGIR would not be what it is
@@ -239,23 +239,23 @@ without all their efforts.</p>
 <h3 id="flexible-and-accessible">Flexible and accessible<a class="anchor" aria-label="anchor" href="#flexible-and-accessible"></a>
 </h3>
 <p>The research field is highly heterogeneous in: the choice of sensor
-brand,, data format, the study protocols used, and the research
-questions it tries to answer. At the same time many within the field
-lack the time or skills to write their own custom data processing
-software. GGIR aims to be flexible to handle all these different
-scenarios and at the same time remain accessible to those who lack time
-or skills to write software. Further, we hope GGIR is of use to those
-without the financial resources for commercial software, although we
-would like stress that we are not a charity and depend on paid or unpaid
-voluntary efforts from contributors.</p>
+brand, data format, the study protocols used, and the research questions
+it tries to answer. At the same time many within the field lack the time
+or skills to write their own custom data processing software. GGIR aims
+to be flexible to handle all these different scenarios and at the same
+time remain accessible to those who lack time or skills to write
+software. Further, we hope GGIR is of use to those without the financial
+resources for commercial software, although we would like stress that we
+are not a charity and depend on paid or unpaid voluntary efforts from
+contributors.</p>
 </div>
 <div class="section level3">
 <h3 id="algorithm-design">Algorithm design<a class="anchor" aria-label="anchor" href="#algorithm-design"></a>
 </h3>
 <p>The philosophy behind the algorithms as implemented in GGIR is that
-biological explainable (heuristic) approaches to data analyses are
-preferably over purely data-driven approaches, unless there is no other
-way. The idea is that to advance knowledge in this field of research it
+biologically explainable (heuristic) approaches to data analyses are
+preferable over purely data-driven approaches, unless there is no other
+way. The idea is that to advance knowledge in this field of research, it
 is essential to have an understanding of the causal relation between the
 phenomena being observed (e.g. body movement), the way an (acceleration)
 sensor works, what we do with the data produced, and how we interpret
@@ -286,8 +286,8 @@ blog post</a>.</li>
 impossible to capture with a movement sensor forcing us to simplify our
 definition of ‘sleep’ towards a definition a movement sensor can
 capture, by which ‘validation’ with polysomnography becomes somewhat
-meaningless as we already know that we are not measuring the same
-construct anymore.</li>
+meaningless as we already know that we are no longer measuring the same
+construct.</li>
 <li>Activity types are ambiguous to define given the high number of ways
 they can be performed. This introduces a fundamental level of
 uncertainty about the robustness of models outside the datasets and
@@ -298,12 +298,12 @@ that have descriptive value on their own regardless of whether they
 offer a high correlation with supposed criterion methods.</p>
 </div>
 <div class="section level3">
-<h3 id="permissive-open-source-license">Permissive Open-source license<a class="anchor" aria-label="anchor" href="#permissive-open-source-license"></a>
+<h3 id="permissive-open-source-license">Permissive open-source license<a class="anchor" aria-label="anchor" href="#permissive-open-source-license"></a>
 </h3>
 <p>It may sound obvious to some that research software is open-source,
-but in the fields of physical activity and sleep research this is far
+but in the fields of physical activity and sleep research, this is far
 from the accepted approach. GGIR is one of the very few research tools
-in this field that has a permissive license aimed to maximize its
+in this field that has a permissive license aimed to maximise its
 potential for re-use and collaboration.</p>
 </div>
 </div>
@@ -318,12 +318,12 @@ to use the documentation in the training course. Further, we also wanted
 to provide a good level of documentation for those who do not follow the
 course or want to refresh their understanding of GGIR.</p>
 <p>The documentation is mainly written in a narrative style where we
-have tried to explain both the theory and practise of all GGIR
+have tried to explain both the theory and practice of all GGIR
 functionalities. Everything you need to type in your R script is
 <code>highlighted like this</code>.</p>
-<p>This is not intended as an academic review: We only cite publications
-to clarify the origin of algorithms and we only discuss what is in
-GGIR.</p>
+<p>This documentation is not intended as an academic review: We only
+cite publications to clarify the origin of algorithms and we only
+discuss what is part of GGIR.</p>
 <p>Finally, the first version of this documentation was sponsored by
 Accelting with the commitment that this will remain available as free
 open-access documentation. However, things like this are much easier to

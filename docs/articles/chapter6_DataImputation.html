@@ -134,22 +134,23 @@
 <h2 id="imputation-of-invalid-epoch-data">Imputation of invalid epoch data<a class="anchor" aria-label="anchor" href="#imputation-of-invalid-epoch-data"></a>
 </h2>
 <p>All time segments classified as non-wear or clipping (see Chapter 3)
-and those masked by study protocol (see Chapter 5) are treated as
-invalid data. In GGIR part 2, the epoch level metric values are imputed
+and those masked by the study protocol (see Chapter 5) are treated as
+invalid data. In GGIR part 2, the epoch level metric values are imputed,
 while a log is kept of which epochs were imputed. For most of the
-subsequent analysis done by GGIR the imputed time series is used, while
-for a few analyses the time series without invalid segments are
-used:</p>
+subsequent analysis done by GGIR, the imputed time series is used. The
+time series without invalid segments are used only for a few
+analyses:</p>
 <ul>
 <li><p>Weighted average of full recording</p></li>
 <li><p>Cosinor analysis (see Chapter 10)</p></li>
-<li><p>Optionally, sleep analysis (see Chapter 8)</p></li>
+<li><p>A very specific non-default configuration of sleep analysis (see
+Chapter 8)</p></li>
 </ul>
-<p>The imputation of epoch data works is done based on the mean metric
-value corresponding to the valid values from the same time in the day on
-other days in the recording. However, if the same time interval is
-marked as invalid across all recorded days the value is imputed by zero,
-except for metric EN which is imputed by 1.</p>
+<p>The imputation of epoch data is done based on the mean metric value
+corresponding to the valid values from the same time in the day on other
+days in the recording. However, if the same time interval is marked as
+invalid across all recorded days, the value is imputed by zero, except
+for metric EN which is imputed by 1.</p>
 <p>For example, imagine a 5-day recording with the following ENMO metric
 data for two specific epochs in the day across five days:</p>
 <table class="table">
@@ -215,15 +216,15 @@ data for two specific epochs in the day across five days:</p>
 <h2 id="controlling-the-imputation">Controlling the imputation<a class="anchor" aria-label="anchor" href="#controlling-the-imputation"></a>
 </h2>
 <p>It is worth noting that you have the option to disable the imputation
-by setting parameter <code>do.imp = FALSE</code>, which means that
-values are kept as they are and not imputed or omitted. Disabling the
+by setting parameter <code>do.imp = FALSE</code>. This means that values
+are kept as they are and not imputed or omitted. Disabling the
 imputation is not recommended for most use-cases, but can be relevant
 for studies in a controlled sleep or exercise laboratories where the
-sensor is known to be worn throughout the experiment. .</p>
-<p>Additionally, an alternative way to control the imputation is to
-specify time segments in which the invalid epochs are to be imputed by
-zeros (or ones for the metric EN) instead of following the standard GGIR
-imputation method. To do this, you should use the parameter
+sensor is known to be worn throughout the experiment.</p>
+<p>An alternative way to control the imputation is to specify time
+segments in which the invalid epochs are to be imputed by zeros (or ones
+for the metric EN) instead of following the standard GGIR imputation
+method. To do this, you should use the parameter
 <code>TimeSegments2ZeroFile</code>.</p>
 </div>
 <div class="section level2">
