@@ -446,6 +446,6 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   #also test one small other function:
   datadir  = system.file("testfiles", package = "GGIR")[1]
   fnames = datadir2fnames(datadir = datadir, filelist = FALSE)
-  expect_equal(length(fnames$fnames), 7)
-  expect_equal(length(fnames$fnamesfull), 7)
+  expect_equal(length(fnames$fnames), 8)
+  expect_equal(length(fnames$fnamesfull), 8)
 })
