@@ -337,9 +337,7 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
                                  LEVELS = LEVELS[sse[ts$diur[sse] == ifelse(fragmode == "day", 0, 1)]],
                                  Lnames = Lnames, xmin = 60/ws3new, mode = fragmode)
       # fragmentation values can come with a lot of decimal places
-      frag.out = round(as.numeric(frag.out), digits = 6)
-      
-      dsummary[si, fi:(fi + (length(frag.out) - 1))] = frag.out
+      dsummary[si, fi:(fi + (length(frag.out) - 1))] = round(as.numeric(frag.out), digits = 6)
       ds_names[fi:(fi + (length(frag.out) - 1))] = paste0("FRAG_", names(frag.out), "_", fragmode)
       fi = fi + length(frag.out)
     }
