@@ -137,6 +137,9 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       # Select relevant section of the time series
       wakeuptimes = which(diff(c(1, mdat$SleepPeriodTime, 0)) == -1)
       onsettimes = which(diff(c(0, mdat$SleepPeriodTime, 1)) == 1) 
+      Nmdat = nrow(mdat)
+      if (wakeuptimes[length(wakeuptimes)] > Nmdat) wakeuptimes[length(wakeuptimes)] = Nmdat
+      if (onsettimes[length(onsettimes)] > Nmdat) onsettimes[length(onsettimes)] = Nmdat
       getIndex = function(x, ts, wakeuptimes, onsettimes, epochSize) {
         if (x == "start") {
           y = 1 # simply the start of the time series
