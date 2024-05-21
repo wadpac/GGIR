@@ -313,7 +313,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         for (wi in window_number) {
           gi = 1
           sse = which(ts$window == wi)
-          if (is.na(ts$ACC[sse[1]])) break
+          if (is.na(ts$ACC[sse[2]])) break
           ts$time_num = ts$time
           ts$time = ts$timestamp
           WLH = length(sse)/((60/epochSize) * 60)
