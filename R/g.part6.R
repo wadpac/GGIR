@@ -314,8 +314,6 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           gi = 1
           sse = which(ts$window == wi)
           if (is.na(ts$ACC[sse[2]])) {
-            # print(fnames.ms5raw[i])
-            # browser()
             next
           }
           ts$time_num = ts$time
