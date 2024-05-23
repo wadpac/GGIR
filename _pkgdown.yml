@@ -84,6 +84,8 @@ navbar:
 
 news:
   releases:
+  - text: "Version 3.1-0"
+    href: https://www.accelting.com/updates/ggir-release-3-1-0/
   - text: "Version 3.0-0"
     href: https://www.accelting.com/updates/ggir-release-3-0-0/
   - text: "Version 2.9-0"
