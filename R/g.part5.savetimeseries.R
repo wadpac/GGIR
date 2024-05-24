@@ -28,11 +28,11 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
   mdat = mdat[,-which(names(mdat) == "date_time")]
   # Add invalid window indicator
   mdat$invalid_wakinghours = mdat$invalid_sleepperiod =  mdat$invalid_fullwindow = 100
-  window_starts = which(abs(diff(c(0, mdat$window, 0))) == 1) + 1 # first epoch of each window
+  window_starts = which(abs(diff(c(0, mdat$window, 0))) > 0) # first epoch of each window
   if (length(window_starts) > 0) {
     if (length(window_starts) > 1) {
       for (di in 1:(length(window_starts) - 1)) {
-        window_indices = window_starts[di]:(window_starts[di + 1] - 1)
+        window_indices = window_starts[di]:pmin((window_starts[di + 1] - 1), nrow(mdat))
         wake = which(mdat$SleepPeriodTime[window_indices] == 0)
         sleep = which(mdat$SleepPeriodTime[window_indices] == 1)
         mdat$invalid_wakinghours[window_indices] = round(mean(mdat$invalidepoch[window_indices[wake]]) * 100, digits = 2)
@@ -40,12 +40,11 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
         mdat$invalid_fullwindow[window_indices] = round(mean(mdat$invalidepoch[window_indices]) * 100, digits = 2)
       }
     } else {
-      window_indices = 1:nrow(mdat)
-      wake = which(mdat$SleepPeriodTime[window_indices] == 0)
-      sleep = which(mdat$SleepPeriodTime[window_indices] == 1)
-      mdat$invalid_wakinghours[window_indices] = round(mean(mdat$invalidepoch[window_indices[wake]]) * 100, digits = 2)
-      mdat$invalid_sleepperiod[window_indices] = round(mean(mdat$invalidepoch[window_indices[sleep]]) * 100, digits = 2)
-      mdat$invalid_fullwindow[window_indices] = round(mean(mdat$invalidepoch[window_indices]) * 100, digits = 2)
+      wake = which(mdat$SleepPeriodTime == 0)
+      sleep = which(mdat$SleepPeriodTime == 1)
+      mdat$invalid_wakinghours = round(mean(mdat$invalidepoch[wake]) * 100, digits = 2)
+      mdat$invalid_sleepperiod = round(mean(mdat$invalidepoch[sleep]) * 100, digits = 2)
+      mdat$invalid_fullwindow = round(mean(mdat$invalidepoch) * 100, digits = 2)
     }
     # round acceleration values to 3 digits to reduce storage space
     mdat$ACC = round(mdat$ACC, digits = 3)
@@ -79,7 +78,8 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
       # Exclude days that have 100% nonwear over the full window or 100% over wakinghours
       cut = which(mdat$invalid_fullwindow == 100 |
                     mdat$invalid_wakinghours > maxpernwday |
-                    mdat$invalid_sleepperiod > maxpernwnight)
+                    mdat$invalid_sleepperiod > maxpernwnight |
+                    mdat$window == 0)
       if (length(cut) > 0) mdat = mdat[-cut,] # remove days from which we already know that they are not going to be included (first and last day)
     }
     mdat$guider = ifelse(mdat$guider == 'sleeplog', yes = 1, # digitize guider to save storage space
