@@ -151,7 +151,7 @@ If you prefer to keep old functionality then divide your old value by 24 #1050.
 
 # CHANGES IN GGIR VERSION 3.0-1
 
-- Part 2: Added option to provide a csv file with start and end dates when accelerometer is expected to be worn #943
+- Part 2: Added parameters study_dates_file and study_dateformat to specify csv file with start and end date when accelerometer is expected to be worn #943
 
 - Part 5: Now stores dictionary for variable names in part 5 reports #938
 
