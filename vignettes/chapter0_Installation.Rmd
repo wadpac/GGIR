@@ -30,7 +30,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Install GGIR
 
 Install the latest released version of GGIR with its dependencies from
-CRAN. You can do this with one command from the console command line:
+CRAN. You can do this with one command from the R command line:
 
 ```{R,eval=FALSE}
 install.packages("GGIR", dependencies = TRUE)
@@ -50,7 +50,7 @@ library(GGIR)
 ## Other packages you may need
 
 Additionally, in some use-cases you will need to install one or multiple
-additional packages. Note these packages are not installed by default,
+additional packages. Note that these packages are not installed by default,
 so please follow the instructions if:
 
 -   You want to derive Neishabouricounts (with
