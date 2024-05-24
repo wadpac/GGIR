@@ -422,7 +422,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                     exfi = collectfi[which(params_247[["winhr"]] == winhr_value)]
                     if (length(varnum) > (60 / ws3) * 60 * winhr_value * 1.2) { # Calculate values
                       # Time window for L5 & M5 analysis
-                      t0_LFMF =  1 #start
+                      t0_LFMF =  0 #start
                       # L5M5window[2] #end in 24 hour clock hours (if a value higher than 24 is chosen, it will take early hours of previous day to complete the 5 hour window
                       t1_LFMF = length(varnum) / (60 * (60 / ws3)) + (winhr_value - (params_247[["M5L5res"]] / 60))
                       
