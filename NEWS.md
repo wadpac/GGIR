@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.1-1
+
+- Part 2: Corrected calculation of LXhr and MXhr which had one hour offset when timing was after midnight, #1117
+
 # CHANGES IN GGIR VERSION 3.1-0
 
 - Minor issue fixes introduced in 3.0-10 related to handling nights without sustained inactivity bouts, handling recordings without midnight and storage of GGIR version in the part 4 output when there are no valid nights.
@@ -151,7 +155,7 @@ If you prefer to keep old functionality then divide your old value by 24 #1050.
 
 # CHANGES IN GGIR VERSION 3.0-1
 
-- Part 2: Added option to provide a csv file with start and end dates when accelerometer is expected to be worn #943
+- Part 2: Added parameters study_dates_file and study_dateformat to specify csv file with start and end date when accelerometer is expected to be worn #943
 
 - Part 5: Now stores dictionary for variable names in part 5 reports #938
 
