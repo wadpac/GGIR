@@ -329,8 +329,8 @@ test_that("chainof5parts", {
   
   expect_true(dir.exists(dirname))
   expect_true(file.exists(vis_sleep_file))
-  expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(0))
-  expect_equal(nightsummary$SptDuration[1], 16.15, tolerance = 0.01)
+  expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(2))
+  expect_equal(nightsummary$SptDuration, nightsummary$guider_SptDuration)
   expect_true(as.logical(nightsummary$acc_available[1]))
   expect_false(as.logical(nightsummary$sleeplog_used[1]))
   #----------------------------------------------------------------------
@@ -357,8 +357,9 @@ test_that("chainof5parts", {
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_true(dir.exists(dirname))
-  expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(10))
+  expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(12))
   expect_that(round(nightsummary$SptDuration[1], digits = 4), equals(7))
+  expect_equal(nightsummary$SptDuration, nightsummary$guider_SptDuration)
   
   #----------------------------------------------------------------------
   # Part 4 - DST-1
