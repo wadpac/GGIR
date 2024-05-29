@@ -613,18 +613,6 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                     } else {
                       spo$dur[evi] = 1  #nocturnal = all acc periods that end after diary onset and start before diary wake
                     }
-                    # REDEFINITION OF ONSET/WAKE OF THIS PERIOD OVERLAPS if TRUE then sleeplog
-                    # value is assigned to accelerometer-based value for onset and wake up
-                    if (params_sleep[["relyonguider"]] == TRUE | relyonguider_thisnight == TRUE) {
-                      if ((spo$start[evi] < SptWake & spo$end[evi] > SptWake) | (spo$start[evi] < SptWake &
-                                                                                 spo$end[evi] < spo$start[evi])) {
-                        spo$end[evi] = SptWake
-                      }
-                      if ((spo$start[evi] < SptOnset & spo$end[evi] > SptOnset) | (spo$end[evi] > SptOnset &
-                                                                                   spo$end[evi] < spo$start[evi])) {
-                        spo$start[evi] = SptOnset
-                      }
-                    }
                   }
                 }
                 if (daysleeper[j] == TRUE) {
@@ -718,8 +706,21 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   # ACCELEROMETER
                   if (length(which(as.numeric(spocum.t$dur) == 1)) > 0) {
                     rtl = which(spocum.t$dur == 1)
-                    nightsummary[sumi, 3] = spocum.t$start[rtl[1]]
-                    nightsummary[sumi, 4] = spocum.t$end[rtl[length(rtl)]]
+                    accSptOnset = spocum.t$start[rtl[1]]
+                    accSptWake = spocum.t$end[rtl[length(rtl)]]
+                    # REDEFINITION OF ONSET/WAKE OF THIS PERIOD if relying on guider
+                    if (params_sleep[["relyonguider"]] == TRUE | relyonguider_thisnight == TRUE) {
+                      accSptOnset = SptOnset
+                      accSptWake = SptWake
+                      # REDEFINE SIBs that are part of the SPT (dur)
+                      # this is, only SIBs within spt, not overlapping, as we are
+                      # trusting the guider definition in this scenario
+                      rtl = which(spocum.t$start >= accSptOnset & spocum.t$end <= accSptWake)
+                      spocum.t$dur = 0
+                      spocum.t$dur[rtl] = 1
+                    }
+                    nightsummary[sumi, 3] = accSptOnset
+                    nightsummary[sumi, 4] = accSptWake
                   } else {
                     cleaningcode = 5  # only for first day, other cleaningcode is assigned to wrong day
                     nightsummary[sumi, 3] = SptOnset  #use default assumption about onset
