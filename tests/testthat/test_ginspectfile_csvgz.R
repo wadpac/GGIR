@@ -6,7 +6,11 @@ quick_gzip = function(filename) {
   fext = fext[length(fext)]
   destnameT = tempfile(fileext = paste0(".", fext, ".gz"))
   x = readLines(filename, warn = FALSE)
-  writeLines(x, destnameT)
+  gzcon = gzfile(destnameT, "w");
+  on.exit({
+    try({close(gzcon)})
+  })
+  write(x, gzcon);
   return(destnameT)
 }
 
