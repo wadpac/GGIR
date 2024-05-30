@@ -2,6 +2,8 @@
 
 - Part 2: Corrected calculation of LXhr and MXhr which had one hour offset when timing was after midnight, #1117
 
+- Part 4: Corrected documentation for parameter relyonguider.
+
 # CHANGES IN GGIR VERSION 3.1-0
 
 - Minor issue fixes introduced in 3.0-10 related to handling nights without sustained inactivity bouts, handling recordings without midnight and storage of GGIR version in the part 4 output when there are no valid nights.
