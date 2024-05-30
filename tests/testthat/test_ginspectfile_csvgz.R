@@ -1,32 +1,12 @@
 library(GGIR)
 testthat::context("g.inspectfile CSV")
 
-# adapted from R.utils::compressFile
-quick_gzip = function(filename, BFR.SIZE=1e+07, ...) {
+quick_gzip = function(filename) {
   fext = strsplit(filename, "[.]")[[1]]
   fext = fext[length(fext)]
   destnameT = tempfile(fileext = paste0(".", fext, ".gz"))
-  inn <- file(filename, open = "rb")
-  on.exit(if (!is.null(inn)) close(inn))
-  outComplete <- FALSE
-  out <- gzfile(destnameT, open = "wb", ...)
-  on.exit({
-    if (!is.null(out)) close(out)
-    if (!outComplete) file.remove(destnameT)
-  }, add = TRUE)
-  nbytes <- 0
-  repeat {
-    bfr <- readBin(inn, what = raw(0L), size = 1L, n = BFR.SIZE)
-    n <- length(bfr)
-    if (n == 0L)
-      break
-    nbytes <- nbytes + n
-    writeBin(bfr, con = out, size = 1L)
-    bfr <- NULL
-  }
-  outComplete <- TRUE
-  close(out)
-  out <- NULL
+  x = readLines(filename, warn = FALSE)
+  writeLines(x, destnameT)
   return(destnameT)
 }
 
