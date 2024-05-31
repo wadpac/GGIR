@@ -1,6 +1,7 @@
 # CHANGES IN GGIR VERSION 3.1-1
 
 - Part 2: Corrected calculation of LXhr and MXhr which had one hour offset when timing was after midnight, #1117
+- Fixes reversion of reading `.csv.gz` files #1131.
 
 # CHANGES IN GGIR VERSION 3.1-0
 
