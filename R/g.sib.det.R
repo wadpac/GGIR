@@ -296,9 +296,10 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                 }
               }
               spt_estimate_tmp = HASPT(angle = tmpANGLE, ws3 = ws3,
-                                       sptblocksize = sptblocksize,
-                                       spt_max_gap = spt_max_gap,
-                                       HASPT.algo = params_sleep[["HASPT.algo"]], invalid = invalid[newqqq1:newqqq2],
+                                       sptblocksize = sptblocksize, spt_max_gap = spt_max_gap,
+                                       HASPT.algo = params_sleep[["HASPT.algo"]],
+                                       invalid = invalid[newqqq1:newqqq2],
+                                       HDCZA_threshold = params_sleep[["HDCZA_threshold"]],
                                        HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
                                        activity = ACC[newqqq1:newqqq2])
               if (length(spt_estimate_tmp$SPTE_start) > 0) {
