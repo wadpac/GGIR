@@ -12,7 +12,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     params_rawdata = params$params_rawdata
     rm(params)
   }
-
+  
   # note that if the file is an RData file then this function will not be called
   # the output of this function for the original datafile is stored inside the RData file in the form of object I
   getbrand = function(filename = c(), datafile = c()) {
@@ -24,47 +24,47 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       extension = extension[length(extension)]
     }
     switch(extension,
-            "bin" = { dformat = FORMAT$BIN },
-            "cwa" = ,
-            "CWA" = { mon = MONITOR$AXIVITY
-            dformat = FORMAT$CWA
-            },
-            "gt3x" = { mon = MONITOR$ACTIGRAPH
-            dformat = FORMAT$GT3X
-            },
-            "GT3X" = { mon = MONITOR$ACTIGRAPH
-            dformat = FORMAT$GT3X
-            if (file.access(datafile, 2) == 0) { # test for write access to file
-              # rename file to be lower case gt3x extension
-              file.rename(from = datafile, to = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile))
-              datafile = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile)
-              warning("\nWe have renamed the GT3X file to gt3x because GGIR dependency read.gt3x cannot handle uper case extension")
-            } else {
-              stop("\nGGIR needs to change the file extension from GT3X to gt3x, but it does not seem to have write permission to the file.")
-            }
-            },
-            "csv" = { dformat = FORMAT$CSV
-            testheader = read.csv(datafile, nrow = 1, skip = 0, header = FALSE)
-
-            if (grepl("ActiGraph", testheader[1], fixed=TRUE)) {
-              mon = MONITOR$ACTIGRAPH
-            } else {
-              testcsv = read.csv(datafile, nrow = 10, skip = 10)
-              testcsvtopline = read.csv(datafile, nrow = 2,skip = 1)
-
-              if (ncol(testcsv) == 2 && ncol(testcsvtopline) < 4) {
-                mon = MONITOR$GENEACTIV
-              } else if (ncol(testcsv) >= 4 && ncol(testcsvtopline) >= 4) {
-                mon = MONITOR$AXIVITY
-              } else {
-                stop(paste0("\nError processing ", filename, ": unrecognised csv file format.\n"))
-              }
-            }
-            },
-            "wav" = { stop(paste0("\nError processing ", filename, ": Axivity .wav file format is no longer supported.\n")) },
-            { stop(paste0("\nError processing ", filename, ": unrecognised file format.\n")) }
+           "bin" = { dformat = FORMAT$BIN },
+           "cwa" = ,
+           "CWA" = { mon = MONITOR$AXIVITY
+           dformat = FORMAT$CWA
+           },
+           "gt3x" = { mon = MONITOR$ACTIGRAPH
+           dformat = FORMAT$GT3X
+           },
+           "GT3X" = { mon = MONITOR$ACTIGRAPH
+           dformat = FORMAT$GT3X
+           if (file.access(datafile, 2) == 0) { # test for write access to file
+             # rename file to be lower case gt3x extension
+             file.rename(from = datafile, to = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile))
+             datafile = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile)
+             warning("\nWe have renamed the GT3X file to gt3x because GGIR dependency read.gt3x cannot handle uper case extension")
+           } else {
+             stop("\nGGIR needs to change the file extension from GT3X to gt3x, but it does not seem to have write permission to the file.")
+           }
+           },
+           "csv" = { dformat = FORMAT$CSV
+           testheader = read.csv(datafile, nrow = 1, skip = 0, header = FALSE)
+           
+           if (grepl("ActiGraph", testheader[1], fixed=TRUE)) {
+             mon = MONITOR$ACTIGRAPH
+           } else {
+             testcsv = read.csv(datafile, nrow = 10, skip = 10)
+             testcsvtopline = read.csv(datafile, nrow = 2,skip = 1)
+             
+             if (ncol(testcsv) == 2 && ncol(testcsvtopline) < 4) {
+               mon = MONITOR$GENEACTIV
+             } else if (ncol(testcsv) >= 4 && ncol(testcsvtopline) >= 4) {
+               mon = MONITOR$AXIVITY
+             } else {
+               stop(paste0("\nError processing ", filename, ": unrecognised csv file format.\n"))
+             }
+           }
+           },
+           "wav" = { stop(paste0("\nError processing ", filename, ": Axivity .wav file format is no longer supported.\n")) },
+           { stop(paste0("\nError processing ", filename, ": unrecognised file format.\n")) }
     )
-
+    
     if (ismovisens(datafile)) {
       dformat = FORMAT$BIN
       mon = MONITOR$MOVISENS
@@ -80,7 +80,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
           # occasionally we'll get a decimal seperated by comma; if so, replace the comma with a dot
           tmp = sub(",", ".", tmp, fixed = TRUE)
           sf = as.numeric(tmp)
-
+          
           #also try to read sf from first page header
           sf_r = sf
           csvr = c()
@@ -119,7 +119,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         # occasionally we'll get a decimal seperated by comma; if so, replace the comma with a dot
         tmp = sub(",", ".", tmp, fixed = TRUE)
         sf = as.numeric(tmp)
-
+        
       } else if (mon == MONITOR$ACTIGRAPH) {
         tmp = read.csv(datafile, nrow = 9, skip = 0)
         tmp = colnames(tmp)
@@ -159,11 +159,11 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   filename = filename[length(filename)]
   monnames = c("genea", "geneactive", "actigraph", "axivity", "movisens", "verisense") #monitor names
   fornames = c("bin", "csv", "wav", "cwa", "csv", "gt3x") #format names
-
+  
   if (length(filename) == 0) {
     warning("no files to analyse", call. = FALSE)
   }
-
+  
   if (length(params_rawdata[["rmc.firstrow.acc"]]) == 0) {
     INFI = getbrand(filename, datafile)
     mon = INFI$mon
@@ -212,14 +212,14 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       stop("\nFile header doesn't specify sample rate. Please provide a non-zero rmc.sf value to process ", datafile)
     }
   }
-
+  
   if (mon == MONITOR$GENEACTIV && dformat == FORMAT$CSV) {
     stop(paste0("The GENEActiv csv reading functionality is deprecated in",
                 " GGIR from version 2.6-4 onwards. Please, use either",
                 " the GENEActiv bin files or try to read the csv files with",
                 " GGIR::read.myacc.csv"), call. = FALSE)
   }
-
+  
   if (dformat == FORMAT$BIN) {
     if (mon == MONITOR$GENEACTIV) {
       H = GGIRread::readGENEActiv(filename = datafile, start = 0, end = 1)$header
@@ -233,7 +233,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         header = as.character(read.csv(xmlfile, nrow = 1))
         tmp1 = unlist(strsplit(header, "measurementId="))[2]
         ID = gsub(pattern = " ",replacement = "",  unlist(strsplit(tmp1, " timestampStart"))[1])
-
+        
         header = paste0(read.csv(xmlfile, nrow = 10, skip = 2), collapse = " ")
         tmp1 = unlist(strsplit(header, "sensorSerialNumber value="))[2]
         SN = unlist(strsplit(tmp1, "/>"))[1]
@@ -254,7 +254,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   } else if (dformat == FORMAT$CWA) {
     PP = GGIRread::readAxivity(datafile, start = 1, end = 10, desiredtz = desiredtz)
     H = PP$header
-
+    
   } else if (dformat == FORMAT$AD_HOC_CSV) { # csv data in a user-specified format
     header = Pusercsvformat$header
   } else if (dformat == FORMAT$GT3X) { # gt3x
@@ -266,7 +266,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       header = NULL
     } else {
       info = info[lengths(info) != 0] # remove odd NULL in the list
-
+      
       H = matrix("", length(info), 2)
       H[, 1] = names(info)
       for (ci in 1:length(info)) {
@@ -282,7 +282,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   if (is.null(sf) || sf == 0) {
     warning(paste0("\nSample frequency not recognised in ", basename(datafile)), call. = FALSE)
   }
-
+  
   if (dformat != FORMAT$AD_HOC_CSV && is.null(sf) == FALSE) {
     H = as.matrix(H)
     if (ncol(H) == 3 && dformat == FORMAT$CSV && mon == MONITOR$ACTIGRAPH) {
