@@ -442,7 +442,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           }
           # now generate empty overview for this night / person
           dummyspo = data.frame(nb = numeric(1), start = numeric(1),  end = numeric(1),
-                                dur = numeric(1), def = character(1))
+                                overlapGuider = numeric(1), def = character(1))
           dummyspo$nb[1] = 1
           spo_day = c()
           spo_day_exists = FALSE
@@ -480,11 +480,11 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
               # now get sleep periods
               nsp = length(unique(sleepdet.t$sib.period))  #number of sleep periods
               spo = data.frame(nb = numeric(nsp), start = numeric(nsp),  end = numeric(nsp),
-                               dur = numeric(nsp), def = character(nsp))
+                               overlapGuider = numeric(nsp), def = character(nsp))
               if (nsp <= 1 & unique(sleepdet.t$sib.period)[1] == 0) {
                 # no sleep periods
                 spo$nb[1] = 1
-                spo[1, c("start", "end", "dur")] = 0
+                spo[1, c("start", "end", "overlapGuider")] = 0
                 spo$def[1] = k
                 if (daysleeper[j] == TRUE) {
                   tmpCmd = paste0("spo_day", k, "= c()")
@@ -574,7 +574,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   # add empty spo object, in case it was removed above
                   # we do this because code below assumes that spo is a matrix
                   spo = data.frame(nb = numeric(1), start = numeric(1),  end = numeric(1),
-                                   dur = numeric(1), def = character(1))
+                                   overlapGuider = numeric(1), def = character(1))
                   spo$nb[1] = 1
                   spo[1, 2:4] = 0
                   spo$def[1] = k
@@ -613,10 +613,10 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                       if (spo$end[evi] < GuiderWake & spo$start[evi] > GuiderOnset) {
                         # if using a time in bed reference, then sleep can never 
                         # start before time in bed
-                        spo$dur[evi] = 1  #All sib that start after guider onset and end before guider wake
+                        spo$overlapGuider[evi] = 1  #All sib that start after guider onset and end before guider wake
                       }
                     } else {
-                      spo$dur[evi] = 1  # All sib that end after guider onset and start before guider wake
+                      spo$overlapGuider[evi] = 1  # All sib that end after guider onset and start before guider wake
                     }
                     if (params_sleep[["relyonguider"]] == TRUE | relyonguider_thisnight == TRUE) {
                       # Redefine sib start and end if it overlaps with guider
@@ -722,7 +722,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                     return(x)
                   }
                   delta_t1 = diff(as.numeric(spocum.t$end))
-                  spocum.t$dur = correct01010pattern(spocum.t$dur)
+                  spocum.t$overlapGuider = correct01010pattern(spocum.t$overlapGuider)
                   
                   #----------------------------
                   nightsummary[sumi, 1] = accid
@@ -732,8 +732,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   
                   #------------------------------------
                   # ACCELEROMETER
-                  if (length(which(as.numeric(spocum.t$dur) == 1)) > 0) {
-                    rtl = which(spocum.t$dur == 1)
+                  if (length(which(as.numeric(spocum.t$overlapGuider) == 1)) > 0) {
+                    rtl = which(spocum.t$overlapGuider == 1)
                     nightsummary[sumi, 3] = spocum.t$start[rtl[1]]
                     nightsummary[sumi, 4] = spocum.t$end[rtl[length(rtl)]]
                   } else {
@@ -799,10 +799,10 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                     nightsummary[sumi, 13] = 1
                   }
                   # Accumulated sustained inactivity bouts during SPT (nocturnal) and dyatime
-                  nocs = as.numeric(spocum.t$end[which(spocum.t$dur == 1)]) -
-                    as.numeric(spocum.t$start[which(spocum.t$dur == 1)])
-                  sibds = as.numeric(spocum.t$end[which(spocum.t$dur == 0)]) -
-                    as.numeric(spocum.t$start[which(spocum.t$dur == 0)])
+                  nocs = as.numeric(spocum.t$end[which(spocum.t$overlapGuider == 1)]) -
+                    as.numeric(spocum.t$start[which(spocum.t$overlapGuider == 1)])
+                  sibds = as.numeric(spocum.t$end[which(spocum.t$overlapGuider == 0)]) -
+                    as.numeric(spocum.t$start[which(spocum.t$overlapGuider == 0)])
                   # it is possible that nocs is negative if when sleep episode starts before dst
                   # in the autumn and ends inside the dst hour
                   negval = which(nocs < 0)
@@ -826,7 +826,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   # if yes, then check whether any of the sleep episodes overlaps dst in spring,
                   # one hour skipped
                   if (dst_night_or_not == 1) {
-                    checkoverlap = spocum.t[which(spocum.t$dur == 1), c("start", "end")]
+                    checkoverlap = spocum.t[which(spocum.t$overlapGuider == 1), c("start", "end")]
                     if (nrow(checkoverlap) > 0) {
                       overlaps = which(checkoverlap[, 1] <= (dsthour + 24) & checkoverlap[, 2] >=
                                          (dsthour + 25))
@@ -914,9 +914,9 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   nightsummary[sumi, 14] = spocum.t.dur.noc  #SleepDurationInSpt
                   nightsummary[sumi, 15] = nightsummary[sumi, 5] - spocum.t.dur.noc  #WASO
                   nightsummary[sumi, 16] = spocum.t.dur_sibd  #total sib (sustained inactivty bout) duration during wakinghours
-                  nightsummary[sumi, 17] = length(which(spocum.t$dur == 1))  #number of nocturnalsleep periods
+                  nightsummary[sumi, 17] = length(which(spocum.t$overlapGuider == 1))  #number of nocturnalsleep periods
                   nightsummary[sumi, 18] = nightsummary[sumi, 17] - 1  #number of awakenings
-                  nightsummary[sumi, 19] = length(which(spocum.t$dur == 0))  #number of sib (sustained inactivty bout) during wakinghours
+                  nightsummary[sumi, 19] = length(which(spocum.t$overlapGuider == 0))  #number of sib (sustained inactivty bout) during wakinghours
                   nightsummary[sumi, 20] = as.numeric(spocum.t.dur_sibd_atleast15min)  #total sib (sustained inactivty bout) duration during wakinghours of at least 5 minutes
                   #-------------------------------------------------------
                   # Also report timestamps in non-numeric format:
@@ -990,7 +990,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                             spocum.t[pli, c("start", "end")] = spocum.t[pli, c("end", "start")]
                           }
                         }
-                        if (spocum.t$dur[pli] == 1) {
+                        if (spocum.t$overlapGuider[pli] == 1) {
                           colb = rainbow(length(undef), start = 0.7, end = 1)
                         } else {
                           colb = rainbow(length(undef), start = 0.2, end = 0.4)
