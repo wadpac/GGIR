@@ -591,10 +591,16 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                 }
                 # If no SIBs overlap with the guider window
                 if (relyonguider_thisnight == TRUE) {
-                  newlines = rbind(spo[1, ], spo[1, ])
-                  newlines[1, 1:4] = c(nrow(spo) + 1, GuiderOnset, GuiderOnset + 1/60, 1)
-                  newlines[2, 1:4] = c(nrow(spo) + 1, GuiderWake - 1/60, GuiderWake, 1)
-                  spo = rbind(spo, newlines)
+                  if (guider != "NotWorn") {
+                    newlines = rbind(spo[1, ], spo[1, ])
+                    newlines[1, 1:4] = c(nrow(spo) + 1, GuiderOnset, GuiderOnset + 1/60, 1)
+                    newlines[2, 1:4] = c(nrow(spo) + 1, GuiderWake - 1/60, GuiderWake, 1)
+                    spo = rbind(spo, newlines) # When NotWorn was used then fully trust on guider and ignore sibs detected
+                  } else {
+                    newlines = spo[1, ] # initialise object
+                    newlines[1, 1:4] = c(nrow(spo) + 1, GuiderOnset, GuiderWake, 1)
+                    spo = newlines
+                  }
                   spo = spo[order(spo$start), ]
                   spo$nb = 1:nrow(spo)
                   relyonguider_thisnight = TRUE
@@ -630,7 +636,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   # for the labelling above it was needed to have times > 36, but for the plotting
                   # time in the second day needs to be returned to a normal 24 hour scale.
                   reversetime2 = which(spo$start >= 36)
-                  reversetime3 = which(spo$end >= 36)
+                  reversetime3 = which(spo$end >= 36 & spo$end - 24 > spo$start)
                   if (length(reversetime2) > 0) spo$start[reversetime2] = spo$start[reversetime2] - 24
                   if (length(reversetime3) > 0) spo$end[reversetime3] = spo$end[reversetime3] - 24
                 }
@@ -692,6 +698,18 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                 if (length(rowswithdefi) > 0) {
                   # only process day if there are at least 2 sustained inactivity bouts
                   spocum.t = spocum[rowswithdefi, ]
+                  evin = 2
+                  if (guider == "NotWorn") {
+                    while (evin <= nrow(spocum.t)) {
+                      if (spocum.t$start[evin] - spocum.t$start[evin - 1] < -2) {
+                        spocum.t$start[evin] = spocum.t$start[evin] + 24
+                      }
+                      if (spocum.t$end[evin] - spocum.t$end[evin - 1] < -2) {
+                        spocum.t$end[evin] = spocum.t$end[evin] + 24
+                      }
+                      evin = evin + 1
+                    }
+                  }
                   # in DST it can be that a double hour is not recognized as part of the SPT
                   correct01010pattern = function(x) {
                     x = as.numeric(x)
@@ -789,10 +807,9 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   # in the autumn and ends inside the dst hour
                   negval = which(nocs < 0)
                   if (length(negval) > 0) {
-                    kk0 = as.numeric(spocum.t$start[which(spocum.t$dur == 1)])  # episode onsets
-                    kk1 = as.numeric(spocum.t$end[which(spocum.t$dur == 1)])  # episode endings
-                    kk1[negval] = kk1[negval] + 1
-                    nocs = kk1 - kk0
+                    kk0 = as.numeric(spocum.t$start[negval])  # episode onsets
+                    kk1 = as.numeric(spocum.t$end[negval]) + 1 # episode endings
+                    nocs[negval] = kk1 - kk0
                   }
                   if (length(nocs) > 0) {
                     spocum.t.dur.noc = sum(nocs)
@@ -894,7 +911,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                     spocum.t.dur_sibd_atleast15min = 0
                   }
                   
-                  nightsummary[sumi, 14] = spocum.t.dur.noc  #total nocturnalsleep /accumulated sleep duration
+                  nightsummary[sumi, 14] = spocum.t.dur.noc  #SleepDurationInSpt
                   nightsummary[sumi, 15] = nightsummary[sumi, 5] - spocum.t.dur.noc  #WASO
                   nightsummary[sumi, 16] = spocum.t.dur_sibd  #total sib (sustained inactivty bout) duration during wakinghours
                   nightsummary[sumi, 17] = length(which(spocum.t$dur == 1))  #number of nocturnalsleep periods
