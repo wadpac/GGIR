@@ -27,6 +27,11 @@
 # CHANGES IN GGIR VERSION 3.1-1
 
 - Part 2: Corrected calculation of LXhr and MXhr which had one hour offset when timing was after midnight, #1117
+- Fixes reversion of reading `.csv.gz` files #1131.
+
+- Part 4: Corrected documentation for parameter relyonguider.
+
+- Part 4: Ignore empty sleeplog columns, which are sometimes accidentally created the user. GGIR can now handle these. #1138
 
 # CHANGES IN GGIR VERSION 3.1-0
 
