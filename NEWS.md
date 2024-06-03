@@ -5,6 +5,8 @@
 
 - Part 4: Corrected documentation for parameter relyonguider.
 
+- Part 4: Ignore empty sleeplog columns, which are sometimes accidentally created the user. GGIR can now handle these. #1138
+
 # CHANGES IN GGIR VERSION 3.1-0
 
 - Minor issue fixes introduced in 3.0-10 related to handling nights without sustained inactivity bouts, handling recordings without midnight and storage of GGIR version in the part 4 output when there are no valid nights.
