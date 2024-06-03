@@ -280,13 +280,13 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             # zero argument)
             guider = "notavailable"
             if (length(L5list) > 0 & length(L5list) >= j) {
-              defaultSptOnset = L5list[j] - 6
-              defaultSptWake = L5list[j] + 6
+              defaultGuiderOnset = L5list[j] - 6
+              defaultGuiderWake = L5list[j] + 6
               guider = "L512"
             } else {
               # This should never happen, but just as a final backup
-              defaultSptOnset = 21
-              defaultSptWake = 31
+              defaultGuiderOnset = 21
+              defaultGuiderWake = 31
               warning("Guider not identified in ID ", accid, ", falling back on 9pm-7am window", call. = FALSE)
             }
             defaultGuider = guider
@@ -296,46 +296,46 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             
             # use SPTE algorithm (inside the g.sib.det function) as backup for sleeplog OR if user
             # explicitely asks for it
-            defaultSptOnset = SPTE_start[j]
-            defaultSptWake = SPTE_end[j]
+            defaultGuiderOnset = SPTE_start[j]
+            defaultGuiderWake = SPTE_end[j]
             guider = params_sleep[["HASPT.algo"]] # HDCZA, NotWorn, HorAngle (or plus invalid)
             defaultGuider = part3_guider[j]
             if (is.null(defaultGuider)) defaultGuider = guider #this ensures compatibility with previous versions in which part3_guider was not stored
-            if (is.na(defaultSptOnset) == TRUE) {
+            if (is.na(defaultGuiderOnset) == TRUE) {
               # If SPTE was not derived for this night, use average estimate for other nights
               availableestimate = which(is.na(SPTE_start) == FALSE)
               cleaningcode = 6
               if (length(availableestimate) > 0) {
-                defaultSptOnset = mean(SPTE_start[availableestimate])
+                defaultGuiderOnset = mean(SPTE_start[availableestimate])
               } else {
-                defaultSptOnset = L5list[j] - 6
+                defaultGuiderOnset = L5list[j] - 6
                 guider = "L512"
               }
             }
-            if (is.na(defaultSptWake) == TRUE) {
+            if (is.na(defaultGuiderWake) == TRUE) {
               # If SPTE was not derived for this night, use average estimate for other nights
               availableestimate = which(is.na(SPTE_end) == FALSE)
               cleaningcode = 6
               if (length(availableestimate) > 0) {
-                defaultSptWake = mean(SPTE_end[availableestimate])
+                defaultGuiderWake = mean(SPTE_end[availableestimate])
               } else {
-                defaultSptWake = L5list[j] + 6
+                defaultGuiderWake = L5list[j] + 6
                 guider = "L512"
               }
             }
           } else if (length(params_sleep[["def.noc.sleep"]]) == 2) {
             # use constant onset and waking time as specified with def.noc.sleep argument
-            defaultSptOnset = params_sleep[["def.noc.sleep"]][1]  #onset
-            defaultSptWake = params_sleep[["def.noc.sleep"]][2]  #wake
+            defaultGuiderOnset = params_sleep[["def.noc.sleep"]][1]  #onset
+            defaultGuiderWake = params_sleep[["def.noc.sleep"]][2]  #wake
             defaultGuider = guider = "setwindow"
           }
-          if (defaultSptOnset >= 24) {
-            defaultSptOnset = defaultSptOnset - 24
+          if (defaultGuiderOnset >= 24) {
+            defaultGuiderOnset = defaultGuiderOnset - 24
           }
-          if (defaultSptWake >= 24) {
-            defaultSptWake = defaultSptWake - 24
+          if (defaultGuiderWake >= 24) {
+            defaultGuiderWake = defaultGuiderWake - 24
           }
-          defaultdur = defaultSptWake - defaultSptOnset  #default sleep duration based on sleeplog, L5+/-6hr, or HDCZA algorithm
+          defaultdur = defaultGuiderWake - defaultGuiderOnset  #default sleep duration based on sleeplog, L5+/-6hr, or HDCZA algorithm
           sleeplog_used = FALSE
           if (dolog == TRUE) {
             #-----------------------------------------------------------
@@ -348,8 +348,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             #-----------------------------------------------------------
             # If sleep log is not available available, use default values calculated above (with
             # the heuristic algorithm HDCZA or if that fails L5+/-6hr.
-            guider.df[which(guider.df$night == j), 1:5] = c(accid, j, defaultdur, convertHRsinceprevMN2Clocktime(defaultSptOnset),
-                                                            convertHRsinceprevMN2Clocktime(defaultSptWake))
+            guider.df[which(guider.df$night == j), 1:5] = c(accid, j, defaultdur, convertHRsinceprevMN2Clocktime(defaultGuiderOnset),
+                                                            convertHRsinceprevMN2Clocktime(defaultGuiderWake))
             cleaningcode = 1
           }
           nightj = nightj + 1
@@ -368,14 +368,14 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           # is a nightworker onset
           tmp1 = format(guider.df2$sleeponset[1])
           tmp2 = unlist(strsplit(tmp1, ":"))
-          SptOnset = as.numeric(tmp2[1]) + (as.numeric(tmp2[2])/60) + (as.numeric(tmp2[3])/3600)
+          GuiderOnset = as.numeric(tmp2[1]) + (as.numeric(tmp2[2])/60) + (as.numeric(tmp2[3])/3600)
           # wake
           tmp4 = format(guider.df2$sleepwake[1])
           tmp5 = unlist(strsplit(tmp4, ":"))
-          SptWake = as.numeric(tmp5[1]) + (as.numeric(tmp5[2])/60) + (as.numeric(tmp5[3])/3600)
+          GuiderWake = as.numeric(tmp5[1]) + (as.numeric(tmp5[2])/60) + (as.numeric(tmp5[3])/3600)
           # Assess whether it is a daysleeper or a nightsleeper
           daysleeper[j] = FALSE  # default
-          if (is.na(SptOnset) == FALSE & is.na(SptWake) == FALSE & tmp1 != "" & tmp4 != "") {
+          if (is.na(GuiderOnset) == FALSE & is.na(GuiderWake) == FALSE & tmp1 != "" & tmp4 != "") {
             # is the sleep log valid?  transform possible Single Digit clock times to Double
             # Digits: hours, minutes and seconds
             doubleDigitClocktime = function(x) {
@@ -393,25 +393,25 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             tmp4 = doubleDigitClocktime(tmp4)
             #------------------------------------------------------------------
             # does sleep period overlap with noon? If yes, then classify as daysleeper
-            if (SptWake > 12 & SptOnset < 12) daysleeper[j] = TRUE
-            if (SptWake > 12 & SptOnset > SptWake) daysleeper[j] = TRUE
+            if (GuiderWake > 12 & GuiderOnset < 12) daysleeper[j] = TRUE
+            if (GuiderWake > 12 & GuiderOnset > GuiderWake) daysleeper[j] = TRUE
             # change time stamps to be a continues time
-            if (SptOnset < 12) SptOnset = SptOnset + 24  #shift 24 hours to create continues time
-            if (SptWake <= 12) SptWake = SptWake + 24  #shift 24 hours to create continues time
-            if (SptWake > 12 & SptWake < 18 & daysleeper[j] == TRUE) SptWake = SptWake + 24  # NEW 10/5/2018 by Vincent
+            if (GuiderOnset < 12) GuiderOnset = GuiderOnset + 24  #shift 24 hours to create continues time
+            if (GuiderWake <= 12) GuiderWake = GuiderWake + 24  #shift 24 hours to create continues time
+            if (GuiderWake > 12 & GuiderWake < 18 & daysleeper[j] == TRUE) GuiderWake = GuiderWake + 24  # NEW 10/5/2018 by Vincent
             if (daysleeper[j] == TRUE) {
-              logdur[i] = SptOnset - SptWake
+              logdur[i] = GuiderOnset - GuiderWake
             } else {
-              logdur[i] = SptWake - SptOnset
+              logdur[i] = GuiderWake - GuiderOnset
             }
             if (sleeplog_used == TRUE) {
               cleaningcode = 0
               guider = "sleeplog"
             }
           } else {
-            SptOnset = defaultSptOnset  #use default assumption about onset
-            SptWake = defaultSptWake + 24  #use default assumption about wake
-            logdur[i] = SptWake - SptOnset
+            GuiderOnset = defaultGuiderOnset  #use default assumption about onset
+            GuiderWake = defaultGuiderWake + 24  #use default assumption about wake
+            logdur[i] = GuiderWake - GuiderOnset
             cleaningcode = 1  # no diary available for this night, so fall back on detaults
             sleeplog_used = FALSE
           }
@@ -428,8 +428,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
               # and is a daysleeper and the last night
               daysleeper[j] = FALSE  #treat it like a normal day
               loaddays = 1
-              if (SptWake > 36)  SptWake = 36  #round diary to noon
-              logdur[i] = SptWake - SptOnset
+              if (GuiderWake > 36)  GuiderWake = 36  #round diary to noon
+              logdur[i] = GuiderWake - GuiderOnset
             }
           } else {
             # if you are excluding the last day dont worrry about whether it is the last day,
@@ -543,9 +543,9 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   }
                 }
                 if (daysleeper[j] == TRUE) {
-                  if (SptWake < 21 & SptWake > 12 & SptOnset > SptWake) {
+                  if (GuiderWake < 21 & GuiderWake > 12 & GuiderOnset > GuiderWake) {
                     # waking up in the afternoon should have value above 36
-                    SptWake = SptWake + 24
+                    GuiderWake = GuiderWake + 24
                   }
                 }
                 # Detect whether none of the SIBs overlaps with the SPT, if this is the case then
@@ -579,8 +579,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   spo[1, 2:4] = 0
                   spo$def[1] = k
                 }
-                if (length(which(spo$start < SptWake &
-                                 spo$end > SptOnset)) == 0) {
+                if (length(which(spo$start < GuiderWake &
+                                 spo$end > GuiderOnset)) == 0) {
                   relyonguider_thisnight = TRUE
                   cleaningcode = 5 
                 }
@@ -589,40 +589,39 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                 if (grepl("+invalid", guider) | grepl("+invalid", defaultGuider)) {
                   relyonguider_thisnight = TRUE # rely on guider because some nonwear was used to help the slep identification
                 }
-                # If no SIBs overlap with the SPT window
+                # If no SIBs overlap with the guider window
                 if (relyonguider_thisnight == TRUE) {
                   newlines = rbind(spo[1, ], spo[1, ])
-                  newlines[1, 1:4] = c(nrow(spo) + 1, SptOnset, SptOnset + 1/60, 1)
-                  newlines[2, 1:4] = c(nrow(spo) + 1, SptWake - 1/60, SptWake, 1)
+                  newlines[1, 1:4] = c(nrow(spo) + 1, GuiderOnset, GuiderOnset + 1/60, 1)
+                  newlines[2, 1:4] = c(nrow(spo) + 1, GuiderWake - 1/60, GuiderWake, 1)
                   spo = rbind(spo, newlines)
                   spo = spo[order(spo$start), ]
                   spo$nb = 1:nrow(spo)
                   relyonguider_thisnight = TRUE
                 }
-                # spo is now a df of onset and wake for each sleep period (episode) Now
-                # classify as being part of the SPT window or not = acconset < logwake & accwake >
-                # logonset
+                # spo is now a data.frame of start and end for each sib (sustained inactivity bout)
+                # Classify as being part of the guider window or not
                 for (evi in 1:nrow(spo)) {
-                  if (spo$start[evi] < SptWake & spo$end[evi] > SptOnset) {
+                  if (spo$start[evi] < GuiderWake & spo$end[evi] > GuiderOnset) {
                     if (params_sleep[["sleepwindowType"]] == "TimeInBed") {
-                      if (spo$end[evi] < SptWake & spo$start[evi] > SptOnset) {
-                        # if using a time in bed reference, then sleep can never start before time
-                        # in bed
-                        spo$dur[evi] = 1  #nocturnal = all acc periods that start after diary onset and end before diary wake
+                      if (spo$end[evi] < GuiderWake & spo$start[evi] > GuiderOnset) {
+                        # if using a time in bed reference, then sleep can never 
+                        # start before time in bed
+                        spo$dur[evi] = 1  #All sib that start after guider onset and end before guider wake
                       }
                     } else {
-                      spo$dur[evi] = 1  #nocturnal = all acc periods that end after diary onset and start before diary wake
+                      spo$dur[evi] = 1  # All sib that end after guider onset and start before guider wake
                     }
-                    # REDEFINITION OF ONSET/WAKE OF THIS PERIOD OVERLAPS if TRUE then sleeplog
-                    # value is assigned to accelerometer-based value for onset and wake up
                     if (params_sleep[["relyonguider"]] == TRUE | relyonguider_thisnight == TRUE) {
-                      if ((spo$start[evi] < SptWake & spo$end[evi] > SptWake) | (spo$start[evi] < SptWake &
-                                                                                 spo$end[evi] < spo$start[evi])) {
-                        spo$end[evi] = SptWake
+                      # Redefine sib start and end if it overlaps with guider
+                      # to match guider 
+                      if ((spo$start[evi] < GuiderWake & spo$end[evi] > GuiderWake) |
+                          (spo$start[evi] < GuiderWake & spo$end[evi] < spo$start[evi])) {
+                        spo$end[evi] = GuiderWake
                       }
-                      if ((spo$start[evi] < SptOnset & spo$end[evi] > SptOnset) | (spo$end[evi] > SptOnset &
-                                                                                   spo$end[evi] < spo$start[evi])) {
-                        spo$start[evi] = SptOnset
+                      if ((spo$start[evi] < GuiderOnset & spo$end[evi] > GuiderOnset) |
+                          (spo$end[evi] > GuiderOnset & spo$end[evi] < spo$start[evi])) {
+                        spo$start[evi] = GuiderOnset
                       }
                     }
                   }
@@ -638,8 +637,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
               }
             }
             #------------------------------------------------------------------------
-            # Variable 'spo' contains all the sleep periods FOR ONE SLEEP DEFINITION Variable
-            # 'spocum' contains all the sleep periods FOR MULTIPLE SLEEP DEFINITIONS
+            # Object spo contains all the sib for one sib defintion
+            # Object spocum contains all the sib for multiple sib definitions
             if (exists("spo")) {
               spo$def = k
               if (spocumi == 1) {
@@ -651,7 +650,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             }
           }
           #------------------------------------------------------------------------
-          # Take variables 'spocum', SptOnset and SptWake to derive nightsummary measures and to
+          # Take variables 'spocum', GuiderOnset and GuiderWake to derive nightsummary measures and to
           # create a plot for the current night in the current participant
           #------------------------------------------------------------------------
           # PLOTTING related
@@ -677,7 +676,6 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             }
           }
           if (length(spocum) > 0) {
-            # if (length(which(spocum[, 5] == "0")) > 0) {
             NAvalues = which(is.na(spocum$def) == TRUE)
             if (length(NAvalues) > 0) {
               spocum = spocum[-NAvalues, ]
@@ -722,8 +720,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                     nightsummary[sumi, 4] = spocum.t$end[rtl[length(rtl)]]
                   } else {
                     cleaningcode = 5  # only for first day, other cleaningcode is assigned to wrong day
-                    nightsummary[sumi, 3] = SptOnset  #use default assumption about onset
-                    nightsummary[sumi, 4] = SptWake  #use default assumption about wake
+                    nightsummary[sumi, 3] = GuiderOnset  #use default assumption about onset
+                    nightsummary[sumi, 4] = GuiderWake  #use default assumption about wake
                   }
                   nightsummary[, 3] = as.numeric(nightsummary[, 3])  # onset
                   nightsummary[, 4] = as.numeric(nightsummary[, 4])  # wake
@@ -741,17 +739,18 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   nightsummary[, 5] = as.numeric(nightsummary[, 5])
                   nightsummary[sumi, 6] = defi  #sleep definition
                   #------------------------------------
-                  # SLEEP LOG correct SptOnset and SptWake to fall within [12-36] window and
-                  # store as sleeplog_onset and sleeplog_wake, except when it is a daysleeper
-                  if (SptOnset > 36) {
-                    nightsummary[sumi, 7] = SptOnset - 24  #onset
+                  # Correct GuiderOnset and GuiderWake to fall within [12-36] window and
+                  # store as guider_onset and guider_wake, except when it is a daysleeper
+                  # because for daysleeper we expect the window to run beyond time 36 (noon next day)
+                  if (GuiderOnset > 36) {
+                    nightsummary[sumi, 7] = GuiderOnset - 24
                   } else {
-                    nightsummary[sumi, 7] = SptOnset
+                    nightsummary[sumi, 7] = GuiderOnset
                   }
-                  if (SptWake > 36 & daysleeper[j] == FALSE) {
-                    nightsummary[sumi, 8] = SptWake - 24  #wake
+                  if (GuiderWake > 36 & daysleeper[j] == FALSE) {
+                    nightsummary[sumi, 8] = GuiderWake - 24
                   } else {
-                    nightsummary[sumi, 8] = SptWake
+                    nightsummary[sumi, 8] = GuiderWake
                   }
                   if (nightsummary[sumi, 7] > nightsummary[sumi, 8]) {
                     nightsummary[sumi, 9] = abs((36 - nightsummary[sumi, 7]) + (nightsummary[sumi,
@@ -760,8 +759,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                     nightsummary[sumi, 9] = abs(nightsummary[sumi, 8] - nightsummary[sumi, 7])
                   }
                   #------------------------------------
-                  # Calculate errors between accelerometer estimate and sleeplog (or HDCZA or
-                  # L5+/-6hr)
+                  # Calculate differences between final estimate and guider
+                  # In the output we call this error
                   nightsummary[sumi, 10] = nightsummary[sumi, 3] - nightsummary[sumi, 7]  #error onset
                   nightsummary[sumi, 11] = nightsummary[sumi, 4] - nightsummary[sumi, 8]  #error wake
                   # sometimes difference calculations (error) can be in the wrong direction,
@@ -781,7 +780,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   } else {
                     nightsummary[sumi, 13] = 1
                   }
-                  # Accumulated nocturnal sleep and daytime sustained inactivity bouts
+                  # Accumulated sustained inactivity bouts during SPT (nocturnal) and dyatime
                   nocs = as.numeric(spocum.t$end[which(spocum.t$dur == 1)]) -
                     as.numeric(spocum.t$start[which(spocum.t$dur == 1)])
                   sibds = as.numeric(spocum.t$end[which(spocum.t$dur == 0)]) -
@@ -989,20 +988,20 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                                ytop = (cnt + qtop), col = colb[defii], border = NA)  #lwd=0.2,
                         }
                       }
-                      SptWaken = SptWake
-                      SptOnsetn = SptOnset
-                      if (SptWake > 36) SptWaken = SptWake - 24
-                      if (SptOnset > 36) SptOnsetn = SptOnset - 24
+                      GuiderWaken = GuiderWake
+                      GuiderOnsetn = GuiderOnset
+                      if (GuiderWake > 36) GuiderWaken = GuiderWake - 24
+                      if (GuiderOnset > 36) GuiderOnsetn = GuiderOnset - 24
                       if (defi == undef[length(undef)]) {
                         # only plot log for last definition night sleeper
-                        if (SptOnsetn > SptWaken) {
-                          rect(xleft = SptOnsetn, ybottom = (cnt - 0.3), xright = 36, ytop = (cnt + 0.3),
+                        if (GuiderOnsetn > GuiderWaken) {
+                          rect(xleft = GuiderOnsetn, ybottom = (cnt - 0.3), xright = 36, ytop = (cnt + 0.3),
                                col = "black", border = TRUE, density = den)  #lwd=0.2,
-                          rect(xleft = 12, ybottom = (cnt - 0.3), xright = SptWaken, ytop = (cnt + 0.3),
+                          rect(xleft = 12, ybottom = (cnt - 0.3), xright = GuiderWaken, ytop = (cnt + 0.3),
                                col = "black", border = TRUE, density = den)  #lwd=0.2,
                         } else {
                           # day sleeper
-                          rect(xleft = SptOnsetn, ybottom = (cnt - 0.3), xright = SptWaken, ytop = (cnt + 0.3),
+                          rect(xleft = GuiderOnsetn, ybottom = (cnt - 0.3), xright = GuiderWaken, ytop = (cnt + 0.3),
                                col = "black", border = TRUE, density = den)  #lwd=0.2,
                         }
                       }
