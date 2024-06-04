@@ -2,6 +2,7 @@
 
 - Part 2: Corrected calculation of LXhr and MXhr which had one hour offset when timing was after midnight, #1117
 - Fixes reversion of reading `.csv.gz` files #1131.
+- Stops interactive calling of `chooseCRANmirror` on `.onAttach` if interactive and CRAN mirror not set #1141.
 
 - Part 4: Corrected documentation for parameter relyonguider.
 
