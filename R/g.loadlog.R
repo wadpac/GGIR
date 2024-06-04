@@ -7,6 +7,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
   # Load sleep log data...
   S = data.table::fread(file = loglocation, stringsAsFactors = FALSE, data.table = FALSE,
                         check.names = TRUE, colClasses = "character")
+  S = Filter(function(x)!all(x == ""), S) # remove empty columns
   nnights = (ncol(S) - coln1 + 1) / 2
   cnt_time_notrecognise = 0
   advanced_sleeplog = length(grep(pattern = "date", x = colnames(S), ignore.case = TRUE)) > 0
@@ -216,7 +217,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
     warning(paste0("\nWe see an odd number of timestamp columns",
                    " in the sleeplog. The last column will be ignored. If this is incorrect,",
                    " please check that argument coln1 is correctly specified if you use a basic sleeplog format and",
-                   " that all days have a date column if you use an advanced sleeplog format."))
+                   " that all days have a date column if you use an advanced sleeplog format."), call. = FALSE)
     nnights = floor(nnights)
   }
   nnights = nnights + deltadate + 1 # to account for the possibility of extra night at the beginning of recording
