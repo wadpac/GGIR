@@ -10,10 +10,11 @@ RELEASE_CYCLE.md
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
-^vignettes/chapter*.Rmd
+^vignettes/chapter.*\\.Rmd$
 ^dev-functions$
 .zenodo.json
 ^doc$
 .chapterInProgress.Rmd
 codecov.yml
 index.md
+^inst/doc/*.html

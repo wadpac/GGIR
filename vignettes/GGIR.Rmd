@@ -25,7 +25,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-You are now in the main GGIR vignette. See also the complementary vignettes on: [Cut-points](https://CRAN.R-project.org/package=GGIR/vignettes/CutPoints.html), [Day segment analyses](https://CRAN.R-project.org/package=GGIR/vignettes/TutorialDaySegmentAnalyses.html), [GGIR parameters](https://CRAN.R-project.org/package=GGIR/vignettes/GGIRParameters.html), [Embedding external functions (pdf)](https://CRAN.R-project.org/package=GGIR/vignettes/ExternalFunction.pdf), and [Reading ad-hoc csv file formats](https://CRAN.R-project.org/package=GGIR/vignettes/readmyacccsv.html).
+You are now in the main GGIR vignette. See also the complementary vignettes on: [Cut-points](https://CRAN.R-project.org/package=GGIR/vignettes/CutPoints.html), [Day segment analyses](https://CRAN.R-project.org/package=GGIR/vignettes/TutorialDaySegmentAnalyses.html), [GGIR parameters](https://CRAN.R-project.org/package=GGIR/vignettes/GGIRParameters.html), [Embedding external functions (pdf)](https://CRAN.R-project.org/package=GGIR/vignettes/ExternalFunction.html), and [Reading ad-hoc csv file formats](https://CRAN.R-project.org/package=GGIR/vignettes/readmyacccsv.html).
 
 # Introduction
 
@@ -1097,197 +1097,15 @@ Some tips to increase reproducibility of your findings:
 
 ## Auto-calibration
 
-An acceleration sensor works on the principle that acceleration is
-captured mechanically and converted into an electrical signal. The
-relationship between the electrical signal and the acceleration is
-usually assumed to be linear, involving an offset and a gain factor. We
-shall refer to the establishment of the offset and gain factor as the
-sensor calibration procedure. Accelerometers are usually calibrated as
-part of the manufacturing process under non-movement conditions using
-the local gravitational acceleration as a reference. The manufacturer
-calibration can later be evaluated by holding each sensor axis parallel
-(up and down) or perpendicular to the direction of gravity; readings for
-each axis should be ±1 and 0 g, respectively. However, this procedure
-can be cumbersome in studies with a high throughput. Furthermore, such a
-calibration check will not be possible for data that have been collected
-in the past and for which the corresponding accelerometer device does
-not exist anymore. Techniques have been proposed that can check and
-correct for calibration error based on the collected triaxial
-accelerometer data in the participant's daily life without additional
-experiments, referred to as autocalibration. The general principle of
-these techniques is that a recording of acceleration is screened for
-nonmovement periods. Next, the moving average over the nonmovement
-periods is taken from each of the three orthogonal sensor axes and used
-to generate a three-dimensional ellipsoid representation that should
-ideally be a sphere with radius 1 g. Here, deviations between the radius
-of the three-dimensional ellipsoid and 1 g (ideal calibration) can then
-be used to derive correction factors for sensor axis-specific
-calibration error. This auto-calibration performed by GGIR uses this
-technique and a more detailed description and demonstration can be found
-in the published paper.
-
-Reference:
-
--   van Hees VT, Fang Z, Langford J, Assah F, Mohammad A, da Silva IC,
-    Trenell MI, White T, Wareham NJ, Brage S. Autocalibration of
-    accelerometer data for free-living physical activity assessment
-    using local gravity and temperature: an evaluation on four
-    continents. J Appl Physiol (1985). 2014 Oct 1;117(7):738-44. PMID:
-    25103964
-    [link](https://doi.org/10.1152/japplphysiol.00421.2014)
-
-Key decisions to be made:
-
-1.  Whether to apply auto-calibration or not (default and recommended
-    setting is YES). You can turn this off by setting argument `do.call`
-    in `GGIR` to `do.call=FALSE`.
-2.  Other variables are probably best left in their default setting
-
-Key output variables:
-
-1.  Variable value `cal.error.end` as stored in data_quality_report.csv
-    or variable value calib_err in summary.csv. These should be less
-    than 0.01 g (10mg).
+This section has been migrated this [section](https://wadpac.github.io/GGIR/articles/chapter3_QualityAssessment.html#auto-calibration-algorithm) in the GitHub pages, which is a more narrative book-style overview of GGIR.
 
 ## Non-wear detection
 
-Accelerometer non-wear time is detected on the basis of statistics derived from 
-a rolling time window. A step in time is classified as non-wear if 
-both of the following criteria are met for at least two out of the three accelerometer axes:
-
-- The standard deviation of the accelerations is less than accelerometer brand specific reference
-values, which for most brands is 13.0 m*g*
-($1 mg = 0.00981 m·s^−2$)
-- The range of accelerations (i.e., maximum value *minus* minimum value) 
-is less than 50 m*g*.
-
-The size of the rolling time window and the size of the steps it takes in time are defined by
-argument `windowsizes`, a vector with length three. More specifically, the second value 
-(mediumsize window, default = 15 min) and the third value 
-(longsize window, default = 60 min) are used.
-
-How it then labels the data depends on the non-wear approach taken as discussed below,
-and specified with argument `nonwear_approach`. At the moment there are two approaches to detect
-non-wear: `nonwear_approach = "2013"` and `nonwear_approach = "2023"`.
-
-### Approaches to detect non-wear: 2013 and 2023 algorithms
-
-**nonwear_approach = "2013"**
-
-The 2013 approach is a revision of the approach first described in the [2011 PLoSONE publication](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0022922).
-It uses the criteria derived from the longsize window centered around each mediumsize 
-window (default = 15 minutes) to classify each mediumsize window at its centre. 
-
-The modification of the algorithm in 2013 relative to 2011 included:
-
--   The longsize window changed from 30 minutes to 60 minutes to decrease the chance of
-accidentally detecting short sedentary periods as non-wear time.
--   The rolling window went from non-overlapping to overlapping (15 minute steps of
-a 60 minute window results in a longsize window overlap between step of 22.5 minutes)
-to improve the time resolution.
-
-**nonwear_approach = "2023"**
-
-The 2023 version of the algorithm uses the criteria applied to the longsize window
-to assign a nonwear score to the entire longsize window (default = 60 minutes) 
-being tested. Instead of centering the longsize window in the middle of the mediumsize
-window, the 2023 method aligns the longsizewindow with its left edge to the left
-edge of the mediumsize window. As a result, each point in time is classified multiple
-times given that multiple steps of the rolling window classification will overlap
-with it. If the nonwear criteria are met for any
-of these windows that overlap with a point in time, it will be labelled as nonwear. 
-
-### Additional non-wear
-
-Inspection of unpublished data on non-wear classification
-by the algorithm as described in our published work indicated that the
-algorithm does not cope well with periods of monitor transportation per
-post. Here, long periods of non-wear are briefly interrupted by periods
-of movement, which are normally interpreted as monitor wear. Therefore,
-the algorithm was expanded with an additional stage in which the
-plausibility of "wear-periods" in-between non-wear periods is tested.
-Short periods of detected wear-time in-between longer periods of
-detected non-wear were classified as non-wear time based on the duration
-and the proportion of the duration relative to the bordering periods of
-detected non-wear-periods. The following criteria were derived from
-visual observation of various datasets using knowledge about study
-protocols. All detected wear-periods of less than six hours and less
-than 30% of the combined duration of their bordering non-wear periods
-were classified as non-wear. Additionally, all wear-periods of less than
-three hours and which formed less than 80% of their bordering non-wear
-periods were classified as non-wear. The motivation for selecting a
-relatively high criteria (\< 30%) in combination with a long period
-(6hrs) and a low criteria (\< 80%) in combination with a short period (3
-hrs) was that long period are more likely to be actually related to
-monitor wear time. A visual model was created, see picture below. Here, units
-of time are presented in squares and marked grey if detected as non-wear
-time. Period C is detected as wear-time and borders to non-wear periods
-B and D. If the length of C is less than six hours and C
-divided by the sum of B and D is less than 0.3 then the first criteria
-is met and block C is turned into a non-wear period.
-
-```{r, out.width = "400px",echo=FALSE}
-knitr::include_graphics("nonwearimage.jpg")
-```
-
-### Beginning and ending of the recording
-
-By visual inspection of \>100 traces from a large observational study it
-turned out that applying this stage in three iterative stages allowed
-for improved classification of periods characterised by intermittent
-periods of non-wear and apparent wear. Further, an additional rule was
-introduced for the final 24 hours of each measurement. The final 24
-hours are often considered the period in which the accelerometer is
-potentially taken off but moved because of transportation, e.g. by the
-mail service. All wear-periods in the final 24 hrs of each measurement
-shorter than three hours and preceded by at least one hour of non-wear
-time were classified as non-wear. 
-
-Finally, if the measurement starts or
-ends with a period of less than three hours of wear followed by non-wear
-(any length) then this period of wear is classified as non-wear. These
-additional criteria for screening the beginning and end of the
-accelerometer file reflect the likelihood of movements that are involved
-when starting the accelerometer or downloading the data from the
-accelerometer. This final check can be turned off with
-argument `nonWearEdgeCorrection`.
-
-Reference:
-
--   van Hees VT, Gorzelniak L, Dean León EC, Eder M, Pias M, Taherian S,
-    Ekelund U, Renström F, Franks PW, Horsch A, Brage S. Separating
-    movement and gravity components in an acceleration signal and
-    implications for the assessment of human daily physical activity.
-    [PLoS One. 2013 Apr 23](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691).
-
-Key decisions to be made:
-
-1.  Size of windows
-2.  Whether to utilize the non-wear detection
-3.  Non-wear approach (either 2013 or 2023)
-
-Key output variables:
-
-1.  Raw classification
-2.  Non-wear duration
-3.  Non-wear duration taking into account the protocol
+This section has been migrated this [section](https://wadpac.github.io/GGIR/articles/chapter3_QualityAssessment.html#non-wear-detection) in the GitHub pages, which is a more narrative book-style overview of GGIR.
 
 ## Clipping score
 
-GGIR also screens the acceleration signal for "clipping". If more than 50% of
-the data points in a mediumsize window (default = 15 minutes) are close
-to the maximal dynamic range of this sensor the corresponding time
-period is considered as potentially corrupt data, which may be explained
-by the sensor getting stuck at its extreme value. For example, for a dynamic range of 8*g*, 
-accelerations over 7.5*g* would be marked as "clipping". 
-
-Reference:
-
--   van Hees VT, Gorzelniak L, Dean León EC, Eder M, Pias M, Taherian S,
-    Ekelund U, Renström F, Franks PW, Horsch A, Brage S. Separating
-    movement and gravity components in an acceleration signal and
-    implications for the assessment of human daily physical activity.
-    [PLoS One. 2013 Apr 23](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691)
+This section has been migrated this [section](https://wadpac.github.io/GGIR/articles/chapter3_QualityAssessment.html#clipping-detection) in the GitHub pages, which is a more narrative book-style overview of GGIR.
 
 ## Why collapse information to epoch level?
 

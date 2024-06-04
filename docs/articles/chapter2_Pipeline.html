@@ -11,7 +11,7 @@
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="2. The GGIR pipeline">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="2. The GGIR pipeline">
 <meta property="og:description" content="GGIR">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:creator" content="@RpackageGGIR">
@@ -25,11 +25,11 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,6 +75,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-1-0/">Version 3.1-0</a>
     <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-0-0/">Version 3.0-0</a>
     <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-9-0/">Version 2.9-0</a>
     <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-8-0/">Version 2.8-0</a>
@@ -136,10 +137,10 @@
 <p>GGIR comes with a large number of functions and optional settings
 (function arguments also referred to as parameters) that together form a
 processing pipeline. To ease interacting with GGIR, it has one function
-to act as interface to all functionality, and this function is also
-named <code>GGIR</code>. You only need to learn how to work with this
-central function, but it is important to understand that this function
-interacts with all other functions in GGIR.</p>
+to act as interface to all functionality. This function is also named
+<code>GGIR</code>. You only need to learn how to work with this central
+function, but it is important to understand that this function interacts
+with all other functions in GGIR.</p>
 <p>Further, it is important to understand that the
 <code>GGIR package</code> is structured in two complementary ways:</p>
 <ul>
@@ -172,27 +173,27 @@ and per file.</li>
 <li>
 <strong>Part 5:</strong> Compiles time series with classification of
 sleep and physical activity intensity categories by re-using information
-derived in part 2, 3 and 4. Next, Part 5 generates a describe summary
-such as total time in intensity categories, the number of bouts, time
-spent in bouts and average acceleration per category, and
+derived in part 2, 3, and 4. Next, Part 5 generates a descriptive
+summary such as total time in intensity categories, the number of bouts,
+time spent in bouts and average acceleration per category, and
 fragmentation.</li>
 <li>
 <strong>Part 6:</strong> Facilitates analyses that rely on direct
 access to the full recording such as household co-analysis and circadian
-rhythm analysis. The reason why it split up in parts is that it avoids
-having the re-run all preceding parts if you only want to make a small
-change in the more downstream parts. The specific order and content of
-the parts has grown for historical with Part 1 and 2 created in
-2011-2013, Part 3 and 4 created in 2013-2015, Part 5 created in
+rhythm analysis. The reason why GGIR is split up in parts is that it
+avoids having the re-run all preceding parts if you only want to make a
+small change in the more downstream parts. The specific order and
+content of the parts have evolved over time, with Part 1 and 2 created
+in 2011-2013, Part 3 and 4 created in 2013-2015, Part 5 created in
 2017-2020, and Part 6 created in 2023-2024.</li>
 </ul>
 <div class="section level4">
 <h4 id="milestone-data">Milestone data<a class="anchor" aria-label="anchor" href="#milestone-data"></a>
 </h4>
-<p>Each part when run stores its intermediate data, which we refer to as
-the milestone data, in an <code>.RData</code> file. This
+<p>Each part, when run, stores its intermediate data, which we refer to
+as the milestone data, in an <code>.RData</code> file. This
 <code>.RData</code> file is then read by the next part. Therefore, there
-is no direct interaction between the parts, all exchange of information
+is no direct interaction between the parts. All exchange of information
 works via the <code>.RData</code> files. The advantage of this design is
 that it offers internal modularity to ease re-processing and code
 development.</p>
@@ -267,14 +268,14 @@ parameter category and their default values:</p>
 </h4>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">?</span><span class="va">GGIR</span></span></code></pre></div>
-<p>Or visit the .pdf manual and search for function
+<p>or visit the .pdf manual and search for function
 <code>GGIR</code>.</p>
 </div>
 <div class="section level4">
 <h4 id="parameters-vignette">Parameters vignette:<a class="anchor" aria-label="anchor" href="#parameters-vignette"></a>
 </h4>
 <p>Documentation for all parameters in the parameter objects can be
-found the vignette: <a href="https://cran.r-project.org/package=GGIR" class="external-link">GGIR configuration
+found in the vignette: <a href="https://cran.r-project.org/package=GGIR" class="external-link">GGIR configuration
 parameters</a>.</p>
 </div>
 <div class="section level4">
@@ -287,8 +288,8 @@ parameters</a>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wadpac/GGIR/" class="external-link">GGIR</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="../reference/load_params.html">load_params</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">params_sleep</span><span class="op">)</span></span></code></pre></div>
-<p>If you are only interested in parameter <code>HASIB.algo</code> from
-the</p>
+<p>If you are only interested in e.g. parameter <code>HASIB.algo</code>
+from the</p>
 <p><code>sleep_params</code> object:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wadpac/GGIR/" class="external-link">GGIR</a></span><span class="op">)</span></span>
@@ -303,33 +304,33 @@ cannot be provided as input to <code>GGIR</code>.</p>
 </h4>
 <p>GGIR stores all the parameter values as used in a csv-file named
 config.csv. The file is stored after each run of GGIR in the root of the
-output folder overwriting any existing config.csv file. So, if you would
-like to add annotations in the file, e.g. in the fourth column, then you
-will need to store it somewhere outside the output folder and explicitly
-specify the path with parameter <code>configfile</code>. Further, the
-config.csv file itself is accepted as input to <code>GGIR</code> with
-parameter <code>configfile</code> to replace the specification of all
-the parameters, except <code>datadir</code> and <code>outputdir</code>,
-see example below.</p>
+output folder, overwriting any existing config.csv file. So, if you
+would like to add annotations in the file, e.g. in the fourth column,
+then you will need to store it somewhere outside the output folder and
+explicitly specify the path with parameter <code>configfile</code>.
+Further, the config.csv file itself is accepted as input to
+<code>GGIR</code> with parameter <code>configfile</code> to replace the
+specification of all the parameters, except <code>datadir</code> and
+<code>outputdir</code>, see example below.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wadpac/GGIR/" class="external-link">GGIR</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/GGIR.html">GGIR</a></span><span class="op">(</span>datadir <span class="op">=</span> <span class="st">"C:/mystudy/mydata"</span>,</span>
 <span>     outputdir <span class="op">=</span> <span class="st">"D:/myresults"</span>, </span>
 <span>     configfile <span class="op">=</span> <span class="st">"D:/myconfigfiles/config.csv"</span><span class="op">)</span></span></code></pre></div>
-<p>The practical value of this is that it eases the replication of
+<p>The practical value of this is that it eases the replication of the
 analysis, because instead of having to share you R script with
 colleagues, sharing your config.csv file will be sufficient.</p>
 </div>
 <div class="section level4">
 <h4 id="parameter-extraction-order">Parameter extraction order<a class="anchor" aria-label="anchor" href="#parameter-extraction-order"></a>
 </h4>
-<p>If parameters are provided in the GGIR call, then it always uses
-those. If parameters are not provided in the function call, GGIR checks
-whether there is a config.csv file either in the output folder or
+<p>If parameters are provided in the GGIR call, then the function always
+uses those. If parameters are not provided in the function call, GGIR
+checks whether there is a config.csv file either in the output folder or
 specified via parameter <code>configfile</code> and loads those values.
-If a parameter is neither specified in the GGIR function call and not
-available in the config.csv file then GGIR uses its default values which
-can be inspected as discussed in the section above. Here, it is
+If a parameter is neither specified in the GGIR function call nor
+available in the config.csv file, then GGIR will use its default value,s
+which can be inspected as discussed in the section above. Here, it is
 important to realise that a consequence of this logic is that GGIR will
 not revert to its default parameter values in a repeated analysis unless
 you remove the parameter from the function call and delete the
@@ -337,14 +338,14 @@ config.csv file.</p>
 <p>To ensure this is clear here are some example:</p>
 <ul>
 <li>If GGIR is used for the first time without specifying parameter
-<code>mvpathreshold</code> then it will use the default value, which is
+<code>mvpathreshold</code>, then it will use the default value, which is
 100.</li>
-<li>If you specify <code>mvpathreshold = 120</code> then GGIR will use
+<li>If you specify <code>mvpathreshold = 120</code>, then GGIR will use
 this instead and store it in the config.csv file.</li>
 <li>If you run GGIR again but this time delete
-<code>mvpathreshold = 120</code> from your GGIR call then GGIR will fall
-back on the value 120 as now stored in the config.csv file.</li>
-<li>If you delete the config.csv file and run GGIR again then the value
+<code>mvpathreshold = 120</code> from your GGIR call, then GGIR will
+fall back on the value 120 as now stored in the config.csv file.</li>
+<li>If you delete the config.csv file and run GGIR again, then the value
 100 will be used again.</li>
 </ul>
 </div>
@@ -370,11 +371,11 @@ formats:</li>
 (.gt3x only the newer format generated with firmware versions above
 2.5.0. Serial numbers that start with “NEO” or “MRA” and have firmware
 version of 2.5.0 or earlier use an older format of the .gt3x file). If
-you want to work with .csv exports via the commercial ActiLife software
+you want to work with .csv exports via the commercial ActiLife software,
 then note that you have the option to export data with timestamps, which
 should be turned off. To cope with the absence of timestamps GGIR will
-calculate timestamps from the sample frequency, the start time and start
-date as presented in the file header.</li>
+calculate timestamps from the sample frequency, the start time, and
+start date as presented in the file header.</li>
 <li>
 <a href="https://www.movisens.com/en/" class="external-link">Movisens</a> with data stored
 in folders.</li>
@@ -401,7 +402,7 @@ description and sleep classification needs to be tailored to
 count-specific algorithms: <code>do.neishabouricounts = TRUE</code>,
 <code>acc.metric = "NeishabouriCount_x"</code>,
 <code>HASPT.algo = "NotWorn"</code> <code>HASIB.algo = "NotWorn"</code>;
-Note 2: For UK Biobank csv epoch data GGIR does not facilitate sleep
+Note 2: For UK Biobank csv epoch data, GGIR does not facilitate sleep
 analysis as arm angle is not exported.</caption>
 <colgroup>
 <col width="33%">
@@ -445,7 +446,7 @@ analysis as arm angle is not exported.</caption>
 </tr>
 </tbody>
 </table>
-<p>To process these files GGIR loads their content and saves it as GGIR
+<p>To process these files, GGIR loads their content and saves it as GGIR
 part 1 milestone data, essentially fooling the rest of GGIR to think
 that GGIR part 1 created the data. As will be discussed in chapter 2,
 GGIR does non-wear detection in two steps: The first step is done in
@@ -455,8 +456,8 @@ of one hour (Actiwatch, ActiGraph) or derived from the file (UK Biobank
 csv).</p>
 <ol start="2" style="list-style-type: decimal">
 <li>All accelerometer data that need to be analysed should be stored in
-one folder or subfolders of that folder. Make sure the folder does not
-contain any files that are not accelerometer data.</li>
+one folder or subfolders of that folder. Make sure that the folder does
+not contain any files that are not accelerometer data.</li>
 <li>Choose an appropriate name for the folder, preferable with a
 reference to the study or project it is related to rather than just
 ‘data’, because the name of this folder will be used as an identifier of
@@ -476,20 +477,21 @@ creates.</li>
 <p>Argument <code>datadir</code> allows you to specify where you have
 stored your accelerometer data and <code>outputdir</code> allows you to
 specify where you would like the output of the analyses to be stored.
-This cannot be equal to <code>datadir</code>. If you copy paste the
+This cannot be equal to <code>datadir</code>. If you copy and paste the
 above code to a new R script (file ending with .R) and Source it in
-R(Studio) then the dataset will be processed and the output will be
+R(Studio), then the dataset will be processed and the output will be
 stored in the specified output directory.</p>
 <p>Next, we can add argument <code>mode</code> to tell GGIR which
 part(s) to run, e.g. <code>mode = 1:5</code> tells GGIR to run all five
-parts and is the default. With argument <code>overwrite</code> we can
-tell GGIR whether to overwrite previously produced milestone data.</p>
+parts and is the default. With argument <code>overwrite</code>, we can
+tell GGIR whether to overwrite previously produced milestone data or
+not.</p>
 <p>Further, argument <code>idloc</code> tells GGIR where to find the
 participant ID. The default setting most likely does not work for most
 data formats, by which it is important that you tailor the value of this
 argument to your study setting.</p>
-<p>GGIR stores some of its output csv file format with by default comma
-as column separator. However, this can be modified by argument
+<p>GGIR stores some of its output csv file format with comma as the
+default column separator. However, this can be modified with argument
 <code>sep_reports</code>.</p>
 <p>Each chapter in this digital book will highlight the key arguments
 related to specific topics.</p>
@@ -499,20 +501,21 @@ related to specific topics.</p>
 <p>Create an R-script and put the GGIR call in it. Next, you can source
 the R-script with the <code>source</code> button in RStudio:
 <code>source("pathtoscript/myshellscript.R")</code></p>
-<p>GGIR by default support multi-thread processing which is used to
-process one input file per process, which can be turned off by setting
-parameter <code>do.parallel = FALSE</code>.</p>
+<p>GGIR by default supports multi-thread processing which is used to
+process one input file per process, speeding up the processing of your
+data. This can be turned off by setting argument
+<code>do.parallel = FALSE</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="in-a-cluster">In a cluster<a class="anchor" aria-label="anchor" href="#in-a-cluster"></a>
 </h3>
 <p>If processing data with GGIR on your desktop/laptop is not fast
-enough then we advise using a GGIR on a computing cluster. The way we
-did it on a Sun Grid Engine cluster is shown below, please note that
-some of these commands are specific to the computing cluster you are
-working on. Please consult your local cluster specialist to explore how
-to run GGIR on your cluster. Here, we only share how we did it. We had
-three files for the SGE setting:</p>
+enough, we advise using GGIR on a computing cluster. The way we did it
+on a Sun Grid Engine cluster is shown below. Please note that some of
+these commands are specific to the computing cluster you are working on.
+Please consult your local cluster specialist to explore how to run GGIR
+on your cluster. Here, we only share how we did it. We had three files
+for the SGE setting:</p>
 <p><strong>submit.sh</strong></p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">707</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
 <span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>    <span class="va">n</span><span class="op">=</span>1</span>
@@ -539,10 +542,11 @@ three files for the SGE setting:</p>
 the parameters you used for <code>GGIR</code>. Note that
 <code>f0=f0,f1=f1</code> is essential for this to work. The values of
 <code>f0</code> and <code>f1</code> are passed on from the bash script.
-Once this is all setup you will need to call <code>bash submit.sh</code>
-from the command line. With the help of computing clusters GGIR has
-successfully been run on some of the world’s largest accelerometer data
-sets such as UK Biobank and German NAKO study.</p>
+Once this is all setup, you will need to call
+<code>bash submit.sh</code> from the command line. With the help of
+computing clusters, GGIR has successfully been run on some of the
+world’s largest accelerometer datasets such as UK Biobank and the German
+NAKO study.</p>
 </div>
 </div>
 <div class="section level2">
@@ -559,25 +563,25 @@ probably you are slowed down by other factors.</p>
 <li>Make sure the data you process is on the same machine as where GGIR
 is run. Processing data located somewhere else on a computer network can
 substantially slow down software.</li>
-<li>Make sure your machine has 8GB or more RAM memory, using GGIR on old
+<li>Make sure your machine has 8GB or more RAM memory. Using GGIR on old
 machines with only 4GB is known to be slow. However, total memory is not
-the only bottle neck, also consider the number of processes (threads)
+the only bottle neck. Also consider the number of processes (threads)
 your CPU can run relative to the amount of memory. Ending up with 2GB
 per process seems a good target. It can be helpful to turn off parallel
 processing with <code>do.paralllel = FALSE</code>.</li>
-<li>Avoid doing other computational activities with your machine while
+<li>Avoid doing other computational activities on your machine while
 running GGIR. For example, if you use DropBox or OneDrive make sure they
-do not sync while you are running GGIR. When using GGIR to process large
-datasets it is probably best not to use the machine. Make sure the
+do not sync while you are running GGIR. It is probably best not to use
+the machine when using GGIR to process large datasets. Make sure the
 machine is configured not to automatically turn off after X hours as
-that would terminate GGIR. Further, you may like to configure the
-machine to not fall asleep as that would pause GGIR.</li>
+that would terminate GGIR. Further, you may want to configure the
+machine to not fall asleep as this pauses GGIR.</li>
 <li>Reduce the amount of data GGIR loads in memory with parameter
 <code>chunksize</code>, which can be useful on machines with limited
 memory or when processing many files in parallel. A
 <code>chunksize</code> value of 0.2 (minimum) will make GGIR load the
 data in chunks of only 20% of the size relative to the chunks it loads
-by default which is approximately 12 hours of data for the
+by default, which is approximately 12 hours of data for the
 auto-calibration routine and 24 hours of data for the calculation of
 signal metrics.</li>
 </ul>
@@ -590,11 +594,11 @@ with parameter <code>outputdir</code>. The output folder name is
 constructed as <code>output_</code> followed by the name of the dataset
 which is derived from the most distal folder name of the data directory
 as specified with <code>datadir</code>. We recommend this approach
-because it ensures that output folder name and data directory have
+because it ensures that the output folder and data directory have
 matching names. However, it is possible to use <code>datadir</code> to
 specify a vector with paths to individual files, which may helpful if
 you want to process a set of files but are not in a position to move
-them to a new folder. In that scenario you will need to set parameter
+them to a new folder. In that scenario, you will need to set parameter
 <code>studyname</code> to tell GGIR what the dataset name is.</p>
 <p>Inside the output folder GGIR will create two subfolders:
 <code>meta</code> and <code>results</code> as discussed earlier in this
@@ -607,8 +611,8 @@ check.</p>
 <p>GGIR generates reports in the parts 2, 4, 5, and 6 of the pipeline.
 With parameter <code>do.report</code> you can specify for which of these
 parts you want the reports to be generated. For example,
-<code>do.report = c(2, 5)</code> will only generated the report for
-parts 2 and 5. For a full GGIR analyses we expect at least the following
+<code>do.report = c(2, 5)</code> will only generate the report for parts
+2 and 5. For a full GGIR analysis we expect at least the following
 output files:</p>
 <p><strong><em>Output files in results subfolder:</em></strong></p>
 <table class="table">
@@ -741,13 +745,11 @@ file</td>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by <a href="https://www.accelting.com/" class="external-link">Vincent T van Hees</a>, <a href="https://www.jhmigueles.com/" class="external-link">Jairo H Migueles</a>.</p>
+  <p>Developed by Vincent T van Hees, Jairo H Migueles, Medical Research Council UK, Accelting, French National Research Agency.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
 </div>
 
     </footer>

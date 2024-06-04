@@ -26,10 +26,10 @@ at least one accelerometer file to be processed by GGIR, please feel
 free to download [this .gt3x file](https://www.dropbox.com/s/covfyj31sarfaw0/GGIR01.gt3x?dl=0) or [this .cwa file](https://biobank.ndph.ox.ac.uk/ukb/refer.cgi?id=131620)
 and follow the instructions below.
 
-## Run GGIR for first time
+## Run GGIR for the first time
 
-1.  First, you will need to place your file(s) in a folder in your
-    computer. Make sure that this folder does only contain accelerometer
+1.  First, you will need to place your file(s) in a folder on your
+    computer. Make sure that this folder only contains accelerometer
     files.
 
 2.  Use the following command to run GGIR over your data using all the
@@ -38,7 +38,7 @@ and follow the instructions below.
     -   datadir refers to the directory where you have located the
         accelerometer files.
 
-    -   outputdir refers to the directory where you want to store the
+    -   outputdir refers to the directory where you want to store
         GGIR’s output.
 
 ``` r
@@ -51,6 +51,6 @@ gets populated with files, reports, and visualizations.
 
 ## Related links
 
--   [Install R and GGIR](https://wadpac.github.io/GGIR/articles/chapter0_Installation.html).
+-   [Install R and GGIR](https://wadpac.github.io/GGIR/articles/chapter0_Installation.html)
 -   [Get support](https://wadpac.github.io/GGIR/articles/chapter0_Support.html)
 -   [Suitable file formats for GGIR](https://wadpac.github.io/GGIR/articles/chapter2_Pipeline.html#input-files)
