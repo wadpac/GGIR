@@ -6,11 +6,13 @@
 
 - Loading GGIR: Stops interactive calling of `chooseCRANmirror` on `.onAttach` if interactive and CRAN mirror not set #1141.
 
-- Part 4: Corrected documentation for parameter relyonguider.
+- Part 4:
 
-- Part 4: Ignore empty sleeplog columns, which are sometimes accidentally created the user. GGIR can now handle these. #1138
+  - Corrected documentation for parameter relyonguider.
 
-- Part 4 report: Bug fixed causing night_part4 column to not be used #1142.
+  - Ignore empty sleeplog columns, which are sometimes accidentally created the user. GGIR can now handle these. #1138
+
+  - report: Bug fixed causing night_part4 column to not be used #1142.
 
 - Part 5: Fix incorrect calendar date when window starts 5 seconds before midnight, #1082
 
