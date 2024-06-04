@@ -1,7 +1,5 @@
 ---
 title: "Embedding external functions in GGIR"
-author: "Vincent van Hees"
-date: "March 7 2023"
 output:
    html_document:
     toc : true

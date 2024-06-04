@@ -187,7 +187,7 @@ As a note to ActiGraph users: If you decide to compare GGIR Cole-Kripke estimate
 ## Embedding your own metrics
 
 Some GGIR users may like to use metrics not covered by GGIR.
-To facilitate this, we allow for external function embedding as discussed in the vignette [Embedding external functions in GGIR](https://cran.r-project.org/package=GGIR/vignettes/ExternalFunction.pdf).
+To facilitate this, we allow for external function embedding as discussed in the vignette [Embedding external functions in GGIR](https://cran.r-project.org/package=GGIR/vignettes/ExternalFunction.html).
 In fact, this allows you to include entire algorithms such as the [step detection](https://github.com/ShimmerEngineering/Verisense-Toolbox/tree/master/Verisense_step_algorithm) or a new sleep classification algorithm that you would like to test inside GGIR.
 
 ## Related output
