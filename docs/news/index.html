@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,10 +101,12 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.1-1" id="changes-in-ggir-version-31-1">CHANGES IN GGIR VERSION 3.1-1<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-31-1"></a></h2>
 <ul><li><p>Part 2: Corrected calculation of LXhr and MXhr which had one hour offset when timing was after midnight, <a href="https://github.com/wadpac/GGIR/issues/1117" class="external-link">#1117</a></p></li>
-<li><p>Fixes reversion of reading <code>.csv.gz</code> files <a href="https://github.com/wadpac/GGIR/issues/1131" class="external-link">#1131</a>.</p></li>
-<li><p>Stops interactive calling of <code>chooseCRANmirror</code> on <code>.onAttach</code> if interactive and CRAN mirror not set <a href="https://github.com/wadpac/GGIR/issues/1141" class="external-link">#1141</a>.</p></li>
+<li><p>Part 1: Fixes reversion of reading <code>.csv.gz</code> files <a href="https://github.com/wadpac/GGIR/issues/1131" class="external-link">#1131</a>.</p></li>
+<li><p>Loading GGIR: Stops interactive calling of <code>chooseCRANmirror</code> on <code>.onAttach</code> if interactive and CRAN mirror not set <a href="https://github.com/wadpac/GGIR/issues/1141" class="external-link">#1141</a>.</p></li>
 <li><p>Part 4: Corrected documentation for parameter relyonguider.</p></li>
 <li><p>Part 4: Ignore empty sleeplog columns, which are sometimes accidentally created the user. GGIR can now handle these. <a href="https://github.com/wadpac/GGIR/issues/1138" class="external-link">#1138</a></p></li>
+<li><p>Part 4 report: Bug fixed causing night_part4 column to not be used <a href="https://github.com/wadpac/GGIR/issues/1142" class="external-link">#1142</a>.</p></li>
+<li><p>Part 5: Fix incorrect calendar date when window starts 5 seconds before midnight, <a href="https://github.com/wadpac/GGIR/issues/1082" class="external-link">#1082</a></p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.1-0" id="changes-in-ggir-version-31-0">CHANGES IN GGIR VERSION 3.1-0<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-31-0"></a></h2><p class="text-muted">CRAN release: 2024-05-06</p>
