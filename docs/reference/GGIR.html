@@ -18,7 +18,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,6 +63,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-1-0/">Version 3.1-0</a>
     <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-0-0/">Version 3.0-0</a>
     <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-9-0/">Version 2.9-0</a>
     <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-8-0/">Version 2.8-0</a>
@@ -181,7 +182,7 @@
 <dd><p>List (default = c()).
     External function object to be applied to raw data. See package vignette for detailed tutorial with
     examples on how to use the function embedding:
-    https://cran.r-project.org/package=GGIR/vignettes/ExternalFunction.pdf</p></dd>
+    https://cran.r-project.org/package=GGIR/vignettes/ExternalFunction.html</p></dd>
 
   <dt>verbose</dt>
 <dd><p>Boolean (default = TRUE).
@@ -1299,9 +1300,15 @@
 <p>A list of parameters used to configure the sleep analysis as performend in
     GGIR <a href="g.part3.html">g.part3</a> and <a href="g.part4.html">g.part4</a>.</p><dl><dt>relyonguider</dt>
 <dd><p>Boolean (default = FALSE).
-        If TRUE, then sleep onset and waking time are defined based on
-        timestamps derived from the guider. If participants were instructed NOT to wear the accelerometer
-        during waking hours then set to TRUE, in all other scenarios set to FALSE.</p></dd>
+        Sustained inactivity bouts (sib) that overlap with the guider are 
+        labelled as sleep. If <code>relyonguider = FALSE</code> and the sib overlaps only
+        partially with the guider then it is the sib that defines the edge 
+        of the SPT window and not the guider.
+        If <code>relyonguider = TRUE</code> and the sib overlaps only partially with the 
+        guider then it is the guider that defines the edge of the SPT window 
+        and not the sib. If participants were instructed NOT to wear the 
+        accelerometer during waking hours and <code>ignorenonware=FALSE</code> then 
+        set to <code>relyonguider=TRUE</code>, in all other scenarios set to FALSE.</p></dd>
 
 
       <dt>relyonsleeplog</dt>

@@ -74,7 +74,7 @@ GGIR(mode = 1:5,
     List (default = c()).
     External function object to be applied to raw data. See package vignette for detailed tutorial with
     examples on how to use the function embedding:
-    https://cran.r-project.org/package=GGIR/vignettes/ExternalFunction.pdf
+    https://cran.r-project.org/package=GGIR/vignettes/ExternalFunction.html
   }
   \item{verbose}{
     Boolean (default = TRUE).
