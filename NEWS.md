@@ -12,6 +12,8 @@
 
 - Part 4 report: Bug fixed causing night_part4 column to not be used #1142.
 
+- Part 5: Fix incorrect calendar date when window starts 5 seconds before midnight, #1082
+
 # CHANGES IN GGIR VERSION 3.1-0
 
 - Minor issue fixes introduced in 3.0-10 related to handling nights without sustained inactivity bouts, handling recordings without midnight and storage of GGIR version in the part 4 output when there are no valid nights.
