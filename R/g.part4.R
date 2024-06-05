@@ -20,18 +20,11 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   # possibly aided by sleep log/diary information (if available and provided by end-user)
   nnpp = 40 # number of nights to be displayed in the report (hard-coded not a critical parameter for most scenarios)
   #------------------------------------------------
-  # check whether milestone 3 data exists, if not give warning
+  # check whether milestone 3 data exists, if not give error
   ms3.out = "/meta/ms3.out"
-  if (!file.exists(paste0(metadatadir,ms3.out))) {
-    if (verbose == TRUE) cat("Warning: First run g.part3 (mode = 3) before running g.part4 (mode = 4)")
-  }
-  # check whether milestone 4 data exists, if no create folder
+  meta.sleep.folder = paste0(metadatadir, ms3.out)
   ms4.out = "/meta/ms4.out"
-  if (file.exists(paste0(metadatadir,ms4.out))) {
-  } else {
-    dir.create(file.path(metadatadir,ms4.out))
-  }
-  meta.sleep.folder = paste0(metadatadir,"/meta/ms3.out")
+  checkMilestoneFolders(metadatadir, partNumber = 4)
   #------------------------------------------------
   # Get sleeplog data
   if (length(params_sleep[["loglocation"]]) > 0) {
@@ -49,6 +42,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   #------------------------------------------------
   # get list of accelerometer milestone data files from sleep (produced by g.part3)
   fnames = dir(meta.sleep.folder)
+
   if (f1 > length(fnames)) f1 = length(fnames)
   if (f0 > length(fnames)) f0 = 1
   if (f1 == 0 | length(f1) == 0 | f1 > length(fnames))  f1 = length(fnames)
