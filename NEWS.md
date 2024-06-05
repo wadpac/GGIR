@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.1-2
+
+- Parts 2-5: Give more informative error when folders with expected milestone files are empty. #1144
+
 # CHANGES IN GGIR VERSION 3.1-1
 
 - Part 2: Corrected calculation of LXhr and MXhr which had one hour offset when timing was after midnight, #1117
