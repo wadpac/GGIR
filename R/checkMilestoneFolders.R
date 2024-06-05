@@ -12,12 +12,12 @@ checkMilestoneFolders = function(metadatadir, partNumber) {
   # Make sure folders exists
   for (i in 1:partNumber) {
     if (!dir.exists(paths[i])) {
-      dir.create(file.path(paths[i]))
+      dir.create(file.path(paths[i]), recursive = TRUE)
     }
   }
   if (partNumber >= 3) {
     if (!dir.exists(sleepqc)) {
-      dir.create(file.path(sleepqc))
+      dir.create(file.path(sleepqc), recursive = TRUE)
     }
   }
   
