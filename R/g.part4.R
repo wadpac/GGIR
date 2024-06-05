@@ -20,7 +20,6 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   # possibly aided by sleep log/diary information (if available and provided by end-user)
   nnpp = 40 # number of nights to be displayed in the report (hard-coded not a critical parameter for most scenarios)
   #------------------------------------------------
-  # check whether milestone 3 data exists, if not give error
   ms3.out = "/meta/ms3.out"
   meta.sleep.folder = paste0(metadatadir, ms3.out)
   ms4.out = "/meta/ms4.out"

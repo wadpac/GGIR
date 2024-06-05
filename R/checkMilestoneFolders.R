@@ -32,7 +32,7 @@ checkMilestoneFolders = function(metadatadir, partNumber) {
     expectedParts = c(2, 3, 4)
   }
    
-  # Give error when do data was found in the expected parts
+  # Give error when no data was found in the expected parts
   warnAbout = NULL
   for (i in expectedParts) {
     N = length(dir(paths[i]))
