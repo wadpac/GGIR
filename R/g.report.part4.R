@@ -75,6 +75,7 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(),
       out = as.matrix(nightsummary)
     }
     nightsummary2 = as.data.frame(do.call(rbind, lapply(fnames.ms4, myfun)), stringsAsFactors = FALSE)
+    nightsummary2$night = as.numeric(gsub(" ", "", nightsummary2$night))
     # ====================================== Add non-wearing during SPT from part 5, if it is availabe:
     ms5.out = "/meta/ms5.out"
     if (file.exists(paste(metadatadir, ms5.out, sep = ""))) {
@@ -131,7 +132,6 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(),
         }
       }
       # merge in variable
-      nightsummary2$night = as.numeric(gsub(" ", "", nightsummary2$night))
       outputp5$night = as.numeric(outputp5$night)
       nightsummary2 = base::merge(nightsummary2, outputp5, by = c("ID", "night"), all.x = TRUE)
       if (remove_oldID == TRUE) {
@@ -194,9 +194,6 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(),
           if (length(data_cleaning_file) > 0) {
             DaCleanFile = data.table::fread(data_cleaning_file, data.table = FALSE)
             if ("night_part4" %in% colnames(DaCleanFile)) {
-              if (inherits(x = nightsummary$night, "character")) {
-                nightsummary$night = as.numeric(gsub(pattern = " ", replacement = "", x = nightsummary$night))
-              }
               days2exclude = which(nightsummary$ID %in% DaCleanFile$ID & nightsummary$night %in% DaCleanFile$night_part4)
               if (length(days2exclude) == 0 & inherits(x = nightsummary$ID, "character")) {
                 # Try again by now attempt to read ID as numeric
