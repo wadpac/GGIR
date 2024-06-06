@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.1-2
+
+- Report part 5: fix bug that was introduced on 2024-Feb-19 in the calculation of wear percentage #1148
+
 # CHANGES IN GGIR VERSION 3.1-1
 
 - Part 2: Corrected calculation of LXhr and MXhr which had one hour offset when timing was after midnight, #1117
