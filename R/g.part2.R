@@ -29,6 +29,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   #---------------------------------
   # Specifying directories with meta-data and extracting filenames
   path = paste0(metadatadir,"/meta/basic/")  #values stored per long epoch, e.g. 15 minutes
+  checkMilestoneFolders(metadatadir, partNumber = 2)
   fnames = dir(path)
   if (f1 > length(fnames)) f1 = length(fnames)
   # create output folders

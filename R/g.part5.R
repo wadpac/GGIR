@@ -30,10 +30,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   params_general = params$params_general
   #======================================================================
   # create new folder (if not existent) for storing milestone data
+  checkMilestoneFolders(metadatadir, partNumber = 5)
   ms5.out = "/meta/ms5.out"
-  if (!file.exists(paste(metadatadir, ms5.out, sep = ""))) {
-    dir.create(file.path(metadatadir, ms5.out))
-  }
   if (params_output[["save_ms5rawlevels"]] == TRUE | params_output[["do.sibreport"]] == TRUE) {
     ms5.outraw = "/meta/ms5.outraw"
     if (file.exists(paste(metadatadir, ms5.outraw, sep = ""))) {
