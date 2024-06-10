@@ -1,5 +1,7 @@
 # CHANGES IN GGIR VERSION 3.1-2
 
+- Parts 2-5: Give more informative error when folders with expected milestone files are empty. #1144
+
 - Report part 5: fix bug that was introduced on 2024-Feb-19 in the calculation of wear percentage #1148
 
 # CHANGES IN GGIR VERSION 3.1-1
