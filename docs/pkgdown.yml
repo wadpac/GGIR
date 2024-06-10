@@ -8,6 +8,8 @@ articles:
   chapter0_Support: chapter0_Support.html
   chapter1_WhatIsGGIR: chapter1_WhatIsGGIR.html
   chapter10_SleepAnalysis: chapter10_SleepAnalysis.html
+  chapter11_DescribingDataCutPoints: chapter11_DescribingDataCutPoints.html
+  chapter12_TimeUseAnalyses: chapter12_TimeUseAnalyses.html
   chapter2_Pipeline: chapter2_Pipeline.html
   chapter3_QualityAssessment: chapter3_QualityAssessment.html
   chapter4_AccMetrics: chapter4_AccMetrics.html
@@ -24,5 +26,5 @@ articles:
   HouseHoldCoanalysis: HouseHoldCoanalysis.html
   readmyacccsv: readmyacccsv.html
   TutorialDaySegmentAnalyses: TutorialDaySegmentAnalyses.html
-last_built: 2024-06-10T17:04Z
+last_built: 2024-06-10T18:12Z
 

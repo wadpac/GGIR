@@ -61,10 +61,10 @@ navbar:
           href: articles/chapter9_SleepFundamentalsSpt.html
         - text: 10. Sleep Analysis
           href: articles/chapter10_SleepAnalysis.html
-        - text: 11. Describing the Data with Cut-Points
-          href: articles/chapterInProgress.html
+        - text: 11. Physical Activity Fundamentals - Describing the data with cut-points
+          href: articles/chapter11_DescribingDataCutPoints.html
         - text: 12. Time-Use Analyses
-          href: articles/chapterInProgress.html
+          href: articles/chapter12_TimeUseAnalyses.html
     annexes:
       text: Annexes
       menu:

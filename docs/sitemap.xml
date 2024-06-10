@@ -22,7 +22,13 @@
     <loc>/articles/chapter10_SleepAnalysis.html</loc>
   </url>
   <url>
+    <loc>/articles/chapter11_DescribingDataCutPoints.html</loc>
+  </url>
+  <url>
     <loc>/articles/chapter11_HouseholdCoanalysis.html</loc>
+  </url>
+  <url>
+    <loc>/articles/chapter12_TimeUseAnalyses.html</loc>
   </url>
   <url>
     <loc>/articles/chapter1_WhatIsGGIR.html</loc>
@@ -125,6 +131,9 @@
   </url>
   <url>
     <loc>/reference/CalcSleepRegularityIndex.html</loc>
+  </url>
+  <url>
+    <loc>/reference/checkMilestoneFolders.html</loc>
   </url>
   <url>
     <loc>/reference/check_log.html</loc>
