@@ -34,16 +34,16 @@ accelerometer and commuting.
 
 ## Selecting/Masking the data
 
-It is important that GGIR analyses masks all data outside the time
+It is important that GGIR masks all data outside the time
 window for which the participant was instructed to wear the
-accelererometer. Study protocols differ in duration and expected wear
-period, which is why GGIR offers a variety of ways to account for study
+accelerometer. Study protocols differ in duration and expected wear
+period, which is why GGIR offers a variety of ways to account for the study
 protocol.
 
-The main parameter to do this is `data_masking_strategy`, and it
+The main parameter to do this is `data_masking_strategy`. It
 requires a numeric value indicating one of the following strategies:
 
--   **data_masking_strategy = 1** to indicate the a specific number of
+-   **data_masking_strategy = 1** to indicate that a specific number of
     hours should be masked from the start and/or the end of the
     recording, specified with parameters `hrs.del.start` and
     `hrs.del.end`, respectively.
@@ -54,21 +54,19 @@ requires a numeric value indicating one of the following strategies:
 
 -   **data_masking_strategy = 3** to indicate that only the most active
     X 24-h blocks starting any time in the day should be used, where X
-    is specified by parameter `ndayswindow`. Note this can be combined
-    with beforementioned parameters `hrs.del.start` and `hrs.del.end`,
-    which will trim this window at the start and end.
+    is specified by parameter `ndayswindow`. Note that this can be combined
+    with the aforementioned parameters `hrs.del.start` and `hrs.del.end`,
+    which will trim this window at the start and end of the recording.
 
 -   **data_masking_strategy = 4** to indicate that only the data after
     the first midnight should be considered.
 
 -   **data_masking_strategy = 5** is similar to data_masking_strategy =
-    3, yet it selects X complete calendar days where X is specified by
+    3, yet it selects X complete calendar days, where X is specified with
     parameter `ndayswindow`.
 
-Additionally, the maximum duration after the start of the recording that
-the accelerometer is expected to be worn can also be set with parameter
-`maxdur` for number of 24 hour blocks or parameter `max_calendar_days`
-for number of calendar days.
+Additionally, you can set the maximum duration the accelerometer is to be worn after recording starts. Use parameter
+`maxdur` to specify the duration in the number of 24 hour blocks or parameter `max_calendar_days`for the number of calendar days.
 
 ## Key parameters
 

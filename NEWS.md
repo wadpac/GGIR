@@ -1,8 +1,34 @@
+# CHANGES IN GGIR VERSION 3.1-2
+
+- Parts 2-5: Give more informative error when folders with expected milestone files are empty. #1144
+
+- Report part 5: fix bug that was introduced on 2024-Feb-19 in the calculation of wear percentage #1148
+
+# CHANGES IN GGIR VERSION 3.1-1
+
+- Part 2: Corrected calculation of LXhr and MXhr which had one hour offset when timing was after midnight, #1117
+
+- Part 1: Fixes reversion of reading `.csv.gz` files #1131.
+
+- Loading GGIR: Stops interactive calling of `chooseCRANmirror` on `.onAttach` if interactive and CRAN mirror not set #1141.
+
+- Part 4:
+
+  - Corrected documentation for parameter relyonguider.
+
+  - Ignore empty sleeplog columns, which are sometimes accidentally created the user. GGIR can now handle these. #1138
+
+  - report: Bug fixed causing night_part4 column to not be used #1142.
+
+- Part 5: Fix incorrect calendar date when window starts 5 seconds before midnight, #1082
+
 # CHANGES IN GGIR VERSION 3.1-0
 
 - Minor issue fixes introduced in 3.0-10 related to handling nights without sustained inactivity bouts, handling recordings without midnight and storage of GGIR version in the part 4 output when there are no valid nights.
 
 - Part 5 report: Add option to filter part 5 windows based on parameter includedaycrit originally used in part 2, for details see documentation of parameter includedaycrit and #1113
+
+- Part 1: Fix bug in identifying and naming the vector magnitude column #1122
 
 # CHANGES IN GGIR VERSION 3.0-10
 
@@ -149,7 +175,7 @@ If you prefer to keep old functionality then divide your old value by 24 #1050.
 
 # CHANGES IN GGIR VERSION 3.0-1
 
-- Part 2: Added option to provide a csv file with start and end dates when accelerometer is expected to be worn #943
+- Part 2: Added parameters study_dates_file and study_dateformat to specify csv file with start and end date when accelerometer is expected to be worn #943
 
 - Part 5: Now stores dictionary for variable names in part 5 reports #938
 

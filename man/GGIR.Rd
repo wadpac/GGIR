@@ -74,7 +74,7 @@ GGIR(mode = 1:5,
     List (default = c()).
     External function object to be applied to raw data. See package vignette for detailed tutorial with
     examples on how to use the function embedding:
-    https://cran.r-project.org/package=GGIR/vignettes/ExternalFunction.pdf
+    https://cran.r-project.org/package=GGIR/vignettes/ExternalFunction.html
   }
   \item{verbose}{
     Boolean (default = TRUE).
@@ -1071,9 +1071,15 @@ GGIR(mode = 1:5,
 
       \item{relyonguider}{
         Boolean (default = FALSE).
-        If TRUE, then sleep onset and waking time are defined based on
-        timestamps derived from the guider. If participants were instructed NOT to wear the accelerometer
-        during waking hours then set to TRUE, in all other scenarios set to FALSE.}
+        Sustained inactivity bouts (sib) that overlap with the guider are 
+        labelled as sleep. If \code{relyonguider = FALSE} and the sib overlaps only
+        partially with the guider then it is the sib that defines the edge 
+        of the SPT window and not the guider.
+        If \code{relyonguider = TRUE} and the sib overlaps only partially with the 
+        guider then it is the guider that defines the edge of the SPT window 
+        and not the sib. If participants were instructed NOT to wear the 
+        accelerometer during waking hours and \code{ignorenonware=FALSE} then 
+        set to \code{relyonguider=TRUE}, in all other scenarios set to FALSE.}
 
       \item{relyonsleeplog}{
         Boolean (default = FALSE).

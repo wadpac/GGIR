@@ -29,7 +29,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,6 +75,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-1-0/">Version 3.1-0</a>
     <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-0-0/">Version 3.0-0</a>
     <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-9-0/">Version 2.9-0</a>
     <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-8-0/">Version 2.8-0</a>
@@ -147,16 +148,15 @@ accelerometer and commuting.</p>
 <div class="section level2">
 <h2 id="selectingmasking-the-data">Selecting/Masking the data<a class="anchor" aria-label="anchor" href="#selectingmasking-the-data"></a>
 </h2>
-<p>It is important that GGIR analyses masks all data outside the time
-window for which the participant was instructed to wear the
-accelererometer. Study protocols differ in duration and expected wear
-period, which is why GGIR offers a variety of ways to account for study
-protocol.</p>
-<p>The main parameter to do this is <code>data_masking_strategy</code>,
-and it requires a numeric value indicating one of the following
+<p>It is important that GGIR masks all data outside the time window for
+which the participant was instructed to wear the accelerometer. Study
+protocols differ in duration and expected wear period, which is why GGIR
+offers a variety of ways to account for the study protocol.</p>
+<p>The main parameter to do this is <code>data_masking_strategy</code>.
+It requires a numeric value indicating one of the following
 strategies:</p>
 <ul>
-<li><p><strong>data_masking_strategy = 1</strong> to indicate the a
+<li><p><strong>data_masking_strategy = 1</strong> to indicate that a
 specific number of hours should be masked from the start and/or the end
 of the recording, specified with parameters <code>hrs.del.start</code>
 and <code>hrs.del.end</code>, respectively.</p></li>
@@ -166,19 +166,19 @@ be considered.</p></li>
 <li><p><strong>data_masking_strategy = 3</strong> to indicate that only
 the most active X 24-h blocks starting any time in the day should be
 used, where X is specified by parameter <code>ndayswindow</code>. Note
-this can be combined with beforementioned parameters
+that this can be combined with the aforementioned parameters
 <code>hrs.del.start</code> and <code>hrs.del.end</code>, which will trim
-this window at the start and end.</p></li>
+this window at the start and end of the recording.</p></li>
 <li><p><strong>data_masking_strategy = 4</strong> to indicate that only
 the data after the first midnight should be considered.</p></li>
 <li><p><strong>data_masking_strategy = 5</strong> is similar to
-data_masking_strategy = 3, yet it selects X complete calendar days where
-X is specified by parameter <code>ndayswindow</code>.</p></li>
+data_masking_strategy = 3, yet it selects X complete calendar days,
+where X is specified with parameter <code>ndayswindow</code>.</p></li>
 </ul>
-<p>Additionally, the maximum duration after the start of the recording
-that the accelerometer is expected to be worn can also be set with
-parameter <code>maxdur</code> for number of 24 hour blocks or parameter
-<code>max_calendar_days</code> for number of calendar days.</p>
+<p>Additionally, you can set the maximum duration the accelerometer is
+to be worn after recording starts. Use parameter <code>maxdur</code> to
+specify the duration in the number of 24 hour blocks or parameter
+<code>max_calendar_days</code>for the number of calendar days.</p>
 </div>
 <div class="section level2">
 <h2 id="key-parameters">Key parameters<a class="anchor" aria-label="anchor" href="#key-parameters"></a>
