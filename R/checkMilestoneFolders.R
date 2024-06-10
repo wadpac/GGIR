@@ -1,7 +1,9 @@
 checkMilestoneFolders = function(metadatadir, partNumber) {
   if (partNumber == 1) return()
-  # This function checks where expected output folders exists and if necessary creates them
-  # Further it check whether folders with expected content are empty and if yes gives error.
+  # This function checks whether expected output folder(s) exists
+  # If not, it creates them
+  # Further it check whether folders with expected content are empty.
+  # If yesm it gives error.
   paths = c(paste0(metadatadir, "/meta/basic"),
             paste0(metadatadir, "/meta/ms2.out"),
             paste0(metadatadir, "/meta/ms3.out"),
