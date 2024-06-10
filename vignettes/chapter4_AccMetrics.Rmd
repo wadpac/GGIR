@@ -26,13 +26,13 @@ Once the data is collected, health researchers typically want to derive from thi
 
 3.  Various other outcomes, i.e. gait, balance, circadian rhythm analysis, and falls.
 
-A critical step in going from the high-resolution data to the classification of activity type or energy expenditure is to calculate metrics, also known as signal features.
+A critical step in going from the high-resolution data to the classification of activity types or energy expenditure is to calculate metrics, also known as signal features.
 A metric allows us to extract information from the signal.
 One approach is to calculate statistical properties of the data like the mean, standard deviation, entropy, and skewness.
 Another approach is to design the data metrics with domain knowledge about the process that generated the data.
 I personally prefer the domain knowledge-driven approach because it allows us to narrow down the search space for a successful metric and it aims at a good understanding of what we calculate.
 
-In the domain-driven approach a distinction is made between three acceleration signal components:
+In the domain-driven approach, a distinction is made between three acceleration signal components:
 
 1.  Acceleration related to gravitational acceleration and by that the orientation of the accelerometer relative to gravity.
 
@@ -48,25 +48,25 @@ Although most metrics are calculated per time point, which reflect a tiny fracti
 
 -   Aggregation per epoch reduces value dependency on sampling frequency, which varies between studies, and by that eases comparisons across studies.
 
--   Evidence on the value of accelerometer data is based on epoch level aggregates, because reference values like Oxygen consumption or sleep cannot reliably be derived at sub-second resolution.
+-   Evidence on the value of accelerometer data is based on epoch level aggregates, because reference values like oxygen consumption or sleep cannot reliably be derived at sub-second resolution.
 
 The epoch length is kept constant within GGIR to allow for consistent interpretation.
 The epoch length is set with the first value of parameter `windowsizes` and used throughout all steps of GGIR, with the following exceptions:
 
 -   In GGIR part 2, the time spent in MVPA variables (as discussed in a later chapter) is done with multiple epoch lengths, one for each output variable.
-    However, per output variable the epoch length is held constant throughout the recording.
+    However, per output variable, the epoch length is held constant throughout the recording.
     GGIR never mixes epoch lengths.
 
 -   In GGIR part 5, the user has the option to aggregate all epochs to 1 minute length with parameter `part5_agg2_60seconds`.
-    For example, when using 5 second epochs in parts 1, 2, 3 and 4, it can be informative to run part 5 with 1 minute epoch length.
+    For example, when using 5 second epochs in parts 1, 2, 3, and 4, it can be informative to run part 5 with 1 minute epoch length.
 
 ## Acceleration metrics available in GGIR
 
 Below you will find a list of all metrics that GGIR can apply.
 Multiple metrics can be derived in the same GGIR run.
 All acceleration metrics are derived in GGIR function [`g.applymetrics`](https://github.com/wadpac/GGIR/blob/master/R/g.applymetrics.R).
-Only for Neishabouri counts GGIR relies on R package `actifelifecounts`.
-Please see code for exact calculations.
+Only for Neishabouri counts GGIR relies on the R package `actifelifecounts`.
+Please see the code in the respective package documentation for information on the exact calculations.
 To use the metrics, add the parameters to your GGIR call, e.g.:
 
 ```         
@@ -101,14 +101,14 @@ GGIR(do.enmo = TRUE, do.mad = TRUE, do.bfen = TRUE, …)
 | bfx                | Band-pass filtered x-axis                                                                                                                                      | Average           | do.bfx                                                                      | Frequency               |
 | bfy                | Band-pass filtered y-axis                                                                                                                                      | Average           | do.bfy                                                                      | Frequency               |
 | bfen               | Euclidean norm of the band-pass filtered signals                                                                                                               | Average           | do.bfz                                                                      | Frequency               |
-| zcx                | Zero crossing count x-axis                                                                                                                                     | Sum               | do.zcx                                                                      | Frequency               |
-| zcy                | Zero crossing count y-axis                                                                                                                                     | Sum               | do.zcy                                                                      | Frequency               |
-| zcz                | Zero crossing count z-axis                                                                                                                                     | Sum               | do.zcz                                                                      | Frequency               |
+| zcx                | Zero crossing count x-axis (see notes below)                                                                                                                                    | Sum               | do.zcx                                                                      | Frequency               |
+| zcy                | Zero crossing count y-axis (see notes below)                                                                                                                                    | Sum               | do.zcy                                                                      | Frequency               |
+| zcz                | Zero crossing count z-axis (see notes below)                                                                                                                                    | Sum               | do.zcz                                                                      | Frequency               |
 | neishabouricounts  | Counts as described by [Neishabouri et al. 2022](https://doi.org/10.1038/s41598-022-16003-x) as used in the ActiLife software for raw ActiGraph data           | Sum               | do.neishabouricounts                                                        | Frequency               |
 
 ### Approach to removing the gravitational signal component
 
-The table above indicates the approach used to separate the gravitation component.
+The table above indicates the approach used to separate the gravitation component from the acceleration signal.
 There are two approaches:
 
 -   Magnitude, where the metric makes an assumption about the magnitude of the gravitational acceleration component.
@@ -120,7 +120,7 @@ Both assumptions are known to not hold true under all conditions, which is why n
 ### Handling high frequency components in the signal
 
 Some argue that high frequency components in the signal should be treated as noise and be removed.
-However, more likely they represent the harmonics of low frequency movements and are by that part of the description of movement.
+However, they more likely represent the harmonics of low frequency movements and are thus part of the description of movement.
 For a more elaborate reflection on this, please see [this blog post](https://www.accelting.com/updates/high-frequencies-in-an-acceleration-signal/).
 
 All metrics that have the letter LF or BF in their name attempt to suppress the high frequency content of the signal.
@@ -129,9 +129,9 @@ All metrics that have the letter LF or BF in their name attempt to suppress the 
 
 Only one metric can be the default.
 Acceleration metric ENMO (Euclidean Norm Minus One with negative values rounded to zero) has been the default metric since GGIR was created.
-In 2013 we investigated different ways of summarising the raw acceleration data ([van Hees et al. PLoS ONE 2013](https://doi.org/10.1371/journal.pone.0061691)).
+In 2013, we investigated different ways of summarising the raw acceleration data ([van Hees et al. PLoS ONE 2013](https://doi.org/10.1371/journal.pone.0061691)).
 In short, different metrics exist and there is very little literature to support the superiority of any metric at the time.
-As long as different studies use different metrics their findings will not be comparable.
+As long as different studies use different metrics, their findings will not be comparable.
 Therefore, the choice for metric ENMO has been partially pragmatic.
 GGIR uses ENMO as default because:
 
@@ -145,29 +145,61 @@ ENMO is easy to describe mathematically and by that improves reproducibility acr
 ENMO attempts to quantify the acceleration in universal units and does not collapse the signal to an abstract scale.
 
 4\.
-The 2013 paper showed that when ENMO is used in combination with auto-calibration it has similar validity to filter-based metrics like HFEN and BFEN, which are conceptually similar to metrics proposed later such as [MIMSunit](https://doi.org/10.1123/jmpb.2018-0068), [MAD](https://doi.org/10.1186/s13102-015-0010-0), [AI0](https://doi.org/10.1371/journal.pone.0160644).
+The 2013 paper showed that when ENMO is used in combination with auto-calibration, it has similar validity to filter-based metrics like HFEN and BFEN, which are conceptually similar to metrics proposed later such as [MIMSunit](https://doi.org/10.1123/jmpb.2018-0068), [MAD](https://doi.org/10.1186/s13102-015-0010-0), [AI0](https://doi.org/10.1371/journal.pone.0160644).
 
 5\.
-Studies who have criticised ENMO consistently failed to apply auto-calibration, or attempted to apply auto-calibration in a lab setting, ignoring the fact that the auto-calibration is not designed for short lasting lab settings.
+Studies who have criticised ENMO consistently failed to apply auto-calibration, or attempted to apply auto-calibration in a lab setting, ignoring the fact that auto-calibration is not designed for short lab settings.
 It needs free-living data to work properly.
 Further, studies are often not clear about how the problematic zero imputation during the idle sleep mode in ActiGraph devices is dealt with.
 
+
+### Notes on implementation of zero crossing counts
+
+The implementation of the zero-crossing count in GGIR is an attempt to imitate the zero-crossed counts previously described by Sadeh, Cole, Kripke and colleagues in the late 1980s and 1990s. However, it cannot be guaranteed to be an exact copy of the original approach, which used the AMA-32 Motionlogger Actigraph by Ambulatory-monitoring Inc. ("AMI"). 
+
+No complete publicly accessible description of that approach exists.
+
+#### Missing information
+
+The missing information about the calculation are:
+
+1. Sadeh specified that calculations were done based on data from the Y-axis but the direction of the Y-axis was not clarified. Therefore, it is unclear whether the Y-axis at that time corresponded to the Y-axis of modern sensors.
+2. A frequency filter was used, but properties of the filter are missing.
+3. Sensitivity of the sensor: We are now guessing that the Motionlogger had a sensitivity of 0.01 *g* but without direct proof.
+4. Relationship between piezo-electric acceleration signal used at that time and modern piezo-capacitive acceleration signals.
+
+From personal correspondence with AMI, we learnt that the technique has been kept proprietary and has never been shared with or sold to other actigraphy manufacturers (time of correspondence October 2021). Based on the correspondence with AMI, we can conclude that even Actiwatch, ActiGraph, and other manufacturers, who have facilitated the use of 1990s sleep classification algorithms, cannot guarantee exact replication of the original studies.
+
+#### Our guess on the missing information
+
+Following the above challenges, the implementation of the zero-crossing count in GGIR is based on an educated guess where we used all information we could find in the literature and product documentation. In relation to the missing information listed above:
+
+1. We allow you to specify which axis you want to use with parameter `Sadeh_axis` but choose as default the second axis.
+2. We use a 0.25 - 3 Hertz band-pass filter with order 2, which you can modify with parameters `zc.lb`, `zc.hb`, and `zc.order`.
+3. We use a 0.01 *g* stop band, which you can change with parameter `zc.sb`.
+4. We assume that the band-passed signal is comparable in the absence of evidence on the contrary.
+
+In our own evaluation, the zero-crossing count value range looks plausible when compared to the value range in the original publications.
+
+As a note to ActiGraph users: If you decide to compare GGIR Cole-Kripke estimates with ActiLife's Cole Kripke estimates, be aware that ActiLife may have adopted a different Cole-Kripke algorithm as the original publication presented four algorithms. This is a potential source of variation. Further, ActiLife may have used different educated guesses about how Motionlogger counts are calculated.
+
+
 ## Embedding your own metrics
 
-Some GGIR users may like to use a metric not covered by GGIR.
-To facilitate this we allow for external function embedding as discussed in the vignette [Embedding external functions in GGIR](https://cran.r-project.org/package=GGIR/vignettes/ExternalFunction.pdf).
+Some GGIR users may like to use metrics not covered by GGIR.
+To facilitate this, we allow for external function embedding as discussed in the vignette [Embedding external functions in GGIR](https://cran.r-project.org/package=GGIR/vignettes/ExternalFunction.html).
 In fact, this allows you to include entire algorithms such as the [step detection](https://github.com/ShimmerEngineering/Verisense-Toolbox/tree/master/Verisense_step_algorithm) or a new sleep classification algorithm that you would like to test inside GGIR.
 
 ## Related output
 
 -   In **GGIR part 2**, output is derived for each acceleration metric derived in GGIR part 1 except for metrics anglex, angley, and anglez.
--   In **GGIR part 4** output is derived from only the metrics used for the sleep detection, typically angle or count (Neishabouri counts or zero-crossing count).
--   In **GGIR part 5** output is derived for only the single metric specified with parameter `acc.metric`. The reason for this constraint is that part 5 produces many variables and creating all of them for multiple metrics would be computationally expensive and substantially increase the complexity of the underlying code.
+-   In **GGIR part 4**, output is derived from only the metrics used for the sleep detection, typically angle or count (Neishabouri counts or zero-crossing count).
+-   In **GGIR part 5**, output is derived for only the single metric specified with parameter `acc.metric`. The reason for this constraint is that part 5 produces many variables and creating all of them for multiple metrics would be computationally expensive and would substantially increase the complexity of the underlying code.
 
 ## References
 
-We are aware that this chapter could be made more informative if it had an even more detailed discussion on each of the metrics.
-However, given that our focus is on GGIR we have a compiled a list of related articles you may find useful:
+We are aware that this chapter could be more informative if it had an even more detailed discussion of each of the metrics.
+However, given that our focus is on GGIR, we have compiled a list of related articles you may find useful:
 
 -   [Van Hees et al. 2011](https://doi.org/10.1371/journal.pone.0022922) Estimation of Daily Energy Expenditure in Pregnant and Non-Pregnant Women Using a Wrist-Worn Tri-Axial Accelerometer.
 

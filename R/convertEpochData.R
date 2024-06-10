@@ -285,7 +285,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         }
         if (is.na(vmcol[1]) == FALSE) { 
           D = as.matrix(D, drop = FALSE) # convert to matrix as data.frame will auto-collapse to vector
-          colnames(D)[vmcol] = c("NeishabouriCount_x")
+          colnames(D)[vmcol] = c("NeishabouriCount_vm")
         }
         keep = c(acccol, vmcol)[!is.na(c(acccol, vmcol))]
         D = D[, keep, drop = FALSE]

@@ -16,15 +16,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
   params_general = params$params_general
   params_output = params$params_output
 
-  #----------------------------------------------------------
-  # create output directory if it does not exist
-  if (!file.exists(paste(metadatadir, sep = ""))) {
-    dir.create(file.path(metadatadir))
-  }
-  if (!file.exists(paste(metadatadir, "/meta/ms3.out", sep = ""))) {
-    dir.create(file.path(paste(metadatadir, "/meta", sep = ""), "ms3.out"))
-    dir.create(file.path(paste(metadatadir, "/meta", sep = ""), "sleep.qc"))
-  }
+  checkMilestoneFolders(metadatadir, partNumber = 3)
   #------------------------------------------------------
   fnames = dir(paste(metadatadir,"/meta/ms2.out", sep = ""))
   if (f1 > length(fnames) | f1 == 0) f1 = length(fnames)

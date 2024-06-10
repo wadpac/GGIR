@@ -121,7 +121,27 @@ test_that("External epoch data is correctly converted", {
   
   # Tidy up by deleting output folder
   if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
+
+  # ActiGraph with headers
+  cat("\nActiGraph with headers")
+  move2folder(system.file("testfiles/ActiGraph13_timestamps_headers.csv", package = "GGIR")[1], dn)
+  params_general[["windowsizes"]][1] = 1
+  params_general[["dataFormat"]] = "actigraph_csv"
+  params_general[["extEpochData_timeformat"]] = "%d-%m-%Y %H:%M:%S"
+  convertEpochData(datadir = dn, metadatadir = "./output_tmp_testdata",
+                   params_general = params_general)
+  if (dir.exists(dn))  unlink(dn, recursive = TRUE)
+  load(paste0(QCbasis, "/meta_ActiGraph13_timestamps_headers.csv.RData"))
+  expect_equal(sum(M$metalong$nonwearscore), 0)
+  expect_equal(nrow(M$metashort), 960)
+  expect_equal(ncol(M$metashort), 5)
+  expect_true(all(c("timestamp", "NeishabouriCount_x", "NeishabouriCount_y", 
+                    "NeishabouriCount_z", "NeishabouriCount_vm") %in% colnames(M$metashort)))
   
+  # Tidy up by deleting output folder
+  if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
+  
+
   # Sensewear
   cat("\nSensewear")
   move2folder(system.file("testfiles/sensewear.xls", package = "GGIR")[1], dn)

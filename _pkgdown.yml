@@ -14,13 +14,6 @@ template:
       card: summary_large_image
       
 authors:
-  Vincent T van Hees:
-    href: https://www.accelting.com/
-  Jairo H Migueles:
-    href: https://www.jhmigueles.com/
-  footer:
-    roles: [aut]
-    text: "Developed by"
   sidebar:
     roles: [aut]
 
@@ -90,7 +83,10 @@ navbar:
     right: [search, github, twitter]
 
 news:
+  cran_dates: TRUE
   releases:
+  - text: "Version 3.1-0"
+    href: https://www.accelting.com/updates/ggir-release-3-1-0/
   - text: "Version 3.0-0"
     href: https://www.accelting.com/updates/ggir-release-3-0-0/
   - text: "Version 2.9-0"

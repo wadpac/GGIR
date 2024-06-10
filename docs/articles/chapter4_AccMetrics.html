@@ -11,7 +11,7 @@
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="4. From Raw Data to Acceleration Metrics">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="4. From Raw Data to Acceleration Metrics">
 <meta property="og:description" content="GGIR">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:creator" content="@RpackageGGIR">
@@ -25,11 +25,11 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,6 +75,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-news">
     <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-1-0/">Version 3.1-0</a>
     <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-0-0/">Version 3.0-0</a>
     <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-9-0/">Version 2.9-0</a>
     <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-8-0/">Version 2.8-0</a>
@@ -148,7 +149,7 @@ as a good proxy for energy expenditure.</p></li>
 analysis, and falls.</p></li>
 </ol>
 <p>A critical step in going from the high-resolution data to the
-classification of activity type or energy expenditure is to calculate
+classification of activity types or energy expenditure is to calculate
 metrics, also known as signal features. A metric allows us to extract
 information from the signal. One approach is to calculate statistical
 properties of the data like the mean, standard deviation, entropy, and
@@ -157,7 +158,7 @@ knowledge about the process that generated the data. I personally prefer
 the domain knowledge-driven approach because it allows us to narrow down
 the search space for a successful metric and it aims at a good
 understanding of what we calculate.</p>
-<p>In the domain-driven approach a distinction is made between three
+<p>In the domain-driven approach, a distinction is made between three
 acceleration signal components:</p>
 <ol style="list-style-type: decimal">
 <li><p>Acceleration related to gravitational acceleration and by that
@@ -183,7 +184,7 @@ per epoch (e.g., 5 seconds) for the following reasons:</p>
 frequency, which varies between studies, and by that eases comparisons
 across studies.</p></li>
 <li><p>Evidence on the value of accelerometer data is based on epoch
-level aggregates, because reference values like Oxygen consumption or
+level aggregates, because reference values like oxygen consumption or
 sleep cannot reliably be derived at sub-second resolution.</p></li>
 </ul>
 <p>The epoch length is kept constant within GGIR to allow for consistent
@@ -193,12 +194,12 @@ GGIR, with the following exceptions:</p>
 <ul>
 <li><p>In GGIR part 2, the time spent in MVPA variables (as discussed in
 a later chapter) is done with multiple epoch lengths, one for each
-output variable. However, per output variable the epoch length is held
+output variable. However, per output variable, the epoch length is held
 constant throughout the recording. GGIR never mixes epoch
 lengths.</p></li>
 <li><p>In GGIR part 5, the user has the option to aggregate all epochs
 to 1 minute length with parameter <code>part5_agg2_60seconds</code>. For
-example, when using 5 second epochs in parts 1, 2, 3 and 4, it can be
+example, when using 5 second epochs in parts 1, 2, 3, and 4, it can be
 informative to run part 5 with 1 minute epoch length.</p></li>
 </ul>
 </div>
@@ -208,9 +209,10 @@ informative to run part 5 with 1 minute epoch length.</p></li>
 <p>Below you will find a list of all metrics that GGIR can apply.
 Multiple metrics can be derived in the same GGIR run. All acceleration
 metrics are derived in GGIR function <a href="https://github.com/wadpac/GGIR/blob/master/R/g.applymetrics.R" class="external-link"><code>g.applymetrics</code></a>.
-Only for Neishabouri counts GGIR relies on R package
-<code>actifelifecounts</code>. Please see code for exact calculations.
-To use the metrics, add the parameters to your GGIR call, e.g.:</p>
+Only for Neishabouri counts GGIR relies on the R package
+<code>actifelifecounts</code>. Please see the code in the respective
+package documentation for information on the exact calculations. To use
+the metrics, add the parameters to your GGIR call, e.g.:</p>
 <pre><code>GGIR(do.enmo = TRUE, do.mad = TRUE, do.bfen = TRUE, …)</code></pre>
 <table class="table">
 <colgroup>
@@ -427,21 +429,21 @@ values rounded to zero</td>
 </tr>
 <tr class="odd">
 <td>zcx</td>
-<td>Zero crossing count x-axis</td>
+<td>Zero crossing count x-axis (see notes below)</td>
 <td>Sum</td>
 <td>do.zcx</td>
 <td>Frequency</td>
 </tr>
 <tr class="even">
 <td>zcy</td>
-<td>Zero crossing count y-axis</td>
+<td>Zero crossing count y-axis (see notes below)</td>
 <td>Sum</td>
 <td>do.zcy</td>
 <td>Frequency</td>
 </tr>
 <tr class="odd">
 <td>zcz</td>
-<td>Zero crossing count z-axis</td>
+<td>Zero crossing count z-axis (see notes below)</td>
 <td>Sum</td>
 <td>do.zcz</td>
 <td>Frequency</td>
@@ -461,7 +463,8 @@ data</td>
 <h3 id="approach-to-removing-the-gravitational-signal-component">Approach to removing the gravitational signal component<a class="anchor" aria-label="anchor" href="#approach-to-removing-the-gravitational-signal-component"></a>
 </h3>
 <p>The table above indicates the approach used to separate the
-gravitation component. There are two approaches:</p>
+gravitation component from the acceleration signal. There are two
+approaches:</p>
 <ul>
 <li><p>Magnitude, where the metric makes an assumption about the
 magnitude of the gravitational acceleration component.</p></li>
@@ -475,8 +478,8 @@ which is why no acceleration metric is perfect.</p>
 <h3 id="handling-high-frequency-components-in-the-signal">Handling high frequency components in the signal<a class="anchor" aria-label="anchor" href="#handling-high-frequency-components-in-the-signal"></a>
 </h3>
 <p>Some argue that high frequency components in the signal should be
-treated as noise and be removed. However, more likely they represent the
-harmonics of low frequency movements and are by that part of the
+treated as noise and be removed. However, they more likely represent the
+harmonics of low frequency movements and are thus part of the
 description of movement. For a more elaborate reflection on this, please
 see <a href="https://www.accelting.com/updates/high-frequencies-in-an-acceleration-signal/" class="external-link">this
 blog post</a>.</p>
@@ -488,11 +491,11 @@ suppress the high frequency content of the signal.</p>
 </h3>
 <p>Only one metric can be the default. Acceleration metric ENMO
 (Euclidean Norm Minus One with negative values rounded to zero) has been
-the default metric since GGIR was created. In 2013 we investigated
+the default metric since GGIR was created. In 2013, we investigated
 different ways of summarising the raw acceleration data (<a href="https://doi.org/10.1371/journal.pone.0061691" class="external-link">van Hees et al. PLoS
 ONE 2013</a>). In short, different metrics exist and there is very
 little literature to support the superiority of any metric at the time.
-As long as different studies use different metrics their findings will
+As long as different studies use different metrics, their findings will
 not be comparable. Therefore, the choice for metric ENMO has been
 partially pragmatic. GGIR uses ENMO as default because:</p>
 <p>1. ENMO has demonstrated value in describing variance in daily energy
@@ -503,25 +506,87 @@ reproducibility across studies and software tools.</p>
 <p>3. ENMO attempts to quantify the acceleration in universal units and
 does not collapse the signal to an abstract scale.</p>
 <p>4. The 2013 paper showed that when ENMO is used in combination with
-auto-calibration it has similar validity to filter-based metrics like
+auto-calibration, it has similar validity to filter-based metrics like
 HFEN and BFEN, which are conceptually similar to metrics proposed later
 such as <a href="https://doi.org/10.1123/jmpb.2018-0068" class="external-link">MIMSunit</a>,
 <a href="https://doi.org/10.1186/s13102-015-0010-0" class="external-link">MAD</a>, <a href="https://doi.org/10.1371/journal.pone.0160644" class="external-link">AI0</a>.</p>
 <p>5. Studies who have criticised ENMO consistently failed to apply
 auto-calibration, or attempted to apply auto-calibration in a lab
-setting, ignoring the fact that the auto-calibration is not designed for
-short lasting lab settings. It needs free-living data to work properly.
-Further, studies are often not clear about how the problematic zero
-imputation during the idle sleep mode in ActiGraph devices is dealt
-with.</p>
+setting, ignoring the fact that auto-calibration is not designed for
+short lab settings. It needs free-living data to work properly. Further,
+studies are often not clear about how the problematic zero imputation
+during the idle sleep mode in ActiGraph devices is dealt with.</p>
+</div>
+<div class="section level3">
+<h3 id="notes-on-implementation-of-zero-crossing-counts">Notes on implementation of zero crossing counts<a class="anchor" aria-label="anchor" href="#notes-on-implementation-of-zero-crossing-counts"></a>
+</h3>
+<p>The implementation of the zero-crossing count in GGIR is an attempt
+to imitate the zero-crossed counts previously described by Sadeh, Cole,
+Kripke and colleagues in the late 1980s and 1990s. However, it cannot be
+guaranteed to be an exact copy of the original approach, which used the
+AMA-32 Motionlogger Actigraph by Ambulatory-monitoring Inc. (“AMI”).</p>
+<p>No complete publicly accessible description of that approach
+exists.</p>
+<div class="section level4">
+<h4 id="missing-information">Missing information<a class="anchor" aria-label="anchor" href="#missing-information"></a>
+</h4>
+<p>The missing information about the calculation are:</p>
+<ol style="list-style-type: decimal">
+<li>Sadeh specified that calculations were done based on data from the
+Y-axis but the direction of the Y-axis was not clarified. Therefore, it
+is unclear whether the Y-axis at that time corresponded to the Y-axis of
+modern sensors.</li>
+<li>A frequency filter was used, but properties of the filter are
+missing.</li>
+<li>Sensitivity of the sensor: We are now guessing that the Motionlogger
+had a sensitivity of 0.01 <em>g</em> but without direct proof.</li>
+<li>Relationship between piezo-electric acceleration signal used at that
+time and modern piezo-capacitive acceleration signals.</li>
+</ol>
+<p>From personal correspondence with AMI, we learnt that the technique
+has been kept proprietary and has never been shared with or sold to
+other actigraphy manufacturers (time of correspondence October 2021).
+Based on the correspondence with AMI, we can conclude that even
+Actiwatch, ActiGraph, and other manufacturers, who have facilitated the
+use of 1990s sleep classification algorithms, cannot guarantee exact
+replication of the original studies.</p>
+</div>
+<div class="section level4">
+<h4 id="our-guess-on-the-missing-information">Our guess on the missing information<a class="anchor" aria-label="anchor" href="#our-guess-on-the-missing-information"></a>
+</h4>
+<p>Following the above challenges, the implementation of the
+zero-crossing count in GGIR is based on an educated guess where we used
+all information we could find in the literature and product
+documentation. In relation to the missing information listed above:</p>
+<ol style="list-style-type: decimal">
+<li>We allow you to specify which axis you want to use with parameter
+<code>Sadeh_axis</code> but choose as default the second axis.</li>
+<li>We use a 0.25 - 3 Hertz band-pass filter with order 2, which you can
+modify with parameters <code>zc.lb</code>, <code>zc.hb</code>, and
+<code>zc.order</code>.</li>
+<li>We use a 0.01 <em>g</em> stop band, which you can change with
+parameter <code>zc.sb</code>.</li>
+<li>We assume that the band-passed signal is comparable in the absence
+of evidence on the contrary.</li>
+</ol>
+<p>In our own evaluation, the zero-crossing count value range looks
+plausible when compared to the value range in the original
+publications.</p>
+<p>As a note to ActiGraph users: If you decide to compare GGIR
+Cole-Kripke estimates with ActiLife’s Cole Kripke estimates, be aware
+that ActiLife may have adopted a different Cole-Kripke algorithm as the
+original publication presented four algorithms. This is a potential
+source of variation. Further, ActiLife may have used different educated
+guesses about how Motionlogger counts are calculated.</p>
+</div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="embedding-your-own-metrics">Embedding your own metrics<a class="anchor" aria-label="anchor" href="#embedding-your-own-metrics"></a>
 </h2>
-<p>Some GGIR users may like to use a metric not covered by GGIR. To
-facilitate this we allow for external function embedding as discussed in
-the vignette <a href="https://cran.r-project.org/package=GGIR/vignettes/ExternalFunction.pdf" class="external-link">Embedding
+<p>Some GGIR users may like to use metrics not covered by GGIR. To
+facilitate this, we allow for external function embedding as discussed
+in the vignette <a href="https://cran.r-project.org/package=GGIR/vignettes/ExternalFunction.html" class="external-link">Embedding
 external functions in GGIR</a>. In fact, this allows you to include
 entire algorithms such as the <a href="https://github.com/ShimmerEngineering/Verisense-Toolbox/tree/master/Verisense_step_algorithm" class="external-link">step
 detection</a> or a new sleep classification algorithm that you would
@@ -534,24 +599,24 @@ like to test inside GGIR.</p>
 <li>In <strong>GGIR part 2</strong>, output is derived for each
 acceleration metric derived in GGIR part 1 except for metrics anglex,
 angley, and anglez.</li>
-<li>In <strong>GGIR part 4</strong> output is derived from only the
+<li>In <strong>GGIR part 4</strong>, output is derived from only the
 metrics used for the sleep detection, typically angle or count
 (Neishabouri counts or zero-crossing count).</li>
-<li>In <strong>GGIR part 5</strong> output is derived for only the
+<li>In <strong>GGIR part 5</strong>, output is derived for only the
 single metric specified with parameter <code>acc.metric</code>. The
 reason for this constraint is that part 5 produces many variables and
 creating all of them for multiple metrics would be computationally
-expensive and substantially increase the complexity of the underlying
-code.</li>
+expensive and would substantially increase the complexity of the
+underlying code.</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<p>We are aware that this chapter could be made more informative if it
-had an even more detailed discussion on each of the metrics. However,
-given that our focus is on GGIR we have a compiled a list of related
-articles you may find useful:</p>
+<p>We are aware that this chapter could be more informative if it had an
+even more detailed discussion of each of the metrics. However, given
+that our focus is on GGIR, we have compiled a list of related articles
+you may find useful:</p>
 <ul>
 <li><p><a href="https://doi.org/10.1371/journal.pone.0022922" class="external-link">Van Hees
 et al. 2011</a> Estimation of Daily Energy Expenditure in Pregnant and
@@ -586,13 +651,11 @@ from Wearable Accelerometer data.</p></li>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by <a href="https://www.accelting.com/" class="external-link">Vincent T van Hees</a>, <a href="https://www.jhmigueles.com/" class="external-link">Jairo H Migueles</a>.</p>
+  <p>Developed by Vincent T van Hees, Jairo H Migueles, Medical Research Council UK, Accelting, French National Research Agency.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
 </div>
 
     </footer>
