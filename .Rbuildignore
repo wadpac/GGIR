@@ -9,8 +9,9 @@ RELEASE_CYCLE.md
 ^CRAN-SUBMISSION$
 ^_pkgdown\.yml$
 ^docs$
+^docs
 ^pkgdown$
-^vignettes/chapter.*\\.Rmd$
+^vignettes/chapter*
 ^dev-functions$
 .zenodo.json
 ^doc$

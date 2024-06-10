@@ -23,6 +23,12 @@
 
   - Fix incorrect usage of part 5 inclusion criteria testing, which used fraction as percentage.
   
+# CHANGES IN GGIR VERSION 3.1-2
+
+- Parts 2-5: Give more informative error when folders with expected milestone files are empty. #1144
+
+- Report part 5: fix bug that was introduced on 2024-Feb-19 in the calculation of wear percentage #1148
+
 
 # CHANGES IN GGIR VERSION 3.1-1
 
@@ -32,11 +38,13 @@
 
 - Loading GGIR: Stops interactive calling of `chooseCRANmirror` on `.onAttach` if interactive and CRAN mirror not set #1141.
 
-- Part 4: Corrected documentation for parameter relyonguider.
+- Part 4:
 
-- Part 4: Ignore empty sleeplog columns, which are sometimes accidentally created the user. GGIR can now handle these. #1138
+  - Corrected documentation for parameter relyonguider.
 
-- Part 4 report: Bug fixed causing night_part4 column to not be used #1142.
+  - Ignore empty sleeplog columns, which are sometimes accidentally created the user. GGIR can now handle these. #1138
+
+  - report: Bug fixed causing night_part4 column to not be used #1142.
 
 - Part 5: Fix incorrect calendar date when window starts 5 seconds before midnight, #1082
 

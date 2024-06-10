@@ -62,7 +62,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
       x$wear_perc_day = 100 - x$nonwear_perc_day #wear percentage during waking hours
       x$wear_min_spt = (1 - (x$nonwear_perc_spt / 100)) * x$dur_spt_min #valid minute during waking hours
       x$wear_perc_spt = 100 - x$nonwear_perc_spt #wear percentage during waking hours
-      
+
       minimumValidMinutesMM = 0 # default
       if (length(params_cleaning[["includedaycrit"]]) == 2) {
         minimumValidMinutesMM = params_cleaning[["includedaycrit"]][2] * 60
