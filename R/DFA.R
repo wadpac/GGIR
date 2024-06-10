@@ -29,32 +29,6 @@
 #- 
 
 DFA = function(data, scale = 2^(1/8), box_size = 4, m = 1){
-  DFA_aux = function(j, box_size, ninbox2, data, y_k, m, N){
-    aux_j = numeric(box_size[j] * ninbox2[j])
-    fit = y_k
-    for (i in seq_len(box_size[j] * ninbox2[j])) {
-      t1 = Sys.time()
-      if (i == 1) {
-        aux_j[1] = box_size[j]
-        mod_i = lm(y_k[i:aux_j[i]] ~ poly(c(i:aux_j[i]), m, raw = TRUE))
-        fit[i:(aux_j[i])] = mod_i$fitted.values
-      }
-      if (i >= 2) {
-        aux_j[i] = aux_j[i - 1] + box_size[j]
-        mod_i = lm(y_k[(aux_j[i - 1] + 1):(aux_j[i])] ~ poly(c((aux_j[i - 1] +1):(aux_j[i])), m, raw = TRUE))
-        fit[(aux_j[i - 1] + 1):(aux_j[i])] = mod_i$fitted.values
-      }
-      if (i >= ninbox2[j]) {
-        aux_j[i] <- 0
-      }
-      t2 = Sys.time()
-    }
-    DFA = sqrt((1 / N) * sum((y_k[1:(box_size[j] * ninbox2[j])] -
-                                fit[1:(box_size[j] * ninbox2[j])]) ^ 2))
-    Results = c(round(box_size[j], digits = 0), DFA)
-    return(Results)
-  }
-  
   if (inherits(x = data, "data.frame")) {
     data = data[, 1]
   }
@@ -80,9 +54,31 @@ DFA = function(data, scale = 2^(1/8), box_size = 4, m = 1){
   aux_seq = seq_along(ninbox2)  
   aux_length = aux_seq[length(aux_seq)]  
   y_k = cumsum(data) - mean(data)
+  rm(data, n_aux, scale)
   aux_mat = matrix(nrow = aux_length, ncol = 2)
   for (j in seq_along(ninbox2)) {
-    aux_mat[j,] = DFA_aux(j, box_size, ninbox2, data, y_k, m, N)
+    W = box_size[j] * ninbox2[j]
+    aux_j = numeric(W)
+    fit = y_k
+    for (i in seq_len(W)) {
+      if (i == 1) {
+        aux_j[1] = box_size[j]
+        tmp1 = i:aux_j[i]
+      } else if (i >= 2) {
+        aux_j[i] = aux_j[i - 1] + box_size[j]
+        tmp1 = (aux_j[i - 1] + 1):(aux_j[i])
+      }
+      if (m == 1) {
+        fit[tmp1] = lm.fit(x = cbind(1, tmp1), y = y_k[tmp1])$fitted.values
+      } else {
+        fit[tmp1] = lm(y_k[tmp1] ~ poly(tmp1, m, raw = TRUE))$fitted.values
+      }
+      if (i >= ninbox2[j]) {
+        aux_j[i] <- 0
+      }
+    }
+    aux_mat[j,] = c(round(box_size[j], digits = 0),
+                    sqrt((1 / N) * sum((y_k[1:W] - fit[1:W]) ^ 2)))
   }
   colnames(aux_mat) <- c("box", "DFA")
   aux_list = aux_mat
