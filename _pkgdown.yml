@@ -55,15 +55,17 @@ navbar:
           href: articles/chapter6_DataImputation.html
         - text: 7. Describing the Data Without Knowing Sleep
           href: articles/chapter7_DescribingDataWithoutKnowingSleep.html
-        - text: 8. Sleep Fundamentals - Guiding Sleep Detection
-          href: articles/chapterInProgress.html
-        - text: 9. Sleep Fundamentals - Sustained Inactivity Bout Detection (SIB)
-          href: articles/chapterInProgress.html
+        - text: 8. Sleep Fundamentals - Sustained Inactivity Bout Detection (SIB)
+          href: articles/chapter8_SleepFundamentalsSibs.html
+        - text: 9. Sleep Fundamentals - Guiding Sleep Detection
+          href: articles/chapter9_SleepFundamentalsGuiders.html
         - text: 10. Sleep Analysis
-          href: articles/chapterInProgress.html
-        - text: 11. Describing the Data with Cut-Points
-          href: articles/chapterInProgress.html
-        - text: 12. Time-Use Analyses
+          href: articles/chapter10_SleepAnalysis.html
+        - text: 11. Physical Activity Fundamentals - Describing the data with cut-points
+          href: articles/chapter11_DescribingDataCutPoints.html
+        - text: 12. Time-Use Analysis
+          href: articles/chapter12_TimeUseAnalysis.html
+        - text: 13. Circadian Rhythm Analysis
           href: articles/chapterInProgress.html
     annexes:
       text: Annexes
