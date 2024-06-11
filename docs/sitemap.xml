@@ -19,7 +19,19 @@
     <loc>/articles/chapter10_CircadianRhythms.html</loc>
   </url>
   <url>
+    <loc>/articles/chapter10_SleepAnalysis.html</loc>
+  </url>
+  <url>
+    <loc>/articles/chapter11_DescribingDataCutPoints.html</loc>
+  </url>
+  <url>
     <loc>/articles/chapter11_HouseholdCoanalysis.html</loc>
+  </url>
+  <url>
+    <loc>/articles/chapter12_TimeUseAnalyses.html</loc>
+  </url>
+  <url>
+    <loc>/articles/chapter12_TimeUseAnalysis.html</loc>
   </url>
   <url>
     <loc>/articles/chapter1_WhatIsGGIR.html</loc>
@@ -52,7 +64,16 @@
     <loc>/articles/chapter8_24hTimeUseAnalysis.html</loc>
   </url>
   <url>
+    <loc>/articles/chapter8_SleepFundamentalsSibs.html</loc>
+  </url>
+  <url>
     <loc>/articles/chapter9_PhysicalBehavioursAnalysis.html</loc>
+  </url>
+  <url>
+    <loc>/articles/chapter9_SleepFundamentalsGuiders.html</loc>
+  </url>
+  <url>
+    <loc>/articles/chapter9_SleepFundamentalsSpt.html</loc>
   </url>
   <url>
     <loc>/articles/chapterInProgress.html</loc>
@@ -116,6 +137,9 @@
   </url>
   <url>
     <loc>/reference/CalcSleepRegularityIndex.html</loc>
+  </url>
+  <url>
+    <loc>/reference/checkMilestoneFolders.html</loc>
   </url>
   <url>
     <loc>/reference/check_log.html</loc>
