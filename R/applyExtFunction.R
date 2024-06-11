@@ -63,6 +63,9 @@ applyExtFunction = function(data, myfun, sf, ws3,interpolationType=1) {
   } else if (length(myfun$timestamp) == 0  & sf == myfun$expected_sample_rate ){ # if no resampling and timestamp column was needed
     OutputExternalFunction = myfun$FUN(data * unitcorrection, myfun$parameters)
   }
+  # if output is factor, store levels to refactorize later on
+  LevelsExternalFunction = NULL
+  if (is.factor(OutputExternalFunction)) LevelsExternalFunction = levels(OutputExternalFunction)
   # output resolution correction (either aggregate or repeat)
   if (myfun$outputtype == "numeric" | myfun$outputtype == "character") { # aggregation is possible with averaging, possibly later also allow for character output
     if (is.null(dim(OutputExternalFunction))) { # if OutputExternalFunction is a simple vector then convert it to 1 column matrix
@@ -83,5 +86,6 @@ applyExtFunction = function(data, myfun, sf, ws3,interpolationType=1) {
       OutputExternalFunction = as.matrix(OutputExternalFunction[indx, ])
     }
   }
-  return(OutputExternalFunction)
+  return(list(OutputExternalFunction = OutputExternalFunction, 
+              LevelsExternalFunction = LevelsExternalFunction))
 }

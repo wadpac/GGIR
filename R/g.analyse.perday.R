@@ -677,7 +677,20 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   daysummary[di,fi] = mean(varnum)
                   ds_names[fi] = varnamescalar; fi = fi + 1
                 } else if (myfun$reporttype[rti] == "type") { # For type we calculate time spent in each class
-                  # Not implemented yet
+                  segmentInfo = list(anwi_nameindices = anwi_nameindices,
+                                     anwi_index = anwi_index,
+                                     anwi_t0 = anwi_t0,
+                                     anwi_t1 = anwi_t1)
+                  typeAgg = aggregateType(metric_name = cn_metashort[mi],
+                                           epochsize = ws3, 
+                                           daysummary = daysummary,
+                                           ds_names = ds_names,
+                                           fi = fi, di = di,
+                                           vari = vari,
+                                           segmentInfo, myfun, params_247)
+                  daysummary = typeAgg$daysummary
+                  ds_names = typeAgg$ds_names
+                  fi = typeAgg$fi
                 }
               }
             }
