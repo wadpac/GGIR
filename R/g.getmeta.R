@@ -356,6 +356,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           OutputExternalFunction = applyExtFunction(data, myfun, sf, ws3, interpolationType = params_rawdata[["interpolationType"]])
           LevelsExternalFunction = OutputExternalFunction$LevelsExternalFunction
           OutputExternalFunction = OutputExternalFunction$OutputExternalFunction
+        } else {
+          LevelsExternalFunction = NULL
         }
       }
       if (LD >= (ws*sf)) { #LD != 0
@@ -593,11 +595,13 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     for (ncolms in 2:NbasicMetrics) {
       metashort[,ncolms] = as.numeric(metashort[,ncolms])
     }
-    for (ncolms in (NbasicMetrics + 1):(NbasicMetrics + NfactorMetrics)) {
-      if (is.null(LevelsExternalFunction)) {
-        metashort[,ncolms] = as.factor(metashort[,ncolms])
-      } else {
-        metashort[,ncolms] = factor(metashort[,ncolms], levels = LevelsExternalFunction)
+    if (NfactorMetrics > 0) {
+      for (ncolms in (NbasicMetrics + 1):(NbasicMetrics + NfactorMetrics)) {
+        if (is.null(LevelsExternalFunction)) {
+          metashort[,ncolms] = as.factor(metashort[,ncolms])
+        } else {
+          metashort[,ncolms] = factor(metashort[,ncolms], levels = LevelsExternalFunction)
+        }
       }
     }
     metalong = data.frame(A = metalong, stringsAsFactors = FALSE)

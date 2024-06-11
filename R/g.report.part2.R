@@ -273,6 +273,44 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
                          file =  paste0(metadatadir, "/results/part2_", eventName, "summary.csv"),
                          row.names = F, na = "")
     }
+    #--------------------------------------
+    # Store Type reports
+    # split daySUMMARY in two files and reoder TypeVariable names if they exist
+    ds_names = names(daySUMMARY)
+    TypeVars = grep(pattern = "ExtFunType_", x = ds_names, value = FALSE)
+    NotTypeVars = grep(pattern = "ExtFunType_", x = ds_names, value = FALSE, invert = TRUE)
+    typeName = "type"
+    if (length(myfun) > 0) {
+      if ("name" %in% names(myfun)) {
+        typeName =  myfun$name
+      }
+    }
+    if (length(TypeVars) > 0) {
+      dayTYPESUMMARY = daySUMMARY[ , c("ID", "filename", "calendar_date",
+                                        "N valid hours", "N hours", "weekday",
+                                        names(daySUMMARY[, TypeVars]))]
+      names(dayTYPESUMMARY) = gsub(pattern = "ExtFunType_", replacement = "", x = names(dayTYPESUMMARY))
+      daySUMMARY = daySUMMARY[,NotTypeVars]
+      dayTYPESUMMARY_clean = tidyup_df(dayTYPESUMMARY)
+      data.table::fwrite(x = dayTYPESUMMARY_clean,
+                         file = paste0(metadatadir, "/results/part2_day", typeName, "summary.csv"),
+                         row.names = F, na = "")
+    }
+    # split SUMMARY in two files and reoder EventVariable names if they exist
+    s_names = names(SUMMARY)
+    TypeVars = grep(pattern = "ExtFunType_", x = s_names, value = FALSE)
+    NotTypeVars = grep(pattern = "ExtFunType_", x = s_names, value = FALSE, invert = TRUE)
+    if (length(TypeVars) > 0) {
+      TYPESUMMARY = SUMMARY[ , c("ID", "filename", "start_time",
+                                  "wear_dur_def_proto_day",
+                                  names(SUMMARY[, TypeVars]))]
+      names(TYPESUMMARY) = gsub(pattern = "ExtFunType_", replacement = "", x = names(TYPESUMMARY))
+      SUMMARY = SUMMARY[,NotTypeVars]
+      TYPESUMMARY_clean = tidyup_df(TYPESUMMARY)
+      data.table::fwrite(x = TYPESUMMARY_clean,
+                         file =  paste0(metadatadir, "/results/part2_", typeName, "summary.csv"),
+                         row.names = F, na = "")
+    }
     #-----------------------------
     # tidy up data.frames
     if (length(SUMMARY) > 0 & length(daySUMMARY) > 0) {

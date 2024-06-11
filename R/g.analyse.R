@@ -253,14 +253,20 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   AveAccAve24hr = matrix(NA,length(lookat),1)
   if (length(which(r5 == 0)) > 0) { #to catch data_masking_strategy 2 with only 1 midnight and other cases where there is no valid data
     for (h in 1:length(lookat)) {
+      if (is.factor(metashort[, lookat[h]])) next
       average24h = matrix(0,n_ws3_perday,1)
       average24hc = matrix(0,n_ws3_perday,1)
       if (floor(ND) != 0) {
         for (j in 1:floor(ND)) {
-          dataOneDay = as.numeric(as.matrix(metashort[(((j - 1) * n_ws3_perday) + 1):(j * n_ws3_perday),lookat[h]]))
-          val = which(is.na(dataOneDay) == F)
-          average24h[val,1] = average24h[val,1] + dataOneDay[val] #mean acceleration
-          average24hc[val,1] = average24hc[val,1] + 1
+          if (!is.factor(metashort[, lookat[h]])) {
+            # it would only be factor if using external function with outtype = "character"
+            dataOneDay = as.numeric(as.matrix(metashort[(((j - 1) * n_ws3_perday) + 1):(j * n_ws3_perday),lookat[h]]))
+            val = which(is.na(dataOneDay) == F)
+            average24h[val,1] = average24h[val,1] + dataOneDay[val] #mean acceleration
+            average24hc[val,1] = average24hc[val,1] + 1
+          } else {
+            dataOneDay = metashort[(((j - 1) * n_ws3_perday) + 1):(j * n_ws3_perday),lookat[h]]
+          }
         }
       }
       if (floor(ND) < ND) {

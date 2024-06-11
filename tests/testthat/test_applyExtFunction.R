@@ -34,6 +34,7 @@ test_that("Function is applied to acceleration data results in expected output",
   # then applyExtFunction overwrites this.
   
   output = applyExtFunction(data, myfun, sf, ws3)
+  output = output$OutputExternalFunction
   
   expect_that(ncol(output),equals(4))
   expect_that(nrow(output),equals(4))
@@ -56,6 +57,7 @@ test_that("Function is applied to acceleration data results in expected output",
   expect_warning({ # warning from setting timestamp = TRUE
     output = applyExtFunction(data, myfun, sf, ws3)
   })
+  output = output$OutputExternalFunction
   
   expect_that(ncol(output),equals(3))
   expect_that(nrow(output),equals(2)) # 2 rows because they were aggregated to match ws3
@@ -76,6 +78,7 @@ test_that("Function is applied to acceleration data results in expected output",
   expect_warning({ # warning from setting timestamp = TRUE
     output = applyExtFunction(data, myfun, sf, ws3)
   })
+  output = output$OutputExternalFunction
   
   expect_that(ncol(output),equals(3))
   expect_that(nrow(output),equals(4))

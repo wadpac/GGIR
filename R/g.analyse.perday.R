@@ -14,7 +14,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
       length(params_247) == 0 || length(params_phyact) == 0) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments,
     # or if params_[...] aren't specified (so need to be filled with defaults).
-
+    
     # So, inside GGIR this will not be used, but it is used when g.analyse is used on its own
     # as if it was still the old g.analyse function
     params = extract_params(params_247 = params_247,
@@ -146,7 +146,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
       }
       if (length(qwindow_names) == 2) {
         if (params_247[["qwindow"]][1] != 0 | params_247[["qwindow"]][2] != 24) {
-          if((qwindowindices[2] * 60 * (60 / ws3)) <= length(val)) {
+          if ((qwindowindices[2] * 60 * (60 / ws3)) <= length(val)) {
             valq = val[((qwindowindices[1] * 60 * (60 / ws3)) + 1):(qwindowindices[2] * 60 * (60 / ws3))]
           } else {
             valq = val[((qwindowindices[1] * 60 * (60 / ws3)) + 1):length(val)]
@@ -347,7 +347,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   startMissingHour = 2 * 60 * (60/ws3) + 1
                   enMissingHour = 3 * 60 * (60/ws3)
                   vari = rbind(vari[1:(startMissingHour - 1)], averageday[startMissingHour:enMissingHour, ],
-                           vari[startMissingHour:nrow(vari),])
+                               vari[startMissingHour:nrow(vari),])
                 } else { # day has less than 24 hours for another reason
                   # Append the average day to the end
                   a56 = nrow(averageday) - abs(deltaLength) + 1
@@ -393,35 +393,67 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               # important to account for imbalance in day length, which we do below.
               # In part 5, however, GGIR forces the user to only work with complete
               # days and by that the day length is less of a problem and not accounted for.
-              
-              NRV = length(which(is.na(as.numeric(as.matrix(vari[,mi]))) == FALSE))
-              # Note: vari equals the imputed time series (metashort) data from one day
-              varnum = as.numeric(as.matrix(vari[,mi])) # Note: varnum is one column of vari
+              NRVcalculated = FALSE
+              if (!is.null(myfun)) {
+                if (myfun$outputtype == "character") {
+                  if (colnames(vari)[mi] %in% myfun$colnames) {
+                    # avoid as.numeric as this is character type
+                    NRV = length(which(is.na(as.matrix(vari[,mi])) == FALSE))
+                    varnum = as.matrix(vari[,mi]) # Note: varnum is one column of vari
+                    NRVcalculated = TRUE
+                  } 
+                }
+              } 
+              if (NRVcalculated == FALSE) {
+                NRV = length(which(is.na(as.numeric(as.matrix(vari[,mi]))) == FALSE))
+                # Note: vari equals the imputed time series (metashort) data from one day
+                varnum = as.numeric(as.matrix(vari[,mi])) # Note: varnum is one column of vari
+              }
               #==============================
               # varnum_step
               isAccMetric = minames[mi] %in% c("ENMO","LFENMO", "BFEN", "EN", "HFEN", "HFENplus", "MAD", "ENMOa",
-                                 "ZCX", "ZCY", "ZCZ", "BrondCount_x", "BrondCount_y",
-                                 "BrondCount_z", "NeishabouriCount_x", "NeishabouriCount_y",
-                                 "NeishabouriCount_z", "NeishabouriCount_vm", "ExtAct")
+                                               "ZCX", "ZCY", "ZCZ", "BrondCount_x", "BrondCount_y",
+                                               "BrondCount_z", "NeishabouriCount_x", "NeishabouriCount_y",
+                                               "NeishabouriCount_z", "NeishabouriCount_vm", "ExtAct")
               
               if (isAccMetric == TRUE & length(ExtFunColsi) > 0) {
                 # Then also extract count metric
-                
-                varnum_event = as.numeric(as.matrix(vari[,ExtFunColsi]))
-                if (NRV != length(averageday[, ExtFunColsi])) {
-                  if (di == 1) {
-                    varnum_event = c(averageday[1:abs(deltaLength), ExtFunColsi], varnum_event)
-                  } else {
-                    a56 = length(averageday[, ExtFunColsi]) - abs(deltaLength)
-                    a57 = length(averageday[, ExtFunColsi])
-                    varnum_event = c(varnum_event, averageday[a56:a57, ExtFunColsi])
+                if (myfun$outputtype != "character") {
+                  varnum_event = as.numeric(as.matrix(vari[,ExtFunColsi]))
+                  if (NRV != length(averageday[, ExtFunColsi])) {
+                    if (di == 1) {
+                      varnum_event = c(averageday[1:abs(deltaLength), ExtFunColsi], varnum_event)
+                    } else {
+                      a56 = length(averageday[, ExtFunColsi]) - abs(deltaLength)
+                      a57 = length(averageday[, ExtFunColsi])
+                      varnum_event = c(varnum_event, averageday[a56:a57, ExtFunColsi])
+                    }
                   }
-                }
-                if (anwi_index != 1) {
-                  if (length(anwindices) > 0) {
-                    varnum_event = as.numeric(varnum_event[anwindices]) #cut short varnum_event to match day segment of interest
-                  } else {
-                    varnum_event = c()
+                  if (anwi_index != 1) {
+                    if (length(anwindices) > 0) {
+                      varnum_event = as.numeric(varnum_event[anwindices]) #cut short varnum_event to match day segment of interest
+                    } else {
+                      varnum_event = c()
+                    }
+                  }
+                } else {
+                  # if myfun$outputtype == "character"
+                  varnum_type = vari[,ExtFunColsi]
+                  if (NRV != length(averageday[, ExtFunColsi])) {
+                    if (di == 1) {
+                      varnum_type = c(averageday[1:abs(deltaLength), ExtFunColsi], varnum_type)
+                    } else {
+                      a56 = length(averageday[, ExtFunColsi]) - abs(deltaLength)
+                      a57 = length(averageday[, ExtFunColsi])
+                      varnum_type = c(varnum_type, averageday[a56:a57, ExtFunColsi])
+                    }
+                  }
+                  if (anwi_index != 1) {
+                    if (length(anwindices) > 0) {
+                      varnum_type = varnum_type[anwindices] #cut short varnum_event to match day segment of interest
+                    } else {
+                      varnum_type = c()
+                    }
                   }
                 }
               }
@@ -650,6 +682,21 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                     ds_names = eventBouts$ds_names
                     di = eventBouts$di
                     fi = eventBouts$fi
+                  } else if (myfun$reporttype == "type") {
+                    # Type bout detection
+                    typeBouts = detectTypeBouts(myfun, varnum_type = varnum_type,
+                                                varnum = varnum,
+                                                UnitReScale = UnitReScale,
+                                                daysummary = daysummary,
+                                                ds_names = ds_names,
+                                                di = di, fi = fi,
+                                                ws3 = ws3,
+                                                boutnameEnding = paste0(cn_metashort[mi],
+                                                                        anwi_nameindices[anwi_index]))
+                    daysummary = typeBouts$daysummary
+                    ds_names = typeBouts$ds_names
+                    di = typeBouts$di
+                    fi = typeBouts$fi
                   }
                 }
               }
@@ -682,12 +729,12 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                                      anwi_t0 = anwi_t0,
                                      anwi_t1 = anwi_t1)
                   typeAgg = aggregateType(metric_name = cn_metashort[mi],
-                                           epochsize = ws3, 
-                                           daysummary = daysummary,
-                                           ds_names = ds_names,
-                                           fi = fi, di = di,
-                                           vari = vari,
-                                           segmentInfo, myfun, params_247)
+                                          epochsize = ws3, 
+                                          daysummary = daysummary,
+                                          ds_names = ds_names,
+                                          fi = fi, di = di,
+                                          vari = vari,
+                                          segmentInfo, myfun)
                   daysummary = typeAgg$daysummary
                   ds_names = typeAgg$ds_names
                   fi = typeAgg$fi

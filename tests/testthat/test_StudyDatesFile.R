@@ -1,6 +1,6 @@
 library(GGIR)
-context("Chainof5parts")
-test_that("chainof5parts", {
+context("StudyDatesFile")
+test_that("StudyDatesFile", {
   skip_on_cran()
   
   Ndays = 3

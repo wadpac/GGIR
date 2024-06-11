@@ -144,16 +144,13 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           for (mi in 1:length(myfun$outputtype)) {
             if (myfun$outputtype[mi] == "character") {
               # At the moment we do not have a strategy in place on how to impute categorical variables
-              # produced by external functions. Therefore, for the moment ignore these variables until
-              # there is a plan.
-              g.imputeType(M, I,
-                           params_cleaning = params_cleaning,
-                           dayborder = params_general[["dayborder"]],
-                           desiredtz = params_general[["desiredtz"]],
-                           TimeSegments2Zero = TimeSegments2Zero,
-                           acc.metric = params_general[["acc.metric"]],
-                           ID = ID)
-              M$metashort = M$metashort[,-which(names(M$metashort) %in% myfun$colnames == TRUE)]
+              # produced by external functions. 
+              # Therefore, temporarily not to impute and warn users that they are 
+              # responsible for data imputation at post-processing
+              typeMetricIndex = which(names(M$metashort) %in% myfun$colnames == TRUE)
+              typeMetric = M$metashort[, typeMetricIndex]
+              M_bu = M
+              M$metashort = M$metashort[, -typeMetricIndex]
             }
           }
         }
@@ -164,7 +161,18 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                        TimeSegments2Zero = TimeSegments2Zero,
                        acc.metric = params_general[["acc.metric"]],
                        ID = ID)
-        
+        # restore type metric from external function in M and IMP
+        if (length(myfun) > 0) {
+          for (mi in 1:length(myfun$outputtype)) {
+            if (myfun$outputtype[mi] == "character") {
+              typeMetricIndex = which(names(M_bu$metashort) %in% myfun$colnames == TRUE)
+              IMP$metashort[, ncol(IMP$metashort) + 1] = M_bu$metashort[, typeMetricIndex]
+              colnames(IMP$metashort)[ncol(IMP$metashort)] = myfun$colnames[mi]
+              IMP$averageday = cbind(IMP$averageday, NA)
+              M = M_bu
+            }
+          }
+        }
         if (params_cleaning[["do.imp"]] == FALSE) { #for those interested in sensisitivity analysis
           IMP$metashort = M$metashort
           # IMP$metalong = M$metalong
