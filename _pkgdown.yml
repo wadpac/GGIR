@@ -58,13 +58,15 @@ navbar:
         - text: 8. Sleep Fundamentals - Sustained Inactivity Bout Detection (SIB)
           href: articles/chapter8_SleepFundamentalsSibs.html
         - text: 9. Sleep Fundamentals - Guiding Sleep Detection
-          href: articles/chapter9_SleepFundamentalsSpt.html
+          href: articles/chapter9_SleepFundamentalsGuiders.html
         - text: 10. Sleep Analysis
           href: articles/chapter10_SleepAnalysis.html
         - text: 11. Physical Activity Fundamentals - Describing the data with cut-points
           href: articles/chapter11_DescribingDataCutPoints.html
-        - text: 12. Time-Use Analyses
-          href: articles/chapter12_TimeUseAnalyses.html
+        - text: 12. Time-Use Analysis
+          href: articles/chapter12_TimeUseAnalysis.html
+        - text: 13. Circadian Rhythm Analysis
+          href: articles/chapterInProgress.html
     annexes:
       text: Annexes
       menu:

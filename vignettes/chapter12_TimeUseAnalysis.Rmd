@@ -1,8 +1,8 @@
 ---
-title: "12. Time-use Analyses"
+title: "12. Time-use Analysis"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{12. Time-use Analyses}
+  %\VignetteIndexEntry{12. Time-use Analysis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
