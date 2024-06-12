@@ -674,12 +674,7 @@ This section has been migrated to this [section](https://wadpac.github.io/GGIR/a
 
 ## What does GGIR stand for?
 
-I wanted a short name and not to spend too much time finding it. At the
-time I was primarily working with GENEActiv and GENEA data In R, and
-that's how the name GGIR was born: Short, easy to remember, and as
-acronym sufficiently vague to not be tight up with a specific
-functionality. However, later the functionality expanded to other sensor
-brands, so the abbreviation has lost its functional meaning.
+I wanted a short name and not to spend too much time finding it. The abbreviation has lost its functional meaning, which is why we now only use GGIR as the name.
 
 ## Circadian Rhythm analyses
 
