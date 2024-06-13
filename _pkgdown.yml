@@ -85,7 +85,7 @@ navbar:
         - text: Household co-analysis
           href: articles/HouseHoldCoanalysis.html
   structure:
-    left:  [installation, intro, chapters, annexes, news, contributing, help]
+    left:  [chapters, annexes, installation, intro, news, contributing, help]
     right: [search, github, twitter]
 
 news:
