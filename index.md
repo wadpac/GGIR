@@ -10,10 +10,9 @@ editor_options:
 </center>
 <br/>
 
-[**GGIR**](https://CRAN.R-project.org/package=GGIR) is a widely used
-R-package designed for the processing of multi-day **accelerometer
-data**, specifically tailored for applications in physical activity,
-sleep, and circadian rhythm research.
+[**GGIR**](https://CRAN.R-project.org/package=GGIR) is a widely used R-package designed for  processing multi-day **accelerometer data**, specifically tailored for applications in physical activity, sleep, and circadian rhythm research.
+
+The contents of these pages have been written and verified to the best our knowledge. Nevertheless, mistakes are possible. Therefore, the authors do not take any responsibility or liability for errors in this document and their possible consequences. We encourage you to report possible mistakes.
 
 ## Images usage
 
