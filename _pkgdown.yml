@@ -70,6 +70,10 @@ navbar:
     annexes:
       text: Annexes
       menu:
+        - text: GGIR Parameters
+          href: articles/GGIRParameters.html
+        - text: GGIR Output
+          href: articles/GGIRoutput.html
         - text: Reading csv files with raw data
           href: articles/readmyacccsv.html
         - text: Embedding external functions in GGIR
@@ -101,3 +105,8 @@ news:
     href: https://www.accelting.com/updates/ggir-release-2-6-0/
   - text: "Version 2.5-0"
     href: https://www.accelting.com/updates/ggir-release-2-5-0/
+    
+search:
+  exclude: ['news/index.html', 'articles/GGIR.html', 'reference', 'reference/', 'reference/*']
+
+

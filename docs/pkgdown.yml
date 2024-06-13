@@ -2,7 +2,7 @@ pandoc: 3.1.11
 pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
-  chapter0_Contributing: chapter0_Contributing.html
+  chapter0_contributing: chapter0_contributing.html
   chapter0_GetStarted: chapter0_GetStarted.html
   chapter0_Installation: chapter0_Installation.html
   chapter0_Support: chapter0_Support.html
@@ -22,11 +22,12 @@ articles:
   CutPoints: CutPoints.html
   ExternalFunction: ExternalFunction.html
   GGIR: GGIR.html
+  GGIRoutput: GGIRoutput.html
   GGIRParameters: GGIRParameters.html
   HouseHoldCoanalysis: HouseHoldCoanalysis.html
   readmyacccsv: readmyacccsv.html
   TutorialDaySegmentAnalyses: TutorialDaySegmentAnalyses.html
-last_built: 2024-06-11T13:03Z
+last_built: 2024-06-12T15:30Z
 urls:
   reference: https://wadpac.github.io/GGIR/reference
   article: https://wadpac.github.io/GGIR/articles
