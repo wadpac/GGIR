@@ -14,8 +14,7 @@ editor_options:
 
 The contents of these pages have been written and verified to the best our knowledge. Nevertheless, mistakes are possible. Therefore, the authors do not take any responsibility or liability for errors in this document and their possible consequences. We encourage you to report possible mistakes.
 
-## Images usage
-
+**Note on images**
 The copyright of the GGIR logo as contained in the file
 vignettes/GGIR-MASTERLOGO-RGB.png lies with Accelting (Almere, The
 Netherlands), please contact
