@@ -1,4 +1,4 @@
-url: ~
+url: https://wadpac.github.io/GGIR/
 template:
   bootstrap: 5
   bslib:
@@ -55,19 +55,25 @@ navbar:
           href: articles/chapter6_DataImputation.html
         - text: 7. Describing the Data Without Knowing Sleep
           href: articles/chapter7_DescribingDataWithoutKnowingSleep.html
-        - text: 8. Sleep Fundamentals - Guiding Sleep Detection
-          href: articles/chapterInProgress.html
-        - text: 9. Sleep Fundamentals - Sustained Inactivity Bout Detection (SIB)
-          href: articles/chapterInProgress.html
+        - text: 8. Sleep Fundamentals - Sustained Inactivity Bout Detection (SIB)
+          href: articles/chapter8_SleepFundamentalsSibs.html
+        - text: 9. Sleep Fundamentals - Guiding Sleep Detection
+          href: articles/chapter9_SleepFundamentalsGuiders.html
         - text: 10. Sleep Analysis
-          href: articles/chapterInProgress.html
-        - text: 11. Describing the Data with Cut-Points
-          href: articles/chapterInProgress.html
-        - text: 12. Time-Use Analyses
+          href: articles/chapter10_SleepAnalysis.html
+        - text: 11. Physical Activity Fundamentals - Describing the data with cut-points
+          href: articles/chapter11_DescribingDataCutPoints.html
+        - text: 12. Time-Use Analysis
+          href: articles/chapter12_TimeUseAnalysis.html
+        - text: 13. Circadian Rhythm Analysis
           href: articles/chapterInProgress.html
     annexes:
       text: Annexes
       menu:
+        - text: GGIR Parameters
+          href: articles/GGIRParameters.html
+        - text: GGIR Output
+          href: articles/GGIRoutput.html
         - text: Reading csv files with raw data
           href: articles/readmyacccsv.html
         - text: Embedding external functions in GGIR
@@ -79,7 +85,7 @@ navbar:
         - text: Household co-analysis
           href: articles/HouseHoldCoanalysis.html
   structure:
-    left:  [installation, intro, chapters, annexes, news, contributing, help]
+    left:  [chapters, annexes, installation, intro, news, contributing, help]
     right: [search, github, twitter]
 
 news:
@@ -99,3 +105,8 @@ news:
     href: https://www.accelting.com/updates/ggir-release-2-6-0/
   - text: "Version 2.5-0"
     href: https://www.accelting.com/updates/ggir-release-2-5-0/
+    
+search:
+  exclude: ['news/index.html', 'articles/GGIR.html', 'reference', 'reference/', 'reference/*']
+
+
