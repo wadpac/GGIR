@@ -22,11 +22,12 @@ articles:
   CutPoints: CutPoints.html
   ExternalFunction: ExternalFunction.html
   GGIR: GGIR.html
+  GGIRoutput: GGIRoutput.html
   GGIRParameters: GGIRParameters.html
   HouseHoldCoanalysis: HouseHoldCoanalysis.html
   readmyacccsv: readmyacccsv.html
   TutorialDaySegmentAnalyses: TutorialDaySegmentAnalyses.html
-last_built: 2024-06-11T13:03Z
+last_built: 2024-06-13T16:13Z
 urls:
   reference: https://wadpac.github.io/GGIR/reference
   article: https://wadpac.github.io/GGIR/articles

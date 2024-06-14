@@ -29,6 +29,7 @@
 
 - Report part 5: fix bug that was introduced on 2024-Feb-19 in the calculation of wear percentage #1148
 
+- Vignette: Migrated many sections from main CRAN vignette to wadpac.github.io/GGIR/
 
 # CHANGES IN GGIR VERSION 3.1-1
 
