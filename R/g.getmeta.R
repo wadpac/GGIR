@@ -531,6 +531,16 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     } else {
       LD = 0 #once LD < 1 the analysis stops, so this is a trick to stop it
       # stop reading because there is not enough data in this block
+      if (verbose) {
+        # user has tried to use an external function and at least 1 block
+        # of data has been read and processed. Then inform that the external
+        # function and/or package should also be cited
+        if (length(myfun) != 0 & i > 1) {
+          cat(paste0("\n\nYou have used an external function in GGIR",
+                     "\nDo not forget to cite the source function/package in your publications.\n"))
+        }
+      }
+      
     }
     if (isLastBlock) LD = 0
     if (ceiling(daylimit) != FALSE) {
