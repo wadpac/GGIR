@@ -19,3 +19,4 @@ RELEASE_CYCLE.md
 codecov.yml
 index.md
 ^inst/doc/*.html
+^vignettes/HouseHoldCoanalysis.Rmd

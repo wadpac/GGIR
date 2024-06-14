@@ -16,19 +16,10 @@
     <loc>https://wadpac.github.io/GGIR/articles/chapter0_Support.html</loc>
   </url>
   <url>
-    <loc>https://wadpac.github.io/GGIR/articles/chapter10_CircadianRhythms.html</loc>
-  </url>
-  <url>
     <loc>https://wadpac.github.io/GGIR/articles/chapter10_SleepAnalysis.html</loc>
   </url>
   <url>
     <loc>https://wadpac.github.io/GGIR/articles/chapter11_DescribingDataCutPoints.html</loc>
-  </url>
-  <url>
-    <loc>https://wadpac.github.io/GGIR/articles/chapter11_HouseholdCoanalysis.html</loc>
-  </url>
-  <url>
-    <loc>https://wadpac.github.io/GGIR/articles/chapter12_TimeUseAnalyses.html</loc>
   </url>
   <url>
     <loc>https://wadpac.github.io/GGIR/articles/chapter12_TimeUseAnalysis.html</loc>
@@ -49,31 +40,16 @@
     <loc>https://wadpac.github.io/GGIR/articles/chapter5_StudyProtocol.html</loc>
   </url>
   <url>
-    <loc>https://wadpac.github.io/GGIR/articles/chapter6_DataImptutation.html</loc>
-  </url>
-  <url>
     <loc>https://wadpac.github.io/GGIR/articles/chapter6_DataImputation.html</loc>
   </url>
   <url>
     <loc>https://wadpac.github.io/GGIR/articles/chapter7_DescribingDataWithoutKnowingSleep.html</loc>
   </url>
   <url>
-    <loc>https://wadpac.github.io/GGIR/articles/chapter7_SleepAnalysis.html</loc>
-  </url>
-  <url>
-    <loc>https://wadpac.github.io/GGIR/articles/chapter8_24hTimeUseAnalysis.html</loc>
-  </url>
-  <url>
     <loc>https://wadpac.github.io/GGIR/articles/chapter8_SleepFundamentalsSibs.html</loc>
   </url>
   <url>
-    <loc>https://wadpac.github.io/GGIR/articles/chapter9_PhysicalBehavioursAnalysis.html</loc>
-  </url>
-  <url>
     <loc>https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html</loc>
-  </url>
-  <url>
-    <loc>https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsSpt.html</loc>
   </url>
   <url>
     <loc>https://wadpac.github.io/GGIR/articles/chapterInProgress.html</loc>
@@ -86,6 +62,9 @@
   </url>
   <url>
     <loc>https://wadpac.github.io/GGIR/articles/GGIR.html</loc>
+  </url>
+  <url>
+    <loc>https://wadpac.github.io/GGIR/articles/GGIRoutput.html</loc>
   </url>
   <url>
     <loc>https://wadpac.github.io/GGIR/articles/GGIRParameters.html</loc>
@@ -119,9 +98,6 @@
   </url>
   <url>
     <loc>https://wadpac.github.io/GGIR/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://wadpac.github.io/GGIR/pull_request_template.html</loc>
   </url>
   <url>
     <loc>https://wadpac.github.io/GGIR/reference/appendRecords.html</loc>
@@ -227,9 +203,6 @@
   </url>
   <url>
     <loc>https://wadpac.github.io/GGIR/reference/g.dotorcomma.html</loc>
-  </url>
-  <url>
-    <loc>https://wadpac.github.io/GGIR/reference/g.downsample.html</loc>
   </url>
   <url>
     <loc>https://wadpac.github.io/GGIR/reference/g.extractheadervars.html</loc>
@@ -377,9 +350,6 @@
   </url>
   <url>
     <loc>https://wadpac.github.io/GGIR/reference/get_nw_clip_block_params.html</loc>
-  </url>
-  <url>
-    <loc>https://wadpac.github.io/GGIR/reference/get_starttime_weekday_meantemp_truncdata.html</loc>
   </url>
   <url>
     <loc>https://wadpac.github.io/GGIR/reference/get_starttime_weekday_truncdata.html</loc>
