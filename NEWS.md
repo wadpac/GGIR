@@ -8,6 +8,8 @@
 
 - Visualreport: Improve handling of recordings where the accelerometer was not worn.
 
+- Vignette: Migrated many sections from main CRAN vignette to wadpac.github.io/GGIR/
+
 # CHANGES IN GGIR VERSION 3.1-1
 
 - Part 2: Corrected calculation of LXhr and MXhr which had one hour offset when timing was after midnight, #1117
