@@ -219,7 +219,9 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         }
       }
 
-      if (params_rawdata[["imputeTimegaps"]] && (dformat == FORMAT$CSV || dformat == FORMAT$GT3X)) {
+      if (params_rawdata[["imputeTimegaps"]] && (dformat == FORMAT$CSV ||
+                                                 dformat == FORMAT$AD_HOC_CSV ||
+                                                 dformat == FORMAT$GT3X)) {
         P = g.imputeTimegaps(data, sf = sf, k = 0.25,
                              PreviousLastValue = PreviousLastValue,
                              PreviousLastTime = PreviousLastTime,
