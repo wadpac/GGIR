@@ -79,7 +79,7 @@ g.imputeTimegaps = function(x, sf, k=0.25, impute = TRUE,
     }
     # refill if first value is not consecutive from last value in previous chunk
     if (!is.null(PreviousLastTime)) {
-      first_deltatime = diff(c(PreviousLastTime, x$time[1]))
+      first_deltatime = diff(c(as.numeric(PreviousLastTime), x$time[1]))
       if (!is.numeric(first_deltatime)) {  # in csv axivity, the time is directly read as numeric (seconds)
         units(first_deltatime) = "secs"
         first_deltatime = as.numeric(first_deltatime)
