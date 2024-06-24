@@ -4,6 +4,10 @@
 
 - Report part 5: fix bug that was introduced on 2024-Feb-19 in the calculation of wear percentage #1148
 
+- Part 1: Enable timegap imputation for ad-hoc csv data. #1154
+
+- Part 1: Reduce constraints on value for parameter chunksize #1155.
+
 - Report part 5: Rename variable sleep_efficiency to sleep_efficiency_after_onset, #1157
 
 - Vignette: Migrated many sections from main CRAN vignette to wadpac.github.io/GGIR/
