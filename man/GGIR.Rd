@@ -361,7 +361,9 @@ GGIR(mode = 1:5,
         0.5 equals 6 and 12 hour chunks, respectively. 
         For machines with less than 4Gb of RAM memory or with < 2GB memory per process
         when using \code{do.parallel = TRUE} a value below 1 is recommended.
-        The value is constrained by GGIR to not be lower than 0.05.}
+        The value is constrained by GGIR to not be lower than 0.05. Please note that
+        setting 0.05 will not produce output when 3rd value of parameter windowsizes
+        is 3600.}
 
       \item{dynrange}{
         Numeric (default = NULL).
