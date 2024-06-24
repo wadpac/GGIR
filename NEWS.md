@@ -16,6 +16,8 @@
 
 - Vignette: Migrated many sections from main CRAN vignette to wadpac.github.io/GGIR/
 
+- Part 3: Fix handling of recordings with only 1 midnight that start before 4am, #1160
+
 # CHANGES IN GGIR VERSION 3.1-1
 
 - Part 2: Corrected calculation of LXhr and MXhr which had one hour offset when timing was after midnight, #1117
