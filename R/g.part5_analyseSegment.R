@@ -186,7 +186,7 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     # sleep efficiency
     dsummary[si,fi] = length(which(ts$sibdetection[sse] == 1 &
                                      ts$diur[sse] == 1)) / length(which(ts$diur[sse] == 1))
-    ds_names[fi] = "sleep_efficiency";      fi = fi + 1
+    ds_names[fi] = "sleep_efficiency_after_onset";      fi = fi + 1
     #===============================================
     # NAPS (estimation)
     if (params_output[["do.sibreport"]] == TRUE & "nap1_nonwear2" %in% colnames(ts) &

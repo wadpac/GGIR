@@ -6,6 +6,8 @@
 
 - Report part 5: fix bug that was introduced on 2024-Feb-19 in the calculation of wear percentage #1148
 
+- Report part 5: Rename variable sleep_efficiency to sleep_efficiency_after_onset, #1157
+
 - Vignette: Migrated many sections from main CRAN vignette to wadpac.github.io/GGIR/
 
 # CHANGES IN GGIR VERSION 3.1-1
