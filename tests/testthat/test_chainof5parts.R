@@ -282,7 +282,7 @@ test_that("chainof5parts", {
   load(rn[1])
   expect_true("sleeplatency" %in% colnames(nightsummary))
   expect_true("sleepefficiency" %in% colnames(nightsummary))
-  expect_equal(round(nightsummary$sleepefficiency[1], 3), 0.851)
+  expect_equal(round(nightsummary$sleepefficiency[1], 3), 0.974)
   
   #--------------------------------------------
   # part 4 without sleeplog

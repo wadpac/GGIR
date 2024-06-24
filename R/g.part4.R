@@ -916,9 +916,9 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                                                    digits = 7)  #sleeponset - guider_onset
                     # sleep efficiency:
                     if (params_sleep[["sleepefficiency.metric"]] == 1) {
-                      nightsummary[sumi, 26] = round(nightsummary[sumi, 14]/nightsummary[sumi, 9], digits = 5)  #accumulated nocturnal sleep / guider
+                      nightsummary[sumi, 26] = round(nightsummary[sumi, 14]/nightsummary[sumi, 5], digits = 5)  # accumulated sleep in spt / duration of spt
                     } else if (params_sleep[["sleepefficiency.metric"]] == 2) {
-                      nightsummary[sumi, 26] = round(nightsummary[sumi, 14]/(nightsummary[sumi, 5] + nightsummary[sumi, 25]), digits = 5)  #accumulated nocturnal sleep / detected spt + latency
+                      nightsummary[sumi, 26] = round(nightsummary[sumi, 14]/(nightsummary[sumi, 5] + nightsummary[sumi, 25]), digits = 5)  # accumulated sleep in spt / duration of spt + latency
                     }
                   }
                   nightsummary[sumi, 27] = pagei

@@ -98,7 +98,7 @@ test_that("recordingEndSleepHour works as expected", {
   expect_equal(sum(p4$guider_inbedStart), 41.42)
   expect_equal(sum(p4$guider_inbedEnd), 57.961)
   expect_equal(sum(p4$number_sib_sleepperiod), 13)
-  expect_equal(sum(p4$sleepefficiency), 0.422)
+  expect_equal(sum(p4$sleepefficiency), 0.428)
   expect_equal(sum(p4$longitudinal_axis), 6)
   
   p5 = read.csv("output_test/results/part5_daysummary_MM_L40M100V400_T5A5.csv")
