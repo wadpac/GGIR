@@ -195,7 +195,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         lastmidnight = midnights[length(midnights)]
         lastmidnighti = midnightsi[length(midnights)]
         firstmidnight = time[1]
-        firstmidnighti = 1
+        firstmidnighti = midnightsi[length(midnights)] #1
       } else {
         cut = which(as.numeric(midnightsi) == 0)
         if (length(cut) > 0) {
