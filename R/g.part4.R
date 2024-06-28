@@ -491,7 +491,6 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   calendar_date[j] = DD$calendar_date
                 }
                 spo = DD$spo
-                reversetime2 = reversetime3 = c()
                 if (daysleeper[j] == TRUE) {
                   if (loaddaysi == 1) {
                     w1 = which(spo$end >= 18)  #only use periods ending after 6pm
@@ -989,6 +988,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                           colb = rainbow(length(undef), start = 0.2, end = 0.4)
                         }
                         if (spocum.t$start[pli] > spocum.t$end[pli]) {
+                          # plot sib that starts on the right (morning) and ends on the left (afternoon)
                           rect(xleft = spocum.t$start[pli], ybottom = (cnt + qbot), xright = 36,
                                ytop = (cnt + qtop), col = colb[defii], border = NA)  #lwd=0.2,
                           rect(xleft = 12, ybottom = (cnt + qbot), xright = spocum.t$end[pli], ytop = (cnt + qtop),
