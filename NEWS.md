@@ -8,8 +8,7 @@
 
 - Part 1: Reduce constraints on value for parameter chunksize #1155.
 
-- Part 1: Fix minor bug when appending records if any of the files has not enough data to produce
-meaningful metashort and metalong objects in part 1. #1162
+- Part 1: When appending records ignore files that have not enough data to produce meaningful metashort and metalong objects in part 1. #1162
 
 - Report part 5: Rename variable sleep_efficiency to sleep_efficiency_after_onset, #1157
 
