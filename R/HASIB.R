@@ -223,8 +223,17 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
     # around to avoid having to completely redesign GGIR just for those studies.
     
     sib_classification = as.data.frame(matrix(0, Nvalues, 1))
-    activityThreshold = as.numeric(quantile(x = activity, probs = 0.1) * 2)
-    activity2 = zoo::rollmax(x = activity, k = 3600 / epochsize, fill = 1)
+    activity2 = zoo::rollmax(x = activity, k = 300 / epochsize, fill = 1)
+    # ignore zeros because in ActiGraph with many zeros it skews the distribution
+    nonzero = which(activity2 != 0)
+    if (length(nonzero) > 0) {
+      activityThreshold = sd(activity2[nonzero], na.rm = TRUE) * 0.05
+      if (activityThreshold < min(activity)) {
+        activityThreshold = quantile(activity2[nonzero], probs = 0.1)
+      }
+    } else {
+      activityThreshold = 0
+    }
     zeroMovement = which(activity2 <= activityThreshold)
     if (length(zeroMovement) > 0) {
       sib_classification[zeroMovement, 1] = 1

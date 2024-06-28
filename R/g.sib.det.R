@@ -230,6 +230,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
           qqq1 = midnightsi[j] + (twd[1] * (3600 / ws3)) #preceding noon
           qqq2 = midnightsi[j] + (twd[2] * (3600 / ws3)) #next noon
         }
+        if (qqq2 - qqq1 < 60) next # skip night if it has less than 60 epochs
         sptei = sptei + 1
         if (qqq2 > length(time))  qqq2 = length(time)
         if (qqq1 < 1)             qqq1 = 1
@@ -295,9 +296,10 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                 }
               }
               spt_estimate_tmp = HASPT(angle = tmpANGLE, ws3 = ws3,
-                                       sptblocksize = sptblocksize,
-                                       spt_max_gap = spt_max_gap,
-                                       HASPT.algo = params_sleep[["HASPT.algo"]], invalid = invalid[newqqq1:newqqq2],
+                                       sptblocksize = sptblocksize, spt_max_gap = spt_max_gap,
+                                       HASPT.algo = params_sleep[["HASPT.algo"]],
+                                       invalid = invalid[newqqq1:newqqq2],
+                                       HDCZA_threshold = params_sleep[["HDCZA_threshold"]],
                                        HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
                                        activity = ACC[newqqq1:newqqq2])
               if (length(spt_estimate_tmp$SPTE_start) > 0) {

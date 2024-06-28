@@ -4,6 +4,10 @@
 
 - Report part 5: fix bug that was introduced on 2024-Feb-19 in the calculation of wear percentage #1148
 
+- Part 3 and 4: Revise NotWorn algorithm to work with both count and raw data with varying degrees of nonwear.
+
+- Visualreport: Improve handling of recordings where the accelerometer was not worn.
+
 - Part 1: Enable timegap imputation for ad-hoc csv data. #1154
 
 - Part 1: Reduce constraints on value for parameter chunksize #1155.
