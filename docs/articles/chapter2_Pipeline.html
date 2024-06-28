@@ -29,7 +29,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,6 +66,7 @@
     <a class="dropdown-item" href="../articles/CutPoints.html">Published cut-points and how to use them</a>
     <a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a>
     <a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a>
+    <a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a>
   </div>
 </li>
 <li class="nav-item">
@@ -183,13 +184,14 @@ fragmentation.</li>
 <li>
 <strong>Part 6:</strong> Facilitates analyses that rely on direct
 access to the full recording such as household co-analysis and circadian
-rhythm analysis. The reason why GGIR is split up in parts is that it
-avoids having the re-run all preceding parts if you only want to make a
-small change in the more downstream parts. The specific order and
-content of the parts have evolved over time, with Part 1 and 2 created
-in 2011-2013, Part 3 and 4 created in 2013-2015, Part 5 created in
-2017-2020, and Part 6 created in 2023-2024.</li>
+rhythm analysis.</li>
 </ul>
+<p>The reason why GGIR is split up in parts is that it avoids having the
+re-run all preceding parts if you only want to make a small change in
+the more downstream parts. The specific order and content of the parts
+have evolved over time, with Part 1 and 2 created in 2011-2013, Part 3
+and 4 created in 2013-2015, Part 5 created in 2017-2020, and Part 6
+created in 2023-2024.</p>
 <div class="section level4">
 <h4 id="milestone-data">Milestone data<a class="anchor" aria-label="anchor" href="#milestone-data"></a>
 </h4>
@@ -571,7 +573,7 @@ machines with only 4GB is known to be slow. However, total memory is not
 the only bottle neck. Also consider the number of processes (threads)
 your CPU can run relative to the amount of memory. Ending up with 2GB
 per process seems a good target. It can be helpful to turn off parallel
-processing with <code>do.paralllel = FALSE</code>.</li>
+processing with <code>do.parallel = FALSE</code>.</li>
 <li>Avoid doing other computational activities on your machine while
 running GGIR. For example, if you use DropBox or OneDrive make sure they
 do not sync while you are running GGIR. It is probably best not to use
@@ -579,12 +581,16 @@ the machine when using GGIR to process large datasets. Make sure the
 machine is configured not to automatically turn off after X hours as
 that would terminate GGIR. Further, you may want to configure the
 machine to not fall asleep as this pauses GGIR.</li>
+<li>Lower value of parameter <code>maxNcores</code> which by default
+uses the number of available cores derived with command
+<code><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">parallel::detectCores()</a></code> minus 1. This might in some cases
+be too demanding for your operating system.</li>
 <li>Reduce the amount of data GGIR loads in memory with parameter
 <code>chunksize</code>, which can be useful on machines with limited
 memory or when processing many files in parallel. A
-<code>chunksize</code> value of 0.2 (minimum) will make GGIR load the
-data in chunks of only 20% of the size relative to the chunks it loads
-by default, which is approximately 12 hours of data for the
+<code>chunksize</code> value of 0.2 will make GGIR load the data in
+chunks of only 20% of the size relative to the chunks it loads by
+default, which is approximately 12 hours of data for the
 auto-calibration routine and 24 hours of data for the calculation of
 signal metrics.</li>
 </ul>

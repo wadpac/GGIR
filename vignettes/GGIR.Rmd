@@ -24,11 +24,7 @@ knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
-You are now in the main GGIR vignette. See also the complementary vignettes on: [Cut-points](https://CRAN.R-project.org/package=GGIR/vignettes/CutPoints.html), [Day segment analyses](https://CRAN.R-project.org/package=GGIR/vignettes/TutorialDaySegmentAnalyses.html), [GGIR parameters](https://CRAN.R-project.org/package=GGIR/vignettes/GGIRParameters.html), [Embedding external functions (pdf)](https://CRAN.R-project.org/package=GGIR/vignettes/ExternalFunction.html), and [Reading ad-hoc csv file formats](https://CRAN.R-project.org/package=GGIR/vignettes/readmyacccsv.html).
-
-
-**NOTE: With the growing amount of functionality in GGIR we have decided to migrate the narrative documentation to the GitHub pages of GGIR. This to ease maintenance and accessibility. Therefore, many of the sections in this vignette have been replaced by a link to their new location.**
+**NOTE: With the growing amount of functionality in GGIR we have decided to migrate the narrative documentation to the [GitHub pages of GGIR](https://wadpac.github.io/GGIR/). This to ease maintenance and accessibility. Therefore, many of the sections in this vignette have been replaced by a link to their new location.**
 
 # Introduction
 
