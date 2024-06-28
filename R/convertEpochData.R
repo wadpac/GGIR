@@ -522,6 +522,9 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         M$metashort = as.data.frame(cbind(time_shortEp_8601,
                                           D[1:length(time_shortEp_8601), ]))
         colnames(M$metashort) = c("timestamp", colnames(D))
+        for (ic in 2:ncol(M$metashort)) {
+          M$metashort[, ic] <- as.numeric(M$metashort[, ic])
+        }
       }
       if (length(which(is.na(M$metashort$ZCY) == TRUE)) > 0) {
         # impute missing data by zero

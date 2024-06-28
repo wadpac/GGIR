@@ -84,6 +84,8 @@ navbar:
           href: articles/TutorialDaySegmentAnalyses.html
         - text: Household co-analysis
           href: articles/HouseHoldCoanalysis.html
+        - text: Cookbook
+          href: articles/Cookbook.html
   structure:
     left:  [chapters, annexes, installation, intro, news, contributing, help]
     right: [search, github, twitter]

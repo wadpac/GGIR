@@ -176,7 +176,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   
   if (length(params_sleep) > 0) {
     if (length(params_sleep[["def.noc.sleep"]]) != 2) {
-      if (params_sleep[["HASPT.algo"]] %in% c("HorAngle", "NotWorn") == FALSE) {
+      if (params_sleep[["HASPT.algo"]][1] %in% c("HorAngle", "NotWorn") == FALSE) {
         params_sleep[["HASPT.algo"]] = "HDCZA"
       }
     } else if (length(params_sleep[["def.noc.sleep"]]) == 2) {
@@ -200,13 +200,13 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   
   if (length(params_general) > 0 & length(params_metrics) > 0 & length(params_sleep) > 0) {
     if (params_general[["sensor.location"]] == "hip" &&
-        params_sleep[["HASPT.algo"]] %in% c("notused", "NotWorn") == FALSE) {
+        params_sleep[["HASPT.algo"]][1] %in% c("notused", "NotWorn") == FALSE) {
       if (params_metrics[["do.anglex"]] == FALSE | params_metrics[["do.angley"]] == FALSE | params_metrics[["do.anglez"]] == FALSE) {
         warning(paste0("\nWhen working with hip data all three angle metrics are needed,",
                        "so GGIR now auto-sets arguments do.anglex, do.angley, and do.anglez to TRUE."), call. = FALSE)
         params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = params_metrics[["do.anglez"]] = TRUE
       }
-      if (params_sleep[["HASPT.algo"]] != "HorAngle") {
+      if (params_sleep[["HASPT.algo"]][1] != "HorAngle") {
         warning("\nChanging HASPT.algo value to HorAngle, because sensor.location is set as hip", call. = FALSE)
         params_sleep[["HASPT.algo"]] = "HorAngle"; params_sleep[["def.noc.sleep"]] = 1
       }
@@ -230,12 +230,12 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_sleep[["def.noc.sleep"]] = 1
     }
     
-    if (params_sleep[["HASPT.algo"]] == "HorAngle" & params_sleep[["sleepwindowType"]] != "TimeInBed") {
+    if (params_sleep[["HASPT.algo"]][1] == "HorAngle" & params_sleep[["sleepwindowType"]] != "TimeInBed") {
       warning("\nHASPT.algo is set to HorAngle, therefore auto-updating sleepwindowType to TimeInBed", call. = FALSE)
       params_sleep[["sleepwindowType"]] = "TimeInBed"
     }
     
-    if (length(params_sleep[["loglocation"]]) == 0 & params_sleep[["HASPT.algo"]] != "HorAngle" & params_sleep[["sleepwindowType"]] != "SPT") {
+    if (length(params_sleep[["loglocation"]]) == 0 & params_sleep[["HASPT.algo"]][1] != "HorAngle" & params_sleep[["sleepwindowType"]] != "SPT") {
       warning("\nAuto-updating sleepwindowType to SPT because no sleeplog used and neither HASPT.algo HorAngle used.", call. = FALSE)
       params_sleep[["sleepwindowType"]] = "SPT"
     }
@@ -377,7 +377,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   
   if (length(params_general) > 0 & length(params_sleep) > 0) {
-    if (params_sleep[["HASPT.algo"]] == "HorAngle") {
+    if (params_sleep[["HASPT.algo"]][1] == "HorAngle") {
       # Not everywhere in the code we check that when HASPT.algo is HorAngle, sensor.location is hip.
       # However, the underlying assumption is that they are linked. Even if a study would
       # use a waist or chest worn sensor we refer to it as hip as the orientation and need
