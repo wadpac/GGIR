@@ -435,7 +435,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           }
           # now generate empty overview for this night / person
           dummyspo = data.frame(nb = numeric(1), start = numeric(1),  end = numeric(1),
-                                overlapGuider = numeric(1), def = character(1))
+                                overlapGuider = numeric(1), def = character(1), duration = numeric(1))
           dummyspo$nb[1] = 1
           spo_day = c()
           spo_day_exists = FALSE
