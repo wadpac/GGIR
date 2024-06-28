@@ -16,7 +16,7 @@
 
 - Report part 5:
 
-  -  fix bug that was introduced on 2024-Feb-19 in the calculation of wear percentage #1148
+  - fix bug that was introduced on 2024-Feb-19 in the calculation of wear percentage #1148
   
   - Rename variable sleep_efficiency to sleep_efficiency_after_onset, #1157
 
