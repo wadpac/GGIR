@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,6 +46,7 @@
     <a class="dropdown-item" href="../articles/CutPoints.html">Published cut-points and how to use them</a>
     <a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a>
     <a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a>
+    <a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a>
   </div>
 </li>
 <li class="nav-item">
@@ -103,9 +104,22 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.1-2" id="changes-in-ggir-version-31-2">CHANGES IN GGIR VERSION 3.1-2<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-31-2"></a></h2>
-<ul><li><p>Parts 2-5: Give more informative error when folders with expected milestone files are empty. <a href="https://github.com/wadpac/GGIR/issues/1144" class="external-link">#1144</a></p></li>
-<li><p>Report part 5: fix bug that was introduced on 2024-Feb-19 in the calculation of wear percentage <a href="https://github.com/wadpac/GGIR/issues/1148" class="external-link">#1148</a></p></li>
+<ul><li>
+<p>Part 1:</p>
+<ul><li><p>Enable timegap imputation for ad-hoc csv data. <a href="https://github.com/wadpac/GGIR/issues/1154" class="external-link">#1154</a></p></li>
+<li><p>Reduce constraints on value for parameter chunksize <a href="https://github.com/wadpac/GGIR/issues/1155" class="external-link">#1155</a>.</p></li>
+<li><p>When appending records ignore files that have not enough data to produce meaningful metashort and metalong objects in part 1. <a href="https://github.com/wadpac/GGIR/issues/1162" class="external-link">#1162</a></p></li>
+</ul></li>
+<li><p>Parts 2-5: Give more informative error when folders with expected milestone files are empty. <a href="https://github.com/wadpac/GGIR/issues/1144" class="external-link">#1144</a></p></li>
+<li><p>Part 3: Fix handling of recordings with only 1 midnight that start before 4am, <a href="https://github.com/wadpac/GGIR/issues/1160" class="external-link">#1160</a></p></li>
+<li><p>Part 3 and 4: Revise NotWorn algorithm to work with both count and raw data with varying degrees of nonwear. Further, when HASPT.algo is set to NotWorn then a second guider can optionally be specified in case the accelerometer unexpectedly worn by the participant. <a href="https://github.com/wadpac/GGIR/issues/1089" class="external-link">#1089</a></p></li>
+<li>
+<p>Report part 5:</p>
+<ul><li><p>fix bug that was introduced on 2024-Feb-19 in the calculation of wear percentage <a href="https://github.com/wadpac/GGIR/issues/1148" class="external-link">#1148</a></p></li>
+<li><p>Rename variable sleep_efficiency to sleep_efficiency_after_onset, <a href="https://github.com/wadpac/GGIR/issues/1157" class="external-link">#1157</a></p></li>
+</ul></li>
 <li><p>Vignette: Migrated many sections from main CRAN vignette to wadpac.github.io/GGIR/</p></li>
+<li><p>Visualreport: Improve handling of recordings where the accelerometer was not worn.</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.1-1" id="changes-in-ggir-version-31-1">CHANGES IN GGIR VERSION 3.1-1<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-31-1"></a></h2><p class="text-muted">CRAN release: 2024-06-04</p>

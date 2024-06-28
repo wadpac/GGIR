@@ -33,7 +33,9 @@ GGIR, has a computational structure of six parts which are applied sequentially 
 -   **Part 3:** Estimation of sustained inactivity bouts (rest periods) and sleep, needed for input to Part 4.
 -   **Part 4:** Labels the sustained inactive periods derived in Part 3 as sleep, or daytime sustained inactivity, per night and per file.
 -   **Part 5:** Compiles time series with classification of sleep and physical activity intensity categories by re-using information derived in part 2, 3, and 4. Next, Part 5 generates a descriptive summary such as total time in intensity categories, the number of bouts, time spent in bouts and average acceleration per category, and fragmentation.
--   **Part 6:** Facilitates analyses that rely on direct access to the full recording such as household co-analysis and circadian rhythm analysis. The reason why GGIR is split up in parts is that it avoids having the re-run all preceding parts if you only want to make a small change in the more downstream parts. The specific order and content of the parts have evolved over time, with Part 1 and 2 created in 2011-2013, Part 3 and 4 created in 2013-2015, Part 5 created in 2017-2020, and Part 6 created in 2023-2024.
+-   **Part 6:** Facilitates analyses that rely on direct access to the full recording such as household co-analysis and circadian rhythm analysis.
+
+The reason why GGIR is split up in parts is that it avoids having the re-run all preceding parts if you only want to make a small change in the more downstream parts. The specific order and content of the parts have evolved over time, with Part 1 and 2 created in 2011-2013, Part 3 and 4 created in 2013-2015, Part 5 created in 2017-2020, and Part 6 created in 2023-2024.
 
 #### Milestone data
 
@@ -230,9 +232,10 @@ The time to process a typical seven-day recording should be anywhere in between 
 Some tips on how you may be able to address this:
 
 -   Make sure the data you process is on the same machine as where GGIR is run. Processing data located somewhere else on a computer network can substantially slow down software.
--   Make sure your machine has 8GB or more RAM memory. Using GGIR on old machines with only 4GB is known to be slow. However, total memory is not the only bottle neck. Also consider the number of processes (threads) your CPU can run relative to the amount of memory. Ending up with 2GB per process seems a good target. It can be helpful to turn off parallel processing with `do.paralllel = FALSE`.
+-   Make sure your machine has 8GB or more RAM memory. Using GGIR on old machines with only 4GB is known to be slow. However, total memory is not the only bottle neck. Also consider the number of processes (threads) your CPU can run relative to the amount of memory. Ending up with 2GB per process seems a good target. It can be helpful to turn off parallel processing with `do.parallel = FALSE`.
 -   Avoid doing other computational activities on your machine while running GGIR. For example, if you use DropBox or OneDrive make sure they do not sync while you are running GGIR. It is probably best not to use the machine when using GGIR to process large datasets. Make sure the machine is configured not to automatically turn off after X hours as that would terminate GGIR. Further, you may want to configure the machine to not fall asleep as this pauses GGIR.
--   Reduce the amount of data GGIR loads in memory with parameter `chunksize`, which can be useful on machines with limited memory or when processing many files in parallel. A `chunksize` value of 0.2 (minimum) will make GGIR load the data in chunks of only 20% of the size relative to the chunks it loads by default, which is approximately 12 hours of data for the auto-calibration routine and 24 hours of data for the calculation of signal metrics.
+-   Lower value of parameter `maxNcores` which by default uses the number of available cores derived with command `parallel::detectCores()` minus 1. This might in some cases be too demanding for your operating system.
+-   Reduce the amount of data GGIR loads in memory with parameter `chunksize`, which can be useful on machines with limited memory or when processing many files in parallel. A `chunksize` value of 0.2 will make GGIR load the data in chunks of only 20% of the size relative to the chunks it loads by default, which is approximately 12 hours of data for the auto-calibration routine and 24 hours of data for the calculation of signal metrics.
 
 ## GGIR output
 
