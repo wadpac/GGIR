@@ -151,7 +151,7 @@ g.report.part5_dictionary = function(metadatadir, params_output) {
         class = getclass(x)
         # sleep efficiency (overwrite prev classification as sleep)
         if ("sleep" %in% elements & "efficiency" %in% elements) {
-          class = "Sleep efficiency"
+          class = "Sleep efficiency after onset"
           unit = "(%)"
         }
         # wakefulness after sleep onset (overwrite prev classification of intensity)
@@ -185,7 +185,7 @@ g.report.part5_dictionary = function(metadatadir, params_output) {
         }
         # connector (in)
         if (!is.null(class)) {
-          if (class != "Sleep efficiency" 
+          if (class != "Sleep efficiency after onset" 
               & substr(class, 1, 8) != "the most"
               & !("ig" %in% elements)) class = paste("in", class)
         }
