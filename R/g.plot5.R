@@ -86,16 +86,18 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
                    fnames_ms1_stripped[sel], " because part 4 output was not available."
             )
           )
-          next()
+          next
         }
-        pdf(paste0(metadatadir, "/results/file summary reports/Report_",
-                   fnames_ms1_stripped[sel], ".pdf"), paper = "a4",
-            width = 0, height = 0)
+       
         sib.cla.sum = c()
         load(paste0(ms3dir,"/",fname_ms3[i]))
         load(paste0(ms1dir,"/",fname_ms1[sel]))
         ws3 = M$windowsizes[1]
         ws2 = M$windowsizes[2]
+        if (nrow(sib.cla.sum) == 0) next
+        pdf(paste0(metadatadir, "/results/file summary reports/Report_",
+                   fnames_ms1_stripped[sel], ".pdf"), paper = "a4",
+            width = 0, height = 0)
         
         # P2daysummary_tmp = P2daysummary[which(P2daysummary$filename == fnames_ms1_stripped[sel]),]
         # note that the reports are generated from the raw sleep classification (part4) and no attempt is made to clean it up,
@@ -116,7 +118,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           if (includenightcrit > 1) includenightcrit = includenightcrit / 24
           d2excludeb = d2exclude = which(P2daysummary_tmp$`N valid hours` < max(c(includedaycrit,
                                                                                   threshold_hrs_of_data_per_day)))
-          n2excludeb = n2exclude = which(summarysleep_tmp$fraction_night_invalid > includenightcrit
+          n2excludeb = n2exclude = which(summarysleep_tmp$fraction_night_invalid > (1 - includenightcrit)
                                          | summarysleep_tmp$SptDuration == 0)
           
           if (length(d2exclude) > 0) {
@@ -130,8 +132,12 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
             n2exclude = n2excludeb
           }
           # nights missing in sleep summary?
-          allnights = 1:max(summarysleep_tmp$night)
-          missingNights = which(allnights %in% summarysleep_tmp$night == FALSE)
+          if (length(summarysleep_tmp$night) > 0) {
+            allnights = 1:max(summarysleep_tmp$night)
+            missingNights = which(allnights %in% summarysleep_tmp$night == FALSE)
+          } else {
+            missingNights = NULL
+          }
           if (length(missingNights) > 0) {
             n2exclude = sort(unique(c(n2exclude, missingNights)))
           }
