@@ -3,6 +3,7 @@ appendRecords = function(metadatadir, desiredtz = "", idloc = 1, maxRecordingInt
   # Declare local functions:
   getInfo = function(fn, idloc, tz) {
     load(fn)
+    if (is.null(M$metashort)) return()
     hvars = g.extractheadervars(I)
     if (exists("Clist")) {
       ID = NA # If Clist exists then ignore this file as it was previously appended
