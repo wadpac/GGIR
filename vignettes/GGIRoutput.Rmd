@@ -259,7 +259,7 @@ may not be obvious:
 | `_WE`| Weekend days    |
 | `_WD`| Week days       |
 | sleeplog_used     | Whether a sleeplog was available (TRUE) or not (FALSE)|
-| sleep_efficiency  | Accelerometer derived sleep efficiency within the sleep period time calculated as the ratio between acc_SleepDurationInSpt and guider_SptDuration (denominator) or acc_SleepDurationInSpt and acc_SptDuration + latency (denominator), as defined with sleepefficiency.metric. Only available at person level, because at night level the user can calculate this from existing variables. |
+| sleep_efficiency_after_onset  | Accelerometer derived sleep efficiency within the sleep period time calculated as the ratio between acc_SleepDurationInSpt and guider_SptDuration (denominator) or acc_SleepDurationInSpt and acc_SptDuration + latency (denominator), as defined with sleepefficiency.metric. Only available at person level, because at night level the user can calculate this from existing variables. |
 | n_nights_acc      | Number of nights of accelerometer data   |
 | n_nights_sleeplog | Number of nights of sleeplog data.       |
 | n\_WE_nights_complete        | Number of weekend nights complete which means both accelerometer and estimate from guider. |
@@ -353,7 +353,7 @@ vigorous activity:
 | dur_day_min | Duration of waking hours within this day window|
 | dur_spt_min | Duration of Sleep Period Time within this day window.       |
 | dur_day_spt_min         | Duration this day window, including both waking hours and SPT.          |
-| sleep_efficiency        | sleep_efficiency in part 5 is not the same as in part 4, but calculated as the percentage of sleep within the sleep period time window. The conventional approach is the approach used in part 4.    |
+| sleep_efficiency_after_onset        | sleep_efficiency_after_onset in part 5 is not the same as in part 4, but calculated as the percentage of sleep within the sleep period time window. The conventional approach is the approach used in part 4.    |
 | L5TIME      | Timing of least active 5hrs, expressed as timestamp in the day          |
 | M5TIME      | Timing of most active 5hrs         |
 | L5TIME_num, M5TIME_num  | Timing of least/most active 5hrs, expressed as hours in the day. Note that L5/M5 timing variables are difficult to average across days because 23:00 and 1:00 would average to noon and not to midnight. So, caution is needed when interpreting person averages.   |
