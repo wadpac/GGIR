@@ -624,11 +624,12 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                     }
                   }
                 }
+                spo$duration = spo$end - spo$start
                 if (daysleeper[j] == TRUE) {
                   # for the labelling above it was needed to have times > 36, but for the plotting
                   # time in the second day needs to be returned to a normal 24 hour scale.
                   reversetime2 = which(spo$start >= 36)
-                  reversetime3 = which(spo$end >= 36 & spo$end - 24 > spo$start)
+                  reversetime3 = which(spo$end >= 36)
                   if (length(reversetime2) > 0) spo$start[reversetime2] = spo$start[reversetime2] - 24
                   if (length(reversetime3) > 0) spo$end[reversetime3] = spo$end[reversetime3] - 24
                 }
@@ -791,10 +792,10 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                     nightsummary[sumi, 13] = 1
                   }
                   # Accumulated sustained inactivity bouts during SPT (nocturnal) and dyatime
-                  nocs = as.numeric(spocum.t$end[which(spocum.t$overlapGuider == 1)]) -
-                    as.numeric(spocum.t$start[which(spocum.t$overlapGuider == 1)])
-                  sibds = as.numeric(spocum.t$end[which(spocum.t$overlapGuider == 0)]) -
-                    as.numeric(spocum.t$start[which(spocum.t$overlapGuider == 0)])
+                  overlap = which(spocum.t$overlapGuider == 1)
+                  nocs = spocum.t$duration[overlap]
+                  no_overlap = which(spocum.t$overlapGuider == 0)
+                  sibds = spocum.t$duration[no_overlap]
                   # it is possible that nocs is negative if when sleep episode starts before dst
                   # in the autumn and ends inside the dst hour
                   negval = which(nocs < 0)
@@ -990,29 +991,31 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                         if (spocum.t$start[pli] > spocum.t$end[pli]) {
                           # plot sib that starts on the right (morning) and ends on the left (afternoon)
                           rect(xleft = spocum.t$start[pli], ybottom = (cnt + qbot), xright = 36,
-                               ytop = (cnt + qtop), col = colb[defii], border = NA)  #lwd=0.2,
+                               ytop = (cnt + qtop), col = colb[defii], border = NA)
                           rect(xleft = 12, ybottom = (cnt + qbot), xright = spocum.t$end[pli], ytop = (cnt + qtop),
-                               col = colb[defii], border = NA)  #lwd=0.2,
+                               col = colb[defii], border = NA)
                         } else {
                           rect(xleft = spocum.t$start[pli], ybottom = (cnt + qbot), xright = spocum.t$end[pli],
-                               ytop = (cnt + qtop), col = colb[defii], border = NA)  #lwd=0.2,
+                               ytop = (cnt + qtop), col = colb[defii], border = NA)
                         }
                       }
                       GuiderWaken = GuiderWake
                       GuiderOnsetn = GuiderOnset
+                      
                       if (GuiderWake > 36) GuiderWaken = GuiderWake - 24
                       if (GuiderOnset > 36) GuiderOnsetn = GuiderOnset - 24
                       if (defi == undef[length(undef)]) {
                         # only plot log for last definition night sleeper
+                        
                         if (GuiderOnsetn > GuiderWaken) {
-                          rect(xleft = GuiderOnsetn, ybottom = (cnt - 0.3), xright = 36, ytop = (cnt + 0.3),
-                               col = "black", border = TRUE, density = den)  #lwd=0.2,
-                          rect(xleft = 12, ybottom = (cnt - 0.3), xright = GuiderWaken, ytop = (cnt + 0.3),
-                               col = "black", border = TRUE, density = den)  #lwd=0.2,
-                        } else {
                           # day sleeper
+                          rect(xleft = GuiderOnsetn, ybottom = (cnt - 0.3), xright = 36, ytop = (cnt + 0.3),
+                               col = "black", border = TRUE, density = den)
+                          rect(xleft = 12, ybottom = (cnt - 0.3), xright = GuiderWaken, ytop = (cnt + 0.3),
+                               col = "black", border = TRUE, density = den)
+                        } else {
                           rect(xleft = GuiderOnsetn, ybottom = (cnt - 0.3), xright = GuiderWaken, ytop = (cnt + 0.3),
-                               col = "black", border = TRUE, density = den)  #lwd=0.2,
+                               col = "black", border = TRUE, density = den)
                         }
                       }
                     }
