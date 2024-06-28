@@ -29,7 +29,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,6 +66,7 @@
     <a class="dropdown-item" href="../articles/CutPoints.html">Published cut-points and how to use them</a>
     <a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a>
     <a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a>
+    <a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a>
   </div>
 </li>
 <li class="nav-item">
@@ -1366,13 +1367,15 @@ For example “%Y-%m-%d %I:%M:%S %p” for “2023-07-11 01:24:01 PM” or
 <div class="section level4">
 <h4 class="unnumbered" id="chunksize">chunksize<a class="anchor" aria-label="anchor" href="#chunksize"></a>
 </h4>
-<p>Numeric (default = 1). Value between 0.2 and 1 to specify the size of
-chunks to be loaded as a fraction of an approximately 12 hour period for
+<p>Numeric (default = 1). Value to specify the size of chunks to be
+loaded as a fraction of an approximately 12 hour period for
 auto-calibration procedure and as fraction of 24 hour period for the
 metric calculation, e.g., 0.5 equals 6 and 12 hour chunks, respectively.
 For machines with less than 4Gb of RAM memory or with &lt; 2GB memory
 per process when using do.parallel = TRUE a value below 1 is
-recommended.</p>
+recommended. The value is constrained by GGIR to not be lower than 0.05.
+Please note that setting 0.05 will not produce output when 3rd value of
+parameter windowsizes is 3600.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="spherecrit">spherecrit<a class="anchor" aria-label="anchor" href="#spherecrit"></a>
@@ -2206,8 +2209,10 @@ on HDCZA but replaces non-movement detection of the HDCZA algorithm by
 looking for time segments where the angle of the longitudinal sensor
 axis has an angle relative to the horizontal plane between -45 and +45
 degrees. And “NotWorn” which is also the same as HDCZA but looks for
-time segments when the 5 minute rolling average of counts is below 20
-per cent of its standard deviation.</p>
+time segments when a rolling average of acceleration magnitude is below
+5 per cent of its standard deviation, see Cookbook vignette in the
+Annexes of <a href="https://wadpac.github.io/GGIR/" class="uri">https://wadpac.github.io/GGIR/</a> for more detailed
+guidance on how to use “NotWorn”.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="hasib-algo">HASIB.algo<a class="anchor" aria-label="anchor" href="#hasib-algo"></a>

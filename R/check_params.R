@@ -75,7 +75,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     check_class("Raw data", params = params_rawdata, parnames = boolean_params, parclass = "boolean")
     check_class("Raw data", params = params_rawdata, parnames = character_params, parclass = "character")
 
-    if (params_rawdata[["chunksize"]] < 0.05) params_rawdata[["chunksize"]] = 0.05
+    if (params_rawdata[["chunksize"]] < 0.1) params_rawdata[["chunksize"]] = 0.1
   }
   if (length(params_247) > 0) {
     # iglevels and qwindow can be numeric or character, so not tested
