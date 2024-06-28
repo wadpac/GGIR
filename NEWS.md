@@ -4,7 +4,7 @@
 
 - Report part 5: fix bug that was introduced on 2024-Feb-19 in the calculation of wear percentage #1148
 
-- Part 3 and 4: Revise NotWorn algorithm to work with both count and raw data with varying degrees of nonwear.
+- Part 3 and 4: Revise NotWorn algorithm to work with both count and raw data with varying degrees of nonwear. Further, when HASPT.algo is set to NotWorn then a second guider can optionally be specified in case the accelerometer unexpectedly worn by the participant. #1089
 
 - Visualreport: Improve handling of recordings where the accelerometer was not worn.
 

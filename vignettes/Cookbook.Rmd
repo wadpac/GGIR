@@ -92,12 +92,13 @@ Study protocol: Worn during the day, taken off during the night
 Wear location: Any
 
 ```
-GGIR(HASPT.algo = "NotWorn",
-    HASIB.algo = "NotWorn",
+GGIR(HASPT.algo = c("NotWorn", "HDCZA"),
+    HASIB.algo = "vanHees2015",
     do.imp = FALSE, # Do not impute nonwear because sensor was never worn 24/7
     HASPT.ignore.invalid = NA, # Treat nonwear as potential part of guider window
     ignorenonwear = FALSE, # Consider nonwear as potential sleep
-    relyonguider = TRUE, # has minor influence
     includenightcrit = 8,
     includedaycrit = 8)
 ```
+
+If "NotWorn" is specified then a second guider can be supplied to the same parameter as shown above. This second guider will be used if the accelerometer is worn for more than 75 percent of the night. The example above shows this for HDCZA.
