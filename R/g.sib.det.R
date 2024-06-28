@@ -260,7 +260,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
           } else {
             L5 = (L5  / (3600 / ws3)) + 12
           }
-          if (length(L5) == 0) L5 = 0 #if there is no L5, because full they is zero
+          if (length(L5) == 0) L5 = 0 #if there is no L5, because full day is zero
         }
         L5list[sptei] = L5
         # Estimate Sleep Period Time window, because this will be used by g.part4 if sleeplog is not available
@@ -312,8 +312,8 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                                        HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
                                        activity = ACC[newqqq1:newqqq2])
               if (length(spt_estimate_tmp$SPTE_start) > 0) {
-                if (spt_estimate_tmp$SPTE_start + newqqq1 >= newqqq2) {
-                  spt_estimate_tmp$SPTE_start = (newqqq2 - newqqq1) - 1
+                # If new SPTE_end is beyond noon (qqq2) then use the new SPTE_end
+                if (spt_estimate_tmp$SPTE_end + newqqq1 >= qqq2) {
                   spt_estimate = spt_estimate_tmp
                 } else {
                   daysleep_offset  = 0

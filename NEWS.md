@@ -12,7 +12,11 @@
 
 - Part 3: Fix handling of recordings with only 1 midnight that start before 4am, #1160
 
-- Part 3 and 4: Revise NotWorn algorithm to work with both count and raw data with varying degrees of nonwear. Further, when HASPT.algo is set to NotWorn then a second guider can optionally be specified in case the accelerometer unexpectedly worn by the participant. #1089
+- Part 3 and 4:
+
+  - Revise NotWorn algorithm to work with both count and raw data with varying degrees of nonwear. Further, when HASPT.algo is set to NotWorn then a second guider can optionally be specified in case the accelerometer unexpectedly worn by the participant. #1089
+
+  - Fix bug in handling of individuals who wake up after noon #1165
 
 - Report part 5:
 
