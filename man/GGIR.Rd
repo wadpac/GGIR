@@ -1146,8 +1146,10 @@ GGIR(mode = 1:5,
         the HDCZA algorithm by looking for time segments where the angle of the
         longitudinal sensor axis has an angle relative to the horizontal plane
         between -45 and +45 degrees. And "NotWorn" which is also the same as HDCZA
-        but looks for time segments when the 5 minute rolling average of counts is
-        below 20 per cent of its standard deviation.}
+        but looks for time segments when a rolling average of acceleration
+        magnitude is below 5 per cent of its standard deviation, see 
+        Cookbook vignette in the Annexes of https://wadpac.github.io/GGIR/ 
+        for more detailed guidance on how to use "NotWorn".}
     
       \item{HDCZA_threshold}{
         Numeric (default = c())

@@ -195,7 +195,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         lastmidnight = midnights[length(midnights)]
         lastmidnighti = midnightsi[length(midnights)]
         firstmidnight = time[1]
-        firstmidnighti = 1
+        firstmidnighti = midnightsi[1]
       } else {
         cut = which(as.numeric(midnightsi) == 0)
         if (length(cut) > 0) {
@@ -230,11 +230,21 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
           qqq1 = midnightsi[j] + (twd[1] * (3600 / ws3)) #preceding noon
           qqq2 = midnightsi[j] + (twd[2] * (3600 / ws3)) #next noon
         }
+        if (qqq2 - qqq1 < 60) next # skip night if it has less than 60 epochs
         sptei = sptei + 1
         if (qqq2 > length(time))  qqq2 = length(time)
         if (qqq1 < 1)             qqq1 = 1
         night[qqq1:qqq2] = sptei
         detection.failed = FALSE
+        # Calculate nonwear percentage for this window
+        nonwear_percentage = (length(which(invalid[qqq1:qqq2] == 1)) /  (qqq2 - qqq1 + 1)) * 100
+        guider_to_use = 1
+        if (params_sleep[["HASPT.algo"]][1] == "NotWorn" &&
+            nonwear_percentage < 25 &&
+            length(params_sleep[["HASPT.algo"]]) == 2) {
+          # Nonwear percentage was low, so use alternative guider specified as second element
+          guider_to_use = 2
+        }
         #------------------------------------------------------------------
         # calculate L5 because this is used as back-up approach
         tmpACC = ACC[qqq1:qqq2]
@@ -257,8 +267,8 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         tmpANGLE = anglez[qqq1:qqq2]
         tmpTIME = time[qqq1:qqq2]
         daysleep_offset = 0
-        if (do.HASPT.hip == TRUE & params_sleep[["HASPT.algo"]] != "NotWorn") {
-          params_sleep[["HASPT.algo"]] = "HorAngle"
+        if (do.HASPT.hip == TRUE & params_sleep[["HASPT.algo"]][1] != "NotWorn") {
+          params_sleep[["HASPT.algo"]][1] = "HorAngle"
           if (params_sleep[["longitudinal_axis"]] == 1) {
             tmpANGLE = anglex[qqq1:qqq2]
           } else if (params_sleep[["longitudinal_axis"]] == 2) {
@@ -268,7 +278,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         if (length(params_sleep[["def.noc.sleep"]]) == 1) {
           spt_estimate = HASPT(angle = tmpANGLE, ws3 = ws3,
                                sptblocksize = sptblocksize, spt_max_gap = spt_max_gap,
-                               HASPT.algo = params_sleep[["HASPT.algo"]],
+                               HASPT.algo = params_sleep[["HASPT.algo"]][guider_to_use],
                                invalid = invalid[qqq1:qqq2], # load only invalid time in the night of interest (i.e., qqq1:qqq2)
                                HDCZA_threshold = params_sleep[["HDCZA_threshold"]],
                                HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
@@ -286,7 +296,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
             if (newqqq2 > length(anglez)) newqqq2 = length(anglez)
             # only try to extract SPT again if it is possible to extract a window of more than 23 hour
             if (newqqq2 < length(anglez) & (newqqq2 - newqqq1) > (23*(3600/ws3)) ) {
-              if (do.HASPT.hip == TRUE & params_sleep[["HASPT.algo"]] != "NotWorn") {
+              if (do.HASPT.hip == TRUE & params_sleep[["HASPT.algo"]][1] != "NotWorn") {
                 tmpANGLE = anglez[newqqq1:newqqq2]
                 if (params_sleep[["longitudinal_axis"]] == 1) {
                   tmpANGLE = anglex[newqqq1:newqqq2]
@@ -295,9 +305,10 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                 }
               }
               spt_estimate_tmp = HASPT(angle = tmpANGLE, ws3 = ws3,
-                                       sptblocksize = sptblocksize,
-                                       spt_max_gap = spt_max_gap,
-                                       HASPT.algo = params_sleep[["HASPT.algo"]], invalid = invalid[newqqq1:newqqq2],
+                                       sptblocksize = sptblocksize, spt_max_gap = spt_max_gap,
+                                       HASPT.algo = params_sleep[["HASPT.algo"]][1],
+                                       invalid = invalid[newqqq1:newqqq2],
+                                       HDCZA_threshold = params_sleep[["HDCZA_threshold"]],
                                        HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
                                        activity = ACC[newqqq1:newqqq2])
               if (length(spt_estimate_tmp$SPTE_start) > 0) {

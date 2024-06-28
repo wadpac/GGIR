@@ -4,6 +4,10 @@
 
 - Report part 5: fix bug that was introduced on 2024-Feb-19 in the calculation of wear percentage #1148
 
+- Part 3 and 4: Revise NotWorn algorithm to work with both count and raw data with varying degrees of nonwear. Further, when HASPT.algo is set to NotWorn then a second guider can optionally be specified in case the accelerometer unexpectedly worn by the participant. #1089
+
+- Visualreport: Improve handling of recordings where the accelerometer was not worn.
+
 - Part 1: Enable timegap imputation for ad-hoc csv data. #1154
 
 - Part 1: Reduce constraints on value for parameter chunksize #1155.
@@ -13,6 +17,8 @@
 - Report part 5: Rename variable sleep_efficiency to sleep_efficiency_after_onset, #1157
 
 - Vignette: Migrated many sections from main CRAN vignette to wadpac.github.io/GGIR/
+
+- Part 3: Fix handling of recordings with only 1 midnight that start before 4am, #1160
 
 # CHANGES IN GGIR VERSION 3.1-1
 

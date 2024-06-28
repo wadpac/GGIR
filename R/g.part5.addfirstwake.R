@@ -81,9 +81,11 @@ g.part5.addfirstwake = function(ts, summarysleep, nightsi, sleeplog, ID,
       # We do this to make sure that the day numbering
       # and merging of the sleep variables is still consistent with
       # the other recording.
-      dummywake = max(firstonset - round(Nepochsinhour/12), nightsi[1] + round(Nepochsinhour * 6))
-      ts$diur[1:dummywake] = 1 
-      ts$nonwear[1:firstonset] = 1
+      if (!is.na(firstonset)) {
+        dummywake = max(firstonset - round(Nepochsinhour/12), nightsi[1] + round(Nepochsinhour * 6))
+        ts$diur[1:dummywake] = 1 
+        ts$nonwear[1:firstonset] = 1
+      }
     }
   }
   return(ts)

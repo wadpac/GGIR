@@ -20,3 +20,4 @@ codecov.yml
 index.md
 ^inst/doc/*.html
 ^vignettes/HouseHoldCoanalysis.Rmd
+^vignettes/Cookbook.Rmd
