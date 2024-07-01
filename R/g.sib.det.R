@@ -296,7 +296,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
             newqqq1 = qqq1 + (daysleep_offset * (3600 / ws3))
             newqqq2 = qqq2 + (daysleep_offset * (3600 / ws3))
             if (qqq1 == 1 && newqqq2 - newqqq1 < (24*3600) / ws3 && newqqq2 > (24*3600) / ws3) {
-              newqqq1 = newqqq2 - (24*3600) / ws3
+              newqqq1 = newqqq2 - (24 * 3600) / ws3
               partialFirstDay = FALSE
             }
             if (newqqq2 > length(anglez)) newqqq2 = length(anglez)
@@ -338,12 +338,11 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
             startTimeRecord = unlist(iso8601chartime2POSIX(IMP$metashort$timestamp[1], tz = desiredtz))
             startTimeRecord = sum(as.numeric(startTimeRecord[c("hour", "min", "sec")]) / c(1, 60, 3600))
             daysleep_offset = daysleep_offset + startTimeRecord
-            SPTE_end[sptei] = (spt_estimate$SPTE_end / (3600 / ws3)) + daysleep_offset
-            SPTE_start[sptei] = (spt_estimate$SPTE_start / (3600 / ws3)) + daysleep_offset
           } else {
-            SPTE_end[sptei] = (spt_estimate$SPTE_end / (3600 / ws3)) + 12 + daysleep_offset
-            SPTE_start[sptei] = (spt_estimate$SPTE_start / (3600 / ws3)) + 12 + daysleep_offset
+            daysleep_offset = daysleep_offset + 12
           }
+          SPTE_end[sptei] = (spt_estimate$SPTE_end / (3600 / ws3)) + daysleep_offset
+          SPTE_start[sptei] = (spt_estimate$SPTE_start / (3600 / ws3)) + daysleep_offset
           SPTE_end[sptei] = dstime_handling_check(tmpTIME = tmpTIME, spt_estimate = spt_estimate,
                                                   tz = desiredtz, calc_SPTE_end = SPTE_end[sptei],
                                                   calc_SPTE_start = SPTE_start[sptei])
