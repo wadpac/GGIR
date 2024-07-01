@@ -302,9 +302,9 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
             if (newqqq2 > length(anglez)) newqqq2 = length(anglez)
             # only try to extract SPT again if it is possible to extract a window of more than 23 hour
             if (newqqq2 < length(anglez) & (newqqq2 - newqqq1) > (23*(3600/ws3)) ) {
+              tmpTIME = time[newqqq1:newqqq2]
               if (params_sleep[["HASPT.algo"]][1] != "NotWorn") {
                 tmpANGLE = anglez[newqqq1:newqqq2]
-                tmpTIME = time[newqqq1:newqqq2]
                 if (do.HASPT.hip == TRUE) {
                   if (params_sleep[["longitudinal_axis"]] == 1) {
                     tmpANGLE = anglex[newqqq1:newqqq2]
