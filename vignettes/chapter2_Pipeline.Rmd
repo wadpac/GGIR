@@ -117,7 +117,7 @@ GGIR(datadir = "C:/mystudy/mydata",
      configfile = "D:/myconfigfiles/config.csv")
 ```
 
-The practical value of this is that it eases the replication of the analysis, because instead of having to share you R script with colleagues, sharing your config.csv file will be sufficient.
+The practical value of this is that it eases the replication of the analysis, because instead of having to share you R script with colleagues, sharing your config.csv file will be sufficient. Please make sure you have the same GGIR and R version installed when using this for reproducibility. See [here](https://wadpac.github.io/GGIR/articles/chapter0_Installation.html) for guidance on how to install older package versions.
 
 #### Parameter extraction order
 

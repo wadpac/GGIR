@@ -178,6 +178,23 @@ package with <code>install.packages("actilifecounts")</code>
 </li>
 </ul>
 </div>
+<div class="section level2">
+<h2 id="installing-older-versions-of-a-package">Installing older versions of a package<a class="anchor" aria-label="anchor" href="#installing-older-versions-of-a-package"></a>
+</h2>
+<p>When aiming to reproduce historical analysis it is critical to
+install the correct package version. Below we will explain how to do
+this for GGIR release 2.4-0 but this should work for any release. Note
+that GGIR is archived on both CRAN (major releases only) and GitHub (all
+releases).</p>
+<p><strong>From CRAN archive:</strong></p>
+<pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org" class="external-link">remotes</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_version.html" class="external-link">install_version</a></span><span class="op">(</span><span class="st">"GGIR"</span>, version <span class="op">=</span> <span class="st">"2.4-0"</span>, repos <span class="op">=</span> <span class="st">"http://cran.us.r-project.org"</span><span class="op">)</span></span></code></pre>
+<p>To see which releases are available on CRAN check out: <a href="https://cran.r-project.org/src/contrib/Archive/GGIR/" class="external-link uri">https://cran.r-project.org/src/contrib/Archive/GGIR/</a>.</p>
+<p><strong>From GitHub:</strong></p>
+<pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org" class="external-link">remotes</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"wadpac/GGIR"</span>, ref <span class="op">=</span> <span class="st">"2.4-0"</span><span class="op">)</span></span></code></pre>
+<p>To see which releases are available on CRAN check out: <a href="https://github.com/wadpac/GGIR/releases" class="external-link uri">https://github.com/wadpac/GGIR/releases</a>.</p>
+</div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
 </div>
