@@ -59,3 +59,25 @@ so please follow the instructions if:
 -   You want to process Sensewear xlsx files (with
     `dataFormat = "sensewear"`), install the readxl package
     with `install.packages("readxl")`
+
+## Installing older versions of a package
+
+When aiming to reproduce historical analysis it is critical to install the correct package version.
+Below we will explain how to do this for GGIR release 2.4-0 but this should work for any release. Note that GGIR is archived on both CRAN (major releases only) and GitHub (all releases).
+
+**From CRAN archive:**
+
+```
+require(remotes)
+install_version("GGIR", version = "2.4-0", repos = "http://cran.us.r-project.org")
+```
+
+To see which releases are available on CRAN check out: https://cran.r-project.org/src/contrib/Archive/GGIR/.
+
+**From GitHub:**
+
+```
+require(remotes)
+install_github("wadpac/GGIR", ref = "2.4-0")
+```
+To see which releases are available on CRAN check out: https://github.com/wadpac/GGIR/releases.
