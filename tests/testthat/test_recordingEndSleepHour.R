@@ -94,11 +94,11 @@ test_that("recordingEndSleepHour works as expected", {
   expect_equal(nrow(p4), 2) # Night 3 is not in the part 4 reports
   expect_equal(nrow(p4full), 2) # Night 3 is not in the part 4 reports
   expect_equal(sum(p4$sleeponset), 41.831)
-  expect_equal(sum(p4$wakeup), 57.917)
+  expect_equal(sum(p4$wakeup), 58.424)
   expect_equal(sum(p4$guider_inbedStart), 41.42)
-  expect_equal(sum(p4$guider_inbedEnd), 57.961)
-  expect_equal(sum(p4$number_sib_sleepperiod), 13)
-  expect_equal(sum(p4$sleepefficiency), 0.422)
+  expect_equal(sum(p4$guider_inbedEnd), 63.961)
+  expect_equal(sum(p4$number_sib_sleepperiod), 15)
+  expect_equal(sum(p4$sleepefficiency), 0.301)
   expect_equal(sum(p4$longitudinal_axis), 6)
   
   p5 = read.csv("output_test/results/part5_daysummary_MM_L40M100V400_T5A5.csv")
@@ -116,10 +116,6 @@ test_that("recordingEndSleepHour works as expected", {
                     "class_id", "invalid_fullwindow", "invalid_sleepperiod",
                     "invalid_wakinghours", "timestamp") %in% names(mdat)))
   
-  
-  
   if (file.exists("output_test"))  unlink("output_test", recursive = TRUE)
   if (file.exists(fn)) file.remove(fn)
 })
-
-
