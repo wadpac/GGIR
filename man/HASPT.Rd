@@ -9,8 +9,8 @@
 }
 \usage{
 HASPT(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5, 
-      HASPT.algo="HDCZA", HDCZA_threshold = 0.2, invalid, 
-      HASPT.ignore.invalid = FALSE, activity)
+      HASPT.algo="HDCZA", HDCZA_threshold = c(), invalid, 
+      HASPT.ignore.invalid = FALSE, activity = NULL)
 }
 \arguments{
   \item{angle}{

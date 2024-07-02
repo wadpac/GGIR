@@ -1175,7 +1175,9 @@ GGIR(mode = 1:5,
         et al. 2018 Scientific Report (doi: 10.1038/s41598-018-31266-z). However,
         doing so has not been supported by research yet and is only intended to
         facilitate methodological research, so we advise sticking with the default in
-        line with the publication.
+        line with the publication. Further, if HDCZA_threshold is set to a numeric vector of
+        length 2, e.g. c(10, 15), that will be used as percentile and 
+        multiplier for the above mentioned 6th step.
       }
 
       \item{HASPT.ignore.invalid}{
