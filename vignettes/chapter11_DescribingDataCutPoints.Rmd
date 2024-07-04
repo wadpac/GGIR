@@ -140,7 +140,7 @@ A fragment of SPT is defined as a sequence of epochs that belong to one of the f
 
 Note that from the metrics below only fragmentation metrics `TP` and `NFrag` are calculated for the SPT fragments.
 
-With parameter `frag.metrics="all"` we can tell GGIR part 5 to derive behavioural fragmentation metrics for daytime and (separately) for spt. You may want to consider combining this with parameter `part5_agg2_60seconds=TRUE` as that will aggregate the time series to 1 minute resolution as is common in behavioural fragmentation literature.
+With parameter `frag.metrics = "all"` we can tell GGIR part 5 to derive behavioural fragmentation metrics for daytime and (separately) for spt. You may want to consider combining this with parameter `part5_agg2_60seconds=TRUE` as that will aggregate the time series to 1 minute resolution as is common in behavioural fragmentation literature.
 
 ## Fragmentation metrics
 
