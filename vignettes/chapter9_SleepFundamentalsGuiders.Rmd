@@ -155,7 +155,7 @@ First the `NotWorn` algortihm calculates the 5 minute rolling average of the acc
 
 Next, this is used to identify the largest non-movement period, by only considering segments of at least 30 minutes, and then looking for longest segment in the day where gaps of less than 60 minutes are ignored. Therefore, the last 4 steps in the algorithm are identical to the last four steps in the HDCZA and HorAngle algorithms.
 
-The algorithm is expected to work with any acceleration metric, so both counts type metrics and metrics in gravitational units.
+The algorithm is expected to work with any acceleration metric, so both count-type metrics and metrics in gravitational units.
 
 To use this guider set parameter `HASPT.algo = "NotWorn"`. Further, we recommend combining the using of "NotWorn" with: `do.imp = FALSE`, `HASPT.ignore.invalid = NA`, and `ignorenonwear = FALSE`.
 
