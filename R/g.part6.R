@@ -133,7 +133,46 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       summary = matrix(NA, nfeatures, 1)
       s_names = rep("", nfeatures)
       fi = 1
-      epochSize = diff(mdat$timenum[1:2])
+      deltatime = diff(mdat$timenum)
+      epochSize = min(deltatime[which(deltatime != 0)])
+      if (any(deltatime > epochSize)) {
+        imputeTimeGaps = function(mdat, epochSize) {
+          # impute timegaps
+          mdat$gap = 1
+          mdat$gap[1:(nrow(mdat) - 1)] = diff(mdat$timenum) / epochSize
+          gapp = which(mdat$gap != 1)
+          if (length(gapp) > 0) {
+            if (gapp[1] > 1) {
+              newTime = mdat$timenum[1:(gapp[1] - 1)]
+            } else {
+              newTime = NULL
+            }
+            for (g in 1:length(gapp)) {
+              newTime = c(newTime, mdat$timenum[gapp[g]] + seq(0, by = epochSize, length.out = mdat$gap[gapp[g]]))
+              if (g < length(gapp)) {
+                newTime = c(newTime, mdat$timenum[(gapp[g] + 1):(gapp[g + 1] - 1)])
+              }
+            }
+            newTime =  c(newTime, mdat$timenum[(gapp[g] + 1):length(mdat$timenum)])
+          }
+          mdat <- as.data.frame(lapply(mdat, rep, mdat$gap))
+          invalid = duplicated(mdat)
+          if (length(gapp) > 0) {
+            mdat$timenum = newTime[1:nrow(mdat)]
+          }
+          mdat = mdat[, which(colnames(mdat) != "gap")]
+          mdat$ACC[invalid] = NA
+          mdat$class_id[invalid] = NA
+          mdat$guider[invalid] = NA
+          mdat$invalidepoch[invalid] = 1
+          mdat$window[invalid] = 9999
+          mdat$invalid_sleepperiod[invalid] = 100
+          mdat$invalid_wakinghours[invalid] = 100
+          mdat$time = mdat$timestamp = as.POSIXct(mdat$timenum, tz =  params_general[["desiredtz"]])
+          return(mdat)
+        }
+        mdat = imputeTimeGaps(mdat, epochSize)
+      }
       # Select relevant section of the time series
       wakeuptimes = which(diff(c(1, mdat$SleepPeriodTime, 0)) == -1)
       onsettimes = which(diff(c(0, mdat$SleepPeriodTime, 1)) == 1) 
@@ -180,16 +219,6 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       if (do.cr == TRUE) {
         ts = mdat[t0:t1, ]
         rm(mdat)
-        # extract nightsi again
-        tempp = unclass(as.POSIXlt(ts$time, tz = params_general[["desiredtz"]]))
-        sec = tempp$sec
-        min = tempp$min
-        hour = tempp$hour
-        if (params_general[["dayborder"]] == 0) {
-          nightsi = which(sec == 0 & min == 0 & hour == 0)
-        } else {
-          nightsi = which(sec == 0 & min == (params_general[["dayborder"]] - floor(params_general[["dayborder"]])) * 60 & hour == floor(params_general[["dayborder"]])) #shift the definition of midnight if required
-        }
         ts = ts[which(ts$window != 0), ]
       } else {
         ts = mdat[1,]
@@ -246,9 +275,34 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         # imputed values to NA.
         colnames(ts)[which(colnames(ts) == "timenum")] = "time"
         acc4cos = ts[, c("time", "ACC")]
+        qcheck = ts$invalidepoch
+        
+        # <<< EXPERIMENTAL CODE 
+        # # Add missing value to complete an interger number of full days
+        # Na4c = nrow(acc4cos)
+        # NepochsPerDay = 24 * (3600 / epochSize)
+        # NepochsNeeded = ((ceiling(Na4c / NepochsPerDay) + 2) * NepochsPerDay - Na4c) + 1
+        # if (NepochsNeeded > 0)  {
+        #   acc4cos[(Na4c + 1):(Na4c + NepochsNeeded), ] = NA
+        #   acc4cos$time[(Na4c + 1):(Na4c + NepochsNeeded)] = seq(from = acc4cos$time[Na4c], by = epochSize, length.out = NepochsNeeded)
+        #   qcheck = c(qcheck, rep(1, NepochsNeeded))
+        # }
+        # EXPERIMENTAL CODE >>>
+        
         threshold = as.numeric(unlist(strsplit( params_phyact[["part6_threshold_combi"]], "_"))[1])
+        
+        # extract nightsi again
+        tempp = unclass(as.POSIXlt(acc4cos$time, tz = params_general[["desiredtz"]]))
+        sec = tempp$sec
+        min = tempp$min
+        hour = tempp$hour
+        if (params_general[["dayborder"]] == 0) {
+          nightsi = which(sec == 0 & min == 0 & hour == 0)
+        } else {
+          nightsi = which(sec == 0 & min == (params_general[["dayborder"]] - floor(params_general[["dayborder"]])) * 60 & hour == floor(params_general[["dayborder"]])) #shift the definition of midnight if required
+        }
         cosinor_coef = apply_cosinor_IS_IV_Analyses(ts = acc4cos,
-                                                    qcheck = ts$invalidepoch,
+                                                    qcheck = qcheck,
                                                     midnightsi = nightsi,
                                                     epochsizes = rep(epochSize, 2),
                                                     threshold = threshold)
