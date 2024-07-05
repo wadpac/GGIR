@@ -240,6 +240,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       #=================================================================
       # Circadian rhythm analysis
       if (do.cr == TRUE & N_valid_days > 2) {
+        #===============================================
         # Cosinor analysis which comes with IV IS estimtes
         # Note: applyCosinorAnalyses below uses column invalidepoch to turn
         # imputed values to NA.
@@ -287,6 +288,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
             silent = TRUE)
         s_names[fi:(fi + 2)] = c("IS", "IV", "phi")
         fi = fi + 3
+        #===============================================
         # Transition probabilities
         for (fragmode in c("day", "spt")) {
           ts_temp = ts
@@ -322,7 +324,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           if (WLH <= 1) WLH = 1.001
           for (wini in params_247[["winhr"]]) {
             reso = params_247[["M5L5res"]] #resolution at 5 minutes
-            endd = floor(WLH * 10) / 10 # rounding needed for non-integer window lengths
+            endd = floor((WLH * 10) / 10) # rounding needed for non-integer window lengths
             nwindow_f = (endd - wini) #number of windows for L5M5 analyses
             ignore = FALSE
             if (endd <= wini | nwindow_f < 1) ignore = TRUE # day is shorter then time window, so ignore this
@@ -342,10 +344,10 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
               TIMErunwin = TIMErunwin[is.na(ACCrunwin) == F]
               if (length(ACCrunwin) > 0 & length(TIMErunwin) > 0) {
                 # Derive day level variables
-                L5HOUR = TIMErunwin[which(ACCrunwin == min(ACCrunwin))[1]]
                 L5VALUE = min(ACCrunwin)
-                M5HOUR = TIMErunwin[which(ACCrunwin == max(ACCrunwin))[1]]
+                L5HOUR = TIMErunwin[which(ACCrunwin == L5VALUE)[1]]
                 M5VALUE = max(ACCrunwin)
+                M5HOUR = TIMErunwin[which(ACCrunwin == M5VALUE)[1]]
                 if (lightpeak_available == TRUE) {
                   if (length(unlist(strsplit(M5HOUR, " |T"))) == 1) M5HOUR = paste0(M5HOUR, " 00:00:00")
                   startM5 = which(format(ts$time) == M5HOUR)
@@ -359,9 +361,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                   M5_mean_peakLUX = M5_max_peakLUX = ""
                 }
               }
-            }
-            # Add variables calculated above to the output matrix
-            if (ignore == FALSE) {
+              # Add variables calculated above to the output matrix
               dsummary[si, gi:(gi + 1)] = c(L5VALUE, M5VALUE)
             }
             ds_names[gi:(gi + 1)] = c(paste0("L", wini, "VALUE"),
@@ -386,9 +386,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
               if (length(unlist(strsplit(M5HOUR," "))) == 1) M5HOUR = paste0(M5HOUR," 00:00:00")
               if (L5HOUR != "not detected") {
                 time_num = sum(as.numeric(unlist(strsplit(unlist(strsplit(L5HOUR," "))[2], ":"))) * c(3600, 60, 1)) / 3600
-                endTime = as.numeric(unlist(strsplit(format(ts$timestamp[sse[length(sse)]], format = "%H:%M:%S"), ":")))
-                endTime = sum(endTime * c(1, 1/60, 1/3600))
-                if (time_num < endTime) {
+                if (time_num <= 12) {
                   time_num = time_num + 24
                 }
                 dsummary[si,gi] = time_num
@@ -406,7 +404,6 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
               }
             }
             ds_names[gi] = paste("M", wini, "TIME_num", sep = "");      gi = gi + 1
-            
           }
           si = si + 1
           if (si > nrow(dsummary)) {
@@ -434,6 +431,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
             min = as.numeric(floor((MXLXsummary[cvi] - hr) * 60))
             sec = as.numeric(floor((MXLXsummary[cvi] - hr - (min / 60)) * 3600))
             if (!is.na(hr) && !is.na(min) && !is.na(sec)) {
+              if (hr >= 24) hr = hr - 24
               clock_time = paste0(hr, ":", min, ":", sec)
             } else {
               clock_time = NA
