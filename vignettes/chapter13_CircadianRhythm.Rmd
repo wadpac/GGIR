@@ -26,10 +26,10 @@ Within GGIR part 2 MXLX is calculated per calendar day and, if argument
 is calculated per window, and if used in combination with the GENEActiv or Axivity
 accelerometer brand LUX estimates per LX and MX are included.
 
-The MX metric describe here should not be confused by the MX metrics as proposed
+The MX metric described here should not be confused by the MX metrics as proposed
 by [Rowlands et al.](https://doi.org/10.1186/s40798-019-0225-9) which looks at
 accumulated most active time which may not always be continuous in time.
-The MX metrics by Rowlands et all are discussed further down.
+The MX metrics by Rowlands et al. are discussed further down.
 
 ## Cosinor analysis and Extended Cosinor analysis
 
@@ -43,7 +43,7 @@ The implementation within GGIR part 2 is as follows:
 -   Acceleration values are averaged per minute, and then log
     transformation as `log(acceleration converted to _mg_ + 1)`.
 -   Invalid data points such as caused by non-wear are set to missing
-    (NA) in order to prevent the imputation approach used elsewhere in
+    (`NA`) in order to prevent the imputation approach used elsewhere in
     GGIR to influence the Cosinor analysis. We do this because
     imputation technique generally come with some assumptions about
     circadian rhythm.
@@ -69,20 +69,18 @@ The implementation within GGIR part 2 is as follows:
 
 ### IV and IS - Default
 
-The original implementation (argument IVIS.activity.metric = 1) uses the
-continuous numeric acceleration values. However, as we later realised
+The original implementation (argument `IVIS.activity.metric = 1`) uses the
+continuous numeric acceleration values. However, as we later realised,
 this is not compatible with the original approach by van Someren and
 colleagues, which uses a binary distinction between active and inactive.
-Therefore, a second option was added (argument IVIS.activity.metric = 2),
+Therefore, a second option was added (argument `IVIS.activity.metric = 2`),
 which needs to be used in combination with accelerometer metric ENMO,
 and collapses the acceleration values into a binary score of rest versus
 active. This is the current default.
 
 ### IV and IS - Cosinor analysis compatible
 
-Disclaimer: The following has been implemented 2022, but is currently 
-undergoing critical evaluation. As a result, we may update this algorithm 
-during the course of 2023.
+**Disclaimer: The following has been implemented 2022, but is currently  undergoing critical evaluation. As a result, we may update this algorithm during the course of 2023.**
 
 IS is sometimes used as a measure of behavioural robustness when
 conducting Cosinor analysis. However, to work with the combination of
@@ -102,7 +100,7 @@ all non-matching epochs across the entire recording were excluded.
 Instead, IV and IS are calculated as follows:
 
 1.  Per day pair based on matching valid epochs only IV and IS and
-    calculated. Here, a log is kept of the number of valid epoch per day
+    calculated. Here, a log is kept of the number of valid epochs per day
     pair.
 2.  Omit day pairs where the fraction of valid epoch pairs is below 0.66
     (0.66 is hard-coded at the moment).

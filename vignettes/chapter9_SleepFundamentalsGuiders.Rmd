@@ -151,7 +151,7 @@ To use this guider set parameter `HASPT.algo = "HorAngle"`
 
 As already referenced in the previous chapter the `NotWorn` guider is designed for studies where the instruction is to not wear the accelerometer during the night. It should be obvious that this does not facilitate any meaningful sleep analysis. Nonetheless we need a crude estimate of night time versus day time in order for GGIR part 5 to characterise day time behaviours.
 
-First the `NotWorn` algortihm calculates the 5 minute rolling average of the acceleration metric values (i.e., acceleration metric defined with parameter `acc.metric`) and applies a threshold that is 5% of the standard deviation in the resulting signal. However, if this threshold is less than the minimum value in the signal the threshold is set equal to the 10th percentile in the distribution.
+First the `NotWorn` algorithm calculates the 5 minute rolling average of the acceleration metric values (i.e., acceleration metric defined with parameter `acc.metric`) and applies a threshold that is 5% of the standard deviation in the resulting signal. However, if this threshold is less than the minimum value in the signal the threshold is set equal to the 10th percentile in the distribution.
 
 Next, this is used to identify the largest non-movement period, by only considering segments of at least 30 minutes, and then looking for longest segment in the day where gaps of less than 60 minutes are ignored. Therefore, the last 4 steps in the algorithm are identical to the last four steps in the HDCZA and HorAngle algorithms.
 
