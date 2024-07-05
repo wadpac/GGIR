@@ -29,13 +29,9 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
       include_window = rep(TRUE, nrow(x))
       if (length(params_cleaning[["data_cleaning_file"]]) > 0) { # allow for forced relying on guider based on external params_cleaning[["data_cleaning_file"]]
         DaCleanFile = data.table::fread(params_cleaning[["data_cleaning_file"]], data.table = FALSE)
-        days2exclude = which(DaCleanFile$ID %in% x$ID & DaCleanFile$day_part5 %in% x$window_number)
+        days2exclude = which(paste(x$ID, x$window_number) %in% paste(DaCleanFile$ID, DaCleanFile$day_part5))
         if (length(days2exclude) > 0) {
-          for (ri in 1:length(days2exclude)) {
-            id2remove = DaCleanFile$ID[days2exclude[ri]]
-            window2remove = DaCleanFile$day_part5[days2exclude[ri]]
-            include_window[which(x$ID == id2remove & x$window_number == window2remove)] = FALSE
-          }
+          include_window[days2exclude] = FALSE
         }
       } else {
         include_window = rep(TRUE,nrow(x))
