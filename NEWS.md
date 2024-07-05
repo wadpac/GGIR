@@ -1,3 +1,9 @@
+# CHANGES IN GGIR VERSION 3.1-3
+
+- Report part 4 and 5:
+
+  - Improves handling of days and nights to exclude from data_cleaning_file in part 4 and 5 reports #1168
+  
 # CHANGES IN GGIR VERSION 3.1-2
 
 - Part 1:
