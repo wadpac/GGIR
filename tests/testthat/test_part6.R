@@ -2,8 +2,6 @@ library(GGIR)
 context("g.part6")
 
 test_that("Part 6 with household co-analysis", {
-  devtools::load_all(".")
-  library(testthat)
 
   # Create test files for household co-analysis
   metadatadir = "./output_testpart6"
