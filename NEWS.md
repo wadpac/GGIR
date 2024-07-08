@@ -22,7 +22,13 @@
   - includenightcrit.part5 added to allow for controlling inclusion of windows in part 5 based on their amount of valid data during spt window. Default remains the same.
 
   - Fix incorrect usage of part 5 inclusion criteria testing, which used fraction as percentage.
-  
+
+# CHANGES IN GGIR VERSION 3.1-3
+
+- Report part 4 and 5:
+
+  - Fix bug at identifying days and nights specified in the data_cleaning_file #1168
+
 # CHANGES IN GGIR VERSION 3.1-2
 
 - Part 1:
