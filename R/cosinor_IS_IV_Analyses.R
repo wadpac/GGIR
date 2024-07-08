@@ -7,6 +7,16 @@ cosinor_IS_IV_Analyses = function(Xi, epochsize = 60, timeOffsetHours = 0, thres
   N = 1440 * (60 / epochsize) # Number of epochs per day
   Xi = Xi[1:(N * floor(length(Xi) / N))] # ActCR expects integer number of days
   
+  # omit all days at the end with no data
+  end2 = length(Xi)
+  while (end2 >= N) {
+    if (all(is.na(Xi[(end2 - N + 1):end2]))) {
+      end2 = end2 - N
+      Xi = Xi[1:end2]
+    } else {
+      end2 = -1
+    }
+  }
   # transform data to millig if data is stored in g-units
   notna = !is.na(Xi)
   if (max(Xi, na.rm = TRUE) < 13 && mean(Xi, na.rm = TRUE) < 1) {
@@ -46,13 +56,7 @@ cosinor_IS_IV_Analyses = function(Xi, epochsize = 60, timeOffsetHours = 0, thres
   coefext$params$R2 = cor(coefext$cosinor_ts$original, coefext$cosinor_ts$fittedYext)^2
   coef$params$R2 = cor(coefext$cosinor_ts$original, coefext$cosinor_ts$fittedY)^2
   
-  # # this should equal: https://en.wikipedia.org/wiki/Coefficient_of_determination
-  # yi = coefext$cosinor_ts$original
-  # fi = coefext$cosinor_ts$fittedY
-  # meanY = mean(coefext$cosinor_ts$original)
-  # SSres = sum((yi - fi)^2)
-  # SStot = sum((y - meanY)^2)
-  # R2 = 1 - (SSres / SStot)
-  
+ # this should equal: https://en.wikipedia.org/wiki/Coefficient_of_determination
+
   invisible(list(coef = coef, coefext = coefext, IVIS = IVIS))
 }
