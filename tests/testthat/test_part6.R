@@ -91,10 +91,10 @@ test_that("Part 6 with household co-analysis", {
   load(path_to_ms6)
   expect_equal(ncol(output_part6), 48)
   expect_equal(output_part6$starttime, "2022-06-02 03:00:00")
-  expect_equal(output_part6$cosinor_mes, 2.451769, tolerance = 0.00001)
-  expect_equal(output_part6$cosinorExt_minimum, 1.288636, tolerance = 0.00001)
-  expect_equal(output_part6$cosinorExt_MESOR, 2.164644, tolerance = 0.00001)
-  expect_equal(sum(output_part6[5:27]), 329.6339, tolerance = 0.0001)
+  expect_equal(output_part6$cosinor_mes, 2.425692, tolerance = 0.00001)
+  expect_equal(output_part6$cosinorExt_minimum, 1.259289, tolerance = 0.00001)
+  expect_equal(output_part6$cosinorExt_MESOR, 2.13904, tolerance = 0.00001)
+  expect_equal(sum(output_part6[5:27]), 527.9784, tolerance = 0.0001)
   
   
   # Run Circadian rhythm analysis with non-default window
@@ -111,10 +111,10 @@ test_that("Part 6 with household co-analysis", {
   load(path_to_ms6)
   expect_equal(ncol(output_part6), 48)
   expect_equal(output_part6$starttime, "2022-06-03 01:41:00")
-  expect_equal(output_part6$cosinor_mes, 2.393491, tolerance = 0.00001)
-  expect_equal(output_part6$cosinorExt_minimum, 1.233231, tolerance = 0.00001)
-  expect_equal(output_part6$cosinorExt_MESOR, 2.106111, tolerance = 0.00001)
-  expect_equal(sum(output_part6[5:27]), 540.4762, tolerance = 0.0001)
+  expect_equal(output_part6$cosinor_mes, 2.393167, tolerance = 0.00001)
+  expect_equal(output_part6$cosinorExt_minimum, 1.233169, tolerance = 0.00001)
+  expect_equal(output_part6$cosinorExt_MESOR, 2.106083, tolerance = 0.00001)
+  expect_equal(sum(output_part6[5:27]), 543.4619, tolerance = 0.0001)
   
   # Remove test files
   if (file.exists(metadatadir))  unlink(metadatadir, recursive = TRUE)

@@ -276,19 +276,17 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         colnames(ts)[which(colnames(ts) == "timenum")] = "time"
         acc4cos = ts[, c("time", "ACC")]
         qcheck = ts$invalidepoch
-        
-        # <<< EXPERIMENTAL CODE 
-        # # Add missing value to complete an interger number of full days
-        # Na4c = nrow(acc4cos)
-        # NepochsPerDay = 24 * (3600 / epochSize)
-        # NepochsNeeded = ((ceiling(Na4c / NepochsPerDay) + 2) * NepochsPerDay - Na4c) + 1
-        # if (NepochsNeeded > 0)  {
-        #   acc4cos[(Na4c + 1):(Na4c + NepochsNeeded), ] = NA
-        #   acc4cos$time[(Na4c + 1):(Na4c + NepochsNeeded)] = seq(from = acc4cos$time[Na4c], by = epochSize, length.out = NepochsNeeded)
-        #   qcheck = c(qcheck, rep(1, NepochsNeeded))
-        # }
-        # EXPERIMENTAL CODE >>>
-        
+
+        # Add missing value to complete an interger number of full days
+        Na4c = nrow(acc4cos)
+        NepochsPerDay = 24 * (3600 / epochSize)
+        NepochsNeeded = ((ceiling(Na4c / NepochsPerDay) + 4) * NepochsPerDay - Na4c) + 1
+        if (NepochsNeeded > 0)  {
+          acc4cos[(Na4c + 1):(Na4c + NepochsNeeded), ] = NA
+          acc4cos$time[Na4c:(Na4c + NepochsNeeded)] = seq(from = acc4cos$time[Na4c], by = epochSize, length.out = NepochsNeeded + 1)
+          qcheck = c(qcheck, rep(1, NepochsNeeded))
+        }
+
         threshold = as.numeric(unlist(strsplit( params_phyact[["part6_threshold_combi"]], "_"))[1])
         
         # extract nightsi again

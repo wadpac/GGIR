@@ -4,7 +4,7 @@ apply_cosinor_IS_IV_Analyses = function(ts, qcheck, midnightsi, epochsizes, thre
   ws3 = epochsizes[1]
   # Re-derive Xi but this time include entire time series
   # Here, we ignore duplicated values (when clock moves backward due to DST)
-  handleDST = !duplicated(ts)
+  handleDST = !duplicated(ts$time)
   qcheck = qcheck[handleDST]
   Xi = ts[handleDST, grep(pattern = "time", x = colnames(ts), invert = TRUE)]
   Nlong_epochs_day =  (1440 * 60) / ws2 # this is 96 by default
