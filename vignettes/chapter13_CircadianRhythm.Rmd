@@ -64,7 +64,6 @@ The implementation within GGIR part 2 is as follows:
 
 ## Intradaily Variability (IV) and Interdaily Stability (IS)
 
-
 **Disclaimer: This functionality has undergone major revisions and enhancements in 2024. The documentation you find here is outdated and will be updated as soon as the enhancements have been incorporated in a GGIR release.**
 
 ### IV and IS - Default
@@ -80,8 +79,6 @@ active. This is the current default.
 
 ### IV and IS - Cosinor analysis compatible
 
-**Disclaimer: The following has been implemented 2022, but is currently  undergoing critical evaluation. As a result, we may update this algorithm during the course of 2023.**
-
 IS is sometimes used as a measure of behavioural robustness when
 conducting Cosinor analysis. However, to work with the combination of
 the two outcomes it seems important that IS is calculated from the same
@@ -90,7 +87,7 @@ twice: Once as part of the default IV and IS analysis as discussed
 above, and once as part of the Cosinor analysis using the same log
 transformed time series. More specifically, the IV and IS algorithm is
 applied with `IVIS.activity.metric = 2` and
-`IVIS_acc_threshold = log(20 + 1)` to make the binary distinction
+a threshold `IVIS_acc_threshold = log(20 + 1)` to make the binary distinction
 between active and inactive, and `IVIS_per_daypair = TRUE`. The setting
 `IVIS_per_daypair` was specifically designed for this context to handle
 the potentially missing values in the time series as used for Cosinor
