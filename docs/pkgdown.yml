@@ -10,6 +10,7 @@ articles:
   chapter10_SleepAnalysis: chapter10_SleepAnalysis.html
   chapter11_DescribingDataCutPoints: chapter11_DescribingDataCutPoints.html
   chapter12_TimeUseAnalysis: chapter12_TimeUseAnalysis.html
+  chapter13_CircadianRhythm: chapter13_CircadianRhythm.html
   chapter2_Pipeline: chapter2_Pipeline.html
   chapter3_QualityAssessment: chapter3_QualityAssessment.html
   chapter4_AccMetrics: chapter4_AccMetrics.html
@@ -28,7 +29,7 @@ articles:
   HouseHoldCoanalysis: HouseHoldCoanalysis.html
   readmyacccsv: readmyacccsv.html
   TutorialDaySegmentAnalyses: TutorialDaySegmentAnalyses.html
-last_built: 2024-07-02T15:03Z
+last_built: 2024-07-10T16:05Z
 urls:
   reference: https://wadpac.github.io/GGIR/reference
   article: https://wadpac.github.io/GGIR/articles
