@@ -38,7 +38,7 @@ In both cases the start of the first SIB is then considered sleep onset and the 
 
 For all guiders, other than "HorAngle", parameter `sleepwindowType` is automatically set to "SPT" corresponding to scenario 1, such that no attempt is made to estimate sleep latency or sleep efficiency. 
 
-If you use as guider a sleeplog that reflects the Time in Bed you will need to set parameter `sleepwindowType = “TimeInBed”` to tell GGIR to follow scenario 2.
+If you use as guider a sleeplog that reflects the Time in Bed you will need to set parameter `sleepwindowType = "TimeInBed"` to tell GGIR to follow scenario 2.
 
 ## Quality assurance
 
