@@ -36,7 +36,7 @@ output_list = foreach::foreach(i = 1:length(fns), .packages = packages2passon,
                                    filename = fns[i]
                                    t0 = Sys.time()
                                    # Following 10 lines derived from
-                                   # https://github.com/SoftwareImpacts/SIMPAC-2023-319/blob/master/R/readCounts.Rhttps://github.com/SoftwareImpacts/SIMPAC-2023-319/blob/master/R/readCounts.R
+                                   # https://github.com/github-js/acc/blob/master/R/readCounts.R
                                    # but modified as their code does not recognise that it is a uniaxial GT3Xplus
                                    con = DBI::dbConnect(RSQLite::SQLite(), dbname = filename)
                                    settings <- DBI::dbReadTable(con, "settings")
@@ -51,7 +51,6 @@ output_list = foreach::foreach(i = 1:length(fns), .packages = packages2passon,
                                    filter <- settings$settingValue[settings$settingName ==  "filter"]
                                    datetimeformat <- settings$settingValue[settings$settingName ==  "datetimeformat"]
                                    if (length(softwareVersion) == 0) softwareVersion = ""
-                                   
                                    
                                    startdatetime2 <- as.POSIXlt((as.numeric(startdatetime)/1e+07),
                                                                 origin = "0001-01-01 00:00:00", tz = "GMT")
