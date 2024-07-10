@@ -57,6 +57,11 @@ Two sleeplog file structures are supported: the so-called basic and advanced sle
 
 To use this guider set the location of your sleeplog as value to parameter `loglocation`.
 
+General notes on how GGIR uses sleeplogs as guider:
+
+- GGIR expects both the start and end of the sleep window to be specified. If one of them is missing then the sleeplog data is assumed to be missing for the entire night.
+- GGIR does not impute sleeplog data. If you feel that imputation is desirable then do this yourself before running GGIR.
+
 #### Basic sleep log
 
 Example of a basic sleeplog:
