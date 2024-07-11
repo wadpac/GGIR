@@ -4,6 +4,9 @@
 
   - Fix bug at identifying days and nights specified in the data_cleaning_file #1168
   
+  
+- Part 5: Expand functionality for exploring the role of naps
+  
 # CHANGES IN GGIR VERSION 3.1-2
 
 - Part 1:

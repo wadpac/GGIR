@@ -5,7 +5,7 @@ tz = "Pacific/Auckland"
 ds_names = rep("", 40)
 dsummary = matrix("", 1, 40)
 startday = as.POSIXct(x = "2022-06-02 08:00:00", tz = tz)
-time = seq(startday, startday + (16 * 3600), by = 60)
+ts = data.frame(time = seq(startday, startday + (16 * 3600), by = 60))
 
 test_that("Overlap 1 nap and 1 sib", {
   fi = 1
@@ -17,7 +17,7 @@ test_that("Overlap 1 nap and 1 sib", {
                                            time2 = sibreport$start, units = "mins", tz = tz))
   restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
                                      ds_names = ds_names, fi = fi, di = di,
-                                     time = time,
+                                     ts = ts,
                                      tz = tz)
   fi = restAnalyses$fi
   di = restAnalyses$di
@@ -46,7 +46,7 @@ test_that("Overlap 1 nonwear and 1 sib", {
   sibreport$duration = as.numeric(difftime(time1 = sibreport$end, time2 = sibreport$start, units = "mins", tz = tz))
   restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
                                      ds_names = ds_names, fi = fi, di = di,
-                                     time = time,
+                                     ts = ts,
                                      tz = tz)
   fi = restAnalyses$fi
   di = restAnalyses$di
@@ -63,7 +63,7 @@ test_that("Overlap 1 nonwear and 1 sib", {
   expect_equal(dsummary$frag_mean_dur_srnonw_day, 20)
   expect_equal(dsummary$perc_sib_overl_srnonw, 100)
   expect_equal(dsummary$perc_srnonw_overl_sib, 75)
-  expect_equal(sum(dsummary), 323)
+  expect_equal(sum(dsummary), 324)
 })
 
 
@@ -76,7 +76,7 @@ test_that("No overlap 1 nonwear, 1 nap, and 1 sib", {
   sibreport$duration = as.numeric(difftime(time1 = sibreport$end, time2 = sibreport$start, units = "mins", tz = tz))
   restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
                                      ds_names = ds_names, fi = fi, di = di,
-                                     time = time,
+                                     ts = ts,
                                      tz = tz)
   fi = restAnalyses$fi
   di = restAnalyses$di
@@ -89,7 +89,7 @@ test_that("No overlap 1 nonwear, 1 nap, and 1 sib", {
   names(dsummary) = ds_names
   dsummary = as.data.frame(t(dsummary))
   
-  expect_equal(ncol(dsummary), 27)
+  expect_equal(ncol(dsummary), 34)
   expect_equal(nrow(dsummary), 1)
   expect_equal(dsummary$nbouts_day_sib, 1)
   expect_equal(dsummary$nbouts_day_srnap, 1)

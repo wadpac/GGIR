@@ -46,8 +46,9 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
   
   #==========================
   # The following is to avoid issue with merging sleep variables from part 4
-  # Note that this means that for MM windows there can be multiple or no wake or onsets in window
-  date = as.Date(ts$time[segStart], tz = params_general[["desiredtz"]])
+  # This code extract them the time series (ts) object created in g.part5
+  # Note that this means that for MM windows there can be multiple or no wake or onsets
+  date = as.Date(ts$time[segStart + 1], tz = params_general[["desiredtz"]])
   if (add_one_day_to_next_date == TRUE & timewindowi %in% c("WW", "OO")) { # see below for explanation
     date = date + 1
     add_one_day_to_next_date = FALSE
@@ -478,7 +479,7 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     if (params_output[["do.sibreport"]]  == TRUE & !is.null(sibreport))  {
       restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
                                          ds_names = ds_names, fi = fi, di = si,
-                                         time = ts$time[sse[ts$diur[sse] == 0]],
+                                         ts = ts[sse[ts$diur[sse] == 0], ],
                                          tz = params_general[["desiredtz"]],
                                          possible_nap_dur = params_sleep[["possible_nap_dur"]])
       fi = restAnalyses$fi

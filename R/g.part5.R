@@ -319,6 +319,19 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               IDtmp = as.character(ID)
               sibreport = g.sibreport(ts, ID = IDtmp, epochlength = ws3new, logs_diaries,
                                       desiredtz = params_general[["desiredtz"]])
+              
+              # Add self-reported classes to ts object
+              ts$selfreported = NA
+              for (srType in c("sleeplog", "nap", "nonwear")) {
+                sr_index = which(sibreport$type == srType)
+                if (length(sr_index) > 0) {
+                  for (sii in sr_index) {
+                    ts$selfreported[which(ts$time >= sibreport$start[sii] & ts$time < sibreport$end[sii])] = srType
+                  }
+                }
+              }
+              ts$selfreported = as.factor(ts$selfreported)
+              
               # store in csv file:
               ms5.sibreport = "/meta/ms5.outraw/sib.reports"
               if (!file.exists(paste(metadatadir, ms5.sibreport, sep = ""))) {
@@ -575,8 +588,14 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     if (params_output[["do.sibreport"]] == TRUE & length(params_sleep[["nap_model"]]) > 0) {
                       napNonwear_col = "nap1_nonwear2"
                     } else {
-                      napNonwear_col = c()
+                      napNonwear_col = NULL
                     }
+                    if (params_output[["do.sibreport"]]  == TRUE) {
+                      selfreported_col = "selfreported"
+                    } else {
+                      selfreported_col = NULL
+                    }
+                    
                     if (lightpeak_available == TRUE) {
                       lightpeak_col = "lightpeak"
                     } else {
@@ -591,8 +610,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                       temperature_col = NULL
                     }
                     g.part5.savetimeseries(ts = ts[, c("time", "ACC", "diur", "nonwear",
-                                                       "guider", "window", napNonwear_col,
-                                                       lightpeak_col, angle_col, temperature_col)],
+                                                       "guider", "window", "sibdetection", napNonwear_col,
+                                                       lightpeak_col, selfreported_col,
+                                                       angle_col, temperature_col)],
                                            LEVELS = LEVELS,
                                            desiredtz = params_general[["desiredtz"]],
                                            rawlevels_fname = rawlevels_fname,
@@ -717,7 +737,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                            "g.part5.handle_lux_extremes", "g.part5.lux_persegment",
                            "g.part5.savetimeseries", "g.part5.wakesleepwindows",
                            "g.part5.onsetwaketiming", "g.part5_analyseSegment",
-                           "g.part5_initialise_ts",
+                           "g.part5_initialise_ts", "g.part5.analyseRest",
                            "g.fragmentation", "g.intensitygradient")
       errhand = 'stop'
     }

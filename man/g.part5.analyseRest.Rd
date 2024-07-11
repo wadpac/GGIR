@@ -10,7 +10,7 @@
 \usage{
   g.part5.analyseRest(sibreport = NULL, dsummary = NULL,
                                 ds_names = NULL, fi = NULL,
-                                di = NULL, time = NULL, tz = NULL,
+                                di = NULL, ts = NULL, tz = NULL,
                                 possible_nap_dur = 0,
                                 possible_nap_edge_acc = Inf)
 }
@@ -31,8 +31,8 @@
   \item{di}{
     Numeric scalar to indicate recording index, created internally by \link{g.part5}
   }
-  \item{time}{
-    Daytime section of time column from the ts object, created internally by \link{g.part5},
+  \item{ts}{
+    Data.frame with time series object passed on from \link{g.part5_analyseSegment} and \link{g.part5},
   }
   \item{tz}{
     Timezone database name

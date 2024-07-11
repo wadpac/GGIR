@@ -439,5 +439,13 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
               includenightcrit = params_cleaning[["includenightcrit"]],
               verbose = TRUE)
     }
+    g.plot_ts(metadatadir = metadatadir,
+              viewingwindow = params_output[["viewingwindow"]],
+              f0 = f0, f1 = f1,
+              overwrite = params_general[["overwrite"]],
+              desiredtz = params_general[["desiredtz"]],
+              verbose = TRUE,
+              part6_threshold_combi = params_phyact[["part6_threshold_combi"]])
+    
   }
 }
