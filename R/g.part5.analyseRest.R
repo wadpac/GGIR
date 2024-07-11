@@ -63,6 +63,7 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
   }
   longboutsi = which((sibreport$type == "sib" &
                         sibreport$duration >= possible_nap_dur[1] &
+                        sibreport$duration < possible_nap_dur[2] &
                         sibreport$acc_edge <= possible_nap_edge_acc) |
                        (sibreport$type != "sib" & sibreport$duration >= 1))
   # for qc purposes:
