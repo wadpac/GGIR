@@ -66,7 +66,7 @@ navbar:
         - text: 12. Time-Use Analysis
           href: articles/chapter12_TimeUseAnalysis.html
         - text: 13. Circadian Rhythm Analysis
-          href: articles/chapterInProgress.html
+          href: articles/chapter13_CircadianRhythm.html
     annexes:
       text: Annexes
       menu:

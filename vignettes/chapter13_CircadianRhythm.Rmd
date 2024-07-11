@@ -1,0 +1,67 @@
+---
+title: "13. Circadian Rhythm Analysis"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{13. Circadian Rhythm Analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## MXLX
+
+Detection of the continuous least (LX) and most (MX) active X hours in a day, where X is defined by argument `winhr`. For both GGIR calculates the average acceleration, the start time, and if argument `iglevels` is specified also the intensity gradient. If argument `winhr` is a vector then descriptive values for LX and MX are derived per value in `winhr`.
+
+Within GGIR part 2 MXLX is calculated per calendar day and, if argument `qwindow` is specified, per segment of the day. Within GGIR part 5 MXLX is calculated per window, and if used in combination with the GENEActiv or Axivity accelerometer brand LUX estimates per LX and MX are included.
+
+The MX metric described here should not be confused by the MX metrics as proposed by [Rowlands et al.](https://doi.org/10.1186/s40798-019-0225-9) which looks at accumulated most active time which may not always be continuous in time. The MX metrics by Rowlands et al. are discussed [here](https://wadpac.github.io/GGIR/articles/chapter7_DescribingDataWithoutKnowingSleep.html#sets-of-quantiles-mx-metrics-by-rowlands-et-al-).
+
+## Cosinor analysis and Extended Cosinor analysis
+
+**Disclaimer: This functionality is currently (2024) being revised. Once the enhancements have been incorporated in a GGIR release this section will also be updated.**
+
+The (Extended) Cosinor analysis quantifies the circadian 24 hour cycle. Cosinor analysis refers to fiting a cosine function to a time series, while the extended cosinor analysis refers to fitting a cosine function to the transformed time series afrer Marler et al. Statist. Med. 2006 (doi: 10.1002/sim.2466).
+
+To do this GGIR uses R package
+[ActCR](https://CRAN.R-project.org/package=ActCR) as a dependency. Specify argument `cosinor = TRUE` to perform these analysis.
+
+GGIR performs cosinor analysis both in part 2 and 6.
+
+The implementation within GGIR part 2 is as follows:
+
+- Acceleration values are averaged per minute, and then log transformation as `log(acceleration converted to _mg_ + 1)`.
+- Invalid data points such as caused by non-wear are set to missing (`NA`) in order to prevent the imputation approach used elsewhere in GGIR to influence the Cosinor analysis. We do this because imputation technique generally come with some assumptions about circadian rhythm.
+- GGIR looks for the first valid data point in the recording and then selects the maximum integer number of recording days following this data point and feeds these to the ActCosinor and ActExtendCosinor functions of ActCR. The time offset between the start and the following midnight is then used to reverse offset the ActCR results, to ensure that acrophase and acrotime can be interpreted relative to midnight.
+- In relation to Day Saving Time: Duplicated time stamps when clock moves backward are ignored and missing time stamps when clock moves forward are inserted as missing values.
+- Time series corresponding to the fitted models are stored inside the part 2 milestone data to facilitate visual inspection. For the moment they are not used in any GGIR visualisation, but you may want to look them up and try to plot them yourself.
+    
+The implementation within GGIR part 6 is as follows:
+- Only the time series are used in the interval as defined with parameter `part6Window`.
+- Make sure to set `save_ms5raw_without_invalid = FALSE`, after the revision it will also handle setting this to TRUE but for the moment TRUE introduces errors.
+    
+
+## Intradaily Variability (IV) and Interdaily Stability (IS)
+
+**Disclaimer: This functionality is currently (2024) being revised. Once the enhancements have been incorporated in a GGIR release this section will also be updated.**
+
+### IV and IS - Default
+
+The original implementation (argument `IVIS.activity.metric = 1`) uses the continuous numeric acceleration values. However, as we later realised, this is not compatible with the original approach by van Someren and colleagues, which uses a binary distinction between active and inactive. Therefore, a second option was added (argument `IVIS.activity.metric = 2`), which needs to be used in combination with accelerometer metric ENMO, and collapses the acceleration values into a binary score of rest versus active. This is the current default.
+
+### IV and IS - Cosinor analysis compatible
+
+IS is sometimes used as a measure of behavioural robustness when conducting Cosinor analysis. However, to work with the combination of the two outcomes it seems important that IS is calculated from the same time series. Therefore, when `cosinor = TRUE` IV and IS are calculated twice: Once as part of the default IV and IS analysis as discussed
+above, and once as part of the Cosinor analysis using the same log transformed time series. More specifically, the IV and IS algorithm is applied with `IVIS.activity.metric = 2` and a threshold `IVIS_acc_threshold = log(20 + 1)` to make the binary distinction between active and inactive, and `IVIS_per_daypair = TRUE`. The setting `IVIS_per_daypair` was specifically designed for this context to handle the potentially missing values in the time series as used for Cosinor
+analysis. Applying the default IVIS algorithm would not be able to handle the missing values and would result in a loss of information if all non-matching epochs across the entire recording were excluded. Instead, IV and IS are calculated as follows:
+
+1. Per day pair based on matching valid epochs only IV and IS and calculated. Here, a log is kept of the number of valid epochs per day pair.
+2. Omit day pairs where the fraction of valid epoch pairs is below 0.66 (0.66 is hard-coded at the moment).
+3. Calculate average IS across days weighted by fraction of valid epochs per day pairs.
+
+The new Cosinor-compatible IV and IS estimates are stored as output variables `cosinorIV` and `cosinorIS`.

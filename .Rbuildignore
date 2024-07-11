@@ -13,6 +13,7 @@ RELEASE_CYCLE.md
 ^pkgdown$
 ^vignettes/chapter*
 ^dev-functions$
+^user-scripts$
 .zenodo.json
 ^doc$
 .chapterInProgress.Rmd

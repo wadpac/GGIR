@@ -53,7 +53,7 @@
     <a class="dropdown-item" href="../articles/chapter10_SleepAnalysis.html">10. Sleep Analysis</a>
     <a class="dropdown-item" href="../articles/chapter11_DescribingDataCutPoints.html">11. Physical Activity Fundamentals - Describing the data with cut-points</a>
     <a class="dropdown-item" href="../articles/chapter12_TimeUseAnalysis.html">12. Time-Use Analysis</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">13. Circadian Rhythm Analysis</a>
+    <a class="dropdown-item" href="../articles/chapter13_CircadianRhythm.html">13. Circadian Rhythm Analysis</a>
   </div>
 </li>
 <li class="nav-item dropdown">
@@ -189,6 +189,14 @@ Two sleeplog file structures are supported: the so-called basic and
 advanced sleeplog.</p>
 <p>To use this guider set the location of your sleeplog as value to
 parameter <code>loglocation</code>.</p>
+<p>General notes on how GGIR uses sleeplogs as guider:</p>
+<ul>
+<li>GGIR expects both the start and end of the sleep window to be
+specified. If one of them is missing then the sleeplog data is assumed
+to be missing for the entire night.</li>
+<li>GGIR does not impute sleeplog data. If you feel that imputation is
+desirable then do this yourself before running GGIR.</li>
+</ul>
 <div class="section level4">
 <h4 id="basic-sleep-log">Basic sleep log<a class="anchor" aria-label="anchor" href="#basic-sleep-log"></a>
 </h4>
@@ -384,7 +392,7 @@ chapter 10.</p>
 to noon. However, if it ends between 11am and noon then it will be
 applied again but to a 6pm-6pm time segment.</p>
 <p>To use this guider set parameter
-<code>HASPT.algo = “HorAngle”</code>.</p>
+<code>HASPT.algo = "HorAngle"</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="guider-l5-12-legacy-algorithm">Guider: L5+/-12 (LEGACY ALGORITHM)<a class="anchor" aria-label="anchor" href="#guider-l5-12-legacy-algorithm"></a>
@@ -399,7 +407,7 @@ inferior to some of the other guiders, but easy to describe. It was
 first presented in a <a href="https://dx.doi.org/10.1038/s41598-018-31266-z" class="external-link">2018
 article</a>.</p>
 <p>To use this guider set parameter
-<code>def.noc.sleep = “c()”</code>.</p>
+<code>def.noc.sleep = c()</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="guider-setwindow-legacy-algorithm">Guider: setwindow (LEGACY ALGORITHM)<a class="anchor" aria-label="anchor" href="#guider-setwindow-legacy-algorithm"></a>
@@ -411,7 +419,7 @@ it.</strong></p>
 <p>This guider uses a set window for each day in the recording. Start
 and end time are specified with argument <code>def.noc.sleep</code>. For
 example, to use this guider with a window from 10pm to 8am set parameter
-<code>def.noc.sleep = “c(22, 8)”</code>.</p>
+<code>def.noc.sleep = c(22, 8)</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="guider-horangle-experimental">Guider: HorAngle (EXPERIMENTAL)<a class="anchor" aria-label="anchor" href="#guider-horangle-experimental"></a>
@@ -437,7 +445,7 @@ longest horizontal period in the day where gaps of less than 60 minutes
 are ignored. Therefore, the last 4 steps in the algorithm are identical
 to the last four steps in the HDCZA algorithm.</p>
 <p>To use this guider set parameter
-<code>HASPT.algo = “HorAngle”</code></p>
+<code>HASPT.algo = "HorAngle"</code></p>
 </div>
 <div class="section level3">
 <h3 id="guider-notworn-experimental">Guider: NotWorn (EXPERIMENTAL)<a class="anchor" aria-label="anchor" href="#guider-notworn-experimental"></a>
@@ -446,23 +454,45 @@ to the last four steps in the HDCZA algorithm.</p>
 it has not been described and evaluated in a peer-reviewed publication
 yet. This means revisions to the algorithm can be expected as the
 algorithm matures.</strong></p>
-<p>This guider is primarily designed for externally derived epoch data
-expressed in movement counts and used for studies where the instruction
-was not to wear the accelerometer during the night. GGIR then searches
-for the longest period with near-zero movement.</p>
-<p>It does this by using the 5 minute rolling average of the
-acceleration metric values and applying a threshold that is 20% of the
-standard deviation in the resulting signal.</p>
-<p>However, if this threshold is less than the minimum value in the
-signal the threshold is set equal to the 10th percentile in the
+<p>As already referenced in the previous chapter the
+<code>NotWorn</code> guider is designed for studies where the
+instruction is to not wear the accelerometer during the night. It should
+be obvious that this does not facilitate any meaningful sleep analysis.
+Nonetheless we need a crude estimate of night time versus day time in
+order for GGIR part 5 to characterise day time behaviours.</p>
+<p>First the <code>NotWorn</code> algorithm calculates the 5 minute
+rolling average of the acceleration metric values (i.e., acceleration
+metric defined with parameter <code>acc.metric</code>) and applies a
+threshold that is 5% of the standard deviation in the resulting signal.
+However, if this threshold is less than the minimum value in the signal
+the threshold is set equal to the 10th percentile in the
 distribution.</p>
 <p>Next, this is used to identify the largest non-movement period, by
 only considering segments of at least 30 minutes, and then looking for
 longest segment in the day where gaps of less than 60 minutes are
 ignored. Therefore, the last 4 steps in the algorithm are identical to
 the last four steps in the HDCZA and HorAngle algorithms.</p>
-<p>To use this guider set parameter
-<code>HASPT.algo = “NotWorn”</code></p>
+<p>The algorithm is expected to work with any acceleration metric, so
+both count-type metrics and metrics in gravitational units.</p>
+<p>To use this guider set parameter <code>HASPT.algo = "NotWorn"</code>.
+Further, we recommend combining the using of “NotWorn” with:
+<code>do.imp = FALSE</code>, <code>HASPT.ignore.invalid = NA</code>, and
+<code>ignorenonwear = FALSE</code>.</p>
+<p>If this is used it will also define the resulting window as SIB
+period and ignore all other identified SIB window to ensure the entire
+window is treated as sleep. So, all SIB periods detected are
+ignored.</p>
+<p>However, we know from experience that participants occasionally wear
+the accelerometer during the night even when they are told not to. GGIR
+offers a solution for this if you are not working with count data but
+with accelerometer metrics in gravitational units. In that case, it is
+possible to specify a second guider to use when the accelerometer has
+been worn for less than 25% of the time in the detection window
+(noon-noon or 6pm-6pm). If this happens then it will check whether
+parameter <code>HASPT.algo</code> has two guiders specified. If it does
+it will use the second one. For example,
+<code>HASPT.algo = c("NotWorn", "HDCZA"</code>) or
+<code>HASPT.algo = c("NotWorn", "HorAngle"</code>).</p>
 </div>
 </div>
 <div class="section level2">
