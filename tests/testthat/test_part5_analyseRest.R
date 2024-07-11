@@ -18,6 +18,8 @@ test_that("Overlap 1 nap and 1 sib", {
   restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
                                      ds_names = ds_names, fi = fi, di = di,
                                      ts = ts,
+                                     possible_nap_dur = c(0, 240),
+                                     possible_nap_edge_acc = Inf,
                                      tz = tz)
   fi = restAnalyses$fi
   di = restAnalyses$di
@@ -47,6 +49,8 @@ test_that("Overlap 1 nonwear and 1 sib", {
   restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
                                      ds_names = ds_names, fi = fi, di = di,
                                      ts = ts,
+                                     possible_nap_dur = c(0, 240),
+                                     possible_nap_edge_acc = Inf,
                                      tz = tz)
   fi = restAnalyses$fi
   di = restAnalyses$di
@@ -77,6 +81,8 @@ test_that("No overlap 1 nonwear, 1 nap, and 1 sib", {
   restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
                                      ds_names = ds_names, fi = fi, di = di,
                                      ts = ts,
+                                     possible_nap_dur = c(0, 240),
+                                     possible_nap_edge_acc = Inf,
                                      tz = tz)
   fi = restAnalyses$fi
   di = restAnalyses$di
