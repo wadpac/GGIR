@@ -41,7 +41,7 @@
     <a class="dropdown-item" href="../articles/chapter10_SleepAnalysis.html">10. Sleep Analysis</a>
     <a class="dropdown-item" href="../articles/chapter11_DescribingDataCutPoints.html">11. Physical Activity Fundamentals - Describing the data with cut-points</a>
     <a class="dropdown-item" href="../articles/chapter12_TimeUseAnalysis.html">12. Time-Use Analysis</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">13. Circadian Rhythm Analysis</a>
+    <a class="dropdown-item" href="../articles/chapter13_CircadianRhythm.html">13. Circadian Rhythm Analysis</a>
   </div>
 </li>
 <li class="nav-item dropdown">
@@ -1411,13 +1411,11 @@
       <dt>HASPT.ignore.invalid</dt>
 <dd><p>Boolean (default = FALSE).
         To indicate whether invalid time segments should be ignored in the
-        Sleep Period Time detection. If <code>FALSE</code> (default), the imputed 
-        angle or activity metric during the invalid time segments is used 
-        in the Sleep Period Time detection. If <code>TRUE</code>, invalid time 
-        segments are ignored for the Sleep Period Time detection 
-        (i.e., considered to be out of the Sleep Period Time). 
-        If <code>NA</code>, then invalid time segments are considered to be no movement
-        segments.</p></dd>
+        heuristic guiders. If <code>FALSE</code> (default), the imputed 
+        angle or activity metric during the invalid time segments are used.
+        If <code>TRUE</code>, invalid time segments are ignored (i.e., they cannot 
+        contribute to the guider). If <code>NA</code>, then invalid time segments are 
+        considered to be no movement segments and can contribute to the guider.</p></dd>
 
 
       <dt>HASIB.algo</dt>

@@ -53,7 +53,7 @@
     <a class="dropdown-item" href="../articles/chapter10_SleepAnalysis.html">10. Sleep Analysis</a>
     <a class="dropdown-item" href="../articles/chapter11_DescribingDataCutPoints.html">11. Physical Activity Fundamentals - Describing the data with cut-points</a>
     <a class="dropdown-item" href="../articles/chapter12_TimeUseAnalysis.html">12. Time-Use Analysis</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">13. Circadian Rhythm Analysis</a>
+    <a class="dropdown-item" href="../articles/chapter13_CircadianRhythm.html">13. Circadian Rhythm Analysis</a>
   </div>
 </li>
 <li class="nav-item dropdown">
@@ -258,27 +258,31 @@ contributors.</p>
 <h3 id="algorithm-design">Algorithm design<a class="anchor" aria-label="anchor" href="#algorithm-design"></a>
 </h3>
 <p>The philosophy behind the algorithms as implemented in GGIR is that
-biologically explainable (heuristic) approaches to data analyses are
-preferable over purely data-driven approaches, unless there is no other
-way. The idea is that to advance knowledge in this field of research, it
-is essential to have an understanding of the causal relation between the
-phenomena being observed (e.g. body movement), the way an (acceleration)
-sensor works, what we do with the data produced, and how we interpret
-the data. In contrast, data-driven methods look by design for optimal
+biomechanical explainable (heuristic or knowledge driven) approaches to
+measurement are preferable over purely data-driven approaches, unless
+there is no other way.</p>
+<p>The idea is that in order to advance knowledge in this field of
+research, it is essential to have an understanding of the causal
+relation between the phenomena being observed (e.g. body movement), the
+way the (acceleration) sensor works, what we do with the data produced,
+and how we interpret the data.</p>
+<p>In contrast, data-driven methods look by design for optimal
 correlation with data and are not or much less concerned with such
 causal links. Identical to how correlation is not necessarily equal to
 causation in health research, it can also confound the process of
-measurement. Some examples: We may be able to capture the differences in
+measurement.</p>
+<p>For example, we may be able to capture the differences in
 acceleration that correlate with different activity types or different
 levels of energy expenditure but that does not mean that we actually
 measure the activity type or the energy expenditure level. Ignoring such
-aspects can easily lead to overestimating the value of accelerometers to
-measure those constructs and to underestimate the value of an
+aspects can easily lead to overestimating the value of accelerometer
+method to measure those constructs and to underestimate the value of an
 accelerometer to capture acceleration as a useful measure of behaviour
 if appropriately used and interpreted.</p>
 <p>A second problem with data-driven methods is that they heavily depend
-on the availability of reliable criterion methods. It is argued that
-such reliable criterion methods do not exist:</p>
+on the availability of reliable criterion methods.</p>
+<p>We argue that such reliable criterion methods do not exist for
+physical behaviour measurement:</p>
 <ol style="list-style-type: decimal">
 <li>Indirect calorimetry and the indicators of energy metabolism that
 can be derived from it are unable to account for the activity type
