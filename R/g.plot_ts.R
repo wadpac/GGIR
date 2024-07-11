@@ -10,10 +10,9 @@ g.plot_ts = function(metadatadir = c(),
   
   # Declare functions:
   panelplot = function(mdat, ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
-                       BCN, BCC, axis_resolution) {
+                       BCN, BCC, axis_resolution, title = "") {
     window_duration = mdat$timenum[nrow(mdat)] - mdat$timenum[1]
-    # print(paste0("window duration: ", window_duration / 3600))
-    
+
     # create vector with color blind friendly colors
     mycolors = c("#E69F00","#56B4E9","#009E73","#F0E442",
                  "#0072B2","#D55E00","#CC79A7", "#999999",
@@ -30,16 +29,34 @@ g.plot_ts = function(metadatadir = c(),
     layout(mat = layout.matrix,
            heights = c(1, 2, 2), # Heights rows
            widths = c(5)) # Widths columns
+    
+    
+    # Prepare time tick points
+    date = paste0(as.numeric(format(mdat$timestamp, "%d")), " ", format(mdat$timestamp, "%b"))
+    hour = as.numeric(format(mdat$timestamp, "%H"))
+    min = as.numeric(format(mdat$timestamp, "%M"))
+    sec = as.numeric(format(mdat$timestamp, "%S"))
+    ticks = which(min == 0 & sec == 0 & hour %in% seq(0, 24, by = axis_resolution))
+    atTime = mdat$timestamp[ticks]
+    datLIM = as.Date(range(mdat$timestamp, na.rm = TRUE), tz = desiredtz)
+    if (datLIM[1] == datLIM[2]) datLIM = datLIM + c(0, 1)
+    XLIM = as.POSIXct(paste0(datLIM, " 00:00:00"), tz = desiredtz)
     #----- LUX
     par(mar = c(1, 4, 1, 8))
-    plot(mdat$timestamp, mdat$lightpeak / 1000, type = "l", col = "grey", cex = 0.8, bty = "l",
-         xlab = "Timestamp", ylab = "Light (klux)", xaxt = 'n', ylim = c(0, 20))
-    
+    if (title == "") {
+      title = paste0(title, " Date: ", as.Date(mdat$timestamp[1], tz = desiredtz), " ", weekdays(mdat$timestamp[1]))
+    }
+    plot(mdat$timestamp, mdat$lightpeak / 1000, type = "l", col = "grey28", cex = 0.8, bty = "l",
+         xlab = "Timestamp", ylab = "Light (klux)", xaxt = 'n', ylim = c(0, 20), xlim = XLIM,
+         main = title)
+    abline(v = atTime, col = "grey", lty = 2)
+
     #----- Acceleration and main non-overlapping behavioural classes
     par(mar = c(1, 4, 1, 8))
     plot(mdat$timestamp, mdat$ACC, type = "l",
-         ylim = c(0, Ymax), col = "grey", cex = 0.5, bty = "l", xaxt = 'n',
+         ylim = c(0, Ymax), xlim = XLIM, col = "grey28", cex = 0.5, bty = "l", xaxt = 'n',
          xlab = "", ylab =  expression(paste("Acceleration (m", italic("g"), ")")))
+    abline(v = atTime, col = "grey", lty = 2)
     COL = mycolors[1:Nlevels[1]]
     y = (0:(Nlevels[1] - 1)) / (Nlevels[1] - 1)
     fraction_bottom_bars = 0.45
@@ -67,19 +84,20 @@ g.plot_ts = function(metadatadir = c(),
            ncol = pmin(5, length(BCN)), cex = 1, pt.cex = 2) #
     #----- Angle and overlapping classes and self-reported classes:
     par(mar = c(4, 4, 1, 8))
+    
+    if (axis_resolution <= 12) {
+      XLAB = "Timestamp"
+    } else {
+      XLAB = "Date"
+    }
+    
     plot(mdat$timestamp, mdat$angle, type = "l",
-         ylim = c(-90, 90), col = "grey", cex = 0.5, bty = "l", xaxt = 'n',
-         xlab = "Timestamp", ylab = "Angle (degrees)")
+         ylim = c(-90, 90), xlim = XLIM, col = "grey28", cex = 0.5, bty = "l", xaxt = 'n',
+         xlab = XLAB, ylab = "Angle (degrees)")
     axis(side = 4, at = seq(-90 + (180/Nlevels[2]/2), 90, by = 180 / Nlevels[2]),
          labels = ylabels_plot2, las = 2, cex.axis = 0.7)
-    
+    abline(v = atTime, col = "grey", lty = 2)  
     # assign timestamp axis:
-    date = as.numeric(format(mdat$timestamp, "%d"))
-    hour = as.numeric(format(mdat$timestamp, "%H"))
-    min = as.numeric(format(mdat$timestamp, "%M"))
-    sec = as.numeric(format(mdat$timestamp, "%S"))
-    ticks = which(min == 0 & sec == 0 & hour %in% seq(0, 24, by = axis_resolution))
-    atTime = mdat$timestamp[ticks]
     if (axis_resolution <= 12) {
       labTime = paste0(hour[ticks], ":00")
       axis(side = 1, at = atTime,
@@ -109,7 +127,7 @@ g.plot_ts = function(metadatadir = c(),
     for (labi in 1:length(binary_vars)) {
       if (length(table(mdat[,binary_vars[labi]])) > 1) {
         t0 = mdat$timestamp[which(diff(c(0, mdat[,binary_vars[labi]])) == 1)]
-        t1 = mdat$timestamp[which(diff(c(mdat[,binary_vars[labi]], 0)) == -1)]
+        t1 = mdat$timestamp[which(diff(c(mdat[, binary_vars[labi]], 0)) == -1)]
         y0 = -90 + 180 * ((lev - 1) / Nlevels[2])
         y1 = -90 + 180 * ((lev) / Nlevels[2])
         rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = mygreys[lev], border = FALSE)
@@ -195,40 +213,48 @@ g.plot_ts = function(metadatadir = c(),
       
       # loop through files
       for (i in f0:f1) {
-        # cat("\n")
-        # print(paste0("file ", i, " ", fnames.ms5raw[i]))
         load(file = paste0(metadatadir, "/meta/ms5.outraw/",
                            part6_threshold_combi, "/", fnames.ms5raw[i]))
+        
+        if (length(mdat) == 0) next
+        if (nrow(mdat) == 0) next
+        
         if (all(c("lightpeak", "selfreported", "sibdetection") %in% colnames(mdat))) {
-          # TO DO:
-          # - Add vertical grid to ease inspection tailored to window selected
-          
+          simple_filename = gsub(pattern = ".RData", replacement = "", x = fnames.ms5raw[i] ) #"patientID12345"
           pdf(paste0(metadatadir, "/results/file summary reports/Time_report_",
-                     fnames.ms5raw[i], ".pdf"), paper = "a4r",
+                     simple_filename, ".pdf"), paper = "a4r",
               width = 0, height = 0)
           
           # whole data
           panelplot(mdat, ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
-                    BCN, BCC, axis_resolution = 24)
+                    BCN, BCC, axis_resolution = 24,
+                    title = simple_filename)
           
           # zoom on windows that have either daytime sib or selfreported nap
           acc_naps = which((mdat$sibdetection == 1 | mdat$selfreport == "nap") &
                              mdat$SleepPeriodTime == 0)
-          subploti = seq(1, nrow(mdat), by = 540)
+          
+          
+          midnightsi = which(format(mdat$timestamp, "%H") == "00" &
+                               format(mdat$timestamp, "%M") == "00" &
+                               format(mdat$timestamp, "%S") == "00")
+          subploti = c(1, midnightsi + 1)
           subploti = cbind(subploti,
-                           subploti + 720)
-          for (jj in 1:nrow(subploti)) {
-            ma = which(acc_naps > subploti[jj, 1] & acc_naps < subploti[jj, 2])
-            if (length(ma) == 0) {
-              is.na(subploti[jj, ]) = TRUE
-            }
-          }
-          subploti = subploti[!is.na(subploti[,1]), , drop = FALSE]
+                           c(midnightsi, nrow(mdat)))
+          
+          # Skip windows without naps?
+          # for (jj in 1:nrow(subploti)) {
+          #   ma = which(acc_naps > subploti[jj, 1] & acc_naps < subploti[jj, 2])
+          #   if (length(ma) == 0) {
+          #     is.na(subploti[jj, ]) = TRUE
+          #   }
+          # }
+          # subploti = subploti[!is.na(subploti[,1]), , drop = FALSE]
           if (nrow(subploti) > 0) {
             for (ani in 1:nrow(subploti)) {
               panelplot(mdat[(subploti[ani, 1] + 1):subploti[ani, 2], ],
                         ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
-                        BCN, BCC, axis_resolution = 1)
+                        BCN, BCC, axis_resolution = 1, title = "")
             }
           }
           dev.off()
