@@ -1,34 +1,34 @@
-g.plot_ts = function(metadatadir = c(), 
-                     viewingwindow = 1,
-                     f0 = c(), f1 = c(), overwrite = FALSE,
-                     desiredtz = "",
-                     verbose = TRUE,
-                     part6_threshold_combi = NULL) {
+g.plot_ts_doubleplot = function(metadatadir = c(), 
+                                viewingwindow = 1,
+                                f0 = c(), f1 = c(), overwrite = FALSE,
+                                desiredtz = "",
+                                verbose = TRUE,
+                                part6_threshold_combi = NULL) {
   if (!file.exists(paste0(metadatadir, "/results/file summary reports"))) {
     dir.create(file.path(paste0(metadatadir, "/results"), "file summary reports"))
   }
   
   # Declare functions:
   panelplot = function(mdat, ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
-                       BCN, BCC, axis_resolution, title = "") {
+                       BCN, BCC, title = "", dayid) {
     window_duration = mdat$timenum[nrow(mdat)] - mdat$timenum[1]
-
+    
     # create vector with color blind friendly colors
     mycolors = c("#E69F00","#56B4E9","#009E73","#F0E442",
                  "#0072B2","#D55E00","#CC79A7", "#999999",
                  "#222255", "black")
-    mygreys = rep(c("darkblue", "lightblue"), 20)
-    mygreys = grDevices::adjustcolor(col = mygreys, alpha.f = 0.5)
+    mycolors = grDevices::adjustcolor(col = mycolors, alpha.f = 0.6)
+    # mygreys = rep(c("darkblue", "lightblue"), 20)
+    # mygreys = grDevices::adjustcolor(col = mygreys, alpha.f = 0.6)
     
-    Ymax = max(mdat$ACC, na.rm = TRUE) * 2
+    mygreys = mycolors
+    
+    myred = grDevices::adjustcolor(col = "red", alpha.f = 0.6)
+    
+    Ymax = max(mdat$ACC, na.rm = TRUE)
     Ymin = min(mdat$ACC, na.rm = TRUE)
     if (is.na(Ymax)) Ymax = 100
     if (is.na(Ymin)) Ymin = 0
-    
-    layout.matrix <- matrix(c(1, 2, 3), nrow = 3, ncol = 1)
-    layout(mat = layout.matrix,
-           heights = c(1, 2, 2), # Heights rows
-           widths = c(5)) # Widths columns
     
     
     # Prepare time tick points
@@ -36,35 +36,31 @@ g.plot_ts = function(metadatadir = c(),
     hour = as.numeric(format(mdat$timestamp, "%H"))
     min = as.numeric(format(mdat$timestamp, "%M"))
     sec = as.numeric(format(mdat$timestamp, "%S"))
-    ticks = which(min == 0 & sec == 0 & hour %in% seq(0, 24, by = axis_resolution))
+    ticks = which(min == 0 & sec == 0 & hour %in% seq(0, 24, by = 1))
     atTime = mdat$timestamp[ticks]
     datLIM = as.Date(range(mdat$timestamp, na.rm = TRUE), tz = desiredtz)
     if (datLIM[1] == datLIM[2]) datLIM = datLIM + c(0, 1)
     XLIM = as.POSIXct(paste0(datLIM, " 00:00:00"), tz = desiredtz)
     #----- LUX
-    par(mar = c(1, 4, 1, 8))
     if (title == "") {
-      title = paste0(title, " Date: ", as.Date(mdat$timestamp[1], tz = desiredtz), " ", weekdays(mdat$timestamp[1]))
+      date = paste0(as.numeric(format(mdat$timestamp[1], "%d")), " ", format(mdat$timestamp[1], "%b"))
+      title = paste0("Day ", dayid, " | ", weekdays(mdat$timestamp[1]), " | ", date)
     }
-    plot(mdat$timestamp, mdat$lightpeak / 1000, type = "l", col = "grey28", cex = 0.8, bty = "l",
-         xlab = "Timestamp", ylab = "Light (klux)", xaxt = 'n', ylim = c(0, 20), xlim = XLIM,
-         main = title)
-    abline(v = atTime, col = "grey", lty = 2)
-
     #----- Acceleration and main non-overlapping behavioural classes
-    par(mar = c(1, 4, 1, 8))
+    par(mar = c(0.5, 3, 2, 4.5))
     plot(mdat$timestamp, mdat$ACC, type = "l",
          ylim = c(0, Ymax), xlim = XLIM, col = "grey28", cex = 0.5, bty = "l", xaxt = 'n',
-         xlab = "", ylab =  expression(paste("Acceleration (m", italic("g"), ")")))
-    abline(v = atTime, col = "grey", lty = 2)
+         xlab = "", ylab =  expression(paste("Acceleration (m", italic("g"), ")")), cex.lab = 0.7,
+         main = title, lwd = 0.6, cex.main = 0.9)
+    abline(v = atTime, col = "grey", lty = 2, lwd = 0.5)
     COL = mycolors[1:Nlevels[1]]
-    y = (0:(Nlevels[1] - 1)) / (Nlevels[1] - 1)
-    fraction_bottom_bars = 0.45
-    fraction_for_bars = 0.35
-    yticks = Ymax * fraction_bottom_bars + (y * fraction_for_bars * Ymax)
-    yStepSize = (Ymax * fraction_for_bars) / Nlevels[1]
-    axis(side = 4, at = yticks,
-         labels = BCN, las = 2, cex.axis = 0.7)
+    yticks = Ymax * seq(from = 0.1, to = 0.9, length.out = Nlevels[1])
+    yStepSize = min(diff(yticks)) * 0.5 #(Ymax * fraction_for_bars) / Nlevels[1]
+    
+    for (gi in 1:length(yticks)) {
+      axis(side = 4, at = yticks[gi],
+           labels = BCN[gi], col = mycolors[gi], las = 2, cex.axis = 0.5)
+    }
     lev = 1
     for (clai in 1:length(BCC)) {
       tempi = which(mdat$class_id == BCC[clai])
@@ -79,36 +75,35 @@ g.plot_ts = function(metadatadir = c(),
       }
       lev = lev + 1
     }
-    legend("top", legend = BCN, bty = 'n',
-           col = COL, pch = rep(15, length(BCN)),
-           ncol = pmin(5, length(BCN)), cex = 1, pt.cex = 2) #
     #----- Angle and overlapping classes and self-reported classes:
-    par(mar = c(4, 4, 1, 8))
-    
-    if (axis_resolution <= 12) {
-      XLAB = "Timestamp"
-    } else {
-      XLAB = "Date"
-    }
+    par(mar = c(2, 3, 0.5, 4.5))
+    XLAB = ""
     
     plot(mdat$timestamp, mdat$angle, type = "l",
          ylim = c(-90, 90), xlim = XLIM, col = "grey28", cex = 0.5, bty = "l", xaxt = 'n',
-         xlab = XLAB, ylab = "Angle (degrees)")
-    axis(side = 4, at = seq(-90 + (180/Nlevels[2]/2), 90, by = 180 / Nlevels[2]),
-         labels = ylabels_plot2, las = 2, cex.axis = 0.7)
-    abline(v = atTime, col = "grey", lty = 2)  
-    # assign timestamp axis:
-    if (axis_resolution <= 12) {
-      labTime = paste0(hour[ticks], ":00")
-      axis(side = 1, at = atTime,
-           labels = labTime, las = 1, cex.axis = 0.7)
-    } else {
-      labTime = date[ticks]
-      axis(side = 1, at = atTime,
-           labels = rep("", length(labTime)), las = 1, cex.axis = 0.7)
-      axis(side = 1, at = atTime + 12 * 3600,
-           labels = labTime,  tick = FALSE, las = 1, cex.axis = 0.7)
+         xlab = XLAB, ylab = "Angle (degrees)", cex.lab = 0.7, lwd = 0.6)
+    print(range(mdat$lightpeak))
+    LUX_scale_hundred = ceiling(pmin(mdat$lightpeak + 1, 20000) / 200)
+    CL = gray.colors(start = 0, end = 1, rev = TRUE, n = 100)[LUX_scale_hundred]
+    yticks = seq(-90 + (180/Nlevels[2]/2), 90, by = 180 / Nlevels[2])
+    yStepSize = min(diff(yticks)) * 0.5 
+    
+    for (gi in 1:length(yticks)) {
+      if (ylabels_plot2[gi] == "invalid") {
+        col = myred
+      } else {
+        col = mygreys[gi]
+      }
+      axis(side = 4, at = yticks[gi],
+           labels = ylabels_plot2[gi], col = col, las = 2, cex.axis = 0.5)
     }
+    abline(v = atTime, col = "grey", lty = 2, lwd = 0.5)
+    # assign timestamp axis:
+    
+    labTime = paste0(hour[ticks], ":00")
+    axis(side = 1, at = atTime,
+         labels = labTime, las = 1, cex.axis = 0.5)
+    
     
     lev = 1
     for (si in 1:length(selfreport_vars)) {
@@ -130,36 +125,25 @@ g.plot_ts = function(metadatadir = c(),
         t1 = mdat$timestamp[which(diff(c(mdat[, binary_vars[labi]], 0)) == -1)]
         y0 = -90 + 180 * ((lev - 1) / Nlevels[2])
         y1 = -90 + 180 * ((lev) / Nlevels[2])
-        rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = mygreys[lev], border = FALSE)
+        if (binary_vars[labi] == "invalidepoch") {
+          col = myred
+        } else {
+          col = mygreys[lev]
+        }
+        rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = col, border = FALSE)
       }
       lev = lev + 1
     }
+    lines(mdat$timestamp, rep(95, nrow(mdat)), type = "p", pch = 20, col = CL, cex = 0.8, lwd = 2)
   }
   
   #---------------------------------------
   # Attempt to load time series directly
-  
   # Identify correct subfolder
   
   expected_ts_path = paste0(metadatadir, "/meta/ms5.outraw/", part6_threshold_combi)
   expected_ms5raw_path = paste0(metadatadir, "/meta/ms5.outraw")
-  # if (!dir.exists(expected_ts_path)) {
-  #   if (!dir.exists(expected_ms5raw_path)) {
-  #     stop("\nPath ", expected_ms5raw_path, " does not exist", call. = FALSE)
-  #   } else {
-  #     subDirs = list.dirs(expected_ms5raw_path)
-  #     if (length(subDirs) > 0) {
-  #       expected_ts_path = paste0(expected_ms5raw_path, "/", subDirs[1])
-  #       warning(paste0("\nThreshold combi ", part6_threshold_combi,
-  #                      " in time series ouput. Instead now using", subDirs[1]), call. = FALSE)
-  #     } else {
-  #       stop(paste0("\nNo subfolders found inside ", expected_ms5raw_path), call. = FALSE)
-  #     }
-  #   }
-  # }
   
-  
-  axis_resolution = 6  # assumption that this is either (0, 12] or 24.
   if (dir.exists(expected_ts_path)) {
     
     fnames.ms5raw = dir(expected_ts_path, pattern = "[.]RData")
@@ -207,9 +191,9 @@ g.plot_ts = function(metadatadir = c(),
       ylabels_plot2 = gsub(pattern = "invalidepoch", replacement = "invalid", x = ylabels_plot2)
       ylabels_plot2 = gsub(pattern = "SleepPeriodTime", replacement = "acc_spt", x = ylabels_plot2)
       ylabels_plot2 = gsub(pattern = "sibdetection", replacement = "acc_sib", x = ylabels_plot2)
-      ylabels_plot2 = gsub(pattern = "nap", replacement = "selfreported_nap", x = ylabels_plot2)
-      ylabels_plot2 = gsub(pattern = "nonwear", replacement = "selfreported_nonwear", x = ylabels_plot2)
-      ylabels_plot2 = gsub(pattern = "sleeplog", replacement = "selfreported_sleepwindow", x = ylabels_plot2)
+      ylabels_plot2 = gsub(pattern = "nap", replacement = "diary_nap", x = ylabels_plot2)
+      ylabels_plot2 = gsub(pattern = "nonwear", replacement = "diary_nonwear", x = ylabels_plot2)
+      ylabels_plot2 = gsub(pattern = "sleeplog", replacement = "diary_sleepwindow", x = ylabels_plot2)
       
       # loop through files
       for (i in f0:f1) {
@@ -222,14 +206,8 @@ g.plot_ts = function(metadatadir = c(),
         if (all(c("lightpeak", "selfreported", "sibdetection") %in% colnames(mdat))) {
           simple_filename = gsub(pattern = ".RData", replacement = "", x = fnames.ms5raw[i] ) #"patientID12345"
           pdf(paste0(metadatadir, "/results/file summary reports/Time_report_",
-                     simple_filename, ".pdf"), paper = "a4r",
+                     simple_filename, ".pdf"), paper = "a4",
               width = 0, height = 0)
-          
-          # whole data
-          panelplot(mdat, ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
-                    BCN, BCC, axis_resolution = 24,
-                    title = simple_filename)
-          
           # zoom on windows that have either daytime sib or selfreported nap
           acc_naps = which((mdat$sibdetection == 1 | mdat$selfreport == "nap") &
                              mdat$SleepPeriodTime == 0)
@@ -249,15 +227,17 @@ g.plot_ts = function(metadatadir = c(),
           #     is.na(subploti[jj, ]) = TRUE
           #   }
           # }
-          # subploti = subploti[!is.na(subploti[,1]), , drop = FALSE]
+          
+          par(mfrow = c(12, 1), mgp = c(2,0.8,0), omi = c(0, 0, 0, 0))
           if (nrow(subploti) > 0) {
             for (ani in 1:nrow(subploti)) {
               panelplot(mdat[(subploti[ani, 1] + 1):subploti[ani, 2], ],
                         ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
-                        BCN, BCC, axis_resolution = 1, title = "")
+                        BCN, BCC, title = "", dayid = ani)
             }
           }
           dev.off()
+          browser()
         }
       }
     }
