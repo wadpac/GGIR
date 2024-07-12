@@ -17,11 +17,14 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
     mycolors = c("#E69F00","#56B4E9","#009E73","#F0E442",
                  "#0072B2","#D55E00","#CC79A7", "#999999",
                  "#222255", "black")
+    mycolors = rep(mycolors, 3)
+    
     mycolors = grDevices::adjustcolor(col = mycolors, alpha.f = 0.6)
     # mygreys = rep(c("darkblue", "lightblue"), 20)
-    # mygreys = grDevices::adjustcolor(col = mygreys, alpha.f = 0.6)
+    mygreys = rep(c("#56B4E9", "#D55E00"), 20)
+    mygreys = grDevices::adjustcolor(col = mygreys, alpha.f = 0.6)
     
-    mygreys = mycolors
+    # mygreys = rev(mycolors)
     
     myred = grDevices::adjustcolor(col = "red", alpha.f = 0.6)
     
@@ -40,7 +43,8 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
     atTime = mdat$timestamp[ticks]
     datLIM = as.Date(range(mdat$timestamp, na.rm = TRUE), tz = desiredtz)
     if (datLIM[1] == datLIM[2]) datLIM = datLIM + c(0, 1)
-    XLIM = as.POSIXct(paste0(datLIM, " 00:00:00"), tz = desiredtz)
+    XLIM = as.POSIXct(c(paste0(datLIM[1], " 00:00:00"),
+                        paste0(datLIM[2], " 12:00:00")), tz = desiredtz)
     #----- LUX
     if (title == "") {
       date = paste0(as.numeric(format(mdat$timestamp[1], "%d")), " ", format(mdat$timestamp[1], "%b"))
@@ -49,9 +53,10 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
     #----- Acceleration and main non-overlapping behavioural classes
     par(mar = c(0.5, 3, 2, 4.5))
     plot(mdat$timestamp, mdat$ACC, type = "l",
-         ylim = c(0, Ymax), xlim = XLIM, col = "grey28", cex = 0.5, bty = "l", xaxt = 'n',
-         xlab = "", ylab =  expression(paste("Acceleration (m", italic("g"), ")")), cex.lab = 0.7,
-         main = title, lwd = 0.6, cex.main = 0.9)
+         ylim = c(0, Ymax), xlim = XLIM, col = "grey28", cex = 0.5, xaxt = 'n',
+         xlab = "", ylab =  expression(paste("Acceleration (m", italic("g"), ")")), cex.lab = 0.6,
+         main = "", lwd = 0.6, cex.main = 0.9)
+    title(main = title, adj = 0)
     abline(v = atTime, col = "grey", lty = 2, lwd = 0.5)
     COL = mycolors[1:Nlevels[1]]
     yticks = Ymax * seq(from = 0.1, to = 0.9, length.out = Nlevels[1])
@@ -76,18 +81,17 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
       lev = lev + 1
     }
     #----- Angle and overlapping classes and self-reported classes:
-    par(mar = c(2, 3, 0.5, 4.5))
+    par(mar = c(2, 3, 0.5, 4.5), bty = "n")
     XLAB = ""
     
     plot(mdat$timestamp, mdat$angle, type = "l",
-         ylim = c(-90, 90), xlim = XLIM, col = "grey28", cex = 0.5, bty = "l", xaxt = 'n',
-         xlab = XLAB, ylab = "Angle (degrees)", cex.lab = 0.7, lwd = 0.6)
-    print(range(mdat$lightpeak))
-    LUX_scale_hundred = ceiling(pmin(mdat$lightpeak + 1, 20000) / 200)
+         ylim = c(-90, 90), xlim = XLIM, col = "grey28", cex = 0.5, xaxt = 'n',
+         xlab = XLAB, ylab = "Angle (degrees)", cex.lab = 0.6, lwd = 0.6)
+    
+    LUX_scale_hundred = ceiling(pmin(mdat$lightpeak + 1, 20000) / 400) * 2
     CL = gray.colors(start = 0, end = 1, rev = TRUE, n = 100)[LUX_scale_hundred]
     yticks = seq(-90 + (180/Nlevels[2]/2), 90, by = 180 / Nlevels[2])
-    yStepSize = min(diff(yticks)) * 0.5 
-    
+
     for (gi in 1:length(yticks)) {
       if (ylabels_plot2[gi] == "invalid") {
         col = myred
@@ -100,11 +104,11 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
     abline(v = atTime, col = "grey", lty = 2, lwd = 0.5)
     # assign timestamp axis:
     
-    labTime = paste0(hour[ticks], ":00")
+    labTime = paste0(hour[ticks], "H")
     axis(side = 1, at = atTime,
          labels = labTime, las = 1, cex.axis = 0.5)
-    
-    
+
+    buffer = 3
     lev = 1
     for (si in 1:length(selfreport_vars)) {
       tempi = which(mdat$selfreport == selfreport_vars[si])
@@ -113,18 +117,20 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
         A[tempi] = 1
         t0 = mdat$timestamp[which(diff(c(0, A)) == 1)]
         t1 = mdat$timestamp[which(diff(c(A, 0)) == -1)]
-        y0 = -90 + 180 * ((lev - 1) / Nlevels[2])
-        y1 = -90 + 180 * ((lev) / Nlevels[2])
+        y0 = -90 + 180 * ((lev - 1) / Nlevels[2]) + buffer
+        y1 = -90 + 180 * ((lev + 0) / Nlevels[2]) - buffer
         rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = mygreys[lev], border = FALSE)
       }
       lev = lev + 1
     }
+
     for (labi in 1:length(binary_vars)) {
-      if (length(table(mdat[,binary_vars[labi]])) > 1) {
+      freqtab = table(mdat[,binary_vars[labi]])
+      if (length(freqtab) > 1 || names(freqtab)[1] == "1") {
         t0 = mdat$timestamp[which(diff(c(0, mdat[,binary_vars[labi]])) == 1)]
         t1 = mdat$timestamp[which(diff(c(mdat[, binary_vars[labi]], 0)) == -1)]
-        y0 = -90 + 180 * ((lev - 1) / Nlevels[2])
-        y1 = -90 + 180 * ((lev) / Nlevels[2])
+        y0 = -90 + 180 * ((lev - 1) / Nlevels[2]) + buffer
+        y1 = -90 + 180 * ((lev + 0) / Nlevels[2]) - buffer
         if (binary_vars[labi] == "invalidepoch") {
           col = myred
         } else {
@@ -134,7 +140,9 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
       }
       lev = lev + 1
     }
-    lines(mdat$timestamp, rep(95, nrow(mdat)), type = "p", pch = 20, col = CL, cex = 0.8, lwd = 2)
+    
+    # plot lux
+    lines(mdat$timestamp, rep(92, nrow(mdat)), type = "p", pch = 15, col = CL, cex = 0.8, lwd = 1)
   }
   
   #---------------------------------------
@@ -181,7 +189,7 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
         Nlevels[1] = maxN
       }
       BCN = gsub(pattern = "day_|spt_", replacement = "", x = BCN)
-      BCN = gsub(pattern = "sleep", replacement = "noc_sleep", x = BCN)
+      BCN = gsub(pattern = "sleep", replacement = "spt_sleep", x = BCN)
       
       # Bottom plot
       selfreport_vars = c("nap", "nonwear", "sleeplog")
@@ -218,7 +226,7 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
                                format(mdat$timestamp, "%S") == "00")
           subploti = c(1, midnightsi + 1)
           subploti = cbind(subploti,
-                           c(midnightsi, nrow(mdat)))
+                           c(midnightsi + 720, nrow(mdat)))
           
           # Skip windows without naps?
           # for (jj in 1:nrow(subploti)) {
@@ -227,10 +235,13 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
           #     is.na(subploti[jj, ]) = TRUE
           #   }
           # }
+          subploti[which(subploti[,2] > nrow(mdat)), 2] = nrow(mdat)
           
-          par(mfrow = c(12, 1), mgp = c(2,0.8,0), omi = c(0, 0, 0, 0))
+          par(mfrow = c(14, 1), mgp = c(2,0.8,0), omi = c(0, 0, 0, 0), bty = "n")
+          print(binary_vars)
           if (nrow(subploti) > 0) {
             for (ani in 1:nrow(subploti)) {
+              
               panelplot(mdat[(subploti[ani, 1] + 1):subploti[ani, 2], ],
                         ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
                         BCN, BCC, title = "", dayid = ani)
