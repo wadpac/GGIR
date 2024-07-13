@@ -19,6 +19,7 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
                  "#222255", "black")
     mycolors = rep(mycolors, 3)
     
+    signalcolor = "grey50"
     mycolors = grDevices::adjustcolor(col = mycolors, alpha.f = 0.6)
     # mygreys = rep(c("darkblue", "lightblue"), 20)
     mygreys = rep(c("#009E73","#F0E442","#56B4E9", "#D55E00"), 20)
@@ -49,20 +50,23 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
     par(mar = c(0, 0, 2, 4.5))
     meanAcc = diff(range(mdat$ACC)) / 2
     plot(mdat$timestamp, (mdat$ACC / 2) + meanAcc, type = "l",
-         ylim = c(0, Ymax), xlim = XLIM, col = "grey28", cex = 0.5, xaxt = 'n', axes = FALSE,
+         ylim = c(0, Ymax), xlim = XLIM, col = signalcolor, cex = 0.5, xaxt = 'n', axes = FALSE,
          xlab = "", ylab = "", cex.lab = 0.6,
          main = "", lwd = 0.3, cex.main = 0.9)
     
-    lines(mdat$timestamp, (-mdat$ACC / 2) + meanAcc, type = "l", col = "grey28", cex = 0.5, lwd = 0.3)
+    lines(mdat$timestamp, (-mdat$ACC / 2) + meanAcc, type = "l", col = signalcolor, cex = 0.5, lwd = 0.3)
+    text(x = mdat$timestamp[1], y = Ymax * 0.5, labels = "Acceleration",
+         pos = 4, cex = 0.7, col = signalcolor, font = 2)
     
     title(main = title, adj = 0)
-    abline(v = atTime, col = "grey", lty = "1F", lwd = 0.5)
+    abline(v = atTime, col = "black", lty = "1F", lwd = 0.5)
     COL = mycolors[1:Nlevels[1]]
     yticks = Ymax * seq(from = 0.1, to = 0.9, length.out = Nlevels[1])
     yStepSize = min(diff(yticks)) * 0.5
     for (gi in 1:length(yticks)) {
-      axis(side = 4, at = yticks[gi],
-           labels = BCN[gi], col = mycolors[gi], las = 2, cex.axis = 0.5)
+      axis(side = 4, at = yticks[gi], lwd = 2,
+           labels = BCN[gi], col = mycolors[gi], las = 2, cex.axis = 0.5,
+           line = 0)
     }
     lev = 1
     for (clai in 1:length(BCC)) {
@@ -83,29 +87,20 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
     if (length(window_edges) > 0) {
       abline(v = mdat$timestamp[window_edges], col = "black", lwd = 1)
     }
-    
-    legend(x = XLIM[1] + 60, y = Ymax * 0.9, legend = c("Acceleration", "Angle-z change"),
-           # xjust = 0, yjust = 0, 
-           ncol = 2, lwd = c(1.4, 1.4),
-           lty = c(1, 1), col = c("grey28", "dodgerblue3"),
-           # x.intersp = -0.5,
-           y.intersp = 0.1, box.lwd = 0.5,
-           bg = "white",
-           # adj = c(0, 0.5), 
-           cex = 0.7)
-    
+
     #----- Angle and overlapping classes and self-reported classes:
     par(mar = c(2, 0, 0, 4.5), bty = "n")
     XLAB = ""
     Ymax = 70
     angleChange = abs(diff(c(mdat$angle, 0)))
     plot(mdat$timestamp, (angleChange / 2), type = "l",
-         ylim = c(-Ymax, Ymax), xlim = XLIM, col = "dodgerblue3", cex = 0.5, xaxt = 'n', axes = FALSE,
+         ylim = c(-Ymax, Ymax), xlim = XLIM, col = signalcolor, cex = 0.5, xaxt = 'n', axes = FALSE,
          xlab = XLAB, ylab = "", cex.lab = 0.6, lwd = 0.3)
     
     lines(mdat$timestamp, (-angleChange / 2), type = "l",
-        col = "dodgerblue3", cex = 0.5, lwd = 0.3)
-    
+        col = signalcolor, cex = 0.5, lwd = 0.3)
+    text(x = mdat$timestamp[1], y = Ymax * 0.5, labels = "Angle-z change",
+         pos = 4, cex = 0.7, col = signalcolor, font = 2)
     LUX_scale_hundred = ceiling(pmin(mdat$lightpeak + 1, 20000) / 400) * 2
     CL = rep("yellow", 100)
     for (ci in 1:100) {
@@ -114,25 +109,24 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
     CL = rev(CL)
     CL[1:2] = "white"
     CL = CL[LUX_scale_hundred]
-    yticks = seq(-Ymax + (Ymax/Nlevels[2]/2), Ymax, by = (Ymax*2) / Nlevels[2])
-
+    stepticks = (Ymax*2) / Nlevels[2]
+    yticks = seq(-Ymax + (Ymax/Nlevels[2]/2), Ymax, by = stepticks)
     for (gi in 1:length(yticks)) {
       if (ylabels_plot2[gi] == "invalid") {
         col = myred
       } else {
         col = mygreys[gi]
       }
-      axis(side = 4, at = yticks[gi],
+      axis(side = 4, at = yticks[gi], lwd = 2,
            labels = ylabels_plot2[gi], col = col, las = 2, cex.axis = 0.5)
     }
-    abline(v = atTime, col = "grey", lty = "1F", lwd = 0.5)
+    abline(v = atTime, col = "black", lty = "1F", lwd = 0.5)
     # assign timestamp axis:
-    
     labTime = paste0(hour[ticks], "H")
     axis(side = 1, at = atTime,
          labels = labTime, las = 1, cex.axis = 0.5)
 
-    buffer = 3
+    buffer = stepticks / 2
     lev = 1
     for (si in 1:length(selfreport_vars)) {
       tempi = which(mdat$selfreport == selfreport_vars[si])
@@ -141,8 +135,8 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
         A[tempi] = 1
         t0 = mdat$timestamp[which(diff(c(0, A)) == 1)]
         t1 = mdat$timestamp[which(diff(c(A, 0)) == -1)]
-        y0 = -Ymax + (Ymax*2) * ((lev - 1) / Nlevels[2]) + buffer
-        y1 = -Ymax + (Ymax*2)  * ((lev + 0) / Nlevels[2]) - buffer
+        y0 = yticks[lev] + buffer
+        y1 = yticks[lev] - buffer
         rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = mygreys[lev], border = FALSE)
       }
       lev = lev + 1
@@ -153,13 +147,14 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
       if (length(freqtab) > 1 || names(freqtab)[1] == "1") {
         t0 = mdat$timestamp[which(diff(c(0, mdat[,binary_vars[labi]])) == 1)]
         t1 = mdat$timestamp[which(diff(c(mdat[, binary_vars[labi]], 0)) == -1)]
-        y0 = -Ymax + (Ymax*2)  * ((lev - 1) / Nlevels[2]) + buffer
-        y1 = -Ymax + (Ymax*2)  * ((lev + 0) / Nlevels[2]) - buffer
+        y0 = yticks[lev] + buffer
+        y1 = yticks[lev] - buffer
         if (binary_vars[labi] == "invalidepoch") {
           col = myred
         } else {
           col = mygreys[lev]
         }
+        # print(paste0("y for rect bi: ", y0, " ", y1))
         rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = col, border = FALSE)
       }
       lev = lev + 1
@@ -257,6 +252,7 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
           subploti = cbind(subploti,
                            c(midnightsi + 720, nrow(mdat)))
           
+          invalid = which(mdat$invalidepoch == 1)
           # Skip windows without naps?
           # for (jj in 1:nrow(subploti)) {
           #   ma = which(acc_naps > subploti[jj, 1] & acc_naps < subploti[jj, 2])
@@ -266,7 +262,7 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
           # }
           subploti[which(subploti[,2] > nrow(mdat)), 2] = nrow(mdat)
           
-          par(mfrow = c(14, 1), mgp = c(2,0.8,0), omi = c(0, 0, 0, 0), bty = "n")
+          par(mfrow = c(14, 1), mgp = c(2, 0.8, 0), omi = c(0, 0, 0, 0), bty = "n")
           if (nrow(subploti) > 0) {
             for (ani in 1:nrow(subploti)) {
               
