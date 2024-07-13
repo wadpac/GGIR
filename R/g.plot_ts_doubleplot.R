@@ -15,25 +15,20 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
     
     # create vector with color blind friendly colors
     mycolors = c("#E69F00","#56B4E9","#009E73","#F0E442",
-                 "#0072B2","#D55E00","#CC79A7", "#999999",
+                 "#0072B2","#D55E00", "#999999", #"#CC79A7"
                  "#222255", "black")
     mycolors = rep(mycolors, 3)
     
     mycolors = grDevices::adjustcolor(col = mycolors, alpha.f = 0.6)
     # mygreys = rep(c("darkblue", "lightblue"), 20)
-    mygreys = rep(c("#56B4E9", "#D55E00"), 20)
+    mygreys = rep(c("#009E73","#F0E442","#56B4E9", "#D55E00"), 20)
     mygreys = grDevices::adjustcolor(col = mygreys, alpha.f = 0.6)
+
+    myred = grDevices::adjustcolor(col = "#CC79A7", alpha.f = 0.6) #"red"
     
-    # mygreys = rev(mycolors)
-    
-    myred = grDevices::adjustcolor(col = "red", alpha.f = 0.6)
-    
-    Ymax = max(mdat$ACC, na.rm = TRUE)
-    Ymin = min(mdat$ACC, na.rm = TRUE)
-    if (is.na(Ymax)) Ymax = 100
-    if (is.na(Ymin)) Ymin = 0
-    
-    
+    Ymax = pmax(800, max(mdat$ACC, na.rm = TRUE))
+    Ymin = 0 #min(mdat$ACC, na.rm = TRUE)
+
     # Prepare time tick points
     date = paste0(as.numeric(format(mdat$timestamp, "%d")), " ", format(mdat$timestamp, "%b"))
     hour = as.numeric(format(mdat$timestamp, "%H"))
@@ -51,17 +46,20 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
       title = paste0("Day ", dayid, " | ", weekdays(mdat$timestamp[1]), " | ", date)
     }
     #----- Acceleration and main non-overlapping behavioural classes
-    par(mar = c(0.5, 3, 2, 4.5))
-    plot(mdat$timestamp, mdat$ACC, type = "l",
-         ylim = c(0, Ymax), xlim = XLIM, col = "grey28", cex = 0.5, xaxt = 'n',
-         xlab = "", ylab =  expression(paste("Acceleration (m", italic("g"), ")")), cex.lab = 0.6,
-         main = "", lwd = 0.6, cex.main = 0.9)
+    par(mar = c(0, 0, 2, 4.5))
+    meanAcc = diff(range(mdat$ACC)) / 2
+    plot(mdat$timestamp, (mdat$ACC / 2) + meanAcc, type = "l",
+         ylim = c(0, Ymax), xlim = XLIM, col = "grey28", cex = 0.5, xaxt = 'n', axes = FALSE,
+         xlab = "", ylab = "", cex.lab = 0.6,
+         main = "", lwd = 0.3, cex.main = 0.9)
+    
+    lines(mdat$timestamp, (-mdat$ACC / 2) + meanAcc, type = "l", col = "grey28", cex = 0.5, lwd = 0.3)
+    
     title(main = title, adj = 0)
-    abline(v = atTime, col = "grey", lty = 2, lwd = 0.5)
+    abline(v = atTime, col = "grey", lty = "1F", lwd = 0.5)
     COL = mycolors[1:Nlevels[1]]
     yticks = Ymax * seq(from = 0.1, to = 0.9, length.out = Nlevels[1])
-    yStepSize = min(diff(yticks)) * 0.5 #(Ymax * fraction_for_bars) / Nlevels[1]
-    
+    yStepSize = min(diff(yticks)) * 0.5
     for (gi in 1:length(yticks)) {
       axis(side = 4, at = yticks[gi],
            labels = BCN[gi], col = mycolors[gi], las = 2, cex.axis = 0.5)
@@ -80,17 +78,43 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
       }
       lev = lev + 1
     }
-    #----- Angle and overlapping classes and self-reported classes:
-    par(mar = c(2, 3, 0.5, 4.5), bty = "n")
-    XLAB = ""
+    # onset/wake lines:
+    window_edges = which(diff(mdat$SleepPeriodTime) != 0)
+    if (length(window_edges) > 0) {
+      abline(v = mdat$timestamp[window_edges], col = "black", lwd = 1)
+    }
     
-    plot(mdat$timestamp, mdat$angle, type = "l",
-         ylim = c(-90, 90), xlim = XLIM, col = "grey28", cex = 0.5, xaxt = 'n',
-         xlab = XLAB, ylab = "Angle (degrees)", cex.lab = 0.6, lwd = 0.6)
+    legend(x = XLIM[1] + 60, y = Ymax * 0.9, legend = c("Acceleration", "Angle-z change"),
+           # xjust = 0, yjust = 0, 
+           ncol = 2, lwd = c(1.4, 1.4),
+           lty = c(1, 1), col = c("grey28", "dodgerblue3"),
+           # x.intersp = -0.5,
+           y.intersp = 0.1, box.lwd = 0.5,
+           bg = "white",
+           # adj = c(0, 0.5), 
+           cex = 0.7)
+    
+    #----- Angle and overlapping classes and self-reported classes:
+    par(mar = c(2, 0, 0, 4.5), bty = "n")
+    XLAB = ""
+    Ymax = 70
+    angleChange = abs(diff(c(mdat$angle, 0)))
+    plot(mdat$timestamp, (angleChange / 2), type = "l",
+         ylim = c(-Ymax, Ymax), xlim = XLIM, col = "dodgerblue3", cex = 0.5, xaxt = 'n', axes = FALSE,
+         xlab = XLAB, ylab = "", cex.lab = 0.6, lwd = 0.3)
+    
+    lines(mdat$timestamp, (-angleChange / 2), type = "l",
+        col = "dodgerblue3", cex = 0.5, lwd = 0.3)
     
     LUX_scale_hundred = ceiling(pmin(mdat$lightpeak + 1, 20000) / 400) * 2
-    CL = gray.colors(start = 0, end = 1, rev = TRUE, n = 100)[LUX_scale_hundred]
-    yticks = seq(-90 + (180/Nlevels[2]/2), 90, by = 180 / Nlevels[2])
+    CL = rep("yellow", 100)
+    for (ci in 1:100) {
+      CL[ci] = grDevices::adjustcolor(col = CL[ci], alpha.f = 1/ci)
+    }
+    CL = rev(CL)
+    CL[1:2] = "white"
+    CL = CL[LUX_scale_hundred]
+    yticks = seq(-Ymax + (Ymax/Nlevels[2]/2), Ymax, by = (Ymax*2) / Nlevels[2])
 
     for (gi in 1:length(yticks)) {
       if (ylabels_plot2[gi] == "invalid") {
@@ -101,7 +125,7 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
       axis(side = 4, at = yticks[gi],
            labels = ylabels_plot2[gi], col = col, las = 2, cex.axis = 0.5)
     }
-    abline(v = atTime, col = "grey", lty = 2, lwd = 0.5)
+    abline(v = atTime, col = "grey", lty = "1F", lwd = 0.5)
     # assign timestamp axis:
     
     labTime = paste0(hour[ticks], "H")
@@ -117,8 +141,8 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
         A[tempi] = 1
         t0 = mdat$timestamp[which(diff(c(0, A)) == 1)]
         t1 = mdat$timestamp[which(diff(c(A, 0)) == -1)]
-        y0 = -90 + 180 * ((lev - 1) / Nlevels[2]) + buffer
-        y1 = -90 + 180 * ((lev + 0) / Nlevels[2]) - buffer
+        y0 = -Ymax + (Ymax*2) * ((lev - 1) / Nlevels[2]) + buffer
+        y1 = -Ymax + (Ymax*2)  * ((lev + 0) / Nlevels[2]) - buffer
         rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = mygreys[lev], border = FALSE)
       }
       lev = lev + 1
@@ -129,8 +153,8 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
       if (length(freqtab) > 1 || names(freqtab)[1] == "1") {
         t0 = mdat$timestamp[which(diff(c(0, mdat[,binary_vars[labi]])) == 1)]
         t1 = mdat$timestamp[which(diff(c(mdat[, binary_vars[labi]], 0)) == -1)]
-        y0 = -90 + 180 * ((lev - 1) / Nlevels[2]) + buffer
-        y1 = -90 + 180 * ((lev + 0) / Nlevels[2]) - buffer
+        y0 = -Ymax + (Ymax*2)  * ((lev - 1) / Nlevels[2]) + buffer
+        y1 = -Ymax + (Ymax*2)  * ((lev + 0) / Nlevels[2]) - buffer
         if (binary_vars[labi] == "invalidepoch") {
           col = myred
         } else {
@@ -142,7 +166,12 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
     }
     
     # plot lux
-    lines(mdat$timestamp, rep(92, nrow(mdat)), type = "p", pch = 15, col = CL, cex = 0.8, lwd = 1)
+    lines(mdat$timestamp, rep(Ymax*1.07, nrow(mdat)), type = "p", pch = 15, col = CL, cex = 0.8, lwd = 1)
+    
+    # onset/wake lines:
+    if (length(window_edges) > 0) {
+      abline(v = mdat$timestamp[window_edges], col = "black", lwd = 1)
+    }
   }
   
   #---------------------------------------
@@ -238,7 +267,6 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
           subploti[which(subploti[,2] > nrow(mdat)), 2] = nrow(mdat)
           
           par(mfrow = c(14, 1), mgp = c(2,0.8,0), omi = c(0, 0, 0, 0), bty = "n")
-          print(binary_vars)
           if (nrow(subploti) > 0) {
             for (ani in 1:nrow(subploti)) {
               
