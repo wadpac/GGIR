@@ -262,7 +262,8 @@ g.plot_ts_doubleplot = function(metadatadir = c(),
           # }
           subploti[which(subploti[,2] > nrow(mdat)), 2] = nrow(mdat)
           
-          par(mfrow = c(14, 1), mgp = c(2, 0.8, 0), omi = c(0, 0, 0, 0), bty = "n")
+          NdaysPerPage = 7
+          par(mfrow = c(NdaysPerPage * 2, 1), mgp = c(2, 0.8, 0), omi = c(0, 0, 0, 0), bty = "n")
           if (nrow(subploti) > 0) {
             for (ani in 1:nrow(subploti)) {
               
