@@ -439,7 +439,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
               includenightcrit = params_cleaning[["includenightcrit"]],
               verbose = TRUE)
       # The new visual report
-      visualreport(metadatadir = metadatadir,
+      visualReport(metadatadir = metadatadir,
                    f0 = f0, f1 = f1,
                    overwrite = params_general[["overwrite"]],
                    desiredtz = params_general[["desiredtz"]],

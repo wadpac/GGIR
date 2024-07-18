@@ -1,4 +1,4 @@
-visualreport = function(metadatadir = c(), 
+visualReport = function(metadatadir = c(), 
                         f0 = c(), f1 = c(), overwrite = FALSE,
                         desiredtz = "",
                         verbose = TRUE,

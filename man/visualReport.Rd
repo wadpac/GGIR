@@ -1,5 +1,5 @@
-\name{visualreport}
-\alias{visualreport}
+\name{visualReport}
+\alias{visualReport}
 \title{
   Generate visualisation of time series produced by part 5.
 }
@@ -8,7 +8,7 @@
   for direct use by user
 }
 \usage{
-  visualreport(metadatadir = c(), 
+  visualReport(metadatadir = c(), 
               f0 = c(), f1 = c(), overwrite = FALSE,
               desiredtz = "",
               verbose = TRUE,
