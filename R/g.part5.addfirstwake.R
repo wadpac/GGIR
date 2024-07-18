@@ -61,7 +61,7 @@ g.part5.addfirstwake = function(ts, summarysleep, nightsi, sleeplog, ID,
       # if there was no sleep log
       if (is.na(SPTE_end[1]) == FALSE) {
         if (SPTE_end[1] != 0) {
-          wake_night1_index = round((SPTE_end[1]-24)* Nepochsinhour)
+          wake_night1_index = nightsi[1] + round((SPTE_end[1] - 24) * Nepochsinhour) 
         }
       }
     }
