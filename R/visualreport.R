@@ -9,7 +9,7 @@ visualreport = function(metadatadir = c(),
   
   # Declare functions:
   panelplot = function(mdat, ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
-                       BCN, BCC, title = "", NhoursPerRow = NULL) {
+                       BCN, BCC, title = "", NhoursPerRow = NULL, plotid = 0) {
     window_duration = mdat$timenum[nrow(mdat)] - mdat$timenum[1]
     
     # create vector with color blind friendly colors
@@ -18,9 +18,10 @@ visualreport = function(metadatadir = c(),
                  "#222255", "black")
     mycolors = rep(mycolors, 3)
     signalcolor = "black"
-    mycolors = grDevices::adjustcolor(col = mycolors, alpha.f = 0.6)
+    mycolors = grDevices::adjustcolor(col = mycolors, alpha.f = 0.8)
 
-    grey_for_lux = gray.colors(n = 100, start = 1, end = 0.1)
+    grey_for_lux = gray.colors(n = 100, start = 0.95, end = 0.1)
+    grey_for_lux[1:2] = "white"
     myred = grDevices::adjustcolor(col = "#CC79A7", alpha.f = 0.6) #"red"
     
     # Prepare time tick points
@@ -33,11 +34,7 @@ visualreport = function(metadatadir = c(),
     datLIM = as.Date(min(mdat$timestamp, na.rm = TRUE), tz = desiredtz)
     XLIM = as.POSIXct(paste0(datLIM[1], " 00:00:00"), tz = desiredtz)
     XLIM[2] = XLIM[1] + NhoursPerRow * 3600
-    
-    # if (datLIM[1] , NhoursPerRow = NULL== datLIM[2]) datLIM = datLIM + c(0, NhoursPerRow/24)
-    # XLIM = as.POSIXct(c(paste0(datLIM[1], " 00:00:00"),
-    #                     paste0(datLIM[2], " 12:00:00")), tz = desiredtz)
-
+  
     par(mar = c(2.5, 0, 1.5, 4.5))
     #============================================
     # Acceleration and angle signal
@@ -54,12 +51,15 @@ visualreport = function(metadatadir = c(),
          main = "", lwd = 0.3, cex.main = 0.9)
     lines(mdat$timestamp, angy, type = "l",
          col = signalcolor, lwd = 0.3)
-    
-    text(x = mdat$timestamp[1], y = 55, labels = "Acceleration",
+    text(x = mdat$timestamp[1], y = 60, labels = "Acceleration",
          pos = 4, cex = 0.7, col = signalcolor, font = 2)
-    text(x = mdat$timestamp[1], y = 5, labels = "Angle-z",
+    text(x = mdat$timestamp[1], y = 40, labels = "Angle-z",
          pos = 4, cex = 0.7, col = signalcolor, font = 2)
     
+    if (plotid == 1) {
+      mtext(text = "Generated with R package GGIR", cex = 0.5, side = 3, line = 0, 
+            at = XLIM[1] + 1800, adj = 0)
+    }
     
     if (NhoursPerRow <= 36) {
       cex_axis = 0.5
@@ -80,33 +80,34 @@ visualreport = function(metadatadir = c(),
       } 
       return(changes)
     }  
+    if (NhoursPerRow <= 36) {
+      cex_mtext = 0.4
+    } else {
+      cex_mtext = 0.35 #25
+    }
+    
     
     # assign timestamp axis:
-    mtext(text = hour[ticks], side = 1, line = 0, cex = 0.3, at = atTime)
+    mtext(text = hour[ticks], side = 1, line = 0, cex = cex_mtext, at = atTime)
 
     # with window numbers
     windowNow = mdat$window[ticks]
     changes = changepoints(windowNow)
-    mtext(text = windowNow[changes], side = 1, line = 0.75, cex = 0.3,
+    mtext(text = windowNow[changes], side = 1, line = 0.75, cex = cex_mtext,
           at = atTime[changes])
     # with dates
-    dateNow = paste0(as.numeric(format(mdat$timestamp[ticks], "%d")), " ", 
-                     format(mdat$timestamp[ticks], "%b"))
-    if (NhoursPerRow <= 36) {
-      cex_mtext = 0.3
-    } else {
-      cex_mtext = 0.25
-    }
-    
+    dateNow = as.numeric(format(mdat$timestamp[ticks], "%d"))
+                     # substring(format(mdat$timestamp[ticks], "%b"), 1, 1))
+
     changes = changepoints(dateNow)
     mtext(text = dateNow[changes], side = 1, line = 1.5, cex = cex_mtext,
           at = atTime[changes])
     
-    mtext(text = "hour", side = 1, line = 0, cex = 0.3,
+    mtext(text = "hour", side = 1, line = 0, cex = cex_mtext,
           at = atTime[length(atTime)] + 5500, adj = 0)
-    mtext(text = "window", side = 1, line = 0.75, cex = 0.3,
+    mtext(text = "window number", side = 1, line = 0.75, cex = cex_mtext,
           at = atTime[length(atTime)] + 5500, adj = 0)
-    mtext(text = "date", side = 1, line = 1.5, cex = 0.3,
+    mtext(text = "date", side = 1, line = 1.5, cex = cex_mtext,
           at = atTime[length(atTime)] + 5500, adj = 0)
     
     
@@ -186,10 +187,10 @@ visualreport = function(metadatadir = c(),
     
     # Add color labels
     tickLabels = c(ylabels_plot2, BCN)
-    if ("lightpeak" %in% colnames(mdat)) tickLabels = c(tickLabels, "Lux")
+    if ("lightpeak" %in% colnames(mdat)) tickLabels = c(tickLabels, "lux")
     tickLabels = tickLabels[which(tickLabels != "invalid")]
     for (gi in 1:length(yticks)) {
-      if (tickLabels[gi] != "Lux") {
+      if (tickLabels[gi] != "lux") {
         col = mycolors[gi]
       } else {
         col = "grey"
@@ -205,7 +206,7 @@ visualreport = function(metadatadir = c(),
       for (wei in 1:length(window_edges)) {
         # onset and wake
         if (mdat$SleepPeriodTime[window_edges[wei]] == 1) {
-          toptext = "wake-up"  
+          toptext = paste0("wake-up ", weekdays(mdat$timestamp[window_edges[wei]]))
         } else {
           toptext = "onset"  
         }
@@ -258,19 +259,20 @@ visualreport = function(metadatadir = c(),
         Nlevels[1] = maxN
       }
       BCN = gsub(pattern = "day_|spt_", replacement = "", x = BCN)
-      BCN = gsub(pattern = "sleep", replacement = "spt_sleep", x = BCN)
-      
+      BCN = gsub(pattern = "sleep", replacement = "sleep_in_spt", x = BCN)
+      BCN = tolower(BCN)
       # Bottom plot
       selfreport_vars = c("nap", "nonwear", "sleeplog")
       binary_vars = c("SleepPeriodTime", "sibdetection", "invalidepoch")
       Nlevels[2] = length(binary_vars) + length(selfreport_vars)
       ylabels_plot2 = c(binary_vars, selfreport_vars)
       ylabels_plot2 = gsub(pattern = "invalidepoch", replacement = "invalid", x = ylabels_plot2)
-      ylabels_plot2 = gsub(pattern = "SleepPeriodTime", replacement = "acc_spt", x = ylabels_plot2)
-      ylabels_plot2 = gsub(pattern = "sibdetection", replacement = "acc_sib", x = ylabels_plot2)
+      ylabels_plot2 = gsub(pattern = "SleepPeriodTime", replacement = "spt", x = ylabels_plot2)
+      ylabels_plot2 = gsub(pattern = "sibdetection", replacement = "sib", x = ylabels_plot2)
       ylabels_plot2 = gsub(pattern = "nap", replacement = "diary_nap", x = ylabels_plot2)
       ylabels_plot2 = gsub(pattern = "nonwear", replacement = "diary_nonwear", x = ylabels_plot2)
       ylabels_plot2 = gsub(pattern = "sleeplog", replacement = "diary_sleepwindow", x = ylabels_plot2)
+      ylabels_plot2 = tolower(ylabels_plot2)
       # loop through files
       for (i in f0:f1) {
         load(file = paste0(metadatadir, "/meta/ms5.outraw/",
@@ -314,7 +316,7 @@ visualreport = function(metadatadir = c(),
               
               panelplot(mdat[(subploti[ani, 1] + 1):subploti[ani, 2], ],
                         ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
-                        BCN, BCC, title = "", NhoursPerRow = NhoursPerRow)
+                        BCN, BCC, title = "", NhoursPerRow = NhoursPerRow, plotid = ani)
             }
           }
           dev.off()
