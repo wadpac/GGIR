@@ -81,6 +81,17 @@ visualreport = function(metadatadir = c(),
       }
       lev = lev + 1
     }
+    if ("invalidepoch" %in% binary_vars) {
+      freqtab = table(mdat$invalidepoch)
+      if (length(freqtab) > 1 || names(freqtab)[1] == "1") {
+        t0 = mdat$timestamp[which(diff(c(0, mdat$invalidepoch)) == 1)]
+        t1 = mdat$timestamp[which(diff(c(mdat$invalidepoch, 0)) == -1)]
+        col = myred
+        rect(xleft = t0, xright = t1, ybottom = 0, ytop = Ymax,
+             col = col, density = 20, border = FALSE)
+      }
+    }
+    
     # onset/wake lines:
     window_edges = which(diff(mdat$SleepPeriodTime) != 0)
     if (length(window_edges) > 0) {
@@ -146,15 +157,18 @@ visualreport = function(metadatadir = c(),
       if (length(freqtab) > 1 || names(freqtab)[1] == "1") {
         t0 = mdat$timestamp[which(diff(c(0, mdat[,binary_vars[labi]])) == 1)]
         t1 = mdat$timestamp[which(diff(c(mdat[, binary_vars[labi]], 0)) == -1)]
-        y0 = yticks[lev] + buffer
-        y1 = yticks[lev] - buffer
         if (binary_vars[labi] == "invalidepoch") {
           col = myred
+          rect(xleft = t0, xright = t1, ybottom = -Ymax, ytop = Ymax,
+               col = col, density = 20, border = FALSE)
         } else {
+          y0 = yticks[lev] + buffer
+          y1 = yticks[lev] - buffer
           col = mygreys[lev]
+          rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = col, border = FALSE)
         }
         # print(paste0("y for rect bi: ", y0, " ", y1))
-        rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = col, border = FALSE)
+        
       }
       lev = lev + 1
     }
@@ -176,7 +190,6 @@ visualreport = function(metadatadir = c(),
   expected_ms5raw_path = paste0(metadatadir, "/meta/ms5.outraw")
   
   if (dir.exists(expected_ts_path)) {
-    
     fnames.ms5raw = dir(expected_ts_path, pattern = "[.]RData")
     N_ts_files = length(fnames.ms5raw)
     if (f1 > N_ts_files) f1 = N_ts_files # this is intentionally ms3 and not ms4, do not change!
@@ -225,57 +238,52 @@ visualreport = function(metadatadir = c(),
       ylabels_plot2 = gsub(pattern = "nap", replacement = "diary_nap", x = ylabels_plot2)
       ylabels_plot2 = gsub(pattern = "nonwear", replacement = "diary_nonwear", x = ylabels_plot2)
       ylabels_plot2 = gsub(pattern = "sleeplog", replacement = "diary_sleepwindow", x = ylabels_plot2)
-      
       # loop through files
       for (i in f0:f1) {
-        # browser()
+        load(file = paste0(metadatadir, "/meta/ms5.outraw/",
+                           part6_threshold_combi, "/", fnames.ms5raw[i]))
         
-        if (length(grep(pattern = "2405CH01_053891_2022-06-08 09-37-25", x = fnames.ms5raw[i], ignore.case = TRUE)) > 0) {
-          load(file = paste0(metadatadir, "/meta/ms5.outraw/",
-                             part6_threshold_combi, "/", fnames.ms5raw[i]))
+        if (length(mdat) == 0) next
+        if (nrow(mdat) == 0) next
+        
+        if (all(c("lightpeak", "selfreported", "sibdetection") %in% colnames(mdat))) {
+          simple_filename = gsub(pattern = ".RData", replacement = "", x = fnames.ms5raw[i] ) #"patientID12345"
+          pdf(paste0(metadatadir, "/results/file summary reports/Time_report_",
+                     simple_filename, ".pdf"), paper = "a4",
+              width = 0, height = 0)
+          # zoom on windows that have either daytime sib or selfreported nap
+          acc_naps = which((mdat$sibdetection == 1 | mdat$selfreport == "nap") &
+                             mdat$SleepPeriodTime == 0)
           
-          if (length(mdat) == 0) next
-          if (nrow(mdat) == 0) next
           
-          if (all(c("lightpeak", "selfreported", "sibdetection") %in% colnames(mdat))) {
-            simple_filename = gsub(pattern = ".RData", replacement = "", x = fnames.ms5raw[i] ) #"patientID12345"
-            pdf(paste0(metadatadir, "/results/file summary reports/Time_report_",
-                       simple_filename, ".pdf"), paper = "a4",
-                width = 0, height = 0)
-            # zoom on windows that have either daytime sib or selfreported nap
-            acc_naps = which((mdat$sibdetection == 1 | mdat$selfreport == "nap") &
-                               mdat$SleepPeriodTime == 0)
-            
-            
-            midnightsi = which(format(mdat$timestamp, "%H") == "00" &
-                                 format(mdat$timestamp, "%M") == "00" &
-                                 format(mdat$timestamp, "%S") == "00")
-            subploti = c(1, midnightsi + 1)
-            subploti = cbind(subploti,
-                             c(midnightsi + 720, nrow(mdat)))
-            
-            invalid = which(mdat$invalidepoch == 1)
-            # Skip windows without naps?
-            # for (jj in 1:nrow(subploti)) {
-            #   ma = which(acc_naps > subploti[jj, 1] & acc_naps < subploti[jj, 2])
-            #   if (length(ma) == 0) {
-            #     is.na(subploti[jj, ]) = TRUE
-            #   }
-            # }
-            subploti[which(subploti[,2] > nrow(mdat)), 2] = nrow(mdat)
-            
-            NdaysPerPage = 7
-            par(mfrow = c(NdaysPerPage * 2, 1), mgp = c(2, 0.8, 0), omi = c(0, 0, 0, 0), bty = "n")
-            if (nrow(subploti) > 0) {
-              for (ani in 1:nrow(subploti)) {
-                
-                panelplot(mdat[(subploti[ani, 1] + 1):subploti[ani, 2], ],
-                          ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
-                          BCN, BCC, title = "", dayid = ani)
-              }
+          midnightsi = which(format(mdat$timestamp, "%H") == "00" &
+                               format(mdat$timestamp, "%M") == "00" &
+                               format(mdat$timestamp, "%S") == "00")
+          subploti = c(1, midnightsi + 1)
+          subploti = cbind(subploti,
+                           c(midnightsi + 720, nrow(mdat)))
+          
+          invalid = which(mdat$invalidepoch == 1)
+          # Skip windows without naps?
+          # for (jj in 1:nrow(subploti)) {
+          #   ma = which(acc_naps > subploti[jj, 1] & acc_naps < subploti[jj, 2])
+          #   if (length(ma) == 0) {
+          #     is.na(subploti[jj, ]) = TRUE
+          #   }
+          # }
+          subploti[which(subploti[,2] > nrow(mdat)), 2] = nrow(mdat)
+          
+          NdaysPerPage = 7
+          par(mfrow = c(NdaysPerPage * 2, 1), mgp = c(2, 0.8, 0), omi = c(0, 0, 0, 0), bty = "n")
+          if (nrow(subploti) > 0) {
+            for (ani in 1:nrow(subploti)) {
+              
+              panelplot(mdat[(subploti[ani, 1] + 1):subploti[ani, 2], ],
+                        ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
+                        BCN, BCC, title = "", dayid = ani)
             }
-            dev.off()
           }
+          dev.off()
         }
       }
     }
