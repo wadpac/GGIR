@@ -68,11 +68,16 @@ g.part5.addfirstwake = function(ts, summarysleep, nightsi, sleeplog, ID,
     if (length(wake_night1_index) == 0) {
       # use waking up from next day and subtract 24 hours,
       # the final option if neither of the above routes works
-      wake_night1_index = (firstwake - (24* ((60/epochSize)*60))) + 1
+      wake_night1_index = (firstwake - (24 * ((60 / epochSize) * 60))) + 1
     }
     if (is.na(wake_night1_index)) wake_night1_index = 0
-    if (wake_night1_index < firstwake & wake_night1_index > 1 & (wake_night1_index-1) > nightsi[1]) {
-      ts$diur[1:(wake_night1_index-1)] = 1
+    if (wake_night1_index < firstwake & wake_night1_index > 1 &
+        (wake_night1_index - 1) > nightsi[1]) {
+      newWakeIndex = max(which(ts$sibdetection[1:(wake_night1_index - 1)] == 1))
+      if (length(newWakeIndex) == 0) {
+        newWakeIndex = wake_night1_index - 1
+      }
+      ts$diur[1:newWakeIndex] = 1
     } else {
       # Person slept only during the afternoon on day 2
       # And there is no sleep data available for the first night
