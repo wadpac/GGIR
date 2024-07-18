@@ -9,7 +9,7 @@ visualreport = function(metadatadir = c(),
   
   # Declare functions:
   panelplot = function(mdat, ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
-                       BCN, BCC, title = "", dayid) {
+                       BCN, BCC, title = "", NhoursPerRow = NULL) {
     window_duration = mdat$timenum[nrow(mdat)] - mdat$timenum[1]
     
     # create vector with color blind friendly colors
@@ -17,17 +17,11 @@ visualreport = function(metadatadir = c(),
                  "#0072B2","#D55E00", "#999999", #"#CC79A7"
                  "#222255", "black")
     mycolors = rep(mycolors, 3)
-    
-    signalcolor = "grey50"
+    signalcolor = "black"
     mycolors = grDevices::adjustcolor(col = mycolors, alpha.f = 0.6)
-    # mygreys = rep(c("darkblue", "lightblue"), 20)
-    mygreys = rep(c("#009E73","#F0E442","#56B4E9", "#D55E00"), 20)
-    mygreys = grDevices::adjustcolor(col = mygreys, alpha.f = 0.6)
-    
+
+    grey_for_lux = gray.colors(n = 100, start = 1, end = 0.1)
     myred = grDevices::adjustcolor(col = "#CC79A7", alpha.f = 0.6) #"red"
-    
-    Ymax = pmax(800, max(mdat$ACC, na.rm = TRUE))
-    Ymin = 0 #min(mdat$ACC, na.rm = TRUE)
     
     # Prepare time tick points
     date = paste0(as.numeric(format(mdat$timestamp, "%d")), " ", format(mdat$timestamp, "%b"))
@@ -36,38 +30,128 @@ visualreport = function(metadatadir = c(),
     sec = as.numeric(format(mdat$timestamp, "%S"))
     ticks = which(min == 0 & sec == 0 & hour %in% seq(0, 24, by = 1))
     atTime = mdat$timestamp[ticks]
-    datLIM = as.Date(range(mdat$timestamp, na.rm = TRUE), tz = desiredtz)
-    if (datLIM[1] == datLIM[2]) datLIM = datLIM + c(0, 1)
-    XLIM = as.POSIXct(c(paste0(datLIM[1], " 00:00:00"),
-                        paste0(datLIM[2], " 12:00:00")), tz = desiredtz)
-    #----- LUX
-    if (title == "") {
-      date = paste0(as.numeric(format(mdat$timestamp[1], "%d")), " ", format(mdat$timestamp[1], "%b"))
-      title = paste0("Day ", dayid, " | ", weekdays(mdat$timestamp[1]), " | ", date)
-    }
-    #----- Acceleration and main non-overlapping behavioural classes
-    par(mar = c(0, 0, 2, 4.5))
-    meanAcc = diff(range(mdat$ACC)) / 2
-    plot(mdat$timestamp, (mdat$ACC / 2) + meanAcc, type = "l",
-         ylim = c(0, Ymax), xlim = XLIM, col = signalcolor, cex = 0.5, xaxt = 'n', axes = FALSE,
-         xlab = "", ylab = "", cex.lab = 0.6,
-         main = "", lwd = 0.3, cex.main = 0.9)
+    datLIM = as.Date(min(mdat$timestamp, na.rm = TRUE), tz = desiredtz)
+    XLIM = as.POSIXct(paste0(datLIM[1], " 00:00:00"), tz = desiredtz)
+    XLIM[2] = XLIM[1] + NhoursPerRow * 3600
     
-    lines(mdat$timestamp, (-mdat$ACC / 2) + meanAcc, type = "l", col = signalcolor, cex = 0.5, lwd = 0.3)
-    text(x = mdat$timestamp[1], y = Ymax * 0.5, labels = "Acceleration",
+    # if (datLIM[1] , NhoursPerRow = NULL== datLIM[2]) datLIM = datLIM + c(0, NhoursPerRow/24)
+    # XLIM = as.POSIXct(c(paste0(datLIM[1], " 00:00:00"),
+    #                     paste0(datLIM[2], " 12:00:00")), tz = desiredtz)
+
+    par(mar = c(2.5, 0, 1.5, 4.5))
+    #============================================
+    # Acceleration and angle signal
+    # scale 0 - 100, where bottom half is used for angle and top half for acceleration
+    Ymax = 100
+    Ymin = 0 #min(mdat$ACC, na.rm = TRUE)
+    accy = (mdat$ACC / 25) + 50
+    angy = (((mdat$angle + 90) * 50) / 180)
+    luxy = ceiling(pmin(mdat$lightpeak + 1, 20000) / 400) * 2
+    plot(mdat$timestamp, accy, type = "l",
+         ylim = c(0, Ymax), xlim = XLIM, col = signalcolor,
+         cex = 0.5, xaxt = 'n', axes = FALSE,
+         xlab = "", ylab = "", cex.lab = 0.6, cex.axis = 0.7,
+         main = "", lwd = 0.3, cex.main = 0.9)
+    lines(mdat$timestamp, angy, type = "l",
+         col = signalcolor, lwd = 0.3)
+    
+    text(x = mdat$timestamp[1], y = 55, labels = "Acceleration",
+         pos = 4, cex = 0.7, col = signalcolor, font = 2)
+    text(x = mdat$timestamp[1], y = 5, labels = "Angle-z",
          pos = 4, cex = 0.7, col = signalcolor, font = 2)
     
-    title(main = title, adj = 0)
-    abline(v = atTime, col = "black", lty = "1F", lwd = 0.5)
-    COL = mycolors[1:Nlevels[1]]
-    yticks = Ymax * seq(from = 0.1, to = 0.9, length.out = Nlevels[1])
-    yStepSize = min(diff(yticks)) * 0.5
-    for (gi in 1:length(yticks)) {
-      axis(side = 4, at = yticks[gi], lwd = 2,
-           labels = BCN[gi], col = mycolors[gi], las = 2, cex.axis = 0.5,
-           line = 0)
+    
+    if (NhoursPerRow <= 36) {
+      cex_axis = 0.5
+    } else {
+      cex_axis = 0.5
     }
+    
+    changepoints = function(x) {
+      Nvalues = length(x)
+      if (Nvalues > 3) {
+        changes = which(x[2:Nvalues] != x[1:(Nvalues - 1)])
+        changes = sort(unique(c(1, changes, changes + 1, Nvalues)))
+        if (length(changes) == 0) {
+          changes = 1:Nvalues
+        }
+      } else {
+        changes = 1:Nvalues
+      } 
+      return(changes)
+    }  
+    
+    # assign timestamp axis:
+    mtext(text = hour[ticks], side = 1, line = 0, cex = 0.3, at = atTime)
+
+    # with window numbers
+    windowNow = mdat$window[ticks]
+    changes = changepoints(windowNow)
+    mtext(text = windowNow[changes], side = 1, line = 0.75, cex = 0.3,
+          at = atTime[changes])
+    # with dates
+    dateNow = paste0(as.numeric(format(mdat$timestamp[ticks], "%d")), " ", 
+                     format(mdat$timestamp[ticks], "%b"))
+    if (NhoursPerRow <= 36) {
+      cex_mtext = 0.3
+    } else {
+      cex_mtext = 0.25
+    }
+    
+    changes = changepoints(dateNow)
+    mtext(text = dateNow[changes], side = 1, line = 1.5, cex = cex_mtext,
+          at = atTime[changes])
+    
+    mtext(text = "hour", side = 1, line = 0, cex = 0.3,
+          at = atTime[length(atTime)] + 5500, adj = 0)
+    mtext(text = "window", side = 1, line = 0.75, cex = 0.3,
+          at = atTime[length(atTime)] + 5500, adj = 0)
+    mtext(text = "date", side = 1, line = 1.5, cex = 0.3,
+          at = atTime[length(atTime)] + 5500, adj = 0)
+    
+    
+    # Add grid of dots
+    abline(v = atTime, col = "black", lty = "1F", lwd = 0.5)
+    
+    #============================================
+    # add rectangular blocks to reflect classes
+    Nlevels = sum(Nlevels) - 1 # -1 because invalidepoch will not be a rectangle
+    if ("lightpeak" %in% colnames(mdat)) Nlevels = Nlevels + 1
+    COL = mycolors[1:Nlevels]
+    yticks = Ymax * seq(from = 0.05, to = 0.95, length.out = Nlevels)
+    yStepSize = min(diff(yticks)) * 0.5
     lev = 1
+    # Binary classes
+    for (labi in 1:length(binary_vars)) {
+      freqtab = table(mdat[,binary_vars[labi]])
+      if (length(freqtab) > 1 || names(freqtab)[1] == "1") {
+        t0 = mdat$timestamp[which(diff(c(0, mdat[,binary_vars[labi]])) == 1)]
+        t1 = mdat$timestamp[which(diff(c(mdat[, binary_vars[labi]], 0)) == -1)]
+        if (binary_vars[labi] != "invalidepoch") {
+          y0 = yticks[lev] + yStepSize
+          y1 = yticks[lev] - yStepSize
+          col = mycolors[lev]
+          rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = col, border = FALSE)
+        }
+      }
+      if (binary_vars[labi] != "invalidepoch") lev = lev + 1
+    }
+    # Diary-based variables
+    for (si in 1:length(selfreport_vars)) {
+      tempi = which(mdat$selfreport == selfreport_vars[si])
+      if (length(tempi) > 0) {
+        A = rep(0, nrow(mdat))
+        A[tempi] = 1
+        t0 = mdat$timestamp[which(diff(c(0, A)) == 1)]
+        t1 = mdat$timestamp[which(diff(c(A, 0)) == -1)]
+        y0 = yticks[lev] + yStepSize
+        y1 = yticks[lev] - yStepSize
+        rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = mycolors[lev], border = FALSE)
+      }
+      lev = lev + 1
+    }
+    
+    # Behavioural classes
     for (clai in 1:length(BCC)) {
       tempi = which(mdat$class_id == BCC[clai])
       if (length(tempi) > 0) {
@@ -77,10 +161,18 @@ visualreport = function(metadatadir = c(),
         t1 = mdat$timestamp[which(diff(c(A, 0)) == -1) + 1]
         y0 = yticks[lev] - yStepSize * 0.8
         y1 = yticks[lev] + yStepSize * 0.8
-        rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = COL[clai], border = FALSE) #boarder = FALSE
+        rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = mycolors[lev], border = FALSE) #boarder = FALSE
       }
       lev = lev + 1
     }
+    
+    if ("lightpeak" %in% colnames(mdat)) {
+      lines(mdat$timestamp, rep(yticks[lev], nrow(mdat)), type = "p", pch = 15,
+            col = grey_for_lux[luxy], cex = 0.8, lwd = 1)
+      lev = lev + 1
+    }
+    
+    # Highlight invalid epochs as hashed area on top of all rects
     if ("invalidepoch" %in% binary_vars) {
       freqtab = table(mdat$invalidepoch)
       if (length(freqtab) > 1 || names(freqtab)[1] == "1") {
@@ -92,93 +184,34 @@ visualreport = function(metadatadir = c(),
       }
     }
     
+    # Add color labels
+    tickLabels = c(ylabels_plot2, BCN)
+    if ("lightpeak" %in% colnames(mdat)) tickLabels = c(tickLabels, "Lux")
+    tickLabels = tickLabels[which(tickLabels != "invalid")]
+    for (gi in 1:length(yticks)) {
+      if (tickLabels[gi] != "Lux") {
+        col = mycolors[gi]
+      } else {
+        col = "grey"
+      }
+      axis(side = 4, at = yticks[gi], lwd = 2,
+           labels = tickLabels[gi], col = col, las = 2, cex.axis = 0.5,
+           line = 0)
+    }
     # onset/wake lines:
     window_edges = which(diff(mdat$SleepPeriodTime) != 0)
     if (length(window_edges) > 0) {
-      abline(v = mdat$timestamp[window_edges], col = "black", lwd = 1)
-    }
-    
-    #----- Angle and overlapping classes and self-reported classes:
-    par(mar = c(2, 0, 0, 4.5), bty = "n")
-    XLAB = ""
-    Ymax = 70
-    angleChange = abs(diff(c(mdat$angle, 0)))
-    plot(mdat$timestamp, (angleChange / 2), type = "l",
-         ylim = c(-Ymax, Ymax), xlim = XLIM, col = signalcolor, cex = 0.5, xaxt = 'n', axes = FALSE,
-         xlab = XLAB, ylab = "", cex.lab = 0.6, lwd = 0.3)
-    
-    lines(mdat$timestamp, (-angleChange / 2), type = "l",
-          col = signalcolor, cex = 0.5, lwd = 0.3)
-    text(x = mdat$timestamp[1], y = Ymax * 0.5, labels = "Angle-z change",
-         pos = 4, cex = 0.7, col = signalcolor, font = 2)
-    LUX_scale_hundred = ceiling(pmin(mdat$lightpeak + 1, 20000) / 400) * 2
-    CL = rep("yellow", 100)
-    for (ci in 1:100) {
-      CL[ci] = grDevices::adjustcolor(col = CL[ci], alpha.f = 1/ci)
-    }
-    CL = rev(CL)
-    CL[1:2] = "white"
-    CL = CL[LUX_scale_hundred]
-    stepticks = (Ymax*2) / Nlevels[2]
-    yticks = seq(-Ymax + (Ymax/Nlevels[2]/2), Ymax, by = stepticks)
-    for (gi in 1:length(yticks)) {
-      if (ylabels_plot2[gi] == "invalid") {
-        col = myred
-      } else {
-        col = mygreys[gi]
-      }
-      axis(side = 4, at = yticks[gi], lwd = 2,
-           labels = ylabels_plot2[gi], col = col, las = 2, cex.axis = 0.5)
-    }
-    abline(v = atTime, col = "black", lty = "1F", lwd = 0.5)
-    # assign timestamp axis:
-    labTime = paste0(hour[ticks], "H")
-    axis(side = 1, at = atTime,
-         labels = labTime, las = 1, cex.axis = 0.5)
-    
-    buffer = stepticks / 2
-    lev = 1
-    for (si in 1:length(selfreport_vars)) {
-      tempi = which(mdat$selfreport == selfreport_vars[si])
-      if (length(tempi) > 0) {
-        A = rep(0, nrow(mdat))
-        A[tempi] = 1
-        t0 = mdat$timestamp[which(diff(c(0, A)) == 1)]
-        t1 = mdat$timestamp[which(diff(c(A, 0)) == -1)]
-        y0 = yticks[lev] + buffer
-        y1 = yticks[lev] - buffer
-        rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = mygreys[lev], border = FALSE)
-      }
-      lev = lev + 1
-    }
-    
-    for (labi in 1:length(binary_vars)) {
-      freqtab = table(mdat[,binary_vars[labi]])
-      if (length(freqtab) > 1 || names(freqtab)[1] == "1") {
-        t0 = mdat$timestamp[which(diff(c(0, mdat[,binary_vars[labi]])) == 1)]
-        t1 = mdat$timestamp[which(diff(c(mdat[, binary_vars[labi]], 0)) == -1)]
-        if (binary_vars[labi] == "invalidepoch") {
-          col = myred
-          rect(xleft = t0, xright = t1, ybottom = -Ymax, ytop = Ymax,
-               col = col, density = 20, border = FALSE)
+      abline(v = mdat$timestamp[window_edges], col = "black", lwd = 0.7)
+      for (wei in 1:length(window_edges)) {
+        # onset and wake
+        if (mdat$SleepPeriodTime[window_edges[wei]] == 1) {
+          toptext = "wake-up"  
         } else {
-          y0 = yticks[lev] + buffer
-          y1 = yticks[lev] - buffer
-          col = mygreys[lev]
-          rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = col, border = FALSE)
+          toptext = "onset"  
         }
-        # print(paste0("y for rect bi: ", y0, " ", y1))
-        
+        mtext(text = toptext, side = 3, line = 0, cex = 0.5,
+              at = mdat$timestamp[window_edges[wei]])
       }
-      lev = lev + 1
-    }
-    
-    # plot lux
-    lines(mdat$timestamp, rep(Ymax*1.07, nrow(mdat)), type = "p", pch = 15, col = CL, cex = 0.8, lwd = 1)
-    
-    # onset/wake lines:
-    if (length(window_edges) > 0) {
-      abline(v = mdat$timestamp[window_edges], col = "black", lwd = 1)
     }
   }
   
@@ -231,7 +264,7 @@ visualreport = function(metadatadir = c(),
       selfreport_vars = c("nap", "nonwear", "sleeplog")
       binary_vars = c("SleepPeriodTime", "sibdetection", "invalidepoch")
       Nlevels[2] = length(binary_vars) + length(selfreport_vars)
-      ylabels_plot2 = c(selfreport_vars, binary_vars)
+      ylabels_plot2 = c(binary_vars, selfreport_vars)
       ylabels_plot2 = gsub(pattern = "invalidepoch", replacement = "invalid", x = ylabels_plot2)
       ylabels_plot2 = gsub(pattern = "SleepPeriodTime", replacement = "acc_spt", x = ylabels_plot2)
       ylabels_plot2 = gsub(pattern = "sibdetection", replacement = "acc_sib", x = ylabels_plot2)
@@ -256,12 +289,13 @@ visualreport = function(metadatadir = c(),
                              mdat$SleepPeriodTime == 0)
           
           
+          NhoursPerRow = 48
           midnightsi = which(format(mdat$timestamp, "%H") == "00" &
                                format(mdat$timestamp, "%M") == "00" &
                                format(mdat$timestamp, "%S") == "00")
           subploti = c(1, midnightsi + 1)
           subploti = cbind(subploti,
-                           c(midnightsi + 720, nrow(mdat)))
+                           c(midnightsi + (NhoursPerRow - 24) * 60, nrow(mdat)))
           
           invalid = which(mdat$invalidepoch == 1)
           # Skip windows without naps?
@@ -274,13 +308,13 @@ visualreport = function(metadatadir = c(),
           subploti[which(subploti[,2] > nrow(mdat)), 2] = nrow(mdat)
           
           NdaysPerPage = 7
-          par(mfrow = c(NdaysPerPage * 2, 1), mgp = c(2, 0.8, 0), omi = c(0, 0, 0, 0), bty = "n")
+          par(mfrow = c(NdaysPerPage, 1), mgp = c(2, 0.8, 0), omi = c(0, 0, 0, 0), bty = "n")
           if (nrow(subploti) > 0) {
             for (ani in 1:nrow(subploti)) {
               
               panelplot(mdat[(subploti[ani, 1] + 1):subploti[ani, 2], ],
                         ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
-                        BCN, BCC, title = "", dayid = ani)
+                        BCN, BCC, title = "", NhoursPerRow = NhoursPerRow)
             }
           }
           dev.off()
