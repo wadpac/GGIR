@@ -85,8 +85,6 @@ visualReport = function(metadatadir = c(),
     } else {
       cex_mtext = 0.35 #25
     }
-    
-    
     # assign timestamp axis:
     mtext(text = hour[ticks], side = 1, line = 0, cex = cex_mtext, at = atTime)
 
@@ -222,7 +220,6 @@ visualReport = function(metadatadir = c(),
   
   expected_ts_path = paste0(metadatadir, "/meta/ms5.outraw/", part6_threshold_combi)
   expected_ms5raw_path = paste0(metadatadir, "/meta/ms5.outraw")
-  
   if (dir.exists(expected_ts_path)) {
     fnames.ms5raw = dir(expected_ts_path, pattern = "[.]RData")
     N_ts_files = length(fnames.ms5raw)
@@ -233,7 +230,6 @@ visualReport = function(metadatadir = c(),
     
     mdat = NULL
     if (ts_exists) {
-      
       Nlevels = c(0, 0)
       # Extract behavioural class names and codes:
       legendfiles = list.files(path = paste0(metadatadir, "/meta/ms5.outraw"), pattern = "codes", full.names = TRUE)
@@ -280,8 +276,9 @@ visualReport = function(metadatadir = c(),
         
         if (length(mdat) == 0) next
         if (nrow(mdat) == 0) next
-        
+        mdat$lightpeak = runif(n = nrow(mdat), min = 0, max = 20000)
         if (all(c("lightpeak", "selfreported", "sibdetection") %in% colnames(mdat))) {
+
           simple_filename = gsub(pattern = ".RData", replacement = "", x = fnames.ms5raw[i] ) #"patientID12345"
           pdf(paste0(metadatadir, "/results/file summary reports/Time_report_",
                      simple_filename, ".pdf"), paper = "a4",
@@ -291,7 +288,7 @@ visualReport = function(metadatadir = c(),
                              mdat$SleepPeriodTime == 0)
           
           
-          NhoursPerRow = 48
+          NhoursPerRow = 36
           midnightsi = which(format(mdat$timestamp, "%H") == "00" &
                                format(mdat$timestamp, "%M") == "00" &
                                format(mdat$timestamp, "%S") == "00")
@@ -313,10 +310,13 @@ visualReport = function(metadatadir = c(),
           par(mfrow = c(NdaysPerPage, 1), mgp = c(2, 0.8, 0), omi = c(0, 0, 0, 0), bty = "n")
           if (nrow(subploti) > 0) {
             for (ani in 1:nrow(subploti)) {
-              
-              panelplot(mdat[(subploti[ani, 1] + 1):subploti[ani, 2], ],
-                        ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
-                        BCN, BCC, title = "", NhoursPerRow = NhoursPerRow, plotid = ani)
+              if (subploti[ani, 2] - subploti[ani, 1] > 60) { # we need at least 1 hour for the ticks
+                # print("A")
+                # print(subploti[2] - subploti[1])
+                panelplot(mdat[(subploti[ani, 1] + 1):subploti[ani, 2], ],
+                          ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
+                          BCN, BCC, title = "", NhoursPerRow = NhoursPerRow, plotid = ani)
+              }
             }
           }
           dev.off()
