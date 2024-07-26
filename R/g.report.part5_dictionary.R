@@ -24,14 +24,15 @@ g.report.part5_dictionary = function(metadatadir, params_output) {
   # main script -------------------------------------------------------------
   # -------------------------------------------------------------------------
   # identify individual reports
-  reports = dir(file.path(metadatadir, "results", "QC"), full.names = TRUE, 
+  reports = dir(file.path(metadatadir, "results"), full.names = TRUE, 
                 pattern = "^part5.*\\.csv$")
   # Select one daysummary, personsummary, and Segment report as variables are the same across configurations
   ds = grep("^part5_daysummary", basename(reports))[1]
   ps = grep("^part5_personsummary", basename(reports))[1]
   reports = reports[c(ds, ps)]
   if (all(is.na( reports))) {
-      reports = dir(file.path(metadatadir, "results", "QC"), full.names = TRUE, 
+    # No cleaned part 5 report probably because no valid windows, so try full report instead
+    reports = dir(file.path(metadatadir, "results", "QC"), full.names = TRUE, 
                     pattern = "^part5.*\\.csv$")
   }
   if (length(reports) == 0 || all(is.na( reports))) return()
