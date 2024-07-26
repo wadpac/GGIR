@@ -3,6 +3,8 @@
 - Report part 4 and 5:
 
   - Fix bug at identifying days and nights specified in the data_cleaning_file #1168
+
+- Data dictionary part 5: When no valid days are seen dictionary generations error, now fixed #1176
   
 # CHANGES IN GGIR VERSION 3.1-2
 
