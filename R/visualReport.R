@@ -2,28 +2,20 @@ visualReport = function(metadatadir = c(),
                         f0 = c(), f1 = c(), overwrite = FALSE,
                         desiredtz = "",
                         verbose = TRUE,
-                        part6_threshold_combi = NULL) {
+                        part6_threshold_combi = NULL,
+                        GGIRversion = NULL) {
   if (!file.exists(paste0(metadatadir, "/results/file summary reports"))) {
     dir.create(file.path(paste0(metadatadir, "/results"), "file summary reports"))
   }
   
   # Declare functions:
-  panelplot = function(mdat, ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
-                       BCN, BCC, title = "", NhoursPerRow = NULL, plotid = 0) {
+  panelplot = function(mdat, ylabels_plot2, selfreport_vars, binary_vars,
+                       BCN, BCC, title = "", NhoursPerRow = NULL, plotid = 0, legend_items = NULL, lux_available = FALSE) {
     window_duration = mdat$timenum[nrow(mdat)] - mdat$timenum[1]
-    
-    # create vector with color blind friendly colors
-    mycolors = c("#E69F00","#56B4E9","#009E73","#F0E442",
-                 "#0072B2","#D55E00", "#999999", #"#CC79A7"
-                 "#222255", "black")
-    mycolors = rep(mycolors, 3)
     signalcolor = "black"
-    mycolors = grDevices::adjustcolor(col = mycolors, alpha.f = 0.8)
-
     grey_for_lux = gray.colors(n = 100, start = 0.95, end = 0.1)
     grey_for_lux[1:2] = "white"
-    myred = grDevices::adjustcolor(col = "#CC79A7", alpha.f = 0.6) #"red"
-    
+
     # Prepare time tick points
     date = paste0(as.numeric(format(mdat$timestamp, "%d")), " ", format(mdat$timestamp, "%b"))
     hour = as.numeric(format(mdat$timestamp, "%H"))
@@ -34,32 +26,22 @@ visualReport = function(metadatadir = c(),
     datLIM = as.Date(min(mdat$timestamp, na.rm = TRUE), tz = desiredtz)
     XLIM = as.POSIXct(paste0(datLIM[1], " 00:00:00"), tz = desiredtz)
     XLIM[2] = XLIM[1] + NhoursPerRow * 3600
-  
-    par(mar = c(2.5, 0, 1.5, 4.5))
+    
+    par(mar = c(2.5, 0, 1.5, 2))
     #============================================
     # Acceleration and angle signal
     # scale 0 - 100, where bottom half is used for angle and top half for acceleration
     Ymax = 100
-    Ymin = 0 #min(mdat$ACC, na.rm = TRUE)
-    accy = (mdat$ACC / 25) + 50
-    angy = (((mdat$angle + 90) * 50) / 180)
-    luxy = ceiling(pmin(mdat$lightpeak + 1, 20000) / 400) * 2
-    plot(mdat$timestamp, accy, type = "l",
-         ylim = c(0, Ymax), xlim = XLIM, col = signalcolor,
-         cex = 0.5, xaxt = 'n', axes = FALSE,
-         xlab = "", ylab = "", cex.lab = 0.6, cex.axis = 0.7,
-         main = "", lwd = 0.3, cex.main = 0.9)
-    lines(mdat$timestamp, angy, type = "l",
-         col = signalcolor, lwd = 0.3)
-    text(x = mdat$timestamp[1], y = 60, labels = "Acceleration",
-         pos = 4, cex = 0.7, col = signalcolor, font = 2)
-    text(x = mdat$timestamp[1], y = 40, labels = "Angle-z",
-         pos = 4, cex = 0.7, col = signalcolor, font = 2)
-    
-    if (plotid == 1) {
-      mtext(text = "Generated with R package GGIR", cex = 0.5, side = 3, line = 0, 
-            at = XLIM[1] + 1800, adj = 0)
+    Ymin = 0
+    accy = (mdat$ACC / 10) + 50
+    angy = (((mdat$angle + 90) * 40) / 180)
+    if (lux_available == TRUE) {
+      luxy = ceiling(pmin(mdat$lightpeak + 1, 20000) / 400) * 2
     }
+    plot(0:1, 0:1,
+         ylim = c(0, Ymax), xlim = XLIM, 
+         xaxt = 'n', axes = FALSE,
+         xlab = "", ylab = "")
     
     if (NhoursPerRow <= 36) {
       cex_axis = 0.5
@@ -87,7 +69,7 @@ visualReport = function(metadatadir = c(),
     }
     # assign timestamp axis:
     mtext(text = hour[ticks], side = 1, line = 0, cex = cex_mtext, at = atTime)
-
+    
     # with window numbers
     windowNow = mdat$window[ticks]
     changes = changepoints(windowNow)
@@ -95,7 +77,6 @@ visualReport = function(metadatadir = c(),
           at = atTime[changes])
     # with dates
     dateNow = as.numeric(format(mdat$timestamp[ticks], "%d"))
-                     # substring(format(mdat$timestamp[ticks], "%b"), 1, 1))
 
     changes = changepoints(dateNow)
     mtext(text = dateNow[changes], side = 1, line = 1.5, cex = cex_mtext,
@@ -103,100 +84,93 @@ visualReport = function(metadatadir = c(),
     
     mtext(text = "hour", side = 1, line = 0, cex = cex_mtext,
           at = atTime[length(atTime)] + 5500, adj = 0)
-    mtext(text = "window number", side = 1, line = 0.75, cex = cex_mtext,
+    mtext(text = "window", side = 1, line = 0.75, cex = cex_mtext,
           at = atTime[length(atTime)] + 5500, adj = 0)
     mtext(text = "date", side = 1, line = 1.5, cex = cex_mtext,
           at = atTime[length(atTime)] + 5500, adj = 0)
-    
     
     # Add grid of dots
     abline(v = atTime, col = "black", lty = "1F", lwd = 0.5)
     
     #============================================
     # add rectangular blocks to reflect classes
-    Nlevels = sum(Nlevels) - 1 # -1 because invalidepoch will not be a rectangle
-    if ("lightpeak" %in% colnames(mdat)) Nlevels = Nlevels + 1
-    COL = mycolors[1:Nlevels]
+    Nlevels = max(legend_items$level, na.rm = TRUE) #sum(Nlevels) - 1 # -1 because invalidepoch will not be a rectangle
+    
+    if (lux_available == TRUE) {
+      Nlevels = Nlevels + 1
+    }
     yticks = Ymax * seq(from = 0.05, to = 0.95, length.out = Nlevels)
-    yStepSize = min(diff(yticks)) * 0.5
-    lev = 1
-    # Binary classes
-    for (labi in 1:length(binary_vars)) {
-      freqtab = table(mdat[,binary_vars[labi]])
-      if (length(freqtab) > 1 || names(freqtab)[1] == "1") {
-        t0 = mdat$timestamp[which(diff(c(0, mdat[,binary_vars[labi]])) == 1)]
-        t1 = mdat$timestamp[which(diff(c(mdat[, binary_vars[labi]], 0)) == -1)]
-        if (binary_vars[labi] != "invalidepoch") {
-          y0 = yticks[lev] + yStepSize
-          y1 = yticks[lev] - yStepSize
-          col = mycolors[lev]
+    yStepSize = min(diff(yticks)) * 0.3
+
+    for (labi in 1:length(legend_items$name)) {
+      if (legend_items$name[labi] %in% c("sib", "invalid")) {
+        
+        
+        # binary variables
+        freqtab = table(mdat[, legend_items$name[labi]])
+        if (length(freqtab) > 1 || names(freqtab)[1] == "1") {
+          t0 = mdat$timestamp[which(diff(c(0, mdat[,legend_items$name[labi]])) == 1)]
+          t1 = mdat$timestamp[which(diff(c(mdat[, legend_items$name[labi]], 0)) == -1)]
+          
+          if (legend_items$name[labi] != "invalid") {
+            y0 = yticks[legend_items$level[labi]] + yStepSize
+            y1 = yticks[legend_items$level[labi]] - yStepSize
+            col = legend_items$col[labi]
+            rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = col, border = FALSE)
+          }
+        }
+      } else {
+        if (legend_items$name[labi] %in% c("diary_nap", "diary_nonwear", "diary_sleepwindow")) {
+          # Diary
+          tempi = which(mdat$selfreport == legend_items$name[labi])
+        } else {
+          # Accelerometer
+          tempi = which(mdat$class_id == legend_items$code[labi])
+        }
+        if (length(tempi) > 0) {
+          A = rep(0, nrow(mdat))
+          A[tempi] = 1
+          t0 = mdat$timestamp[which(diff(c(0, A)) == 1)]
+          t1 = mdat$timestamp[which(diff(c(A, 0)) == -1)]
+          y0 = yticks[legend_items$level[labi]] + yStepSize
+          y1 = yticks[legend_items$level[labi]] - yStepSize
+          col = legend_items$col[labi]
           rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = col, border = FALSE)
         }
       }
-      if (binary_vars[labi] != "invalidepoch") lev = lev + 1
-    }
-    # Diary-based variables
-    for (si in 1:length(selfreport_vars)) {
-      tempi = which(mdat$selfreport == selfreport_vars[si])
-      if (length(tempi) > 0) {
-        A = rep(0, nrow(mdat))
-        A[tempi] = 1
-        t0 = mdat$timestamp[which(diff(c(0, A)) == 1)]
-        t1 = mdat$timestamp[which(diff(c(A, 0)) == -1)]
-        y0 = yticks[lev] + yStepSize
-        y1 = yticks[lev] - yStepSize
-        rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = mycolors[lev], border = FALSE)
-      }
-      lev = lev + 1
     }
     
-    # Behavioural classes
-    for (clai in 1:length(BCC)) {
-      tempi = which(mdat$class_id == BCC[clai])
-      if (length(tempi) > 0) {
-        A = rep(0, nrow(mdat))
-        A[tempi] = 1
-        t0 = mdat$timestamp[which(diff(c(0, A)) == 1)]
-        t1 = mdat$timestamp[which(diff(c(A, 0)) == -1) + 1]
-        y0 = yticks[lev] - yStepSize * 0.8
-        y1 = yticks[lev] + yStepSize * 0.8
-        rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = mycolors[lev], border = FALSE) #boarder = FALSE
-      }
-      lev = lev + 1
-    }
-    
-    if ("lightpeak" %in% colnames(mdat)) {
-      lines(mdat$timestamp, rep(yticks[lev], nrow(mdat)), type = "p", pch = 15,
-            col = grey_for_lux[luxy], cex = 0.8, lwd = 1)
-      lev = lev + 1
+    if (lux_available == TRUE) {
+      lines(mdat$timestamp, rep(yticks[max(legend_items$level) + 1], nrow(mdat)), type = "p", pch = 15,
+            col = grey_for_lux[luxy], cex = 0.8, lwd = 2)
     }
     
     # Highlight invalid epochs as hashed area on top of all rects
-    if ("invalidepoch" %in% binary_vars) {
-      freqtab = table(mdat$invalidepoch)
+    if ("invalid" %in% legend_items$name) {
+      freqtab = table(mdat$invalid)
       if (length(freqtab) > 1 || names(freqtab)[1] == "1") {
-        t0 = mdat$timestamp[which(diff(c(0, mdat$invalidepoch)) == 1)]
-        t1 = mdat$timestamp[which(diff(c(mdat$invalidepoch, 0)) == -1)]
-        col = myred
+        t0 = mdat$timestamp[which(diff(c(0, mdat$invalid)) == 1)]
+        t1 = mdat$timestamp[which(diff(c(mdat$invalid, 0)) == -1)]
+        col = legend_items$col[which(legend_items$name == "invalid")]
+        
+        
         rect(xleft = t0, xright = t1, ybottom = 0, ytop = Ymax,
-             col = col, density = 20, border = FALSE)
+             col = col, density = 15, border = TRUE)
       }
     }
     
-    # Add color labels
-    tickLabels = c(ylabels_plot2, BCN)
-    if ("lightpeak" %in% colnames(mdat)) tickLabels = c(tickLabels, "lux")
-    tickLabels = tickLabels[which(tickLabels != "invalid")]
-    for (gi in 1:length(yticks)) {
-      if (tickLabels[gi] != "lux") {
-        col = mycolors[gi]
-      } else {
-        col = "grey"
-      }
-      axis(side = 4, at = yticks[gi], lwd = 2,
-           labels = tickLabels[gi], col = col, las = 2, cex.axis = 0.5,
-           line = 0)
-    }
+    # Add lines on top
+    lines(mdat$timestamp, accy, type = "l",
+          col = signalcolor,
+          lwd = 0.3)
+    
+    lines(mdat$timestamp, angy, type = "l",
+          col = signalcolor, lwd = 0.3)
+    text(x = mdat$timestamp[1], y = 60, labels = "Acceleration",
+         pos = 4, cex = 0.7, col = signalcolor, font = 2)
+    text(x = mdat$timestamp[1], y = 40, labels = "Angle-z",
+         pos = 4, cex = 0.7, col = signalcolor, font = 2)
+    
     # onset/wake lines:
     window_edges = which(diff(mdat$SleepPeriodTime) != 0)
     if (length(window_edges) > 0) {
@@ -230,9 +204,9 @@ visualReport = function(metadatadir = c(),
     
     mdat = NULL
     if (ts_exists) {
-      Nlevels = c(0, 0)
       # Extract behavioural class names and codes:
-      legendfiles = list.files(path = paste0(metadatadir, "/meta/ms5.outraw"), pattern = "codes", full.names = TRUE)
+      legendfiles = list.files(path = paste0(metadatadir, "/meta/ms5.outraw"),
+                               pattern = "codes", full.names = TRUE)
       df = file.info(legendfiles)
       legendfiles = rownames(df)[which.max(df$mtime)]
       legendF = read.csv(rownames(df)[which.max(df$mtime)])
@@ -246,22 +220,21 @@ visualReport = function(metadatadir = c(),
       class2remove = grep(pattern = "unbt|spt_wake", x = BCN, invert = FALSE, value = FALSE)
       BCN = BCN[-class2remove]
       BCC = BCC[BCC %in% BCC[class2remove] == FALSE]
-      
-      Nlevels[1] = length(BCC)
-      maxN = 9 # maximum number of levels to show
-      if (Nlevels[1] > maxN) {
-        BCC = BCC[1:maxN]
-        BCN = BCN[1:maxN]
-        Nlevels[1] = maxN
-      }
       BCN = gsub(pattern = "day_|spt_", replacement = "", x = BCN)
       BCN = gsub(pattern = "sleep", replacement = "sleep_in_spt", x = BCN)
       BCN = tolower(BCN)
+      BCN = gsub(pattern = "lig_", replacement = "lipa_", x = BCN)
+      BCN = gsub(pattern = "in_bts", replacement = "inactive_bts", x = BCN)
+      
       # Bottom plot
-      selfreport_vars = c("nap", "nonwear", "sleeplog")
+      if ("selfreported" %in% colnames(mdat)) {
+        selfreport_vars = c("nap", "nonwear", "sleeplog")
+        ylabels_plot2 = selfreport_vars
+      } else {
+        ylabels_plot2 = NULL
+      }
       binary_vars = c("SleepPeriodTime", "sibdetection", "invalidepoch")
-      Nlevels[2] = length(binary_vars) + length(selfreport_vars)
-      ylabels_plot2 = c(binary_vars, selfreport_vars)
+      ylabels_plot2 = c(binary_vars, ylabels_plot2)
       ylabels_plot2 = gsub(pattern = "invalidepoch", replacement = "invalid", x = ylabels_plot2)
       ylabels_plot2 = gsub(pattern = "SleepPeriodTime", replacement = "spt", x = ylabels_plot2)
       ylabels_plot2 = gsub(pattern = "sibdetection", replacement = "sib", x = ylabels_plot2)
@@ -273,54 +246,167 @@ visualReport = function(metadatadir = c(),
       for (i in f0:f1) {
         load(file = paste0(metadatadir, "/meta/ms5.outraw/",
                            part6_threshold_combi, "/", fnames.ms5raw[i]))
-        
         if (length(mdat) == 0) next
         if (nrow(mdat) == 0) next
-        mdat$lightpeak = runif(n = nrow(mdat), min = 0, max = 20000)
-        if (all(c("lightpeak", "selfreported", "sibdetection") %in% colnames(mdat))) {
 
-          simple_filename = gsub(pattern = ".RData", replacement = "", x = fnames.ms5raw[i] ) #"patientID12345"
-          pdf(paste0(metadatadir, "/results/file summary reports/Time_report_",
-                     simple_filename, ".pdf"), paper = "a4",
-              width = 0, height = 0)
-          # zoom on windows that have either daytime sib or selfreported nap
-          acc_naps = which((mdat$sibdetection == 1 | mdat$selfreport == "nap") &
-                             mdat$SleepPeriodTime == 0)
-          
-          
-          NhoursPerRow = 36
-          midnightsi = which(format(mdat$timestamp, "%H") == "00" &
-                               format(mdat$timestamp, "%M") == "00" &
-                               format(mdat$timestamp, "%S") == "00")
-          subploti = c(1, midnightsi + 1)
-          subploti = cbind(subploti,
-                           c(midnightsi + (NhoursPerRow - 24) * 60, nrow(mdat)))
-          
-          invalid = which(mdat$invalidepoch == 1)
-          # Skip windows without naps?
-          # for (jj in 1:nrow(subploti)) {
-          #   ma = which(acc_naps > subploti[jj, 1] & acc_naps < subploti[jj, 2])
-          #   if (length(ma) == 0) {
-          #     is.na(subploti[jj, ]) = TRUE
-          #   }
-          # }
-          subploti[which(subploti[,2] > nrow(mdat)), 2] = nrow(mdat)
-          
-          NdaysPerPage = 7
-          par(mfrow = c(NdaysPerPage, 1), mgp = c(2, 0.8, 0), omi = c(0, 0, 0, 0), bty = "n")
-          if (nrow(subploti) > 0) {
-            for (ani in 1:nrow(subploti)) {
-              if (subploti[ani, 2] - subploti[ani, 1] > 60) { # we need at least 1 hour for the ticks
-                # print("A")
-                # print(subploti[2] - subploti[1])
-                panelplot(mdat[(subploti[ani, 1] + 1):subploti[ani, 2], ],
-                          ylabels_plot2, Nlevels, selfreport_vars, binary_vars,
-                          BCN, BCC, title = "", NhoursPerRow = NhoursPerRow, plotid = ani)
-              }
-            }
-          }
-          dev.off()
+        names(mdat)[which(names(mdat) == "sibdetection")] = "sib"
+        names(mdat)[which(names(mdat) == "invalidepoch")] = "invalid"
+        mdat$sib[which(mdat$SleepPeriodTime == 1)] = 0
+        
+        if ("lightpeak" %in% colnames(mdat)) {
+          lux_available = TRUE
+        } else {
+          lux_available = FALSE
         }
+        
+        epochSize = diff(mdat$timenum[1:2])
+        
+        # Define legend
+        legend_items = list(col = NULL, name = NULL, code = NULL, level = NULL)
+        gen_col_names = function(BCN, BCC = NULL, name, legend_items, colour = NULL, level = NULL) {
+          vars = grep(pattern = name, x = BCN, value = TRUE)
+          Nitems = length(vars)
+          if (Nitems > 0) {
+            legend_items$name = c(legend_items$name, vars)
+            legend_items$level = c(legend_items$level, rep(level, Nitems))
+            if (!is.null(BCC)) {
+              legend_items$code = c(legend_items$code, BCC[which(BCN %in% vars)])
+            } else {
+              legend_items$code = c(legend_items$code, rep(-1, Nitems))
+            }
+            col = rep(colour, Nitems)
+            for (ci in 1:length(col)) {
+              col[ci] = grDevices::adjustcolor(col = col[ci],
+                                               alpha.f = 1 / (ci + 0.2))
+            }
+            legend_items$col = c(legend_items$col, col)
+          }
+          return(legend_items)
+        }
+        # Sleep diary
+        legend_items = gen_col_names(ylabels_plot2, name = "diary",
+                                     legend_items = legend_items,
+                                     colour = "#222255", level = 1)
+        # SIB (day time)
+        legend_items$col = c(legend_items$col, "#56B4E9") #"#E69F00")
+        legend_items$name = c(legend_items$name, "sib")
+        legend_items$code = c(legend_items$code, -1)
+        legend_items$level = c(legend_items$level, 2)
+        # Sleep in SPT
+        legend_items = gen_col_names(BCN, BCC = BCC, name = "sleep_in_spt",
+                                     legend_items = legend_items, colour = "#F0E442",
+                                     level = 3)
+        # Inactivity
+        legend_items = gen_col_names(BCN, BCC = BCC, name = "inactive_bts",
+                                     legend_items = legend_items, colour = "#D55E00",
+                                     level = 3)
+        # LIPA
+        legend_items = gen_col_names(BCN, BCC = BCC, name = "lipa_bts",
+                                     legend_items = legend_items, colour = "#009E73",
+                                     level = 3)
+        # MVPA
+        legend_items = gen_col_names(BCN, BCC = BCC, name = "mvpa_bts",
+                                     legend_items = legend_items, colour = "#0072B2",
+                                     level = 3)
+        # Invalid
+        legend_items$col = c(legend_items$col, "black")# "#CC79A7"
+        legend_items$name = c(legend_items$name, "invalid")
+        legend_items$code = c(legend_items$code, -1)
+        legend_items$level = c(legend_items$level, 0)
+        
+        
+        simple_filename = gsub(pattern = ".RData", replacement = "", x = fnames.ms5raw[i] ) #"patientID12345"
+        pdf(paste0(metadatadir, "/results/file summary reports/Time_report_",
+                   simple_filename, ".pdf"), paper = "a4",
+            width = 0, height = 0)
+        
+        NhoursPerRow = 36
+        midnightsi = which(format(mdat$timestamp, "%H") == "00" &
+                             format(mdat$timestamp, "%M") == "00" &
+                             format(mdat$timestamp, "%S") == "00")
+        subploti = c(1, midnightsi + 1)
+        subploti = cbind(subploti,
+                         c(midnightsi + (NhoursPerRow - 24) * 60, nrow(mdat)))
+        
+        invalid = which(mdat$invalidepoch == 1)
+        subploti[which(subploti[,2] > nrow(mdat)), 2] = nrow(mdat)
+        
+        NdaysPerPage = 8
+        par(mfrow = c(NdaysPerPage, 1), mgp = c(2, 0.8, 0), omi = c(0, 0, 0, 0), bty = "n")
+        if (nrow(subploti) > 0) {
+          for (ani in 1:nrow(subploti)) {
+            if (ani == 1 || round(ani / NdaysPerPage) == (ani / NdaysPerPage)) {
+              
+              par(mar = c(2.5, 0, 1.5, 2))
+              plot.new()
+              # Top plot plot
+              legendnames = legend_items$name
+              legendnames[which(legendnames == "sib")] = "no movement (sib daytime)"
+              legendnames[which(legendnames == "sleep_in_spt")] = "sleep"
+              legendnames = gsub(pattern = "_", replacement = " ", x = legendnames)
+              boutvars = grep(pattern = "bts", x = legendnames, value = FALSE)
+              for (bvi in 1:length(boutvars)) {
+                tmp_split = unlist(strsplit(legendnames[boutvars[bvi]], " "))
+                if (length(tmp_split) == 3) {
+                  legendnames[boutvars[bvi]] = paste0(tmp_split[1], " ", tmp_split[2], " >=", tmp_split[3])
+                } else {
+                  legendnames[boutvars[bvi]] = paste0(tmp_split[1], " ",tmp_split[2], " [", tmp_split[3], ",", tmp_split[4], ")")
+                }
+                
+              }
+              legendnames[boutvars] = paste0(legendnames[boutvars], " mins")
+              if (lux_available) {
+                legendnames = c(legendnames, "light exposure (lux)")
+                legendcolors = c(legend_items$col, "grey40")
+              } else {
+                legendcolors = legend_items$col
+              }
+              # legenddensity = rep(-1, length(legendnames))
+              # legenddensity[] = 20
+              # Nitems = length(legendnames)
+              # lty = rep("p", Nitems)
+              # pch = rep(15, Nitems)
+              # lty[which(legendnames == "invalid")] = "l"
+              # pchlty[which(legendnames == "invalid")] = "l"p
+              not_invalid = which(legendnames != "invalid")
+              legend("topright", legend = legendnames[not_invalid],
+                     col = legendcolors[not_invalid], 
+                     ncol = (length(legend_items$name) - 1) %/% 5 + 1, cex = 1, 
+                     pch = 15, pt.cex = 2, bty = "n", title = "Legend:",
+                     title.font = 2, title.adj = 0)
+              if (is.null(GGIRversion)) GGIRversion = "Not identified"
+              
+              RecDuration = round((nrow(mdat) * epochSize) / (24 * 3600), digits = 1)
+              RecDurUnit = "days"
+              if (RecDuration < 1) {
+                RecDuration * 24
+                RecDurUnit = "hours"
+              } 
+              if (desiredtz == "") desiredtz = Sys.timezone()
+              
+              legend("topleft", legend = c(paste0("Filename: ", simple_filename),
+                                            paste0("Start date: ", as.Date(mdat$timestamp[1])),
+                                            paste0("Duration: ", RecDuration, " ", RecDurUnit),
+                                            paste0("GGIR version: " , GGIRversion),
+                                           paste0("Timezone: ", desiredtz)),
+                     cex = 1, 
+                     bty = "n", title = "Info:",
+                     title.font = 2, title.adj = 0)
+              
+              mtext(text = "Accelerometer report generated by R package GGIR",
+                    side = 3, line = 0.3, cex = 1.2, font = 2)
+              
+            }
+            if (subploti[ani, 2] - subploti[ani, 1] > 60) { # we need at least 1 hour for the ticks
+              panelplot(mdat[(subploti[ani, 1] + 1):subploti[ani, 2], ],
+                        ylabels_plot2, selfreport_vars, binary_vars,
+                        BCN, BCC, title = "", NhoursPerRow = NhoursPerRow, plotid = ani,
+                        legend_items = legend_items, lux_available = lux_available)
+            }
+            
+          }
+        }
+        dev.off()
       }
     }
   }

@@ -444,7 +444,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                    overwrite = params_general[["overwrite"]],
                    desiredtz = params_general[["desiredtz"]],
                    verbose = TRUE,
-                   part6_threshold_combi = params_phyact[["part6_threshold_combi"]])
+                   part6_threshold_combi = params_phyact[["part6_threshold_combi"]],
+                   GGIRversion = GGIRversion)
     }
     # g.plot_ts(metadatadir = metadatadir,
     #           viewingwindow = params_output[["viewingwindow"]],
