@@ -24,12 +24,18 @@ g.report.part5_dictionary = function(metadatadir, params_output) {
   # main script -------------------------------------------------------------
   # -------------------------------------------------------------------------
   # identify individual reports
-  reports = dir(file.path(metadatadir, "results"), full.names = TRUE, 
+  reports = dir(file.path(metadatadir, "results", "QC"), full.names = TRUE, 
                 pattern = "^part5.*\\.csv$")
   # Select one daysummary, personsummary, and Segment report as variables are the same across configurations
   ds = grep("^part5_daysummary", basename(reports))[1]
   ps = grep("^part5_personsummary", basename(reports))[1]
   reports = reports[c(ds, ps)]
+  if (all(is.na( reports))) {
+      reports = dir(file.path(metadatadir, "results", "QC"), full.names = TRUE, 
+                    pattern = "^part5.*\\.csv$")
+  }
+  if (length(reports) == 0 || all(is.na( reports))) return()
+  reports = reports[!is.na(reports)]
   if (!exists("baseDictionary")) return()
   # read col names of each report and derive definitions
   for (ri in 1:length(reports)) {
