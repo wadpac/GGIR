@@ -14,9 +14,7 @@ visualReport = function(metadatadir = c(),
                        step_count_available = FALSE) {
     window_duration = mdat$timenum[nrow(mdat)] - mdat$timenum[1]
     signalcolor = "black"
-    # grey_for_lux = gray.colors(n = 100, start = 0.95, end = 0.1)
-    # grey_for_lux[1:2] = "white"
-    
+
     # Prepare time tick points
     date = paste0(as.numeric(format(mdat$timestamp, "%d")), " ", format(mdat$timestamp, "%b"))
     hour = as.numeric(format(mdat$timestamp, "%H"))
@@ -125,20 +123,9 @@ visualReport = function(metadatadir = c(),
             at = atTime[length(atTime)] + 5000, adj = 0)
     }
     
-    
-    
-    # # Add grid of dots
-    # abline(v = atTime, col = "black", lty = "1F", lwd = 0.5)
-    
     #============================================
     # add rectangular blocks to reflect classes
     Nlevels = max(legend_items$level, na.rm = TRUE) #sum(Nlevels) - 1 # -1 because invalidepoch will not be a rectangle
-    
-    # if (lux_available == TRUE) {
-    #   Nlevels = Nlevels + 1
-    # }
-    yticks = Ymax * seq(from = 0.05, to = 0.90, length.out = Nlevels)
-    yStepSize = min(diff(yticks)) * 0.3
     
     for (labi in 1:length(legend_items$name)) {
       if (legend_items$name[labi] %in% c("sib", "invalid")) {
@@ -178,26 +165,6 @@ visualReport = function(metadatadir = c(),
         }
       }
     }
-    
-    # if (lux_available == TRUE) {
-    #   text(x = atTime, y = rep(yticks[max(legend_items$level) + 1] + 0.5 * yStepSize, length(atTime)),
-    #        labels = lux_per_hour[ticks], cex = cex_mtext, col = "red")
-    #   
-    # }
-    # if (step_count_available == TRUE) {
-    #   y_tmp = yticks[max(legend_items$level) + 1] - 0.5 * yStepSize
-    #   text(x = atTime, y = rep(y_tmp, length(atTime)),
-    #        labels = steps_per_hour[ticks], cex = cex_mtext)
-    #   
-    #   
-    #   text(x = max(atTime) + 60, ext = "steps (x 100)", side = 4, line = 0, cex = cex_mtext,
-    #         at = y_tmp, las = 2)
-    #   # mtext(text = "steps (x 100)", side = 4, line = 0, cex = cex_mtext,
-    #   #       at = y_tmp, las = 2)
-    #   
-    #   # mtext(text = "steps (x 100)", side = 1, line = -5, cex = cex_mtext,
-    #   #       at = y_tmp, las = 2)
-    # }
     
     # Highlight invalid epochs as hashed area on top of all rects
     if ("invalid" %in% legend_items$name) {

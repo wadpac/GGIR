@@ -12,7 +12,7 @@
               f0 = c(), f1 = c(), overwrite = FALSE,
               desiredtz = "",
               verbose = TRUE,
-              part6_threshold_combi = NULL)
+              part6_threshold_combi = NULL, GGIRversion = NULL)
 }
 \arguments{
   \item{metadatadir}{
@@ -39,6 +39,9 @@
   }
   \item{part6_threshold_combi}{
     See \link{GGIR}
+  }
+  \item{GGIRversion}{
+    Character with GGIR version number
   }
 }
 \value{
