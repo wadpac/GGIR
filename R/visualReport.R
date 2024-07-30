@@ -9,13 +9,14 @@ visualReport = function(metadatadir = c(),
   }
   
   # Declare functions:
-  panelplot = function(mdat, ylabels_plot2, selfreport_vars, binary_vars,
-                       BCN, BCC, title = "", NhoursPerRow = NULL, plotid = 0, legend_items = NULL, lux_available = FALSE) {
+  panelplot = function(mdat, ylabels_plot2, binary_vars,
+                       BCN, BCC, title = "", NhoursPerRow = NULL, plotid = 0, legend_items = NULL, lux_available = FALSE,
+                       step_count_available = FALSE) {
     window_duration = mdat$timenum[nrow(mdat)] - mdat$timenum[1]
     signalcolor = "black"
-    grey_for_lux = gray.colors(n = 100, start = 0.95, end = 0.1)
-    grey_for_lux[1:2] = "white"
-
+    # grey_for_lux = gray.colors(n = 100, start = 0.95, end = 0.1)
+    # grey_for_lux[1:2] = "white"
+    
     # Prepare time tick points
     date = paste0(as.numeric(format(mdat$timestamp, "%d")), " ", format(mdat$timestamp, "%b"))
     hour = as.numeric(format(mdat$timestamp, "%H"))
@@ -27,7 +28,21 @@ visualReport = function(metadatadir = c(),
     XLIM = as.POSIXct(paste0(datLIM[1], " 00:00:00"), tz = desiredtz)
     XLIM[2] = XLIM[1] + NhoursPerRow * 3600
     
-    par(mar = c(2.5, 0, 1.5, 2))
+    if (step_count_available == TRUE) {
+      steps_per_hour = round(zoo::rollsum(x = mdat$step_count, k = 60, fill = NA) / 100) # assumes 1 minute epoch
+      steps_per_hour = as.character(steps_per_hour)
+      steps_per_hour = gsub(pattern = "0", replacement = "", x = steps_per_hour)
+    }
+    if (lux_available == TRUE) {
+      lux_per_hour = round(zoo::rollmax(x = mdat$lightpeak, k = 60, fill = NA) / 1000) # assumes 1 minute epoch
+      lux_per_hour = as.character(lux_per_hour)
+      lux_per_hour = gsub(pattern = "0", replacement = "", x = lux_per_hour)
+    }
+    
+    
+    
+    
+    par(mar = c(3, 0, 1.5, 2.5))
     #============================================
     # Acceleration and angle signal
     # scale 0 - 100, where bottom half is used for angle and top half for acceleration
@@ -67,45 +82,66 @@ visualReport = function(metadatadir = c(),
     } else {
       cex_mtext = 0.35 #25
     }
-    # assign timestamp axis:
-    mtext(text = hour[ticks], side = 1, line = 0, cex = cex_mtext, at = atTime)
     
+    line = 0
+    line_delta = 0.5
+    # assign timestamp axis:
+    mtext(text = hour[ticks], side = 1, line = line, cex = cex_mtext, at = atTime)
+    mtext(text = "hour", side = 1, line = line, cex = cex_mtext,
+          at = atTime[length(atTime)] + 5000, adj = 0)
+    
+    line = line + line_delta
     # with window numbers
     windowNow = mdat$window[ticks]
     changes = changepoints(windowNow)
-    mtext(text = windowNow[changes], side = 1, line = 0.75, cex = cex_mtext,
+    mtext(text = windowNow[changes], side = 1, line = line, cex = cex_mtext,
           at = atTime[changes])
+    mtext(text = "window", side = 1, line = line, cex = cex_mtext,
+          at = atTime[length(atTime)] + 5000, adj = 0)
+    
+    line = line + line_delta
     # with dates
     dateNow = as.numeric(format(mdat$timestamp[ticks], "%d"))
-
+    
     changes = changepoints(dateNow)
-    mtext(text = dateNow[changes], side = 1, line = 1.5, cex = cex_mtext,
+    mtext(text = dateNow[changes], side = 1, line = line, cex = cex_mtext,
           at = atTime[changes])
+    mtext(text = "date", side = 1, line = line, cex = cex_mtext,
+          at = atTime[length(atTime)] + 5000, adj = 0)
+    line = line + line_delta
     
-    mtext(text = "hour", side = 1, line = 0, cex = cex_mtext,
-          at = atTime[length(atTime)] + 5500, adj = 0)
-    mtext(text = "window", side = 1, line = 0.75, cex = cex_mtext,
-          at = atTime[length(atTime)] + 5500, adj = 0)
-    mtext(text = "date", side = 1, line = 1.5, cex = cex_mtext,
-          at = atTime[length(atTime)] + 5500, adj = 0)
+    # optional variables
+    if (lux_available == TRUE) {
+      mtext(text = lux_per_hour[ticks], side = 1, line = line, cex = cex_mtext,
+            at = atTime)
+      mtext(text = "kLux", side = 1, line = line, cex = cex_mtext,
+            at = atTime[length(atTime)] + 5000, adj = 0)
+      line = line + line_delta
+    }
+    if (step_count_available == TRUE) {
+      mtext(text = steps_per_hour[ticks], side = 1, line = line, cex = cex_mtext,
+            at = atTime)
+      mtext(text = "steps x100", side = 1, line = line, cex = cex_mtext,
+            at = atTime[length(atTime)] + 5000, adj = 0)
+    }
     
-    # Add grid of dots
-    abline(v = atTime, col = "black", lty = "1F", lwd = 0.5)
+    
+    
+    # # Add grid of dots
+    # abline(v = atTime, col = "black", lty = "1F", lwd = 0.5)
     
     #============================================
     # add rectangular blocks to reflect classes
     Nlevels = max(legend_items$level, na.rm = TRUE) #sum(Nlevels) - 1 # -1 because invalidepoch will not be a rectangle
     
-    if (lux_available == TRUE) {
-      Nlevels = Nlevels + 1
-    }
-    yticks = Ymax * seq(from = 0.05, to = 0.95, length.out = Nlevels)
+    # if (lux_available == TRUE) {
+    #   Nlevels = Nlevels + 1
+    # }
+    yticks = Ymax * seq(from = 0.05, to = 0.90, length.out = Nlevels)
     yStepSize = min(diff(yticks)) * 0.3
-
+    
     for (labi in 1:length(legend_items$name)) {
       if (legend_items$name[labi] %in% c("sib", "invalid")) {
-        
-        
         # binary variables
         freqtab = table(mdat[, legend_items$name[labi]])
         if (length(freqtab) > 1 || names(freqtab)[1] == "1") {
@@ -113,37 +149,55 @@ visualReport = function(metadatadir = c(),
           t1 = mdat$timestamp[which(diff(c(mdat[, legend_items$name[labi]], 0)) == -1)]
           
           if (legend_items$name[labi] != "invalid") {
-            y0 = yticks[legend_items$level[labi]] + yStepSize
-            y1 = yticks[legend_items$level[labi]] - yStepSize
+            y0 = 45
+            y1 = 55
             col = legend_items$col[labi]
-            rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = col, border = FALSE)
+            rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1, col = "#D55E00", border = FALSE)
           }
         }
       } else {
         if (legend_items$name[labi] %in% c("diary_nap", "diary_nonwear", "diary_sleepwindow")) {
           # Diary
-          tempi = which(mdat$selfreport == legend_items$name[labi])
+          tempi = which(mdat$selfreported == legend_items$name[labi])
+          y0 = 0
+          y1 = 45
         } else {
           # Accelerometer
           tempi = which(mdat$class_id == legend_items$code[labi])
+          y0 = 55
+          y1 = 100
         }
         if (length(tempi) > 0) {
           A = rep(0, nrow(mdat))
           A[tempi] = 1
           t0 = mdat$timestamp[which(diff(c(0, A)) == 1)]
           t1 = mdat$timestamp[which(diff(c(A, 0)) == -1)]
-          y0 = yticks[legend_items$level[labi]] + yStepSize
-          y1 = yticks[legend_items$level[labi]] - yStepSize
+          
           col = legend_items$col[labi]
           rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = col, border = FALSE)
         }
       }
     }
     
-    if (lux_available == TRUE) {
-      lines(mdat$timestamp, rep(yticks[max(legend_items$level) + 1], nrow(mdat)), type = "p", pch = 15,
-            col = grey_for_lux[luxy], cex = 0.8, lwd = 2)
-    }
+    # if (lux_available == TRUE) {
+    #   text(x = atTime, y = rep(yticks[max(legend_items$level) + 1] + 0.5 * yStepSize, length(atTime)),
+    #        labels = lux_per_hour[ticks], cex = cex_mtext, col = "red")
+    #   
+    # }
+    # if (step_count_available == TRUE) {
+    #   y_tmp = yticks[max(legend_items$level) + 1] - 0.5 * yStepSize
+    #   text(x = atTime, y = rep(y_tmp, length(atTime)),
+    #        labels = steps_per_hour[ticks], cex = cex_mtext)
+    #   
+    #   
+    #   text(x = max(atTime) + 60, ext = "steps (x 100)", side = 4, line = 0, cex = cex_mtext,
+    #         at = y_tmp, las = 2)
+    #   # mtext(text = "steps (x 100)", side = 4, line = 0, cex = cex_mtext,
+    #   #       at = y_tmp, las = 2)
+    #   
+    #   # mtext(text = "steps (x 100)", side = 1, line = -5, cex = cex_mtext,
+    #   #       at = y_tmp, las = 2)
+    # }
     
     # Highlight invalid epochs as hashed area on top of all rects
     if ("invalid" %in% legend_items$name) {
@@ -152,10 +206,10 @@ visualReport = function(metadatadir = c(),
         t0 = mdat$timestamp[which(diff(c(0, mdat$invalid)) == 1)]
         t1 = mdat$timestamp[which(diff(c(mdat$invalid, 0)) == -1)]
         col = legend_items$col[which(legend_items$name == "invalid")]
-        
-        
-        rect(xleft = t0, xright = t1, ybottom = 0, ytop = Ymax,
-             col = col, density = 15, border = TRUE)
+        y0 = 0
+        y1 = 100
+        rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1,
+             col = col, lwd = 0.8, density = 15, border = TRUE)
       }
     }
     
@@ -174,7 +228,7 @@ visualReport = function(metadatadir = c(),
     # onset/wake lines:
     window_edges = which(diff(mdat$SleepPeriodTime) != 0)
     if (length(window_edges) > 0) {
-      abline(v = mdat$timestamp[window_edges], col = "black", lwd = 0.7)
+      abline(v = mdat$timestamp[window_edges], col = "black", lwd = 1)
       for (wei in 1:length(window_edges)) {
         # onset and wake
         if (mdat$SleepPeriodTime[window_edges[wei]] == 1) {
@@ -225,38 +279,49 @@ visualReport = function(metadatadir = c(),
       BCN = tolower(BCN)
       BCN = gsub(pattern = "lig_", replacement = "lipa_", x = BCN)
       BCN = gsub(pattern = "in_bts", replacement = "inactive_bts", x = BCN)
-      
-      # Bottom plot
-      if ("selfreported" %in% colnames(mdat)) {
-        selfreport_vars = c("nap", "nonwear", "sleeplog")
-        ylabels_plot2 = selfreport_vars
-      } else {
-        ylabels_plot2 = NULL
-      }
-      binary_vars = c("SleepPeriodTime", "sibdetection", "invalidepoch")
-      ylabels_plot2 = c(binary_vars, ylabels_plot2)
-      ylabels_plot2 = gsub(pattern = "invalidepoch", replacement = "invalid", x = ylabels_plot2)
-      ylabels_plot2 = gsub(pattern = "SleepPeriodTime", replacement = "spt", x = ylabels_plot2)
-      ylabels_plot2 = gsub(pattern = "sibdetection", replacement = "sib", x = ylabels_plot2)
-      ylabels_plot2 = gsub(pattern = "nap", replacement = "diary_nap", x = ylabels_plot2)
-      ylabels_plot2 = gsub(pattern = "nonwear", replacement = "diary_nonwear", x = ylabels_plot2)
-      ylabels_plot2 = gsub(pattern = "sleeplog", replacement = "diary_sleepwindow", x = ylabels_plot2)
-      ylabels_plot2 = tolower(ylabels_plot2)
       # loop through files
       for (i in f0:f1) {
         load(file = paste0(metadatadir, "/meta/ms5.outraw/",
                            part6_threshold_combi, "/", fnames.ms5raw[i]))
         if (length(mdat) == 0) next
         if (nrow(mdat) == 0) next
-
         names(mdat)[which(names(mdat) == "sibdetection")] = "sib"
         names(mdat)[which(names(mdat) == "invalidepoch")] = "invalid"
         mdat$sib[which(mdat$SleepPeriodTime == 1)] = 0
         
+        
+        if (i == f0) {
+          ylabels_plot2 = NULL
+          if ("selfreported" %in% colnames(mdat)) {
+            ylabels_plot2 = c("nap", "nonwear", "sleeplog")
+          }
+          binary_vars = c("SleepPeriodTime", "sibdetection", "invalidepoch")
+          ylabels_plot2 = c(binary_vars, ylabels_plot2)
+          ylabels_plot2 = gsub(pattern = "invalidepoch", replacement = "invalid", x = ylabels_plot2)
+          ylabels_plot2 = gsub(pattern = "SleepPeriodTime", replacement = "spt", x = ylabels_plot2)
+          ylabels_plot2 = gsub(pattern = "sibdetection", replacement = "sib", x = ylabels_plot2)
+          ylabels_plot2 = gsub(pattern = "nap", replacement = "diary_nap", x = ylabels_plot2)
+          ylabels_plot2 = gsub(pattern = "nonwear", replacement = "diary_nonwear", x = ylabels_plot2)
+          ylabels_plot2 = gsub(pattern = "sleeplog", replacement = "diary_sleepwindow", x = ylabels_plot2)
+          ylabels_plot2 = tolower(ylabels_plot2)
+        }
+        if ("selfreported" %in% colnames(mdat)) {
+          levels(mdat$selfreported) <- c(levels(mdat$selfreported), "diary_sleepwindow", "diary_nap", "diary_nonwear")
+          mdat$selfreported[which(mdat$selfreported == "sleeplog")] = "diary_sleepwindow"
+          mdat$selfreported[which(mdat$selfreported == "nap")] = "diary_nap"
+          mdat$selfreported[which(mdat$selfreported == "nonwear")] = "diary_nonwear"
+        }
+
         if ("lightpeak" %in% colnames(mdat)) {
           lux_available = TRUE
         } else {
           lux_available = FALSE
+        }
+        
+        if ("step_count" %in% colnames(mdat)) {
+          step_count_available = TRUE
+        } else {
+          step_count_available = FALSE
         }
         
         epochSize = diff(mdat$timenum[1:2])
@@ -277,7 +342,7 @@ visualReport = function(metadatadir = c(),
             col = rep(colour, Nitems)
             for (ci in 1:length(col)) {
               col[ci] = grDevices::adjustcolor(col = col[ci],
-                                               alpha.f = 1 / (ci + 0.2))
+                                               alpha.f = 1 / (ci + 0.4))
             }
             legend_items$col = c(legend_items$col, col)
           }
@@ -288,28 +353,28 @@ visualReport = function(metadatadir = c(),
                                      legend_items = legend_items,
                                      colour = "#222255", level = 1)
         # SIB (day time)
-        legend_items$col = c(legend_items$col, "#56B4E9") #"#E69F00")
+        legend_items$col = c(legend_items$col, "#D55E00") #"#E69F00") #"#56B4E9"
         legend_items$name = c(legend_items$name, "sib")
         legend_items$code = c(legend_items$code, -1)
         legend_items$level = c(legend_items$level, 2)
         # Sleep in SPT
         legend_items = gen_col_names(BCN, BCC = BCC, name = "sleep_in_spt",
                                      legend_items = legend_items, colour = "#F0E442",
-                                     level = 3)
+                                     level = 2)
         # Inactivity
         legend_items = gen_col_names(BCN, BCC = BCC, name = "inactive_bts",
-                                     legend_items = legend_items, colour = "#D55E00",
-                                     level = 3)
+                                     legend_items = legend_items, colour = "#CC79A7",
+                                     level = 2)
         # LIPA
         legend_items = gen_col_names(BCN, BCC = BCC, name = "lipa_bts",
                                      legend_items = legend_items, colour = "#009E73",
-                                     level = 3)
+                                     level = 2)
         # MVPA
         legend_items = gen_col_names(BCN, BCC = BCC, name = "mvpa_bts",
                                      legend_items = legend_items, colour = "#0072B2",
-                                     level = 3)
+                                     level = 2)
         # Invalid
-        legend_items$col = c(legend_items$col, "black")# "#CC79A7"
+        legend_items$col = c(legend_items$col, "black") # ""
         legend_items$name = c(legend_items$name, "invalid")
         legend_items$code = c(legend_items$code, -1)
         legend_items$level = c(legend_items$level, 0)
@@ -337,7 +402,7 @@ visualReport = function(metadatadir = c(),
           for (ani in 1:nrow(subploti)) {
             if (ani == 1 || round(ani / NdaysPerPage) == (ani / NdaysPerPage)) {
               
-              par(mar = c(2.5, 0, 1.5, 2))
+              par(mar = c(3, 0, 1.5, 2.5))
               plot.new()
               # Top plot plot
               legendnames = legend_items$name
@@ -355,12 +420,7 @@ visualReport = function(metadatadir = c(),
                 
               }
               legendnames[boutvars] = paste0(legendnames[boutvars], " mins")
-              if (lux_available) {
-                legendnames = c(legendnames, "light exposure (lux)")
-                legendcolors = c(legend_items$col, "grey40")
-              } else {
-                legendcolors = legend_items$col
-              }
+              legendcolors = legend_items$col
               # legenddensity = rep(-1, length(legendnames))
               # legenddensity[] = 20
               # Nitems = length(legendnames)
@@ -371,7 +431,7 @@ visualReport = function(metadatadir = c(),
               not_invalid = which(legendnames != "invalid")
               legend("topright", legend = legendnames[not_invalid],
                      col = legendcolors[not_invalid], 
-                     ncol = (length(legend_items$name) - 1) %/% 5 + 1, cex = 1, 
+                     ncol = (length(legend_items$name) - 1) %/% 5 + 1, cex = 0.9, 
                      pch = 15, pt.cex = 2, bty = "n", title = "Legend:",
                      title.font = 2, title.adj = 0)
               if (is.null(GGIRversion)) GGIRversion = "Not identified"
@@ -385,23 +445,24 @@ visualReport = function(metadatadir = c(),
               if (desiredtz == "") desiredtz = Sys.timezone()
               
               legend("topleft", legend = c(paste0("Filename: ", simple_filename),
-                                            paste0("Start date: ", as.Date(mdat$timestamp[1])),
-                                            paste0("Duration: ", RecDuration, " ", RecDurUnit),
-                                            paste0("GGIR version: " , GGIRversion),
+                                           paste0("Start date: ", as.Date(mdat$timestamp[1])),
+                                           paste0("Duration: ", RecDuration, " ", RecDurUnit),
+                                           paste0("GGIR version: " , GGIRversion),
                                            paste0("Timezone: ", desiredtz)),
-                     cex = 1, 
+                     cex = 0.9, 
                      bty = "n", title = "Info:",
                      title.font = 2, title.adj = 0)
               
               mtext(text = "Accelerometer report generated by R package GGIR",
-                    side = 3, line = 0.3, cex = 1.2, font = 2)
+                    side = 3, line = 0.2, cex = 1.2, font = 2)
               
             }
             if (subploti[ani, 2] - subploti[ani, 1] > 60) { # we need at least 1 hour for the ticks
               panelplot(mdat[(subploti[ani, 1] + 1):subploti[ani, 2], ],
-                        ylabels_plot2, selfreport_vars, binary_vars,
+                        ylabels_plot2, binary_vars,
                         BCN, BCC, title = "", NhoursPerRow = NhoursPerRow, plotid = ani,
-                        legend_items = legend_items, lux_available = lux_available)
+                        legend_items = legend_items, lux_available = lux_available,
+                        step_count_available = step_count_available)
             }
             
           }
