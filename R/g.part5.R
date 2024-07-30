@@ -281,11 +281,21 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               # only include angle if angle is present
               angleColName = grep(pattern = "angle", x = names(ts), value = TRUE)
               if (lightpeak_available == TRUE) {
-                ts = aggregate(ts[, c("ACC","sibdetection", "diur", "nonwear", angleColName, "lightpeak", "lightpeak_imputationcode")],
-                               by = list(ts$time_num), FUN = function(x) mean(x))
+                light_columns = c("lightpeak", "lightpeak_imputationcode")
               } else {
-                ts = aggregate(ts[,c("ACC","sibdetection", "diur", "nonwear", angleColName)],
-                               by = list(ts$time_num), FUN = function(x) mean(x))
+                light_columns = NULL
+              }
+              
+              stepcount_available = ifelse("step_count" %in% names(ts), yes = TRUE, no = FALSE)
+                
+              if (stepcount_available) {
+                step_count_tmp = aggregate(ts$step_count, by = list(ts$time_num), FUN = function(x) sum(x))
+                colnames(step_count_tmp)[2] = "step_count"
+              }
+              ts = aggregate(ts[,c("ACC","sibdetection", "diur", "nonwear", angleColName, light_columns)],
+                             by = list(ts$time_num), FUN = function(x) mean(x))
+              if (stepcount_available) {
+                ts = merge(x = ts, y = step_count_tmp, by = "Group.1")
               }
               ts$sibdetection = round(ts$sibdetection)
               ts$diur = round(ts$diur)
@@ -573,12 +583,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                   }
                   if (params_output[["save_ms5rawlevels"]] == TRUE || params_247[["part6HCA"]] == TRUE || params_247[["part6CR"]] == TRUE) {
                     legendfile = paste0(metadatadir,ms5.outraw,"/behavioralcodes",as.Date(Sys.time()),".csv")
-                    if (file.exists(legendfile) == FALSE) {
-                      legendtable = data.frame(class_name = Lnames, class_id = 0:(length(Lnames) - 1), stringsAsFactors = FALSE)
-                      data.table::fwrite(legendtable, file = legendfile, row.names = FALSE,
-                                         sep = params_output[["sep_reports"]],
-                                         dec = params_output[["dec_reports"]])
-                    }
+                    legendtable = data.frame(class_name = Lnames, class_id = 0:(length(Lnames) - 1), stringsAsFactors = FALSE)
+                    data.table::fwrite(legendtable, file = legendfile, row.names = FALSE,
+                                       sep = params_output[["sep_reports"]],
+                                       dec = params_output[["dec_reports"]])
                     # I moved this bit of code to the end, because we want guider to be included (VvH April 2020)
                     rawlevels_fname =  paste0(metadatadir, ms5.outraw, "/", TRLi, "_", TRMi, "_", TRVi, "/",
                                               gsub(pattern = "[.]|rdata|csv|cwa|gt3x|bin",
@@ -609,10 +617,14 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     if (length(temperature_col) == 0) {
                       temperature_col = NULL
                     }
+                    step_count_col = grep(pattern = "step_count", x = names(ts), value = TRUE)
+                    if (length(step_count_col) == 0) {
+                      step_count_col = NULL
+                    }
                     g.part5.savetimeseries(ts = ts[, c("time", "ACC", "diur", "nonwear",
                                                        "guider", "window", "sibdetection", napNonwear_col,
                                                        lightpeak_col, selfreported_col,
-                                                       angle_col, temperature_col)],
+                                                       angle_col, temperature_col, step_count_col)],
                                            LEVELS = LEVELS,
                                            desiredtz = params_general[["desiredtz"]],
                                            rawlevels_fname = rawlevels_fname,
