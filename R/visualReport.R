@@ -3,7 +3,8 @@ visualReport = function(metadatadir = c(),
                         desiredtz = "",
                         verbose = TRUE,
                         part6_threshold_combi = NULL,
-                        GGIRversion = NULL) {
+                        GGIRversion = NULL,
+                        params_sleep = NULL) {
   if (!file.exists(paste0(metadatadir, "/results/file summary reports"))) {
     dir.create(file.path(paste0(metadatadir, "/results"), "file summary reports"))
   }
@@ -47,7 +48,21 @@ visualReport = function(metadatadir = c(),
     Ymax = 100
     Ymin = 0
     accy = (mdat$ACC / 10) + 50
-    angy = (((mdat$angle + 90) * 40) / 180)
+    
+    # identify angle columns
+    anglecols = sort(grep(pattern = "angle", x = colnames(mdat), value = TRUE))
+    Nangles = length(anglecols)
+    if (Nangles == 1) {
+      ang1 = (((mdat[, anglecols] + 90) * 40) / 180)
+    } else if (Nangles == 2) {
+      ang1 = (((mdat[, anglecols[1]] + 90) * 40) / 180)
+      ang2 = (((mdat[, anglecols[1]] + 90) * 40) / 180) #+ 20
+    } else if (Nangles == 3) {
+      ang1 = (((mdat[, anglecols[1]] + 90) * 40) / 180)
+      ang2 = (((mdat[, anglecols[2]] + 90) * 40) / 180) #+ 13
+      ang3 = (((mdat[, anglecols[3]] + 90) * 40) / 180) #+ 26
+    }
+
     if (lux_available == TRUE) {
       luxy = ceiling(pmin(mdat$lightpeak + 1, 20000) / 400) * 2
     }
@@ -166,6 +181,24 @@ visualReport = function(metadatadir = c(),
       }
     }
     
+    # Add lines on top
+    lines(mdat$timestamp, accy, type = "l",
+          col = signalcolor,
+          lwd = 0.3)
+    angleColor = ifelse(Nangles > 1, yes = "blue", no = signalcolor)
+    lines(mdat$timestamp, ang1, type = "l", col = angleColor, lwd = 0.3)
+    if (Nangles > 1) {
+      lines(mdat$timestamp, ang2, type = "l", col = "red", lwd = 0.3)
+    }
+    if (Nangles > 2) {
+      lines(mdat$timestamp, ang3, type = "l", col = "green", lwd = 0.3)
+    }
+    text(x = mdat$timestamp[1], y = 60, labels = "Acceleration",
+         pos = 4, cex = 0.7, col = signalcolor, font = 2)
+    textAngle = ifelse(Nangles > 1, yes = "Angles", no = "Angle")
+    text(x = mdat$timestamp[1], y = 40, labels = textAngle,
+         pos = 4, cex = 0.7, col = signalcolor, font = 2)
+    
     # Highlight invalid epochs as hashed area on top of all rects
     if ("invalid" %in% legend_items$name) {
       freqtab = table(mdat$invalid)
@@ -173,29 +206,18 @@ visualReport = function(metadatadir = c(),
         t0 = mdat$timestamp[which(diff(c(0, mdat$invalid)) == 1)]
         t1 = mdat$timestamp[which(diff(c(mdat$invalid, 0)) == -1)]
         col = legend_items$col[which(legend_items$name == "invalid")]
-        y0 = 0
-        y1 = 100
+        y0 = 5
+        y1 = 95
+        transparantWhite = grDevices::adjustcolor(col = "white", alpha.f = 0.8)
         rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1,
-             col = col, lwd = 0.8, density = 15, border = TRUE)
+             col = transparantWhite, lwd = 0.8, border = "grey")
       }
     }
-    
-    # Add lines on top
-    lines(mdat$timestamp, accy, type = "l",
-          col = signalcolor,
-          lwd = 0.3)
-    
-    lines(mdat$timestamp, angy, type = "l",
-          col = signalcolor, lwd = 0.3)
-    text(x = mdat$timestamp[1], y = 60, labels = "Acceleration",
-         pos = 4, cex = 0.7, col = signalcolor, font = 2)
-    text(x = mdat$timestamp[1], y = 40, labels = "Angle-z",
-         pos = 4, cex = 0.7, col = signalcolor, font = 2)
     
     # onset/wake lines:
     window_edges = which(diff(mdat$SleepPeriodTime) != 0)
     if (length(window_edges) > 0) {
-      abline(v = mdat$timestamp[window_edges], col = "black", lwd = 1)
+      abline(v = mdat$timestamp[window_edges], col = "black", lwd = 1.5, lty = 2)
       for (wei in 1:length(window_edges)) {
         # onset and wake
         if (mdat$SleepPeriodTime[window_edges[wei]] == 1) {
@@ -255,11 +277,12 @@ visualReport = function(metadatadir = c(),
         names(mdat)[which(names(mdat) == "sibdetection")] = "sib"
         names(mdat)[which(names(mdat) == "invalidepoch")] = "invalid"
         mdat$sib[which(mdat$SleepPeriodTime == 1)] = 0
-        
-        
+
         if (i == f0) {
           ylabels_plot2 = NULL
-          if ("selfreported" %in% colnames(mdat)) {
+          if ("selfreported" %in% colnames(mdat) &&
+              !is.null(params_sleep) &&
+              !is.null(params_sleep[["loglocation"]])) {
             ylabels_plot2 = c("nap", "nonwear", "sleeplog")
           }
           binary_vars = c("SleepPeriodTime", "sibdetection", "invalidepoch")
@@ -341,7 +364,7 @@ visualReport = function(metadatadir = c(),
                                      legend_items = legend_items, colour = "#0072B2",
                                      level = 2)
         # Invalid
-        legend_items$col = c(legend_items$col, "black") # ""
+        legend_items$col = c(legend_items$col, "grey") # ""
         legend_items$name = c(legend_items$name, "invalid")
         legend_items$code = c(legend_items$code, -1)
         legend_items$level = c(legend_items$level, 0)
@@ -395,11 +418,16 @@ visualReport = function(metadatadir = c(),
               # pch = rep(15, Nitems)
               # lty[which(legendnames == "invalid")] = "l"
               # pchlty[which(legendnames == "invalid")] = "l"p
+              
               not_invalid = which(legendnames != "invalid")
-              legend("topright", legend = legendnames[not_invalid],
-                     col = legendcolors[not_invalid], 
-                     ncol = (length(legend_items$name) - 1) %/% 5 + 1, cex = 0.9, 
-                     pch = 15, pt.cex = 2, bty = "n", title = "Legend:",
+              legendpch = rep(15, length(legendnames))
+              legendpch[which(legendnames == "invalid")] = 0
+              legendcolors[which(legendnames == "invalid")] = "grey" #"white"
+              legendnames[which(legendnames == "invalid")] = "(transparent) imputed"
+              legend("topright", legend = legendnames,
+                     col = legendcolors, 
+                     ncol = length(legend_items$name) %/% 5 + 1, cex = 0.9, 
+                     pch = legendpch, pt.cex = 2, bty = "n", title = "Legend:",
                      title.font = 2, title.adj = 0)
               if (is.null(GGIRversion)) GGIRversion = "Not identified"
               
