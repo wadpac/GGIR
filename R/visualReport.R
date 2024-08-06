@@ -12,7 +12,7 @@ visualReport = function(metadatadir = c(),
   # Declare functions:
   panelplot = function(mdat, ylabels_plot2, binary_vars,
                        BCN, BCC, title = "", NhoursPerRow = NULL, plotid = 0, legend_items = NULL, lux_available = FALSE,
-                       step_count_available = FALSE) {
+                       step_count_available = FALSE, epochSize = 60) {
     window_duration = mdat$timenum[nrow(mdat)] - mdat$timenum[1]
     signalcolor = "black"
 
@@ -38,7 +38,17 @@ visualReport = function(metadatadir = c(),
       lux_per_hour = gsub(pattern = "0", replacement = "", x = lux_per_hour)
     }
     
-    
+    correctRect = function(starti, endi, NR, epochSize) {
+      if (endi[length(endi)] > NR) {
+        if (starti[length(starti)] < endi[length(endi)] - 1) {
+          endi[length(endi)] = endi[length(endi)] - epochSize
+        } else {
+          starti = starti[1:(length(starti) - 1)]
+          endi = endi[1:(length(endi) - 1)]
+        }
+      }
+      invisible(list(starti = starti, endi = endi))
+    }
     
     
     par(mar = c(3, 0, 1.5, 2.5))
@@ -147,9 +157,11 @@ visualReport = function(metadatadir = c(),
         # binary variables
         freqtab = table(mdat[, legend_items$name[labi]])
         if (length(freqtab) > 1 || names(freqtab)[1] == "1") {
-          t0 = mdat$timestamp[which(diff(c(0, mdat[,legend_items$name[labi]])) == 1)]
-          t1 = mdat$timestamp[which(diff(c(mdat[, legend_items$name[labi]], 0)) == -1)]
-          
+          starti = which(diff(c(0, mdat[,legend_items$name[labi]])) == 1)
+          endi = which(diff(c(mdat[, legend_items$name[labi]], 0)) == -1) + 1
+          newi = correctRect(starti, endi, NR = nrow(mdat), epochSize)
+          t0 = mdat$timestamp[starti = newi$starti]
+          t1 = mdat$timestamp[endi = newi$endi]
           if (legend_items$name[labi] != "invalid") {
             y0 = 45
             y1 = 55
@@ -172,9 +184,14 @@ visualReport = function(metadatadir = c(),
         if (length(tempi) > 0) {
           A = rep(0, nrow(mdat))
           A[tempi] = 1
-          t0 = mdat$timestamp[which(diff(c(0, A)) == 1)]
-          t1 = mdat$timestamp[which(diff(c(A, 0)) == -1)]
+          starti = which(diff(c(0, A)) == 1)
+          endi = which(diff(c(A, 0)) == -1) + 1
+          newi = correctRect(starti, endi, NR = nrow(mdat), epochSize)
+          starti = newi$starti
+          endi = newi$endi
           
+          t0 = mdat$timestamp[starti]
+          t1 = mdat$timestamp[endi]
           col = legend_items$col[labi]
           rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1 , col = col, border = FALSE)
         }
@@ -203,8 +220,11 @@ visualReport = function(metadatadir = c(),
     if ("invalid" %in% legend_items$name) {
       freqtab = table(mdat$invalid)
       if (length(freqtab) > 1 || names(freqtab)[1] == "1") {
-        t0 = mdat$timestamp[which(diff(c(0, mdat$invalid)) == 1)]
-        t1 = mdat$timestamp[which(diff(c(mdat$invalid, 0)) == -1)]
+        starti = which(diff(c(0, mdat$invalid)) == 1)
+        endi = which(diff(c(mdat$invalid, 0)) == -1) + 1
+        newi = correctRect(starti, endi, NR = nrow(mdat), epochSize)
+        t0 = mdat$timestamp[newi$starti]
+        t1 = mdat$timestamp[newi$endi]
         col = legend_items$col[which(legend_items$name == "invalid")]
         y0 = 5
         y1 = 95
@@ -257,10 +277,11 @@ visualReport = function(metadatadir = c(),
       BCC = legendF$class_id # behavioural class codes (numeric)
       
       neworder = c(grep(pattern = "sleep", x = BCN), grep(pattern = "IN", x = BCN),
-                   grep(pattern = "LIG", x = BCN), grep(pattern = "MVPA", x = BCN)) 
+                   grep(pattern = "LIG", x = BCN), grep(pattern = "MOD", x = BCN),
+                   grep(pattern = "VIG", x = BCN), grep(pattern = "MVPA", x = BCN)) 
       BCN = BCN[neworder]
       BCC = BCC[neworder]
-      class2remove = grep(pattern = "unbt|spt_wake", x = BCN, invert = FALSE, value = FALSE)
+      class2remove = grep(pattern = "spt_wake", x = BCN, invert = FALSE, value = FALSE)
       BCN = BCN[-class2remove]
       BCC = BCC[BCC %in% BCC[class2remove] == FALSE]
       BCN = gsub(pattern = "day_|spt_", replacement = "", x = BCN)
@@ -268,6 +289,7 @@ visualReport = function(metadatadir = c(),
       BCN = tolower(BCN)
       BCN = gsub(pattern = "lig_", replacement = "lipa_", x = BCN)
       BCN = gsub(pattern = "in_bts", replacement = "inactive_bts", x = BCN)
+      BCN = gsub(pattern = "in_unbt", replacement = "inactive_unbt", x = BCN)
       # loop through files
       for (i in f0:f1) {
         load(file = paste0(metadatadir, "/meta/ms5.outraw/",
@@ -352,15 +374,15 @@ visualReport = function(metadatadir = c(),
                                      legend_items = legend_items, colour = "#F0E442",
                                      level = 2)
         # Inactivity
-        legend_items = gen_col_names(BCN, BCC = BCC, name = "inactive_bts",
+        legend_items = gen_col_names(BCN, BCC = BCC, name = "inactive",
                                      legend_items = legend_items, colour = "#CC79A7",
                                      level = 2)
         # LIPA
-        legend_items = gen_col_names(BCN, BCC = BCC, name = "lipa_bts",
+        legend_items = gen_col_names(BCN, BCC = BCC, name = "lipa",
                                      legend_items = legend_items, colour = "#009E73",
                                      level = 2)
         # MVPA
-        legend_items = gen_col_names(BCN, BCC = BCC, name = "mvpa_bts",
+        legend_items = gen_col_names(BCN, BCC = BCC, name = "mod|vig|mvpa",
                                      legend_items = legend_items, colour = "#0072B2",
                                      level = 2)
         # Invalid
@@ -423,10 +445,10 @@ visualReport = function(metadatadir = c(),
               legendpch = rep(15, length(legendnames))
               legendpch[which(legendnames == "invalid")] = 0
               legendcolors[which(legendnames == "invalid")] = "grey" #"white"
-              legendnames[which(legendnames == "invalid")] = "(transparent) imputed"
+              legendnames[which(legendnames == "invalid")] = "ignored/imputed"
               legend("topright", legend = legendnames,
                      col = legendcolors, 
-                     ncol = length(legend_items$name) %/% 5 + 1, cex = 0.9, 
+                     ncol = length(legend_items$name) %/% 6 + 1, cex = 0.9, 
                      pch = legendpch, pt.cex = 2, bty = "n", title = "Legend:",
                      title.font = 2, title.adj = 0)
               if (is.null(GGIRversion)) GGIRversion = "Not identified"
@@ -439,7 +461,8 @@ visualReport = function(metadatadir = c(),
               } 
               if (desiredtz == "") desiredtz = Sys.timezone()
               
-              legend("topleft", legend = c(paste0("Filename: ", simple_filename),
+              legend("topleft", legend = c(paste0("Start filename: ", 
+                                                  substr(x = simple_filename, start = 1, stop = 10), "..."), 
                                            paste0("Start date: ", as.Date(mdat$timestamp[1])),
                                            paste0("Duration: ", RecDuration, " ", RecDurUnit),
                                            paste0("GGIR version: " , GGIRversion),
@@ -457,7 +480,7 @@ visualReport = function(metadatadir = c(),
                         ylabels_plot2, binary_vars,
                         BCN, BCC, title = "", NhoursPerRow = NhoursPerRow, plotid = ani,
                         legend_items = legend_items, lux_available = lux_available,
-                        step_count_available = step_count_available)
+                        step_count_available = step_count_available, epochSize = epochSize)
             }
             
           }
