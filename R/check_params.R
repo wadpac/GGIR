@@ -347,6 +347,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_output[["save_ms5rawlevels"]] = TRUE
       params_output[["save_ms5raw_without_invalid"]] = FALSE
     }
+    if (length(params_247[["clevels"]]) == 1) {
+      warning("\nParameter clevels expects a number vector of at least 2 values, current length is 1", call. = FALSE)
+    }
   }
   if (!is.null(params_general[["expand_tail_max_hours"]])) {
     if (is.null(params_general[["recordingEndSleepHour"]]) & params_general[["expand_tail_max_hours"]] != 0) {

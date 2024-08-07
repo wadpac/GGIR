@@ -1399,8 +1399,9 @@ GGIR(mode = 1:5,
         onset till the 10th wakeup time.
       }
       \item{clevel}{
-        Numeric vector (default = c(30, 150)) to indicate cadence ranges used 
-        when summarising step counts, if available.
+        Numeric vector (default = c(30, 150)) with length 2 to indicate cadence ranges used 
+        when summarising step counts, if available. When set to NULL, step counts will not be
+        summarised in part 5 output.
       }
     }
   }

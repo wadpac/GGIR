@@ -230,7 +230,7 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     #======================================================
     # STEPS... (IF STEP_COUNT IS AVAILABLE)
     if ("step_count" %in% names(ts)) {
-      if (length(params_247[["clevels"]]) > 0) {
+      if (length(params_247[["clevels"]]) > 1) {
         for (windowhalf in c("day", "spt")) {
           step_subsegment = sse[ts$diur[sse] == ifelse(windowhalf == "day", yes = 0, no = 1)]
           cadence = ts$step_count[step_subsegment] / (60 / ws3new)
