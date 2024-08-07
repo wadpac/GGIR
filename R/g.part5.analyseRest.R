@@ -91,13 +91,18 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
       }
     }
   }
-  
   if (length(longboutsi) > 0) {
     sibreport = sibreport[longboutsi,]
     srep_tmp = sibreport[which(sibreport$start >= min(ts$time) &
                                  sibreport$end <= max(ts$time)),]
     
-    
+    # update ts time series with the classified naps
+    if ("sib" %in% srep_tmp$type) {
+      sibnaps = which(srep_tmp$type == "sib")
+      for (sni in 1:length(sibnaps)) {
+        ts$sibdetection[which(ts$time >= srep_tmp$start[sibnaps[sni]] & ts$time <= srep_tmp$end[sibnaps[sni]])] = 2
+      }
+    }
     #	identify overlapping and non-overlapping, (nap-sib, non-wear-sib, sib, nap, nonwear)
     #	calculate for all five categories number, total duration, mean duration
     # but also account for possibility that some of these categories do not exist
@@ -166,7 +171,7 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
       sibs_indices = which(srep_tmp$type == "sib")
       nap_indices = which(srep_tmp$type == "nap")
       nonwear_indices = which(srep_tmp$type == "nonwear")
-      sleeplog_indices = which(srep_tmp$type == "sleeplog")
+      # sleeplog_indices = which(srep_tmp$type == "sleeplog")
       SIBoverlapNap_indices = which(srep_tmp$SIBoverlapNap != 0)
       SIBoverlapNonwear_indices = which(srep_tmp$SIBoverlapNonwear != 0)
       SIBoverlapSleeplog_indices = which(srep_tmp$SIBoverlapSleeplog != 0)
@@ -174,7 +179,7 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
       NonwearOverlapSIB_indices = which(srep_tmp$NonwearOverlapSIB != 0)
       SleeplogOverlapSIB_indices = which(srep_tmp$NonwearOverlapSIB != 0)
       
-      if (length(sleeplog_indices) > 1) browser()
+      # if (length(sleeplog_indices) > 1) browser()
       # Count number of occurrences (do not count sleeplog because not informative)
       dsummary[di,fi:(fi + 7)] = c(length(sibs_indices),
                                    length(nap_indices),
@@ -257,5 +262,5 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
       fi  =  fi + 33
     }
   }
-  invisible(list(fi = fi, di = di, ds_names = ds_names, dsummary = dsummary))
+  invisible(list(fi = fi, di = di, ds_names = ds_names, dsummary = dsummary, ts = ts))
 }
