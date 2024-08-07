@@ -3,10 +3,11 @@
 - Report part 4 and 5:
 
   - Fix bug at identifying days and nights specified in the data_cleaning_file #1168
-  
-  
+
 - Part 5: Expand functionality for exploring the role of naps
-  
+
+- Part 5: Added step_count-based summary statistics in reports #653
+
 # CHANGES IN GGIR VERSION 3.1-2
 
 - Part 1:
