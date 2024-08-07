@@ -6,6 +6,7 @@ ds_names = rep("", 40)
 dsummary = matrix("", 1, 40)
 startday = as.POSIXct(x = "2022-06-02 08:00:00", tz = tz)
 ts = data.frame(time = seq(startday, startday + (16 * 3600), by = 60))
+ts$sibdetection = 0
 
 test_that("Overlap 1 nap and 1 sib", {
   fi = 1

@@ -99,8 +99,13 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
     # update ts time series with the classified naps
     if ("sib" %in% srep_tmp$type) {
       sibnaps = which(srep_tmp$type == "sib")
-      for (sni in 1:length(sibnaps)) {
-        ts$sibdetection[which(ts$time >= srep_tmp$start[sibnaps[sni]] & ts$time <= srep_tmp$end[sibnaps[sni]])] = 2
+      if (length(sibnaps) > 0) {
+        for (sni in 1:length(sibnaps)) {
+          sibnap = which(ts$time >= srep_tmp$start[sibnaps[sni]] & ts$time <= srep_tmp$end[sibnaps[sni]])
+          if (length(sibnap) > 0) {
+            ts$sibdetection[sibnap] = 2
+          }
+        }
       }
     }
     #	identify overlapping and non-overlapping, (nap-sib, non-wear-sib, sib, nap, nonwear)
