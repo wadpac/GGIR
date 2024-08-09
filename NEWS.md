@@ -4,6 +4,10 @@
 
   - Fix bug at identifying days and nights specified in the data_cleaning_file #1168
   
+- Part 5: Fix bug in addition of first wake-up time if not present #1179
+
+- Part 2: Correctly skip MXLX calculation when it cannot be calculated, which caused error when trying to use the output. Fixes #1180
+  
 # CHANGES IN GGIR VERSION 3.1-2
 
 - Part 1:
