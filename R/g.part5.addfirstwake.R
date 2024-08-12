@@ -61,7 +61,7 @@ g.part5.addfirstwake = function(ts, summarysleep, nightsi, sleeplog, ID,
       # if there was no sleep log
       if (is.na(SPTE_end[1]) == FALSE) {
         if (SPTE_end[1] != 0) {
-          wake_night1_index = round((SPTE_end[1]-24)* Nepochsinhour)
+          wake_night1_index = nightsi[1] + round((SPTE_end[1] - 24) * Nepochsinhour) 
         }
       }
     }
@@ -71,8 +71,13 @@ g.part5.addfirstwake = function(ts, summarysleep, nightsi, sleeplog, ID,
       wake_night1_index = (firstwake - (24* ((60/epochSize)*60))) + 1
     }
     if (is.na(wake_night1_index)) wake_night1_index = 0
-    if (wake_night1_index < firstwake & wake_night1_index > 1 & (wake_night1_index-1) > nightsi[1]) {
-      ts$diur[1:(wake_night1_index-1)] = 1
+    if (wake_night1_index < firstwake & wake_night1_index > 1 &
+        (wake_night1_index - 1) > nightsi[1]) {
+      newWakeIndex = max(which(ts$sibdetection[1:(wake_night1_index - 1)] == 1))
+      if (length(newWakeIndex) == 0) {
+        newWakeIndex = wake_night1_index - 1
+      }
+      ts$diur[1:newWakeIndex] = 1
     } else {
       # Person slept only during the afternoon on day 2
       # And there is no sleep data available for the first night
