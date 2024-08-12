@@ -3,6 +3,8 @@
 - Report part 4 and 5:
 
   - Fix bug at identifying days and nights specified in the data_cleaning_file #1168
+
+- Part 5: Data dictionary generates error when no valid days are seen dictionary, fixed #1176
   
 - Part 5: Fix bug in addition of first wake-up time if not present #1179
 
