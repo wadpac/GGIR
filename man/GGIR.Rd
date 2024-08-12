@@ -513,7 +513,8 @@ GGIR(mode = 1:5,
 
       \item{rmc.noise}{
         Numeric (default = 13).
-        Noise level of acceleration signal in m\emph{g}-units, used when working ad-hoc .csv data formats
+        Noise level of acceleration signal in m\emph{g}-units, used when working 
+        ad-hoc .csv data formats
         using \link{read.myacc.csv}. The \link{read.myacc.csv} does not take rmc.noise as argument,
         but when interacting with \link{GGIR} or \link{g.part1} rmc.noise is used.}
         
@@ -529,6 +530,11 @@ GGIR(mode = 1:5,
         per data block is larger than this fraction then the data block will be imputed
         by lack of movement with gravitational oriationed guessed from most recent
         valid data block. Only applicable to Axivity .cwa data.
+      }
+      \item{nonwear_range_threshold}{
+        Numeric (default 150) used to define maximum value range per axis for non-wear
+        detection, used in combination with brand specific standard deviation per
+        axis.
       }
       
     }
