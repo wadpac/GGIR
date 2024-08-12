@@ -6,6 +6,10 @@
 
 - Data dictionary part 5: When no valid days are seen dictionary generations error, now fixed #1176
   
+- Part 5: Fix bug in addition of first wake-up time if not present #1179
+
+- Part 2: Correctly skip MXLX calculation when it cannot be calculated, which caused error when trying to use the output. Fixes #1180
+  
 # CHANGES IN GGIR VERSION 3.1-2
 
 - Part 1:
