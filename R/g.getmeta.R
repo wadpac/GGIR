@@ -126,13 +126,10 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   deviceSerialNumber = hvars$deviceSerialNumber
 
   # get now-wear, clip, and blocksize parameters (thresholds)
-  ncb_params = get_nw_clip_block_params(chunksize = params_rawdata[["chunksize"]],
-                                        dynrange = params_rawdata[["dynrange"]],
-                                        monc = mon, dformat = dformat,
+  ncb_params = get_nw_clip_block_params(monc = mon, dformat = dformat,
                                         deviceSerialNumber = deviceSerialNumber,
-                                        rmc.noise = params_rawdata[["rmc.noise"]],
                                         sf = sf,
-                                        rmc.dynamic_range = params_rawdata[["rmc.dynamic_range"]])
+                                        params_rawdata = params_rawdata)
   clipthres = ncb_params$clipthres
   blocksize = ncb_params$blocksize
   sdcriter = ncb_params$sdcriter
