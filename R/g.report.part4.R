@@ -180,11 +180,11 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(),
         if (dotwice == 2) {
           # ignore nights that were derived without sleep log?
           if (only.use.sleeplog == TRUE) {
-            del = which(nightsummary$cleaningcode > 0 | nightsummary$sleeplog_used == "FALSE")
+            del = which(nightsummary$cleaningcode > 0 | nightsummary$sleeplog_used == "FALSE"  | nightsummary$guider == "NotWorn")
           } else {
-            # only delete nights with no or no valid accelerometer data data, but consider nigths with
+            # only delete nights with no or no valid accelerometer data or when accelerometer not worn, but consider nights with
             # missing sleep log data
-            del = which(nightsummary$cleaningcode > 1)
+            del = which(nightsummary$cleaningcode > 1 | nightsummary$guider == "NotWorn")
           }
           if (length(del) > 0) {
             nightsummary = nightsummary_bu[-del, ]
