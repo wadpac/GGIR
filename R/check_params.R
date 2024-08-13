@@ -210,7 +210,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "so GGIR now auto-sets arguments do.anglex, do.angley, and do.anglez to TRUE."), call. = FALSE)
         params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = params_metrics[["do.anglez"]] = TRUE
       }
-      if (params_sleep[["HASPT.algo"]][1] != "HorAngle") {
+      if (length(params_sleep[["HASPT.algo"]]) == 1 && params_sleep[["HASPT.algo"]][1] != "HorAngle") {
         warning("\nChanging HASPT.algo value to HorAngle, because sensor.location is set as hip", call. = FALSE)
         params_sleep[["HASPT.algo"]] = "HorAngle"; params_sleep[["def.noc.sleep"]] = 1
       }
