@@ -210,10 +210,12 @@ visualReport = function(metadatadir = c(),
     lines(mdat$timestamp, accy, type = "l",
           col = signalcolor,
           lwd = 0.3)
-    angleColor = ifelse(Nangles > 1, yes = "blue", no = signalcolor)
+    angleColor = ifelse(Nangles > 1, yes = "orange", no = signalcolor)
     lines(mdat$timestamp, ang1, type = "l", col = angleColor, lwd = 0.3)
+    abline(h = c(10, 30), lty = 2, lwd = 0.3)
+    abline(h = c(0, 20, 40), lty = 3, lwd = 0.3)
     if (Nangles > 1) {
-      lines(mdat$timestamp, ang2, type = "l", col = "orange", lwd = 0.3)
+      lines(mdat$timestamp, ang2, type = "l", col = "red", lwd = 0.3)
     }
     if (Nangles > 2) {
       lines(mdat$timestamp, ang3, type = "l", col = "green", lwd = 0.3)
@@ -255,9 +257,9 @@ visualReport = function(metadatadir = c(),
           # add guider name
           # guider names as defined in function g.part5.savetimeseries
           guider_names = c('unknown', 'sleeplog', 'HDCZA', 'setwindow', 'L512', 'HorAngle', 'NotWorn')
-          guider_here =  paste0("guided by: ", guider_names[mdat$guider[window_edges[wei]] + 1])
+          guider_name =  paste0("guided by: ", guider_names[mdat$guider[window_edges[wei]] + 1])
           text(x = mdat$timestamp[window_edges[wei]], y = 5,
-               labels = guider_here, las = 2, srt = 90, pos = 4,
+               labels = guider_name, las = 2, srt = 90, pos = 4,
                offset = 0.4, adj = 0, cex = 0.6)
         }
         mtext(text = toptext, side = 3, line = 0, cex = 0.5,
