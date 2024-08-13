@@ -180,6 +180,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       if (params_sleep[["HASPT.algo"]][1] %in% c("HorAngle", "NotWorn") == FALSE) {
         params_sleep[["HASPT.algo"]] = "HDCZA"
       }
+      if (length(params_sleep[["HASPT.algo"]]) == 2 && params_sleep[["HASPT.algo"]][2] == "NotWorn") {
+        params_sleep[["HASPT.algo"]] = params_sleep[["HASPT.algo"]][2:1] # NotWorn is expected to be first
+      }
     } else if (length(params_sleep[["def.noc.sleep"]]) == 2) {
       params_sleep[["HASPT.algo"]] = "notused"
     }
