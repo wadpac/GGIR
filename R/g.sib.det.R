@@ -270,7 +270,6 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         tmpTIME = time[qqq1:qqq2]
         daysleep_offset = 0
         if (do.HASPT.hip == TRUE & params_sleep[["HASPT.algo"]][guider_to_use] != "NotWorn") {
-          params_sleep[["HASPT.algo"]][1] = "HorAngle"
           if (params_sleep[["longitudinal_axis"]] == 1) {
             tmpANGLE = anglex[qqq1:qqq2]
           } else if (params_sleep[["longitudinal_axis"]] == 2) {
