@@ -1,9 +1,6 @@
 HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
                  HASPT.algo="HDCZA", HDCZA_threshold = c(), invalid,
                  HASPT.ignore.invalid=FALSE, activity = NULL) {
-  if (HASPT.algo == "HorAngle") {
-    sptblocksize = 15
-  }
   tib.threshold = SPTE_start = SPTE_end = part3_guider = c()
   # internal functions ---------
   adjustlength = function(x, invalid) {
