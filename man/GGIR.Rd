@@ -1519,7 +1519,8 @@ GGIR(mode = 1:5,
       \item{dofirstpage}{
         Boolean (default = TRUE).
         To indicate whether a first page with histograms summarizing the whole
-        measurement should be added in the file summary reports generated with \code{visualreport = TRUE}.}
+        measurement should be added in the file summary reports generated 
+        with \code{visualreport = TRUE}.}
 
       \item{sep_reports}{
         Character (default = ",").
@@ -1542,6 +1543,10 @@ GGIR(mode = 1:5,
           If TRUE, then reports generated with \code{visualreport = TRUE} only show
           the windows with sufficiently valid data according to \code{includedaycrit}
           when viewingwindow = 1 or \code{includenightcrit} when viewingwindow = 2}
+      \item{old_visualreport}{
+        Boolean (default = TRUE).
+        If TRUE, then generate old visual report in addition to new visualreport.
+        The old visualreport will eventually be deprecated}
     }
   }
 }

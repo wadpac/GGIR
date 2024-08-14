@@ -116,7 +116,8 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                          do.sibreport = FALSE, do.part2.pdf = TRUE,
                          sep_reports = ",", sep_config = ",", 
                          dec_reports = ".", dec_config = ".", 
-                         visualreport_without_invalid = TRUE)
+                         visualreport_without_invalid = TRUE,
+                         old_visualreport = TRUE)
 
   }
   if ("general" %in% topic) {
