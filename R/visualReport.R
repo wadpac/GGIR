@@ -206,14 +206,17 @@ visualReport = function(metadatadir = c(),
       }
     }
     
-    # Add lines on top
+    # Add angle grid lines
+    abline(h = c(10, 30), lty = 2, lwd = 0.3)
+    if (Nangles > 1) {
+      abline(h = c(0, 20, 40), lty = 3, lwd = 0.3)
+    }
+    # Add angle lines on top
     lines(mdat$timestamp, accy, type = "l",
           col = signalcolor,
           lwd = 0.3)
     angleColor = ifelse(Nangles > 1, yes = "orange", no = signalcolor)
     lines(mdat$timestamp, ang1, type = "l", col = angleColor, lwd = 0.3)
-    abline(h = c(10, 30), lty = 2, lwd = 0.3)
-    abline(h = c(0, 20, 40), lty = 3, lwd = 0.3)
     if (Nangles > 1) {
       lines(mdat$timestamp, ang2, type = "l", col = "red", lwd = 0.3)
     }
