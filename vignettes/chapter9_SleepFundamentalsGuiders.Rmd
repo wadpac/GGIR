@@ -162,7 +162,7 @@ Next, this is used to identify the largest non-movement period, by only consider
 
 The algorithm is expected to work with any acceleration metric, so both count-type metrics and metrics in gravitational units.
 
-To use this guider set parameter `HASPT.algo = "NotWorn"`. Further, we recommend combining the using of "NotWorn" with: `do.imp = FALSE`, `HASPT.ignore.invalid = NA`, and `ignorenonwear = FALSE`.
+To use this guider set parameter `HASPT.algo = "NotWorn"`. Further, we recommend combining the using of "NotWorn" with: `do.imp = FALSE` and `ignorenonwear = FALSE`. Internally `HASPT.ignore.invalid` is always set to `NA` when "NotWorn" is used.
 
 If this is used it will also define the resulting window as SIB period and ignore all other identified SIB window to ensure the entire window is treated as sleep. So, all SIB periods detected are ignored.
 

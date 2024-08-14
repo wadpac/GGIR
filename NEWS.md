@@ -5,6 +5,10 @@
 
 - Visual report: Add new visualreport that is automatically generated when visualreport = TRUE, and add parameter old_visualreport to turn off the old visualreport generation. #1173
 
+# CHANGES IN GGIR VERSION 3.1-4
+
+- Part 3: Update threshold used for HorAngle to 60 degree, and auto-setting HASPT.ignore.invalid to NA when NotWorn guider is used. #1186
+
 - Part 4:
 
   - Improved logging of what guider was used when using NotWorn and optional backup guider, #1156
@@ -27,6 +31,8 @@
 this used to be a constant. And default changed to 50mg. #1172
 
 - Part 4: Improved error message when a sleeplog timestamp is not in expected format. #1184
+
+# CHANGES IN GGIR VERSION 3.1-2
 
 - Part 1:
 

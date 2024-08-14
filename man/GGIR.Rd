@@ -1178,6 +1178,8 @@ GGIR(mode = 1:5,
         If \code{TRUE}, invalid time segments are ignored (i.e., they cannot 
         contribute to the guider). If \code{NA}, then invalid time segments are 
         considered to be no movement segments and can contribute to the guider.
+        When HASPT.algo is "NotWorn", HASPT.ignore.invalid is automatically set to
+        NA.
         }
 
       \item{HASIB.algo}{

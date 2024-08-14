@@ -69,7 +69,10 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       # to the threshold to allow for consistent definition of nomov below
       # i.e., x < threshold
       threshold = activityThreshold + 0.001
-      HASPT.ignore.invalid = NA # Only for NotWorn, because not good to rely on imputed time series
+      # Always set HASPT.ignore.invalid to NA for HASPT.algo NotWorn
+      # because NotWorn is by definition interested in invalid periods
+      # and we definitely do not want to rely on imputed time series
+      HASPT.ignore.invalid = NA
     }
     # Now define nomov periods with the selected strategy for invalid time
     nomov = rep(0,length(x)) # no movement
@@ -149,6 +152,7 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
           part3_guider = paste0(HASPT.algo, "+invalid")
         }
       }
+      
       # # Code to help investigate classifications:
       # plot(x, col = "black", type = "l")
       # abline(v = SPTE_start, col = "green", lwd = 2)
@@ -170,6 +174,7 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       # lines(invalid* 0.05, type = "l", col = "red")
       # # graphics.off()
       # browser()
+      
     } else {
       SPTE_end = c()
       SPTE_start = c()
