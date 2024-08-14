@@ -23,7 +23,6 @@ this used to be a constant. And default changed to 50mg. #1172
 
 - Part 4: Improved error message when a sleeplog timestamp is not in expected format. #1184
 
-
 # CHANGES IN GGIR VERSION 3.1-2
 
 - Part 1:
