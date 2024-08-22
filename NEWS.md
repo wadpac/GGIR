@@ -1,6 +1,6 @@
 # CHANGES IN GGIR VERSION 3.1-4
 
-- Part 4: Advanced sleeplog date shift when recording starts exactly at midnight now fixed, #1188
+- Part 4: Fixed issue with merging sleeplog advanced format and acc data starting at midnight, #1188
 
 - Part 4: When sleeplog column name is accidentally left empty generate error message, #1138.
 
