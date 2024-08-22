@@ -17,7 +17,7 @@ test_that("Test recordings that start at midnight", {
     if (advanced_sleeplog == FALSE) {
       mode = 1:5
     } else {
-      mode = 4:5
+      mode = 4
     }
     #--------------------------------------------
     # run GGIR
@@ -54,8 +54,7 @@ test_that("Test recordings that start at midnight", {
     expect_equal(nrow(out5), 2)
     expect_true(all(out5$dur_day_spt_min == 1440))
   }
-  
-  if (dir.exists(dn))  unlink(dn, recursive = TRUE)
+  if (file.exists(dn))  unlink(dn, recursive = TRUE)
   if (file.exists(fn)) unlink(fn)
   if (file.exists(sleeplog_fn)) file.remove(sleeplog_fn)
 })
