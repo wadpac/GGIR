@@ -12,7 +12,6 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
     stop(paste0("Sleeplog column found with empty header. This can also happen if ",
                 "there are empty columns at the end, delete these if applicable."), call. = FALSE)
   }
-  nnights = (ncol(S) - coln1 + 1) / 2
   cnt_time_notrecognise = 0
   advanced_sleeplog = length(grep(pattern = "date", x = colnames(S), ignore.case = TRUE)) > 0
   if (advanced_sleeplog ==  TRUE) {
@@ -227,6 +226,8 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
         colid = 1
       }
     }
+  } else {
+    nnights = (ncol(S) - coln1 + 1) / 2
   }
   # test whether number of columns with night information in sleeplog is odd
   # this would provide nnights %% 2 == 0.5
