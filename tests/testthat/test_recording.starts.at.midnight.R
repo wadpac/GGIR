@@ -2,9 +2,7 @@ library(GGIR)
 context("Recording starts at midnight")
 test_that("Test recordings that start at midnight", {
   skip_on_cran()
-  
-  devtools::load_all(".")
-  library(testthat)
+
   Ndays = 2
   create_test_acc_csv(Nmin = Ndays*1440, starts_at_midnight = TRUE)
   outputdir = getwd()
