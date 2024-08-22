@@ -41,7 +41,7 @@ visualReport = function(metadatadir = c(),
     correctRect = function(starti, endi, NR, epochSize) {
       if (endi[length(endi)] > NR) {
         if (starti[length(starti)] < endi[length(endi)] - 1) {
-          endi[length(endi)] = endi[length(endi)] - epochSize
+          endi[length(endi)] = endi[length(endi)] - 1
         } else {
           starti = starti[1:(length(starti) - 1)]
           endi = endi[1:(length(endi) - 1)]
