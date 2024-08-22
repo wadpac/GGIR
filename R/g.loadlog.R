@@ -7,7 +7,11 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
   # Load sleep log data...
   S = data.table::fread(file = loglocation, stringsAsFactors = FALSE, data.table = FALSE,
                         check.names = TRUE, colClasses = "character")
-  S = Filter(function(x)!all(x == ""), S) # remove empty columns
+  if (colnames(S)[1] == "V1" && any(S[1, ] == "")) {
+    problematicColumn = which(S[1, ] == "")
+    stop(paste0("Sleeplog column found with empty header. This can also happen if ",
+                "there are empty columns at the end, delete these if applicable."), call. = FALSE)
+  }
   nnights = (ncol(S) - coln1 + 1) / 2
   cnt_time_notrecognise = 0
   advanced_sleeplog = length(grep(pattern = "date", x = colnames(S), ignore.case = TRUE)) > 0
@@ -22,6 +26,8 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
       
       startdates = data.table::rbindlist(startdates, fill = TRUE)
       colnames(startdates) = c("ID", "startdate")
+      startdates$startAtMidnight = FALSE
+      startdates$startAtMidnight[grep(pattern = "00:00:00", x = startdates$startdate)] = TRUE
       startdates$startdate = as.Date(iso8601chartime2POSIX(startdates$startdate, tz = desiredtz), tz = desiredtz)
     } else {
       warning("\nArgument meta.sleep.folder has not been specified")
@@ -96,6 +102,17 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
                 }
               }
             }
+          }
+          if (startdates$startAtMidnight[which(startdates$ID == ID)] == TRUE) {
+            # If the first day in the advanced sleeplog is 28/11 
+            # and the recording starts at midnight 27/11 00:00:00
+            # then that means that we miss the first 2 nights.
+            # However, the code above only sees a
+            # difference of 1 day (deltadate) between 27/11 and 28/11.
+            # If the recording starts at 27/11 00:00:05 this is correct 
+            # because 27/11 is not counted as a night in g.part3 and g.part4.
+            # This is why we need to do + 1 if the recording starts at midnight.
+            deltadate = deltadate + 1
           }
           if (length(Sdates_correct) == 0 | is.na(startdate_sleeplog) == TRUE) {
             warning(paste0("\nSleeplog for ID: ",ID," not used because first date",
