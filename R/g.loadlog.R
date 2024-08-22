@@ -8,9 +8,8 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
   S = data.table::fread(file = loglocation, stringsAsFactors = FALSE, data.table = FALSE,
                         check.names = TRUE, colClasses = "character")
   if (colnames(S)[1] == "V1" && any(S[1, ] == "")) {
-    problematicColumn = which(S[1, ] == "")
-    stop(paste0("Sleeplog column found with empty header. This can also happen if ",
-                "there are empty columns at the end, delete these if applicable."), call. = FALSE)
+    stop(paste0("Sleeplog column found with empty header, please fix. This can also happen if ",
+                "there are empty columns at the end, delete those columns if applicable."), call. = FALSE)
   }
   cnt_time_notrecognise = 0
   advanced_sleeplog = length(grep(pattern = "date", x = colnames(S), ignore.case = TRUE)) > 0
