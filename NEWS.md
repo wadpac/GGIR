@@ -1,3 +1,9 @@
+# CHANGES IN GGIR VERSION 3.1-4
+
+- Part 4: Fixed issue with merging sleeplog advanced format and acc data starting at midnight, #1188
+
+- Part 4: When sleeplog column name is accidentally left empty generate error message, #1138.
+
 # CHANGES IN GGIR VERSION 3.1-3
 
 - Report part 4 and 5:
