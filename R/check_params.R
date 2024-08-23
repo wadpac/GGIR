@@ -113,13 +113,13 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     check_class("cleaning", params = params_cleaning, parnames = character_params, parclass = "character")
   }
   if (length(params_output) > 0) {
-    numeric_params = c("viewingwindow", "criterror")
+    numeric_params = c("viewingwindow", "criterror", "visualreport_hrsPerRow")
     boolean_params = c("epochvalues2csv", "save_ms5rawlevels", "save_ms5raw_without_invalid",
                        "storefolderstructure", "dofirstpage", "visualreport", "week_weekend_aggregate.part5",
                        "do.part3.pdf", "outliers.only", "do.visual", "do.sibreport", "visualreport_without_invalid",
                        "do.part2.pdf", "old_visualreport")
     character_params = c("save_ms5raw_format", "timewindow", "sep_reports", "sep_config",
-                         "dec_reports", "dec_config")
+                         "dec_reports", "dec_config", "visualreport_focus")
     check_class("output", params = params_output, parnames = numeric_params, parclass = "numeric")
     check_class("output", params = params_output, parnames = boolean_params, parclass = "boolean")
     check_class("output", params = params_output, parnames = character_params, parclass = "character")
@@ -323,6 +323,10 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     if (params_output[["sep_config"]] == params_output[["dec_config"]]) {
       stop(paste0("\nYou have set sep_config and dec_config both to ",
                   params_output[["sep_config"]], " this is ambiguous. Please fix."))
+    }
+    if (params_output[["visualreport_hrsPerRow"]] < 24 ||
+        params_output[["visualreport_hrsPerRow"]] > 48) {
+      stop("Parameter visualreport_hrsPerRow is expected to be set in the range 24-48")
     }
   }
   # params 247

@@ -1549,6 +1549,17 @@ GGIR(mode = 1:5,
         Boolean (default = TRUE).
         If TRUE, then generate old visual report in addition to new visualreport.
         The old visualreport will eventually be deprecated}
+      \item{visualreport_hrsPerRow}{
+        Numeric (default = 36).
+        Width of the plots in the new visualreport expressed in hours.
+        Expected to be in the range 24-48. If more than 24 then the extra time overlaps
+        with the beginning of the next plot.
+      }
+      \item{visualreport_focus}{
+         Character (default = "day")
+         Whether new visual report focussed on day. If set ot "nigth" the focus will be
+         on the night.
+      }
     }
   }
 }

@@ -4,15 +4,15 @@ visualReport = function(metadatadir = c(),
                         verbose = TRUE,
                         part6_threshold_combi = NULL,
                         GGIRversion = NULL,
-                        params_sleep = NULL) {
+                        params_sleep = NULL, params_output = NULL) {
   if (!file.exists(paste0(metadatadir, "/results/file summary reports"))) {
     dir.create(file.path(paste0(metadatadir, "/results"), "file summary reports"))
   }
   
   # Declare functions:
   panelplot = function(mdat, ylabels_plot2, binary_vars,
-                       BCN, BCC, title = "", NhoursPerRow = NULL, plotid = 0, legend_items = NULL, lux_available = FALSE,
-                       step_count_available = FALSE, epochSize = 60) {
+                       BCN, BCC, title = "", hrsPerRow = NULL, plotid = 0, legend_items = NULL, lux_available = FALSE,
+                       step_count_available = FALSE, epochSize = 60, focus = "day") {
     window_duration = mdat$timenum[nrow(mdat)] - mdat$timenum[1]
     signalcolor = "black"
 
@@ -24,16 +24,20 @@ visualReport = function(metadatadir = c(),
     ticks = which(min == 0 & sec == 0 & hour %in% seq(0, 24, by = 1))
     atTime = mdat$timestamp[ticks]
     datLIM = as.Date(min(mdat$timestamp, na.rm = TRUE), tz = desiredtz)
-    XLIM = as.POSIXct(paste0(datLIM[1], " 00:00:00"), tz = desiredtz)
-    XLIM[2] = XLIM[1] + NhoursPerRow * 3600
+    if (focus == "day") {
+      XLIM = as.POSIXct(paste0(datLIM[1], " 00:00:00"), tz = desiredtz)
+    } else if (focus == "night") {
+      XLIM = as.POSIXct(paste0(datLIM[1], " 12:00:00"), tz = desiredtz)
+    }
+    XLIM[2] = XLIM[1] + hrsPerRow * 3600
     
     if (step_count_available == TRUE) {
-      steps_per_hour = round(zoo::rollsum(x = mdat$step_count, k = 60, fill = NA) / 100) # assumes 1 minute epoch
+      steps_per_hour = round(zoo::rollsum(x = mdat$step_count, k = epochSize, fill = NA) / 100)
       steps_per_hour = as.character(steps_per_hour)
       steps_per_hour = gsub(pattern = "0", replacement = "", x = steps_per_hour)
     }
     if (lux_available == TRUE) {
-      lux_per_hour = round(zoo::rollmax(x = mdat$lightpeak, k = 60, fill = NA) / 1000) # assumes 1 minute epoch
+      lux_per_hour = round(zoo::rollmax(x = mdat$lightpeak, k = epochSize, fill = NA) / 1000)
       lux_per_hour = as.character(lux_per_hour)
       lux_per_hour = gsub(pattern = "0", replacement = "", x = lux_per_hour)
     }
@@ -81,7 +85,7 @@ visualReport = function(metadatadir = c(),
          xaxt = 'n', axes = FALSE,
          xlab = "", ylab = "")
     
-    if (NhoursPerRow <= 36) {
+    if (hrsPerRow <= 36) {
       cex_axis = 0.5
     } else {
       cex_axis = 0.5
@@ -100,7 +104,7 @@ visualReport = function(metadatadir = c(),
       } 
       return(changes)
     }  
-    if (NhoursPerRow <= 36) {
+    if (hrsPerRow <= 36) {
       cex_mtext = 0.4
     } else {
       cex_mtext = 0.35 #25
@@ -441,17 +445,30 @@ visualReport = function(metadatadir = c(),
                    simple_filename, ".pdf"), paper = "a4",
             width = 0, height = 0)
         
-        NhoursPerRow = 36
-        midnightsi = which(format(mdat$timestamp, "%H") == "00" &
+        hrsPerRow = params_output[["visualreport_hrsPerRow"]]
+        focus = params_output[["visualreport_focus"]]
+        if (focus == "day") {
+          dayedges = which(format(mdat$timestamp, "%H") == "00" &
                              format(mdat$timestamp, "%M") == "00" &
                              format(mdat$timestamp, "%S") == "00")
-        subploti = c(1, midnightsi + 1)
+        } else if (focus == "night") {
+          dayedges = which(format(mdat$timestamp, "%H") == "12" &
+                             format(mdat$timestamp, "%M") == "00" &
+                             format(mdat$timestamp, "%S") == "00")
+        }
+        
+        if (dayedges[1] == 1) {
+          # recording starts at edge
+          subploti = dayedges + 1
+        } else {
+          # recording does not start at edge
+          subploti = c(1, dayedges + 1)
+        }
         subploti = cbind(subploti,
-                         c(midnightsi + (NhoursPerRow - 24) * 60, nrow(mdat)))
+                         c(dayedges + ((hrsPerRow - 24) * epochSize), nrow(mdat)))
         
         invalid = which(mdat$invalidepoch == 1)
         subploti[which(subploti[,2] > nrow(mdat)), 2] = nrow(mdat)
-        
         NdaysPerPage = 8
         par(mfrow = c(NdaysPerPage, 1), mgp = c(2, 0.8, 0), omi = c(0, 0, 0, 0), bty = "n")
         if (nrow(subploti) > 0) {
@@ -528,12 +545,13 @@ visualReport = function(metadatadir = c(),
                     side = 3, line = 0.2, cex = 1.2, font = 2)
               
             }
-            if (subploti[ani, 2] - subploti[ani, 1] > 60) { # we need at least 1 hour for the ticks
+            if (subploti[ani, 2] - subploti[ani, 1] > 60 * (60/epochSize)) { # we need at least 1 hour for the ticks
               panelplot(mdat[(subploti[ani, 1] + 1):subploti[ani, 2], ],
                         ylabels_plot2, binary_vars,
-                        BCN, BCC, title = "", NhoursPerRow = NhoursPerRow, plotid = ani,
+                        BCN, BCC, title = "", hrsPerRow = hrsPerRow, plotid = ani,
                         legend_items = legend_items, lux_available = lux_available,
-                        step_count_available = step_count_available, epochSize = epochSize)
+                        step_count_available = step_count_available, epochSize = epochSize,
+                        focus = focus)
             }
             
           }
