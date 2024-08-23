@@ -113,7 +113,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     check_class("cleaning", params = params_cleaning, parnames = character_params, parclass = "character")
   }
   if (length(params_output) > 0) {
-    numeric_params = c("viewingwindow", "criterror", "visualreport_hrsPerRow")
+    numeric_params = c("viewingwindow", "criterror", "visualreport_hrsPerRow",
+                       "visualreport_validcrit")
     boolean_params = c("epochvalues2csv", "save_ms5rawlevels", "save_ms5raw_without_invalid",
                        "storefolderstructure", "dofirstpage", "visualreport", "week_weekend_aggregate.part5",
                        "do.part3.pdf", "outliers.only", "do.visual", "do.sibreport", "visualreport_without_invalid",

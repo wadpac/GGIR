@@ -1545,20 +1545,28 @@ GGIR(mode = 1:5,
           If TRUE, then reports generated with \code{visualreport = TRUE} only show
           the windows with sufficiently valid data according to \code{includedaycrit}
           when viewingwindow = 1 or \code{includenightcrit} when viewingwindow = 2}
+      
       \item{old_visualreport}{
         Boolean (default = TRUE).
         If TRUE, then generate old visual report in addition to new visualreport.
         The old visualreport will eventually be deprecated}
+      
       \item{visualreport_hrsPerRow}{
         Numeric (default = 36).
         Width of the plots in the new visualreport expressed in hours.
         Expected to be in the range 24-48. If more than 24 then the extra time overlaps
-        with the beginning of the next plot.
-      }
+        with the beginning of the next plot.}
+      
       \item{visualreport_focus}{
          Character (default = "day")
          Whether new visual report focussed on day. If set ot "nigth" the focus will be
          on the night.
+      }
+      
+      \item{visualreport_validcrit}{
+         Numeric (default = 0).
+         Value between 0 and 1 representing the fraction of data in a plot 
+         that is expected to be valid. If this criteria is not met the row is skipped.
       }
     }
   }

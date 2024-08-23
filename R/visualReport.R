@@ -441,9 +441,7 @@ visualReport = function(metadatadir = c(),
         
         
         simple_filename = gsub(pattern = ".RData", replacement = "", x = fnames.ms5raw[i] ) #"patientID12345"
-        pdf(paste0(metadatadir, "/results/file summary reports/Time_report_",
-                   simple_filename, ".pdf"), paper = "a4",
-            width = 0, height = 0)
+       
         
         hrsPerRow = params_output[["visualreport_hrsPerRow"]]
         focus = params_output[["visualreport_focus"]]
@@ -459,17 +457,41 @@ visualReport = function(metadatadir = c(),
         
         if (dayedges[1] == 1) {
           # recording starts at edge
-          subploti = dayedges + 1
+          subploti = dayedges
         } else {
           # recording does not start at edge
-          subploti = c(1, dayedges + 1)
+          subploti = c(1, dayedges)
         }
         subploti = cbind(subploti,
-                         c(dayedges + ((hrsPerRow - 24) * epochSize), nrow(mdat)))
+                         c(dayedges + ((hrsPerRow - 24) * epochSize) - 1, nrow(mdat)))
         
         invalid = which(mdat$invalidepoch == 1)
         subploti[which(subploti[,2] > nrow(mdat)), 2] = nrow(mdat)
         NdaysPerPage = 8
+        
+        if ( params_output[["visualreport_validcrit"]] > 0) {
+          # Only keep windows that meet the fraction of valid data
+          # as specified with parameter visualreport_validcrit
+          for (si in 1:nrow(subploti)) {
+            Nvalid = length(which(mdat$invalid[(subploti[si, 1] + 1):subploti[si, 2]] == 0))
+            Ntotal =  length(mdat$invalid[(subploti[si, 1] + 1):subploti[si, 2]])
+            frac_valid = Nvalid / Ntotal
+            if (frac_valid < params_output[["visualreport_validcrit"]]) {
+              subploti[si, ] = -1
+            }
+          }
+          subploti = subploti[which(subploti[,1] > 0), ]
+          if (length(subploti) == 0 || nrow(subploti) == 0) {
+            message(paste0("Recording ", simple_filename, " skipped from visual",
+                           " report generation because valid",
+                           " data criteria (visualreport_validcrit) not met."))
+            next
+          }
+        }
+        
+        pdf(paste0(metadatadir, "/results/file summary reports/Time_report_",
+                   simple_filename, ".pdf"), paper = "a4",
+            width = 0, height = 0)
         par(mfrow = c(NdaysPerPage, 1), mgp = c(2, 0.8, 0), omi = c(0, 0, 0, 0), bty = "n")
         if (nrow(subploti) > 0) {
           for (ani in 1:nrow(subploti)) {

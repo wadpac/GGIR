@@ -13,7 +13,8 @@
               desiredtz = "",
               verbose = TRUE,
               part6_threshold_combi = NULL, GGIRversion = NULL,
-              params_sleep = NULL)
+              params_sleep = NULL,
+              params_output = NULL)
 }
 \arguments{
   \item{metadatadir}{
@@ -45,6 +46,9 @@
     Character with GGIR version number
   }
   \item{params_sleep}{
+    See \link{GGIR}
+  }
+  \item{params_output}{
     See \link{GGIR}
   }
 }
