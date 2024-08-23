@@ -20,10 +20,11 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
         load(x)
         invisible(list(ID = ID, rec_starttime = rec_starttime))
       }
-      startdates = as.data.frame(lapply(X = dir(meta.sleep.folder, full.names = T), FUN = getIDstartdate))
+      startdates = lapply(X = dir(meta.sleep.folder, full.names = T), FUN = getIDstartdate)
+      startdates = as.data.frame(data.table::rbindlist(startdates, fill = TRUE))
       
       startdates$startAtMidnight = FALSE
-      startdates$startAtMidnight[grep(pattern = "00:00:00", x = startdates$startdate)] = TRUE
+      startdates$startAtMidnight[grep(pattern = "00:00:00", x = startdates$rec_starttime)] = TRUE
       colnames(startdates)[1:2] = c("ID", "startdate")
       startdates$startdate = as.Date(iso8601chartime2POSIX(startdates$startdate, tz = desiredtz), tz = desiredtz)
     } else {

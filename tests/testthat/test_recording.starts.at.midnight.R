@@ -39,7 +39,7 @@ test_that("Test recordings that start at midnight", {
   expect_equal(nrow(out4), 2)
   expect_equal(out4$guider, rep("sleeplog", 2))
   expect_equal(out4$night, 1:2)
-  expect_equal(out4$guider_onset_ts, c("23:00:03", "23:00:04"))
+  expect_equal(out4$guider_onset_ts, c("23:00:02", "23:00:03"))
   
   #--------------------------------------------
   # part 5 data contains 2 complete days
