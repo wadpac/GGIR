@@ -243,6 +243,8 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
         WK[j] = paste0(WKN[1], ":", WKN[2], ":", WKN[3])
         SLN2 = SLN[1] * 3600 + SLN[2] * 60 + SLN[3]
         WKN2 = WKN[1] * 3600 + WKN[2] * 60  + WKN[3]
+        if (is.na(WKN2)) stop(paste0(WKN[1]," as found in the sleeplog is not a valid timestamp"), call. = FALSE)
+        if (is.na(SLN2)) stop(paste0(SLN[1]," as found in the sleeplog is not a valid timestamp"), call. = FALSE)
         if (WKN2 > SLN2) { #e.g. 01:00 - 07:00
           dur = WKN2 - SLN2
         } else if (WKN2 < SLN2) { #e.g. 22:00 - 07:00

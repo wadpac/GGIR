@@ -388,7 +388,7 @@ test_that("chainof5parts", {
   expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(6))
   expect_that(round(nightsummary$SptDuration[1], digits = 4), equals(13.075))
   #---------------------
-  # Part 1 with external function and selectdaysfile:
+  # Part 1 with external function:
   exampleExtFunction = function(data=c(), parameters=c()) {
     data = data.frame(data, agglevel = round((1:nrow(data)) / (30 * 60 * 15)))
     output = aggregate(data, by = list(data$agglevel), FUN = mean)
@@ -405,14 +405,6 @@ test_that("chainof5parts", {
                 outputtype = "numeric", #"numeric" (averaging is possible), "category" (majority vote)
                 aggfunction = mean,
                 timestamp = as.numeric(Sys.time())) # for unit test only
-  # create selectdaysfile
-  SDF = matrix("", 1, 3)
-  SDF[1, 1] = "MOS2D12345678"
-  SDF[1, 2:3] =  c("23-05-2016", "24-05-2016")
-  colnames(SDF) = c("Monitor", "Day1", "Day2")
-  selectdaysfile = "selectdaysfile.csv"
-  write.csv(SDF, file = selectdaysfile)
-  
   
   g.part1(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           overwrite = TRUE, desiredtz = desiredtz,
@@ -424,7 +416,7 @@ test_that("chainof5parts", {
           do.dev_roll_med_acc_x = TRUE, do.dev_roll_med_acc_y = TRUE, do.dev_roll_med_acc_z = TRUE,
           do.bfx = TRUE, do.bfy = TRUE, do.bfz = TRUE, do.hfen = TRUE,
           do.hfx = TRUE, do.hfy = TRUE, do.hfz = TRUE, do.lfen = TRUE,
-          do.enmoa = TRUE, selectdaysfile = selectdaysfile, verbose = FALSE)
+          do.enmoa = TRUE, verbose = FALSE)
   
   rn = dir("output_test/meta/basic/", full.names = TRUE)
   load(rn[1])
@@ -438,8 +430,6 @@ test_that("chainof5parts", {
   expect_equal(mean(M$metashort$dev_roll_med_acc_x, na.rm = T), 0.007, tolerance = 3)
   expect_equal(mean(M$metashort$ENMOa, na.rm = T), 0.03, tolerance = 3)
   
-  
-  if (file.exists(selectdaysfile)) file.remove(selectdaysfile)
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
   if (file.exists(fn)) unlink(fn)
   if (file.exists(sleeplog_fn)) file.remove(sleeplog_fn)

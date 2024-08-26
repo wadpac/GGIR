@@ -25,6 +25,16 @@
 
   - Fix incorrect usage of part 5 inclusion criteria testing, which used fraction as percentage.
 
+# CHANGES IN GGIR VERSION 3.1-4
+
+- Part 3: Update threshold used for HorAngle to 60 degree, and auto-setting HASPT.ignore.invalid to NA when NotWorn guider is used. #1186
+
+- Part 4:
+
+  - Improved logging of what guider was used when using NotWorn and optional backup guider, #1156
+
+  - Skip night in part 4 csv report if guider was NotWorn, #1156
+
 # CHANGES IN GGIR VERSION 3.1-3
 
 - Report part 4 and 5:
@@ -39,7 +49,9 @@
 
 - Part 1: Add parameter nonwear_range_threshold to control range threshold for nonwear detection,
 this used to be a constant. And default changed to 50mg. #1172
-  
+
+- Part 4: Improved error message when a sleeplog timestamp is not in expected format. #1184
+
 # CHANGES IN GGIR VERSION 3.1-2
 
 - Part 1:
