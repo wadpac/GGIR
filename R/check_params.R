@@ -180,6 +180,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       if (params_sleep[["HASPT.algo"]][1] %in% c("HorAngle", "NotWorn") == FALSE) {
         params_sleep[["HASPT.algo"]] = "HDCZA"
       }
+      if (length(params_sleep[["HASPT.algo"]]) == 2 && params_sleep[["HASPT.algo"]][2] == "NotWorn") {
+        params_sleep[["HASPT.algo"]] = params_sleep[["HASPT.algo"]][2:1] # NotWorn is expected to be first
+      }
     } else if (length(params_sleep[["def.noc.sleep"]]) == 2) {
       params_sleep[["HASPT.algo"]] = "notused"
     }
@@ -207,7 +210,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "so GGIR now auto-sets arguments do.anglex, do.angley, and do.anglez to TRUE."), call. = FALSE)
         params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = params_metrics[["do.anglez"]] = TRUE
       }
-      if (params_sleep[["HASPT.algo"]][1] != "HorAngle") {
+      if (length(params_sleep[["HASPT.algo"]]) == 1 && params_sleep[["HASPT.algo"]][1] != "HorAngle") {
         warning("\nChanging HASPT.algo value to HorAngle, because sensor.location is set as hip", call. = FALSE)
         params_sleep[["HASPT.algo"]] = "HorAngle"; params_sleep[["def.noc.sleep"]] = 1
       }

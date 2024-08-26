@@ -1,8 +1,16 @@
 # CHANGES IN GGIR VERSION 3.1-4
 
-- Part 4: Fixed issue with merging sleeplog advanced format and acc data starting at midnight, #1188
+- Part 3: Update threshold used for HorAngle to 60 degree, and auto-setting HASPT.ignore.invalid to NA when NotWorn guider is used. #1186
 
-- Part 4: When sleeplog column name is accidentally left empty generate error message, #1138.
+- Part 4:
+
+  - Fixed issue with merging sleeplog advanced format and acc data starting at midnight, #1188
+  
+  - When sleeplog column name is accidentally left empty generate error message, #1138.
+
+  - Improved logging of what guider was used when using NotWorn and optional backup guider, #1156
+
+  - Skip night in part 4 csv report if guider was NotWorn, #1156
 
 # CHANGES IN GGIR VERSION 3.1-3
 
@@ -20,7 +28,7 @@
 this used to be a constant. And default changed to 50mg. #1172
 
 - Part 4: Improved error message when a sleeplog timestamp is not in expected format. #1184
-  
+
 # CHANGES IN GGIR VERSION 3.1-2
 
 - Part 1:
