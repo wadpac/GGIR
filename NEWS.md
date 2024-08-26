@@ -11,6 +11,10 @@
 
 - Part 4:
 
+  - Fixed issue with merging sleeplog advanced format and acc data starting at midnight, #1188
+  
+  - When sleeplog column name is accidentally left empty generate error message, #1138.
+
   - Improved logging of what guider was used when using NotWorn and optional backup guider, #1156
 
   - Skip night in part 4 csv report if guider was NotWorn, #1156
