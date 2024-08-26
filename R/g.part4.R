@@ -286,20 +286,32 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           } else if ((length(params_sleep[["def.noc.sleep"]]) == 1 ||
                       length(params_sleep[["loglocation"]]) != 0) &&
                      length(SPTE_start) != 0) {
-            
             # use SPTE algorithm (inside the g.sib.det function) as backup for sleeplog OR if user
             # explicitely asks for it
             defaultGuiderOnset = SPTE_start[j]
             defaultGuiderWake = SPTE_end[j]
-            guider = params_sleep[["HASPT.algo"]][1] # HDCZA, NotWorn, HorAngle (or plus invalid)
-            defaultGuider = part3_guider[j]
-            if (is.null(defaultGuider)) defaultGuider = guider #this ensures compatibility with previous versions in which part3_guider was not stored
+            defaultGuider = part3_guider[j] # HDCZA, NotWorn, HorAngle (or plus invalid)
+            if (is.null(defaultGuider)) {
+              # this ensures compatibility with previous versions in which part3_guider was not stored
+              # for newer version we expect defaultGuider to always not be NULL
+              guider = params_sleep[["HASPT.algo"]][1]
+              defaultGuider = guider
+            } else {
+              if (is.na(defaultGuider)) { 
+                # No default guider available, for example when sleeplog is 
+                # available but not accelerometer
+                # In that case guider will be set to "sleeplog" later on
+              } else {
+                guider = defaultGuider
+              }
+            }
             if (is.na(defaultGuiderOnset) == TRUE) {
               # If SPTE was not derived for this night, use average estimate for other nights
               availableestimate = which(is.na(SPTE_start) == FALSE)
               cleaningcode = 6
               if (length(availableestimate) > 0) {
                 defaultGuiderOnset = mean(SPTE_start[availableestimate])
+                guider = defaultGuider = names(sort(table(part3_guider[availableestimate]), decreasing = TRUE)[1])
               } else {
                 defaultGuiderOnset = L5list[j] - 6
                 guider = "L512"
@@ -311,6 +323,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
               cleaningcode = 6
               if (length(availableestimate) > 0) {
                 defaultGuiderWake = mean(SPTE_end[availableestimate])
+                guider = defaultGuider = names(sort(table(part3_guider[availableestimate]), decreasing = TRUE)[1])
               } else {
                 defaultGuiderWake = L5list[j] + 6
                 guider = "L512"
