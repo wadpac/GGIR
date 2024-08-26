@@ -41,7 +41,7 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       # x = absolute angle
       # threshold = 45 degrees
       x = abs(angle)
-      threshold = 45
+      threshold = 60
     } else if (HASPT.algo == "NotWorn") {
       # When protocol is to not wear sensor during the night,
       # and data is collected in count units we do not know angle
@@ -69,6 +69,10 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       # to the threshold to allow for consistent definition of nomov below
       # i.e., x < threshold
       threshold = activityThreshold + 0.001
+      # Always set HASPT.ignore.invalid to NA for HASPT.algo NotWorn
+      # because NotWorn is by definition interested in invalid periods
+      # and we definitely do not want to rely on imputed time series
+      HASPT.ignore.invalid = NA
     }
     # Now define nomov periods with the selected strategy for invalid time
     nomov = rep(0,length(x)) # no movement
@@ -170,7 +174,7 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       # lines(invalid* 0.05, type = "l", col = "red")
       # # graphics.off()
       # browser()
-
+      
     } else {
       SPTE_end = c()
       SPTE_start = c()

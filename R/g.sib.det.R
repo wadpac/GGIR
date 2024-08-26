@@ -227,8 +227,8 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
           qqq1 = midnightsi[j] + (twd[1] * (3600 / ws3)) #preceding noon
           qqq2 = midnightsi[j] + (twd[2] * (3600 / ws3)) #next noon
         }
-        if (qqq2 - qqq1 < 60) next # skip night if it has less than 60 epochs
         sptei = sptei + 1
+        if (qqq2 - qqq1 < 60) next # skip night if it has less than 60 epochs
         if (qqq2 > length(time))  qqq2 = length(time)
         if (qqq1 < 1)             qqq1 = 1
         if (qqq1 == 1 && qqq2 != 24 * 3600 / ws3) {
@@ -269,8 +269,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         tmpANGLE = anglez[qqq1:qqq2]
         tmpTIME = time[qqq1:qqq2]
         daysleep_offset = 0
-        if (do.HASPT.hip == TRUE & params_sleep[["HASPT.algo"]][1] != "NotWorn") {
-          params_sleep[["HASPT.algo"]][1] = "HorAngle"
+        if (do.HASPT.hip == TRUE & params_sleep[["HASPT.algo"]][guider_to_use] != "NotWorn") {
           if (params_sleep[["longitudinal_axis"]] == 1) {
             tmpANGLE = anglex[qqq1:qqq2]
           } else if (params_sleep[["longitudinal_axis"]] == 2) {
