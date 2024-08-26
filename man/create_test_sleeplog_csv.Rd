@@ -9,7 +9,7 @@ with dummy data (23:00 onset, 07:00 waking time for every night).
 }
 \usage{
   create_test_sleeplog_csv(Nnights = 7, storagelocation = c(),
-                            advanced = FALSE, sep = ",")
+                            advanced = FALSE, sep = ",", begin_date = "2016/06/25")
 }
 \arguments{
   \item{Nnights}{
@@ -26,6 +26,10 @@ with dummy data (23:00 onset, 07:00 waking time for every night).
   }
   \item{sep}{
     Character to indicate the column separator of the csv file.
+  }
+  \item{begin_date}{
+    Character to indicate first date (in format "2016/06/25") to be used
+    in the advanced sleeplog format. Ignored when generated basic sleeplog format.
   }
 }
 \value{
