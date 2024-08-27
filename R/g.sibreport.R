@@ -57,8 +57,8 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
             # only attempt if there are at least 2 timestamps to process
             nonempty = which(tmp[3:ncol(tmp)] != "" & tmp[3:ncol(tmp)] != "NA")
             if (length(nonempty) > 1) {
-              date = as.Date(as.character(tmp[1,2]), format = dateformat)
-              times = format(unlist(tmp[1,3:ncol(tmp)]))
+              date = as.Date(tmp[1,2], format = dateformat)
+              times = as.character(unlist(tmp[1,3:ncol(tmp)]))
               times = grep(pattern = "NA", value = TRUE, invert = TRUE, x = times)
               times = gsub(pattern = " ", replacement = "", x = times)
               times = times[which(times %in% c("", "NA") == FALSE)]
