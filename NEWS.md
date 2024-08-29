@@ -11,6 +11,8 @@
   - Improved logging of what guider was used when using NotWorn and optional backup guider, #1156
 
   - Skip night in part 4 csv report if guider was NotWorn, #1156
+  
+- Part 5: Revised rounding of seconds in timestamps to match epoch size used in part 5 when adding the sleep period time windows to the time series (g.part5.wakesleepwindows). #1192
 
 # CHANGES IN GGIR VERSION 3.1-3
 
