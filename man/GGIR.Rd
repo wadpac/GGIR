@@ -1406,7 +1406,7 @@ GGIR(mode = 1:5,
         ignores the first and last 5 hours, and c("O2", "W10") goes from the second
         onset till the 10th wakeup time.
       }
-      \item{clevel}{
+      \item{clevels}{
         Numeric vector (default = c(30, 150)) with length 2 to indicate cadence ranges used 
         when summarising step counts, if available. When set to NULL, step counts will not be
         summarised in part 5 output.
