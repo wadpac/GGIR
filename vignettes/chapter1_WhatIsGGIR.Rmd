@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 ## A brief overview
 
 [GGIR](https://CRAN.R-project.org/package=GGIR) is an R-package primarily designed to process multi-day ***raw*** accelerometer data for physical activity, sleep, and circadian rhythm research.
-The term ***raw*** refers to data being expressed in gravitational units (1 _g_ equal gravitational acceleration, which on average is 9.81 m/s<sup>2</sup>) as opposed to the previous generation of accelerometers which stored data in accelerometer brand-specific units.
+The term ***raw*** refers to data being expressed in gravitational units (1 _g_ equal gravitational acceleration, which on average is 9.81 m/s<sup>2</sup>) as opposed to the previous generation of accelerometers which stored data in accelerometer brand-specific units at epoch level, typically 5, 30, or 60 seconds in length.
 Despite the focus on the raw data, GGIR also offers functionality to process previous-generation accelerometer data.
 The signal processing for raw data includes many steps that are explained in these pages. For example, automatic calibration to gravity, detection of abnormally high values, imputation of raw-level time gaps (only for specific sensor brands), and calculation of orientation angle and average magnitude acceleration based on a variety of metrics.
 Next, the signal processing for both raw and previous-generation data continue with the detection of non-wear and epoch-level imputation.
