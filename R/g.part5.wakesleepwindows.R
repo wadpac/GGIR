@@ -27,12 +27,18 @@ g.part5.wakesleepwindows = function(ts, part4_output, desiredtz, nightsi,
       if (temp[3] / epochSize != round(temp[3] / epochSize)) {
         temp[3] = round(temp[3] / epochSize)*epochSize
         if (temp[3] == 60) {
+          # if rounded seconds == 60, then add one minute
           temp[2] = temp[2] + 1
           temp[3] = 0
-        }
-        if (temp[2] == 60) {
-          temp[1] = temp[1] + 1
-          temp[2] = 0
+          if (temp[2] == 60) {
+            # if after adding one minute, minutes == 60, then add 1 hour
+            temp[1] = temp[1] + 1
+            temp[2] = 0
+            if (temp[1] == 24) {
+              # if after adding one hour, hours == 24, then turn to midnight
+              temp[1] = 0
+            }
+          }
         }
         x = paste(temp, collapse = ":")
       }
