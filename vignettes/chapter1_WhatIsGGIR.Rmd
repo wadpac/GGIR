@@ -93,7 +93,8 @@ The documentation that existed before was a collection of ad-hoc written paragra
 As a result, it was difficult to use the documentation in the training course.
 Further, we also wanted to provide a good level of documentation for those who do not follow the course or want to refresh their understanding of GGIR.
 
-The documentation is mainly written in a narrative style where we have tried to explain both the theory and practice of all GGIR functionalities.
+The documentation is mainly written in a narrative style where we have tried to explain both the theory and practice of all GGIR functionalities. As mentioned above, GGIR offers a vast amount of functionality. If you arrive here with the expectation to find a quick instruction to run and use GGIR then we have to disappoint you. Learning to use GGIR requires some time investment.
+
 Everything you need to type in your R script is `highlighted like this`.
 
 This documentation is not intended as an academic review: We only cite publications to clarify the origin of algorithms and we only discuss what is part of GGIR.
