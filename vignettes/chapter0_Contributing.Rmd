@@ -29,6 +29,7 @@ We welcome contributions in the development, maintenance, and documentation of G
 
 You might not have the coding skills to contribute to the code base of GGIR, and still your contribution could be very important for us. For example: 
 
--	**Doing research on algorithms** is crucial to support the development of GGIR. We welcome contributions on any aspect in this regard.
--	**Reporting any issue you might have** in the google group dedicated to GGIR community. Our answers to your issues might also help other GGIR users. 
--	**Proofreading the GGIR documentation** and informing us if you miss any essential aspect or you found it difficult to follow any of the instructions provided.
+- **Apply for funding** to support the development and maintenance of GGIR. GGIR is free software by which we entirely depend on users applying for funding to sponsor our efforts. Funding could be used to support the development of new functionalities, to support improvement of the existing GGIR software code, or to support development of better open-access training materials such as instruction videos.
+-	**Report your issues and questions** in the [GGIR google group](https://groups.google.com/g/RpackageGGIR).
+-	**Proofread the GGIR documentation** and inform us if you miss something or if you found it difficult to follow.
+
