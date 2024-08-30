@@ -16,57 +16,33 @@ knitr::opts_chunk$set(
 
 ## Why do we need to extract metrics
 
-Wearable accelerometers are widely used in health research to study physical activity, sleep, and other behaviours.
-Most modern accelerometers are able to collect and store at least 30 values per second expressed in units of gravitational acceleration (*g*).
-Once the data is collected, health researchers typically want to derive from this data:
+Wearable accelerometers are widely used in health research to study physical activity, sleep, and other behaviours. Most modern accelerometers can collect and store at least 30 values per second expressed in units of gravitational acceleration (*g*). Once the data is collected, it is important to extract kinematically meaningful information from it. In data processing, summary measures to describe a signal are referred to as metrics or signal features. 
 
-1.  Activity types and body postures like sleep, walking, running, sitting, etc.
+If you have no knowledge about how an accelerometer works the typical approach in metric calculation is to calculate all possible statistical properties of the acceleration signal like the mean, standard deviation, entropy, and skewness. 
+However, as discussed in [chapter 1](https://wadpac.github.io/GGIR/articles/chapter1_WhatIsGGIR.html), we favour the approach were we try to use our knowledge of the sensor. Our knowledge of the sensor tells us the an acceleration signal comes with three components that need to be separated:
 
-2.  Energy expenditure or a measure of body acceleration that can act as a good proxy for energy expenditure.
+1.	The acceleration related to the gravitational acceleration. In the absence of movement the three acceleration signals inform us about the orientation of the accelerometer relative to gravity as a proxy for posture.  
+2.	Accelerations and decelerations related to movement, which we can interpret as a proxy of muscle contractions and the energy expenditure needed for those contractions .
+3.	Measurement error and bias. For example, signal noise caused by electronical components introducing a minor variation in the acceleration signal even when the real acceleration is constant. The variation due to noise is typically small compared with the variation due to movement. Another example are the calibration errors discussed in [chapter 3](https://wadpac.github.io/GGIR/articles/chapter3_QualityAssessment.html).
 
-3.  Various other outcomes, i.e. gait, balance, circadian rhythm analysis, and falls.
-
-A critical step in going from the high-resolution data to the classification of activity types or energy expenditure is to calculate metrics, also known as signal features.
-A metric allows us to extract information from the signal.
-One approach is to calculate statistical properties of the data like the mean, standard deviation, entropy, and skewness.
-Another approach is to design the data metrics with domain knowledge about the process that generated the data.
-I personally prefer the domain knowledge-driven approach because it allows us to narrow down the search space for a successful metric and it aims at a good understanding of what we calculate.
-
-In the domain-driven approach, a distinction is made between three acceleration signal components:
-
-1.  Acceleration related to gravitational acceleration and by that the orientation of the accelerometer relative to gravity.
-
-2.  Accelerations and decelerations related to movement and by that a proxy of muscle contractions and the energy expenditure needed for them.
-
-3.  Signal noise.
-
-Finding a metric that can separate these three components will provide informative value in relation to posture and magnitude of acceleration as a proxy for muscle contraction related to body movement and associated energy expenditure.
+Finding a metric able to separate these three components will provide informative value in relation to orientation and magnitude of acceleration as proxies for the before mentioned posture and muscle contractions, respectively.
 
 ## Metric aggregation per epoch
 
-Although most metrics are calculated per time point, which reflect a tiny fraction of a second, GGIR then continues to aggregate these values per epoch (e.g., 5 seconds) for the following reasons:
+Most metrics are at first calculated at the same resolution as the raw data, which reflects a tiny fraction of a second. The exact number of data points per second also known as the sampling rate can vary between studies. With a different sampling rate values are not directly comparable. However, by aggregating metric values per larger time window, known as an epoch, we can make the values more comparable. So, GGIR aggregates these values per epoch (e.g. 5 seconds). Aside from harmonising the data across studies, aggregation per epoch also has other advantages:
 
--   Aggregation per epoch reduces value dependency on sampling frequency, which varies between studies, and by that eases comparisons across studies.
+- Evidence on the value of accelerometer data is based on epoch-level aggregates, because reference values like Oxygen consumption or sleep cannot reliably be derived at sub-second resolution.
+-	Aggregating leads to less data points which makes it a lot more practical to work with.
 
--   Evidence on the value of accelerometer data is based on epoch level aggregates, because reference values like oxygen consumption or sleep cannot reliably be derived at sub-second resolution.
+In GGIR, the epoch length is kept constant across the GGIR parts to allow for consistent interpretation. The epoch length is set with the first value of parameter `windowsizes` (default 5 seconds) and used throughout all steps of GGIR, with the following exceptions:
 
-The epoch length is kept constant within GGIR to allow for consistent interpretation.
-The epoch length is set with the first value of parameter `windowsizes` and used throughout all steps of GGIR, with the following exceptions:
+-	In GGIR part 2, the time spent in MVPA variables (as discussed in a [chapter 11](https://wadpac.github.io/GGIR/articles/chapter11_DescribingDataCutPoints.html)) is done with multiple epoch lengths, one for each output variable. However, per output variable the epoch length is held constant throughout the recording, GGIR never mixes epoch lengths because epoch the length affects the interpretation of its value. It is like reading an overview article about car speeds that alternates the unit of speed in every sentence (i.e., miles per hour, meters per second, km per hour, etc).
+-	In GGIR part 5, the user has the option to aggregate all epochs to 1 minute length with parameter `part5_agg2_60seconds`. For example, when using 5 second epochs in parts 1, 2, 3 and 4, it can be informative to run part 5 with 1 minute epoch length.
 
--   In GGIR part 2, the time spent in MVPA variables (as discussed in a later chapter) is done with multiple epoch lengths, one for each output variable.
-    However, per output variable, the epoch length is held constant throughout the recording.
-    GGIR never mixes epoch lengths.
-
--   In GGIR part 5, the user has the option to aggregate all epochs to 1 minute length with parameter `part5_agg2_60seconds`.
-    For example, when using 5 second epochs in parts 1, 2, 3, and 4, it can be informative to run part 5 with 1 minute epoch length.
 
 ## Acceleration metrics available in GGIR
 
-Below you will find a list of all metrics that GGIR can apply.
-Multiple metrics can be derived in the same GGIR run.
-All acceleration metrics are derived in GGIR function [`g.applymetrics`](https://github.com/wadpac/GGIR/blob/master/R/g.applymetrics.R).
-Only for Neishabouri counts GGIR relies on the R package `actifelifecounts`.
-Please see the code in the respective package documentation for information on the exact calculations.
+Below you will find a list of all metrics that GGIR can apply. Multiple metrics can be derived in the same GGIR run. All acceleration metrics are derived in GGIR function [`g.applymetrics`](https://github.com/wadpac/GGIR/blob/master/R/g.applymetrics.R). Only for Neishabouri counts GGIR relies on the R package `actifelifecounts`. Please see the code in the respective package documentation for information on the exact calculations.
 To use the metrics, add the parameters to your GGIR call, e.g.:
 
 ```         
@@ -108,38 +84,29 @@ GGIR(do.enmo = TRUE, do.mad = TRUE, do.bfen = TRUE, …)
 
 ### Approach to removing the gravitational signal component
 
-The table above indicates the approach used to separate the gravitation component from the acceleration signal.
-There are two approaches:
+The table with the metrics overview above indicates the approach used to separate the gravitation component from the acceleration signal. There are two approaches to design the metrics:
 
 -   Magnitude, where the metric makes an assumption about the magnitude of the gravitational acceleration component.
-
 -   Frequency, where the metric makes an assumption about the frequency content of the gravitational acceleration component.
 
-Both assumptions are known to not hold true under all conditions, which is why no acceleration metric is perfect.
+Both assumptions are known for not being always true under all conditions, which is why no acceleration metric is perfect.
 
 ### Handling high frequency components in the signal
 
-Some argue that high frequency components in the signal should be treated as noise and be removed.
-However, they more likely represent the harmonics of low frequency movements and are thus part of the description of movement.
-For a more elaborate reflection on this, please see [this blog post](https://www.accelting.com/updates/high-frequencies-in-an-acceleration-signal/).
+Some argue that high frequency components in the signal should be treated as noise and be removed. However, they are more likely to represent the harmonics of low frequency movements and are thus part of the description of movement. For a more elaborate reflection on this, please see [this blog post](https://www.accelting.com/updates/high-frequencies-in-an-acceleration-signal/).
 
-All metrics that have the letter LF or BF in their name attempt to suppress the high frequency content of the signal.
+All metrics, listed above, that have the letters LF or BF in their name attempt to suppress the high frequency content of the signal. So, as a GGIR user you can decide whether you prefer to filter the higher frequencies or not.
 
 ### Why GGIR uses ENMO as a default.
 
-Only one metric can be the default.
-Acceleration metric ENMO (Euclidean Norm Minus One with negative values rounded to zero) has been the default metric since GGIR was created.
-In 2013, we investigated different ways of summarising the raw acceleration data ([van Hees et al. PLoS ONE 2013](https://doi.org/10.1371/journal.pone.0061691)).
-In short, different metrics exist and there is very little literature to support the superiority of any metric at the time.
-As long as different studies use different metrics, their findings will not be comparable.
-Therefore, the choice for metric ENMO has been partially pragmatic.
-GGIR uses ENMO as default because:
+Only one metric can be the default. Acceleration metric ENMO (Euclidean Norm Minus One with negative values rounded to zero) has been the default metric since GGIR was created. In 2013, we investigated different ways of summarising the raw acceleration data ([van Hees et al. PLoS ONE 2013](https://doi.org/10.1371/journal.pone.0061691)).
+In short, different metrics exist and there is very little literature to support the superiority of any metric at the time. As long as different studies use different metrics, their findings will not be comparable. Therefore, the choice for metric ENMO has been merely pragmatic. GGIR uses ENMO as default because:
 
 1\.
 ENMO has demonstrated value in describing variance in daily energy expenditure, is correlated with questionnaire data, and able to describe patterns in physical activity.
 
 2\.
-ENMO is easy to describe mathematically and by that improves reproducibility across studies and software tools.
+ENMO is easy to describe mathematically and, therefore, improves reproducibility across studies and software tools.
 
 3\.
 ENMO attempts to quantify the acceleration in universal units and does not collapse the signal to an abstract scale.
@@ -148,9 +115,7 @@ ENMO attempts to quantify the acceleration in universal units and does not colla
 The 2013 paper showed that when ENMO is used in combination with auto-calibration, it has similar validity to filter-based metrics like HFEN and BFEN, which are conceptually similar to metrics proposed later such as [MIMSunit](https://doi.org/10.1123/jmpb.2018-0068), [MAD](https://doi.org/10.1186/s13102-015-0010-0), [AI0](https://doi.org/10.1371/journal.pone.0160644).
 
 5\.
-Studies who have criticised ENMO consistently failed to apply auto-calibration, or attempted to apply auto-calibration in a lab setting, ignoring the fact that auto-calibration is not designed for short lab settings.
-It needs free-living data to work properly.
-Further, studies are often not clear about how the problematic zero imputation during the idle sleep mode in ActiGraph devices is dealt with.
+Studies who have criticised ENMO consistently failed to apply auto-calibration, or attempted to apply auto-calibration in a lab setting, ignoring the fact that auto-calibration is not designed for short lab settings. It needs free-living data to work properly. Further, studies are often not clear about how the problematic zero imputation during the idle sleep mode in ActiGraph devices is dealt with.
 
 
 ### Notes on implementation of zero crossing counts
@@ -186,9 +151,7 @@ As a note to ActiGraph users: If you decide to compare GGIR Cole-Kripke estimate
 
 ## Embedding your own metrics
 
-Some GGIR users may like to use metrics not covered by GGIR.
-To facilitate this, we allow for external function embedding as discussed in the vignette [Embedding external functions in GGIR](https://cran.r-project.org/package=GGIR/vignettes/ExternalFunction.html).
-In fact, this allows you to include entire algorithms such as the [step detection](https://github.com/ShimmerEngineering/Verisense-Toolbox/tree/master/Verisense_step_algorithm) or a new sleep classification algorithm that you would like to test inside GGIR.
+Some GGIR users may like to use metrics not covered by GGIR. To facilitate this, we allow for external function embedding as discussed in the vignette [Embedding external functions in GGIR](https://cran.r-project.org/package=GGIR/vignettes/ExternalFunction.html). In fact, this allows you to include entire algorithms such as the [step detection](https://github.com/ShimmerEngineering/Verisense-Toolbox/tree/master/Verisense_step_algorithm) or a new sleep classification algorithm that you would like to test inside GGIR.
 
 ## Related output
 
@@ -198,8 +161,7 @@ In fact, this allows you to include entire algorithms such as the [step detectio
 
 ## References
 
-We are aware that this chapter could be more informative if it had an even more detailed discussion of each of the metrics.
-However, given that our focus is on GGIR, we have compiled a list of related articles you may find useful:
+We have compiled a list of related articles you may find useful:
 
 -   [Van Hees et al. 2011](https://doi.org/10.1371/journal.pone.0022922) Estimation of Daily Energy Expenditure in Pregnant and Non-Pregnant Women Using a Wrist-Worn Tri-Axial Accelerometer.
 
