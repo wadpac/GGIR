@@ -204,7 +204,11 @@ test_that("chainof5parts", {
           overwrite = TRUE, excludefirstlast = FALSE, do.parallel = do.parallel,
           frag.metrics = "all", save_ms5rawlevels = TRUE,
           part5_agg2_60seconds = TRUE, do.sibreport = TRUE, nap_model = "hip3yr",
-          iglevels = 1, timewindow = c("MM", "WW", "OO"))
+          iglevels = 1, timewindow = c("MM", "WW", "OO"),
+          possible_nap_window = c(0, 24),
+          possible_nap_dur = c(0, 240),
+          possible_nap_edge_acc = Inf,
+          possible_nap_gap = 0)
   sibreport_dirname = "output_test/meta/ms5.outraw/sib.reports"
   expect_true(dir.exists(sibreport_dirname))
   expect_true(file.exists(paste0(sibreport_dirname, "/sib_report_123A_testaccfile_T5A5.csv")))

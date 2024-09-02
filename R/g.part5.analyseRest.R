@@ -1,7 +1,7 @@
 g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
                                ds_names = NULL, fi = NULL, di = NULL,
-                               ts = NULL, tz = NULL, possible_nap_dur = 0,
-                               possible_nap_edge_acc = Inf) {
+                               ts = NULL, tz = NULL,
+                               params_sleep = NULL) {
   # define function to summarise overlap between selfreported behaviour and sibs
   summarise_overlap = function(srep_tmp, X, Y, xi, yi, name = "", sumobject = NULL) {
     # X: column name in srep_temp to reflect overlap SIB with Selfreport
@@ -55,16 +55,53 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
   sibreport$end = as.POSIXct(sibreport$end, tz = tz)
   sibreport$start = as.POSIXct(sibreport$start, tz = tz)
   
+  #---------------------------------------
+  # merge sibs when gap is shorter than possible_nap_gap
+  if (params_sleep[["possible_nap_gap"]] > 0) {
+    sibreport$gap2next = NA
+    Nrow = nrow(sibreport)
+    sibreport$gap2next[1:(Nrow - 1)] = as.numeric(sibreport$start[2:Nrow]) - as.numeric(sibreport$end[1:(Nrow - 1)])
+    sibreport$gap2next[which(sibreport$type != "sib" | sibreport$gap2next < 0)] = NA
+    iter = 1
+    while (iter < nrow(sibreport)) {
+      if (!is.na(sibreport$gap2next[iter]) &&
+          sibreport$gap2next[iter] < params_sleep[["possible_nap_gap"]]) {
+        sibreport$end[iter] = sibreport$end[iter + 1]
+        sibreport$mean_acc_1min_after[iter] = sibreport$mean_acc_1min_after[iter + 1]
+        sibreport = sibreport[-(iter + 1),]
+        sibreport$gap2next[iter] = as.numeric(sibreport$start[iter + 1]) - as.numeric(sibreport$end[iter])
+        # no need to increment iter, because by merging the sib blocks
+        # the current iter now refers to the next gap
+      } else {
+        iter = iter + 1
+      }
+      if (iter > nrow(sibreport) - 1) {
+        break()
+      }
+    }
+    sibreport$duration = as.numeric(difftime(sibreport$end, sibreport$start, units = "mins"))
+  }
+  
   # Only consider sib episodes with minimum duration
   if (length(grep(pattern = "mean_acc_1min", x = colnames(sibreport))) > 0) {
     sibreport$acc_edge = pmax(sibreport$mean_acc_1min_before, sibreport$mean_acc_1min_after)
   } else {
     sibreport$acc_edge = 0
   }
+  sibreport$startHour = as.numeric(format(sibreport$start, "%H"))
+  sibreport$endHour = as.numeric(format(sibreport$end, "%H"))
+  
+  overlapMidnight = which(sibreport$endHour < sibreport$startHour)
+  if (length(overlapMidnight) > 0) {
+    sibreport$endHour[overlapMidnight] = sibreport$endHour[overlapMidnight] + 24
+  }
+  
   longboutsi = which((sibreport$type == "sib" &
-                        sibreport$duration >= possible_nap_dur[1] &
-                        sibreport$duration < possible_nap_dur[2] &
-                        sibreport$acc_edge <= possible_nap_edge_acc) |
+                        sibreport$duration >= params_sleep[["possible_nap_dur"]][1] &
+                        sibreport$duration < params_sleep[["possible_nap_dur"]][2] &
+                        sibreport$acc_edge <= params_sleep[["possible_nap_edge_acc"]] &
+                        sibreport$startHour >= params_sleep[["possible_nap_window"]][1] &
+                        sibreport$endHour < params_sleep[["possible_nap_window"]][2]) |
                        (sibreport$type != "sib" & sibreport$duration >= 1))
   # for qc purposes:
   dsummary[di,fi] = length(longboutsi)

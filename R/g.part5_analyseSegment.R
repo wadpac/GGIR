@@ -505,7 +505,7 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
                                          ds_names = ds_names, fi = fi, di = si,
                                          ts = ts[sse[ts$diur[sse] == 0], ],
                                          tz = params_general[["desiredtz"]],
-                                         possible_nap_dur = params_sleep[["possible_nap_dur"]])
+                                         params_sleep = params_sleep)
       fi = restAnalyses$fi
       si = restAnalyses$di
       ts[sse[ts$diur[sse] == 0], ] = restAnalyses$ts

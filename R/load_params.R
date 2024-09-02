@@ -24,8 +24,9 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                         sleeplogsep = NULL, sleepwindowType = "SPT",
                         possible_nap_window = c(9, 18),
                         possible_nap_dur = c(15, 240),
-                        nap_model = c(), sleepefficiency.metric = 1,
+                        possible_nap_gap = 0,
                         possible_nap_edge_acc = Inf,
+                        nap_model = c(), sleepefficiency.metric = 1,
                         HDCZA_threshold = c())
   }
   if ("metrics" %in% topic) {

@@ -16,12 +16,12 @@ test_that("Overlap 1 nap and 1 sib", {
                          end = c("2022-06-02 14:20:00", "2022-06-02 14:20:00"))
   sibreport$duration = as.numeric(difftime(time1 = sibreport$end,
                                            time2 = sibreport$start, units = "mins", tz = tz))
+  params_sleep = load_params()$params_sleep
+  params_sleep[["possible_nap_dur"]] =  c(0, 240)
   restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
                                      ds_names = ds_names, fi = fi, di = di,
-                                     ts = ts,
-                                     possible_nap_dur = c(0, 240),
-                                     possible_nap_edge_acc = Inf,
-                                     tz = tz)
+                                     ts = ts, tz = tz,
+                                     params_sleep = params_sleep)
   fi = restAnalyses$fi
   di = restAnalyses$di
   dsummary = restAnalyses$dsummary
@@ -47,12 +47,11 @@ test_that("Overlap 1 nonwear and 1 sib", {
                          start = c("2022-06-02 14:00:00", "2022-06-02 14:05:00"),
                          end = c("2022-06-02 14:20:00", "2022-06-02 14:20:00"))
   sibreport$duration = as.numeric(difftime(time1 = sibreport$end, time2 = sibreport$start, units = "mins", tz = tz))
+  params_sleep = load_params()$params_sleep
+  params_sleep[["possible_nap_dur"]] =  c(0, 240)
   restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
                                      ds_names = ds_names, fi = fi, di = di,
-                                     ts = ts,
-                                     possible_nap_dur = c(0, 240),
-                                     possible_nap_edge_acc = Inf,
-                                     tz = tz)
+                                     ts = ts, tz = tz,params_sleep = params_sleep)
   fi = restAnalyses$fi
   di = restAnalyses$di
   dsummary = restAnalyses$dsummary
@@ -79,12 +78,12 @@ test_that("No overlap 1 nonwear, 1 nap, and 1 sib", {
                          start = c("2022-06-02 12:00:00", "2022-06-02 13:00:00", "2022-06-02 15:00:00"),
                          end = c("2022-06-02 12:20:00", "2022-06-02 13:20:00", "2022-06-02 15:20:00"))
   sibreport$duration = as.numeric(difftime(time1 = sibreport$end, time2 = sibreport$start, units = "mins", tz = tz))
+  params_sleep = load_params()$params_sleep
+  params_sleep[["possible_nap_dur"]] =  c(0, 240)
+  
   restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
                                      ds_names = ds_names, fi = fi, di = di,
-                                     ts = ts,
-                                     possible_nap_dur = c(0, 240),
-                                     possible_nap_edge_acc = Inf,
-                                     tz = tz)
+                                     ts = ts, tz = tz, params_sleep = params_sleep)
   fi = restAnalyses$fi
   di = restAnalyses$di
   dsummary = restAnalyses$dsummary

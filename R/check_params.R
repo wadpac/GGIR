@@ -32,7 +32,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     numeric_params = c("anglethreshold", "timethreshold", "longitudinal_axis", 
                        "possible_nap_window", "possible_nap_dur",
                        "colid", "coln1", "def.noc.sleep", "nnights", 
-                       "sleepefficiency.metric", "possible_nap_edge_acc", "HDCZA_threshold")
+                       "sleepefficiency.metric", "possible_nap_edge_acc", "HDCZA_threshold",
+                       "possible_nap_gap")
     boolean_params = c("ignorenonwear", "HASPT.ignore.invalid",
                        "relyonguider", "sleeplogidnum")
     character_params = c("HASPT.algo", "HASIB.algo", "Sadeh_axis", "nap_model",
@@ -186,6 +187,18 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       }
     } else if (length(params_sleep[["def.noc.sleep"]]) == 2) {
       params_sleep[["HASPT.algo"]] = "notused"
+    }
+    if (length(params_sleep[["possible_nap_gap"]]) != 1) {
+      stop(paste0("Parameter possible_nap_gap has length ", length(params_sleep[["possible_nap_gap"]]), 
+                  " while length 1 is expected"), call. = FALSE)
+    }
+    if (length(params_sleep[["possible_nap_window"]]) != 2) {
+      stop(paste0("Parameter possible_nap_window has length ", length(params_sleep[["possible_nap_window"]]), 
+                  " while length 2 is expected"), call. = FALSE)
+    }
+    if (length(params_sleep[["possible_nap_dur"]]) != 2) {
+      stop(paste0("Parameter possible_nap_dur has length ", length(params_sleep[["possible_nap_dur"]]), 
+                  " while length 2 is expected"), call. = FALSE)
     }
   }
   

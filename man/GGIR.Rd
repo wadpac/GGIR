@@ -1253,6 +1253,11 @@ GGIR(mode = 1:5,
         Maximum acceleration before or after the SIB for the nap to be considered.
         By default this will allow all possible naps.
       }
+      \item{possible_nap_gap}{
+        Numeric (default = 0).
+        Time gap expressed in seconds that is allowed between the sustained 
+        inactivity bouts that form the naps.
+      }
     }
   }
 

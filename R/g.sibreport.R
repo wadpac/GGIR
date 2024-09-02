@@ -101,6 +101,12 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
                   tt2 = as.POSIXlt(timestamps[(bi * 2)], tz = desiredtz)
                   logreport_tmp$start[bi]  = format(tt1)
                   logreport_tmp$end[bi] = format(tt2)
+                  if (length(unlist(strsplit(logreport_tmp$start[bi], " "))) == 1) {
+                    logreport_tmp$start[bi] = paste0(logreport_tmp$start[bi], " 00:00:00")
+                  }
+                  if (length(unlist(strsplit(logreport_tmp$end[bi], " "))) == 1) {
+                    logreport_tmp$end[bi] = paste0(logreport_tmp$end[bi], " 00:00:00")
+                  }
                   logreport_tmp$duration[bi] = abs(as.numeric(difftime(time1 = tt1, time2 = tt2, units = "mins")))
                 }
               }
