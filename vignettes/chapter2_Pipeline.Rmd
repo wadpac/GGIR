@@ -67,7 +67,7 @@ The parameters of all GGIR package functions can be used as parameter to the GGI
 -   **params_rawdata:** parameters related to handling the raw data such as resampling or calibrating.
 -   **params_metrics:** parameters related to aggregating the raw data to epoch level summary measures (metrics).
 -   **params_sleep:** parameters related to sleep detection.
--   **params_physact:** parameters related to physical (in)activity.
+-   **params_phyact:** parameters related to physical (in)activity.
 -   **params_247:** parameters related to 24/7 behaviours that do not fall into the typical sleep or physical (in)activity research category such as measures of circadian rhythm or more 24 hour data description techniques.
 -   **params_output:** parameters relating to how and whether output is stored.
 -   **params_general:** general parameters not covered by any of the above categories
