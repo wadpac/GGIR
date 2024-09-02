@@ -27,9 +27,9 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
     } else {
       dsummary[di,fi:(fi + 2)] = c(0, 0, 0)
     }
-    ds_names[fi:(fi + 2)] = c(paste0("mdur_sib_overl_", name),
-                              paste0("tdur_sib_overl_", name),
-                              paste0("perc_sib_overl_", name))
+    ds_names[fi:(fi + 2)] = c(paste0("mdur_denap_overl_", name),
+                              paste0("tdur_denap_overl_", name),
+                              paste0("perc_denap_overl_", name))
     fi = fi + 3
     # Overlap selfreportwith sib
     if (length(xi) > 0) {
@@ -40,9 +40,9 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
     } else {
       dsummary[di,fi:(fi + 2)] = c(0, 0, 0)
     }
-    ds_names[fi:(fi + 2)] = c(paste0("mdur_", name, "_overl_sib"),
-                              paste0("tdur_", name, "_overl_sib"),
-                              paste0("perc_", name ,"_overl_sib"))
+    ds_names[fi:(fi + 2)] = c(paste0("mdur_", name, "_overl_denap"),
+                              paste0("tdur_", name, "_overl_denap"),
+                              paste0("perc_", name ,"_overl_denap"))
     fi = fi + 3
     invisible(list(fi = fi, ds_names = ds_names, dsummary = dsummary, di = di))
   }
@@ -223,18 +223,17 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
       
       # if (length(sleeplog_indices) > 1) browser()
       # Count number of occurrences (do not count sleeplog because not informative)
-      dsummary[di,fi:(fi + 7)] = c(length(sibs_indices),
+      dsummary[di,fi:(fi + 6)] = c(length(sibs_indices),
                                    length(nap_indices),
                                    length(nonwear_indices),
                                    length(SIBoverlapNap_indices),
                                    length(SIBoverlapNonwear_indices),
                                    length(NapOverlapSIB_indices),
-                                   length(NonwearOverlapSIB_indices),
-                                   length(SleeplogOverlapSIB_indices))
-      ds_names[fi:(fi + 7)] = c("nbouts_day_sib", "nbouts_day_srnap", "nbouts_day_srnonw", 
-                                "noverl_sib_srnap", "noverl_sib_srnonw",
-                                "noverl_srnap_sib", "noverl_srnonw_sib", "noverl_srsleep_sib")
-      fi = fi + 8
+                                   length(NonwearOverlapSIB_indices))
+      ds_names[fi:(fi + 6)] = c("nbouts_day_denap", "nbouts_day_srnap", "nbouts_day_srnonw", 
+                                "noverl_denap_srnap", "noverl_denap_srnonw",
+                                "noverl_srnap_denap", "noverl_srnonw_denap")
+      fi = fi + 7
       # mean and total duration in sib per day
       if (length(sibs_indices) > 0) {
         dsummary[di,fi:(fi + 1)] = c(mean(srep_tmp$duration[sibs_indices]),
@@ -242,7 +241,7 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
       } else {
         dsummary[di,fi:(fi + 1)] = c(0, 0)
       }
-      ds_names[fi:(fi + 1)] = c("frag_mean_dur_sib_day", "dur_day_sib_min")
+      ds_names[fi:(fi + 1)] = c("frag_mean_dur_denap_day", "dur_day_denap_min")
       fi = fi + 2
       # mean and total duration in self-reported naps per day
       if (length(nap_indices) > 0) {
@@ -285,17 +284,6 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
         xi = SIBoverlapNonwear_indices,
         yi = NonwearOverlapSIB_indices,
         name = "srnonw",
-        sumobject = so
-      )
-      dsummary = so$dsummary; ds_names = so$ds_names; fi = so$fi
-      # Self-reported sleep (window could be time in bed, this depends on what user used in part 4)
-      so = summarise_overlap(
-        srep_tmp,
-        X = "SIBoverlapSleeplog",
-        Y = "SleeplogOverlapSIB",
-        xi = SIBoverlapSleeplog_indices,
-        yi = SleeplogOverlapSIB_indices,
-        name = "srsleep",
         sumobject = so
       )
       dsummary = so$dsummary; ds_names = so$ds_names; fi = so$fi

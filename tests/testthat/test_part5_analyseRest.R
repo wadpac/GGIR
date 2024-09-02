@@ -31,12 +31,12 @@ test_that("Overlap 1 nap and 1 sib", {
   names(dsummary) = ds_names
   dsummary = as.data.frame(t(dsummary))
   
-  expect_equal(dsummary$nbouts_day_sib, 1)
+  expect_equal(dsummary$nbouts_day_denap, 1)
   expect_equal(dsummary$nbouts_day_srnap, 1)
-  expect_equal(dsummary$frag_mean_dur_sib_day, 15)
+  expect_equal(dsummary$frag_mean_dur_denap_day, 15)
   expect_equal(dsummary$frag_mean_dur_srnap_day, 20)
-  expect_equal(dsummary$perc_sib_overl_srnap, 100)
-  expect_equal(dsummary$perc_srnap_overl_sib, 75)
+  expect_equal(dsummary$perc_denap_overl_srnap, 100)
+  expect_equal(dsummary$perc_srnap_overl_denap, 75)
   expect_equal(sum(dsummary), 323)
 })
 
@@ -61,13 +61,13 @@ test_that("Overlap 1 nonwear and 1 sib", {
   names(dsummary) = ds_names
   dsummary = as.data.frame(t(dsummary))
   
-  expect_equal(dsummary$nbouts_day_sib, 1)
+  expect_equal(dsummary$nbouts_day_denap, 1)
   expect_equal(dsummary$nbouts_day_srnonw, 1)
-  expect_equal(dsummary$frag_mean_dur_sib_day, 15)
+  expect_equal(dsummary$frag_mean_dur_denap_day, 15)
   expect_equal(dsummary$frag_mean_dur_srnonw_day, 20)
-  expect_equal(dsummary$perc_sib_overl_srnonw, 100)
-  expect_equal(dsummary$perc_srnonw_overl_sib, 75)
-  expect_equal(sum(dsummary), 324)
+  expect_equal(dsummary$perc_denap_overl_srnonw, 100)
+  expect_equal(dsummary$perc_srnonw_overl_denap, 75)
+  expect_equal(sum(dsummary), 323)
 })
 
 
@@ -95,17 +95,17 @@ test_that("No overlap 1 nonwear, 1 nap, and 1 sib", {
   names(dsummary) = ds_names
   dsummary = as.data.frame(t(dsummary))
   
-  expect_equal(ncol(dsummary), 34)
+  expect_equal(ncol(dsummary), 27)
   expect_equal(nrow(dsummary), 1)
-  expect_equal(dsummary$nbouts_day_sib, 1)
+  expect_equal(dsummary$nbouts_day_denap, 1)
   expect_equal(dsummary$nbouts_day_srnap, 1)
   expect_equal(dsummary$nbouts_day_srnonw, 1)
-  expect_equal(dsummary$frag_mean_dur_sib_day, 20)
+  expect_equal(dsummary$frag_mean_dur_denap_day, 20)
   expect_equal(dsummary$frag_mean_dur_srnap_day, 20)
   expect_equal(dsummary$frag_mean_dur_srnonw_day, 20)
-  expect_equal(dsummary$perc_sib_overl_srnap, 0)
-  expect_equal(dsummary$perc_sib_overl_srnonw, 0)
-  expect_equal(dsummary$perc_srnonw_overl_sib, 0)
+  expect_equal(dsummary$perc_denap_overl_srnap, 0)
+  expect_equal(dsummary$perc_denap_overl_srnonw, 0)
+  expect_equal(dsummary$perc_srnonw_overl_denap, 0)
   expect_equal(sum(dsummary, na.rm = TRUE), 129)
   
 })
