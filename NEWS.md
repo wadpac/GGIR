@@ -12,7 +12,8 @@
 
   - Skip night in part 4 csv report if guider was NotWorn, #1156
   
-- Part 5: Revised rounding of seconds in timestamps to match epoch size used in part 5 when adding the sleep period time windows to the time series (g.part5.wakesleepwindows). #1192
+- Part 5: Fixed bug in g.part5.wakesleepwindows causing the first SPT window in a recording incorrectly to be  defined from the first timestamp in the recording. For details see: #1192
+
 
 # CHANGES IN GGIR VERSION 3.1-3
 
