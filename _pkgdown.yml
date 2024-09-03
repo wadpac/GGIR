@@ -109,6 +109,6 @@ news:
     href: https://www.accelting.com/updates/ggir-release-2-5-0/
     
 search:
-  exclude: ['news/index.html', 'articles/GGIR.html', 'reference', 'reference/', 'reference/*']
+  exclude: ['news/index.html', 'articles/GGIR.html']
 
 

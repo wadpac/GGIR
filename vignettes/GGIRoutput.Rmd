@@ -14,7 +14,7 @@ vignette: >
 ---
 
 
-```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}
+```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"', fig.alt="GGIR logo"}
 knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 ```
 
@@ -90,9 +90,9 @@ Part 2 generates the following output:
 | `WWE_`| Weekend days (weighted average) The variable was calculated per day and then averaged over weekend days. Double weekend days are averaged. This is only relevant for experiments that last for more than seven days. |
 | `WWD_`| Week days (weighted average) The variable was calculated per day and then averaged over week days. Double week days were averaged. This is only relevant for experiments that last for more than seven days)      |
 | WWD\_MVPA_E5S_T100_ENMO       | Time spent in moderate-to-vigorous based on 5 second epoch size and an ENMO metric threshold of 100         |
-| `WWE_MVPA_E5 S_B1M80%_T100_ENMO`| Time spent in moderate-to-vigorous based on 5 second epoch size and an ENMO metric threshold of 100 based on a bout criteria of 100    |
+| `WWE_MVPA_E5S_B1M80%_T100_ENMO`| Time spent in moderate-to-vigorous based on a bout criteria of at least 1 minute where 80% or more of the 5 second epochs are expected to meet the threshold criteria of of 100 mg based on acceleration metric ENMO (threshold is specified with parameter `mvpathreshold`) |
 | `WE_[100, 150)_mg_0-24h_ENMO`  | Time spent between (and including) 100 mg and 150 (excluding 150 itself) between 0 and 24 hours (the full day) using metric ENMO data exclusion data_masking_strategy (value=1, ignore specific hours; value=2, ignore all data before the first midnight and after the last midnight)    |
-| `_M VPA_E5S_B1M80_T100`        | MVPA calculated based on 5 second epoch setting bout duration 1 Minute and inclusion criterion of more than 80 percent. This is only done for metric ENMO at the moment, and only if mvpa threshold is not left blank     |
+| `_MVPA_E5S_B1M80_T100`        | MVPA calculated based on 5 second epoch setting bout duration 1 Minute and inclusion criterion of more than 80 percent.    |
 | `_ENMO_mg`         | ENMO or other metric was first calculated per day and then average according to AD, WD, WWE, WWD           |
 | data exclusion data_masking_strategy        | A log of the decision made when calling g.impute: value=1 mean ignore specific hours; value=2 mean ignore all data before the first midnight and after the last midnight |
 | n hours ignored at start of meas (if data_masking_strategy=1, 3 or 5)        | number of hours ignored at the start of the measurement (if data_masking_strategy = 1) or at the start of the `ndayswindow` (if data_masking_strategy = 3 or 5) A log of decision made in part2.R       |
@@ -101,8 +101,8 @@ Part 2 generates the following output:
 | epoch size to which acceleration was averaged (seconds) | A log of decision made in part1.R     |
 | pdffilenumb        | Indicator of in which pdf-file the plot was stored  |
 | pdfpagecount       | Indicator of in which pdf-page the plot was stored|
-| `cosinor_`         | Cosinor analysis estimates such as mes, amp, acrophase, and acrotime, as documented in the [Ac tCR](https://CRAN.R-project.org/package=ActCR) package.   |
-| `cosinorExt_`      | Extended Cosinor analysis estimates such as minimum, amp, alpha, beta, acrotime, UpMesor, DownMesor, MESOR, and F_pseudo, as documented in the [Ac tCR](https://CRAN.R-project.org/package=ActCR) package.    |
+| `cosinor_`         | Cosinor analysis estimates such as mes, amp, acrophase, and acrotime, as documented in the [ActCR](https://CRAN.R-project.org/package=ActCR) package.   |
+| `cosinorExt_`      | Extended Cosinor analysis estimates such as minimum, amp, alpha, beta, acrotime, UpMesor, DownMesor, MESOR, and F_pseudo, as documented in the [ActCR](https://CRAN.R-project.org/package=ActCR) package.    |
 | `cosinorIV`        | Cosinor analysis compatible estimate of the Intradaily Variability (IV)        |
 | `cosinorIS`        | Cosinor analysis compatible estimate of Interdaily Stability (IS)  |
 
@@ -297,7 +297,7 @@ this visualisation allowed us to quickly zoom in on the most problematic
 nights to investigate possible mistakes in GGIR or mistakes in data
 entry.
 
-```{r, out.width = "700px",echo=FALSE}
+```{r, out.width = "700px",echo=FALSE, fig.alt="Example visualisation GGIR part 4"}
 knitr::include_graphics("example_dovisual.jpg")
 ```
 
