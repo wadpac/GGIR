@@ -674,7 +674,7 @@ I wanted a short name and not to spend too much time finding it. The abbreviatio
 
 ## Circadian Rhythm analyses
 
-This section has been migrated to this [section](https://wadpac.github.io/GGIR/articles/chapter13_chapter13_CircadianRhythm.html) in the GGIR github-pages, which is now the main documentation resource for GGIR.
+This section has been migrated to this [section](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) in the GGIR github-pages, which is now the main documentation resource for GGIR.
 
 
 ## ActiGraph's idle sleep mode
