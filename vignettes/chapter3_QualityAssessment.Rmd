@@ -18,7 +18,7 @@ Data quality assurance is an important part of GGIR. GGIR undertakes several key
 
 ## Time gaps identification and imputation
 
-Accelerometer data stored in binary format (e.g. .bin or .cwa) where it is typically structured in data blocks. Each data block has a header at the top and a constant number of data points often represent a few seconds of data. For the Axivity accelerometer with data stored in '.cwa' file format those blocks can, on rare occasions, be corrupted and unreadable, therefore creating a gap in the information recorded.
+Accelerometer data stored in binary format (e.g. .bin or .cwa) is typically structured in data blocks. Each data block has a header at the top and a constant number of data points per block, usually the equivalent of a few seconds of data. For the Axivity accelerometer with data stored in '.cwa' file format those blocks can, on rare occasions, be corrupted and unreadable, therefore creating a gap in the information recorded.
 
 For the ActiGraph accelerometer, but also some other sensor brands that export data in ‘csv’ file format, it is possible that the recording stops at certain time and starts recording after some time, therefore creating a time gap.
 

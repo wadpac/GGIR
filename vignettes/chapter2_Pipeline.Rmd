@@ -46,14 +46,14 @@ Each part, when run, stores its output in an R-data file that has `.RData` as it
 
 The milestone files are read by the next GGIR part. The advantage of this design is that it offers internal modularity. For example, we can run part 1 now and continue with part 2 another time without having to repeat part 1 again. So, this design eases re-processing and is also helpful for us when developing and testing the GGIR code.
 
-The milestone files are stored in sub-folders of the output folder as show below. Note that the output folder is named `output_mystudy` as example but exact name may differ for you.
+The milestone data files are stored in sub-folders of the output folder as show below. Note that the output folder is named `output_mystudy` as example but exact name may differ for you.
 
--   Part 1 milestone data are stored in `output_mystudy/meta/basic`.
--   Part 2 milestone data are stored in `output_mystudy/meta/ms2.out`.
--   Part 3 milestone data are stored in `output_mystudy/meta/ms3.out`.
--   Part 4 milestone data are stored in `output_mystudy/meta/ms4.out`.
--   Part 5 milestone data are stored in `output_mystudy/meta/ms5.out`.
--   Part 6 milestone data are stored in `output_mystudy/meta/ms6.out`.
+-   For part 1: `output_mystudy/meta/basic`.
+-   For part 2: `output_mystudy/meta/ms2.out`.
+-   For part 3: `output_mystudy/meta/ms3.out`.
+-   For part 4: `output_mystudy/meta/ms4.out`.
+-   For part 5: `output_mystudy/meta/ms5.out`.
+-   For part 6: `output_mystudy/meta/ms6.out`.
 
 The milestone files are potentially useful for you for the following reasons:
 
