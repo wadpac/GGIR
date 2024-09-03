@@ -20,11 +20,13 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-This section will guide you through the process of configuring your work
-environment to initiate the use of GGIR. For this purpose, you will need
-at least one accelerometer file to be processed by GGIR, please feel
-free to download [this .gt3x file](https://www.dropbox.com/s/covfyj31sarfaw0/GGIR01.gt3x?dl=0) or [this .cwa file](https://biobank.ndph.ox.ac.uk/ukb/refer.cgi?id=131620)
-and follow the instructions below.
+If you arrive here with the expectation to find a quick instruction to run and use GGIR for your research then we have to disappoint you. The number of GGIR functionalities is vast and mastering them requires a time investment. In this section we will only provide you with a brief introduction on how GGIR is used. However, to fully benefit from all the functionality GGIR offers we recommend that you read the chapters on this website and/or consider taking part in the [GGIR training](https://www.accelting.com/ggir-training/). 
+
+The first step to get started is to install R, Rstudio, and GGIR as discussed [here](https://wadpac.github.io/GGIR/articles/chapter0_Installation.html).
+
+If you have never used R before, we strongly recommend that you follow a R introduction course. In [this](https://www.accelting.com/updates/short-r-tutorial/) blog post we have attempted to provide a short tutorial. Nonetheless, the more effort you make to master the basics of R the easier it will be for you to master GGIR.
+
+Next, make sure you have at least one accelerometer file available on your computer. If you do not have an accelerometer file, feel free to use the files from the GGIR training [link](https://www.accelting.com/wp-content/uploads/2024/07/GGIRtrainingdata_v1.zip). This is a zipped folder of 369MB with 4 accelerometer files and a sleep log.
 
 ## Run GGIR for the first time
 
@@ -32,8 +34,7 @@ and follow the instructions below.
     computer. Make sure that this folder only contains accelerometer
     files.
 
-2.  Use the following command to run GGIR over your data using all the
-    default options.
+2.  Use the following command to run GGIR.
 
     -   datadir refers to the directory where you have located the
         accelerometer files.
@@ -45,9 +46,10 @@ and follow the instructions below.
 library(GGIR) 
 GGIR(datadir="C:/mystudy/mydata", outputdir="D:/myresults")
 ```
-
 After some minutes, you should be able to see how your output directory
 gets populated with files, reports, and visualizations.
+
+This command will let GGIR run with all its default settings (parameters), so the analysis is not tailored yet to the study design and your research question. The documentation chapters you will find on this website will guide you through this.
 
 ## Related links
 
