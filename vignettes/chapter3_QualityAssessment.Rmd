@@ -100,7 +100,7 @@ For example, when the accelerometer is in the post long periods of non-wear are 
 
 The motivation for selecting a relatively high criterion (\< 30%) in combination with a long period (6 hrs) and a low criterion (\< 80%) in combination with a short period (3 hrs) is that long periods are more likely to be actually related to monitor wear time. To illustrate the algorithm we created a visual model, see picture below. Here, units of time are presented in squares and marked grey if detected as non-wear time. Period C is detected as wear-time and borders to non-wear periods B and D. If the length of C is less than six hours and C divided by the sum of B and D is less than 0.3 then the first criteria is met and block C is turned into a non-wear period.
 
-```{r, out.width = "400px",echo=FALSE}
+```{r, out.width = "400px",echo=FALSE, fig.alt="Model to illustrate rescoring of nonwear"}
 knitr::include_graphics("nonwearimage.jpg")
 ```
 
