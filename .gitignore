@@ -13,3 +13,4 @@ vignettes/*.html
 vignettes/*.R
 /doc/
 /Meta/
+docs/reference/*.html
