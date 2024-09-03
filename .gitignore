@@ -13,3 +13,7 @@ vignettes/*.html
 vignettes/*.R
 /doc/
 /Meta/
+# ignore all html files in the docs reference folder because GGIR and our
+# pkgdown site is focussed on vignettes, and not on package functions, so
+# they should not appear in the search results.
+docs/reference/*.html
