@@ -22,11 +22,10 @@ g.part5.wakesleepwindows = function(ts, part4_output, desiredtz, nightsi,
   w0 = w1 = rep(0,length(part4_output$calendar_date))
   # Round seconds to integer number of epoch lengths (needed if cleaningcode = 5).
   round_seconds_to_epochSize = function(x, epochSize) {
-    temp = as.numeric(unlist(strsplit(x,":")))
-    if (length(temp) == 3) {
-      if (temp[3] / epochSize != round(temp[3] / epochSize)) {
-        x = paste0(temp[1],":",temp[2],":",round(temp[3] / epochSize)*epochSize)
-      }
+    if (length(as.numeric(unlist(strsplit(x,":")))) == 3) {
+      xPOSIX = as.POSIXct(x, format = "%H:%M:%S")
+      xPOSIX_rounded = as.POSIXct(round(as.numeric(xPOSIX) / epochSize) * epochSize)
+      x = format(xPOSIX_rounded, format = "%H:%M:%S")
     } else {
       x = ""
     }

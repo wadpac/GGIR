@@ -38,6 +38,9 @@
   - Improved logging of what guider was used when using NotWorn and optional backup guider, #1156
 
   - Skip night in part 4 csv report if guider was NotWorn, #1156
+  
+- Part 5: Fixed bug in g.part5.wakesleepwindows causing the first SPT window in a recording incorrectly to be  defined from the first timestamp in the recording. For details see: #1192
+
 
 # CHANGES IN GGIR VERSION 3.1-3
 
