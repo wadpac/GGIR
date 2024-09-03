@@ -109,6 +109,49 @@ news:
     href: https://www.accelting.com/updates/ggir-release-2-5-0/
     
 search:
-  exclude: ['news/index.html', 'articles/GGIR.html']
+  exclude: ['news/index.html', 'articles/GGIR.html', 
+  'articles/cosinorAnalyses.html', 'articles/appendRecords.html', 'articles/applyCosinorAnalyses.html',
+  'reference/cosinorAnalyses.html', 'reference/appendRecords.html', 'reference/applyCosinorAnalyses.html',
+  'reference/applyExtFunction.html', 'reference/CalcSleepRegularityIndex.html', 
+  'reference/checkMilestoneFolders.html', 'reference/check_log.html', 
+  'reference/check_myfun.html', 'reference/check_params.html', 'reference/convertEpochData.html',
+  'reference/correctOlderMilestoneData.html', 'reference/cosinorAnalyses.html',
+  'reference/createConfigFile.html', 'reference/create_test_acc_csv.html', 
+  'reference/create_test_sleeplog_csv.html', 'reference/data.calibrate.html', 
+  'reference/data.getmeta.html', 'reference/data.inspectfile.html', 'reference/data.metalong.html', 
+  'reference/data.ts.html', 'reference/datadir2fnames.html', 'reference/detect_nonwear_clipping.html', 
+  'reference/extractID.html', 'reference/extract_params.html', 'reference/g.abr.day.names.html', 
+  'reference/g.analyse.avday.html', 'reference/g.analyse.html', 'reference/g.analyse.perday.html', 
+  'reference/g.analyse.perfile.html', 'reference/g.applymetrics.html', 'reference/g.calibrate.html', 
+  'reference/g.conv.actlog.html', 'reference/g.convert.part2.long.html', 'reference/g.create.sp.mat.html', 
+  'reference/g.detecmidnight.html', 'reference/g.dotorcomma.html', 'reference/g.extractheadervars.html', 
+  'reference/g.fragmentation.html', 'reference/g.getbout.html', 'reference/g.getM5L5.html', 
+  'reference/g.getmeta.html', 'reference/g.getstarttime.html', 'reference/g.impute.html', 
+  'reference/g.imputeTimegaps.html', 'reference/g.inspectfile.html', 'reference/g.intensitygradient.html', 
+  'reference/g.IVIS.html', 'reference/g.loadlog.html', 'reference/g.part1.html', 'reference/g.part2.html', 
+  'reference/g.part3.html', 'reference/g.part4.html', 'reference/g.part4_extradctid.html', 
+  'reference/g.part5.addfirstwake.html', 'reference/g.part5.addsib.html', 'reference/g.part5.analyseRest.html', 
+  'reference/g.part5.classifyNaps.html', 'reference/g.part5.definedays.html', 
+  'reference/g.part5.fixmissingnight.html', 'reference/g.part5.handle_lux_extremes.html', 
+  'reference/g.part5.html', 'reference/g.part5.lux_persegment.html', 
+  'reference/g.part5.ontsetwaketiming.html', 'reference/g.part5.savetimeseries.html', 
+  'reference/g.part5.wakesleepwindows.html', 'reference/g.part5_analyseSegment.html', 
+  'reference/g.part5_initialise_ts.html', 'reference/g.part6.html', 'reference/g.plot.html', 
+  'reference/g.plot5.html', 'reference/g.readaccfile.html', 'reference/g.readtemp_movisens.html', 
+  'reference/g.report.part2.html', 'reference/g.report.part4.html', 'reference/g.report.part5.html', 
+  'reference/g.report.part5_dictionary.html', 'reference/g.report.part6.html', 
+  'reference/g.shell.GGIR.html', 'reference/g.sib.det.html', 'reference/g.sib.plot.html', 
+  'reference/g.sib.sum.html', 'reference/g.sibreport.html', 'reference/g.weardec.html', 
+  'reference/getfolderstructure.html', 'reference/get_nw_clip_block_params.html', 
+  'reference/get_starttime_weekday_truncdata.html', 'reference/GGIR-package.html', 
+  'reference/GGIR.html', 'reference/HASIB.html', 'reference/HASPT.html', 'reference/identify_levels.html', 
+  'reference/index.html', 'reference/is.ISO8601.html', 'reference/isfilelist.html', 'reference/ismovisens.html', 
+  'reference/iso8601chartime2POSIX.html', 'reference/is_this_a_dst_night.html', 
+  'reference/load_params.html', 'reference/parametersVignette.html', 'reference/part6AlignIndividuals.html', 
+  'reference/part6PairwiseAggregation.html', 'reference/POSIXtime2iso8601.html', 
+  'reference/read.myacc.csv.html', 'reference/ShellDoc2Vignette.html', 
+  'reference/tidyup_df.html', 'reference/updateBlocksize.html']
+
+
 
 
