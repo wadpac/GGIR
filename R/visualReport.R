@@ -9,7 +9,33 @@ visualReport = function(metadatadir = c(),
     dir.create(file.path(paste0(metadatadir, "/results"), "file summary reports"))
   }
   
-  # Declare functions:
+  # Declare local functions:
+  correctRect = function(starti, endi, NR, epochSize) {
+    if (endi[length(endi)] > NR) {
+      if (starti[length(starti)] < endi[length(endi)] - 1) {
+        endi[length(endi)] = endi[length(endi)] - 1
+      } else {
+        starti = starti[1:(length(starti) - 1)]
+        endi = endi[1:(length(endi) - 1)]
+      }
+    }
+    invisible(list(starti = starti, endi = endi))
+  }
+  
+  changepoints = function(x) {
+    Nvalues = length(x)
+    if (Nvalues > 3) {
+      changes = which(x[2:Nvalues] != x[1:(Nvalues - 1)])
+      changes = sort(unique(c(1, changes, changes + 1, Nvalues)))
+      if (length(changes) == 0) {
+        changes = 1:Nvalues
+      }
+    } else {
+      changes = 1:Nvalues
+    } 
+    return(changes)
+  }  
+  
   panelplot = function(mdat, ylabels_plot2, binary_vars,
                        BCN, BCC, title = "", hrsPerRow = NULL, plotid = 0, legend_items = NULL, lux_available = FALSE,
                        step_count_available = FALSE, epochSize = 60, focus = "day") {
@@ -41,19 +67,6 @@ visualReport = function(metadatadir = c(),
       lux_per_hour = as.character(lux_per_hour)
       lux_per_hour = gsub(pattern = "0", replacement = "", x = lux_per_hour)
     }
-    
-    correctRect = function(starti, endi, NR, epochSize) {
-      if (endi[length(endi)] > NR) {
-        if (starti[length(starti)] < endi[length(endi)] - 1) {
-          endi[length(endi)] = endi[length(endi)] - 1
-        } else {
-          starti = starti[1:(length(starti) - 1)]
-          endi = endi[1:(length(endi) - 1)]
-        }
-      }
-      invisible(list(starti = starti, endi = endi))
-    }
-    
     
     par(mar = c(3, 0, 1.5, 2.5))
     #============================================
@@ -91,19 +104,7 @@ visualReport = function(metadatadir = c(),
       cex_axis = 0.5
     }
     
-    changepoints = function(x) {
-      Nvalues = length(x)
-      if (Nvalues > 3) {
-        changes = which(x[2:Nvalues] != x[1:(Nvalues - 1)])
-        changes = sort(unique(c(1, changes, changes + 1, Nvalues)))
-        if (length(changes) == 0) {
-          changes = 1:Nvalues
-        }
-      } else {
-        changes = 1:Nvalues
-      } 
-      return(changes)
-    }  
+    
     if (hrsPerRow <= 36) {
       cex_mtext = 0.4
     } else {
@@ -179,11 +180,26 @@ visualReport = function(metadatadir = c(),
           rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1, col = col, border = FALSE)
         }
       } else {
-        if (legend_items$name[labi] %in% c("diary_nap", "diary_nonwear", "diary_sleepwindow")) {
+        diary_names = c("diary_nap", "diary_nonwear", "diary_sleepwindow", "diary_timeinbed")
+        if (legend_items$name[labi] %in% diary_names) {
           # Diary-based classes
-          tempi = which(mdat$selfreported == legend_items$name[labi])
+          if (legend_items$name[labi] == "diary_sleepwindow") {
+            relevant_labels = c("sleeplog", "sleeplog+bedlog")
+          } else if (legend_items$name[labi] == "diary_timeinbed") {
+            relevant_labels = c("bedlog", "sleeplog+bedlog")
+          } else {
+            relevant_labels = legend_items$name[labi]
+          }
+          tempi = which(mdat$selfreported %in% relevant_labels)
           y0 = 0
           y1 = 25
+          if (legend_items$name[labi] == "diary_sleepwindow") {
+            y0 = 0
+            y1 = 12.5
+          } else if (legend_items$name[labi] == "diary_timeinbed") {
+            y0 = 12.5
+            y1 = 25
+          }
         } else {
           # Accelerometer- based classes
           tempi = which(mdat$class_id == legend_items$code[labi])
@@ -277,10 +293,36 @@ visualReport = function(metadatadir = c(),
     }
   }
   
+  gen_col_names = function(BCN, BCC = NULL, name, legend_items, colour = NULL,
+                           level = NULL, reverse = TRUE) {
+    # generate colour and names for legend
+    vars = grep(pattern = name, x = BCN, value = TRUE)
+    Nitems = length(vars)
+    if (Nitems > 0) {
+      legend_items$name = c(legend_items$name, vars)
+      legend_items$level = c(legend_items$level, rep(level, Nitems))
+      if (!is.null(BCC)) {
+        legend_items$code = c(legend_items$code, BCC[which(BCN %in% vars)])
+      } else {
+        legend_items$code = c(legend_items$code, rep(-1, Nitems))
+      }
+      col = rep(colour, length.out = Nitems)
+      if (length(colour) == 1) {
+        for (ci in 1:Nitems) {
+          col[ci] = grDevices::adjustcolor(col = col[ci],
+                                           alpha.f = 0.2 + (ci / Nitems) * 0.8) #1 / (ci + 0.4)
+        }
+      }
+      if (reverse == TRUE) col = rev(col)
+      legend_items$col = c(legend_items$col, col)
+    }
+    return(legend_items)
+  }
+  # End of defining local functions
   #---------------------------------------
+  
   # Attempt to load time series directly
   # Identify correct subfolder
-  
   expected_ts_path = paste0(metadatadir, "/meta/ms5.outraw/", part6_threshold_combi)
   expected_ms5raw_path = paste0(metadatadir, "/meta/ms5.outraw")
   if (dir.exists(expected_ts_path)) {
@@ -290,7 +332,6 @@ visualReport = function(metadatadir = c(),
     if (f1 == 0) f1 = N_ts_files
     
     ts_exists = ifelse(length(fnames.ms5raw) > 0, yes = TRUE, no = FALSE) 
-    
     mdat = NULL
     if (ts_exists) {
       # Extract behavioural class names and codes:
@@ -340,7 +381,7 @@ visualReport = function(metadatadir = c(),
           if ("selfreported" %in% colnames(mdat) &&
               !is.null(params_sleep) &&
               !is.null(params_sleep[["loglocation"]])) {
-            ylabels_plot2 = c("nap", "nonwear", "sleeplog")
+            ylabels_plot2 = c("nap", "nonwear", "sleeplog", "bedlog")
           }
           binary_vars = c("SleepPeriodTime", "sibdetection", "invalidepoch")
           ylabels_plot2 = c(binary_vars, ylabels_plot2)
@@ -350,57 +391,33 @@ visualReport = function(metadatadir = c(),
           ylabels_plot2 = gsub(pattern = "nap", replacement = "diary_nap", x = ylabels_plot2)
           ylabels_plot2 = gsub(pattern = "nonwear", replacement = "diary_nonwear", x = ylabels_plot2)
           ylabels_plot2 = gsub(pattern = "sleeplog", replacement = "diary_sleepwindow", x = ylabels_plot2)
+          ylabels_plot2 = gsub(pattern = "bedlog", replacement = "diary_timeinbed", x = ylabels_plot2)
           ylabels_plot2 = tolower(ylabels_plot2)
         }
         if ("selfreported" %in% colnames(mdat)) {
-          levels(mdat$selfreported) <- c(levels(mdat$selfreported), "diary_sleepwindow", "diary_nap", "diary_nonwear")
-          mdat$selfreported[which(mdat$selfreported == "sleeplog")] = "diary_sleepwindow"
-          mdat$selfreported[which(mdat$selfreported == "nap")] = "diary_nap"
-          mdat$selfreported[which(mdat$selfreported == "nonwear")] = "diary_nonwear"
+          sr_levelnames = levels(mdat$selfreported)
+          sr_levelnames = gsub(pattern = "nap", replacement = "diary_nap", x = sr_levelnames)
+          sr_levelnames = gsub(pattern = "nonwear", replacement = "diary_nonwear", x = sr_levelnames)
+          levels(mdat$selfreported) = sr_levelnames
         }
-
         if ("lightpeak" %in% colnames(mdat)) {
           lux_available = TRUE
         } else {
           lux_available = FALSE
         }
-        
         if ("step_count" %in% colnames(mdat)) {
           step_count_available = TRUE
         } else {
           step_count_available = FALSE
         }
-        
         epochSize = diff(mdat$timenum[1:2])
-        
         # Define legend
         legend_items = list(col = NULL, name = NULL, code = NULL, level = NULL)
-        gen_col_names = function(BCN, BCC = NULL, name, legend_items, colour = NULL,
-                                 level = NULL, reverse = TRUE) {
-          vars = grep(pattern = name, x = BCN, value = TRUE)
-          Nitems = length(vars)
-          if (Nitems > 0) {
-            legend_items$name = c(legend_items$name, vars)
-            legend_items$level = c(legend_items$level, rep(level, Nitems))
-            if (!is.null(BCC)) {
-              legend_items$code = c(legend_items$code, BCC[which(BCN %in% vars)])
-            } else {
-              legend_items$code = c(legend_items$code, rep(-1, Nitems))
-            }
-            col = rep(colour, Nitems)
-            for (ci in 1:Nitems) {
-              col[ci] = grDevices::adjustcolor(col = col[ci],
-                                               alpha.f = 0.2 + (ci / Nitems) * 0.8) #1 / (ci + 0.4)
-            }
-            if (reverse == TRUE) col = rev(col)
-            legend_items$col = c(legend_items$col, col)
-          }
-          return(legend_items)
-        }
+        
         # Sleep diary
         legend_items = gen_col_names(ylabels_plot2, name = "diary",
                                      legend_items = legend_items,
-                                     colour = "gray23", level = 1, reverse = TRUE) #"#222255"
+                                     colour = c("#FF00FF", "#FFD700", "#7CFC00", "red"), level = 1, reverse = TRUE) #"#222255" #
         # SIB (day time)
         legend_items$col = c(legend_items$col, "#56B4E9") #"#D55E00""#E69F00") "#56B4E9"
         legend_items$name = c(legend_items$name, "sib")
@@ -439,10 +456,7 @@ visualReport = function(metadatadir = c(),
         legend_items$code = c(legend_items$code, -1)
         legend_items$level = c(legend_items$level, 0)
         
-        
-        simple_filename = gsub(pattern = ".RData", replacement = "", x = fnames.ms5raw[i] ) #"patientID12345"
-       
-        
+        simple_filename = gsub(pattern = ".RData", replacement = "", x = fnames.ms5raw[i] )
         hrsPerRow = params_output[["visualreport_hrsPerRow"]]
         focus = params_output[["visualreport_focus"]]
         if (focus == "day") {
@@ -468,7 +482,6 @@ visualReport = function(metadatadir = c(),
         invalid = which(mdat$invalidepoch == 1)
         subploti[which(subploti[,2] > nrow(mdat)), 2] = nrow(mdat)
         NdaysPerPage = 8
-        
         if ( params_output[["visualreport_validcrit"]] > 0) {
           # Only keep windows that meet the fraction of valid data
           # as specified with parameter visualreport_validcrit
@@ -517,14 +530,7 @@ visualReport = function(metadatadir = c(),
               }
               legendnames[boutvars] = paste0(legendnames[boutvars], " mins")
               legendcolors = legend_items$col
-              # legenddensity = rep(-1, length(legendnames))
-              # legenddensity[] = 20
-              # Nitems = length(legendnames)
-              # lty = rep("p", Nitems)
-              # pch = rep(15, Nitems)
-              # lty[which(legendnames == "invalid")] = "l"
-              # pchlty[which(legendnames == "invalid")] = "l"p
-              
+
               not_invalid = which(legendnames != "invalid")
               legendpch = rep(15, length(legendnames))
               legendpch[which(legendnames == "invalid")] = 0

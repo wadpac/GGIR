@@ -111,8 +111,8 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
   # add segment of sleeplog to sibreport. Done here and not near 
   # function g.sibreport called in function g.part5 because the segment needs to
   # be part of the time range otherwise it is omitted further down
-  sibreport = sibreport[which(sibreport$type != "sleeplog"),]
-  sleeplogi = which(ts$selfreported == "sleeplog")
+  sibreport = sibreport[which(sibreport$type != "sleeplog" & sibreport$type != "sleeplog+bedlog"),]
+  sleeplogi = which(ts$selfreported == "sleeplog" | ts$selfreported == "sleeplog+bedlog")
   if (length(sleeplogi) > 0) {
     dsi = diff(sleeplogi)
     sl_starts = c(1, which(dsi != 1) + 1)

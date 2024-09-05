@@ -7,7 +7,7 @@ test_that("gloadlog is able to load different log formats", {
 
   # test that a sleep log with any separator from the set of [,\t |;] can be successfully parsed
   for (sep in c(",", "\t", " ", "|", ";")) {
-    create_test_sleeplog_csv(Nnights = 7, advanced = TRUE, sep = sep)
+    create_test_sleeplog_csv(Nnights = 7, advanced = TRUE, sep = sep, type = "sleeplog")
     fn = "testsleeplogfile.csv"
     expect_true(file.exists(fn))
 
@@ -81,8 +81,40 @@ test_that("gloadlog is able to load different log formats", {
   logs5 = g.loadlog(loglocation = fn, coln1 = 2, colid = 1,
                     meta.sleep.folder = tempdir , desiredtz = "")
   expect_equal(nrow(logs5$sleeplog), 1)
-  expect_equal(ncol(logs4$sleeplog), 5)
-  expect_equal(logs4$sleeplog$night, "1")
+  expect_equal(ncol(logs5$sleeplog), 5)
+  expect_equal(logs5$sleeplog$night, "1")
+  
+  
+  # Test advanced bedlog:
+  create_test_sleeplog_csv(Nnights = 3, advanced = TRUE, sep = ",", type = "bedlog")
+  fn = "testsleeplogfile.csv"
+  expect_true(file.exists(fn))
+  rec_starttime = format(as.POSIXct("2016-06-25 20:20:20"), "%Y-%m-%dT%H:%M:%S%z")
+  save(ID, rec_starttime, file = "mytestdir/dummyms3.RData")
+  logs6 = g.loadlog(loglocation = fn, coln1 = 2, colid = 1,
+                    meta.sleep.folder = tempdir , desiredtz = "")
+  expect_equal(nrow(logs6$sleeplog), 0)
+  expect_equal(nrow(logs6$bedlog), 3)
+  expect_equal(colnames(logs6$bedlog), c("ID", "night", "duration", "bedstart", "bedend"))
+  expect_equal(logs6$bedlog$night, c("1", "2", "3"))
+  
+  
+  # Test advanced bedlog + sleeplog:
+  create_test_sleeplog_csv(Nnights = 3, advanced = TRUE, sep = ",", type = "both")
+  fn = "testsleeplogfile.csv"
+  expect_true(file.exists(fn))
+  rec_starttime = format(as.POSIXct("2016-06-25 20:20:20"), "%Y-%m-%dT%H:%M:%S%z")
+  save(ID, rec_starttime, file = "mytestdir/dummyms3.RData")
+  logs7 = g.loadlog(loglocation = fn, coln1 = 2, colid = 1,
+                    meta.sleep.folder = tempdir , desiredtz = "")
+  expect_equal(nrow(logs7$sleeplog), 3)
+  expect_equal(ncol(logs7$sleeplog), 5)
+  expect_equal(nrow(logs7$bedlog), 3)
+  expect_equal(ncol(logs7$bedlog), 5)
+  expect_equal(logs7$bedlog$bedend[1], "8:0:2")
+  expect_equal(logs7$bedlog$bedstart[1], "22:0:1")
+  expect_equal(logs7$sleeplog$sleepwake[1], "7:0:2")
+  expect_equal(logs7$sleeplog$sleeponset[1], "23:0:1")
   
   if (dir.exists(tempdir)) unlink(tempdir, recursive = TRUE)
   if (file.exists(fn)) unlink(fn, recursive = TRUE)

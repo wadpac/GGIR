@@ -69,7 +69,11 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
     load(sleeplogRDA)
     if (length(logs_diaries) > 0) {# new format
       if (is.list(logs_diaries)) { # advanced format
-        sleeplog = logs_diaries$sleeplog
+        if (params_sleep[["sleepwindowType"]] == "TimeInBed" && length(logs_diaries$bedlog) > 0) {
+          sleeplog = logs_diaries$bedlog
+        } else {
+          sleeplog = logs_diaries$sleeplog
+        }
       } else {
         sleeplog = logs_diaries
       }
@@ -332,16 +336,23 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               
               # Add self-reported classes to ts object
               ts$selfreported = NA
-              for (srType in c("sleeplog", "nap", "nonwear")) {
+              for (srType in c("sleeplog", "nap", "nonwear", "bedlog")) {
                 sr_index = which(sibreport$type == srType)
                 if (length(sr_index) > 0) {
                   for (sii in sr_index) {
-                    ts$selfreported[which(ts$time >= sibreport$start[sii] & ts$time < sibreport$end[sii])] = srType
+                    ts_index = which(ts$time >= sibreport$start[sii] & ts$time < sibreport$end[sii])
+                    ts_index1 = ts_index[which(is.na(ts$selfreported[ts_index]))]
+                    ts_index2 = ts_index[which(!is.na(ts$selfreported[ts_index]))]
+                    if (length(ts_index1) > 0) {
+                      ts$selfreported[ts_index1] = srType
+                    }
+                    if (length(ts_index2) > 0) {
+                      ts$selfreported[ts_index2] = paste0(ts$selfreported[ts_index2], "+", srType)
+                    }
                   }
                 }
               }
               ts$selfreported = as.factor(ts$selfreported)
-              
               # store in csv file:
               ms5.sibreport = "/meta/ms5.outraw/sib.reports"
               if (!file.exists(paste(metadatadir, ms5.sibreport, sep = ""))) {

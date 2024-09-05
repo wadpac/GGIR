@@ -36,6 +36,7 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
     nonwearlog = logs_diaries$nonwearlog
     naplog = logs_diaries$naplog
     sleeplog = logs_diaries$sleeplog
+    bedlog = logs_diaries$bedlog
     dateformat = logs_diaries$dateformat
 
     firstDate = as.Date(ts$time[1])
@@ -49,7 +50,7 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
           if (!is.null(firstDate)) {
             # Add date if missing and remove unneeded columns
             log$date = firstDate + as.numeric(log$night) - 1
-            log = log[,c("ID", "date", grep(pattern = "sleeponset|sleepwake", x = names(log), value = TRUE))]
+            log = log[,c("ID", "date", grep(pattern = "onset|wake|bed", x = names(log), value = TRUE))]
           }
           for (i in 1:nrow(log)) { # loop over lines (days)
             
@@ -124,6 +125,7 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
     naplogreport = extract_logs(naplog, ID, logname = "nap")
     nonwearlogreport = extract_logs(nonwearlog, ID, logname = "nonwear")
     sleeplogreport = extract_logs(sleeplog, ID, logname = "sleeplog", firstDate = firstDate)
+    bedlogreport = extract_logs(bedlog, ID, logname = "bedlog", firstDate = firstDate)
     logreport = sibreport
     # append all together in one output data.frame
     if (length(logreport) > 0 & length(naplogreport) > 0) {
@@ -140,6 +142,11 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
       logreport = merge(logreport, sleeplogreport, by = c("ID", "type", "start", "end", "duration"), all = TRUE)
     } else if (length(logreport) == 0 & length(sleeplogreport) > 0) {
       logreport = sleeplogreport
+    }
+    if (length(logreport) > 0 & length(bedlogreport) > 0) {
+      logreport = merge(logreport, bedlogreport, by = c("ID", "type", "start", "end", "duration"), all = TRUE)
+    } else if (length(logreport) == 0 & length(bedlogreport) > 0) {
+      logreport = bedlogreport
     }
   } else {
     logreport = sibreport
