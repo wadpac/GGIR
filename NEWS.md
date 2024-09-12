@@ -1,3 +1,8 @@
+# CHANGES IN GGIR VERSION 3.1-5
+
+- Part 5: Fixed minor bug in g.part5.addfirstwake causing the first wake is not correctly added when
+no SIBs are detected from the beginning of the recording until the first detected night. #1198
+
 # CHANGES IN GGIR VERSION 3.1-4
 
 - Part 3: Update threshold used for HorAngle to 60 degree, and auto-setting HASPT.ignore.invalid to NA when NotWorn guider is used. #1186
