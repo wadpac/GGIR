@@ -5,7 +5,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                             doquan, quantiletype, doilevels, domvpa,
                             mvpanames, wdaycode, ID,
                             deviceSerialNumber, ExtFunColsi, myfun, desiredtz = "",
-                            params_247 = c(), params_phyact = c(), params_general = c(),
+                            params_247 = c(), params_phyact = c(),
                             ...) {
   #get input variables
   input = list(...)
@@ -18,12 +18,10 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
     # as if it was still the old g.analyse function
     params = extract_params(params_247 = params_247,
                             params_phyact = params_phyact,
-                            params_general = params_general,
                             input = input,
-                            params2check = c("247", "phyact", "general")) # load default parameters
+                            params2check = c("247", "phyact")) # load default parameters
     params_247 = params$params_247
     params_phyact = params$params_phyact
-    params_general = params$params_general
     rm(params)
   }
   
@@ -199,9 +197,8 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
     ds_names[fi] = "ID";      fi = fi + 1
     daysummary[di,fi] = fname
     ds_names[fi] = "filename";  fi = fi + 1
-    # calendardate = unlist(strsplit(as.character(vari[1,1])," "))[1]
-    calendardate = as.Date(vari[1,1], tz = params_general[["desiredtz"]])
-    daysummary[di,fi] = as.character(calendardate)
+    calendardate = unlist(strsplit(as.character(vari[1,1])," "))[1]
+    daysummary[di,fi] = calendardate
     daysummary[di,(fi + 1)] = sensor.location
     daysummary[di,(fi + 2)] = nvalidhours
     daysummary[di,(fi + 3)] = nhours
