@@ -239,7 +239,8 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       # tidy up data.frames
       SUMMARY_clean = tidyup_df(SUMMARY)
       daySUMMARY_clean = tidyup_df(daySUMMARY)
-      
+      # format calendar dates (dates are stored as iso8601, so date is in the first 10 characters )
+      daySUMMARY_clean$calendar_date = substr(daySUMMARY_clean$calendar_date, 1, 10)
       #===============================================================================
       # store final matrices again
       data.table::fwrite(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"),
