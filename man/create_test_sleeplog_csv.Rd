@@ -9,7 +9,8 @@ with dummy data (23:00 onset, 07:00 waking time for every night).
 }
 \usage{
   create_test_sleeplog_csv(Nnights = 7, storagelocation = c(),
-                            advanced = FALSE, sep = ",", begin_date = "2016/06/25")
+                            advanced = FALSE, sep = ",", begin_date = "2016/06/25",
+                            type = "sleeplog")
 }
 \arguments{
   \item{Nnights}{
@@ -30,6 +31,11 @@ with dummy data (23:00 onset, 07:00 waking time for every night).
   \item{begin_date}{
     Character to indicate first date (in format "2016/06/25") to be used
     in the advanced sleeplog format. Ignored when generated basic sleeplog format.
+  }
+  \item{type}{
+    Character to indicate which type of advanced sleeplog to create,
+    either "sleeplog" with "wakeup" and "onset" columns, "bedlog" with 
+    "bedstart" and "bedend" columns, or "both" with both.
   }
 }
 \value{

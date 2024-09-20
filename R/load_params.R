@@ -24,8 +24,9 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                         sleeplogsep = NULL, sleepwindowType = "SPT",
                         possible_nap_window = c(9, 18),
                         possible_nap_dur = c(15, 240),
-                        nap_model = c(), sleepefficiency.metric = 1,
+                        possible_nap_gap = 0,
                         possible_nap_edge_acc = Inf,
+                        nap_model = c(), sleepefficiency.metric = 1,
                         HDCZA_threshold = c())
   }
   if ("metrics" %in% topic) {
@@ -76,7 +77,8 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                       LUX_cal_constant = c(), LUX_cal_exponent = c(), LUX_day_segments = c(),
                       L5M5window = c(0, 24), cosinor = FALSE,
                       part6CR = FALSE, part6HCA = FALSE,
-                      part6Window = c("start", "end"))
+                      part6Window = c("start", "end"),
+                      clevels = c(30, 150))
   }
   if ("phyact" %in% topic) {
     params_phyact = list(mvpathreshold = 100, boutcriter = 0.8,
@@ -116,7 +118,9 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                          sep_reports = ",", sep_config = ",", 
                          dec_reports = ".", dec_config = ".", 
                          visualreport_without_invalid = TRUE,
-                         require_complete_lastnight_part5 = FALSE)
+                         old_visualreport = TRUE, visualreport_hrsPerRow = 36,
+                         visualreport_focus = "day",
+                         visualreport_validcrit = 0, require_complete_lastnight_part5 = FALSE)
 
   }
   if ("general" %in% topic) {

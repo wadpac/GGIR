@@ -1253,6 +1253,11 @@ GGIR(mode = 1:5,
         Maximum acceleration before or after the SIB for the nap to be considered.
         By default this will allow all possible naps.
       }
+      \item{possible_nap_gap}{
+        Numeric (default = 0).
+        Time gap expressed in seconds that is allowed between the sustained 
+        inactivity bouts that form the naps.
+      }
     }
   }
 
@@ -1406,6 +1411,11 @@ GGIR(mode = 1:5,
         ignores the first and last 5 hours, and c("O2", "W10") goes from the second
         onset till the 10th wakeup time.
       }
+      \item{clevels}{
+        Numeric vector (default = c(30, 150)) with length 2 to indicate cadence ranges used 
+        when summarising step counts, if available. When set to NULL, step counts will not be
+        summarised in part 5 output.
+      }
     }
   }
 
@@ -1516,7 +1526,8 @@ GGIR(mode = 1:5,
       \item{dofirstpage}{
         Boolean (default = TRUE).
         To indicate whether a first page with histograms summarizing the whole
-        measurement should be added in the file summary reports generated with \code{visualreport = TRUE}.}
+        measurement should be added in the file summary reports generated 
+        with \code{visualreport = TRUE}.}
 
       \item{sep_reports}{
         Character (default = ",").
@@ -1539,12 +1550,35 @@ GGIR(mode = 1:5,
           If TRUE, then reports generated with \code{visualreport = TRUE} only show
           the windows with sufficiently valid data according to \code{includedaycrit}
           when viewingwindow = 1 or \code{includenightcrit} when viewingwindow = 2}
+
       \item{require_complete_lastnight_part5}{    
           Boolean (default = FALSE).
           When set to TRUE: The last WW window is excluded if recording ends 
           between midnight and 3pm; The last OO and MM window are excluded if 
           recording ends between midnight and 9am. This to avoid risk that recording
           end biases the sleep estimates for the last night.
+
+      \item{old_visualreport}{
+        Boolean (default = TRUE).
+        If TRUE, then generate old visual report in addition to new visualreport.
+        The old visualreport will eventually be deprecated}
+      
+      \item{visualreport_hrsPerRow}{
+        Numeric (default = 36).
+        Width of the plots in the new visualreport expressed in hours.
+        Expected to be in the range 24-48. If more than 24 then the extra time overlaps
+        with the beginning of the next plot.}
+      
+      \item{visualreport_focus}{
+         Character (default = "day")
+         Whether new visual report focussed on day. If set ot "nigth" the focus will be
+         on the night.
+      }
+      
+      \item{visualreport_validcrit}{
+         Numeric (default = 0).
+         Value between 0 and 1 representing the fraction of data in a plot 
+         that is expected to be valid. If this criteria is not met the row is skipped.
       }
     }
   }

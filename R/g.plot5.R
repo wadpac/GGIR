@@ -478,8 +478,8 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           NGPP = 7 #number of graphs per page
           par(
             mfcol = c(NGPP, 1),
-            mar = c(2, 0.5, 1, 0.5) + 0.1,
-            omi = c(0, 0, 0.1, 0),
+            mar = c(2, 0.5, 2, 0.5) + 0.1,
+            omi = c(0, 0, 0.3, 0),
             mgp = c(2, 0.8, 0)
           )
           daycount = 1
@@ -902,6 +902,11 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
                   ((daycount - 1) / NGPP) == (round((daycount - 1) / NGPP))) {
                 mtext(paste0("Filename: ", fnames_ms1_stripped[sel]),
                       side = 3, line = 0, outer = TRUE, font = 2, cex = 0.6)
+                mtext(text = paste0("Warning: This GGIR report will be deprecated,",
+                                    " please start using the new ",
+                                    "visualreport as now stored in the same folder."),
+                      side = 3, line = 1, outer = TRUE, font = 2, cex = 0.7
+                )
               }
             }
             daycount = daycount + 1
