@@ -62,8 +62,8 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
         indices = which(x$wear_perc_day >= includeday_wearPercentage &
                           x$wear_min_day >= includeday_absolute &
                           x$dur_spt_min > 0 & x$dur_day_min > 0 &
-                          ((x$lastnight == TRUE & x$lasttimestamp > 15 & window == "WW") |
-                             (x$lastnight == TRUE & x$lasttimestamp > 9 & window == "OO") |
+                          ((x$lastnight == TRUE & x$lasttimestamp >= 15 & window == "WW") |
+                             (x$lastnight == TRUE & x$lasttimestamp >= 9 & window == "OO") |
                              x$lastnight == FALSE) &
                           include_window == TRUE &
                           x$wear_min_day_spt >= minimumValidMinutesMM)

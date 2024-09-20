@@ -31,6 +31,9 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
     if ((timewindow == "MM" || timewindow == "OO") && last_timestamp < 9) {
       mdat$window[which(mdat$window == max(mdat$window))] = 0 
     }
+    if (timewindow == "WW" && last_timestamp < 15) {
+      mdat$window[which(mdat$window == max(mdat$window))] = 0 
+    }
   }
   
   # Add invalid day indicator
