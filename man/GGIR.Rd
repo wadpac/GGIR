@@ -1556,7 +1556,7 @@ GGIR(mode = 1:5,
           When set to TRUE: The last WW window is excluded if recording ends 
           between midnight and 3pm; The last OO and MM window are excluded if 
           recording ends between midnight and 9am. This to avoid risk that recording
-          end biases the sleep estimates for the last night.
+          end biases the sleep estimates for the last night.}
 
       \item{old_visualreport}{
         Boolean (default = TRUE).
