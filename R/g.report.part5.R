@@ -47,21 +47,35 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
       
       x$wear_min_day = (1 - (x$nonwear_perc_day / 100)) * x$dur_day_min #valid minute during waking hours
       x$wear_perc_day = 100 - x$nonwear_perc_day #wear percentage during waking hours
+      x$lasttimestamp = as.numeric(x$lasttimestamp)
       
       minimumValidMinutesMM = 0 # default
       if (length(params_cleaning[["includedaycrit"]]) == 2) {
         minimumValidMinutesMM = params_cleaning[["includedaycrit"]][2] * 60
       }
+      if (params_output[["require_complete_lastnight_part5"]] == FALSE) {
+        x$lastnight = FALSE
+      } else {
+        x$lastnight = x$window_number == max(x$window_number)
+      }
       if (window == "WW" | window == "OO") {
         indices = which(x$wear_perc_day >= includeday_wearPercentage &
                           x$wear_min_day >= includeday_absolute &
                           x$dur_spt_min > 0 & x$dur_day_min > 0 &
+                          ((x$lastnight == TRUE & x$lasttimestamp > 15 & window == "WW") |
+                             (x$lastnight == TRUE & x$lasttimestamp > 9 & window == "OO") |
+                             x$lastnight == FALSE) &
                           include_window == TRUE &
                           x$wear_min_day_spt >= minimumValidMinutesMM)
       } else if (window == "MM") {
+        # Note: For MM it would also be good to put requirements on the 
+        # timing of the last timestamp to include/exlcude the last window
+        # but not done yet
         indices = which(x$wear_perc_day >= includeday_wearPercentage &
                           x$wear_min_day >= includeday_absolute &
                           x$dur_spt_min > 0 & x$dur_day_min > 0 &
+                          ((x$lastnight == TRUE & x$lasttimestamp > 9) |
+                             x$lastnight == FALSE) &
                           x$dur_day_spt_min >= (params_cleaning[["minimum_MM_length.part5"]] * 60) &
                           include_window == TRUE &
                           x$wear_min_day_spt >= minimumValidMinutesMM)
@@ -118,12 +132,13 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                  " take a few minutes\n"))
     }
     myfun = function(x, expectedCols = c()) {
-      tail_expansion_log = NULL
+      tail_expansion_log = last_timestamp = output = NULL
       load(file = x)
       cut = which(output[, 1] == "")
       if (length(cut) > 0 & length(cut) < nrow(output)) {
         output = output[-cut, which(colnames(output) != "")]
       }
+      output$lasttimestamp = as.numeric(format(last_timestamp, "%H"))
       out = as.matrix(output)
       if (length(expectedCols) > 0) {
         tmp = as.data.frame(matrix(0, 0, length(expectedCols)))
