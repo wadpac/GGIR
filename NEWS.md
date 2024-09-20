@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.1-?
+
+- Part 5: Add parameters require_complete_lastnight_part5 to control whether incomplete last nights are included. #1196
+
 # CHANGES IN GGIR VERSION 3.1-4
 
 - Part 3: Update threshold used for HorAngle to 60 degree, and auto-setting HASPT.ignore.invalid to NA when NotWorn guider is used. #1186
