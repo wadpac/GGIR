@@ -121,13 +121,12 @@ test_that("recordingEndSleepHour works as expected", {
   create_test_acc_csv(Nmin = 3 * 1440) # ends at 8:45
   # delete config.csv such that GGIR uses its own default parameter values
   if (file.exists("output_test/config.csv"))  unlink("output_test/config.csv", recursive = TRUE)
-  # No warning, this should work
   GGIR(datadir = fn, outputdir = getwd(), mode = 1:5,
        studyname = "test", overwrite = TRUE, desiredtz = tz, 
        verbose = FALSE, require_complete_lastnight_part5 = TRUE,
        do.report = 5)
   p5 = read.csv("output_test/results/part5_daysummary_MM_L40M100V400_T5A5.csv")
-  expect_equal(nrow(p5), 2) # expanded day appears in MM report
+  expect_equal(nrow(p5), 2) # last window is ignored from because the night ends at 8:45
   
   
   if (file.exists("output_test"))  unlink("output_test", recursive = TRUE)
