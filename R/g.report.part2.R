@@ -1,5 +1,6 @@
 g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
-                          store.long = FALSE, params_output, verbose = TRUE) {
+                          store.long = FALSE, params_output, verbose = TRUE,
+                          desiredtz = "") {
   ms2.out = "/meta/ms2.out"
   if (file.exists(paste0(metadatadir,ms2.out))) {
     if (length(dir(paste0(metadatadir,ms2.out))) == 0) {
@@ -239,8 +240,9 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       # tidy up data.frames
       SUMMARY_clean = tidyup_df(SUMMARY)
       daySUMMARY_clean = tidyup_df(daySUMMARY)
-      # format calendar dates (dates are stored as iso8601, so date is in the first 10 characters )
-      daySUMMARY_clean$calendar_date = substr(daySUMMARY_clean$calendar_date, 1, 10)
+      # format calendar dates
+      dd = iso8601chartime2POSIX(daySUMMARY_clean$calendar_date, tz = desiredtz) 
+      daySUMMARY_clean$calendar_date = format(dd, format = "%Y-%m-%d")
       #===============================================================================
       # store final matrices again
       data.table::fwrite(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"),

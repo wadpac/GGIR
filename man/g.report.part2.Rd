@@ -9,7 +9,7 @@
 }
 \usage{
   g.report.part2(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
-  store.long = FALSE, params_output, verbose = TRUE)
+  store.long = FALSE, params_output, verbose = TRUE, desiredtz = "")
 }
 \arguments{
   \item{metadatadir}{
@@ -37,6 +37,9 @@
     Parameters object, see \link{GGIR}
   }
   \item{verbose}{
+    See details in \link{GGIR}.
+  }
+  \item{desiredtz}{
     See details in \link{GGIR}.
   }
 }
