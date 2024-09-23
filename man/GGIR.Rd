@@ -1555,6 +1555,13 @@ GGIR(mode = 1:5,
           If TRUE, then reports generated with \code{visualreport = TRUE} only show
           the windows with sufficiently valid data according to \code{includedaycrit}
           when viewingwindow = 1 or \code{includenightcrit} when viewingwindow = 2}
+      \item{require_complete_lastnight_part5}{    
+          Boolean (default = FALSE).
+          When set to TRUE: The last WW window is excluded if recording ends 
+          between midnight and 3pm; The last OO and MM window are excluded if 
+          recording ends between midnight and 9am. This to avoid risk that recording
+          end biases the sleep estimates for the last night.
+      }
     }
   }
 }

@@ -25,6 +25,10 @@
 
   - Fix incorrect usage of part 5 inclusion criteria testing, which used fraction as percentage.
 
+# CHANGES IN GGIR VERSION 3.1-5
+
+- Part 5: Add parameters require_complete_lastnight_part5 to control whether last window is included if last night is incomplete. #1196
+
 # CHANGES IN GGIR VERSION 3.1-4
 
 - Part 3: Update threshold used for HorAngle to 60 degree, and auto-setting HASPT.ignore.invalid to NA when NotWorn guider is used. #1186
