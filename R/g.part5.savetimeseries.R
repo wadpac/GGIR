@@ -24,9 +24,8 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
   names(mdat)[which(names(mdat) == "nonwear")] = "invalidepoch"
   names(mdat)[which(names(mdat) == "diur")] = "SleepPeriodTime"
   mdat = mdat[,-which(names(mdat) == "date_time")]
-  
-  
-  if (params_output[["require_complete_lastnight_part5"]] == TRUE) {
+  if ("require_complete_lastnight_part5" %in% names(params_output) &&
+      params_output[["require_complete_lastnight_part5"]] == TRUE) {
     last_timestamp = as.numeric(format(mdat$timestamp[length(mdat$timestamp)], "%H"))
     if ((timewindow == "MM" || timewindow == "OO") && last_timestamp < 9) {
       mdat$window[which(mdat$window == max(mdat$window))] = 0 
