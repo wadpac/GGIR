@@ -1,6 +1,6 @@
 # CHANGES IN GGIR VERSION 3.1-?
 
-- Part 5: Add parameters require_complete_lastnight_part5 to control whether incomplete last nights are included. #1196
+- Part 5: Add parameters require_complete_lastnight_part5 to control whether last window is included if last night is incomplete. #1196
 
 # CHANGES IN GGIR VERSION 3.1-4
 
