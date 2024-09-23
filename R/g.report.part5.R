@@ -138,7 +138,11 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
       if (length(cut) > 0 & length(cut) < nrow(output)) {
         output = output[-cut, which(colnames(output) != "")]
       }
-      output$lasttimestamp = as.numeric(format(last_timestamp, "%H"))
+      if (exists("last_timestamp") == TRUE) {
+        output$lasttimestamp = as.numeric(format(last_timestamp, "%H"))
+      } else {
+        output$lasttimestamp = Inf # use dummy value
+      }
       out = as.matrix(output)
       if (length(expectedCols) > 0) {
         tmp = as.data.frame(matrix(0, 0, length(expectedCols)))
@@ -284,8 +288,11 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   sep = params_output[["sep_reports"]],
                   dec = params_output[["dec_reports"]])
                 # store all summaries in csv files with cleaning criteria
-                validdaysi = getValidDayIndices(x = OF3, window = uwi[j],
+                validdaysi = getValidDayIndices(x = OF3_clean, window = uwi[j],
                                                 params_cleaning = params_cleaning)
+                if ("lasttimestamp" %in% colnames(OF3_clean)) {
+                  OF3_clean = OF3_clean[, -which(colnames(OF3_clean) == "lasttimestamp")]
+                }
                 if (length(validdaysi) > 0) {
                   data.table::fwrite(
                     OF3_clean[validdaysi, ],
