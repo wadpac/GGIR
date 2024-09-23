@@ -58,6 +58,7 @@
   \item{Lnames}{
     Level names as passed on from \link{identify_levels}, these are the names
     corresponding the ID of the behavioural classes as stored in column class_id.
+  }
   \item{timewindow}{
     See \link{GGIR}
   }
