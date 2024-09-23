@@ -12,7 +12,8 @@
                               DaCleanFile = NULL,
                               includedaycrit.part5 = 2/3,
                               ID = NULL, params_output,
-                              params_247 = NULL)
+                              params_247 = NULL,
+                              filename = "")
 }
 \arguments{
   \item{ts}{
@@ -47,6 +48,9 @@
   }
   \item{params_247}{
     See \link{GGIR}
+  }
+  \item{filename}{
+    Character (default = "") indicating the filename to store in the output.
   }
 }
 \value{
