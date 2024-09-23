@@ -68,9 +68,6 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                           include_window == TRUE &
                           x$wear_min_day_spt >= minimumValidMinutesMM)
       } else if (window == "MM") {
-        # Note: For MM it would also be good to put requirements on the 
-        # timing of the last timestamp to include/exlcude the last window
-        # but not done yet
         indices = which(x$wear_perc_day >= includeday_wearPercentage &
                           x$wear_min_day >= includeday_absolute &
                           x$dur_spt_min > 0 & x$dur_day_min > 0 &
