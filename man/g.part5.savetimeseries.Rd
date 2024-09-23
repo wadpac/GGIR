@@ -12,7 +12,8 @@
                               DaCleanFile = NULL,
                               includedaycrit.part5 = 2/3,
                               ID = NULL, params_output,
-                              params_247 = NULL)
+                              params_247 = NULL,
+                              timewindow = NULL)
 }
 \arguments{
   \item{ts}{
@@ -46,6 +47,9 @@
     Parameters object, see \link{GGIR}
   }
   \item{params_247}{
+    See \link{GGIR}
+  }
+  \item{timewindow}{
     See \link{GGIR}
   }
 }

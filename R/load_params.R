@@ -120,7 +120,7 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                          visualreport_without_invalid = TRUE,
                          old_visualreport = TRUE, visualreport_hrsPerRow = 36,
                          visualreport_focus = "day",
-                         visualreport_validcrit = 0)
+                         visualreport_validcrit = 0, require_complete_lastnight_part5 = FALSE)
 
   }
   if ("general" %in% topic) {

@@ -119,7 +119,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     boolean_params = c("epochvalues2csv", "save_ms5rawlevels", "save_ms5raw_without_invalid",
                        "storefolderstructure", "dofirstpage", "visualreport", "week_weekend_aggregate.part5",
                        "do.part3.pdf", "outliers.only", "do.visual", "do.sibreport", "visualreport_without_invalid",
-                       "do.part2.pdf", "old_visualreport")
+                       "do.part2.pdf", "old_visualreport", "require_complete_lastnight_part5")
+
     character_params = c("save_ms5raw_format", "timewindow", "sep_reports", "sep_config",
                          "dec_reports", "dec_config", "visualreport_focus")
     check_class("output", params = params_output, parnames = numeric_params, parclass = "numeric")
