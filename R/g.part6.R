@@ -29,7 +29,6 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   # Identify correct subfolder
   expected_ts_path = paste0(metadatadir, "/meta/ms5.outraw/", params_phyact[["part6_threshold_combi"]])
   expected_ms5raw_path = paste0(metadatadir, "/meta/ms5.outraw")
-  expected_ms5_path = paste0(metadatadir, "/meta/ms5.out")
   if (!dir.exists(expected_ts_path)) {
     if (!dir.exists(expected_ms5raw_path)) {
       stop("\nPath ", expected_ms5raw_path, " does not exist", call. = FALSE)
@@ -45,7 +44,6 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
     }
   }
   fnames.ms5raw = dir(expected_ts_path)
-  fnames.ms5 = dir(expected_ms5_path)
   # It can be that the use stored rdata and csv files
   # only use rdata in that case
   getExt = function(x) {
@@ -97,7 +95,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   # Declare recording level functionality, which at the end of this g.part6 is either
   # applied to the file in parallel with foreach or serially with a loop
   main_part6_recordlevel = function(i, metadatadir = c(), f0 = c(), f1 = c(),
-                                    fnames.ms5raw, ffdone, EXT, verbose, fnames.ms5) {
+                                    fnames.ms5raw, ffdone, EXT, verbose) {
     if (length(ffdone) > 0) {
       if (length(which(ffdone == fnames.ms5raw[i])) > 0) {
         skip = 1 #skip this file because it was analysed before")
@@ -111,7 +109,6 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
     
     if (skip == 0) {
       # Load time series:
-      lookfor = unlist(strsplit(fnames.ms5raw[i], "_"))[1] # filename without extension and without sib detection indicator (e.g., _T5A5.csv)
       if (EXT == "RData") {
         load(file = paste0(metadatadir, "/meta/ms5.outraw/",
                            params_phyact[["part6_threshold_combi"]], "/", fnames.ms5raw[i]))
@@ -119,17 +116,6 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       } else {
         mdat = data.table::fread(file = paste0(metadatadir, "/meta/ms5.outraw/", 
                                                params_phyact[["part6_threshold_combi"]],  "/", fnames.ms5raw[i]), data.table = FALSE)
-      }
-      # also load corresponding ms5 file to extract filename
-      ms5toload = grep(pattern = lookfor, fnames.ms5, fixed = T, value = T)
-      if (length(ms5toload) == 1) {
-        output = c()
-        load(file.path(metadatadir, "meta/ms5.out", ms5toload))
-        filename = gsub(".RData$", "", unique(output$filename))
-        rm(output)
-      } else {
-        # if couldn't match the ms5 data, then use the ms5raw as filename as it was done before
-        filename = gsub(pattern = "[.]RData|[.]csv", replacement = "", x = fnames.ms5raw[i])
       }
       nfeatures = 50
       summary = matrix(NA, nfeatures, 1)
@@ -202,7 +188,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       summary[fi] = format(starttime)
       s_names[fi] = "starttime"
       fi = fi + 1
-      summary[fi] = filename
+      summary[fi] = gsub(pattern = "[.]RData|[.]csv", replacement = "", x = fnames.ms5raw[i])
       s_names[fi] = "filename"
       fi = fi + 1
       summary[fi] = ifelse(test = nrow(ts) == 1,
@@ -295,9 +281,9 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         }
         output_part6$GGIRversion = GGIRversion
         save(output_part6, GGIRversion, file = paste0(metadatadir, ms6.out, "/",
-                                         gsub(pattern = "[.]csv|[.]RData",
-                                              replacement = "",
-                                              x = fnames.ms5raw[i]), ".RData"))
+                                                      gsub(pattern = "[.]csv|[.]RData",
+                                                           replacement = "",
+                                                           x = fnames.ms5raw[i]), ".RData"))
       }
       rm(output_part6, summary)
     }
@@ -347,8 +333,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                      .export = functions2passon, .errorhandling = errhand) %myinfix% {
                                        tryCatchResult = tryCatch({
                                          main_part6_recordlevel(i, metadatadir, f0, f1,
-                                                                fnames.ms5raw, ffdone, EXT, verbose,
-                                                                fnames.ms5)
+                                                                fnames.ms5raw, ffdone, EXT, verbose)
                                        })
                                        return(tryCatchResult)
                                      }
@@ -363,8 +348,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       for (i in f0:f1) {
         if (verbose == TRUE) cat(paste0(i, " "))
         main_part6_recordlevel(i, metadatadir, f0, f1,
-                               fnames.ms5raw, ffdone, EXT, verbose,
-                               fnames.ms5)
+                               fnames.ms5raw, ffdone, EXT, verbose)
       }
     }
   }
