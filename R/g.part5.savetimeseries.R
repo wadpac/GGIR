@@ -2,7 +2,8 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
                                   DaCleanFile = NULL,
                                   includedaycrit.part5 = 2/3, ID = NULL,
                                   params_output,
-                                  params_247 = NULL) {
+                                  params_247 = NULL,
+                                  timewindow = NULL) {
   
   ms5rawlevels = data.frame(date_time = ts$time, class_id = LEVELS,
                             # class_name = rep("",Nts),
@@ -23,6 +24,17 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
   names(mdat)[which(names(mdat) == "nonwear")] = "invalidepoch"
   names(mdat)[which(names(mdat) == "diur")] = "SleepPeriodTime"
   mdat = mdat[,-which(names(mdat) == "date_time")]
+  if ("require_complete_lastnight_part5" %in% names(params_output) &&
+      params_output[["require_complete_lastnight_part5"]] == TRUE) {
+    last_timestamp = as.numeric(format(mdat$timestamp[length(mdat$timestamp)], "%H"))
+    if ((timewindow == "MM" || timewindow == "OO") && last_timestamp < 9) {
+      mdat$window[which(mdat$window == max(mdat$window))] = 0 
+    }
+    if (timewindow == "WW" && last_timestamp < 15) {
+      mdat$window[which(mdat$window == max(mdat$window))] = 0 
+    }
+  }
+  
   # Add invalid day indicator
   mdat$invalid_wakinghours = mdat$invalid_sleepperiod =  mdat$invalid_fullwindow = 100
   wakeup = which(diff(c(mdat$SleepPeriodTime,0)) == -1) + 1 # first epoch of each day
