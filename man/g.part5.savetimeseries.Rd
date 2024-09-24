@@ -13,7 +13,8 @@
                               includedaycrit.part5 = 2/3,
                               ID = NULL, params_output,
                               params_247 = NULL,
-                              filename = "")
+                              filename = "",
+                              timewindow = NULL)
 }
 \arguments{
   \item{ts}{
@@ -51,6 +52,9 @@
   }
   \item{filename}{
     Character (default = "") indicating the filename to store in the output.
+  }
+  \item{timewindow}{
+    See \link{GGIR}
   }
 }
 \value{

@@ -45,7 +45,9 @@ GGIR part 5 facilitates the following time window definitions, which can be sele
 | “WW”       | waking up to waking up     | Each day is defined as the time from the participant wakes up a given day to the time they wake up the next day.                             |
 | “OO”       | sleep onset to sleep onset | Each day is defined as the time from the sleep onset a given day to the sleep onset of the next day.                                         |
 
-: For "WW" and "OO", the onset and waking times are guided by the estimates from part 4, but if they are missing, part 5 will attempt to retrieve the estimate from the guider method. Note that the parameter `timewindow` can consist of one of the options beforementioned or any combination of them, for example, the default value is `timewindow = c("MM", "WW")`.
+For "WW" and "OO", the onset and waking times are guided by the estimates from part 4, but if they are missing, part 5 will attempt to retrieve the estimate from the guider method. Note that the parameter `timewindow` can consist of one of the options beforementioned or any combination of them, for example, the default value is `timewindow = c("MM", "WW")`.
+
+When recordings end in the night or early morning the sleep estimates for the night are likely affected. For example, if a recording ends at 10am we cannot be sure that the participant did not sleep until after 10am, and if a recording ends at 2am we cannot be sure that the sleep onset time was reliably estimated. To handle this and ignore the final window in the data, set parameter `require_complete_lastnight_part5 = TRUE` (not default).
 
 ### Defining segments within the MM window
 
