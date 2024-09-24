@@ -27,7 +27,7 @@
      See \link{GGIR}.
   }
   \item{rawlevels_fname}{
-    Path to the file where the output should be stored
+    Path to the file where the output (time series) should be stored
   }
   \item{DaCleanFile}{
     Content of data_cleaning_file as documented in \link{g.report.part5}.
@@ -51,7 +51,8 @@
     See \link{GGIR}
   }
   \item{filename}{
-    Character (default = "") indicating the filename to store in the output.
+    Character (default = "") indicating the name of the accelerometer data file 
+    that was used as input. This name will be stored inside the time series output file.
   }
   \item{timewindow}{
     See \link{GGIR}
