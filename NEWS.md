@@ -2,7 +2,7 @@
 
 - Part 5: Add parameters require_complete_lastnight_part5 to control whether last window is included if last night is incomplete. #1196
 
-- General: GGIR version look-up in .onattach() now skipped when computer is offline, fixes #1203.
+- General: GGIR version look-up in .onattach() no longer crashed when computer is offline, fixes #1203.
 
 # CHANGES IN GGIR VERSION 3.1-4
 
