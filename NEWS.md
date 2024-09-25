@@ -2,8 +2,9 @@
 
 - Part 5: Add parameters require_complete_lastnight_part5 to control whether last window is included if last night is incomplete. #1196
 
-- Reports: The calendar_date and filename columns in reports have been standardized, as %Y-%m-%d and the input accelerometer file name, respectively. #1197
+- General: GGIR version look-up in .onattach() no longer crashes when computer is offline, fixes #1203.
 
+- Reports: The calendar_date and filename columns in reports have been standardized, as %Y-%m-%d and the input accelerometer file name, respectively. #1197
 
 # CHANGES IN GGIR VERSION 3.1-4
 
