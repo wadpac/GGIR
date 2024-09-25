@@ -4,6 +4,8 @@
 
 - General: GGIR version look-up in .onattach() no longer crashes when computer is offline, fixes #1203.
 
+- Reports: The calendar_date and filename columns in reports have been standardized, as %Y-%m-%d and the input accelerometer file name, respectively. #1197
+
 # CHANGES IN GGIR VERSION 3.1-4
 
 - Part 3: Update threshold used for HorAngle to 60 degree, and auto-setting HASPT.ignore.invalid to NA when NotWorn guider is used. #1186
