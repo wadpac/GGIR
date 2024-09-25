@@ -200,6 +200,9 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
       outputfinal = outputfinal[,-cut]
     }
     
+    # revise filename
+    outputfinal$filename = gsub(".RData$", "", outputfinal$filename)
+
     # order data.frame
     outputfinal$window_number = as.numeric(gsub(" ", "", outputfinal$window_number))
     outputfinal = outputfinal[order(outputfinal$filename, outputfinal$window_number, outputfinal$window), ]

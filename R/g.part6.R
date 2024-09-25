@@ -116,6 +116,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       } else {
         mdat = data.table::fread(file = paste0(metadatadir, "/meta/ms5.outraw/", 
                                                params_phyact[["part6_threshold_combi"]],  "/", fnames.ms5raw[i]), data.table = FALSE)
+        filename = fnames.ms5raw[i]
       }
       nfeatures = 50
       summary = matrix(NA, nfeatures, 1)
@@ -188,7 +189,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       summary[fi] = format(starttime)
       s_names[fi] = "starttime"
       fi = fi + 1
-      summary[fi] = gsub(pattern = "[.]RData|[.]csv", replacement = "", x = fnames.ms5raw[i])
+      summary[fi] = gsub(pattern = "[.]RData$|[.]csv$", replacement = "", x = filename)
       s_names[fi] = "filename"
       fi = fi + 1
       summary[fi] = ifelse(test = nrow(ts) == 1,
@@ -281,9 +282,9 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         }
         output_part6$GGIRversion = GGIRversion
         save(output_part6, GGIRversion, file = paste0(metadatadir, ms6.out, "/",
-                                         gsub(pattern = "[.]csv|[.]RData",
-                                              replacement = "",
-                                              x = fnames.ms5raw[i]), ".RData"))
+                                                      gsub(pattern = "[.]csv|[.]RData",
+                                                           replacement = "",
+                                                           x = fnames.ms5raw[i]), ".RData"))
       }
       rm(output_part6, summary)
     }
