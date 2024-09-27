@@ -95,7 +95,6 @@ g.part5.wakesleepwindows = function(ts, part4_output, desiredtz, nightsi,
       if (noon1 > Nts) noon1 = Nts
       nonwearpercentage = mean(ts$nonwear[noon0:noon1])
       if ((length(sleeplog) > 0 & (nonwearpercentage > 0.33) | part4_output$sleeponset_ts[k] == "")) { # added condition to detect nights that are not detected in part 4
-        
         # If non-wear is high for this day and if sleeplog is available
         sleeplogonset = sleeplog$sleeponset[which(sleeplog$ID == ID & sleeplog$night == part4_output$night[k])]
         sleeplogwake = sleeplog$sleepwake[which(sleeplog$ID == ID & sleeplog$night == part4_output$night[k])]
@@ -124,10 +123,19 @@ g.part5.wakesleepwindows = function(ts, part4_output, desiredtz, nightsi,
               s0 = 1
             }
             s1 = closestmidnight + round(sleeplogwake_hr * Nepochsinhour)
+            # if sleeplog indicates a time after the ending of the recording, 
+            # then set the nrow(ts) + 1, so that the next line will set as 
+            # SPT all the time from sleep onset until the end of the recording.
+            if (s1 > nrow(ts) + 1) s1 = nrow(ts) + 1
           }
         }
       }
-      ts$diur[s0:(s1 - 1)] = 1
+      # it might also be that both the sleeplog reported sleeponset and
+      # wakeup goes beyond recording length, in that case, s1 < s0,
+      # so only assign SPT if s0 < s1
+      if (s0 < s1) {
+        ts$diur[s0:(s1 - 1)] = 1
+      }
     }
   }
   return(ts)
