@@ -1,6 +1,10 @@
 # CHANGES IN GGIR VERSION 3.1-?
 
-- Part 5: Add parameters require_complete_lastnight_part5 to control whether last window is included if last night is incomplete. #1196
+- Part 5: 
+
+  - Add parameters require_complete_lastnight_part5 to control whether last window is included if last night is incomplete. #1196
+
+  - Adjust sleeplog times to recording length in part 5 when classifying a night that was not detected in part 4. #1206
 
 - General: GGIR version look-up in .onattach() no longer crashes when computer is offline, fixes #1203.
 
