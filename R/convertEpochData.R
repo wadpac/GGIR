@@ -1,7 +1,41 @@
 convertEpochData = function(datadir = c(), metadatadir = c(),
                             params_general = c(), verbose = TRUE) {
+  
   # Function to convert externally derived epoch data
   # to a format that allows GGIR to process them as if they were part 1 output.
+  
+  # Declare local funcions:
+  matAggregate = function(mat, step) {
+    # Aggregate matrix mat by taking over step number of rows
+    # as sum unless column names is sleep or nonwear in that case
+    # we take the rounded mean.
+    mat = rbind(rep(0, ncol(mat)), mat)
+    cumsum2 = function(x) {
+      x = cumsum(ifelse(is.na(x), 0, x)) + x*0
+      return(x)
+    }
+    mat = apply(mat, 2, cumsum2)
+    mat = mat[seq(1, nrow(mat), by = step), , drop = FALSE]
+    mat = apply(mat, 2, diff)
+    # Correct non incremental variables
+    for (niv in c("sleep", "ExtSleep", "light", "nonwear")) {
+      if (niv %in% colnames(D)) D[, niv] = round(D[, niv] / step)
+    }
+    return(mat)
+  }
+
+  checkEpochMatch = function(desiredEpochSize, epSizeShort) {
+    # Check whether desired and derived epoch size match
+    if (!is.null(desiredEpochSize) && epSizeShort != desiredEpochSize) {
+      stop(paste0("\nThe short epoch size as specified by the user (",
+                  desiredEpochSize, " seconds) does NOT match the short",
+                  " epoch size we see in the data (", epSizeShort,
+                  " seconds). Please correct."), call. = FALSE)
+    }
+    return()
+  }
+  #-----------------------------------------------------------
+  
   
   tz = params_general[["desiredtz"]]
   epSizeShort = params_general[["windowsizes"]][1]
@@ -128,24 +162,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
     sf = sf,
     filename = "unknown",
     deviceSerialNumber = "unknown")
-  
-  detectQuote = function(fn, index) {
-    # From experience we know that on some machine the quotes in the files are
-    # poorly recognised, to catch this first try to check whether this is the case:
-    quote = "\""
-    Dtest = NULL
-    try(expr = {Dtest = data.table::fread(input = fn,
-                                          header = FALSE, sep = ",", skip = index,
-                                          nrows = 20, quote = quote)}, silent = TRUE)
-    if (length(Dtest) == 0) {
-      quote = ""
-    } else {
-      if (nrow(Dtest) <= 1) {
-        quote = "" 
-      }
-    }
-    return(quote)
-  }
+
   I_bu = I # backup version of I (for now only used in actigraph_csv)
   for (i in 1:length(fnames)) { # loop over all epoch files
     # include verbose info
@@ -182,6 +199,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         # extract date/timestamp from fileheader
         timestamp = unlist(strsplit(header," - "))[2]
         timestamp_POSIX = as.POSIXlt(timestamp, tz = tz)
+        D = list(data = D, epochSize = epSizeShort, startTime = timestamp_POSIX)
       } else if (params_general[["dataFormat"]] == "sensewear_xls") {
         # read data
         D = as.data.frame(readxl::read_excel(path = fnames[i], col_types = "text"))
@@ -199,287 +217,72 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                              units = "secs")
         epSizeShort = as.numeric(epochSize)
         timestamp_POSIX = timestamp_POSIX[1]
+        D = list(data = D, epochSize = epSizeShort, startTime = timestamp_POSIX)
       } else if (params_general[["dataFormat"]] == "actigraph_csv") {
-        # check if file was exported with header:
-        header_test = FALSE
-        header = data.table::fread(input = fnames[i], header = FALSE, nrows = 10, data.table = FALSE, sep = ",")
-        splitHeader = function(x) {
-          tmp = unlist(strsplit(x, " "))
-          variable = gsub(pattern = ":| ", replacement = "", x = paste0(tmp[1:(length(tmp) - 1)], collapse = ""))
-          df = data.frame(variable = tolower(variable), value = tmp[length(tmp)])
-          return(df)
-        }
-        AGh = NULL
-        for (hh in header[2:9,1]) {
-          AGh = rbind(AGh, splitHeader(hh))
-        }
-        if (any(grepl("serialnumber", AGh$variable))) header_test = TRUE
+        D = GGIRread::readActiGraphCount(filename = fnames[i], 
+                           timeformat = params_general[["extEpochData_timeformat"]],
+                           desiredtz = params_general[["desiredtz"]],
+                           configtz = params_general[["configtz"]],
+                           timeformatName = "extEpochData_timeformat")
         
-        # rows to skip:
-        if (header_test == TRUE) {
-          skip = 10
-        } else {
-          tmp = data.table::fread(input = fnames[i],
-                                  header = FALSE,
-                                  data.table = FALSE,
-                                  skip = 0,
-                                  nrows = 1)
-          if (any(grepl("data|scoring", tmp[1,]))) {
-            skip = 1
-          } else {
-            skip = 0
-          }
-        }
-        
-        # check if file was exported with column names:
-        colnames = FALSE
-        colnames_test = data.table::fread(input = fnames[i],
-                                        header = FALSE,
-                                        data.table = FALSE,
-                                        skip = skip,
-                                        nrows = 1)
-        if (any(grepl("Axis|vector magnitude|vm", colnames_test[1,], ignore.case = TRUE))) {
-          colnames = TRUE
-        }
-        
-        Dtest = data.table::fread(input = fnames[i],
-                              header = colnames,
-                              data.table = FALSE,
-                              skip = skip, nrows = 1)
-        if (length(grep(pattern = "time|date", x = Dtest[1, 1], ignore.case = TRUE)) > 0) {
-          skip = skip + 1
-        }
-        # read data
-        D = data.table::fread(input = fnames[i],
-                              header = colnames,
-                              data.table = FALSE,
-                              skip = skip)
-        
-        # ignore time and date column if present
-        D = D[, grep(pattern = "time|date", x = Dtest[1, ], ignore.case = TRUE, invert = TRUE), drop = FALSE]
-        D = D[, grep(pattern = "time|date", x = colnames(Dtest), ignore.case = TRUE, invert = TRUE), drop = FALSE]
-        if (inherits(x = D[1,1], what = "POSIXt")) {
-          # remove timestamp
-          D = D[, -1, drop = FALSE]
-        }
-        # Identify time and acceleration columns 
-        acccol = vmcol = NA
-        if (colnames == TRUE) {
-          acccol = grep("axis|activity", colnames(D), ignore.case = TRUE)
-          vmcol = grep("vector magnitude|vm", colnames(D), ignore.case = TRUE)
-        } else {
-          # Then assume 
-          # first 3 columns are axis1, axis2, axis3 if ncol(D) >= 3
-          # first column is VM if ncol(D) < 3
-          # NOTE: this could not be true, from actilife, the user can select
-          # the columns to export (e.g, it could be "Axis1", "Vector Magnitude", "Steps")
-          if (ncol(D) >= 3) {
-            acccol = 1:3
-          } else {
-            vmcol = 1
-          }
-        }
-        # D colnames and formatting
-        if (is.na(acccol[1]) == FALSE) { 
-          colnames(D)[acccol] = c("NeishabouriCount_y", "NeishabouriCount_x", "NeishabouriCount_z")
-        }
-        if (is.na(vmcol[1]) == FALSE) { 
-          D = as.matrix(D, drop = FALSE) # convert to matrix as data.frame will auto-collapse to vector
-          colnames(D)[vmcol] = c("NeishabouriCount_vm")
-        }
-        keep = c(acccol, vmcol)[!is.na(c(acccol, vmcol))]
-        D = D[, keep, drop = FALSE]
-        if (ncol(D) == 3 & is.na(vmcol)) {
-          D$NeishabouriCount_vm = sqrt(D[,1]^2 + D[,2]^2 + D[,3]^2)
-        }
-        # extract information from header
-        if (header_test == TRUE) {
-          I$deviceSerialNumber = AGh$value[grep(pattern = "serialnumber", x = AGh$variable)]
-          # Add serial number to header object because g.extractheadersvars for Actigraph uses this
-          I$header[nrow(I$header) + 1, 1] = NA
-          I$header$value[nrow(I$header)] = as.character(I$deviceSerialNumber)
-          row.names(I$header)[nrow(I$header)] = "Serial Number:"
-          epochSize = AGh$value[grep(pattern = "epochperiod|cycleperiod", x = AGh$variable)]
-          epSizeShort = sum(as.numeric(unlist(strsplit(epochSize, ":"))) * c(3600, 60, 1))
-          
-          # extract date/timestamp from fileheader
-          starttime = AGh$value[grep(pattern = "starttime", x = AGh$variable)]
-          startdate = AGh$value[grep(pattern = "startdate", x = AGh$variable)]
-          
-          timestamp = paste0(startdate, " ", starttime)
-          I$header[which(rownames(I$header) == "start"), 1] = timestamp
-          timestamp_POSIX = as.POSIXlt(timestamp, tz = tz,
-                                       format = params_general[["extEpochData_timeformat"]])
-        } else if (header_test == FALSE) {
-          # extract date/timestamp if included in the columns
-          tmp = data.table::fread(input = fnames[i],
-                                  header = colnames,
-                                  data.table = FALSE,
-                                  skip = skip,
-                                  nrows = 2)
-          if (colnames == TRUE) {
-            datecol = grep("date", colnames(tmp), ignore.case = TRUE)
-            timecol = grep("time|epoch", colnames(tmp), ignore.case = TRUE)
-            time = tmp[, timecol]
-            date = tmp[, datecol]
-            
-            starttime = time[1]
-            starttime = date[1]
-            timestamp = paste0(date, " ", time)
-            I$header[which(rownames(I$header) == "start"), 1] = timestamp[1]
-            format = params_general[["extEpochData_timeformat"]]
-            timestamp_POSIX = as.POSIXlt(timestamp, tz = tz, format = format)
-            if (all(is.na(timestamp_POSIX))) {
-              stop(paste0("\nTimestamps are not available in the file, neither has",
-                          " it a header to extract the timestamps from. Therefore, the file",
-                          " cannot be processed.\n"))
-            }
-            
-            epochSize = difftime(timestamp_POSIX[2], timestamp_POSIX[1], 
-                                 units = "secs")
-            epSizeShort = as.numeric(epochSize)
-            timestamp_POSIX = timestamp_POSIX[1]
-          }
-        }
-        # CHECKS
-        if (all(is.na(timestamp_POSIX))) {
-          stop(paste0("\nTime format in data ", timestamp, " does not match with time format ",
-                      params_general[["extEpochData_timeformat"]],
-                      " as specified by argument extEpochData_timeformat, please correct.\n"))
-        }
-        if (params_general[["windowsizes"]][1] > epSizeShort) {
-            # aggregate data to lower resolution to match desired epoch size in argument windowsizes
-            step = params_general[["windowsizes"]][1] %/% epSizeShort
-            Dcs = apply(D, 2, cumsum)
-            Dcs = apply(Dcs, 2, diff, lag = 1)
-            D = Dcs[seq(1, nrow(Dcs), by = step), , drop = FALSE] 
-            epSizeShort = epSizeShort * step
-        }
-        if (epSizeShort != params_general[["windowsizes"]][1]) {
-          stop(paste0("\nThe short epoch size as specified by the user as the first value of argument windowsizes (",
-                      params_general[["windowsizes"]][1],
-                      " seconds) does NOT match the short epoch size we see in the data (", epSizeShort),
-               " seconds). Please correct.", call. = FALSE)
-        }
-        # mode = AGh$value[grep(pattern = "mode", x = AGh$variable)]
+        # Rename to align with GGIR metric naming
+        cnd = colnames(D$data)
+        colnames(D$data)[which(cnd == "x")] = "NeishabouriCount_x"
+        colnames(D$data)[which(cnd == "y")] = "NeishabouriCount_y"
+        colnames(D$data)[which(cnd == "z")] = "NeishabouriCount_z"
+        colnames(D$data)[which(cnd == "vm")] = "NeishabouriCount_vm"
       } else if (length(grep(pattern = "actiwatch", x = params_general[["dataFormat"]], ignore.case = TRUE)) > 0) {
-        if (params_general[["dataFormat"]] == "actiwatch_csv") {
-          # ! Assumptions that timeseries start before line 1000
-          index = 1000
-          while (index > 0) {
-            quote = detectQuote(fn = fnames[i], index = index)
-            testraw = data.table::fread(input = fnames[i],
-                                        header = FALSE, sep = ",", skip = index,
-                                        nrows = 2, data.table = FALSE, quote = quote)
-            if (length(testraw) > 0) {
-              if (nrow(testraw) == 2) {
-                if (testraw$V1[2] == testraw$V1[1] + 1) {
-                  break
-                }
-              }
-            }
-            index = index - 100
-          }
-          # ! Assumption that first column are the epoch numbers
-          delta = 1 - testraw$V1[1]
-          index = index + delta
-          startFound = FALSE
-          while (startFound == FALSE) {
-            Dtest = data.table::fread(input = fnames[i], sep = ",", skip = index, quote = quote, nrows = 1)  
-            if (Dtest$V1[1] == 1) {
-              startFound = TRUE
-            } else {
-              # This happens when file is has an empty row between each measurement point is stored
-              index = index - 1
-              if (index < 1) stop("Could not find start of recording", call. = FALSE)
-            }
-          }
-          
-          D = data.table::fread(input = fnames[i], sep = ",", skip = index, quote = quote)
-          # ! Assumption that column names are present 2 lines prior to timeseries
-          colnames = data.table::fread(input = fnames[i],
-                                       header = FALSE, sep = ",",
-                                       skip = index - 2, nrows = 1, quote = quote)
-          if (all(is.na(colnames))) {
-            colnames = data.table::fread(input = fnames[i],
-                                         header = FALSE, sep = ",",
-                                         skip = index - 4, nrows = 1, quote = quote)
-          }
-          colnames(D) = as.character(colnames)[1:ncol(D)]
-          
-          # ! Assumptions about columns names
-          colnames(D) = gsub(pattern = "datum|date", replacement = "date", x = colnames(D), ignore.case = TRUE)
-          colnames(D) = gsub(pattern = "tijd|time", replacement = "time", x = colnames(D), ignore.case = TRUE)
-          colnames(D) = gsub(pattern = "activiteit|activity", replacement = "ZCY", x = colnames(D), ignore.case = TRUE)
-          I$header[which(rownames(I$header) == "start"), 1] = paste(D$date[1], D$time[1], sep = " ")
-          
-          timestamp_POSIX = as.POSIXct(x = paste(D$date[1:4], D$time[1:4], sep = " "),
-                                       format = params_general[["extEpochData_timeformat"]],
-                                       tz = tz)
-          if (all(is.na(timestamp_POSIX))) {
-            stop(paste0("\nTime format in data ", D$date[1], " does not match with time format ",
-                        params_general[["extEpochData_timeformat"]],
-                        " as specified by argument extEpochData_timeformat, please correct.\n"))
-          }
-          epSizeShort = mean(diff(as.numeric(timestamp_POSIX)))
-          if (epSizeShort != params_general[["windowsizes"]][1]) {
-            stop(paste0("\nThe short epoch size as specified by the user as the first value of argument windowsizes (",
-                        params_general[["windowsizes"]][1],
-                        " seconds) does NOT match the short epoch size we see in the data (", epSizeShort),
-                 " seconds). Please correct.", call. = FALSE)
-          }
-          timestamp_POSIX = timestamp_POSIX[1]
-          D = D[, "ZCY"]
-          if (quote == "") D$ZCY = as.numeric(D$ZCY)
-        } else if (params_general[["dataFormat"]] == "actiwatch_awd") {
-          # ! Assumption that first data row equals the first row with 3 columns
-          index = 0
-          
-          quote = detectQuote(fn = fnames[i], index = 50)
-          NC = 1
-          while (NC >= 3) {
-            
-            testraw = data.table::fread(input = fnames[i],
-                                        header = FALSE, sep = ",", skip = index,
-                                        nrows = 1, data.table = TRUE, quote = quote)
-            NC = ncol(testraw)
-            if (NC >= 3) {
-              break()
-            } else {
-              index = index + 1
-            }
-          }
-          D = data.table::fread(input = fnames[i], 
-                                header = FALSE, sep = ",", skip = index, quote = quote)
-          D = D[,1]
-          colnames(D)[1] = "ZCY"
-          header = data.table::fread(input = fnames[i],
-                                     header = FALSE, sep = ",", nrows =  7, quote = quote)
-          # Get epoch size
-          optionalEpochs = data.frame(code = c("1", "2", "4", "8", "20", "81", "C1", "C2"),
-                                      size = c(15, 30, 60, 120, 300, 2, 5, 10))
-          epSizeShort = optionalEpochs$size[which(optionalEpochs$code == as.character(header[4]))]
-          # Get starttime 
-          timestampFormat = paste0(unlist(strsplit(params_general[["extEpochData_timeformat"]], " "))[1], " %H:%M")
-          I$header[which(rownames(I$header) == "start"), 1] =  paste(header[2], header[3], sep = " ")
-          timestamp_POSIX = as.POSIXct(x = paste(header[2], header[3], sep = " "),
-                                       format = timestampFormat, tz = tz)
-          if (is.na(timestamp_POSIX)) {
-            stop(paste0("\nTime format in data ", header[2], " does not match with time format ",
-                        params_general[["extEpochData_timeformat"]],
-                        " as specified by argument extEpochData_timeformat, please correct.\n"))
-          }
-          if (epSizeShort != params_general[["windowsizes"]][1]) {
-            stop(paste0("\nThe short epoch size as specified by the user as the first value of argument windowsizes (",
-                        params_general[["windowsizes"]][1],
-                        " seconds) does NOT match the short epoch size we see in the data (", epSizeShort),
-                 " seconds). Please correct.", call. = FALSE)
-          }
-          if (quote == "") D$ZCY = as.numeric(D$ZCY)
+        D = GGIRread::readActiwatchCount(filename = fnames[i], 
+                               timeformat = params_general[["extEpochData_timeformat"]],
+                               desiredtz = params_general[["desiredtz"]],
+                               configtz = params_general[["configtz"]],
+                               timeformatName = "extEpochData_timeformat")
+        # Rename to align with GGIR metric naming
+        colnames(D$data)[which(colnames(D$data) == "counts")] = "ZCY"
+        extraVars  = grep(pattern = "light|nonwear", x = colnames(D$data))
+        if (length(extraVars) > 0) {
+          # split the extraVars
+          D_extraVars = D$data[, extraVars, drop = FALSE]
+          D$data = D$data[, -extraVars, drop = FALSE]
         }
+      } else if (params_general[["dataFormat"]] == "phb_xlsx") {
+        # phb = Philips Health Band
+        
+        # fnames = dir(inputPath, recursive = FALSE, full.names = TRUE, pattern = "[.]xlsx")
+        # fileOverview = data.frame(filename = fnames)
+        # extractID = function(x) {
+        #   x = basename(x)
+        #   x = gsub(pattern = "sleep_wake", replacement = "sleepwake", x = tolower(x))
+        #   ID = unlist(strsplit(x, "_"))[2]
+        #   return(ID)
+        # }
+        # fileOverview$ID = unlist(lapply(fileOverview$filename, FUN = extractID))
+        # 
+        # uids = unique(fileOverview$ID)
+        # for (uid in uids) {
+        # filesForThisPerson = fileOverview$filename[which(fileOverview$ID == uid)]
       }
-      quartlystart = (ceiling(as.numeric(timestamp_POSIX) / epSizeLong)) * epSizeLong
+      if ("sleep" %in% colnames(D$data)) colnames(D$data)[which(colnames(D$data) == "sleep")] = "ExtSleep"
+      if ("steps" %in% colnames(D$data)) colnames(D$data)[which(colnames(D$data) == "steps")] = "ExtStep"
       
+      # Convert lists to objects as expected by code below
+      timestamp_POSIX = D$startTime
+      epSizeShort = D$epochSize
+      D = D$data
+      #-----------------------------------
+      # Aggregate epochs if desired epoch length is larger
+      desiredEpochSize = params_general[["windowsizes"]][1]
+      if (!is.null(desiredEpochSize)) {
+        if (desiredEpochSize > epSizeShort) {
+          step = desiredEpochSize %/% epSizeShort
+
+          D = matAggregate(D, step)
+          epSizeShort = epSizeShort * step
+        }
+        checkEpochMatch(desiredEpochSize, epSizeShort)
+      }
+      
+      quartlystart = (ceiling(as.numeric(timestamp_POSIX) / epSizeLong)) * epSizeLong
       ts_longEp_POSIX = as.POSIXlt(quartlystart, tz = tz, origin = "1970-01-01") # POSIX time
       M$wdayname = weekdays(x = ts_longEp_POSIX, abbreviate = FALSE) # extract weekday as day name
       M$wday = ts_longEp_POSIX$wday # extract weekday as a daynumber
@@ -515,7 +318,8 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                                             tz = tz)
       time_longEp_8601 = POSIXtime2iso8601(x = as.POSIXlt(time_longEp_num, tz = tz, origin = "1970-01-01"),
                                            tz = tz)
-      if (params_general[["dataFormat"]] %in% c("actigraph_csv", "sensewear_xls") == FALSE) {
+      if (params_general[["dataFormat"]] %in% c("actigraph_csv", "sensewear_xls", 
+                                                "actiwatch_awd", "actiwatch_csv") == FALSE) {
         M$metashort = data.frame(timestamp = time_shortEp_8601,
                                  accmetric = D[1:length(time_shortEp_8601),1],stringsAsFactors = FALSE)
       } else {
@@ -531,7 +335,6 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         # if it is a lot then this will be detected as non-wear
         M$metashort$ZCY[is.na(M$metashort$ZCY)] = 0 
       }
-      
       LML = length(time_longEp_8601)
       if (params_general[["dataFormat"]] == "ukbiobank_csv") {
         names(M$metashort)[2] = "LFENMO"

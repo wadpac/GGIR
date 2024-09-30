@@ -61,8 +61,8 @@ test_that("External epoch data is correctly converted", {
   load(paste0(QCbasis, "/meta_Actiwatch.csv.RData"))
   expect_equal(sum(M$metalong$nonwearscore), 0)
   expect_equal(nrow(M$metashort), 860)
-  expect_equal(ncol(M$metashort), 2)
-  expect_equal(colnames(M$metashort), c("timestamp", "ZCY"))
+  expect_equal(ncol(M$metashort), 3)
+  expect_equal(colnames(M$metashort), c("timestamp", "ZCY", "ExtSleep"))
 
   # Tidy up by deleting output folder
   if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
@@ -96,9 +96,9 @@ test_that("External epoch data is correctly converted", {
   load(paste0(QCbasis, "/meta_ActiGraph61.csv.RData"))
   expect_equal(sum(M$metalong$nonwearscore), 165)
   expect_equal(nrow(M$metashort), 984)
-  expect_equal(ncol(M$metashort), 5)
+  expect_equal(ncol(M$metashort), 6)
   expect_true(all(c("timestamp", "NeishabouriCount_x", "NeishabouriCount_y", 
-                    "NeishabouriCount_z") %in% colnames(M$metashort)))
+                    "NeishabouriCount_z", "ExtStep") %in% colnames(M$metashort)))
   
   # Tidy up by deleting output folder
   if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
@@ -115,8 +115,8 @@ test_that("External epoch data is correctly converted", {
   load(paste0(QCbasis, "/meta_ActiGraph13.csv.RData"))
   expect_equal(sum(M$metalong$nonwearscore), 291)
   expect_equal(nrow(M$metashort), 988)
-  expect_equal(ncol(M$metashort), 5)
-  expect_true(all(c("timestamp", "NeishabouriCount_x", "NeishabouriCount_y", 
+  expect_equal(ncol(M$metashort), 6)
+  expect_true(all(c("timestamp", "NeishabouriCount_x", "NeishabouriCount_y",  "ExtStep",
                     "NeishabouriCount_z") %in% colnames(M$metashort)))
   
   # Tidy up by deleting output folder
@@ -134,9 +134,9 @@ test_that("External epoch data is correctly converted", {
   load(paste0(QCbasis, "/meta_ActiGraph13_timestamps_headers.csv.RData"))
   expect_equal(sum(M$metalong$nonwearscore), 0)
   expect_equal(nrow(M$metashort), 960)
-  expect_equal(ncol(M$metashort), 5)
+  expect_equal(ncol(M$metashort), 6)
   expect_true(all(c("timestamp", "NeishabouriCount_x", "NeishabouriCount_y", 
-                    "NeishabouriCount_z", "NeishabouriCount_vm") %in% colnames(M$metashort)))
+                    "NeishabouriCount_z", "ExtStep", "NeishabouriCount_vm") %in% colnames(M$metashort)))
   
   # Tidy up by deleting output folder
   if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
