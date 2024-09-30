@@ -21,14 +21,17 @@ test_that("Part 6 with household co-analysis", {
   data(data.ts)
   mdat = data.ts
   mdat$timenum = mdat$timenum - (5 * 60) 
-  save(mdat, file = paste0(dn, "/800-900-001_left wrist.RData"))
+  filename = "800-900-001_left wrist.bin"
+  save(mdat, filename, file = paste0(dn, "/800-900-001_left wrist.RData"))
   mdat$timenum = mdat$timenum + (7 * 60)
-  save(mdat, file = paste0(dn, "/800-900-002_left wrist.RData"))
+  filename = "800-900-002_left wrist.bin"
+  save(mdat, filename, file = paste0(dn, "/800-900-002_left wrist.RData"))
   mdat$timenum = mdat$timenum + (14 * 60)
-  save(mdat, file = paste0(dn, "/800-900-003_left wrist.RData"))
+  filename = "800-900-003_left wrist.bin"
+  save(mdat, filename, file = paste0(dn, "/800-900-003_left wrist.RData"))
   
   # Run household co-analysis  
-  # Update parameters to align with datset
+  # Update parameters to align with dataset
   params_general = load_params(topic = "general")$params_general
   params_general[["desiredtz"]] = "America/Curacao"
   params_phyact = load_params(topic = "phyact")$params_phyact

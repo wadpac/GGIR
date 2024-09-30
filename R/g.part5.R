@@ -170,6 +170,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         # convert to character/numeric if stored as factor in metashort and metalong
         M$metashort = correctOlderMilestoneData(M$metashort)
         M$metalong = correctOlderMilestoneData(M$metalong)
+        filename = filename_dir
         # load output g.part3
         longitudinal_axis = NULL # initialise var that is part of ms3.out
         load(paste0(metadatadir, "/meta/ms3.out/", fnames.ms3[i]))
@@ -600,7 +601,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                            includedaycrit.part5 = params_cleaning[["includedaycrit.part5"]],
                                            ID = ID,
                                            params_output = params_output,
-                                           params_247 = params_247)
+                                           params_247 = params_247,
+                                           filename = filename,
+                                           timewindow = timewindowi)
                   }
                 }
               }
@@ -662,7 +665,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                 if (length(GGIRversion) != 1) GGIRversion = sessionInfo()$otherPkgs$GGIR$Version
               }
               output$GGIRversion = GGIRversion
-              save(output, tail_expansion_log, GGIRversion,
+              # Capture final timestamp to ease filtering last window in g.report.part5
+              last_timestamp = time_POSIX[length(time_POSIX)] 
+              save(output, tail_expansion_log, GGIRversion, last_timestamp,
                    file = paste(metadatadir, ms5.out, "/", fnames.ms3[i], sep = ""))
             }
           }
