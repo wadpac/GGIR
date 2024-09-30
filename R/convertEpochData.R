@@ -42,31 +42,65 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
   epSizeLong = params_general[["windowsizes"]][2]
   epSizeNonWear = params_general[["windowsizes"]][3]
   myfun = NULL
-  # Identify input data file extensions
+  # Identify input data files
   if (dir.exists(datadir) == FALSE) {
     stop("\nWhen working with external data, argument datadir is expected to be a directory")
   }
-  fnames_csv = dir(datadir, full.names = TRUE,pattern = "[.]csv")
-  fnames_awd = dir(datadir, full.names = TRUE,pattern = "[.]awd|[.]AWD")
-  fnames_xls = dir(datadir, full.names = TRUE,pattern = "[.]xls")
-  if (length(which(c(length(fnames_csv), length(fnames_awd), length(fnames_xls)) != 0)) > 1) {
-    stop("Do not mix csv and awd files in the same data directory")
+  
+  if (params_general[["dataFormat"]] == "phb_xlsx") {
+    # Philips Health Band data comes with two files per recording that need to be matched
+    # Identify all xlsx files
+    xlsx_files = dir(datadir, recursive = FALSE, full.names = TRUE, pattern = "[.]xlsx")
+    xlsx_files = xlsx_files[grep(pattern = "sleep|datalist", x = xlsx_files, ignore.case = TRUE)]
+    # Identify the pairs by looking for matching ID
+    fileOverview = data.frame(filename = xlsx_files)
+    extractID = function(x) {
+      x = basename(x)
+      # remove _ in sleep_wake to ease finding the ID
+      x = gsub(pattern = "sleep_wake", replacement = "sleepwake", x = tolower(x))
+      ID = unlist(strsplit(x, "_"))[2]
+      return(ID)
+    }
+    fileOverview$ID = unlist(lapply(fileOverview$filename, FUN = extractID))
+    # Put matching file pairs in a vector of lists
+    uids = unique(fileOverview$ID)
+    fnames = rep(NA, length(uids))
+    for (uid in 1:length(uids)) {
+      # Only keep recording where we have both files
+      matchingFiles = which(fileOverview$ID == uids[uid])
+      if (length(matchingFiles) == 2) {
+        fnames[uid] = list(fileOverview$filename[matchingFiles])
+      } else if (length(matchingFiles) == 1) {
+        warning(paste0("No matching file found for ", fileOverview$filename[matchingFiles]), call. = FALSE)
+      } else if (length(matchingFiles) > 2) {
+        warning(paste0("There are more than 2 files for ID ", uids[uid], "."), call. = FALSE)
+      }
+    }
   } else {
-    if (length(fnames_awd) > 0) {
-      if (params_general[["dataFormat"]] != "actiwatch_awd") {
-        stop("Specified dataFormat does not match the data")
+    # Data with just one recording per file.
+    # Here we do a check that no unexpected file types are found.
+    fnames_csv = dir(datadir, full.names = TRUE,pattern = "[.]csv")
+    fnames_awd = dir(datadir, full.names = TRUE,pattern = "[.]awd|[.]AWD")
+    fnames_xls = dir(datadir, full.names = TRUE,pattern = "[.]xls")
+    if (length(which(c(length(fnames_csv), length(fnames_awd), length(fnames_xls)) != 0)) > 1) {
+      stop("Do not mix csv and awd files in the same data directory")
+    } else {
+      if (length(fnames_awd) > 0) {
+        if (params_general[["dataFormat"]] != "actiwatch_awd") {
+          stop("Specified dataFormat does not match the data")
+        }
+        fnames = fnames_awd
+      } else if (length(fnames_csv) > 0) {
+        if (params_general[["dataFormat"]] == "actiwatch_awd") {
+          stop("Specified dataFormat does not match the data")
+        }
+        fnames = fnames_csv
+      } else if (length(fnames_xls) > 0) {
+        if (params_general[["dataFormat"]] != "sensewear_xls") {
+          stop("Specified dataFormat does not match the data")
+        }
+        fnames = fnames_xls
       }
-      fnames = fnames_awd
-    } else if (length(fnames_csv) > 0) {
-      if (params_general[["dataFormat"]] == "actiwatch_awd") {
-        stop("Specified dataFormat does not match the data")
-      }
-      fnames = fnames_csv
-    } else if (length(fnames_xls) > 0) {
-      if (params_general[["dataFormat"]] != "sensewear_xls") {
-        stop("Specified dataFormat does not match the data")
-      }
-      fnames = fnames_xls
     }
   }
   #-------------
@@ -115,6 +149,13 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
     dformc = 98
     dformn = "epochdata"
     sf = 100 # <= EXTRACT FROM FILE?
+  } else  if (params_general[["dataFormat"]] == "phb_xlsx") {
+    deviceName = "PhilipsHealthBand"
+    monn = "philipshealthband"
+    monc = 97
+    dformc = 98
+    dformn = "epochdata"
+    sf = 100
   }
   
   # Before we look inside the epoch files we can already create templates
@@ -174,7 +215,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
       }
     }
     # filename
-    fname = basename(fnames[i])
+    fname = basename(unlist(fnames[i])[1])
     
     outputFileName = paste0(metadatadir, "/meta/basic/meta_", fname, ".RData")
     
@@ -247,24 +288,30 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         }
       } else if (params_general[["dataFormat"]] == "phb_xlsx") {
         # phb = Philips Health Band
+        D = GGIRread::mergePHBdata(filenames = unlist(fnames[i]), 
+                                   timeformat = params_general[["extEpochData_timeformat"]],
+                                   desiredtz = params_general[["desiredtz"]],
+                                   configtz = params_general[["configtz"]],
+                                   timeformatName = "extEpochData_timeformat")
+        epochSize = difftime(D$data$timestamp[2], D$data$timestamp[1], 
+                             units = "secs")
+        epSizeShort = as.numeric(epochSize)
+        timestamp_POSIX = D$data$timestamp[1]
         
-        # fnames = dir(inputPath, recursive = FALSE, full.names = TRUE, pattern = "[.]xlsx")
-        # fileOverview = data.frame(filename = fnames)
-        # extractID = function(x) {
-        #   x = basename(x)
-        #   x = gsub(pattern = "sleep_wake", replacement = "sleepwake", x = tolower(x))
-        #   ID = unlist(strsplit(x, "_"))[2]
-        #   return(ID)
-        # }
-        # fileOverview$ID = unlist(lapply(fileOverview$filename, FUN = extractID))
-        # 
-        # uids = unique(fileOverview$ID)
-        # for (uid in uids) {
-        # filesForThisPerson = fileOverview$filename[which(fileOverview$ID == uid)]
+        D$epochSize = epSizeShort
+        D$startTime = timestamp_POSIX
+        
+        extraVars  = grep(pattern = "nonwear", x = colnames(D$data))
+        if (length(extraVars) > 0) {
+          # split the extraVars
+          D_extraVars = D$data[, extraVars, drop = FALSE]
+          D$data = D$data[, -extraVars, drop = FALSE]
+        }
+        D$data = D$data[, grep(pattern = "cardio|heart|sleepevent|battery|duration|missing|activem|vo2|energy|respiration|timestamp",
+                               x = colnames(D$data), ignore.case = TRUE, invert = TRUE)]
       }
       if ("sleep" %in% colnames(D$data)) colnames(D$data)[which(colnames(D$data) == "sleep")] = "ExtSleep"
       if ("steps" %in% colnames(D$data)) colnames(D$data)[which(colnames(D$data) == "steps")] = "ExtStep"
-      
       # Convert lists to objects as expected by code below
       timestamp_POSIX = D$startTime
       epSizeShort = D$epochSize
@@ -318,8 +365,10 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                                             tz = tz)
       time_longEp_8601 = POSIXtime2iso8601(x = as.POSIXlt(time_longEp_num, tz = tz, origin = "1970-01-01"),
                                            tz = tz)
-      if (params_general[["dataFormat"]] %in% c("actigraph_csv", "sensewear_xls", 
-                                                "actiwatch_awd", "actiwatch_csv") == FALSE) {
+      # formats with possibly more than 1 column
+      morethan1 = c("actigraph_csv", "sensewear_xls", "actiwatch_awd",
+                    "actiwatch_csv", "phb_xlsx")
+      if (params_general[["dataFormat"]] %in% morethan1 == FALSE) {
         M$metashort = data.frame(timestamp = time_shortEp_8601,
                                  accmetric = D[1:length(time_shortEp_8601),1],stringsAsFactors = FALSE)
       } else {
@@ -336,30 +385,39 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         M$metashort$ZCY[is.na(M$metashort$ZCY)] = 0 
       }
       LML = length(time_longEp_8601)
+      
+      if (params_general[["dataFormat"]] == "ukbiobank_csv") {
+        acc_column = 2
+      } else {
+        acc_column = 1
+      }
+      
       if (params_general[["dataFormat"]] == "ukbiobank_csv") {
         names(M$metashort)[2] = "LFENMO"
         #Collapse second column of input data to use as non-wear score
         imp = D[, 2]
         M$metashort$LFENMO = M$metashort$LFENMO/1000
-      } else if (length(grep(pattern = "actiwatch", x = params_general[["dataFormat"]], ignore.case = TRUE)) > 0) {
-        imp = unlist(D[, 1])
-      } else if (params_general[["dataFormat"]] == "actigraph_csv") {
-        imp = unlist(D[, 1])
-      } else if (params_general[["dataFormat"]] == "sensewear_xls") {
+      } else {
         imp = unlist(D[, 1])
       }
       navalues = which(is.na(imp) == TRUE)
       if (length(navalues) > 0) imp[navalues] = 1
-
+      
+      # Nonwear in the day
       if (params_general[["dataFormat"]] == "ukbiobank_csv") {
+        nonwear_in_data = TRUE
+      } else {
+        nonwear_in_data = FALSE
+      }
+      
+
+      if (nonwear_in_data == TRUE) {
         # Take long epoch mean of UK Biobank based invalid data indicater per 5 seconds
         imp2 = cumsum(imp)
         imp3 = diff(imp2[seq(1, length(imp2),
                              by = ((60/epSizeShort) * (epSizeLong/60)))]) / ((60/epSizeShort) * (epSizeLong/60)) # rolling mean
         nonwearscore = round(imp3 * 3) # create three level nonwear score from it, not really necessary for GGIR, but helps to retain some of the information
-      } else if (length(grep(pattern = "actiwatch", x = params_general[["dataFormat"]], ignore.case = TRUE)) > 0 |
-                 params_general[["dataFormat"]] == "actigraph_csv" |
-                 params_general[["dataFormat"]] == "sensewear_xls") {
+      } else {
         # Using rolling long window sum to indicate whether it is nonwear
         nonwearscore = rep(0, LML)
         ni = 1
