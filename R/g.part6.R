@@ -128,6 +128,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         Lnames = data.table::fread(file = legendfile)$class_name
         mdat = data.table::fread(file = paste0(metadatadir, "/meta/ms5.outraw/", 
                                                params_phyact[["part6_threshold_combi"]],  "/", fnames.ms5raw[i]), data.table = FALSE)
+        filename = fnames.ms5raw[i]
       }
       nfeatures = 200
       summary = matrix(NA, nfeatures, 1)
@@ -241,7 +242,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       summary[fi] = format(starttime)
       s_names[fi] = "starttime"
       fi = fi + 1
-      summary[fi] = gsub(pattern = "[.]RData|[.]csv", replacement = "", x = fnames.ms5raw[i])
+      summary[fi] = gsub(pattern = "[.]RData$|[.]csv$", replacement = "", x = filename)
       s_names[fi] = "filename"
       fi = fi + 1
       summary[fi] = ifelse(test = nrow(ts) == 1,

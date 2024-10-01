@@ -40,13 +40,16 @@ test_that("Part 6 with household co-analysis", {
   
   mdat$timenum = mdat$timenum - (5 * 60) 
   mdat$timestamp = as.POSIXct(mdat$timenum, tz =  params_general[["desiredtz"]])
-  save(mdat, Lnames, file = paste0(dn, "/800-900-001_left wrist.RData"))
+  filename = "800-900-001_left wrist.bin"
+  save(mdat, filename, Lnames, file = paste0(dn, "/800-900-001_left wrist.RData"))
   mdat$timenum = mdat$timenum + (7 * 60)
   mdat$timestamp = as.POSIXct(mdat$timenum, tz =  params_general[["desiredtz"]])
-  save(mdat, Lnames, file = paste0(dn, "/800-900-002_left wrist.RData"))
+  filename = "800-900-002_left wrist.bin"
+  save(mdat, filename, Lnames, file = paste0(dn, "/800-900-002_left wrist.RData"))
   mdat$timenum = mdat$timenum + (14 * 60)
   mdat$timestamp = as.POSIXct(mdat$timenum, tz =  params_general[["desiredtz"]])
-  save(mdat, Lnames, file = paste0(dn, "/800-900-003_left wrist.RData"))
+  filename = "800-900-003_left wrist.bin"
+  save(mdat, filename, Lnames, file = paste0(dn, "/800-900-003_left wrist.RData"))
   mdat_file3 = mdat
   
   # Run household co-analysis  

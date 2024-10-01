@@ -76,6 +76,9 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(),
     }
     nightsummary2 = as.data.frame(do.call(rbind, lapply(fnames.ms4, myfun)), stringsAsFactors = FALSE)
     nightsummary2$night = as.numeric(gsub(" ", "", nightsummary2$night))
+    nightsummary2$calendar_date = as.Date(nightsummary2$calendar_date, format = "%d/%m/%Y")
+    nightsummary2$calendar_date = format(nightsummary2$calendar_date, format = "%Y-%m-%d")
+    nightsummary2$filename = gsub(".RData$", "", nightsummary2$filename)
     # ====================================== Add non-wearing during SPT from part 5, if it is availabe:
     ms5.out = "/meta/ms5.out"
     if (file.exists(paste(metadatadir, ms5.out, sep = ""))) {

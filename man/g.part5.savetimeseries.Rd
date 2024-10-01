@@ -14,7 +14,9 @@
                               includenightcrit.part5 = 0,
                               ID = NULL, params_output,
                               params_247 = NULL,
-                              Lnames = NULL, timewindow = NULL)
+                              Lnames = NULL, timewindow = NULL
+                              filename = "",
+                              timewindow = NULL)
 }
 \arguments{
   \item{ts}{
@@ -27,7 +29,7 @@
      See \link{GGIR}.
   }
   \item{rawlevels_fname}{
-    Path to the file where the output should be stored
+    Path to the file where the output (time series) should be stored
   }
   \item{DaCleanFile}{
     Content of data_cleaning_file as documented in \link{g.report.part5}.
@@ -58,6 +60,10 @@
   \item{Lnames}{
     Level names as passed on from \link{identify_levels}, these are the names
     corresponding the ID of the behavioural classes as stored in column class_id.
+  }
+  \item{filename}{
+    Character (default = "") indicating the name of the accelerometer data file 
+    that was used as input. This name will be stored inside the time series output file.
   }
   \item{timewindow}{
     See \link{GGIR}
