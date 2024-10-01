@@ -13,6 +13,7 @@
                               includedaycrit.part5 = 2/3,
                               ID = NULL, params_output,
                               params_247 = NULL,
+                              filename = "",
                               timewindow = NULL)
 }
 \arguments{
@@ -26,7 +27,7 @@
      See \link{GGIR}.
   }
   \item{rawlevels_fname}{
-    Path to the file where the output should be stored
+    Path to the file where the output (time series) should be stored
   }
   \item{DaCleanFile}{
     Content of data_cleaning_file as documented in \link{g.report.part5}.
@@ -48,6 +49,10 @@
   }
   \item{params_247}{
     See \link{GGIR}
+  }
+  \item{filename}{
+    Character (default = "") indicating the name of the accelerometer data file 
+    that was used as input. This name will be stored inside the time series output file.
   }
   \item{timewindow}{
     See \link{GGIR}
