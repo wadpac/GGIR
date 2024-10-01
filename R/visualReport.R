@@ -37,7 +37,8 @@ visualReport = function(metadatadir = c(),
   }  
   
   panelplot = function(mdat, ylabels_plot2, binary_vars,
-                       BCN, BCC, title = "", hrsPerRow = NULL, plotid = 0, legend_items = NULL, lux_available = FALSE,
+                       BCN, BCC, title = "", hrsPerRow = NULL, plotid = 0, 
+                       legend_items = NULL, lux_available = FALSE,
                        step_count_available = FALSE, epochSize = 60, focus = "day") {
     window_duration = mdat$timenum[nrow(mdat)] - mdat$timenum[1]
     signalcolor = "black"
@@ -72,7 +73,11 @@ visualReport = function(metadatadir = c(),
     #============================================
     # Acceleration and angle signal
     # scale 0 - 100, where bottom half is used for angle and top half for acceleration
-    Ymax = 100
+    if (lux_available == TRUE) {
+      Ymax = 110
+    } else {
+      Ymax = 100
+    }
     Ymin = 0
     accy = (mdat$ACC / 10) + 50
     
@@ -91,7 +96,8 @@ visualReport = function(metadatadir = c(),
     }
 
     if (lux_available == TRUE) {
-      luxy = ceiling(pmin(mdat$lightpeak + 1, 20000) / 400) * 2
+      # luxy = ceiling(pmin(mdat$lightpeak + 1, 20000) / 2000) + 100
+      luxy = (pmin(mdat$lightpeak + 1, 20000) / 2000) + 100
     }
     plot(0:1, 0:1,
          ylim = c(0, Ymax), xlim = XLIM, 
@@ -231,11 +237,20 @@ visualReport = function(metadatadir = c(),
     if (Nangles > 1) {
       abline(h = c(0, 20, 40), lty = 3, lwd = 0.3)
     }
-    # Add angle lines on top
+    # Add acc line
     lines(mdat$timestamp, accy, type = "l",
           col = signalcolor,
           lwd = 0.3)
+    
+    if (lux_available == TRUE) {
+      # Add lux
+      lines(mdat$timestamp, luxy, type = "l",
+            col = signalcolor,
+            lwd = 0.3)
+    }
+    
     angleColor = ifelse(Nangles > 1, yes = "orange", no = signalcolor)
+    # Add angle lines on top
     lines(mdat$timestamp, ang1, type = "l", col = angleColor, lwd = 0.3)
     if (Nangles > 1) {
       lines(mdat$timestamp, ang2, type = "l", col = "red", lwd = 0.3)
@@ -249,6 +264,11 @@ visualReport = function(metadatadir = c(),
     text(x = mdat$timestamp[1], y = 40, labels = textAngle,
          pos = 4, cex = 0.7, col = signalcolor, font = 2)
     
+    if (lux_available == TRUE) {
+      text(x = mdat$timestamp[1], y = 105, labels = "Lux",
+           pos = 4, cex = 0.7, col = signalcolor, font = 2)
+    }
+    
     # Highlight invalid epochs as hashed area on top of all rects
     if ("invalid" %in% legend_items$name) {
       freqtab = table(mdat$invalid)
@@ -260,7 +280,11 @@ visualReport = function(metadatadir = c(),
         t1 = mdat$timestamp[newi$endi]
         col = legend_items$col[which(legend_items$name == "invalid")]
         y0 = 5
-        y1 = 95
+        if (lux_available == TRUE) {
+          y1 = 105
+        } else {
+          y1 = 95
+        }
         transparantWhite = grDevices::adjustcolor(col = "white", alpha.f = 0.8)
         rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1,
              col = transparantWhite, lwd = 0.8, border = "grey")
@@ -279,7 +303,8 @@ visualReport = function(metadatadir = c(),
           toptext = "onset"  
           # add guider name
           # guider names as defined in function g.part5.savetimeseries
-          guider_names = c('unknown', 'sleeplog', 'HDCZA', 'setwindow', 'L512', 'HorAngle', 'NotWorn')
+          guider_names = c('unknown', 'sleeplog', 'HDCZA', 'setwindow', 
+                           'L512', 'HorAngle', 'NotWorn')
           guider_name =  paste0("guided by: ", guider_names[mdat$guider[window_edges[wei]] + 1])
           text(x = mdat$timestamp[window_edges[wei]], y = 5,
                labels = guider_name, las = 2, srt = 90, pos = 4,
@@ -310,7 +335,7 @@ visualReport = function(metadatadir = c(),
       if (length(colour) == 1) {
         for (ci in 1:Nitems) {
           col[ci] = grDevices::adjustcolor(col = col[ci],
-                                           alpha.f = 0.2 + (ci / Nitems) * 0.8) #1 / (ci + 0.4)
+                                           alpha.f = 0.2 + (ci / Nitems) * 0.8)
         }
       }
       if (reverse == TRUE) col = rev(col)
@@ -417,7 +442,8 @@ visualReport = function(metadatadir = c(),
         # Sleep diary
         legend_items = gen_col_names(ylabels_plot2, name = "diary",
                                      legend_items = legend_items,
-                                     colour = c("#FF00FF", "#FFD700", "#7CFC00", "red"), level = 1, reverse = TRUE) #"#222255" #
+                                     colour = c("#FF00FF", "#FFD700", "#7CFC00", "red"),
+                                     level = 1, reverse = TRUE) #"#222255" #
         # SIB (day time)
         legend_items$col = c(legend_items$col, "#56B4E9") #"#D55E00""#E69F00") "#56B4E9"
         legend_items$name = c(legend_items$name, "sib")
@@ -523,9 +549,11 @@ visualReport = function(metadatadir = c(),
               for (bvi in 1:length(boutvars)) {
                 tmp_split = unlist(strsplit(legendnames[boutvars[bvi]], " "))
                 if (length(tmp_split) == 3) {
-                  legendnames[boutvars[bvi]] = paste0(tmp_split[1], " ", tmp_split[2], " >=", tmp_split[3])
+                  legendnames[boutvars[bvi]] = paste0(tmp_split[1], " ", tmp_split[2],
+                                                      " >=", tmp_split[3])
                 } else {
-                  legendnames[boutvars[bvi]] = paste0(tmp_split[1], " ",tmp_split[2], " [", tmp_split[3], ",", tmp_split[4], ")")
+                  legendnames[boutvars[bvi]] = paste0(tmp_split[1], " ",tmp_split[2], 
+                                                      " [", tmp_split[3], ",", tmp_split[4], ")")
                 }
                 
               }
@@ -561,7 +589,8 @@ visualReport = function(metadatadir = c(),
                 
               }
               legend("topleft", legend = c(paste0(added_text1,
-                                                  substr(x = simple_filename, start = 1, stop = 10), added_text2), 
+                                                  substr(x = simple_filename, start = 1, stop = 10),
+                                                  added_text2), 
                                            paste0("Start date: ", as.Date(mdat$timestamp[1])),
                                            paste0("Duration: ", RecDuration, " ", RecDurUnit),
                                            paste0("GGIR version: " , GGIRversion),
