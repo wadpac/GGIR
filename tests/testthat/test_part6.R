@@ -88,7 +88,8 @@ test_that("Part 6 with household co-analysis", {
   mdat_file3$invalid_fullwindow[which(mdat_file3$window == 4)] = 100 # set one window to invalid
   mdat_file3$ACC[which(mdat$window == 3)] = NA # set one window to invalid
   mdat = mdat_file3
-  save(mdat, Lnames, file = paste0(dn, "/800-900-003_left wrist.RData"))
+  filename = "800-900-003_left wrist.bin"
+  save(mdat, filename, Lnames, file = paste0(dn, "/800-900-003_left wrist.RData"))
   
   # Run Circadian rhythm analysis with default window
   params_247[["part6HCA"]] = FALSE
@@ -142,7 +143,8 @@ test_that("Part 6 with household co-analysis", {
   
   # Assess impact of storing part 5 output without invalid
   mdat = mdat_file3[-which(mdat$window == 4),] # delete the invalid window
-  save(mdat, Lnames, file = paste0(dn, "/800-900-003_left wrist.RData"))
+  filename = "800-900-003_left wrist.bin"
+  save(mdat, filename, Lnames, file = paste0(dn, "/800-900-003_left wrist.RData"))
   
   g.part6(metadatadir = metadatadir,
           params_general = params_general,

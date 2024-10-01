@@ -6,8 +6,7 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
                                   params_output,
                                   params_247 = NULL,
                                   Lnames = NULL, timewindow = NULL,
-                                  filename = "",
-                                  timewindow = NULL) {
+                                  filename = "") {
 
   ms5rawlevels = data.frame(date_time = ts$time, class_id = LEVELS,
                             # class_name = rep("",Nts),

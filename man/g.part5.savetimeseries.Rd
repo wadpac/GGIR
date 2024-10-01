@@ -9,14 +9,14 @@
 }
 \usage{
   g.part5.savetimeseries(ts, LEVELS, desiredtz, rawlevels_fname,
-                              DaCleanFile = NULL,
-                              includedaycrit.part5 = 2/3,
-                              includenightcrit.part5 = 0,
-                              ID = NULL, params_output,
-                              params_247 = NULL,
-                              Lnames = NULL, timewindow = NULL
-                              filename = "",
-                              timewindow = NULL)
+                            DaCleanFile = NULL,
+                            includedaycrit.part5 = 2/3,
+                            includenightcrit.part5 = 0,
+                            ID = NULL,
+                            params_output,
+                            params_247 = NULL,
+                            Lnames = NULL, timewindow = NULL,
+                            filename = "")
 }
 \arguments{
   \item{ts}{
@@ -61,12 +61,12 @@
     Level names as passed on from \link{identify_levels}, these are the names
     corresponding the ID of the behavioural classes as stored in column class_id.
   }
+  \item{timewindow}{
+    See \link{GGIR}
+  }
   \item{filename}{
     Character (default = "") indicating the name of the accelerometer data file 
     that was used as input. This name will be stored inside the time series output file.
-  }
-  \item{timewindow}{
-    See \link{GGIR}
   }
 }
 \value{
