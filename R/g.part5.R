@@ -290,6 +290,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               } else {
                 light_columns = NULL
               }
+              temperature_col = grep(pattern = "temperature", x = names(ts), value = TRUE)
               
               stepcount_available = ifelse("step_count" %in% names(ts), yes = TRUE, no = FALSE)
                 
@@ -297,7 +298,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                 step_count_tmp = aggregate(ts$step_count, by = list(ts$time_num), FUN = function(x) sum(x))
                 colnames(step_count_tmp)[2] = "step_count"
               }
-              ts = aggregate(ts[,c("ACC","sibdetection", "diur", "nonwear", angleColName, light_columns)],
+              ts = aggregate(ts[,c("ACC","sibdetection", "diur", "nonwear", angleColName, light_columns, temperature_col)],
                              by = list(ts$time_num), FUN = function(x) mean(x))
               if (stepcount_available) {
                 ts = merge(x = ts, y = step_count_tmp, by = "Group.1")
