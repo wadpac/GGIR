@@ -39,7 +39,8 @@ visualReport = function(metadatadir = c(),
   panelplot = function(mdat, ylabels_plot2, binary_vars,
                        BCN, BCC, title = "", hrsPerRow = NULL, plotid = 0, 
                        legend_items = NULL, lux_available = FALSE,
-                       step_count_available = FALSE, epochSize = 60, focus = "day") {
+                       step_count_available = FALSE, epochSize = 60, focus = "day",
+                       temperature_available = FALSE) {
     window_duration = mdat$timenum[nrow(mdat)] - mdat$timenum[1]
     signalcolor = "black"
 
@@ -78,7 +79,11 @@ visualReport = function(metadatadir = c(),
     } else {
       Ymax = 100
     }
-    Ymin = 0
+    if (temperature_available == TRUE) {
+      Ymin = -10
+    } else {
+      Ymin = 0
+    }
     accy = (mdat$ACC / 10) + 50
     
     # identify angle columns
@@ -97,10 +102,15 @@ visualReport = function(metadatadir = c(),
 
     if (lux_available == TRUE) {
       # luxy = ceiling(pmin(mdat$lightpeak + 1, 20000) / 2000) + 100
-      luxy = (pmin(mdat$lightpeak + 1, 20000) / 2000) + 100
+      luxy = (pmin(mdat$lightpeak, 20000) / 2000) + 100
+    }
+    if (temperature_available == TRUE) {
+      temperaturey = round(pmax(pmin(diff(c(0, mdat$temperature)), 1), -1))
+      temperaturey[which(temperaturey < 0)] = -1
+      temperaturey[which(temperaturey > 0)] = 1
     }
     plot(0:1, 0:1,
-         ylim = c(0, Ymax), xlim = XLIM, 
+         ylim = c(Ymin, Ymax), xlim = XLIM, 
          xaxt = 'n', axes = FALSE,
          xlab = "", ylab = "")
     
@@ -248,7 +258,11 @@ visualReport = function(metadatadir = c(),
             col = signalcolor,
             lwd = 0.3)
     }
-    
+    if (temperature_available == TRUE) {
+      # Add temperature
+      text(x = mdat$timestamp[which(temperaturey == -1)], y = -9, labels = "-", cex = 0.5)
+      text(x = mdat$timestamp[which(temperaturey == 1)], y = -9, labels = "+", cex = 0.5)
+    }
     angleColor = ifelse(Nangles > 1, yes = "orange", no = signalcolor)
     # Add angle lines on top
     lines(mdat$timestamp, ang1, type = "l", col = angleColor, lwd = 0.3)
@@ -268,7 +282,10 @@ visualReport = function(metadatadir = c(),
       text(x = mdat$timestamp[1], y = 105, labels = "Lux",
            pos = 4, cex = 0.7, col = signalcolor, font = 2)
     }
-    
+    if (temperature_available == TRUE) {
+      text(x = mdat$timestamp[1], y = -2, labels = "Temperature change",
+           pos = 4, cex = 0.7, col = signalcolor, font = 2)
+    }
     # Highlight invalid epochs as hashed area on top of all rects
     if ("invalid" %in% legend_items$name) {
       freqtab = table(mdat$invalid)
@@ -279,7 +296,11 @@ visualReport = function(metadatadir = c(),
         t0 = mdat$timestamp[newi$starti]
         t1 = mdat$timestamp[newi$endi]
         col = legend_items$col[which(legend_items$name == "invalid")]
-        y0 = 5
+        if (temperature_available == TRUE) {
+          y0 = -5
+        } else {
+          y0 = 5
+        }
         if (lux_available == TRUE) {
           y1 = 105
         } else {
@@ -429,6 +450,11 @@ visualReport = function(metadatadir = c(),
           lux_available = TRUE
         } else {
           lux_available = FALSE
+        }
+        if ("temperature" %in% colnames(mdat)) {
+          temperature_available = TRUE
+        } else {
+          temperature_available = FALSE
         }
         if ("step_count" %in% colnames(mdat)) {
           step_count_available = TRUE
@@ -609,7 +635,7 @@ visualReport = function(metadatadir = c(),
                         BCN, BCC, title = "", hrsPerRow = hrsPerRow, plotid = ani,
                         legend_items = legend_items, lux_available = lux_available,
                         step_count_available = step_count_available, epochSize = epochSize,
-                        focus = focus)
+                        focus = focus, temperature_available = temperature_available)
               cntplot = cntplot + 1
             }
             
