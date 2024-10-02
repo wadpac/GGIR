@@ -77,12 +77,24 @@ g.part5.wakesleepwindows = function(ts, part4_output, desiredtz, nightsi,
     s1 = findIndex(timeChar, wc = format(as.POSIXlt(w1[k], tz = desiredtz)))
     
     if (is.na(s0) == TRUE) {
-      s0 = 1
+      if (format(as.POSIXlt(w0[k], tz = desiredtz)) < timeChar[1]) {
+        # safe check, only turn s0 to 1 when the part4 wake up is before the first
+        # timestamp. Otherwise, if wake up is after the last timestamp, then the 
+        # whole time series is set to sleep period time (only occurs in nights with
+        # cleaningcode = 5 in part 4 (no accelerometer data available, but spt extracted from sleeplog))
+        s0 = 1
+      }
     }
     if (is.na(s1) == TRUE) {
       # might still be NA if the timestamps is not in ts (expanded time from expand_tail)
       # if so, we assume the participant is sleeping at the end of the recording, this night will be disregarded later on
-      s1 = nrow(ts)
+      if (format(as.POSIXlt(w1[k], tz = desiredtz)) > timeChar[length(timeChar)]) {
+        # safe check, only turn s1 to nrow(ts) when the part4 wake up is after the last
+        # timestamp. Otherwise, if sleep onset is before the first timestamp, then the 
+        # whole time series is set to sleep period time (only occurs in nights with
+        # cleaningcode = 5 in part 4 (no accelerometer data available, but spt extracted from sleeplog))
+        s1 = nrow(ts)
+      }
     }
     
     if (length(s1) != 0 & length(s0) != 0 & is.na(s0) == FALSE & is.na(s1) == FALSE && length(nightsi) > 0) {
