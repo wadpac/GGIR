@@ -36,6 +36,8 @@ no SIBs are detected from the beginning of the recording until the first detecte
 
 - Reports: The calendar_date and filename columns in reports have been standardized, as %Y-%m-%d and the input accelerometer file name, respectively. #1197
 
+- Part 1: Reverse default value for nonwear_range_threshold as changed in 3.1-3 back to 150 as more research needed to support the change. #1172
+
 # CHANGES IN GGIR VERSION 3.1-4
 
 - Part 3: Update threshold used for HorAngle to 60 degree, and auto-setting HASPT.ignore.invalid to NA when NotWorn guider is used. #1186
