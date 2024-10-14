@@ -42,24 +42,14 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
   # in the data for this day.
   if (timewindowi == "MM") {
     NepochPerDay = ((24*3600) / epochSize)
-    # offset from prev midnight
-    t0 = format(ts$time[1], "%H:%M:%S")
-    hms = as.numeric(unlist(strsplit(t0, ":")))
-    NepochFromPrevMidnight = (hms[1]*60*60 + hms[2]*60 + hms[3]) / epochSize
-    NepochFromDayborder2Midnight = (-dayborder*60*60) / epochSize
-    NepochFromPrevNight = NepochFromPrevMidnight + NepochFromDayborder2Midnight
-    if (NepochFromPrevNight < 0) {
-      NepochFromPrevNight = NepochPerDay + NepochFromPrevNight
-    }
-    if (wi == 1) {
-      qqq[1] = 1
-      qqq[2] = NepochPerDay - NepochFromPrevNight
-    } else {
-      qqq[1] = ((wi - 1) * NepochPerDay) - NepochFromPrevNight + 1
-      qqq[2] = (wi * NepochPerDay) - NepochFromPrevNight
-    }
+    # include first and last partial days in MM
+    if (nightsi[1] > 1) nightsi = c(1, nightsi)
+    if (nightsi[length(nightsi)] < nrow(ts)) nightsi = c(nightsi, nrow(ts))
+    # define window
+    qqq[1] = nightsi[wi]
+    qqq[2] = nightsi[wi + 1] - 1
     # is this the last day?
-    if (qqq[2] >= Nts) {
+    if (qqq[2] >= Nts - 1) {
       qqq[2] = Nts
       lastDay = TRUE
     }
