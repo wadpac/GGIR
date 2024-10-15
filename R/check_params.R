@@ -61,7 +61,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "rmc.firstrow.acc", "rmc.firstrow.header", "rmc.header.length",
                        "rmc.col.temp", "rmc.col.time",
                        "rmc.sf", "rmc.col.wear", "rmc.noise", "frequency_tol",
-                       "rmc.scalefactor.acc", "nonwear_range_threshold")
+                       "rmc.scalefactor.acc", "nonwear_range_threshold",
+                       "nonwear_stdev_threshold")
     boolean_params = c("printsummary", "do.cal", "rmc.unsignedbit", "rmc.check4timegaps", "rmc.doresample",
                        "imputeTimegaps")
     character_params = c("backup.cal.coef", "rmc.dec", "rmc.unit.acc",

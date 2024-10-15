@@ -53,5 +53,8 @@ get_nw_clip_block_params = function(monc, dformat, deviceSerialNumber = "", sf,
     }
     sdcriter = params_rawdata[["rmc.noise"]] * 1.2
   }
+  if (!is.null(params_rawdata[["nonwear_stdev_threshold"]])) {
+    sdcriter = params_rawdata[["nonwear_stdev_threshold"]] / 1000
+  }
   invisible(list(clipthres=clipthres, blocksize=blocksize, sdcriter=sdcriter, racriter=racriter))
 }

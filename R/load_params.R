@@ -63,6 +63,7 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
       rmc.headername.sf = c(), rmc.headername.sn = c(),
       rmc.headername.recordingid = c(), rmc.header.structure = c(),
       rmc.check4timegaps = FALSE,  rmc.noise = 13, nonwear_range_threshold = 150,
+      nonwear_stdev_threshold = NULL,
       rmc.col.wear = c(), rmc.doresample = FALSE,
       interpolationType = 1,
       imputeTimegaps = TRUE, frequency_tol = 0.1, rmc.scalefactor.acc = 1)

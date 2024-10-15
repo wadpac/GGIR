@@ -536,7 +536,10 @@ GGIR(mode = 1:5,
         detection, used in combination with brand specific standard deviation per
         axis.
       }
-      
+      \item{nonwear_stdev_threshold}{
+        Numeric (default NULL) used to overwrite default standard deviation threshold per
+        axis for non-wear detection, used in combination with brand nonwear_range_threshold.
+      }
     }
   }
 
