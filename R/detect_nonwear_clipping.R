@@ -12,6 +12,7 @@ detect_nonwear_clipping = function(data = c(), windowsizes = c(5, 900, 3600), sf
   crit = ((window/window2)/2) + 1
   
   if (nonwear_approach %in% c("2013", "2023")) {
+    if (nonwear_approach == "2023") nmin = nmin - (window/window2 - 1)
     # define windows to check:
     for (h in 1:nmin) { #number of windows
       
@@ -36,7 +37,6 @@ detect_nonwear_clipping = function(data = c(), windowsizes = c(5, 900, 3600), sf
       } else if (nonwear_approach == "2023") {
         # long-epoch windows to flag (nonwear)
         NWflag = h:(h + window/window2 - 1)
-        if (NWflag[length(NWflag)] > nmin) NWflag = NWflag[-which(NWflag > nmin)]
         # window to check (not aggregated values)
         hoc1 = h * window2 - window2
         hoc2 = hoc1 + window
@@ -83,7 +83,7 @@ detect_nonwear_clipping = function(data = c(), windowsizes = c(5, 900, 3600), sf
       }
       CWav[h] = max(c(CW[h, 1], CW[h, 2], CW[h, 3])) #indicator of clipping
     }
-  } 
+  }
   # In NWav: single 1's surrounded by 2's or 3's --> 2 (so it is considered nonwear)
   ones = which(NWav == 1)
   if (length(ones) > 0) {

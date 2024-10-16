@@ -107,7 +107,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "includenightcrit", "max_calendar_days")
     boolean_params = c("excludefirstlast.part5", "do.imp", "excludefirstlast",
                        "excludefirst.part4", "excludelast.part4", "nonWearEdgeCorrection")
-    character_params = c("data_cleaning_file", "TimeSegments2ZeroFile")
+    character_params = c("data_cleaning_file", "TimeSegments2ZeroFile", "nonwear_approach")
     check_class("cleaning", params = params_cleaning, parnames = numeric_params, parclass = "numeric")
     check_class("cleaning", params = params_cleaning, parnames = boolean_params, parclass = "boolean")
     check_class("cleaning", params = params_cleaning, parnames = character_params, parclass = "character")
