@@ -37,7 +37,7 @@ Internally GGIR loads csv files with accelerometer data and standardises the out
 
 # The read.myacc.csv function
 
-As for the rest of GGIR functions, `read.myacc.csv` is intended to be used within function `GGIR`. All the arguments of the `read.myacc.csv` can be easily recognized as they all start by "rmc". The GGIR function checks whether the argument `rmc.firstrow.acc` is provided by the user; in such case, GGIR will attempt to read the data with `read.myacc.csv`. In other words you always need to specify `rmc.firstrow.acc` to use `read.myacc.csv`.
+As for the rest of GGIR functions, `read.myacc.csv` is intended to be used within function `GGIR`. All the arguments of the `read.myacc.csv` can be easily recognized as they all start by "rmc". GGIR checks whether argument `rmc.firstrow.acc` is provided by the user; in such case, GGIR will attempt to read the data with function `read.myacc.csv`. In other words you always need to specify `rmc.firstrow.acc` to use `read.myacc.csv`. Further, we recommend that you always first test the function argument settings by first trying to use function `read.myacc.csv` on its own. When that works copy the arguments to you GGIR call.
 
 ## Input arguments
 
@@ -53,8 +53,8 @@ Below we present a summary of the available input arguments. Please see the [par
 - `rmc.dec` - Decimal separator used for numbers, same as dec argument in \link[utils]{read.csv} and in data.table::\link[data.table]{fread}. If not "." (default) then usually ",".
 - `rmc.firstrow.acc` - First row (number) of the acceleration data.
 - `rmc.unit.acc` - Character with unit of acceleration values: "g", "mg", or "bit".
-- `rmc.desiredtz` - Timezone in which device was worn.
-- `rmc.confgitz` - Timezone in which device was configured.
+- `desiredtz` - Timezone in which device was worn.
+- `confgitz` - Timezone in which device was configured.
 - `rmc.sf` - Sample rate in Hertz, if this is stored in the file header then that will be used instead.
 
 ### Arguments for files containing a header {#header}
@@ -112,7 +112,7 @@ dateTime | acc_x | acc_y | acc_z | ambient_temp
 
 This file contains timestamps in the column 1 (formatted as "%d/%m/%Y %H:%M:%OS"), the acceleration signals (in _g_'s) for the x, y, and z axis in the columns 2, 3, and 4, respectively, and temperature information in Celsius in the column 5. Also, this file has no header.
 
-First, we test read this file using the `read.myacc.csv` function in GGIR as follows.
+Before we can use this with GGIR, we first test read this file using the `read.myacc.csv` function directly.
 
 ```{R,eval=FALSE}
 library(GGIR)
@@ -128,7 +128,7 @@ read.myacc.csv(rmc.file = "C:/mystudy/mydata/datafile.csv",
                rmc.unit.temp = "C",
                rmc.unit.time = "POSIX",
                rmc.format.time = "%d/%m/%Y %H:%M:%OS",
-               rmc.desiredtz = "Europe/London",
+               desiredtz = "Europe/London",
                rmc.sf = 100)
 ```
 
@@ -156,7 +156,7 @@ GGIR(
              rmc.unit.temp = "C", 
              rmc.unit.time = "POSIX",
              rmc.format.time = "%d/%m/%Y %H:%M:%OS",
-             rmc.desiredtz = "Europe/London",
+             desiredtz = "Europe/London",
              rmc.sf = 100,
              rmc.noise = 0.013
 )
