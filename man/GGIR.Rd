@@ -1070,8 +1070,10 @@ GGIR(mode = 1:5,
         See package vignette for description of fragmentation metrics.}
 
       \item{part6_threshold_combi}{
-        Character (default = "40_100_120") to indicate the threshold combination derived in
-        part 5 to be used for part 6
+        Character (default = NULL) to indicate the threshold combination derived in
+        part 5 to be used for part 6. For example, "40_100_120". If left in default value
+        GGIR will use the first threshold value from parameters \code{threshold.lig},
+        \code{threshold.mod}, and \code{threshold.vig}.
       }
     }
   }
