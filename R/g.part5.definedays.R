@@ -41,7 +41,6 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
   # Check that it is possible to find both windows (WW and MM)
   # in the data for this day.
   if (timewindowi == "MM") {
-    NepochPerDay = ((24*3600) / epochSize)
     # include first and last partial days in MM
     if (nightsi[1] > 1) nightsi = c(1, nightsi)
     if (nightsi[length(nightsi)] < nrow(ts)) nightsi = c(nightsi, nrow(ts))
@@ -78,9 +77,9 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
       breaks = qwindow2timestamp(qwindow, epochSize)
       if (24 %in% qwindow) {
         # 24:00:00: probably does not exist, replace by last timestamp in a day
-        # here, NepochPerDay + 1 extra hour just in case we are deriving this in 
+        # here, we consider N epochs per day plus 1 hour just in case we are deriving this in 
         # a 25-hour daylight saving time day
-        NepochPerDayPlusOneHr = NepochPerDay + 60*60/epochSize
+        NepochPerDayPlusOneHr = ((25*3600) / epochSize)
         latest_time_in_day = max(format(ts$time[1:pmin(Nts, NepochPerDayPlusOneHr)], format = "%H:%M:%S"))
         breaks = gsub(pattern = "24:00:00", replacement = latest_time_in_day, x = breaks)
       }
