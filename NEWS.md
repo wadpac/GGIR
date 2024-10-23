@@ -6,8 +6,9 @@
 
   - Adjust sleeplog times to recording length in part 5 when classifying a night that was not detected in part 4. #1206
 
-  - Fixed minor bug in g.part5.addfirstwake causing the first wake not correctly being added when
-    no SIBs are detected from the beginning of the recording until the first detected night. #1198
+  - Fixed minor bug in g.part5.addfirstwake causing the first wake is not correctly added when no SIBs are detected from the beginning of the recording until the first detected night. #1198
+
+  - Revise MM window definition in daylight saving time days, as it assumed fixed day duration of 24 hours #1211 
 
 - General: GGIR version look-up in .onattach() no longer crashes when computer is offline, fixes #1203.
 
