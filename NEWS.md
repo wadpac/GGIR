@@ -16,6 +16,9 @@
 
 - Part 1: Reverse default value for nonwear_range_threshold as changed in 3.1-3 back to 150 as more research needed to support the change. #1172
 
+- Part 1: Fixed issue where non-wear detection with `nonwear_approach = "2023"` potentially labels the end of a data chunk (a chunk is approx 24 hours) as nonwear
+while using a shorter detection window than the window size as specified in the 3rd element of parameter `windowsizes`. #1212
+
 # CHANGES IN GGIR VERSION 3.1-4
 
 - Part 3: Update threshold used for HorAngle to 60 degree, and auto-setting HASPT.ignore.invalid to NA when NotWorn guider is used. #1186
