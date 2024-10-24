@@ -12,7 +12,7 @@
 
 - General: GGIR version look-up in .onattach() no longer crashes when computer is offline, fixes #1203.
 
-- Reports: The calendar_date and filename columns in reports have been standardized, as %Y-%m-%d and the input accelerometer file name, respectively. #1197
+- Reports: The calendar_date and filename columns in csv reports have been standardized, as %Y-%m-%d and the input accelerometer file name, respectively. #1197
 
 - Part 1: Reverse default value for nonwear_range_threshold as changed in 3.1-3 back to 150 as more research needed to support the change. #1172
 
