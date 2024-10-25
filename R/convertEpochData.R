@@ -21,6 +21,9 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
     for (niv in c("sleep", "ExtSleep", "light", "nonwear")) {
       if (niv %in% colnames(D)) D[, niv] = round(D[, niv] / step)
     }
+    # Incremental variables are counts, calories, ExtAct as so far
+    # none of the data formats provide movement expressed as average acceleration
+    # per epoch
     return(mat)
   }
 
@@ -76,6 +79,23 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         warning(paste0("There are more than 2 files for ID ", uids[uid], "."), call. = FALSE)
       }
     }
+  } else if (params_general[["dataFormat"]] == "fitbit_json") {
+    # Fitbit comes with one folder per participant that has multiple files
+    # Identify folders
+    participantFolders = dir(datadir, include.dirs = TRUE, full.names = TRUE)
+    participantFolders = participantFolders[dir.exists(participantFolders)]
+    IDs = fnames = rep(NA, length(participantFolders))
+    for (uid in 1:length(participantFolders)) {
+      IDs[uid] = basename(participantFolders[uid]) # Use folder name as ID because ID is not inside the files
+      # Identify files in each folder
+      jsonFiles = dir(participantFolders[uid], pattern = "json", recursive = TRUE, full.names = TRUE)
+      jsonFiles = grep(pattern = "sleep|steps|calories", x = jsonFiles, value = TRUE)
+      if (length(jsonFiles) > 0) {
+        fnames[uid] = list(jsonFiles = jsonFiles)
+      }
+    }
+    IDs = IDs[!is.na(fnames)]
+    fnames = fnames[!is.na(fnames)]
   } else {
     # Data with just one recording per file.
     # Here we do a check that no unexpected file types are found.
@@ -124,39 +144,36 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
     monn = "axivity"
     monc = 4
     dformc = 4
-    dformn = "cwa"
-    sf = 100
     epSizeShort = 5
   } else if (params_general[["dataFormat"]] == "actigraph_csv") {
     deviceName = "ActiGraph"
     monn = "actigraph"
     monc = 3
-    dformc = 2
-    dformn = "csv"
-    sf = 0 # extract from file header
+    dformc = 95
     epSizeShort = 0 # extract from file header
   } else if (actiwatchData == TRUE) {
     deviceName = "Actiwatch"
     monn = "actiwatch"
     monc = 99
     dformc = 99
-    dformn = "epochdata"
-    sf = 100 # <= EXTRACT FROM FILE?
   } else if (params_general[["dataFormat"]] == "sensewear_xls") {
     deviceName = "Sensewear"
     monn = "sensewear"
     monc = 98
     dformc = 98
-    dformn = "epochdata"
-    sf = 100 # <= EXTRACT FROM FILE?
   } else  if (params_general[["dataFormat"]] == "phb_xlsx") {
     deviceName = "PhilipsHealthBand"
     monn = "philipshealthband"
     monc = 97
-    dformc = 98
-    dformn = "epochdata"
-    sf = 100
+    dformc = 97
+  } else  if (params_general[["dataFormat"]] == "fitbit_json") {
+    deviceName = "Fitbit"
+    monn = "Fitbit"
+    monc = 96
+    dformc = 96
   }
+  sf = NA
+  dformn = params_general[["dataFormat"]]
   
   # Before we look inside the epoch files we can already create templates
   # with dummy data
@@ -186,7 +203,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
            bsc_qc = data.frame(A = 1:3,
                                B = 1:3))
   dummyheader = data.frame(uniqueSerialCode = 0, 
-                           frequency = 100,
+                           frequency = NA, # NA because we work with processed data
                            start = "", # if relevant, this will be filled later on in code
                            device = deviceName,
                            firmwareVersion = "unknown",
@@ -214,6 +231,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         cat(paste0(" ", i))
       }
     }
+    
     # filename
     fname = basename(unlist(fnames[i])[1])
     
@@ -229,6 +247,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
     }
     if (skip == FALSE) {
       I = I_bu
+    
       I$filename = filename_dir = fname
       if (params_general[["dataFormat"]] == "ukbiobank_csv") {
         # read data
@@ -288,7 +307,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         }
       } else if (params_general[["dataFormat"]] == "phb_xlsx") {
         # phb = Philips Health Band
-        D = GGIRread::mergePHBdata(filenames = unlist(fnames[i]), 
+        D = GGIRread::mergePHBdata(filenames = fnames[[i]], 
                                    timeformat = params_general[["extEpochData_timeformat"]],
                                    desiredtz = params_general[["desiredtz"]],
                                    configtz = params_general[["configtz"]],
@@ -309,6 +328,33 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         }
         D$data = D$data[, grep(pattern = "cardio|heart|sleepevent|battery|duration|missing|activem|vo2|energy|respiration|timestamp",
                                x = colnames(D$data), ignore.case = TRUE, invert = TRUE)]
+      } else if (params_general[["dataFormat"]] == "fitbit_json") {
+        data = GGIRread::mergeFitbitData(filenames = fnames[[i]],
+                            desiredtz = params_general[["desiredtz"]],
+                            configtz = params_general[["configtz"]])
+        ID = IDs[i]
+        I$filename = filename_dir = fname = ID
+        epochSizes = names(table(diff(data$dateTime)))
+        if (length(epochSizes) > 1) {
+          stop(paste0("multiple epoch sizes encountered in Fitbit data ", basename(fnames[[i]])), call. = FALSE)
+        } else if (length(epochSizes) == 1) {
+          epSizeShort = as.numeric(epochSizes)
+        } else {
+          stop(paste0("No epoch size recognised in Fitbit data ", basename(fnames[[i]])), call. = FALSE)
+        }
+        timestamp_POSIX = data$dateTime[1]
+        D = list(data = data, epochSize = epSizeShort, startTime = timestamp_POSIX)
+        fnames[[i]] = list(unlist(fnames[i]), ID) # add ID to fnames object
+        # convert sleeplevel to sleep because GGIR does not deal with sleep stages
+        if ("sleeplevel" %in% names(D$data)) {
+          D$data$sleep = 0
+          D$data$sleep[which(D$data$sleeplevel %in% c("asleep", "deep", "light", "rem", "restless"))] = 1
+          D$data = D$data[, -which(names(D$data) == "sleeplevel")]
+        }
+        if ("calories" %in% names(D$data)) {
+          names(D$data)[which(names(D$data) == "calories")] = "ExtAct"
+        }
+        D$data = D$data[, -which(names(D$data) %in% c("seconds", "dateTime"))]
       }
       if ("sleep" %in% colnames(D$data)) colnames(D$data)[which(colnames(D$data) == "sleep")] = "ExtSleep"
       if ("steps" %in% colnames(D$data)) colnames(D$data)[which(colnames(D$data) == "steps")] = "ExtStep"
@@ -385,32 +431,23 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         M$metashort$ZCY[is.na(M$metashort$ZCY)] = 0 
       }
       LML = length(time_longEp_8601)
-      
       if (params_general[["dataFormat"]] == "ukbiobank_csv") {
         acc_column = 2
-      } else {
-        acc_column = 1
-      }
-      
-      if (params_general[["dataFormat"]] == "ukbiobank_csv") {
         names(M$metashort)[2] = "LFENMO"
         #Collapse second column of input data to use as non-wear score
         imp = D[, 2]
         M$metashort$LFENMO = M$metashort$LFENMO/1000
+        nonwear_in_data = TRUE
       } else {
+        acc_column = 1
         imp = unlist(D[, 1])
+        nonwear_in_data = FALSE
       }
+
       navalues = which(is.na(imp) == TRUE)
       if (length(navalues) > 0) imp[navalues] = 1
       
       # Nonwear in the day
-      if (params_general[["dataFormat"]] == "ukbiobank_csv") {
-        nonwear_in_data = TRUE
-      } else {
-        nonwear_in_data = FALSE
-      }
-      
-
       if (nonwear_in_data == TRUE) {
         # Take long epoch mean of UK Biobank based invalid data indicater per 5 seconds
         imp2 = cumsum(imp)
