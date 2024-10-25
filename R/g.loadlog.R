@@ -118,7 +118,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
             warning(paste0("\nSleeplog for ID: ",ID," not used because first date",
                            " not within 30 days of first date in accerometer recording"), call. = FALSE)
           } else {
-            # only attempt to use sleeplog if start date could be recognisedd
+            # only attempt to use sleeplog if start date could be recognised
             # Add row to newsleeplog if somehow there are not enough rows
             if (count > nrow(newsleeplog)) {
               newsleeplog = rbind(newsleeplog, matrix(NA, 1, ncol(newsleeplog)))
@@ -222,7 +222,15 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
       }
       
       removeEmptyCells = function(x) {
-        emptyrows = which(rowSums(x == "") == ncol(x))
+        if (nrow(x) == 1) {
+          if (sum(x[, 2:ncol(x)] == "") == ncol(x) - 1) {
+            emptyrows = 1
+          } else {
+            emptyrows = NULL
+          }
+        } else {
+          emptyrows = which(rowSums(x[, 2:ncol(x)] == "") == ncol(x) - 1)
+        }
         if (length(emptyrows)) {
           x = as.matrix(x[-emptyrows,])
         }
@@ -247,12 +255,18 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
         return(x)
       }
       if (length(newsleeplog) > 0) {
-        S = as.data.frame(removeEmptyCells(newsleeplog))
+        newsleeplog = removeEmptyCells(newsleeplog)
+        if (!is.null(newsleeplog)) {
+          S = as.data.frame(newsleeplog)
+        }
         coln1 = 2
         colid = 1
       }
       if (length(newbedlog) > 0) {
-        B = as.data.frame(removeEmptyCells(newbedlog))
+        newbedlog = removeEmptyCells(newbedlog)
+        if (!is.null(newbedlog)) {
+          B = as.data.frame(newbedlog)
+        }
         coln1 = 2
         colid = 1
       }
@@ -343,8 +357,11 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
     log = log[which(is.na(log$duration) == FALSE),]
     return(log)
   }
-  
-  sleeplog = adjustLogFormat(S, nnights, mode = "sleeplog")
+  if (exists("S")) {
+    sleeplog = adjustLogFormat(S, nnights, mode = "sleeplog")
+  } else {
+    sleeplog = NULL
+  }
   if (exists("B")) {
     bedlog = adjustLogFormat(B, nnights, mode = "bedlog")
   } else {

@@ -27,6 +27,6 @@ test_that("g.sibreport creates expected object", {
   expect_equal(mean(SIBREPORT$duration, na.rm = TRUE), 26.625)
   expect_equal(mean(SIBREPORT$mean_acc_1min_before, na.rm = TRUE), 2)
   expect_equal(mean(SIBREPORT$mean_acc_1min_after, na.rm = TRUE), 6)
-  expect_equal(SIBREPORT$start[8], "2021-03-03 15:02:00")
-  expect_equal(SIBREPORT$end[8], "2021-03-03 15:04:00")
+  expect_equal(format(SIBREPORT$start[8]), "2021-03-03 15:02:00")
+  expect_equal(format(SIBREPORT$end[8]), "2021-03-03 15:04:00")
 })
