@@ -1,13 +1,20 @@
-# CHANGES IN GGIR VERSION 3.1-?
+# CHANGES IN GGIR VERSION 3.1-5
 
-- Part 5: Fixed minor bug in g.part5.addfirstwake causing the first wake is not correctly added when
-no SIBs are detected from the beginning of the recording until the first detected night. #1198
+- Part 5: 
 
-- Part 5: Add parameters require_complete_lastnight_part5 to control whether last window is included if last night is incomplete. #1196
+  - Add parameters require_complete_lastnight_part5 to control whether last window is included if last night is incomplete. #1196
+
+  - Adjust sleeplog times to recording length in part 5 when classifying a night that was not detected in part 4. #1206
+
+  - Fixed minor bug in g.part5.addfirstwake causing the first wake is not correctly added when no SIBs are detected from the beginning of the recording until the first detected night. #1198
+
+  - Revise MM window definition in daylight saving time days, as it assumed fixed day duration of 24 hours #1211 
 
 - General: GGIR version look-up in .onattach() no longer crashes when computer is offline, fixes #1203.
 
 - Reports: The calendar_date and filename columns in reports have been standardized, as %Y-%m-%d and the input accelerometer file name, respectively. #1197
+
+- Part 1: Reverse default value for nonwear_range_threshold as changed in 3.1-3 back to 150 as more research needed to support the change. #1172
 
 # CHANGES IN GGIR VERSION 3.1-4
 
