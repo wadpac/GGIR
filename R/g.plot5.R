@@ -902,7 +902,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
                   ((daycount - 1) / NGPP) == (round((daycount - 1) / NGPP))) {
                 mtext(paste0("Filename: ", fnames_ms1_stripped[sel]),
                       side = 3, line = 0, outer = TRUE, font = 2, cex = 0.6)
-                mtext(text = paste0("Warning: This GGIR report is not intended to be used for data quality assessment and is a legacy of a quick attempt in 2015 to have something to show to a study participant,",
+                mtext(text = paste0("Warning: This GGIR legacy report is not intended to be used for data quality assessment,",
                                     " To visually quality check your data see file names starting with Time_report_ "),
                       side = 3, line = 1, outer = TRUE, font = 2, cex = 0.7
                 )
