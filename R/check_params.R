@@ -355,7 +355,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       }
     }
     # params 247 & params output
-    if (params_247[["part6HCA"]] == TRUE) {
+    if (params_247[["part6HCA"]] == TRUE || params_247[["part6CR"]] == TRUE) {
       # Add RData because part 6 will need it
       params_output[["save_ms5raw_format"]] = unique(c(params_output[["save_ms5raw_format"]], "RData"))
       params_output[["save_ms5rawlevels"]] = TRUE

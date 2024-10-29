@@ -1349,16 +1349,16 @@ GGIR(mode = 1:5,
         number of levels.}
 
       \item{IVIS_windowsize_minutes}{
-        This argument is deprecated.}
+        This argument has been deprecated.}
 
       \item{IVIS_epochsize_seconds}{
-        This argument is deprecated.}
+        This argument has been deprecated.}
 
       \item{IVIS.activity.metric}{
-        This argument is deprecated.}
+        This argument has been deprecated.}
 
       \item{IVIS_acc_threshold}{
-        This argument is deprecated.}
+        This argument has been deprecated.}
 
       \item{qM5L5}{
         Numeric (default = NULL).
