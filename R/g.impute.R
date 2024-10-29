@@ -1,6 +1,6 @@
 g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
                     dayborder = 0, TimeSegments2Zero = c(), acc.metric = "ENMO", 
-                    ID, ...) {
+                    ID, qwindowImp = c(), ...) {
   
   #get input variables
   input = list(...)
@@ -51,7 +51,10 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   
   #========================================
   # Extracting non-wear and clipping and make decision on which additional time needs to be considered non-wear
-  out = g.weardec(M, wearthreshold, ws2, nonWearEdgeCorrection = params_cleaning[["nonWearEdgeCorrection"]])
+  out = g.weardec(M, wearthreshold, ws2,
+                  params_cleaning = params_cleaning,
+                  desiredtz = desiredtz,
+                  qwindowImp = qwindowImp)
   r1 = out$r1 #non-wear
   r2 = out$r2 #clipping
   r3 = out$r3 #additional non-wear

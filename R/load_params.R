@@ -103,7 +103,9 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                            nonWearEdgeCorrection = TRUE, nonwear_approach = "2023",
                            segmentWEARcrit.part5 = 0.5,
                            segmentDAYSPTcrit.part5 = c(0.9, 0),
-                           study_dates_file = c(), study_dates_dateformat = "%d-%m-%Y")
+                           study_dates_file = c(), study_dates_dateformat = "%d-%m-%Y",
+                           nonwearFiltermaxHours = NULL,
+                           nonwearFilterWindow = NULL)
   }
   if ("output" %in% topic) {
     params_output = list(epochvalues2csv = FALSE, save_ms5rawlevels = FALSE,

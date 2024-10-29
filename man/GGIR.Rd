@@ -939,16 +939,15 @@ GGIR(mode = 1:5,
         at valid data during waking hours.}
 
       \item{max_calendar_days}{
-      Numeric (default = 0).
-      The maximum number of calendar days to include (set to zero if unknown).}
+        Numeric (default = 0).
+        The maximum number of calendar days to include (set to zero if unknown).}
 
       \item{nonWearEdgeCorrection}{
-      Boolean (default = TRUE).
+        Boolean (default = TRUE).
         If TRUE then the non-wear detection around the edges of the recording (first
         and last 3 hours) are corrected following description in vanHees2013 as
         has been the default since then. This functionality is advisable when working 
-        with sleep clinic or exercise lab data typically lasting less than a day.
-      }
+        with sleep clinic or exercise lab data typically lasting less than a day.}
 
       \item{nonwear_approach}{
         Character (default = "2023").
@@ -960,8 +959,20 @@ GGIR(mode = 1:5,
         in the middle. The 2023 version differs in which it would flag as nonwear 
         the full longsize window. For the 2013 method the longsize window is centered 
         in the centre of the mediumsize window, while in the 2023 method the longsizewindow 
-        is aligned with its left edge to the left edge of the mediumsize window.
-      }
+        is aligned with its left edge to the left edge of the mediumsize window.}
+      
+      \item{nonwearFiltermaxHours}{
+        Numeric (default = NULL).
+        When not NULL ignore classified nonwear periods during the night as defined
+        by either parameter NonwearFilterWindow or parameter qwindow. This functionality
+        was added to ignore short lasting nonwear because of suspicious that this
+        is not actual nonwear but relates to extended motionless sleep periods.}
+      
+      \item{nonwearFilterWindow}{
+        Numeric (default = NULL).
+        Vector of length 2 to specify the start and end hour of the night to be used
+        for the functionality as described above for NonwearFiltermaxHours. If not
+        specified qwindow will be used.}
     }
   }
 
