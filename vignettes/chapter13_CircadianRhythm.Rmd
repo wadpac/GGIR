@@ -61,13 +61,14 @@ The Cosinor-compatible IV and IS estimates are stored as output variables `cosin
 
 ## phi
 
-....
+Phi is an indicator of how correlated the multi-day acceleration time series is with itself when shifted over time, also known as auto-correlation. A higher phi value indicates a higher autocorrelation, while a phi close to zero or even negative indicates more fragmented behavior. For a detailed discussion of phi see [Dickey and Fuller (1979)](https://doi.org/10.1080/01621459.1979.10482531) and [Danilevicz et al. 2024](https://doi.org/10.1186/s12874-024-02255-w). Phi is calculated by default in GGIR part 2 and in part 6 only when parameter part6CR is set to TRUE.
+
 
 ## Detrended fluctionation analysis (DFA)
 
 ### Self-similarity paramerter (SSP)
 
-The self-similarity paramter (SSP) is also known as scaling exponent or alpha. SSP is a real number between zero and two. Values in the range (0, 1) indicate stationary motion behaviour. Values int he range (1, 2 indicate nonstationary motion behaviour. For details see [Danilevicz et al. 2024](https://doi.org/10.1186/s12874-024-02255-w).
+The self-similarity paramter (SSP) is also known as scaling exponent or alpha. SSP is a real number between zero and two. Values in the range (0, 1) indicate stationary motion behaviour. Values int he range (1, 2 indicate nonstationary motion behaviour. For details see [Mesquita et al 2020](https://doi.org/10.1093/bioinformatics/btaa955) and  [Danilevicz et al. 2024](https://doi.org/10.1186/s12874-024-02255-w).
 
 ### Activity Balance Index (ABI)
 

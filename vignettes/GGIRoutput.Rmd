@@ -113,7 +113,7 @@ Part 2 generates the following output:
 | cosinorExt_ndays | (copied from ActCR documentation) Number of days modeled. |
 | cosinorExt_F_pseudo | (copied from ActCR documentation) Measure the improvement of the fit obtained by the non-linear estimation of the transformed cosine model |
 | cosinorExt_R2 | Measure of goodness of fit of the extended cosinor function to the log transformed acceleration signal. Higher values indicate better goodness of fit. |
-| phi | ... |
+| phi | Indicator of auto-correlation in acceleration time series over multiple days, see [chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) for details. |
 | SSP | Method for describing time series, see [chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) for details. |
 | ABI | ABI measures how the activity over the observed period is balanced, see [chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) for details. |
 
