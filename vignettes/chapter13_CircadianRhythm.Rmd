@@ -61,7 +61,7 @@ The Cosinor-compatible IV and IS estimates are stored as output variables `cosin
 
 ## phi
 
-Phi is an indicator of how correlated the multi-day acceleration time series is with itself when shifted over time, also known as auto-correlation. A higher phi value indicates a higher autocorrelation, while a phi close to zero or even negative indicates more fragmented behavior. For a detailed discussion of phi see [Dickey and Fuller (1979)](https://doi.org/10.1080/01621459.1979.10482531) and [Danilevicz et al. 2024](https://doi.org/10.1186/s12874-024-02255-w). Phi is calculated by default in GGIR part 2 and in part 6 only when parameter part6CR is set to TRUE.
+Phi indicates how correlated the multi-day acceleration time series is with itself when there is an hour shift, also known as first-order auto-correlation from the first-order autoregressive model AR(1). A higher phi value indicates a higher autocorrelation, while a phi close to zero or even negative indicates more fragmented behavior. For a detailed discussion of phi see [Dickey and Fuller (1979)](https://doi.org/10.1080/01621459.1979.10482531) and [Danilevicz et al. 2024](https://doi.org/10.1186/s12874-024-02255-w). Phi is calculated by default in GGIR part 2 and in part 6 only when parameter `part6CR` is set to TRUE.
 
 
 ## Detrended fluctionation analysis (DFA)
