@@ -963,16 +963,19 @@ GGIR(mode = 1:5,
       
       \item{nonwearFiltermaxHours}{
         Numeric (default = NULL).
-        When not NULL ignore classified nonwear periods during the night as defined
-        by either parameter NonwearFilterWindow or parameter qwindow. This functionality
-        was added to ignore short lasting nonwear because of suspicious that this
-        is not actual nonwear but relates to extended motionless sleep periods.}
+        If not NULL, ignore detected nonwear periods during window as defined by
+        NonwearFilterWindow. If NonwearFilterWindow is not provided use the outer 
+        segments as specified by parameter \code{qwindow}. If \code{qwindow} is
+        defined by activity diary file and a diary entry is missing use midnight-6am
+        as fall back setting. The main purpose of this functionality is to offer
+        the option to ignore short lasting nonwear episodes during the night
+        when there is suspicious that these are falsely detect, e.g. in individuals
+        with extended motionless sleep periods caused by medication.}
       
       \item{nonwearFilterWindow}{
         Numeric (default = NULL).
         Vector of length 2 to specify the start and end hour of the night to be used
-        for the functionality as described above for NonwearFiltermaxHours. If not
-        specified qwindow will be used.}
+        for the functionality as described above for NonwearFiltermaxHours.}
     }
   }
 

@@ -23,7 +23,12 @@ g.weardec = function(M, wearthreshold, ws2, params_cleaning = NULL,
   #----------------------------------------------------------------
   # Optionally ignore short lasting nonwear during the night
   if (!is.null(params_cleaning[["nonwearFiltermaxHours"]])) {
-    r1 = filterNonwearNight(r1, metalong, qwindowImp, desiredtz, params_cleaning, ws2)
+    fnn = filterNonwearNight(r1, metalong, qwindowImp, desiredtz, params_cleaning, ws2)
+    r1[, 1] = fnn$r1
+    nonwearHoursFiltered = fnn$nonwearHoursFiltered
+    nonwearEventsFiltered = fnn$nonwearEventsFiltered
+  } else {
+    nonwearEventsFiltered = nonwearHoursFiltered = 0
   }
   r1 = c(0, r1, 0)
   r2 = c(0, r2, 0)
@@ -105,6 +110,8 @@ g.weardec = function(M, wearthreshold, ws2, params_cleaning = NULL,
     r2 = r2,
     r3 = r3,
     LC = LC,
-    LC2 = LC2
+    LC2 = LC2,
+    nonwearHoursFiltered = nonwearHoursFiltered,
+    nonwearEventsFiltered = nonwearEventsFiltered
   ))
 }

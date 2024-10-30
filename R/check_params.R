@@ -286,8 +286,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     }
     
     if (!is.null(params_cleaning[["nonwearFiltermaxHours"]])) {
-      if (params_cleaning[["nonwearFiltermaxHours"]] > 0 &&
-          params_cleaning[["nonwearFiltermaxHours"]] < 12) {
+      if (params_cleaning[["nonwearFiltermaxHours"]] < 0 ||
+          params_cleaning[["nonwearFiltermaxHours"]] > 12) {
         stop("Parameters nonwearFiltermaxHours is expected to have a value > 0 and < 12")
       }
       if (!is.null(params_cleaning[["nonwearFilterWindow"]])) {

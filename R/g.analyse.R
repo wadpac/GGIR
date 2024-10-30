@@ -46,14 +46,14 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   metalong = M$metalong
   metashort = IMP$metashort
   rout = IMP$rout
+  nonwearHoursFiltered = IMP$nonwearHoursFiltered
+  nonwearEventsFiltered = IMP$nonwearEventsFiltered
   wdaycode = M$wday
   wdayname = M$wdayname
   if (length(params_phyact[["mvpadur"]]) > 0) params_phyact[["mvpadur"]] = sort(params_phyact[["mvpadur"]])
   LC2 = IMP$LC2
   LC = IMP$LC
   dcomplscore = IMP$dcomplscore
-  r1 = as.numeric(as.matrix(rout[,1]))
-  r2 = as.numeric(as.matrix(rout[,2]))
   r4 = as.numeric(as.matrix(rout[,4]))
   r5 = as.numeric(as.matrix(rout[,5]))
   ws3 = windowsizes[1]
@@ -282,7 +282,9 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                                 meas_dur_dys =  LD/1440,
                                 dcomplscore = dcomplscore,
                                 meas_dur_def_proto_day = LMp / 1440,
-                                wear_dur_def_proto_day = LWp / 1440)
+                                wear_dur_def_proto_day = LWp / 1440,
+                                nonwearHoursFiltered = nonwearHoursFiltered,
+                                nonwearEventsFiltered = nonwearEventsFiltered)
   file_summary = data.frame(wdayname = wdayname,
                             deviceSerialNumber = deviceSerialNumber,
                             sensor.location = sensor.location,
