@@ -7,17 +7,11 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   # In contrast to R package ActFrag this function assumes
   # that non-wear and missing values have already been taken care of (imputed)
   # outside this function or set to NA. Further, the algorithms are not all exactly the same,
-  # and there are some additional metrics.
-  # This function is either called from GGIR g.part5 function and applied per waking
-  # hours of a day (by default, alternative option spt, see mode).
-  # This allows us to test for behavioural differences between days of the week.
-  # Knowing fragmentation per day of the week allows us to account for this
-  # variation.
+  # and there are some additional metrics. For further dicussion see
+  # https://wadpac.github.io/GGIR/articles/chapter11_DescribingDataCutPoints.html
   # Further, I am avoiding the term sedentary because sedentary implies
   # that the activity type sitting  was classified, which is generally
   # difficult to justify.
-  # Additionally, this function is called from GGIR g.part6 function and applied
-  # to the entire recording with either SPT set to NA or daytime set to NA.
   
   # LEVELS: vector with behavioural classes produced by GGIR
   # Lnames: Names of brehavioural classes.
