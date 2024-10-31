@@ -10,8 +10,9 @@
   protocol to label impute invalid time segments in the data.
 }
 \usage{
-  g.impute(M, I, params_cleaning = c(),
-  desiredtz="", dayborder= 0, TimeSegments2Zero =c(), acc.metric = "ENMO", ID, ...)
+  g.impute(M, I, params_cleaning = c(), desiredtz = "", dayborder = 0,
+            TimeSegments2Zero = c(), acc.metric = "ENMO", ID, 
+            qwindowImp = c(), ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -41,6 +42,11 @@
   }
   \item{ID}{
     ID extracted in g.part2.
+  }
+  \item{qwindowImp}{
+    qwindow object as documented in See \link{GGIR}. If qwindow is based on a diary 
+    then the qwindow object is assumed to only include the values for the current
+    participant ID. 
   }
   \item{...}{
      Any argument used in the previous version of g.impute, which will now

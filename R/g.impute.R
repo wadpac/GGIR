@@ -1,6 +1,6 @@
 g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
                     dayborder = 0, TimeSegments2Zero = c(), acc.metric = "ENMO", 
-                    ID, ...) {
+                    ID, qwindowImp = c(), ...) {
   
   #get input variables
   input = list(...)
@@ -51,14 +51,18 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   
   #========================================
   # Extracting non-wear and clipping and make decision on which additional time needs to be considered non-wear
-  out = g.weardec(M, wearthreshold, ws2, nonWearEdgeCorrection = params_cleaning[["nonWearEdgeCorrection"]])
+  out = g.weardec(M, wearthreshold, ws2,
+                  params_cleaning = params_cleaning,
+                  desiredtz = desiredtz,
+                  qwindowImp = qwindowImp)
   r1 = out$r1 #non-wear
   r2 = out$r2 #clipping
   r3 = out$r3 #additional non-wear
   r4 = matrix(0,length(r3),1) #protocol based decisions on data removal
   LC = out$LC
   LC2 = out$LC2
-  
+  nonwearHoursFiltered = out$nonwearHoursFiltered
+  nonwearEventsFiltered = out$nonwearEventsFiltered
   #========================================================
   # Check whether TimeSegments2Zero exist, because this means that the
   # user wants to ignore specific time windows. This feature is used
@@ -402,5 +406,6 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   invisible(list(metashort = metashort, rout = rout, r5long = r5long, dcomplscore = dcomplscore,
                  averageday = averageday, windowsizes = windowsizes, data_masking_strategy = params_cleaning[["data_masking_strategy"]],
                  LC = LC, LC2 = LC2, hrs.del.start = params_cleaning[["hrs.del.start"]], hrs.del.end = params_cleaning[["hrs.del.end"]],
-                 maxdur = params_cleaning[["maxdur"]]))
+                 maxdur = params_cleaning[["maxdur"]], nonwearHoursFiltered = nonwearHoursFiltered,
+                 nonwearEventsFiltered = nonwearEventsFiltered))
 }

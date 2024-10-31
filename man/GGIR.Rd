@@ -949,16 +949,15 @@ GGIR(mode = 1:5,
         at valid data during waking hours.}
 
       \item{max_calendar_days}{
-      Numeric (default = 0).
-      The maximum number of calendar days to include (set to zero if unknown).}
+        Numeric (default = 0).
+        The maximum number of calendar days to include (set to zero if unknown).}
 
       \item{nonWearEdgeCorrection}{
-      Boolean (default = TRUE).
+        Boolean (default = TRUE).
         If TRUE then the non-wear detection around the edges of the recording (first
         and last 3 hours) are corrected following description in vanHees2013 as
         has been the default since then. This functionality is advisable when working 
-        with sleep clinic or exercise lab data typically lasting less than a day.
-      }
+        with sleep clinic or exercise lab data typically lasting less than a day.}
 
       \item{nonwear_approach}{
         Character (default = "2023").
@@ -976,8 +975,24 @@ GGIR(mode = 1:5,
       \item{includecrit.part6}{
         Numeric (default = c(2/3, 2/3))
         Vector of two with the minimum fraction of valid data required for day
-        and spt time, respectively. This criteria is only used for circadian rhythm analysis.
-      }
+        and spt time, respectively. This criteria is only used for circadian 
+        rhythm analysis.}
+      
+      \item{nonwearFiltermaxHours}{
+        Numeric (default = NULL).
+        If not NULL, ignore detected nonwear periods during window as defined by
+        NonwearFilterWindow. If NonwearFilterWindow is not provided use the outer 
+        segments as specified by parameter \code{qwindow}. If \code{qwindow} is
+        defined by activity diary file and a diary entry is missing use midnight-6am
+        as fall back setting. The main purpose of this functionality is to offer
+        the option to ignore short lasting nonwear episodes during the night
+        when there is suspicious that these are falsely detect, e.g. in individuals
+        with extended motionless sleep periods caused by medication.}
+      
+      \item{nonwearFilterWindow}{
+        Numeric (default = NULL).
+        Vector of length 2 to specify the start and end hour of the night to be used
+        for the functionality as described above for NonwearFiltermaxHours.}
     }
   }
 

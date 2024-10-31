@@ -106,7 +106,9 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                            segmentDAYSPTcrit.part5 = c(0.9, 0),
                            study_dates_file = c(), study_dates_dateformat = "%d-%m-%Y",
                            includecrit.part6 = c(2/3, 2/3),
-                           includenightcrit.part5 = 0)
+                           includenightcrit.part5 = 0,
+                           nonwearFiltermaxHours = NULL,
+                           nonwearFilterWindow = NULL)
   }
   if ("output" %in% topic) {
     params_output = list(epochvalues2csv = FALSE, save_ms5rawlevels = FALSE,
