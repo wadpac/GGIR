@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-In chapters 8, 9, and 10 we discussed the classification of sleep and in chapter 11 we discussed the classification of daytime physical behavioural classes. This information is typically described as time spent per behavioural class. An complementary way of describing the data is by looking at the fragmentation of these behaviours of time.
+In chapters 8, 9, and 10 we discussed the classification of sleep and in chapter 11 we discussed the classification of daytime physical behavioural classes.  These are typically reported as time spent per behavioural class. An complementary way of describing the data is by looking at the fragmentation of these behaviours of time.
 
 ## Defining fragments
 
