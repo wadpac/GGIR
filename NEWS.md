@@ -43,6 +43,8 @@
 
 - Part 1: Reverse default value for nonwear_range_threshold as changed in 3.1-3 back to 150 as more research needed to support the change. #1172
 
+- Part 1: Tidied up code in internal function detect_nonwear_clipping.R to ease future reviews. #1212
+
 # CHANGES IN GGIR VERSION 3.1-4
 
 - Part 3: Update threshold used for HorAngle to 60 degree, and auto-setting HASPT.ignore.invalid to NA when NotWorn guider is used. #1186
