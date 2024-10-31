@@ -58,7 +58,6 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
       x$wear_perc_day = 100 - x$nonwear_perc_day #wear percentage during waking hours
       x$wear_min_spt = (1 - (x$nonwear_perc_spt / 100)) * x$dur_spt_min #valid minute during waking hours
       x$wear_perc_spt = 100 - x$nonwear_perc_spt #wear percentage during waking hours
-      x$lasttimestamp = as.numeric(x$lasttimestamp)
       x$lastHour = as.numeric(x$lastHour)
       x$calendar_date = as.Date(x$calendar_date)
 
