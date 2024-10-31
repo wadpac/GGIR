@@ -4,6 +4,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                    params_cleaning = c(), params_output = c(),
                    params_general = c(), verbose = TRUE, ...) {
   options(encoding = "UTF-8")
+  filename_dir = NULL
   # This function called by function GGIR
   # and aims to combine all the milestone output from the previous parts
   # in order to facilitate a varierty of analysis on time-use, interactions
@@ -170,7 +171,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         # convert to character/numeric if stored as factor in metashort and metalong
         M$metashort = correctOlderMilestoneData(M$metashort)
         M$metalong = correctOlderMilestoneData(M$metalong)
-        filename = filename_dir
+        filename = filename_dir # object comes from load() call above
         # load output g.part3
         longitudinal_axis = NULL # initialise var that is part of ms3.out
         load(paste0(metadatadir, "/meta/ms3.out/", fnames.ms3[i]))
