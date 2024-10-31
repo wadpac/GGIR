@@ -42,14 +42,13 @@ export(g.analyse, g.calibrate,
        g.part5_analyseSegment, g.part5_initialise_ts,
        g.part5.analyseRest, part6AlignIndividuals,
        part6PairwiseAggregation, g.part6, g.report.part6, 
-       check_log, g.report.part5_dictionary, DFA, ABI, SSP)
-
+       check_log, g.report.part5_dictionary, DFA, ABI, SSP, visualReport)
 
 importFrom("grDevices", "colors", "dev.off", "pdf",
-           "rgb", "rainbow", "palette")
+           "rgb", "rainbow", "palette", "adjustcolor", "gray.colors")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
            "rect","axis.POSIXct", "barplot", "box", "legend",
-           "lines", "mtext", "text", "arrows", "segments")
+           "lines", "mtext", "text", "arrows", "segments", "layout")
 importFrom("utils", "read.csv", "sessionInfo", "write.csv",
            "installed.packages", "setTxtProgressBar",
            "txtProgressBar", "write.table", "head",

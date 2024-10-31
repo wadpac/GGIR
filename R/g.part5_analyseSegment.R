@@ -46,8 +46,9 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
   
   #==========================
   # The following is to avoid issue with merging sleep variables from part 4
-  # Note that this means that for MM windows there can be multiple or no wake or onsets in window
-  date = as.Date(ts$time[segStart], tz = params_general[["desiredtz"]])
+  # This code extract them the time series (ts) object created in g.part5
+  # Note that this means that for MM windows there can be multiple or no wake or onsets
+  date = as.Date(ts$time[segStart + 1], tz = params_general[["desiredtz"]])
   if (add_one_day_to_next_date == TRUE & timewindowi %in% c("WW", "OO")) { # see below for explanation
     date = date + 1
     add_one_day_to_next_date = FALSE
@@ -225,6 +226,30 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     ds_names[fi] = "ACC_spt_mg_stdev";      fi = fi + 1
     dsummary[si, fi] = mean(ts$ACC[sse], na.rm = TRUE)
     ds_names[fi] = "ACC_day_spt_mg";      fi = fi + 1
+    
+    #======================================================
+    # STEPS... (IF STEP_COUNT IS AVAILABLE)
+    if ("step_count" %in% names(ts)) {
+      if (length(params_247[["clevels"]]) > 1) {
+        for (windowhalf in c("day", "spt")) {
+          step_subsegment = sse[ts$diur[sse] == ifelse(windowhalf == "day", yes = 0, no = 1)]
+          cadence = ts$step_count[step_subsegment] / (60 / ws3new)
+          step_count = ts$step_count[step_subsegment]
+          for (cleveli in 1:(length(params_247[["clevels"]]) - 1)) {
+            cadence_condition_met = which(cadence >= params_247[["clevels"]][cleveli] &
+                                            cadence < params_247[["clevels"]][cleveli + 1])
+            dsummary[si, fi] = floor(sum(step_count[cadence_condition_met]))
+            tmp_ending_of_name = paste0("in_candence_", params_247[["clevels"]][cleveli],
+                                        "_", params_247[["clevels"]][cleveli + 1], "_spm")
+            ds_names[fi] = paste0("STEPS_", windowhalf, "_count_", tmp_ending_of_name)
+            fi = fi + 1
+            dsummary[si, fi] = length(step_count[cadence_condition_met]) * (ws3new / 60)
+            ds_names[fi] = paste0("STEPS_", windowhalf, "_min_", tmp_ending_of_name)
+            fi = fi + 1
+          }
+        }
+      }
+    }
     #===============================================
     # QUANTILES...
     WLH = ((qqq2 - qqq1) + 1)/((60/ws3new) * 60)
@@ -384,11 +409,12 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     if (params_output[["do.sibreport"]]  == TRUE & !is.null(sibreport))  {
       restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
                                          ds_names = ds_names, fi = fi, di = si,
-                                         time = ts$time[sse[ts$diur[sse] == 0]],
+                                         ts = ts[sse[ts$diur[sse] == 0], ],
                                          tz = params_general[["desiredtz"]],
-                                         possible_nap_dur = params_sleep[["possible_nap_dur"]])
+                                         params_sleep = params_sleep)
       fi = restAnalyses$fi
       si = restAnalyses$di
+      ts[sse[ts$diur[sse] == 0], ] = restAnalyses$ts
       dsummary = restAnalyses$dsummary
       ds_names = restAnalyses$ds_names
     }

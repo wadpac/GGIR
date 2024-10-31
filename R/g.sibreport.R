@@ -35,23 +35,32 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
     # extract self-reported nonwear and naps
     nonwearlog = logs_diaries$nonwearlog
     naplog = logs_diaries$naplog
+    sleeplog = logs_diaries$sleeplog
+    bedlog = logs_diaries$bedlog
     dateformat = logs_diaries$dateformat
 
-    extract_logs = function(log, ID, logname) {
+    firstDate = as.Date(ts$time[1])
+    extract_logs = function(log, ID, logname, firstDate = NULL) {
       logreport = c()
       if (length(log) > 0) {
         relevant_rows = which(log$ID == ID)
         
         if (length(relevant_rows) > 0) {
           log = log[relevant_rows,] # extract ID
+          if (!is.null(firstDate)) {
+            # Add date if missing and remove unneeded columns
+            log$date = firstDate + as.numeric(log$night) - 1
+            log = log[,c("ID", "date", grep(pattern = "onset|wake|bed", x = names(log), value = TRUE))]
+          }
           for (i in 1:nrow(log)) { # loop over lines (days)
             
             tmp = log[i,] # convert into timestamps
             # only attempt if there are at least 2 timestamps to process
+            if (ncol(tmp) <= 2) next
             nonempty = which(tmp[3:ncol(tmp)] != "" & tmp[3:ncol(tmp)] != "NA")
             if (length(nonempty) > 1) {
-              date = as.Date(as.character(tmp[1,2]), format = dateformat)
-              times = format(unlist(tmp[1,3:ncol(tmp)]))
+              date = as.Date(tmp[1,2], format = dateformat)
+              times = as.character(unlist(tmp[1,3:ncol(tmp)]))
               times = grep(pattern = "NA", value = TRUE, invert = TRUE, x = times)
               times = gsub(pattern = " ", replacement = "", x = times)
               times = times[which(times %in% c("", "NA") == FALSE)]
@@ -69,17 +78,37 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
               # put remaining timestamps in logreport
               if (length(times) > 1) {
                 Nevents = floor(length(times) / 2)
-                timestamps = sort(as.POSIXlt(paste0(date, " ", times), tz = desiredtz))
+                timestamps = as.POSIXlt(paste0(date, " ", times), tz = desiredtz)
+                hour = as.numeric(format(timestamps, "%H"))
+                if (!is.null(firstDate)) {
+                  # sleeplog start and/or ending after midnight
+                  AM = which(hour < 12)
+                  if (length(AM) > 0) {
+                    timestamps[AM] = as.POSIXlt(paste0(date + 1, " ", times[AM]), tz = desiredtz)
+                  }
+                } else {
+                  # self-reported nap or nonwear startign before midnight and ending after midnight
+                  if (hour[1] >= 12 & hour[2] < 12) {
+                    timestamps[2] = as.POSIXlt(paste0(date, " ", times[2]), tz = desiredtz)
+                  }
+                }
+                timestamps = sort(timestamps)
                 logreport_tmp = data.frame(ID = rep(ID, Nevents),
                                            type = rep(logname, Nevents),
                                            start = rep("", Nevents),
                                            end = rep("", Nevents),
                                            duration = rep(0, Nevents), stringsAsFactors = FALSE)
                 for (bi in 1:Nevents) {
-                  tt1 = as.POSIXlt(timestamps[(bi * 2) - 1], tz = desiredtz)
-                  tt2 = as.POSIXlt(timestamps[(bi * 2)], tz = desiredtz)
+                  tt1 = as.POSIXct(timestamps[(bi * 2) - 1], tz = desiredtz)
+                  tt2 = as.POSIXct(timestamps[(bi * 2)], tz = desiredtz)
                   logreport_tmp$start[bi]  = format(tt1)
                   logreport_tmp$end[bi] = format(tt2)
+                  if (length(unlist(strsplit(logreport_tmp$start[bi], " "))) == 1) {
+                    logreport_tmp$start[bi] = paste0(logreport_tmp$start[bi], " 00:00:00")
+                  }
+                  if (length(unlist(strsplit(logreport_tmp$end[bi], " "))) == 1) {
+                    logreport_tmp$end[bi] = paste0(logreport_tmp$end[bi], " 00:00:00")
+                  }
                   logreport_tmp$duration[bi] = abs(as.numeric(difftime(time1 = tt1, time2 = tt2, units = "mins")))
                 }
               }
@@ -96,6 +125,8 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
     }
     naplogreport = extract_logs(naplog, ID, logname = "nap")
     nonwearlogreport = extract_logs(nonwearlog, ID, logname = "nonwear")
+    sleeplogreport = extract_logs(sleeplog, ID, logname = "sleeplog", firstDate = firstDate)
+    bedlogreport = extract_logs(bedlog, ID, logname = "bedlog", firstDate = firstDate)
     logreport = sibreport
     # append all together in one output data.frame
     if (length(logreport) > 0 & length(naplogreport) > 0) {
@@ -108,8 +139,20 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
     } else if (length(logreport) == 0 & length(nonwearlogreport) > 0) {
       logreport = nonwearlogreport
     }
+    if (length(logreport) > 0 & length(sleeplogreport) > 0) {
+      logreport = merge(logreport, sleeplogreport, by = c("ID", "type", "start", "end", "duration"), all = TRUE)
+    } else if (length(logreport) == 0 & length(sleeplogreport) > 0) {
+      logreport = sleeplogreport
+    }
+    if (length(logreport) > 0 & length(bedlogreport) > 0) {
+      logreport = merge(logreport, bedlogreport, by = c("ID", "type", "start", "end", "duration"), all = TRUE)
+    } else if (length(logreport) == 0 & length(bedlogreport) > 0) {
+      logreport = bedlogreport
+    }
   } else {
     logreport = sibreport
   }
+  logreport$start = as.POSIXct(logreport$start, tz = desiredtz)
+  logreport$end = as.POSIXct(logreport$end, tz = desiredtz)
   return(logreport)
 }
