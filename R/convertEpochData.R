@@ -171,6 +171,12 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
     monn = "Fitbit"
     monc = 96
     dformc = 96
+  } else if (params_general[["dataFormat"]] == "actical_csv") {
+    deviceName = "Actical"
+    monn = "actical"
+    monc = 94
+    dformc = 94
+    epSizeShort = 0 # extract from file header
   }
   sf = NA
   dformn = params_general[["dataFormat"]]
@@ -196,7 +202,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
              EN = rep(0, 3)
            ),
            metashort = data.frame(timestamp = rep(0, 3),
-                                  accmetric = rep(0, 3)), 
+                                  ExtAct = rep(0, 3)), 
            wday = 0,
            wdayname = "Sunday",
            windowsizes = params_general[["windowsizes"]],
@@ -291,6 +297,14 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         colnames(D$data)[which(cnd == "y")] = "NeishabouriCount_y"
         colnames(D$data)[which(cnd == "z")] = "NeishabouriCount_z"
         colnames(D$data)[which(cnd == "vm")] = "NeishabouriCount_vm"
+      } else if (params_general[["dataFormat"]] == "actical_csv") {
+        D = GGIRread::readActicalCount(filename = fnames[i],
+                                       timeformat = params_general[["extEpochData_timeformat"]],
+                                       desiredtz = params_general[["desiredtz"]],
+                                       configtz = params_general[["configtz"]],
+                                       timeformatName = "extEpochData_timeformat")
+        # Rename to align with GGIR metric naming
+        colnames(D$data)[which(colnames(D$data) == "counts")] = "ExtAct"
       } else if (length(grep(pattern = "actiwatch", x = params_general[["dataFormat"]], ignore.case = TRUE)) > 0) {
         D = GGIRread::readActiwatchCount(filename = fnames[i], 
                                timeformat = params_general[["extEpochData_timeformat"]],
@@ -304,6 +318,14 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
           # split the extraVars
           D_extraVars = D$data[, extraVars, drop = FALSE]
           D$data = D$data[, -extraVars, drop = FALSE]
+        }
+        if (D$epochSize == 120) {
+          # Oddly data can be stored in 120 second epochs even though original publications
+          # never proposed this. The rest of GGIR cannot handle epoch size of 120 seconds
+          # and most practical solution seems to duplicate data to simulate 60 second epoch
+          D$data = D$data[rep(1:nrow(D$data), each = 2),]
+          D$data[, "ZCY"] = D$data[, "ZCY"] / 2
+          D$epochSize = 60
         }
       } else if (params_general[["dataFormat"]] == "phb_xlsx") {
         # phb = Philips Health Band
@@ -326,6 +348,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
           D_extraVars = D$data[, extraVars, drop = FALSE]
           D$data = D$data[, -extraVars, drop = FALSE]
         }
+        colnames(D$data)[which(colnames(D$data) == "counts")] = "ExtAct"
         D$data = D$data[, grep(pattern = "cardio|heart|sleepevent|battery|duration|missing|activem|vo2|energy|respiration|timestamp",
                                x = colnames(D$data), ignore.case = TRUE, invert = TRUE)]
       } else if (params_general[["dataFormat"]] == "fitbit_json") {
@@ -413,10 +436,10 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                                            tz = tz)
       # formats with possibly more than 1 column
       morethan1 = c("actigraph_csv", "sensewear_xls", "actiwatch_awd",
-                    "actiwatch_csv", "phb_xlsx")
+                    "actiwatch_csv", "phb_xlsx", "actical_csv", "fitbit_json") #, "
       if (params_general[["dataFormat"]] %in% morethan1 == FALSE) {
         M$metashort = data.frame(timestamp = time_shortEp_8601,
-                                 accmetric = D[1:length(time_shortEp_8601),1],stringsAsFactors = FALSE)
+                                 ExtAct = D[1:length(time_shortEp_8601),1],stringsAsFactors = FALSE)
       } else {
         M$metashort = as.data.frame(cbind(time_shortEp_8601,
                                           D[1:length(time_shortEp_8601), ]))
@@ -465,6 +488,12 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
             if (sum(imp[indices], na.rm = TRUE) == 0) {
               nonwearscore[ni] = 3
             }
+            # For Fitbit and Sensewear we do nonwear detection based on calories
+            if (params_general[["dataFormat"]] %in% c("fitbit_json", "sensewear_xls") &&
+                sd(imp[indices], na.rm = TRUE) < 0.0001 &&
+                mean(imp[indices], na.rm = TRUE) < 2) {
+              nonwearscore[ni] = 3
+            }
           }
           ni = ni + 1
         }
@@ -475,7 +504,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
       if (length(nonwearscore) < LML) {
         nonwearscore = c(nonwearscore, rep(0, LML - length(nonwearscore)))
       }
-      if (params_general[["dataFormat"]] == "sensewear_xls") {
+      if (params_general[["dataFormat"]] %in% c("sensewear_xls", "phb_xlsx", "fitbit_json")) {
         # Create myfun object, this to trigger outcome type specific analysis
         myfun = list(FUN = NA,
                      parameters = NA, 
@@ -488,6 +517,20 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                      aggfunction = NA,
                      timestamp = F, 
                      reporttype = c("scalar", "event", "type"))
+      }
+      if (params_general[["dataFormat"]] == "actiwatch_csv" && "ExtSleep" %in% colnames(D)) {
+        # Create myfun object, this to trigger outcome type specific analysis
+        myfun = list(FUN = NA,
+                     parameters = NA, 
+                     expected_sample_rate = NA, 
+                     expected_unit = "g", 
+                     colnames = c("ExtSleep"),
+                     outputres = epSizeShort,
+                     minlength = NA,
+                     outputtype = c("numeric"),
+                     aggfunction = NA,
+                     timestamp = F, 
+                     reporttype = c("type"))
       }
       # create data.frame for metalong, note that light and temperature are just set at zero
       M$metalong = data.frame(timestamp = time_longEp_8601,nonwearscore = nonwearscore, #rep(0,LML)

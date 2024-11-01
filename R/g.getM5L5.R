@@ -1,5 +1,6 @@
 g.getM5L5 = function(varnum, ws3, t0_LFMF, t1_LFMF, M5L5res, winhr, 
-                     qM5L5  = c(), iglevels = c(), MX.ig.min.dur = 10) {
+                     qM5L5  = c(), iglevels = c(), MX.ig.min.dur = 10,
+                     UnitReScale = 1000) {
   #diurnal pattern features extracted only meaningful if more than 16 hours
   # note: acceleration 1-6am removed from this function and
   # placed in g.analyse because it is not related to M5L5 analyse (23-7-2019)
@@ -27,9 +28,9 @@ g.getM5L5 = function(varnum, ws3, t0_LFMF, t1_LFMF, M5L5res, winhr,
     valid = which(is.na(DAYrunav5) == F)
     DAYL5HOUR = ((which(DAYrunav5 == min(DAYrunav5[valid], na.rm = T) &
                           is.na(DAYrunav5) == F)-1)/(60/reso)) + t0_LFMF #- 1
-    DAYL5VALUE = min(DAYrunav5[valid]) * 1000
+    DAYL5VALUE = min(DAYrunav5[valid]) * UnitReScale
     DAYM5HOUR = ((which(DAYrunav5 == max(DAYrunav5[valid], na.rm = T)  & is.na(DAYrunav5) == F)-1)/(60/reso)) + t0_LFMF #- 1
-    DAYM5VALUE = max(DAYrunav5[valid]) * 1000
+    DAYM5VALUE = max(DAYrunav5[valid]) * UnitReScale
     #-------------------------------------
     if (length(DAYL5VALUE) > 1) { DAYL5VALUE = sort(DAYL5VALUE)[ceiling(length(DAYL5VALUE)/2)] }
     if (length(DAYL5HOUR) > 1) { DAYL5HOUR = sort(DAYL5HOUR)[ceiling(length(DAYL5HOUR)/2)] }
@@ -64,9 +65,9 @@ g.getM5L5 = function(varnum, ws3, t0_LFMF, t1_LFMF, M5L5res, winhr,
       for (li in 1:2) { # do twice, once for LX and once for MX
         q49 = c()
         if (li == 1) {
-          q50 = cut(varnum[L5start:L5end]*1000, breaks = iglevels,right=FALSE)
+          q50 = cut(varnum[L5start:L5end]*UnitReScale, breaks = iglevels,right=FALSE)
         } else {
-          q50 = cut(varnum[M5start:M5end]*1000, breaks = iglevels,right=FALSE)
+          q50 = cut(varnum[M5start:M5end]*UnitReScale, breaks = iglevels,right=FALSE)
         }
         q50 = table(q50)
         q49  = (as.numeric(q50) * ws3)/60 #converting to minutes
@@ -89,7 +90,7 @@ g.getM5L5 = function(varnum, ws3, t0_LFMF, t1_LFMF, M5L5res, winhr,
       # calculate statistics
       L5q = quantile(varnum[L5start:L5end], probs = qM5L5 , na.rm = TRUE)
       M5q = quantile(varnum[M5start:M5end], probs = qM5L5 , na.rm = TRUE)
-      M5L5varsExtra = as.numeric(c(L5q, M5q)) * 1000
+      M5L5varsExtra = as.numeric(c(L5q, M5q)) * UnitReScale
     } else {
       M5L5varsExtra = rep(NA, length(qM5L5) * 2)
     }

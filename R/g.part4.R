@@ -266,9 +266,10 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           # go through the nights get default onset and wake (based on sleeplog or on heuristic
           # algorithms) def.noc.sleep is an input argument the GGIR user can use to specify what
           # detection strategy is used in the absense of a sleep diary
-          if (length(params_sleep[["def.noc.sleep"]]) == 0 ||
-              length(SPTE_start) == 0 ||
-              length(SPTE_start[which(is.na(SPTE_start) == FALSE)]) == 0) {
+          if ((length(params_sleep[["def.noc.sleep"]]) == 0 ||
+               length(SPTE_start) == 0 ||
+               length(SPTE_start[which(is.na(SPTE_start) == FALSE)]) == 0) &&
+              length(params_sleep[["def.noc.sleep"]]) != 2) {
             # use L5+/-6hr algorithm if SPTE fails OR if the user explicitely asks for it (length
             # zero argument)
             guider = "notavailable"

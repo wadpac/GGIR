@@ -246,10 +246,11 @@ GGIR(mode = 1:5,
         Character (default = "raw").
         To indicate what the format is of the data in datadir.
         Alternatives: ukbiobank_csv, actiwatch_csv, actiwatch_awd, 
-        actigraph_csv, and sensewear_xls, which correspond to epoch level data 
-        files from, respecitively, UK Biobank in csv format, Actiwatch in csv 
-        format, Actiwatch in awd format, ActiGraph csv format, and Sensewear in
-        xls format (also works with xlsx). Here, the assumed epoch size for
+        actigraph_csv, sensewear_xls, phb_xlsx, and fitbit_json which correspond 
+        to epoch level data files from, respecitively, UK Biobank in csv format, 
+        Actiwatch in csv format, Actiwatch in awd format, ActiGraph csv format, 
+        Sensewear in xls format (also works with xlsx), Philips Health Band in 
+        xlsx format, and Fitbit in json format. Here, the assumed epoch size for
         UK Biobank csvdata is 5 seconds. 
         The epoch size for the other non-raw data formats is 
         flexible, but make sure that you set first value of argument 

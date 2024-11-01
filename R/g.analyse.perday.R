@@ -390,6 +390,15 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                                      "ZCX", "ZCY", "ZCZ", "BrondCount_x", "BrondCount_y",
                                      "BrondCount_z", "NeishabouriCount_x", "NeishabouriCount_y", 
                                      "NeishabouriCount_z", "NeishabouriCount_vm", "ExtAct")) {
+                
+                if (minames[mi] %in% c("ZCX", "ZCY", "ZCZ", "BrondCount_x", "BrondCount_y",
+                    "BrondCount_z", "NeishabouriCount_x", "NeishabouriCount_y", 
+                    "NeishabouriCount_z", "NeishabouriCount_vm", "ExtAct") == FALSE) {
+                  unit = "_mg"
+                } else {
+                  unit = ""
+                }
+                
                 collectfi = c()
                 for (winhr_value in params_247[["winhr"]]) { # Variable (column) names
                   # We are first defining location of variable names, before calculating
@@ -410,9 +419,9 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                                  paste0("M", winhr_value, "_q", round(params_247[["qM5L5"]] * 100)))
                   }
                   # add metric name and timewindow name
-                  fi = correct_fi(di, ds_names, fi, varname = paste0(ML5colna[1],"_", colnames(metashort)[mi], "_mg",
+                  fi = correct_fi(di, ds_names, fi, varname = paste0(ML5colna[1],"_", colnames(metashort)[mi], unit,
                                                                      L5M5window_name))
-                  ds_names[fi:(fi - 1 + length(ML5colna))] = paste0(ML5colna, "_", colnames(metashort)[mi], "_mg", 
+                  ds_names[fi:(fi - 1 + length(ML5colna))] = paste0(ML5colna, "_", colnames(metashort)[mi], unit, 
                                                                     L5M5window_name)
                   collectfi = c(collectfi, fi)
                   fi = fi + length(ML5colna)
@@ -427,7 +436,8 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                       t1_LFMF = length(varnum) / (60 * (60 / ws3)) + (winhr_value - (params_247[["M5L5res"]] / 60))
                       
                       ML5 = g.getM5L5(varnum, ws3, t0_LFMF, t1_LFMF, params_247[["M5L5res"]], winhr_value, qM5L5 = params_247[["qM5L5"]], 
-                                      iglevels = params_247[["iglevels"]], MX.ig.min.dur = params_247[["MX.ig.min.dur"]])
+                                      iglevels = params_247[["iglevels"]], MX.ig.min.dur = params_247[["MX.ig.min.dur"]],
+                                      UnitReScale = UnitReScale)
                       ML5colna = colnames(ML5)
                       ML5 = as.numeric(ML5)
                       if (anwi_index > 1) {
@@ -453,22 +463,22 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   daysummary[di,collectfi] = ""
                 }
                 if (anwindices[1] == 1 & length(anwindices) > 6*60*(60/ws3)) { # only derive if 1-6am falls within window
-                  fi = correct_fi(di, ds_names, fi, varname = paste0("mean_", colnames(metashort)[mi], "_mg_1-6am"))
+                  fi = correct_fi(di, ds_names, fi, varname = paste0("mean_", colnames(metashort)[mi], unit, "_1-6am"))
                   daysummary[di,fi] = mean(varnum[((1 * 60 * (60 / ws3)) + 1):(6 * 60 * (60 / ws3))]) * UnitReScale #from 1am to 6am
-                  ds_names[fi] = paste0("mean_",colnames(metashort)[mi],"_mg_1-6am"); fi = fi + 1
+                  ds_names[fi] = paste0("mean_",colnames(metashort)[mi], unit, "_1-6am"); fi = fi + 1
                 }
                 if (anwi_nameindices[anwi_index] == "") { # for consistency with previous GGIR version
                   anwi_nameindices[anwi_index] = "_24hr"
                 }
                 cn_metashort = colnames(metashort)
-                fi = correct_fi(di, ds_names, fi, varname = paste0("mean_", cn_metashort[mi], "_mg",
+                fi = correct_fi(di, ds_names, fi, varname = paste0("mean_", cn_metashort[mi], unit,
                                                                    anwi_nameindices[anwi_index]))
                 if (length(varnum) > 0) {
                   daysummary[di,fi] = mean(varnum) * UnitReScale
                 } else {
                   daysummary[di,fi] = ""
                 }
-                ds_names[fi] = paste0("mean_", cn_metashort[mi], "_mg", anwi_nameindices[anwi_index]); fi = fi + 1
+                ds_names[fi] = paste0("mean_", cn_metashort[mi], unit, anwi_nameindices[anwi_index]); fi = fi + 1
                 if (anwi_nameindices[anwi_index] == "_24hr") {
                   anwi_nameindices[anwi_index] = ""
                 }
@@ -480,7 +490,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   for (rq46i in 1:length(rownames(as.matrix(q46)))) {
                     tmp1 = rownames(as.matrix(q46))[rq46i]
                     tmp2 = as.character(unlist(strsplit(tmp1, "%")))
-                    namesq46[rq46i] = paste0("p", tmp2, "_", colnames(metashort)[mi], "_mg",
+                    namesq46[rq46i] = paste0("p", tmp2, "_", colnames(metashort)[mi], unit,
                                              anwi_nameindices[anwi_index])
                   }
                   fi = correct_fi(di, ds_names, fi, varname = namesq46[1])
@@ -501,7 +511,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   keepindex_48[mi - 1,] = c(fi, (fi + (length(q48) - 1)))
                   namesq47 = rep(0, length(rownames(q47)))
                   for (rq47i in 1:length(rownames(q47))) {
-                    namesq47[rq47i] = paste0(rownames(q47)[rq47i], "_", colnames(metashort)[mi], "_mg",
+                    namesq47[rq47i] = paste0(rownames(q47)[rq47i], "_", colnames(metashort)[mi], unit,
                                              anwi_nameindices[anwi_index])
                   }
                   fi = correct_fi(di, ds_names, fi, varname = namesq47[1])

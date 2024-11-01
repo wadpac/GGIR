@@ -14,7 +14,7 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
   }
   if (length(acc.metric) == 0) {
     acc.metric = colnames(IMP$metashort)[which(colnames(IMP$metashort) %in% 
-                                                 c("anglex", "angley", "anglez", "timestamp") == FALSE)[1]]
+                                                 c("anglex", "angley", "anglez", "ExtSleep", "timestamp") == FALSE)[1]]
   }
   
   if (doquan == TRUE) {
@@ -31,7 +31,7 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
   }
   if (doquan == TRUE) {
     for (quani in 1:ncol(averageday)) { # these columns of averageday correspond to the metrics from part 1
-      if (colnames(M$metashort)[(quani + 1)] %in% c("anglex", "angley", "anglez") == FALSE) {
+      if (colnames(M$metashort)[(quani + 1)] %in% c("anglex", "angley", "anglez", "ExtSleep") == FALSE) {
         #--------------------------------------
         # quantiles
         QUANtmp =  quantile(averageday[((t_TWDI[1] * (3600 / ws3)) + 1):(t_TWDI[length(t_TWDI)] * (3600 / ws3)), quani],
