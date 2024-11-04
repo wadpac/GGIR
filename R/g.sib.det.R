@@ -277,6 +277,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
           }
         }
         if (length(params_sleep[["def.noc.sleep"]]) == 1) {
+          if (params_sleep[["HASPT.algo"]][guider_to_use] == "HorAngle") spt_max_gap = 30
           spt_estimate = HASPT(angle = tmpANGLE, ws3 = ws3,
                                sptblocksize = sptblocksize, spt_max_gap = spt_max_gap,
                                HASPT.algo = params_sleep[["HASPT.algo"]][guider_to_use],
@@ -284,6 +285,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                                HDCZA_threshold = params_sleep[["HDCZA_threshold"]],
                                HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
                                activity = tmpACC)
+          spt_max_gap = 60
         } else {
           spt_estimate = list(SPTE_end = NULL, SPTE_start = NULL, tib.threshold = NULL, part3_guider = NULL)
         }
@@ -301,8 +303,18 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
             if (newqqq2 > length(anglez)) newqqq2 = length(anglez)
             # only try to extract SPT again if it is possible to extract a window of more than 23 hour
             if (newqqq2 < length(anglez) & (newqqq2 - newqqq1) > (23*(3600/ws3)) ) {
+              # Recalculate nonwear percentage for new window (6pm to 6pm)
+              nonwear_percentage = (length(which(invalid[newqqq1:newqqq2] == 1)) /  (newqqq2 - newqqq1 + 1)) * 100
+              guider_to_use = 1
+              if (params_sleep[["HASPT.algo"]][1] == "NotWorn" &&
+                  nonwear_percentage < 25 &&
+                  length(params_sleep[["HASPT.algo"]]) == 2) {
+                # Nonwear percentage was low, so use alternative guider specified as second element
+                guider_to_use = 2
+              }
+              # new TIME (6pm tp 6pm)
               tmpTIME = time[newqqq1:newqqq2]
-              if (params_sleep[["HASPT.algo"]][1] != "NotWorn") {
+              if (params_sleep[["HASPT.algo"]][guider_to_use] != "NotWorn") {
                 tmpANGLE = anglez[newqqq1:newqqq2]
                 if (do.HASPT.hip == TRUE) {
                   if (params_sleep[["longitudinal_axis"]] == 1) {
@@ -312,28 +324,33 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                   }
                 }
               }
+              if (params_sleep[["HASPT.algo"]][guider_to_use] == "HorAngle") spt_max_gap = 30
               spt_estimate_tmp = HASPT(angle = tmpANGLE, ws3 = ws3,
                                        sptblocksize = sptblocksize, spt_max_gap = spt_max_gap,
-                                       HASPT.algo = params_sleep[["HASPT.algo"]][1],
+                                       HASPT.algo = params_sleep[["HASPT.algo"]][guider_to_use],
                                        invalid = invalid[newqqq1:newqqq2],
                                        HDCZA_threshold = params_sleep[["HDCZA_threshold"]],
                                        HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
                                        activity = ACC[newqqq1:newqqq2])
+              spt_max_gap = 60
+              # spte_end_after_noon = FALSE
               if (length(spt_estimate_tmp$SPTE_start) > 0) {
                 # If new SPTE_end is beyond noon (qqq2) then use the new SPTE_end
                 if (spt_estimate_tmp$SPTE_end + newqqq1 >= qqq2) {
                   spt_estimate = spt_estimate_tmp
-                } else {
-                  daysleep_offset  = 0
-                }
-              } else {
-                daysleep_offset  = 0
+                  # spte_end_after_noon = TRUE
+                } 
               }
             } else {
+              # if newqqq window is short and not used, reset daysleep_offset to 0
               daysleep_offset  = 0
             }
+            # # reset to 0 for next calculations if spt estimate do not finish after noon
+            # if (sptei < 3) browser()
+            # if (spte_end_after_noon == TRUE) daysleep_offset  = 0
           }
-          if (qqq1 == 1 && partialFirstDay == TRUE) {  # only use startTimeRecord if the start of the block send into SPTE was after noon
+          if (qqq1 == 1 && partialFirstDay == TRUE) {  
+            # only use startTimeRecord if the start of the block send into SPTE was after noon
             startTimeRecord = unlist(iso8601chartime2POSIX(IMP$metashort$timestamp[1], tz = desiredtz))
             startTimeRecord = sum(as.numeric(startTimeRecord[c("hour", "min", "sec")]) / c(1, 60, 3600))
             daysleep_offset = daysleep_offset + startTimeRecord
