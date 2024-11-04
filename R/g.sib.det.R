@@ -333,21 +333,19 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                                        HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
                                        activity = ACC[newqqq1:newqqq2])
               spt_max_gap = 60
-              # spte_end_after_noon = FALSE
               if (length(spt_estimate_tmp$SPTE_start) > 0) {
                 # If new SPTE_end is beyond noon (qqq2) then use the new SPTE_end
                 if (spt_estimate_tmp$SPTE_end + newqqq1 >= qqq2) {
                   spt_estimate = spt_estimate_tmp
-                  # spte_end_after_noon = TRUE
-                } 
+                } else {
+                  daysleep_offset  = 0
+                }
+              } else {
+                daysleep_offset  = 0
               }
             } else {
-              # if newqqq window is short and not used, reset daysleep_offset to 0
               daysleep_offset  = 0
             }
-            # # reset to 0 for next calculations if spt estimate do not finish after noon
-            # if (sptei < 3) browser()
-            # if (spte_end_after_noon == TRUE) daysleep_offset  = 0
           }
           if (qqq1 == 1 && partialFirstDay == TRUE) {  
             # only use startTimeRecord if the start of the block send into SPTE was after noon
