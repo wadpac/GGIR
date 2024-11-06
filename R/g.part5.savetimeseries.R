@@ -19,6 +19,7 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
   }
   # Create numeric time to faciltiate merging
   ts$timenum = as.numeric(ts$timestamp)
+  epochSize = ts$timenum[2] - ts$timenum[1]
   ms5rawlevels$timenum = as.numeric(ms5rawlevels$date_time)
   mdat = merge(ts, ms5rawlevels, by = "timenum")
   rm(ts, ms5rawlevels)
@@ -27,11 +28,23 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
   mdat = mdat[,-which(names(mdat) == "date_time")]
   if ("require_complete_lastnight_part5" %in% names(params_output) &&
       params_output[["require_complete_lastnight_part5"]] == TRUE) {
-    last_timestamp = as.numeric(format(mdat$timestamp[length(mdat$timestamp)], "%H"))
-    if ((timewindow == "MM" || timewindow == "OO") && last_timestamp < 9) {
+    N_window0_at_end = which(rev(mdat$window) != 0)[1]
+    N_hours_window0_at_end = ((N_window0_at_end * epochSize) / 3600)
+    lastHour = as.numeric(format(mdat$timestamp[length(mdat$timestamp)], "%H"))
+    # If last hour is less than 9 then we know recording ended between midnight and 9am
+    # which means that sleep onset may not be reliably detected
+    # If last window with a non-zero number ends after 6pm in the before last day
+    # then that confirms that sleep was estimated fromt his incomplete night
+    if ((timewindow == "MM" || timewindow == "OO") && lastHour < 9 &&
+        N_hours_window0_at_end < 9 + 6) {
       mdat$window[which(mdat$window == max(mdat$window))] = 0 
     }
-    if (timewindow == "WW" && last_timestamp < 15) {
+    # If last hour is less than 15 then we know recording ended between midnight and 3pm
+    # which means that wakeup may not be reliably detected
+    # If last window with a non-zero number ends after 6pm in the before last day
+    # then that confirms that sleep was estimated from this incomplete night
+    if (timewindow == "WW" && lastHour < 15 &&
+        N_hours_window0_at_end < 15 + 6) {
       mdat$window[which(mdat$window == max(mdat$window))] = 0 
     }
   }
