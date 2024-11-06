@@ -34,7 +34,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "colid", "coln1", "def.noc.sleep", "nnights", 
                        "sleepefficiency.metric", "possible_nap_edge_acc", "HDCZA_threshold")
     boolean_params = c("ignorenonwear", "HASPT.ignore.invalid",
-                       "relyonguider", "sleeplogidnum")
+                       "relyonguider", "sleeplogidnum", "sib_must_fully_overlap_with_TimeInBed")
     character_params = c("HASPT.algo", "HASIB.algo", "Sadeh_axis", "nap_model",
                          "sleeplogsep", "sleepwindowType", "loglocation")
     check_class("Sleep", params = params_sleep, parnames = numeric_params, parclass = "numeric")

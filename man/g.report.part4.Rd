@@ -8,9 +8,9 @@
   for direct use by package user
 }
 \usage{
-g.report.part4(datadir = c(), metadatadir = c(), loglocation = c(), f0 = c(),
+g.report.part4(datadir = c(), metadatadir = c(), f0 = c(),
   f1 = c(), data_cleaning_file = c(),
-  sleepwindowType = "SPT", params_output, verbose = TRUE)
+  params_sleep, params_output, verbose = TRUE)
 }
 \arguments{
   \item{datadir}{
@@ -24,9 +24,6 @@ g.report.part4(datadir = c(), metadatadir = c(), loglocation = c(), f0 = c(),
     is normally created by \link{g.part1} and \link{GGIR} will recognise what
     the value of metadatadir is.
   }
-  \item{loglocation}{
-    see \link{g.part4}
-  }
   \item{f0}{
     File index to start with (default = 1). Index refers to the filenames sorted
     in alphabetical order
@@ -37,8 +34,8 @@ g.report.part4(datadir = c(), metadatadir = c(), loglocation = c(), f0 = c(),
   \item{data_cleaning_file}{
     see \link{GGIR}
   }
-  \item{sleepwindowType}{
-    see \link{GGIR}
+  \item{params_sleep}{
+    Parameters object, see \link{GGIR}
   }
   \item{params_output}{
     Parameters object, see \link{GGIR}

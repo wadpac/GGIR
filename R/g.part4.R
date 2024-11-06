@@ -613,9 +613,9 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                 # spo is now a data.frame of start and end for each sib (sustained inactivity bout)
                 # Classify as being part of the guider window or not
                 for (evi in 1:nrow(spo)) {
-                  if (spo$start[evi] < GuiderWake & spo$end[evi] > GuiderOnset) {
+                  if (spo$start[evi] < GuiderWake && spo$end[evi] > GuiderOnset) {
                     if (params_sleep[["sleepwindowType"]] == "TimeInBed") {
-                      if (spo$end[evi] < GuiderWake & spo$start[evi] > GuiderOnset) {
+                      if (params_sleep[["sib_must_fully_overlap_with_TimeInBed"]] && spo$end[evi] < GuiderWake & spo$start[evi] > GuiderOnset) {
                         # if using a time in bed reference, then sleep can never 
                         # start before time in bed
                         spo$overlapGuider[evi] = 1  #All sib that start after guider onset and end before guider wake
@@ -626,12 +626,12 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                     if (params_sleep[["relyonguider"]] == TRUE | relyonguider_thisnight == TRUE) {
                       # Redefine sib start and end if it overlaps with guider
                       # to match guider 
-                      if ((spo$start[evi] < GuiderWake & spo$end[evi] > GuiderWake) |
-                          (spo$start[evi] < GuiderWake & spo$end[evi] < spo$start[evi])) {
+                      if ((spo$start[evi] < GuiderWake && spo$end[evi] > GuiderWake) |
+                          (spo$start[evi] < GuiderWake && spo$end[evi] < spo$start[evi])) {
                         spo$end[evi] = GuiderWake
                       }
-                      if ((spo$start[evi] < GuiderOnset & spo$end[evi] > GuiderOnset) |
-                          (spo$end[evi] > GuiderOnset & spo$end[evi] < spo$start[evi])) {
+                      if ((spo$start[evi] < GuiderOnset && spo$end[evi] > GuiderOnset) |
+                          (spo$end[evi] > GuiderOnset && spo$end[evi] < spo$start[evi])) {
                         spo$start[evi] = GuiderOnset
                       }
                     }
