@@ -27,6 +27,8 @@
 
 - Part 1: Tidied up code in internal function detect_nonwear_clipping.R to ease future reviews. #1212
 
+- Part 4: Undo changes to 3 line in g.part4 function from commit 3b9e2b7 (in between 3.1-1 and 3.1-2 release in June 2024) which broke functionality for handling sleep that starts before the double DST hour in the autumn and ends inside it. #1221
+
 # CHANGES IN GGIR VERSION 3.1-4
 
 - Part 3: Update threshold used for HorAngle to 60 degree, and auto-setting HASPT.ignore.invalid to NA when NotWorn guider is used. #1186
