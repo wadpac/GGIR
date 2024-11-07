@@ -1541,10 +1541,12 @@ GGIR(mode = 1:5,
           when viewingwindow = 1 or \code{includenightcrit} when viewingwindow = 2}
       \item{require_complete_lastnight_part5}{    
           Boolean (default = FALSE).
-          When set to TRUE: The last WW window is excluded if recording ends 
-          between midnight and 3pm; The last OO and MM window are excluded if 
-          recording ends between midnight and 9am. This to avoid risk that recording
-          end biases the sleep estimates for the last night.
+          When set to TRUE: The last WW window is excluded if the recording ends 
+          between midnight and 3pm, and starts on a date that is on or one day before the 
+          recording end date; The last OO and MM window are excluded if recording 
+          ends between midnight and 9am, and starts on a date that is on or one
+          day before the recording end date. This to avoid risk that recording end 
+          biases the sleep estimates for the last night.
       }
     }
   }
