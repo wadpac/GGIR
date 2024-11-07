@@ -22,7 +22,7 @@ Descriptive variables such as average acceleration per day or recording as discu
 
 A popular approach to define behavioural classes in physical activity research is to distinguish so called intensity levels. Here, it is common to distinguish sedentary behaviour (SB), light physical activity (LIPA), moderate, and vigorous physical activity. The latter two categories are often combined into moderate or vigorous physical activity (MVPA). Inside GGIR we refer to sedentary behaviour as inactivity to emphasize that our methods quantify mainly a lack of activity rather than being in sitting or reclying posture.
 
-However, intensity levels as behavioural classes lack a feasible operational construct definition which has caused methodological discrepancies for decades. An elaborate reflection on this can be found in [this](https://www.accelting.com/updates/why-does-ggir-facilitate-cut-points/) blog post.
+However, intensity levels as behavioural classes lack a feasible operational construct definition which has caused methodological discrepancies for decades. An elaborate reflection on this can be found in [this blog post](https://www.accelting.com/updates/why-does-ggir-facilitate-cut-points/).
 
 This situation has forced us to be pragmatic and use a operational construct definition of intensity levels that is feasible for accelerometer data.
 
@@ -31,6 +31,9 @@ This situation has forced us to be pragmatic and use a operational construct def
 It is common to classify intensity levels from accelerometer data by evaluating whether the acceleration is below, above, or between certain acceleration level(s). The acceleration magnitude(s) to use as threshold(s), are also known as cut-points.
 
 The use of thresholds (cut-points) is intended to be a crude indicator of time spent in intensity levels and sufficient to rank individuals on their amount of time spent in these behaviours. The cut-point approach has indisputably been the most powerful method so far to drive physical activity research.
+
+See [published cut-points and how to use them](https://wadpac.github.io/GGIR/articles/CutPoints.html) as guidance for choosing cut-points for your dataset.
+
 
 As discussed in more detail further down, the acceleration (intensity) level classification is done in GGIR parts 2 and 5.
 
