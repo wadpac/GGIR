@@ -303,16 +303,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                      " a fraction of the day between zero and one or the number ",
                      "of hours in a day."))
     }
-    if (params_cleaning[["includenightcrit.part5"]] < 0) {
-      stop("\nNegative value of includenightcrit.part5 is not allowed, please change.")
-    } else if (params_cleaning[["includenightcrit.part5"]]  > 24) {
-      stop(paste0("\nIncorrect value of includenightcrit.part5, this should be",
-                  " a fraction of the day between zero and one or the number ",
-                  "of hours in a day."))
-    }
-    if (any(params_cleaning[["includecrit.part6"]] < 0) | any(params_cleaning[["includecrit.part6"]] > 1)) {
-      stop("Values of includecrit.part6 are not in the range [0, 1]. Please fix.")
-    }
     if (!is.null(params_cleaning[["nonwearFiltermaxHours"]])) {
       if (params_cleaning[["nonwearFiltermaxHours"]] < 0 ||
           params_cleaning[["nonwearFiltermaxHours"]] > 12) {
@@ -332,6 +322,17 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                          " values in nonwearFilterWindow is correct"), call. = FALSE)
         }
       }
+    }
+
+    if (params_cleaning[["includenightcrit.part5"]] < 0) {
+      stop("\nNegative value of includenightcrit.part5 is not allowed, please change.")
+    } else if (params_cleaning[["includenightcrit.part5"]]  > 24) {
+      stop(paste0("\nIncorrect value of includenightcrit.part5, this should be",
+                     " a fraction of the day between zero and one or the number ",
+                     "of hours in a day."))
+    }
+    if (any(params_cleaning[["includecrit.part6"]] < 0) | any(params_cleaning[["includecrit.part6"]] > 1)) {
+      stop("Values of includecrit.part6 are not in the range [0, 1]. Please fix.")
     }
   }
   if (length(params_phyact) > 0) {

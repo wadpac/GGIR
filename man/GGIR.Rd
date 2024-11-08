@@ -977,7 +977,7 @@ GGIR(mode = 1:5,
         Vector of two with the minimum fraction of valid data required for day
         and spt time, respectively. This criteria is only used for circadian 
         rhythm analysis.}
-      
+
       \item{nonwearFiltermaxHours}{
         Numeric (default = NULL).
         If not NULL, ignore detected nonwear periods during window as defined by
