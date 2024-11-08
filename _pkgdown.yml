@@ -67,6 +67,8 @@ navbar:
           href: articles/chapter12_TimeUseAnalysis.html
         - text: 13. Circadian Rhythm Analysis
           href: articles/chapter13_CircadianRhythm.html
+        - text: 14. Behavioural Fragmentation
+          href: articles/chapter14_BehaviouralFragmentation.html
     annexes:
       text: Annexes
       menu:
@@ -109,8 +111,7 @@ news:
     href: https://www.accelting.com/updates/ggir-release-2-5-0/
     
 search:
-  exclude: ['news/index.html', 'articles/GGIR.html', 
-  'articles/cosinorAnalyses.html', 'articles/appendRecords.html', 'articles/applyCosinorAnalyses.html',
+  exclude: ['news/index.html',
   'reference/cosinorAnalyses.html', 'reference/appendRecords.html', 'reference/applyCosinorAnalyses.html',
   'reference/applyExtFunction.html', 'reference/CalcSleepRegularityIndex.html', 
   'reference/checkMilestoneFolders.html', 'reference/check_log.html', 
