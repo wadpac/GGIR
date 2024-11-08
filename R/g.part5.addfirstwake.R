@@ -73,7 +73,9 @@ g.part5.addfirstwake = function(ts, summarysleep, nightsi, sleeplog, ID,
     if (is.na(wake_night1_index)) wake_night1_index = 0
     if (wake_night1_index < firstwake & wake_night1_index > 1 &
         (wake_night1_index - 1) > nightsi[1]) {
-      newWakeIndex = max(which(ts$sibdetection[1:(wake_night1_index - 1)] == 1))
+      newWakeIndex = c()
+      firstSIBs = which(ts$sibdetection[1:(wake_night1_index - 1)] == 1)
+      if (length(firstSIBs) > 0) newWakeIndex = max(firstSIBs)
       if (length(newWakeIndex) == 0) {
         newWakeIndex = wake_night1_index - 1
       }

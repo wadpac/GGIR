@@ -77,12 +77,24 @@ g.part5.wakesleepwindows = function(ts, part4_output, desiredtz, nightsi,
     s1 = findIndex(timeChar, wc = format(as.POSIXlt(w1[k], tz = desiredtz)))
     
     if (is.na(s0) == TRUE) {
-      s0 = 1
+      if (format(as.POSIXlt(w0[k], tz = desiredtz)) < timeChar[1]) {
+        # safe check, only turn s0 to 1 when the part4 wake up is before the first
+        # timestamp. Otherwise, if wake up is after the last timestamp, then the 
+        # whole time series is set to sleep period time (only occurs in nights with
+        # cleaningcode = 5 in part 4 (no accelerometer data available, but spt extracted from sleeplog))
+        s0 = 1
+      }
     }
     if (is.na(s1) == TRUE) {
       # might still be NA if the timestamps is not in ts (expanded time from expand_tail)
       # if so, we assume the participant is sleeping at the end of the recording, this night will be disregarded later on
-      s1 = nrow(ts)
+      if (format(as.POSIXlt(w1[k], tz = desiredtz)) > timeChar[length(timeChar)]) {
+        # safe check, only turn s1 to nrow(ts) when the part4 wake up is after the last
+        # timestamp. Otherwise, if sleep onset is before the first timestamp, then the 
+        # whole time series is set to sleep period time (only occurs in nights with
+        # cleaningcode = 5 in part 4 (no accelerometer data available, but spt extracted from sleeplog))
+        s1 = nrow(ts)
+      }
     }
     
     if (length(s1) != 0 & length(s0) != 0 & is.na(s0) == FALSE & is.na(s1) == FALSE && length(nightsi) > 0) {
@@ -95,7 +107,6 @@ g.part5.wakesleepwindows = function(ts, part4_output, desiredtz, nightsi,
       if (noon1 > Nts) noon1 = Nts
       nonwearpercentage = mean(ts$nonwear[noon0:noon1])
       if ((length(sleeplog) > 0 & (nonwearpercentage > 0.33) | part4_output$sleeponset_ts[k] == "")) { # added condition to detect nights that are not detected in part 4
-        
         # If non-wear is high for this day and if sleeplog is available
         sleeplogonset = sleeplog$sleeponset[which(sleeplog$ID == ID & sleeplog$night == part4_output$night[k])]
         sleeplogwake = sleeplog$sleepwake[which(sleeplog$ID == ID & sleeplog$night == part4_output$night[k])]
@@ -124,10 +135,19 @@ g.part5.wakesleepwindows = function(ts, part4_output, desiredtz, nightsi,
               s0 = 1
             }
             s1 = closestmidnight + round(sleeplogwake_hr * Nepochsinhour)
+            # if sleeplog indicates a time after the ending of the recording, 
+            # then set the nrow(ts) + 1, so that the next line will set as 
+            # SPT all the time from sleep onset until the end of the recording.
+            if (s1 > nrow(ts) + 1) s1 = nrow(ts) + 1
           }
         }
       }
-      ts$diur[s0:(s1 - 1)] = 1
+      # it might also be that both the sleeplog reported sleeponset and
+      # wakeup goes beyond recording length, in that case, s1 < s0,
+      # so only assign SPT if s0 < s1
+      if (s0 < s1) {
+        ts$diur[s0:(s1 - 1)] = 1
+      }
     }
   }
   return(ts)

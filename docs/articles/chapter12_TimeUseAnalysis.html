@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,6 +46,7 @@
     <li><a class="dropdown-item" href="../articles/chapter11_DescribingDataCutPoints.html">11. Physical Activity Fundamentals - Describing the data with cut-points</a></li>
     <li><a class="dropdown-item" href="../articles/chapter12_TimeUseAnalysis.html">12. Time-Use Analysis</a></li>
     <li><a class="dropdown-item" href="../articles/chapter13_CircadianRhythm.html">13. Circadian Rhythm Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter14_BehaviouralFragmentation.html">14. Behavioural Fragmentation</a></li>
   </ul>
 </li>
 <li class="nav-item dropdown">
@@ -156,12 +157,6 @@ from a calendar day, we refer to them as windows in the data.</p>
 <p>GGIR part 5 facilitates the following time window definitions, which
 can be selected with parameter <code>timewindow</code>:</p>
 <table class="table">
-<caption>For “WW” and “OO”, the onset and waking times are guided by the
-estimates from part 4, but if they are missing, part 5 will attempt to
-retrieve the estimate from the guider method. Note that the parameter
-<code>timewindow</code> can consist of one of the options
-beforementioned or any combination of them, for example, the default
-value is <code>timewindow = c("MM", "WW")</code>.</caption>
 <colgroup>
 <col width="34%">
 <col width="32%">
@@ -194,6 +189,19 @@ the sleep onset of the next day.</td>
 </tr>
 </tbody>
 </table>
+<p>For “WW” and “OO”, the onset and waking times are guided by the
+estimates from part 4, but if they are missing, part 5 will attempt to
+retrieve the estimate from the guider method. Note that the parameter
+<code>timewindow</code> can consist of one of the options
+beforementioned or any combination of them, for example, the default
+value is <code>timewindow = c("MM", "WW")</code>.</p>
+<p>When recordings end in the night or early morning the sleep estimates
+for the night are likely affected. For example, if a recording ends at
+10am we cannot be sure that the participant did not sleep until after
+10am, and if a recording ends at 2am we cannot be sure that the sleep
+onset time was reliably estimated. To handle this and ignore the final
+window in the data, set parameter
+<code>require_complete_lastnight_part5 = TRUE</code> (not default).</p>
 <div class="section level3">
 <h3 id="defining-segments-within-the-mm-window">Defining segments within the MM window<a class="anchor" aria-label="anchor" href="#defining-segments-within-the-mm-window"></a>
 </h3>
@@ -463,7 +471,7 @@ of the variables.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

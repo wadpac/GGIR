@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,6 +46,7 @@
     <li><a class="dropdown-item" href="../articles/chapter11_DescribingDataCutPoints.html">11. Physical Activity Fundamentals - Describing the data with cut-points</a></li>
     <li><a class="dropdown-item" href="../articles/chapter12_TimeUseAnalysis.html">12. Time-Use Analysis</a></li>
     <li><a class="dropdown-item" href="../articles/chapter13_CircadianRhythm.html">13. Circadian Rhythm Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter14_BehaviouralFragmentation.html">14. Behavioural Fragmentation</a></li>
   </ul>
 </li>
 <li class="nav-item dropdown">
@@ -241,18 +242,19 @@ community.</p>
 <p>The philosophy behind the algorithms as implemented in GGIR is that
 biomechanical explainable (heuristic or knowledge driven) approaches to
 measurement in science are preferable over purely data-driven
-approaches. Only when a knowledge driven approach is unrealistic we can
-consider a data-driven approach.</p>
+approaches. Please note the specification to the scientific context
+rather than measurement in general, e.g. consumer wearables. Only when a
+knowledge driven approach is unrealistic we can consider a data-driven
+approach.</p>
 <p>The idea of a knowledge driven approach is that in order to advance
-insight in our field of research, it is essential to have an
-understanding of the causal relation between the phenomena being
-observed (e.g. acceleration of one body part), the way the
-(acceleration) sensor works, what we do with the data produced, and how
-we interpret the data. For example, we know that body acceleration
-relates to energy expenditure because of physics and human physiology.
-The abundance of scientific publications that have reported a positive
-correlation between accelerometer data and energy expenditure only
-served to confirm that existing knowledge was correct.</p>
+insight, it is essential to have an understanding of the causal relation
+between the phenomena being observed (e.g. acceleration of one body
+part), the way the (acceleration) sensor works, what we do with the data
+produced, and how we interpret the data. For example, we know that body
+acceleration relates to energy expenditure because of physics and human
+physiology. The abundance of scientific publications that have reported
+a positive correlation between accelerometer data and energy expenditure
+only served to confirm prior knowledge.</p>
 <p>In contrast, data-driven methods focus on optimal correlation between
 sensor data and reference labels or values, and are much less concerned
 with causal associations that are the focus of knowledge driven
@@ -262,7 +264,7 @@ measurement can also be confounded. Some examples: We may see
 differences in body acceleration patterns that correlate with different
 activity types or different levels of energy expenditure, but that does
 not mean that we actually measure those activity types or energy
-expenditure levels. Ignoring such aspects can easily lead to
+expenditure levels. Ignoring this distinction can easily lead to
 overestimating the value of an accelerometer for measuring those
 constructs (activity type, etc) and to underestimate the value of an
 accelerometer of capturing acceleration as a useful measure of
@@ -280,12 +282,13 @@ different activity types across individuals that differ in body weight.
 See also reflections in <a href="https://www.accelting.com/updates/why-does-ggir-facilitate-cut-points/" class="external-link">this
 blog post</a>.</li>
 <li>Polysomnography (PSG) is the standard in sleep research. PSG offers
-a physiological definition of sleep that is impossible to capture with a
-movement sensor. Therefore, we are forced to simplify our definition of
-‘sleep’ towards a definition that can be captured by a movement sensor.
-As a result, the act of evaluating an accelerometer on its ability to
-classify sleep with PSG becomes somewhat meaningless as we already know
-that we are not measuring the same construct as PSG.</li>
+a physiological definition of sleep that is impossible to capture
+directly with a movement sensor. Therefore, we are forced to simplify
+our definition of ‘sleep’ towards a definition that can be captured by a
+movement sensor. As a result, the act of evaluating an accelerometer on
+its ability to classify sleep with PSG becomes somewhat meaningless as
+we already know that we are not measuring the same construct as
+PSG.</li>
 <li>Activity types are ambiguous to define given the high number of ways
 they can be performed. This introduces a fundamental level of
 uncertainty about the robustness of models outside the datasets and
@@ -328,10 +331,12 @@ cite publications to clarify the origin of algorithms and we only
 discuss what is part of GGIR.</p>
 <p>Finally, the first version of this documentation was sponsored by
 Accelting with the commitment that this will remain available as free
-open-access documentation. However, things like this are much easier to
+open-access documentation. However, open documentation is much easier to
 maintain as a community: We would be grateful for your help to improve
-the documentation either by giving feedback, pull requests (for those
-who know how to do it), or financially.</p>
+the documentation either by giving feedback (e.g. via v.vanhees at
+accelting dot com), pull requests (for those who know how to do it), or
+financially. For example, it would be great if we had funding for
+creating high quality complementary info graphics and videos.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
@@ -344,7 +349,7 @@ who know how to do it), or financially.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

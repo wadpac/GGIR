@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,6 +46,7 @@
     <li><a class="dropdown-item" href="../articles/chapter11_DescribingDataCutPoints.html">11. Physical Activity Fundamentals - Describing the data with cut-points</a></li>
     <li><a class="dropdown-item" href="../articles/chapter12_TimeUseAnalysis.html">12. Time-Use Analysis</a></li>
     <li><a class="dropdown-item" href="../articles/chapter13_CircadianRhythm.html">13. Circadian Rhythm Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter14_BehaviouralFragmentation.html">14. Behavioural Fragmentation</a></li>
   </ul>
 </li>
 <li class="nav-item dropdown">
@@ -112,120 +113,173 @@
 <div class="section level2">
 <h2 id="mxlx">MXLX<a class="anchor" aria-label="anchor" href="#mxlx"></a>
 </h2>
-<p>Detection of the continuous least (LX) and most (MX) active X hours
-in a day, where X is defined by argument <code>winhr</code>. For both
-GGIR calculates the average acceleration, the start time, and if
-argument <code>iglevels</code> is specified also the intensity gradient.
-If argument <code>winhr</code> is a vector then descriptive values for
-LX and MX are derived per value in <code>winhr</code>.</p>
+<p>MXLX looks for the continuous least (LX) and most (MX) active X hour
+window in a day, where X is defined by parameter <code>winhr</code>. For
+both LX and MX, GGIR calculates the average acceleration, the start
+time, and if argument <code>iglevels</code> is specified also the
+intensity gradient. If parameter <code>winhr</code> is a vector then MX
+and LX are derived for each value in the vector.</p>
 <p>Within GGIR part 2 MXLX is calculated per calendar day and, if
 argument <code>qwindow</code> is specified, per segment of the day.
-Within GGIR part 5 MXLX is calculated per window, and if used in
-combination with the GENEActiv or Axivity accelerometer brand LUX
-estimates per LX and MX are included.</p>
+Within GGIR part 5 MXLX is calculated per <a href="https://wadpac.github.io/GGIR/articles/chapter12_TimeUseAnalysis.html#defining-the-time-windows">window</a>.
+If used in combination with the GENEActiv or Axivity accelerometer
+brands, LUX estimates per LX and MX are also included in GGIR part 5 csv
+reports.</p>
 <p>The MX metric described here should not be confused by the MX metrics
 as proposed by <a href="https://doi.org/10.1186/s40798-019-0225-9" class="external-link">Rowlands et al.</a>
 which looks at accumulated most active time which may not always be
 continuous in time. The MX metrics by Rowlands et al. are discussed <a href="https://wadpac.github.io/GGIR/articles/chapter7_DescribingDataWithoutKnowingSleep.html#sets-of-quantiles-mx-metrics-by-rowlands-et-al-">here</a>.</p>
 </div>
 <div class="section level2">
-<h2 id="cosinor-analysis-and-extended-cosinor-analysis">Cosinor analysis and Extended Cosinor analysis<a class="anchor" aria-label="anchor" href="#cosinor-analysis-and-extended-cosinor-analysis"></a>
+<h2 id="extended-cosinor-analysis">(Extended) Cosinor analysis<a class="anchor" aria-label="anchor" href="#extended-cosinor-analysis"></a>
 </h2>
-<p><strong>Disclaimer: This functionality is currently (2024) being
-revised. Once the enhancements have been incorporated in a GGIR release
-this section will also be updated.</strong></p>
-<p>The (Extended) Cosinor analysis quantifies the circadian 24 hour
-cycle. Cosinor analysis refers to fiting a cosine function to a time
-series, while the extended cosinor analysis refers to fitting a cosine
-function to the transformed time series afrer Marler et al. Statist.
-Med. 2006 (doi: 10.1002/sim.2466).</p>
-<p>To do this GGIR uses R package <a href="https://CRAN.R-project.org/package=ActCR" class="external-link">ActCR</a> as a
-dependency. Specify argument <code>cosinor = TRUE</code> to perform
-these analysis.</p>
-<p>GGIR performs cosinor analysis both in part 2 and 6.</p>
-<p>The implementation within GGIR part 2 is as follows:</p>
-<ul>
-<li>Acceleration values are averaged per minute, and then log
-transformation as
-<code>log(acceleration converted to _mg_ + 1)</code>.</li>
+<p>The Cosinor analysis quantifies the circadian 24 hour cycle. Cosinor
+analysis refers to fitting a cosine function to a log transformed time
+series, while the extended cosinor analysis refers to fitting a
+non-linear transformation of the traditional cosinor curve to after
+Marler et al. Statist. Med. 2006 (doi: 10.1002/sim.2466).</p>
+<p>Corinos analyssis are not run by default, to tell GGIR to perform
+these analyse specify parameter <code>cosinor = TRUE</code>. The
+implementation is as follows:</p>
+<ol style="list-style-type: decimal">
+<li>The acceleration metric as specified with parameter
+<code>acc.metric</code> is used.</li>
+<li>Acceleration metric values are averaged per minute and expressed in
+m<em>g</em> if the input is in <em>g</em>, and then log transformed as
+<code>log(acceleration + 1)</code>.</li>
 <li>Invalid data points such as caused by non-wear are set to missing
-(<code>NA</code>) in order to prevent the imputation approach used
-elsewhere in GGIR to influence the Cosinor analysis. We do this because
-imputation technique generally come with some assumptions about
-circadian rhythm.</li>
-<li>GGIR looks for the first valid data point in the recording and then
-selects the maximum integer number of recording days following this data
-point and feeds these to the ActCosinor and ActExtendCosinor functions
-of ActCR. The time offset between the start and the following midnight
-is then used to reverse offset the ActCR results, to ensure that
-acrophase and acrotime can be interpreted relative to midnight.</li>
-<li>In relation to Day Saving Time: Duplicated time stamps when clock
-moves backward are ignored and missing time stamps when clock moves
-forward are inserted as missing values.</li>
+(<code>NA</code>) as we do not want the imputation used elsewhere in
+GGIR to influence the Cosinor analysis. We do this because imputation
+technique generally come with some assumptions about circadian
+rhythm.</li>
+<li>In part 2 GGIR uses all valid data in the recording while in part 6
+we only use the valid data in the interval as defined with parameter
+<code>part6Window</code>, e.g. first wake-up time till last wake-up
+time.</li>
+<li>GGIR looks for the first valid data point in the time series and
+then selects the maximum integer number of recording days following this
+data point.</li>
+<li>If Day Saving Time occurs in the time series then duplicated
+timestamps when clock moves backward are ignored and missing timestamps
+when clock moves forward are inserted as missing values.</li>
+<li>Cosinor models are fitted using functions <code>ActCosinor</code>
+and <code>ActExtendCosinor</code> from R package <a href="https://CRAN.R-project.org/package=ActCR" class="external-link">ActCR</a>. Here,
+<code>ActExtendCosinor</code> uses an anti-logistic function for the
+transformation.</li>
+<li>The time offset between the start of the time series as used and the
+following midnight is used to reverse offset the ActCR results, to
+ensure that acrophase and acrotime can be interpreted relative to
+midnight.</li>
 <li>Time series corresponding to the fitted models are stored inside the
-part 2 milestone data to facilitate visual inspection. For the moment
-they are not used in any GGIR visualisation, but you may want to look
-them up and try to plot them yourself.</li>
-</ul>
-<p>The implementation within GGIR part 6 is as follows: - Only the time
-series are used in the interval as defined with parameter
-<code>part6Window</code>. - Make sure to set
-<code>save_ms5raw_without_invalid = FALSE</code>, after the revision it
-will also handle setting this to TRUE but for the moment TRUE introduces
-errors.</p>
+part 2 milestone data as stored in output subfolder
+<code>meta/ms2.out</code> to facilitate visual inspection. For the
+moment they are not used in any GGIR visualisation, but you may want to
+look them up and try to plot them yourself. They are stored in object
+<code>SUM$cosinor_ts</code>.</li>
+</ol>
 </div>
 <div class="section level2">
 <h2 id="intradaily-variability-iv-and-interdaily-stability-is">Intradaily Variability (IV) and Interdaily Stability (IS)<a class="anchor" aria-label="anchor" href="#intradaily-variability-iv-and-interdaily-stability-is"></a>
 </h2>
-<p><strong>Disclaimer: This functionality is currently (2024) being
-revised. Once the enhancements have been incorporated in a GGIR release
-this section will also be updated.</strong></p>
-<div class="section level3">
-<h3 id="iv-and-is---default">IV and IS - Default<a class="anchor" aria-label="anchor" href="#iv-and-is---default"></a>
-</h3>
-<p>The original implementation (argument
-<code>IVIS.activity.metric = 1</code>) uses the continuous numeric
-acceleration values. However, as we later realised, this is not
-compatible with the original approach by van Someren and colleagues,
-which uses a binary distinction between active and inactive. Therefore,
-a second option was added (argument
-<code>IVIS.activity.metric = 2</code>), which needs to be used in
-combination with accelerometer metric ENMO, and collapses the
-acceleration values into a binary score of rest versus active. This is
-the current default.</p>
-</div>
-<div class="section level3">
-<h3 id="iv-and-is---cosinor-analysis-compatible">IV and IS - Cosinor analysis compatible<a class="anchor" aria-label="anchor" href="#iv-and-is---cosinor-analysis-compatible"></a>
-</h3>
+<p>IV and IS were first proposed by <a href="https://doi.org/10.1016/0006-3223(90)90523-5" class="external-link">Witting W et
+al. 1990</a> and <a href="https://doi.org/10.1016/0006-3223(95)00370-3" class="external-link">van Someren EJ, et
+al. 1996</a>.</p>
+<ul>
+<li><p>IS measures how constant is the routine of activity over several
+days and ranges from 0 to 1, values close to 1 indicate more constant
+routine.</p></li>
+<li><p>IV measures the variability in activity hour by hour throughout
+the days. It ranges from 0 to
++<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>∞</mi><annotation encoding="application/x-tex">\infty</annotation></semantics></math>,
+value close to 2 indicates more fragmented rhythm, and &gt;2 indicates
+ultradian rhythm (very uncommon).</p></li>
+</ul>
+<p>The GGIR implementation of IV and IS since GGIR release 3.1-6 has
+been described in <a href="https://doi.org/10.1186/s12874-024-02255-w" class="external-link">Danilevicz et
+al. 2024</a>. This implementation replaces the experimental
+implementation of IS and IV that was present in GGIR since release
+1.5-1. In the experimental implementation we were not sure how to go
+from raw acceleration signal to an indicator of being active as this
+aspect was not documented in the original publications. Similarly, we
+were not sure how to deal with missing data. However, these issues were
+both resolved in release 3.1-6:</p>
+<ul>
+<li>Being active is now defined as a mean acceleration metric value
+above the light physical activity threshold as specified with parameter
+<code>threshold.lig</code>.</li>
+<li>Missing values are left missing and not imputed, the algorithm now
+accounts for this.</li>
+</ul>
+<p>The new implementation as documented by <a href="https://doi.org/10.1186/s12874-024-02255-w" class="external-link">Danilevicz et
+al. 2024</a> is not compatible with the older experimental
+implementation. Parameters <code>IVIS.activity.metric</code>,
+<code>IVIS_windowsize_minutes</code>,
+<code>IVIS_epochsize_seconds</code>, and <code>IVIS_acc_threshold</code>
+that were used before is no longer needed and have been deprecated.</p>
+<p><strong>Cosinor analysis compatible IV and IS</strong></p>
 <p>IS is sometimes used as a measure of behavioural robustness when
 conducting Cosinor analysis. However, to work with the combination of
 the two outcomes it seems important that IS is calculated from the same
-time series. Therefore, when <code>cosinor = TRUE</code> IV and IS are
+time series. Therefore, when <code>cosinor = TRUE,</code> IV and IS are
 calculated twice: Once as part of the default IV and IS analysis as
 discussed above, and once as part of the Cosinor analysis using the same
-log transformed time series. More specifically, the IV and IS algorithm
-is applied with <code>IVIS.activity.metric = 2</code> and a threshold
-<code>IVIS_acc_threshold = log(20 + 1)</code> to make the binary
-distinction between active and inactive, and
-<code>IVIS_per_daypair = TRUE</code>. The setting
-<code>IVIS_per_daypair</code> was specifically designed for this context
-to handle the potentially missing values in the time series as used for
-Cosinor analysis. Applying the default IVIS algorithm would not be able
-to handle the missing values and would result in a loss of information
-if all non-matching epochs across the entire recording were excluded.
-Instead, IV and IS are calculated as follows:</p>
-<ol style="list-style-type: decimal">
-<li>Per day pair based on matching valid epochs only IV and IS and
-calculated. Here, a log is kept of the number of valid epochs per day
-pair.</li>
-<li>Omit day pairs where the fraction of valid epoch pairs is below 0.66
-(0.66 is hard-coded at the moment).</li>
-<li>Calculate average IS across days weighted by fraction of valid
-epochs per day pairs.</li>
-</ol>
-<p>The new Cosinor-compatible IV and IS estimates are stored as output
+log transformed time series.</p>
+<p>The Cosinor-compatible IV and IS estimates are stored as output
 variables <code>cosinorIV</code> and <code>cosinorIS</code>.</p>
 </div>
+<div class="section level2">
+<h2 id="phi">phi<a class="anchor" aria-label="anchor" href="#phi"></a>
+</h2>
+<p>Phi indicates how correlated the multi-day acceleration time series
+is with itself when there is an hour shift, also known as first-order
+auto-correlation from the first-order autoregressive model AR(1). A
+higher phi value indicates a higher autocorrelation, while a phi close
+to zero or even negative indicates more fragmented behavior. For a
+detailed discussion of phi see <a href="https://doi.org/10.1080/01621459.1979.10482531" class="external-link">Dickey and Fuller
+(1979)</a> and <a href="https://doi.org/10.1186/s12874-024-02255-w" class="external-link">Danilevicz et
+al. 2024</a>. Phi is calculated by default in GGIR part 2 and in part 6
+only when parameter <code>part6CR</code> is set to TRUE.</p>
+</div>
+<div class="section level2">
+<h2 id="detrended-fluctionation-analysis-dfa">Detrended fluctionation analysis (DFA)<a class="anchor" aria-label="anchor" href="#detrended-fluctionation-analysis-dfa"></a>
+</h2>
+<div class="section level3">
+<h3 id="self-similarity-paramerter-ssp">Self-similarity paramerter (SSP)<a class="anchor" aria-label="anchor" href="#self-similarity-paramerter-ssp"></a>
+</h3>
+<p>The self-similarity paramter (SSP) is also known as scaling exponent
+or alpha. SSP is a real number between zero and two. Values in the range
+(0, 1) indicate stationary motion behaviour. Values int he range (1, 2
+indicate nonstationary motion behaviour. For details see <a href="https://doi.org/10.1093/bioinformatics/btaa955" class="external-link">Mesquita et al
+2020</a> and <a href="https://doi.org/10.1186/s12874-024-02255-w" class="external-link">Danilevicz et
+al. 2024</a>.</p>
+</div>
+<div class="section level3">
+<h3 id="activity-balance-index-abi">Activity Balance Index (ABI)<a class="anchor" aria-label="anchor" href="#activity-balance-index-abi"></a>
+</h3>
+<p>The Activity Balance Index (ABI) was introduced by <a href="https://doi.org/10.1186/s12874-024-02255-w" class="external-link">Danilevicz et
+al. 2024</a> and is a transformation of SSP. ABI measures how the
+activity over the observed period is balanced, higher values reflect a
+more balanced pattern of activity. ABI is a real number between zero and
+one and calculated from the acceleration metric time series directly
+without the need for cut-points.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="related-output">Related output<a class="anchor" aria-label="anchor" href="#related-output"></a>
+</h2>
+<ul>
+<li><p>MXLX are derived per 24 hours (part 2) and available per day in
+part2_daysummary.csv, and summarised per recording in
+part2_summary.csv.</p></li>
+<li><p>MXLX are derived per window (part6) but only stored as recording
+summary in part6_summary.csv.</p></li>
+<li><p>All other circadian rhythm variables are only derived at
+recording level. IV, IS, phi, and cosinor analysis variables and stored
+in part2_summary.csv and part6_summary.csv, while SSP and ABI are only
+stored in part6_summary.csv.</p></li>
+<li><p>For a more detailed variable dictionary see annex on <a href="https://wadpac.github.io/GGIR/articles/GGIRoutput.html">GGIR
+output</a>.</p></li>
+</ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
@@ -238,7 +292,7 @@ variables <code>cosinorIV</code> and <code>cosinorIS</code>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

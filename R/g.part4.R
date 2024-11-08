@@ -363,7 +363,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           acc_available = TRUE  #default assumption
           # initialize dataframe to hold sleep period overview:
           spocum = data.frame(nb = numeric(0), start = numeric(0),  end = numeric(0),
-                              dur = numeric(0), def = character(0))
+                              overlapGuider = numeric(0), def = character(0))
           
           spocumi = 1  # counter for sleep periods
           # continue now with the specific data of the night
@@ -814,9 +814,10 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   # in the autumn and ends inside the dst hour
                   negval = which(nocs < 0)
                   if (length(negval) > 0) {
-                    kk0 = as.numeric(spocum.t$start[negval])  # episode onsets
-                    kk1 = as.numeric(spocum.t$end[negval]) + 1 # episode endings
-                    nocs[negval] = kk1 - kk0
+                    kk0 = as.numeric(spocum.t$start[which(spocum.t$overlapGuider == 1)])  # episode onsets
+                    kk1 = as.numeric(spocum.t$end[which(spocum.t$overlapGuider == 1)])  # episode endings
+                    kk1[negval] = kk1[negval] + 1
+                    nocs = kk1 - kk0
                   }
                   if (length(nocs) > 0) {
                     spocum.t.dur.noc = sum(nocs)

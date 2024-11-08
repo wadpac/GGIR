@@ -143,6 +143,12 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           }
           # Account for shift in nights relative to windows
           if (nrow(P2daysummary_tmp) > 0) {
+            # nights missing in sleep summary?
+            allnights = 1:max(summarysleep_tmp$night)
+            missingNights = which(allnights %in% summarysleep_tmp$night == FALSE)
+            if (length(missingNights) > 0) {
+              n2exclude = sort(unique(c(n2exclude, missingNights)))
+            }
             if (P2daysummary_tmp$`N hours`[1] < 24 & P2daysummary_tmp$`N hours`[1] > 12 & length(n2exclude) > 0) {
               # First calendar day is between 12 and 24 hours
               # this means that the first night viewindow (=2) may include some data but

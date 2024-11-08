@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,6 +46,7 @@
     <li><a class="dropdown-item" href="../articles/chapter11_DescribingDataCutPoints.html">11. Physical Activity Fundamentals - Describing the data with cut-points</a></li>
     <li><a class="dropdown-item" href="../articles/chapter12_TimeUseAnalysis.html">12. Time-Use Analysis</a></li>
     <li><a class="dropdown-item" href="../articles/chapter13_CircadianRhythm.html">13. Circadian Rhythm Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter14_BehaviouralFragmentation.html">14. Behavioural Fragmentation</a></li>
   </ul>
 </li>
 <li class="active nav-item dropdown">
@@ -157,11 +158,14 @@ measurement, timestamp, header format, and column locations.</p>
 <p>As for the rest of GGIR functions, <code>read.myacc.csv</code> is
 intended to be used within function <code>GGIR</code>. All the arguments
 of the <code>read.myacc.csv</code> can be easily recognized as they all
-start by “rmc”. The GGIR function checks whether the argument
+start by “rmc”. GGIR checks whether argument
 <code>rmc.firstrow.acc</code> is provided by the user; in such case,
-GGIR will attempt to read the data with <code>read.myacc.csv</code>. In
-other words you always need to specify <code>rmc.firstrow.acc</code> to
-use <code>read.myacc.csv</code>.</p>
+GGIR will attempt to read the data with function
+<code>read.myacc.csv</code>. In other words you always need to specify
+<code>rmc.firstrow.acc</code> to use <code>read.myacc.csv</code>.
+Further, we recommend that you always first test the function argument
+settings by first trying to use function <code>read.myacc.csv</code> on
+its own. When that works copy the arguments to you GGIR call.</p>
 <div class="section level3">
 <h3 id="input-arguments">Input arguments<a class="anchor" aria-label="anchor" href="#input-arguments"></a>
 </h3>
@@ -201,9 +205,9 @@ acceleration data.</li>
 <code>rmc.unit.acc</code> - Character with unit of acceleration
 values: “g”, “mg”, or “bit”.</li>
 <li>
-<code>rmc.desiredtz</code> - Timezone in which device was worn.</li>
+<code>desiredtz</code> - Timezone in which device was worn.</li>
 <li>
-<code>rmc.confgitz</code> - Timezone in which device was
+<code>confgitz</code> - Timezone in which device was
 configured.</li>
 <li>
 <code>rmc.sf</code> - Sample rate in Hertz, if this is stored in the
@@ -404,8 +408,8 @@ structure:</p>
 and z axis in the columns 2, 3, and 4, respectively, and temperature
 information in Celsius in the column 5. Also, this file has no
 header.</p>
-<p>First, we test read this file using the <code>read.myacc.csv</code>
-function in GGIR as follows.</p>
+<p>Before we can use this with GGIR, we first test read this file using
+the <code>read.myacc.csv</code> function directly.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wadpac/GGIR/" class="external-link">GGIR</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/read.myacc.csv.html">read.myacc.csv</a></span><span class="op">(</span>rmc.file <span class="op">=</span> <span class="st">"C:/mystudy/mydata/datafile.csv"</span>,</span>
@@ -420,7 +424,7 @@ function in GGIR as follows.</p>
 <span>               rmc.unit.temp <span class="op">=</span> <span class="st">"C"</span>,</span>
 <span>               rmc.unit.time <span class="op">=</span> <span class="st">"POSIX"</span>,</span>
 <span>               rmc.format.time <span class="op">=</span> <span class="st">"%d/%m/%Y %H:%M:%OS"</span>,</span>
-<span>               rmc.desiredtz <span class="op">=</span> <span class="st">"Europe/London"</span>,</span>
+<span>               desiredtz <span class="op">=</span> <span class="st">"Europe/London"</span>,</span>
 <span>               rmc.sf <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="example-using-the-shell-function">Example using the shell function<a class="anchor" aria-label="anchor" href="#example-using-the-shell-function"></a>
@@ -456,7 +460,7 @@ respectively).</p>
 <span>             rmc.unit.temp <span class="op">=</span> <span class="st">"C"</span>, </span>
 <span>             rmc.unit.time <span class="op">=</span> <span class="st">"POSIX"</span>,</span>
 <span>             rmc.format.time <span class="op">=</span> <span class="st">"%d/%m/%Y %H:%M:%OS"</span>,</span>
-<span>             rmc.desiredtz <span class="op">=</span> <span class="st">"Europe/London"</span>,</span>
+<span>             desiredtz <span class="op">=</span> <span class="st">"Europe/London"</span>,</span>
 <span>             rmc.sf <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>             rmc.noise <span class="op">=</span> <span class="fl">0.013</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -474,7 +478,7 @@ respectively).</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

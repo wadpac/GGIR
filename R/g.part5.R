@@ -4,6 +4,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                    params_cleaning = c(), params_output = c(),
                    params_general = c(), verbose = TRUE, ...) {
   options(encoding = "UTF-8")
+  filename_dir = NULL
   # This function called by function GGIR
   # and aims to combine all the milestone output from the previous parts
   # in order to facilitate a varierty of analysis on time-use, interactions
@@ -107,6 +108,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         extractfilenames, referencefnames, folderstructure,
                         fullfilenames, foldername, ffdone, verbose) {
     tail_expansion_log =  NULL
+    filename_dir = NULL # to be loaded
     fnames.ms1 = dir(paste(metadatadir, "/meta/basic", sep = ""))
     fnames.ms2 = dir(paste(metadatadir, "/meta/ms2.out", sep = ""))
     fnames.ms4 = dir(paste(metadatadir, "/meta/ms4.out", sep = ""))
@@ -170,7 +172,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         # convert to character/numeric if stored as factor in metashort and metalong
         M$metashort = correctOlderMilestoneData(M$metashort)
         M$metalong = correctOlderMilestoneData(M$metalong)
-        filename = filename_dir
+        filename = filename_dir # object comes from load() call above
         # load output g.part3
         longitudinal_axis = NULL # initialise var that is part of ms3.out
         load(paste0(metadatadir, "/meta/ms3.out/", fnames.ms3[i]))
@@ -599,11 +601,12 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                            rawlevels_fname = rawlevels_fname,
                                            DaCleanFile = DaCleanFile,
                                            includedaycrit.part5 = params_cleaning[["includedaycrit.part5"]],
+                                           includenightcrit.part5 = params_cleaning[["includenightcrit.part5"]],
                                            ID = ID,
                                            params_output = params_output,
                                            params_247 = params_247,
-                                           filename = filename,
-                                           timewindow = timewindowi)
+                                           Lnames = Lnames, timewindow = timewindowi,
+                                           filename = filename)
                   }
                 }
               }
