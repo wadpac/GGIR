@@ -26,6 +26,15 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
         includeday_wearPercentage = 0
         includeday_absolute = params_cleaning[["includedaycrit.part5"]] * 60
       }
+      if (params_cleaning[["includenightcrit.part5"]] >= 0 &
+          params_cleaning[["includenightcrit.part5"]] <= 1) { # if includenightcrit.part5 is used as a ratio
+        includenight_wearPercentage = params_cleaning[["includenightcrit.part5"]] * 100
+        includenight_absolute = 0
+      } else if (params_cleaning[["includenightcrit.part5"]] > 1 &
+                 params_cleaning[["includenightcrit.part5"]] <= 25) { # if includenightcrit.part5 is used like params_cleaning[["includenightcrit"]] as a number of hours
+        includenight_wearPercentage = 0
+        includenight_absolute = params_cleaning[["includenightcrit.part5"]] * 60
+      }
       include_window = rep(TRUE, nrow(x))
       if (length(params_cleaning[["data_cleaning_file"]]) > 0) { # allow for forced relying on guider based on external params_cleaning[["data_cleaning_file"]]
         DaCleanFile = data.table::fread(params_cleaning[["data_cleaning_file"]], data.table = FALSE)
@@ -47,32 +56,42 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
       
       x$wear_min_day = (1 - (x$nonwear_perc_day / 100)) * x$dur_day_min #valid minute during waking hours
       x$wear_perc_day = 100 - x$nonwear_perc_day #wear percentage during waking hours
-      x$lasttimestamp = as.numeric(x$lasttimestamp)
-      
+      x$wear_min_spt = (1 - (x$nonwear_perc_spt / 100)) * x$dur_spt_min #valid minute during waking hours
+      x$wear_perc_spt = 100 - x$nonwear_perc_spt #wear percentage during waking hours
+
+      x$lastHour = as.numeric(x$lastHour)
+      x$calendar_date = as.Date(x$calendar_date)
+
       minimumValidMinutesMM = 0 # default
       if (length(params_cleaning[["includedaycrit"]]) == 2) {
         minimumValidMinutesMM = params_cleaning[["includedaycrit"]][2] * 60
       }
       if (params_output[["require_complete_lastnight_part5"]] == FALSE) {
-        x$lastnight = FALSE
+        x$lastWindow = FALSE
+        x$lastDate = x$calendar_date
       } else {
-        x$lastnight = x$window_number == max(x$window_number)
+        x$lastWindow = x$window_number == max(x$window_number)
+        x$lastDate = as.Date(x$lastDate)
       }
       if (window == "WW" | window == "OO") {
         indices = which(x$wear_perc_day >= includeday_wearPercentage &
                           x$wear_min_day >= includeday_absolute &
+                          x$wear_perc_spt >= includenight_wearPercentage &
+                          x$wear_min_spt >= includenight_absolute &
                           x$dur_spt_min > 0 & x$dur_day_min > 0 &
-                          ((x$lastnight == TRUE & x$lasttimestamp >= 15 & window == "WW") |
-                             (x$lastnight == TRUE & x$lasttimestamp >= 9 & window == "OO") |
-                             x$lastnight == FALSE) &
+                          ((x$lastWindow == TRUE & x$lastHour >= 15 & (x$lastDate - x$calendar_date) >= -1 & window == "WW") |
+                             (x$lastWindow == TRUE & x$lastHour >= 9 & (x$lastDate - x$calendar_date) >= -1 & window == "OO") |
+                             x$lastWindow == FALSE) &
                           include_window == TRUE &
                           x$wear_min_day_spt >= minimumValidMinutesMM)
       } else if (window == "MM") {
         indices = which(x$wear_perc_day >= includeday_wearPercentage &
                           x$wear_min_day >= includeday_absolute &
+                          x$wear_perc_spt >= includenight_wearPercentage &
+                          x$wear_min_spt >= includenight_absolute &
                           x$dur_spt_min > 0 & x$dur_day_min > 0 &
-                          ((x$lastnight == TRUE & x$lasttimestamp > 9) |
-                             x$lastnight == FALSE) &
+                          ((x$lastWindow == TRUE & x$lastHour > 9 & (x$lastDate - x$calendar_date) >= -1) |
+                             x$lastWindow == FALSE) &
                           x$dur_day_spt_min >= (params_cleaning[["minimum_MM_length.part5"]] * 60) &
                           include_window == TRUE &
                           x$wear_min_day_spt >= minimumValidMinutesMM)
@@ -136,9 +155,11 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
         output = output[-cut, which(colnames(output) != "")]
       }
       if (exists("last_timestamp") == TRUE) {
-        output$lasttimestamp = as.numeric(format(last_timestamp, "%H"))
+        output$lastHour = as.numeric(format(last_timestamp, "%H"))
+        output$lastDate = as.Date(last_timestamp)
       } else {
-        output$lasttimestamp = Inf # use dummy value
+        output$lastHour = Inf # use dummy value
+        output$lastDate = Inf # use dummy value
       }
       out = as.matrix(output)
       if (length(expectedCols) > 0) {
@@ -163,9 +184,9 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                                        "daysleeper|sleeplog_used|_spt_sleep|_spt_wake"),
                       x = names(out), value = FALSE)
         window_number = as.numeric(out[,"window_number"])
-        lastwindow = which(window_number == max(window_number, na.rm = TRUE))
-        if (length(col2na) > 0 & length(lastwindow) > 0) {
-          out[lastwindow, col2na] = "" # set last row to NA for all sleep related variables
+        lastwindow_indices = which(window_number == max(window_number, na.rm = TRUE))
+        if (length(col2na) > 0 & length(lastwindow_indices) > 0) {
+          out[lastwindow_indices, col2na] = "" # set last row to NA for all sleep related variables
         }
       }
       return(out)
@@ -290,8 +311,8 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 # store all summaries in csv files with cleaning criteria
                 validdaysi = getValidDayIndices(x = OF3_clean, window = uwi[j],
                                                 params_cleaning = params_cleaning)
-                if ("lasttimestamp" %in% colnames(OF3_clean)) {
-                  OF3_clean = OF3_clean[, -which(colnames(OF3_clean) == "lasttimestamp")]
+                if ("lastHour" %in% colnames(OF3_clean)) {
+                  OF3_clean = OF3_clean[, -which(colnames(OF3_clean) %in% c("lastHour", "lasteDate"))]
                 }
                 if (length(validdaysi) > 0) {
                   data.table::fwrite(

@@ -76,7 +76,8 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                       LUX_cal_constant = c(), LUX_cal_exponent = c(), LUX_day_segments = c(),
                       L5M5window = c(0, 24), cosinor = FALSE,
                       part6CR = FALSE, part6HCA = FALSE,
-                      part6Window = c("start", "end"))
+                      part6Window = c("start", "end"),
+                      part6DFA = FALSE)
   }
   if ("phyact" %in% topic) {
     params_phyact = list(mvpathreshold = 100, boutcriter = 0.8,
@@ -103,7 +104,9 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                            nonWearEdgeCorrection = TRUE, nonwear_approach = "2023",
                            segmentWEARcrit.part5 = 0.5,
                            segmentDAYSPTcrit.part5 = c(0.9, 0),
-                           study_dates_file = c(), study_dates_dateformat = "%d-%m-%Y")
+                           study_dates_file = c(), study_dates_dateformat = "%d-%m-%Y",
+                           includecrit.part6 = c(2/3, 2/3),
+                           includenightcrit.part5 = 0)
   }
   if ("output" %in% topic) {
     params_output = list(epochvalues2csv = FALSE, save_ms5rawlevels = FALSE,

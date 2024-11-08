@@ -320,7 +320,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     }
     g.part6(datadir = datadir, metadatadir = metadatadir, f0 = f0, f1 = f1,
             params_general = params_general, params_phyact = params_phyact,
-            params_247 = params_247,
+            params_247 = params_247, params_cleaning = params_cleaning,
             verbose = verbose)
   }
   

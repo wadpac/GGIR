@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,6 +46,7 @@
     <li><a class="dropdown-item" href="../articles/chapter11_DescribingDataCutPoints.html">11. Physical Activity Fundamentals - Describing the data with cut-points</a></li>
     <li><a class="dropdown-item" href="../articles/chapter12_TimeUseAnalysis.html">12. Time-Use Analysis</a></li>
     <li><a class="dropdown-item" href="../articles/chapter13_CircadianRhythm.html">13. Circadian Rhythm Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter14_BehaviouralFragmentation.html">14. Behavioural Fragmentation</a></li>
   </ul>
 </li>
 <li class="nav-item dropdown">
@@ -212,7 +213,8 @@ package with <code>install.packages("actilifecounts")</code>
 </li>
 <li>If you want to derive circadian rhythm indicators using the [Cosinor
 analysis and Extended Cosinor analysis] (with
-<code>cosinor = TRUE</code>), install the ActCR package with
+<code>cosinor = TRUE</code> for part 2, in part 6 it is always
+performed), install the ActCR package with
 <code>install.packages("ActCR")</code>
 </li>
 </ul>
@@ -653,6 +655,88 @@ in the GGIR github-pages, which is now the main documentation resource
 for GGIR.</p>
 </div>
 </div>
+<div class="section level3">
+<h3 class="tabset" id="output-part-6">Output part 6<a class="anchor" aria-label="anchor" href="#output-part-6"></a>
+</h3>
+<p>When <code>part6CR = TRUE</code> and the vector as specified for
+paramter <code>do.report</code> includes the number 6, a csv report will
+be stored with the following variables:</p>
+<table class="table">
+<colgroup>
+<col width="38%">
+<col width="61%">
+</colgroup>
+<thead><tr class="header">
+<th>Variable name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>ID</td>
+<td>Participant ID extracted from file</td>
+</tr>
+<tr class="even">
+<td>starttime</td>
+<td>Start timestamp for the data as used for the analysis</td>
+</tr>
+<tr class="odd">
+<td>filename</td>
+<td>File name</td>
+</tr>
+<tr class="even">
+<td>N_days</td>
+<td>Number of days in the data as used for the analysis</td>
+</tr>
+<tr class="odd">
+<td>N_valid_days</td>
+<td>Number of valid days in the data as used for the analysis, defined
+as the cumulative number of epoch expressed in days</td>
+</tr>
+<tr class="even">
+<td><code>cosinor_</code></td>
+<td>Cosinor analysis estimates such as mes, amp, acrophase, and
+acrotime, as documented in the <a href="https://CRAN.R-project.org/package=ActCR" class="external-link">Ac tCR</a> package.</td>
+</tr>
+<tr class="odd">
+<td><code>cosinorExt_</code></td>
+<td>Extended Cosinor analysis estimates such as minimum, amp, alpha,
+beta, acrotime, UpMesor, DownMesor, MESOR, and F_pseudo, as documented
+in the <a href="https://CRAN.R-project.org/package=ActCR" class="external-link">Ac tCR</a>
+package.</td>
+</tr>
+<tr class="even">
+<td><code>IV</code></td>
+<td>Intradaily Variability (IV) after Eus J. W. Van Someren
+(Chronobiology International. 1999. Volume 16, issue 4). Implementation
+described in Ian Meneghel Danilevicz et al. <a href="https://doi.org/10.21203/rs.3.rs-3543711/v1" class="external-link uri">https://doi.org/10.21203/rs.3.rs-3543711/v1</a>
+</td>
+</tr>
+<tr class="odd">
+<td><code>IS</code></td>
+<td>Interdaily Stability (IS) after Eus J. W. Van Someren (Chronobiology
+International. 1999. Volume 16, issue 4). Implementation described in
+Ian Meneghel Danilevicz et al. <a href="https://doi.org/10.21203/rs.3.rs-3543711/v1" class="external-link uri">https://doi.org/10.21203/rs.3.rs-3543711/v1</a>
+</td>
+</tr>
+<tr class="even">
+<td>phi</td>
+<td>Ian Meneghel Danilevicz et al. <a href="https://doi.org/10.21203/rs.3.rs-3543711/v1" class="external-link uri">https://doi.org/10.21203/rs.3.rs-3543711/v1</a>
+</td>
+</tr>
+<tr class="odd">
+<td>SSP</td>
+<td>Only created when <code>part6DFA = TRUE</code>. Self-Similarity
+parameter as part of the Detrended Fluctuation Analysis. Implementation
+described in Ian Meneghel Danilevicz et al. <a href="https://doi.org/10.21203/rs.3.rs-3543711/v1" class="external-link uri">https://doi.org/10.21203/rs.3.rs-3543711/v1</a>.</td>
+</tr>
+<tr class="even">
+<td>ABI</td>
+<td>Only created when <code>part6DFA = TRUE</code>. Activity Balance
+Index. Implementation described in Ian Meneghel Danilevicz et al. <a href="https://doi.org/10.21203/rs.3.rs-3543711/v1" class="external-link uri">https://doi.org/10.21203/rs.3.rs-3543711/v1</a>.</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="section level2">
 <h2 id="motivation-and-clarification">Motivation and clarification<a class="anchor" aria-label="anchor" href="#motivation-and-clarification"></a>
@@ -1084,7 +1168,7 @@ this logo.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

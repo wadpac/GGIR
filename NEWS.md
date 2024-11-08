@@ -1,15 +1,51 @@
-# CHANGES IN GGIR VERSION 3.1-?
+# CHANGES IN GGIR VERSION 3.1-6
 
-- Part 5: Fixed minor bug in g.part5.addfirstwake causing the first wake is not correctly added when
-no SIBs are detected from the beginning of the recording until the first detected night. #1198
+- Part 6:
 
-- Part 5: Add parameters require_complete_lastnight_part5 to control whether last window is included if last night is incomplete. #1196
+  - Add DFA functionality #839 (credits: Ian Meneghel Danilevicz and Victor Barreto Mesquita)
+
+  - Add fragmentation metrics, same function as in part 5 but now applied at recording level #839
+  
+  - Circadian rhythm analysis now ignore invalid nights controlled with new parameter "includecrit.part6".
+  
+  - Circadian rhythm analysis now provides consistent results for both regardless of whether time series are stored with or without valid windows with parameter save_ms5raw_without_invalid.
+
+- Part 2 + 6: Revised and simplified IV and IS calculation which now ignores invalid timestamps and also comes with phi statistic (credits: Ian Meneghel Danilevicz). In part 2 we used to have 2 calculation, which is now replaced by just one and applied to all valid data points in the recordings. In part 6 this is repeated by for the time window as specified with parameter part6Window. Further, IVIS now uses argument threshold.lig as threshold to distinguish inactivity from active.
+
+- Part 2: Increase sensitivity clipping detection from 80% to 30% of a window. If the long epoch has more than 30% of its values close to the dynamic range of the sensor then it will be labelled as clipping.
+
+- Part 4: Now also has copy of part 5 variable ACC_spt_mg.
+
+- Part 5:
+
+  - Moving LXMX from part 5 to part 6 as these are circadian rhythm analysis.
+  
+  - Omitted fragmentation metrics for spt window as not meaningful given that part 5 only focusses on valid daytime behaviours.
+  - includenightcrit.part5 added to allow for controlling inclusion of windows in part 5 based on their amount of valid data during spt window. Default remains the same.
+
+  - Fix incorrect usage of part 5 inclusion criteria testing, which used fraction as percentage.
+
+# CHANGES IN GGIR VERSION 3.1-5
+
+- Part 5: 
+
+  - Add parameters require_complete_lastnight_part5 to control whether last window is included if last night is incomplete. #1196
+
+  - Handle sleeplog times beyond the end of the recording. #1206
+
+  - Fixed minor bug in g.part5.addfirstwake causing the first wake is not correctly added when no SIBs are detected in between the start of the recorded and the algorithm or diary based estimate of wakeup time. #1198
+
+  - Revise MM window definition in daylight saving time days, as it assumed fixed day duration of 24 hours #1211 
 
 - General: GGIR version look-up in .onattach() no longer crashes when computer is offline, fixes #1203.
 
-- Reports: The calendar_date and filename columns in reports have been standardized, as %Y-%m-%d and the input accelerometer file name, respectively. #1197
+- Reports: The calendar_date and filename columns in csv reports have been standardized, as %Y-%m-%d and the input accelerometer file name, respectively. #1197
 
 - Part 1: Reverse default value for nonwear_range_threshold as changed in 3.1-3 back to 150 as more research needed to support the change. #1172
+
+- Part 1: Tidied up code in internal function detect_nonwear_clipping.R to ease future reviews. #1212
+
+- Part 4: Undo changes to 3 line in g.part4 function from commit 3b9e2b7 (in between 3.1-1 and 3.1-2 release in June 2024) which broke functionality for handling sleep that starts before the double DST hour in the autumn and ends inside it. #1221
 
 # CHANGES IN GGIR VERSION 3.1-4
 
