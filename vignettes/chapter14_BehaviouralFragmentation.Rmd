@@ -1,0 +1,88 @@
+---
+title: "14. Behavioural fragmentation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{14. Behavioural fragmentation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+In chapters 8, 9, and 10 we discussed the classification of sleep and in chapter 11 we discussed the classification of daytime physical behavioural classes.  These are typically reported as time spent per behavioural class. An complementary way of describing the data is by looking at the fragmentation of these behaviours of time.
+
+## Defining fragments
+
+In GGIR, a fragment for daytime is a defined as a sequence of epochs that belong to one of the four categories:
+
+1.  Inactivity
+2.  Light Physical Activity (LIPA)
+3.  Moderate or Vigorous Physical Acitivty (MVPA)
+4.  Physical activity (can be either LIPA or MVPA)
+
+Each of these categories represents the combination of bouted and unbouted time in the respective categories. Inactivity and physical activity add up to a full day (outside SPT), as well as inactivity, LIPA and MVPA.
+
+A fragment of SPT is defined as a sequence of epochs that belong to one of the four categories:
+
+1.  Estimated sleep
+2.  Estimated wakefulness
+3.  Inactivity
+4.  Physical activity (can be either LIPA or MVPA)
+
+With parameter `frag.metrics = "all"` we can instruct GGIR part 5 to derive behavioural fragmentation metrics. You may want to consider combining this with parameter `part5_agg2_60seconds=TRUE` as that will aggregate the time series to 1 minute resolution as is common in behavioural fragmentation literature. GGIR part 6 performs fragmentation analysis when `part6CR` is set to `TRUE`. For this it uses the time series output generated in part 5 as discussed in the [previous chapter](https://wadpac.github.io/GGIR/articles/chapter12_TimeUseAnalysis.html#exporting-time-series).
+
+GGIR derives fragmentation metrics in two ways:
+
+-   In part 5 fragmentation is quantified per waking hours of the day and reported per day and as recording average of the daily estimates.
+-   In part 6 fragmentation is quantified based on all data in the recording within the window as specifed by parameter `part6Window`.
+
+Calculation per day allows us to explore and possibly account for behavioural differences between days of the week. However, a day level estimate could be considered less robust than the recording level estimates as generated in part 6.
+
+The in internal function `g.fragmentation` for fragmentation metric calculation is used in both part 5 and 6 ensuring that the calculation are otherwise consistent.
+
+## Fragmentation metrics
+
+Note that from the fragmentation metrics discussed below only fragmentation metrics `TP` and `NFrag` are calculated for the SPT fragments.
+
+-   Coefficient of Variance (`CoV`) is calculated according to [Blikman et al. 2014](https://doi.org/10.1016/j.apmr.2014.08.023), which entails dividing the standard deviation by the mean lognormal transformed fragment length (minutes).
+
+-   Transition probability (`TP`) from Inactivity (IN) to Physical activity (IN2PA), from Physical activity to inactivity (PA2IN), and from IN to LIPA or MVPA are all calculated according to [Danilevicz et al. 2024](https://doi.org/10.1186/s12874-024-02255-w).
+
+-   Gini index is calculated with function `Gini` from the `ineq` R package, and with `ineq` argument `corr` set to TRUE.
+
+-   Power law exponent metrics: Alpha, x0.5, and W0.5 are calculated according to [Chastin et al. 2010](https://doi.org/10.1016/j.gaitpost.2009.09.002). Note that compared with R package ActFrag as described in [Junrui Di et al. 2017](https://www.biorxiv.org/content/10.1101/182337v1) we we use the theoretical minimum fragment duration instead of the observed minimum fragment duration.
+
+-   Number of fragment per minutes (`NFragPM`) is calculated identical to metric `fragmentation index` in [Chastin et al. 2012](https://academic.oup.com/ageing/article/41/1/111/46538), but it is renamed here to be a more specific reflection of the calculation. The term `fragmentation index` appears too generic given that all fragmentation metrics inform us about fragmentation. Please note that this is close to the metrics for transition probability, because total number divided by total sum in duration equals 1 divided by average duration. Although the exact math is slightly different.
+
+## Conditions for calculation
+
+-   Metrics `Gini` and `CoV` are only calculated if there are at least 10 fragments (e.g. 5 inactive and 5 active). If this condition is not met the metric value will be set to missing.
+
+-   Metrics related to power law exponent alpha are also only calculated when there are at least 10 fragments, but with the additional condition that the standard deviation in fragment duration is not zero. If these conditions are not met the metric value will be set to missing.
+
+-   Other metrics related to binary fragmentation (`mean_dur_PA` and `mean_dur_IN`), are calculated when there are at least 2 fragments (1 inactive, 1 active). If this condition is not met the value will is set to zero.
+
+-   Metrics related to `TP` are calculated if: There is at least 1 inactivity fragment AND (1 LIPA OR 1 MVPA fragment). If this condition is not met the `TP` metric value is set to zero.
+
+To keep an overview of which recording days met the criteria for non-zero standard deviation and at least ten fragments, GGIR part 5 stores variable `Nvaliddays_AL10F` at person level (i.e., number of valid days with at least 10 fragments), and `SD_dur` (i.e., standard deviation of fragment durations) at day level as well as aggregated per person.
+
+## Key parameters
+
+The parameters related to cut-points and bout detection are mainly the parameters listed under ["Physical activity parameters"](https://wadpac.github.io/GGIR/articles/GGIRParameters.html#physical-activity-parameters).
+
+## Related output
+
+In GGIR part 5 csv reports you will find:
+
+-   Fragmentation metrics at day level per waking hours of the day
+
+In GGIR part 6 csv report you will find:
+
+-   Fragmentation metrics
+
+For an overview of output variables see the [GGIR output annex](https://wadpac.github.io/GGIR/articles/GGIRoutput.html).
