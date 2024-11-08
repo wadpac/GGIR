@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,6 +46,7 @@
     <li><a class="dropdown-item" href="../articles/chapter11_DescribingDataCutPoints.html">11. Physical Activity Fundamentals - Describing the data with cut-points</a></li>
     <li><a class="dropdown-item" href="../articles/chapter12_TimeUseAnalysis.html">12. Time-Use Analysis</a></li>
     <li><a class="dropdown-item" href="../articles/chapter13_CircadianRhythm.html">13. Circadian Rhythm Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter14_BehaviouralFragmentation.html">14. Behavioural Fragmentation</a></li>
   </ul>
 </li>
 <li class="active nav-item dropdown">
@@ -152,8 +153,8 @@ deviation threshold, brown: non-wear after extra filtering step
 </h3>
 <table class="table">
 <colgroup>
-<col width="34%">
-<col width="65%">
+<col width="36%">
+<col width="63%">
 </colgroup>
 <thead><tr class="header">
 <th>(Part of) variable name</th>
@@ -306,13 +307,13 @@ sleep variables in GGIR part 4 output.</td>
 <td>Number of valid week days</td>
 </tr>
 <tr class="even">
-<td>IS_interdailystability</td>
+<td>IS</td>
 <td>inter daily stability. The movement count that is derived for this
 was an attempt to follow the original approach by Eus J. W. Van Someren
 (Chronobiology International. 1999. Volume 16, issue 4).</td>
 </tr>
 <tr class="odd">
-<td>IV_in tradailyvariability</td>
+<td>IV</td>
 <td>intra daily variability. In contrast to the original paper, we
 ignore the epoch transitions between the end of a day and the beginning
 of the next day for the numerator of the equation, this to make it a
@@ -453,6 +454,123 @@ package.</td>
 <td><code>cosinorIS</code></td>
 <td>Cosinor analysis compatible estimate of Interdaily Stability
 (IS)</td>
+</tr>
+<tr class="odd">
+<td>cosinor_timeOffsetHours</td>
+<td>Offset between start time series as used and midnight</td>
+</tr>
+<tr class="even">
+<td>cosinor_mes</td>
+<td>The mean value of the cosinor function fitted to the log transformed
+acceleration signal. Higher values indicate more activity.</td>
+</tr>
+<tr class="odd">
+<td>cosinor_amp</td>
+<td>The amplitude of the cosinor function fitted to the log transformed
+acceleration signal, corresponding to the peak of the function minus the
+mesor. Higher values indicate larger amplitude in the rhythm</td>
+</tr>
+<tr class="even">
+<td>cosinor_acrotime</td>
+<td>Time at which the cosinor function fitted to the log transformed
+acceleration signal reaches its maximum</td>
+</tr>
+<tr class="odd">
+<td>cosinor_acrophase</td>
+<td>Acrotime expressed in radians</td>
+</tr>
+<tr class="even">
+<td>cosinor_ndays</td>
+<td>Number of days used for the cosinor analysis.</td>
+</tr>
+<tr class="odd">
+<td>cosinor_R2</td>
+<td>Measure of goodness of fit of the cosinor function to the log
+transformed acceleration signal. Higher values indicate better goodness
+of fit.</td>
+</tr>
+<tr class="even">
+<td>cosinorExt_minimum</td>
+<td>(copied from ActCR documentation) Minimum value of the function</td>
+</tr>
+<tr class="odd">
+<td>cosinorExt_amp</td>
+<td>(copied from ActCR documentation) Amplitude, a measure of half the
+extend of predictable variation within a cycle. This represents the
+highest activity one can achieve.</td>
+</tr>
+<tr class="even">
+<td>cosinorExt_alpha</td>
+<td>(copied from ActCR documentation) It determines whether the peaks of
+the curve are wider than the troughs: when alpha is small, the troughs
+are narrow and the peaks are wide; when alpha is large, the troughs are
+wide and the peaks are narrow.</td>
+</tr>
+<tr class="odd">
+<td>cosinorExt_beta</td>
+<td>(copied from ActCR documentation) It dertermines whether the
+transformed function rises and falls more steeply than the cosine curve:
+large values of beta produce curves that are nearly square waves.</td>
+</tr>
+<tr class="even">
+<td>cosinorExt_acrotime</td>
+<td>(copied from ActCR documentation) acrophase is the time of day of
+the peak in the unit of the time (hours)</td>
+</tr>
+<tr class="odd">
+<td>cosinorExt_UpMesor</td>
+<td>(copied from ActCR documentation) Time of day of switch from low to
+high activity. Represents the timing of the rest- activity rhythm. Lower
+(earlier) values indicate increase in activity earlier in the day and
+suggest a more advanced circadian phase.</td>
+</tr>
+<tr class="even">
+<td>cosinorExt_DownMesor</td>
+<td>(copied from ActCR documentation) Time of day of switch from high to
+low activity. Represents the timing of the rest-activity rhythm. Lower
+(earlier) values indicate decline in activity earlier in the day,
+suggesting a more advanced circadian phase.</td>
+</tr>
+<tr class="odd">
+<td>cosinorExt_MESOR</td>
+<td>(copied from ActCR documentation) A measure analogous to the MESOR
+of the cosine model (or half the deflection of the curve) can be
+obtained from mes=min+amp/2. However, it goes through the middle of the
+peak, and is therefore not equal to the MESOR of the cosine model, which
+is the mean of the data</td>
+</tr>
+<tr class="even">
+<td>cosinorExt_ndays</td>
+<td>(copied from ActCR documentation) Number of days modeled.</td>
+</tr>
+<tr class="odd">
+<td>cosinorExt_F_pseudo</td>
+<td>(copied from ActCR documentation) Measure the improvement of the fit
+obtained by the non-linear estimation of the transformed cosine
+model</td>
+</tr>
+<tr class="even">
+<td>cosinorExt_R2</td>
+<td>Measure of goodness of fit of the extended cosinor function to the
+log transformed acceleration signal. Higher values indicate better
+goodness of fit.</td>
+</tr>
+<tr class="odd">
+<td>phi</td>
+<td>Indicator of auto-correlation in acceleration time series over
+multiple days, see <a href="https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html">chapter
+13</a> for details.</td>
+</tr>
+<tr class="even">
+<td>SSP</td>
+<td>Method for describing time series, see <a href="https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html">chapter
+13</a> for details.</td>
+</tr>
+<tr class="odd">
+<td>ABI</td>
+<td>ABI measures how the activity over the observed period is balanced,
+see <a href="https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html">chapter
+13</a> for details.</td>
 </tr>
 </tbody>
 </table>
@@ -717,7 +835,7 @@ user.</p>
 <li>part4_nightsummary_sleep_cleaned.csv</li>
 <li>QC/part4_nightsummary_sleep_full.csv</li>
 </ul>
-<p>The latter with ’_full’ in the name is intended to aid clarifying why
+<p>The latter with ‘_full’ in the name is intended to aid clarifying why
 some nights (if any) are excluded from the cleaned summary report.
 Although, nights where the accelerometer was not worn at all are
 excluded from this. So, if you have a 30 day recording where the
@@ -726,8 +844,8 @@ last 22 nights in either csv-report.</p>
 <p>The csv. files contain the variables as shown below.</p>
 <table class="table">
 <colgroup>
-<col width="34%">
-<col width="65%">
+<col width="36%">
+<col width="63%">
 </colgroup>
 <thead><tr class="header">
 <th>(Part of) variable name</th>
@@ -911,8 +1029,8 @@ data. If either of these applies set argument
 <code>sleepwindowType</code> to “TimeInBed”.</p>
 <table class="table">
 <colgroup>
-<col width="34%">
-<col width="65%">
+<col width="36%">
+<col width="63%">
 </colgroup>
 <thead><tr class="header">
 <th>(Part of) variable name</th>
@@ -959,8 +1077,8 @@ below extra clarification on a few of the variable names for which the
 meaning may not be obvious:</p>
 <table class="table">
 <colgroup>
-<col width="34%">
-<col width="65%">
+<col width="36%">
+<col width="63%">
 </colgroup>
 <thead><tr class="header">
 <th>(Part of) variable name</th>
@@ -1513,7 +1631,7 @@ above.</td>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

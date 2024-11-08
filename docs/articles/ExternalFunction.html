@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,6 +46,7 @@
     <li><a class="dropdown-item" href="../articles/chapter11_DescribingDataCutPoints.html">11. Physical Activity Fundamentals - Describing the data with cut-points</a></li>
     <li><a class="dropdown-item" href="../articles/chapter12_TimeUseAnalysis.html">12. Time-Use Analysis</a></li>
     <li><a class="dropdown-item" href="../articles/chapter13_CircadianRhythm.html">13. Circadian Rhythm Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter14_BehaviouralFragmentation.html">14. Behavioural Fragmentation</a></li>
   </ul>
 </li>
 <li class="active nav-item dropdown">
@@ -149,9 +150,9 @@ following code:</p>
 <code class="sourceCode R"><span><span class="va">calculateCounts</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">parameters</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># data: 3 column matrix with acc data</span></span>
 <span>  <span class="co"># parameters: the sample rate of data</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st">"activityCounts"</span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/walkabillylab/activityCounts" class="external-link">"activityCounts"</a></span><span class="op">)</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">==</span> <span class="fl">4</span><span class="op">)</span> <span class="va">data</span><span class="op">=</span> <span class="va">data</span><span class="op">[</span>,<span class="fl">2</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span></span>
-<span>  <span class="va">mycounts</span> <span class="op">=</span> <span class="fu">counts</span><span class="op">(</span>data<span class="op">=</span><span class="va">data</span>, hertz<span class="op">=</span><span class="va">parameters</span>, </span>
+<span>  <span class="va">mycounts</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/activityCounts/man/counts.html" class="external-link">counts</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">data</span>, hertz<span class="op">=</span><span class="va">parameters</span>, </span>
 <span>                    x_axis<span class="op">=</span><span class="fl">1</span>, y_axis<span class="op">=</span><span class="fl">2</span>, z_axis<span class="op">=</span><span class="fl">3</span>,</span>
 <span>                    start_time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">mycounts</span> <span class="op">=</span> <span class="va">mycounts</span><span class="op">[</span>,<span class="fl">2</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span> <span class="co">#Note: do not provide timestamps to GGIR</span></span>
@@ -378,7 +379,7 @@ paper</a>, and corresponding code is here: <a href="https://github.com/wadpac/Su
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

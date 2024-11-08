@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,6 +46,7 @@
     <li><a class="dropdown-item" href="../articles/chapter11_DescribingDataCutPoints.html">11. Physical Activity Fundamentals - Describing the data with cut-points</a></li>
     <li><a class="dropdown-item" href="../articles/chapter12_TimeUseAnalysis.html">12. Time-Use Analysis</a></li>
     <li><a class="dropdown-item" href="../articles/chapter13_CircadianRhythm.html">13. Circadian Rhythm Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter14_BehaviouralFragmentation.html">14. Behavioural Fragmentation</a></li>
   </ul>
 </li>
 <li class="active nav-item dropdown">
@@ -997,47 +998,87 @@ arguments.</p>
 <td>params_cleaning</td>
 </tr>
 <tr class="even">
+<td>includenight.part5</td>
+<td>5</td>
+<td>params_cleaning</td>
+</tr>
+<tr class="odd">
 <td>frag.metrics</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>LUXthresholds</td>
 <td>5</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>LUX_cal_constant</td>
 <td>5</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>LUX_cal_exponent</td>
 <td>5</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>LUX_day_segments</td>
 <td>5</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>timewindow</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>save_ms5raw_format</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>save_ms5raw_without_invalid</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.sibreport</td>
+<td>5</td>
+<td>params_output</td>
+</tr>
+<tr class="even">
+<td>includecrit.part6</td>
+<td>6</td>
+<td>params_cleaning</td>
+</tr>
+<tr class="odd">
+<td>part6_threshold_combi</td>
+<td>6</td>
+<td>params_phyact</td>
+</tr>
+<tr class="even">
+<td>part6CR</td>
+<td>6</td>
+<td>params_247</td>
+</tr>
+<tr class="odd">
+<td>part6HCA</td>
+<td>6</td>
+<td>params_247</td>
+</tr>
+<tr class="even">
+<td>part6Window</td>
+<td>6</td>
+<td>params_247</td>
+</tr>
+<tr class="odd">
+<td>part6DFA</td>
+<td>6</td>
+<td>params_247</td>
+</tr>
+<tr class="even">
+<td>require_complete_lastnight_part5</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
@@ -2155,6 +2196,24 @@ data_masking_strategy selected.</p>
 <p>Character (default = “%d-%m-%Y”). To specify the date format used in
 the study_dates_file as used by [base]strptime.</p>
 </div>
+<div class="section level4">
+<h4 class="unnumbered" id="includecrit-part6">includecrit.part6<a class="anchor" aria-label="anchor" href="#includecrit-part6"></a>
+</h4>
+<p>Numeric (default = c(2/3, 2/3)) Vector of two with the minimum
+fraction of valid data required for day and spt time, respectively. This
+criteria is only used for circadian rhythm analysis.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="includenightcrit-part5">includenightcrit.part5<a class="anchor" aria-label="anchor" href="#includenightcrit-part5"></a>
+</h4>
+<p>Numeric (default = 0). Inclusion criteria used in part 5 for number
+of valid hours during the sleep period hours of a day (the night), when
+value is smaller than or equal to 1 used as fraction of sleep period
+hours, when value above 1 used as absolute number of valid hours
+required. Do not confuse this argument with argument includenightcrit
+which is only used in GGIR part 4 and applies to the entire 24 hour
+window from noon to noon or 6pm to 6pm.</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="sleep-parameters">Sleep Parameters<a class="anchor" aria-label="anchor" href="#sleep-parameters"></a>
@@ -2549,28 +2608,22 @@ data.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="ivis_windowsize_minutes">IVIS_windowsize_minutes<a class="anchor" aria-label="anchor" href="#ivis_windowsize_minutes"></a>
 </h4>
-<p>Numeric (default = 60). Window size of the Intradaily Variability
-(IV) and Interdaily Stability (IS) metrics in minutes, needs to be able
-to add up to 24 hours.</p>
+<p>This argument has been deprecated.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="ivis_epochsize_seconds">IVIS_epochsize_seconds<a class="anchor" aria-label="anchor" href="#ivis_epochsize_seconds"></a>
 </h4>
-<p>Numeric (default = NULL). This argument is deprecated.</p>
+<p>This argument has been deprecated.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="ivis-activity-metric">IVIS.activity.metric<a class="anchor" aria-label="anchor" href="#ivis-activity-metric"></a>
 </h4>
-<p>Numeric (default = 2). Metric used for activity calculation. Value =
-1, uses continuous scaled acceleration. Value = 2, tries to collapse
-acceleration into a binary score of rest versus active to try to
-simulate the original approach.</p>
+<p>This argument has been deprecated.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="ivis_acc_threshold">IVIS_acc_threshold<a class="anchor" aria-label="anchor" href="#ivis_acc_threshold"></a>
 </h4>
-<p>Numeric (default = 20). Acceleration threshold to distinguish
-inactive from active.</p>
+<p>This argument has been deprecated.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="qm5l5">qM5L5<a class="anchor" aria-label="anchor" href="#qm5l5"></a>
@@ -2646,13 +2699,17 @@ needs to be calculated. Now this is done with argument qwindow.</p>
 <h4 class="unnumbered" id="cosinor">cosinor<a class="anchor" aria-label="anchor" href="#cosinor"></a>
 </h4>
 <p>Boolean (default = FALSE). Whether to apply the cosinor analysis from
-the ActCR package.</p>
+the ActCR package in part 2. In part 6 cosinor analysis is applied by
+default and cannot be turned off.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="part6cr">part6CR<a class="anchor" aria-label="anchor" href="#part6cr"></a>
 </h4>
 <p>Boolean (default = FALSE) to indicate whether circadian rhythm
-analysis should be run by part 6.</p>
+analysis should be run by part 6, this includes: cosinor analysis,
+extended cosinor analysis, IS, IV, and phi. Optionally this can be
+expanded with detrended fluctutation analysis which is controlled by
+parameter <code>part6DFA</code>.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="part6hca">part6HCA<a class="anchor" aria-label="anchor" href="#part6hca"></a>
@@ -2673,6 +2730,13 @@ relative to the end of the recording. For example, c(“W1”, “W-1”) goes
 from the first till the last wakeup, c(“H5”, “H-5”) ignores the first
 and last 5 hours, and c(“O2”, “W10”) goes from the second onset till the
 10th wakeup time.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="part6dfa">part6DFA<a class="anchor" aria-label="anchor" href="#part6dfa"></a>
+</h4>
+<p>Boolean (default = FALSE) to indicate whether to perform Detrended
+Fluctuation Analysis. Turned off by default because it can be time
+consuming.</p>
 </div>
 </div>
 <div class="section level3">
@@ -2842,6 +2906,17 @@ g.part2.</p>
 visualreport = TRUE only show the windows with sufficiently valid data
 according to includedaycrit when viewingwindow = 1 or includenightcrit
 when viewingwindow = 2</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="require_complete_lastnight_part5">require_complete_lastnight_part5<a class="anchor" aria-label="anchor" href="#require_complete_lastnight_part5"></a>
+</h4>
+<p>Boolean (default = FALSE). When set to TRUE: The last WW window is
+excluded if the recording ends between midnight and 3pm, and starts on a
+date that is on or one day before the recording end date; The last OO
+and MM window are excluded if recording ends between midnight and 9am,
+and starts on a date that is on or one day before the recording end
+date. This to avoid risk that recording end biases the sleep estimates
+for the last night.</p>
 <p><img src="GGIR-MASTERLOGO-RGB.png" alt="GGIR logo" width="60%" style="border: 0; padding:20px"></p>
 </div>
 </div>
@@ -2857,7 +2932,7 @@ when viewingwindow = 2</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

@@ -1,6 +1,6 @@
 g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
                            ws3, doiglevels, firstmidnighti, ws2, midnightsi, params_247 = c(), 
-                           qcheck = c(), acc.metric = c(), ...) {
+                           qcheck = c(), acc.metric = c(), params_phyact = NULL, ...) {
   #get input variables
   input = list(...)
   if (length(input) > 0 || length(params_247) == 0) {
@@ -99,35 +99,21 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
       }
     }
   }
-  # IS and IV variables
-  fmn = midnightsi[1] * (ws2/ws3) # select data from first midnight to last midnight because we need full calendar days to compare
-  lmn = (midnightsi[length(midnightsi)] * (ws2/ws3)) - 1
-  # By using the metashort from the IMP we do not need to ignore segments, because data imputed
-  Xi = IMP$metashort[fmn:lmn, acc.metric]
-  # IV IS
-  IVISout = g.IVIS(Xi, epochsizesecondsXi = ws3, 
-                   IVIS_epochsize_seconds = params_247[["IVIS_epochsize_seconds"]], 
-                   IVIS_windowsize_minutes = params_247[["IVIS_windowsize_minutes"]],
-                   IVIS.activity.metric = params_247[["IVIS.activity.metric"]],
-                   IVIS_acc_threshold = params_247[["IVIS_acc_threshold"]])
-  InterdailyStability = IVISout$InterdailyStability
-  IntradailyVariability = IVISout$IntradailyVariability
-  rm(Xi)
-  
   #----------------------------------
-  # (Extended) Cosinor analysis
+  # Cosinor analysis, (Extended) Cosinor analysis, including IV, IS, and phi
+  # based on time series where invalid data points are set to NA
   if (params_247[["cosinor"]] == TRUE) {
-    cosinor_coef = applyCosinorAnalyses(ts = IMP$metashort[, c("timestamp", acc.metric)],
-                                        qcheck = qcheck,
-                                        midnightsi, epochsizes = c(ws3, ws2))
+    cosinor_coef = apply_cosinor_IS_IV_Analyses(ts = IMP$metashort[, c("timestamp", acc.metric)],
+                                                qcheck = qcheck,
+                                                midnightsi, epochsizes = c(ws3, ws2),
+                                                threshold = params_phyact[["threshold.lig"]][1]) # only use one threshold
   } else {
     cosinor_coef = c()
   }
-  invisible(list(InterdailyStability = InterdailyStability,
-                 IntradailyVariability = IntradailyVariability, 
-                 igfullr_names = igfullr_names,
+  invisible(list(igfullr_names = igfullr_names,
                  igfullr = igfullr, QUAN = QUAN,
                  qlevels_names = qlevels_names,
                  ML5AD = ML5AD,
-                 ML5AD_names = ML5AD_names, cosinor_coef = cosinor_coef))
+                 ML5AD_names = ML5AD_names,
+                 cosinor_coef = cosinor_coef))
 }

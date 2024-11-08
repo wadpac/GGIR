@@ -1,10 +1,10 @@
-applyCosinorAnalyses = function(ts, qcheck, midnightsi, epochsizes) {
+apply_cosinor_IS_IV_Analyses = function(ts, qcheck, midnightsi, epochsizes, threshold = NULL) {
   # qcheck - vector of length ts to indicate invalid values
   ws2 = epochsizes[2]
   ws3 = epochsizes[1]
   # Re-derive Xi but this time include entire time series
   # Here, we ignore duplicated values (when clock moves backward due to DST)
-  handleDST = !duplicated(ts)
+  handleDST = !duplicated(ts$time)
   qcheck = qcheck[handleDST]
   Xi = ts[handleDST, grep(pattern = "time", x = colnames(ts), invert = TRUE)]
   Nlong_epochs_day =  (1440 * 60) / ws2 # this is 96 by default
@@ -59,11 +59,8 @@ applyCosinorAnalyses = function(ts, qcheck, midnightsi, epochsizes) {
     } else {
       epochsize = ws3
     }
-    # log transform of data in millig
-    notna = !is.na(Xi)
-    Xi[notna] = log((Xi[notna]*1000) + 1)
-  
-    cosinor_coef = cosinorAnalyses(Xi = Xi, epochsize = epochsize, timeOffsetHours = timeOffsetHours) 
+    cosinor_coef = cosinor_IS_IV_Analyses(Xi = Xi, epochsize = epochsize, 
+                                   timeOffsetHours = timeOffsetHours, threshold = threshold)
     cosinor_coef$timeOffsetHours = timeOffsetHours
   } else {
     cosinor_coef = c()

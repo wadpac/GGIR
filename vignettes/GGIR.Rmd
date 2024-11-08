@@ -140,7 +140,7 @@ additional packages:
 -   If you want to derive Neishabouricounts (with `do.neishabouricounts = TRUE`),
     install the actilifecounts package with `install.packages("actilifecounts")`
 -   If you want to derive circadian rhythm indicators using the [Cosinor analysis and Extended Cosinor analysis] 
-    (with `cosinor = TRUE`), install the ActCR package with `install.packages("ActCR")`
+    (with `cosinor = TRUE` for part 2, in part 6 it is always performed), install the ActCR package with `install.packages("ActCR")`
 
 ## Prepare folder structure
 
@@ -444,7 +444,6 @@ This section has been migrated to this [section](https://wadpac.github.io/GGIR/a
 
 This section has been migrated to this [section](https://wadpac.github.io/GGIR/articles/GGIRoutput.html) in the GGIR github-pages, which is now the main documentation resource for GGIR.
 
-
 ### Day level summary
 
 This section has been migrated to this [section](https://wadpac.github.io/GGIR/articles/GGIRoutput.html) in the GGIR github-pages, which is now the main documentation resource for GGIR.
@@ -480,6 +479,28 @@ This section has been migrated to this [section](https://wadpac.github.io/GGIR/a
 ### Person level summary
 
 This section has been migrated to this [section](https://wadpac.github.io/GGIR/articles/GGIRoutput.html) in the GGIR github-pages, which is now the main documentation resource for GGIR.
+
+
+## Output part 6 {.tabset}
+
+When `part6CR = TRUE` and the vector as specified for paramter `do.report` includes the number 6, a csv report will be stored with the following variables:
+
+
+| Variable name               | Description                                  |
+|-----------------------------|----------------------------------------------|
+| ID                          | Participant ID extracted from file           |
+| starttime                   | Start timestamp for the data as used for the analysis    |
+| filename	                  | File name                 |
+| N_days	                    | Number of days in the data as used for the analysis |
+| N_valid_days                | Number of valid days in the data as used for the analysis, defined as the cumulative number of epoch expressed in days |
+| `cosinor_`         | Cosinor analysis estimates such as mes, amp, acrophase, and acrotime, as documented in the [Ac tCR](https://CRAN.R-project.org/package=ActCR) package.   |
+| `cosinorExt_`      | Extended Cosinor analysis estimates such as minimum, amp, alpha, beta, acrotime, UpMesor, DownMesor, MESOR, and F_pseudo, as documented in the [Ac tCR](https://CRAN.R-project.org/package=ActCR) package.|
+| `IV`  | Intradaily Variability (IV) after Eus J. W. Van Someren (Chronobiology International. 1999. Volume 16, issue 4). Implementation described in Ian Meneghel Danilevicz et al. https://doi.org/10.21203/rs.3.rs-3543711/v1      |
+| `IS`  | Interdaily Stability (IS) after Eus J. W. Van Someren (Chronobiology International. 1999. Volume 16, issue 4). Implementation described in Ian Meneghel Danilevicz et al. https://doi.org/10.21203/rs.3.rs-3543711/v1 |
+| phi     | Ian Meneghel Danilevicz  et al. https://doi.org/10.21203/rs.3.rs-3543711/v1    |
+| SSP     | Only created when `part6DFA = TRUE`. Self-Similarity parameter as part of the Detrended Fluctuation Analysis. Implementation described in Ian Meneghel Danilevicz et al. https://doi.org/10.21203/rs.3.rs-3543711/v1.    |
+| ABI     | Only created when `part6DFA = TRUE`. Activity Balance Index. Implementation described in Ian Meneghel Danilevicz et al. https://doi.org/10.21203/rs.3.rs-3543711/v1.|
+
 
 # Motivation and clarification
 
@@ -675,7 +696,6 @@ I wanted a short name and not to spend too much time finding it. The abbreviatio
 ## Circadian Rhythm analyses
 
 This section has been migrated to this [section](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) in the GGIR github-pages, which is now the main documentation resource for GGIR.
-
 
 ## ActiGraph's idle sleep mode
 
