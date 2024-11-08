@@ -109,7 +109,7 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(),
           output = output[-cut, which(colnames(output) != "")]
         }
         WW = which(output[, "window"] == "WW")
-        out = as.matrix(output[WW, which(colnames(output) %in% c("ID", "nonwear_perc_spt", "night_number", "window"))])
+        out = as.matrix(output[WW, which(colnames(output) %in% c("ID", "nonwear_perc_spt", "ACC_spt_mg", "night_number", "window"))])
       }
       outputp5 = as.data.frame(do.call(rbind, lapply(fnames.ms5[f0:f1], myfun5)), stringsAsFactors = FALSE)
       dupl = which(duplicated(outputp5[, c("ID", "night_number")]) == TRUE)
@@ -143,6 +143,7 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(),
       }
       nightsummary2 = nightsummary2[order(nightsummary2$ID, nightsummary2$night), ]
       nightsummary2$nonwear_perc_spt = as.numeric(nightsummary2$nonwear_perc_spt)
+      nightsummary2$ACC_spt_mg = as.numeric(nightsummary2$ACC_spt_mg)
     }
     # =============
     skip = FALSE
@@ -350,6 +351,11 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), loglocation = c(),
                 if ("nonwear_perc_spt" %in% colnames(nightsummary.tmp)) {
                   personSummary[i, cnt + 1] = mean(nightsummary.tmp$nonwear_perc_spt[this_sleepparam[Seli]], na.rm = TRUE)
                   personSummarynames = c(personSummarynames, paste("nonwear_perc_spt_", TW, "_mn", sep = ""))
+                  cnt = cnt + 1
+                }
+                if ("ACC_spt_mg" %in% colnames(nightsummary.tmp)) {
+                  personSummary[i, cnt + 1] = mean(nightsummary.tmp$ACC_spt_mg[this_sleepparam[Seli]], na.rm = TRUE)
+                  personSummarynames = c(personSummarynames, paste("ACC_spt_mg_", TW, "_mn", sep = ""))
                   cnt = cnt + 1
                 }
               }

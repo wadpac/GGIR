@@ -546,7 +546,7 @@ visualReport = function(metadatadir = c(),
             }
           }
           subploti = subploti[which(subploti[,1] > 0), ]
-          if (length(subploti) == 0 || nrow(subploti) == 0) {
+          if (length(subploti) == 0 || inherits(x = subploti, what = "matrix") == FALSE || nrow(subploti) == 0) {
             message(paste0("Recording ", simple_filename, " skipped from visual",
                            " report generation because valid",
                            " data criteria (visualreport_validcrit) not met."))

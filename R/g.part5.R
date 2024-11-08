@@ -112,6 +112,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         extractfilenames, referencefnames, folderstructure,
                         fullfilenames, foldername, ffdone, verbose) {
     tail_expansion_log =  NULL
+    filename_dir = NULL # to be loaded
     fnames.ms1 = dir(paste(metadatadir, "/meta/basic", sep = ""))
     fnames.ms2 = dir(paste(metadatadir, "/meta/ms2.out", sep = ""))
     fnames.ms4 = dir(paste(metadatadir, "/meta/ms4.out", sep = ""))
@@ -370,6 +371,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
               # nap/sib/nonwear overlap analysis
               if (length(params_sleep[["nap_model"]]) > 0 & length(sibreport) > 0) {
+                #===========================================
+                # THIS IS THE OLD NAP DETECTION IMPLEMENTATION
                 # nap detection
                 if (params_general[["acc.metric"]] != "ENMO" |
                     params_sleep[["HASIB.algo"]] != "vanHees2015") {
@@ -487,7 +490,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                               epochSize = ws3new)
                       # This will be an object with numeric qwindow values for all individuals and days
                     }
-                    lastDay = ifelse(Nwindows > 0, yes = FALSE, no = TRUE) # skip while loop if there are no days to analyses
+                    lastDay = ifelse(Nwindows > 0 && length(nightsi) > 0, yes = FALSE, no = TRUE) # skip while loop if there are no days to analyses
                     wi = 1
                     while (lastDay == FALSE) { #loop through windows
                       # Define indices of start and end of the day window (e.g. midnight-midnight, or waking-up or wakingup
@@ -644,11 +647,12 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                            rawlevels_fname = rawlevels_fname,
                                            DaCleanFile = DaCleanFile,
                                            includedaycrit.part5 = params_cleaning[["includedaycrit.part5"]],
+                                           includenightcrit.part5 = params_cleaning[["includenightcrit.part5"]],
                                            ID = ID,
                                            params_output = params_output,
                                            params_247 = params_247,
-                                           filename = filename,
-                                           timewindow = timewindowi)
+                                           Lnames = Lnames, timewindow = timewindowi,
+                                           filename = filename)
                   }
                 }
               }

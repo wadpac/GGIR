@@ -1,14 +1,14 @@
-\name{applyCosinorAnalyses}
-\alias{applyCosinorAnalyses}
+\name{apply_cosinor_IS_IV_Analyses}
+\alias{apply_cosinor_IS_IV_Analyses}
 \title{
   Apply Cosinor Analyses to time series
 }
 \description{
-  Wrapper function around \link{cosinorAnalyses} that first prepares the time series
+  Wrapper function around \link{cosinor_IS_IV_Analyses} that first prepares the time series
   before applying the cosinorAnlayses
 }
 \usage{
-  applyCosinorAnalyses(ts, qcheck, midnightsi, epochsizes)
+  apply_cosinor_IS_IV_Analyses(ts, qcheck, midnightsi, epochsizes, threshold = NULL)
 }
 \arguments{
   \item{ts}{
@@ -23,6 +23,9 @@
   }
   \item{epochsizes}{
     Epoch size for ts and qcheck respectively
+  }
+  \item{threshold}{
+    See \link{cosinor_IS_IV_Analyses}
   }
 }
 \author{

@@ -1,6 +1,130 @@
 g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), 
                      sleeplogsep = ",", meta.sleep.folder = c(), desiredtz="") {
+  # declare local functions:
+  getIDstartdate = function(x) {
+    rec_starttime = ID = c()
+    load(x)
+    invisible(list(ID = ID, rec_starttime = rec_starttime))
+  }
+  remove_empty_rows_cols = function(logmatrix, name) {
+    logmatrix = as.data.frame(logmatrix[which((rowSums(logmatrix != "") != 0) == TRUE),
+                                        which((colSums(logmatrix != "") != 0) == TRUE)])
+    logmatrix = as.data.frame(logmatrix)
+    if (length(name) > 0 & nrow(logmatrix) > 0) {
+      newnames = c("ID", "date", rep(paste0(name, 1:ncol(logmatrix)), each = 2))
+      colnames(logmatrix) = newnames[1:ncol(logmatrix)]
+    }
+    return(logmatrix)
+  }
+  removeEmptyCells = function(x) {
+    if (nrow(x) == 1) {
+      if (sum(x[, 2:ncol(x)] == "") == ncol(x) - 1) {
+        emptyrows = 1
+      } else {
+        emptyrows = NULL
+      }
+    } else {
+      emptyrows = which(rowSums(x[, 2:ncol(x)] == "") == ncol(x) - 1)
+    }
+    if (length(emptyrows)) {
+      x = as.matrix(x[-emptyrows,])
+    }
+    if (length(x) != 0) {
+      if (ncol(x) == 1 & nrow(x) > 1) {
+        x = t(x)
+      }
+    }
+    emptycols = which(colSums(x == "") == nrow(x))
+    colp = ncol(x)
+    twocols = c(colp - 1, colp)
+    while (min(twocols) > 0) {
+      if (all(twocols %in% emptycols)) {
+        x = as.matrix(x[, -twocols])
+        if (ncol(x) == 1) x = t(x)
+        twocols = twocols - 2
+      } else {
+        break
+      }
+    }
+    if (ncol(x) == 1) x = NULL
+    return(x)
+  }
+  adjustLogFormat = function(S, nnights, mode = "sleeplog") {
+    # function to adjust the sleeplog or bedlog format
+    log = matrix(0,(nrow(S)*nnights),3)
+    log_times = matrix(" ", (nrow(S) * nnights), 2)
+    cnt = 1
+    sli = coln1
+    wki = sli + 1
+    night = 1
+    while (wki <= ncol(S)) { #loop through nights
+      SL = as.character(S[,sli])
+      WK = as.character(S[,wki])
+      # Check whether any correction need to be made to the sleep log:
+      for (j in 1:length(SL)) { #loop through participant
+        # idtmp = S[j,colid]
+        if (is.na(WK[j]) == FALSE & is.na(SL[j]) == FALSE & WK[j] != "" & SL[j] != "") {
+          SLN = as.numeric(unlist(strsplit(SL[j],":")))
+          WKN = as.numeric(unlist(strsplit(WK[j],":")))
+          if (length(SLN) == 2) SLN = c(SLN,0) #add seconds when they are not stored
+          if (length(WKN) == 2) WKN = c(WKN,0) #add seconds when they are not stored
+          SL[j] = paste0(SLN[1], ":", SLN[2], ":", SLN[3])
+          WK[j] = paste0(WKN[1], ":", WKN[2], ":", WKN[3])
+          SLN2 = SLN[1] * 3600 + SLN[2] * 60 + SLN[3]
+          WKN2 = WKN[1] * 3600 + WKN[2] * 60  + WKN[3]
+          if (is.na(WKN2)) stop(paste0(WKN[1]," as found in the ", mode, " is not a valid timestamp"), call. = FALSE)
+          if (is.na(SLN2)) stop(paste0(SLN[1]," as found in the ", mode, " is not a valid timestamp"), call. = FALSE)
+          if (WKN2 > SLN2) { #e.g. 01:00 - 07:00
+            dur = WKN2 - SLN2
+          } else if (WKN2 < SLN2) { #e.g. 22:00 - 07:00
+            dur = ((24*3600) - SLN2) + WKN2
+          }
+          dur = dur / 3600
+        } else {
+          cnt_time_notrecognise = cnt_time_notrecognise + 1
+          dur = 0
+          is.na(dur) =  TRUE
+        }
+        # add extra row if needed
+        if (nrow(log) < cnt) {
+          log = rbind(log, matrix(0, 1, 3))
+          log_times = rbind(log_times, matrix(0, 1, 2))
+        }
+        # store information in log
+        log[cnt,1] = as.character(S[j,colid])
+        log[cnt,2] = night #ifelse(deltadate > 0, yes = i, no = i + abs(deltadate))
+        log[cnt,3] = dur
+        log_times[cnt,1] = SL[j]
+        log_times[cnt,2] = WK[j]
+        cnt = cnt + 1
+      }
+      sli = sli + 2
+      wki = wki + 2
+      night = night + 1
+    }
+    # delete id-numbers that are unrecognisable
+    empty_rows = which(as.character(log[,1]) == "0")
+    if (length(empty_rows) > 0) {
+      log = log[-empty_rows, , drop = FALSE]
+      log_times = log_times[-empty_rows, , drop = FALSE]
+    }
+    log = as.data.frame(log, stringsAsFactors = FALSE)
+    names(log) = c("ID","night","duration")
+    if (mode == "sleeplog") {
+      log$sleeponset = log_times[,1]
+      log$sleepwake = log_times[,2]
+    } else if (mode == "bedlog") {
+      log$bedstart = log_times[,1]
+      log$bedend = log_times[,2]
+    }
+    # keep only the non-empty rows as they can only lead to confusion later on
+    log = log[which(is.na(log$duration) == FALSE),]
+    return(log)
+  }
   
+  #==========================================================================
+  # Main code starts here
+  #==========================================================================
   dateformat_correct = "%Y-%m-%d" # set default value
   deltadate = 0
   #===============================
@@ -15,11 +139,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
   advanced_sleeplog = length(grep(pattern = "date", x = colnames(S), ignore.case = TRUE)) > 0
   if (advanced_sleeplog ==  TRUE) {
     if (length(meta.sleep.folder) > 0) {
-      getIDstartdate = function(x) {
-        rec_starttime = ID = c()
-        load(x)
-        invisible(list(ID = ID, rec_starttime = rec_starttime))
-      }
+      
       startdates = lapply(X = dir(meta.sleep.folder, full.names = T), FUN = getIDstartdate)
       startdates = as.data.frame(data.table::rbindlist(startdates, fill = TRUE))
       
@@ -114,11 +234,22 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
             # This is why we need to do + 1 if the recording starts at midnight.
             deltadate = deltadate + 1
           }
+          # handle missing dates
+          ndates = as.numeric(diff(range(Sdates_correct[!is.na(Sdates_correct)]))) + 1
+          if (ndates > nnights) {
+            extraColumns = matrix("", nrow(newsleeplog), max(c((ndates - nnights)*2, 100)) + 1)
+            newsleeplog = cbind(newsleeplog, extraColumns)
+            newbedlog = cbind(newbedlog, extraColumns)
+            extraColumns = matrix("", nrow(naplog), max(c((ndates - nnights)*2, 100)) + 1)
+            naplog = cbind(naplog, extraColumns)
+            nonwearlog = cbind(nonwearlog, extraColumns)
+            nnights = ndates
+          }
           if (length(Sdates_correct) == 0 | is.na(startdate_sleeplog) == TRUE) {
             warning(paste0("\nSleeplog for ID: ",ID," not used because first date",
                            " not within 30 days of first date in accerometer recording"), call. = FALSE)
           } else {
-            # only attempt to use sleeplog if start date could be recognisedd
+            # only attempt to use sleeplog if start date could be recognised
             # Add row to newsleeplog if somehow there are not enough rows
             if (count > nrow(newsleeplog)) {
               newsleeplog = rbind(newsleeplog, matrix(NA, 1, ncol(newsleeplog)))
@@ -204,16 +335,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
                        " and that argument coldid is correctly set."), call. = FALSE)
       }
       # remove empty rows and columns:
-      remove_empty_rows_cols = function(logmatrix, name) {
-        logmatrix = as.data.frame(logmatrix[which((rowSums(logmatrix != "") != 0) == TRUE),
-                                            which((colSums(logmatrix != "") != 0) == TRUE)])
-        logmatrix = as.data.frame(logmatrix)
-        if (length(name) > 0 & nrow(logmatrix) > 0) {
-          newnames = c("ID", "date", rep(paste0(name, 1:ncol(logmatrix)), each = 2))
-          colnames(logmatrix) = newnames[1:ncol(logmatrix)]
-        }
-        return(logmatrix)
-      }
+      
       if (length(naplog) > 0) {
         naplog = remove_empty_rows_cols(naplog, name = "nap")
       }
@@ -221,38 +343,19 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
         nonwearlog = remove_empty_rows_cols(nonwearlog, name = "nonwear")
       }
       
-      removeEmptyCells = function(x) {
-        emptyrows = which(rowSums(x == "") == ncol(x))
-        if (length(emptyrows)) {
-          x = as.matrix(x[-emptyrows,])
-        }
-        if (length(x) != 0) {
-          if (ncol(x) == 1 & nrow(x) > 1) {
-            x = t(x)
-          }
-        }
-        emptycols = which(colSums(x == "") == nrow(x))
-        colp = ncol(x)
-        twocols = c(colp - 1, colp)
-        while (min(twocols) > 0) {
-          if (all(twocols %in% emptycols)) {
-            x = as.matrix(x[, -twocols])
-            if (ncol(x) == 1) x = t(x)
-            twocols = twocols - 2
-          } else {
-            break
-          }
-        }
-        if (ncol(x) == 1) x = NULL
-        return(x)
-      }
       if (length(newsleeplog) > 0) {
-        S = as.data.frame(removeEmptyCells(newsleeplog))
+        newsleeplog = removeEmptyCells(newsleeplog)
+        if (!is.null(newsleeplog)) {
+          S = as.data.frame(newsleeplog)
+        }
         coln1 = 2
         colid = 1
       }
       if (length(newbedlog) > 0) {
-        B = as.data.frame(removeEmptyCells(newbedlog))
+        newbedlog = removeEmptyCells(newbedlog)
+        if (!is.null(newbedlog)) {
+          B = as.data.frame(newbedlog)
+        }
         coln1 = 2
         colid = 1
       }
@@ -271,86 +374,16 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
   }
   nnights = nnights + deltadate + 1 # to account for the possibility of extra night at the beginning of recording
   # # From here we continue with original code focused on sleeplog only
-  adjustLogFormat = function(S, nnights, mode = "sleeplog") {
-    # function to adjust the sleeplog or bedlog format
-    log = matrix(0,(nrow(S)*nnights),3)
-    log_times = matrix(" ", (nrow(S) * nnights), 2)
-    cnt = 1
-    sli = coln1
-    wki = sli + 1
-    night = 1
-    while (wki <= ncol(S)) { #loop through nights
-      SL = as.character(S[,sli])
-      WK = as.character(S[,wki])
-      # Check whether any correction need to be made to the sleep log:
-      for (j in 1:length(SL)) { #loop through participant
-        # idtmp = S[j,colid]
-        if (is.na(WK[j]) == FALSE & is.na(SL[j]) == FALSE & WK[j] != "" & SL[j] != "") {
-          SLN = as.numeric(unlist(strsplit(SL[j],":")))
-          WKN = as.numeric(unlist(strsplit(WK[j],":")))
-          if (length(SLN) == 2) SLN = c(SLN,0) #add seconds when they are not stored
-          if (length(WKN) == 2) WKN = c(WKN,0) #add seconds when they are not stored
-          SL[j] = paste0(SLN[1], ":", SLN[2], ":", SLN[3])
-          WK[j] = paste0(WKN[1], ":", WKN[2], ":", WKN[3])
-          SLN2 = SLN[1] * 3600 + SLN[2] * 60 + SLN[3]
-          WKN2 = WKN[1] * 3600 + WKN[2] * 60  + WKN[3]
-          if (is.na(WKN2)) stop(paste0(WKN[1]," as found in the ", mode, " is not a valid timestamp"), call. = FALSE)
-          if (is.na(SLN2)) stop(paste0(SLN[1]," as found in the ", mode, " is not a valid timestamp"), call. = FALSE)
-          if (WKN2 > SLN2) { #e.g. 01:00 - 07:00
-            dur = WKN2 - SLN2
-          } else if (WKN2 < SLN2) { #e.g. 22:00 - 07:00
-            dur = ((24*3600) - SLN2) + WKN2
-          }
-          dur = dur / 3600
-        } else {
-          cnt_time_notrecognise = cnt_time_notrecognise + 1
-          dur = 0
-          is.na(dur) =  TRUE
-        }
-        # add extra row if needed
-        if (nrow(log) < cnt) {
-          log = rbind(log, matrix(0, 1, 3))
-          log_times = rbind(log_times, matrix(0, 1, 2))
-        }
-        # store information in log
-        log[cnt,1] = as.character(S[j,colid])
-        log[cnt,2] = night #ifelse(deltadate > 0, yes = i, no = i + abs(deltadate))
-        log[cnt,3] = dur
-        log_times[cnt,1] = SL[j]
-        log_times[cnt,2] = WK[j]
-        cnt = cnt + 1
-      }
-      sli = sli + 2
-      wki = wki + 2
-      night = night + 1
-    }
-    # delete id-numbers that are unrecognisable
-    empty_rows = which(as.character(log[,1]) == "0")
-    if (length(empty_rows) > 0) {
-      log = log[-empty_rows, , drop = FALSE]
-      log_times = log_times[-empty_rows, , drop = FALSE]
-    }
-    log = as.data.frame(log, stringsAsFactors = FALSE)
-    names(log) = c("ID","night","duration")
-    if (mode == "sleeplog") {
-      log$sleeponset = log_times[,1]
-      log$sleepwake = log_times[,2]
-    } else if (mode == "bedlog") {
-      log$bedstart = log_times[,1]
-      log$bedend = log_times[,2]
-    }
-    # keep only the non-empty rows as they can only lead to confusion later on
-    log = log[which(is.na(log$duration) == FALSE),]
-    return(log)
+  if (exists("S")) {
+    sleeplog = adjustLogFormat(S, nnights, mode = "sleeplog")
+  } else {
+    sleeplog = NULL
   }
-  
-  sleeplog = adjustLogFormat(S, nnights, mode = "sleeplog")
   if (exists("B")) {
     bedlog = adjustLogFormat(B, nnights, mode = "bedlog")
   } else {
     bedlog = NULL
   }
-  
   invisible(list(sleeplog = sleeplog, nonwearlog = nonwearlog, naplog = naplog, bedlog = bedlog,
                  dateformat = dateformat_correct))
 }
