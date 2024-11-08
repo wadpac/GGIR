@@ -1,5 +1,5 @@
-pandoc: 3.1.11
-pkgdown: 2.1.0
+pandoc: '3.2'
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   chapter0_Contributing: chapter0_Contributing.html
@@ -11,6 +11,7 @@ articles:
   chapter11_DescribingDataCutPoints: chapter11_DescribingDataCutPoints.html
   chapter12_TimeUseAnalysis: chapter12_TimeUseAnalysis.html
   chapter13_CircadianRhythm: chapter13_CircadianRhythm.html
+  chapter14_BehaviouralFragmentation: chapter14_BehaviouralFragmentation.html
   chapter2_Pipeline: chapter2_Pipeline.html
   chapter3_QualityAssessment: chapter3_QualityAssessment.html
   chapter4_AccMetrics: chapter4_AccMetrics.html
@@ -29,7 +30,7 @@ articles:
   HouseHoldCoanalysis: HouseHoldCoanalysis.html
   readmyacccsv: readmyacccsv.html
   TutorialDaySegmentAnalyses: TutorialDaySegmentAnalyses.html
-last_built: 2024-09-03T09:27Z
+last_built: 2024-11-08T16:02Z
 urls:
   reference: https://wadpac.github.io/GGIR/reference
   article: https://wadpac.github.io/GGIR/articles
