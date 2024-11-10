@@ -280,7 +280,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
           }
         }
         if (length(params_sleep[["def.noc.sleep"]]) == 1) {
-          if (params_sleep[["HASPT.algo"]][guider_to_use] == "HorAngle") sptblocksize = 60
+          # if (params_sleep[["HASPT.algo"]][guider_to_use] == "HorAngle") spt_max_gap = 30
           spt_estimate = HASPT(angle = tmpANGLE, ws3 = ws3,
                                sptblocksize = sptblocksize, spt_max_gap = spt_max_gap,
                                HASPT.algo = params_sleep[["HASPT.algo"]][guider_to_use],
@@ -288,7 +288,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                                HDCZA_threshold = params_sleep[["HDCZA_threshold"]],
                                HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
                                activity = tmpACC)
-          sptblocksize = 30
+          # spt_max_gap = 60
         } else {
           spt_estimate = list(SPTE_end = NULL, SPTE_start = NULL, tib.threshold = NULL, part3_guider = NULL)
         }
@@ -327,7 +327,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                   }
                 }
               }
-              if (params_sleep[["HASPT.algo"]][guider_to_use] == "HorAngle") sptblocksize = 60
+              # if (params_sleep[["HASPT.algo"]][guider_to_use] == "HorAngle") spt_max_gap = 30
               spt_estimate_tmp = HASPT(angle = tmpANGLE, ws3 = ws3,
                                        sptblocksize = sptblocksize, spt_max_gap = spt_max_gap,
                                        HASPT.algo = params_sleep[["HASPT.algo"]][guider_to_use],
@@ -335,7 +335,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                                        HDCZA_threshold = params_sleep[["HDCZA_threshold"]],
                                        HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
                                        activity = ACC[newqqq1:newqqq2])
-              sptblocksize = 30
+              # spt_max_gap = 60
               if (length(spt_estimate_tmp$SPTE_start) > 0) {
                 # If new SPTE_end is beyond noon (qqq2) then use the new SPTE_end
                 if (spt_estimate_tmp$SPTE_end + newqqq1 >= qqq2) {
