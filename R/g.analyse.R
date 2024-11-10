@@ -207,7 +207,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                                  quantiletype = quantiletype, ws3 = ws3,
                                  doiglevels = doiglevels, firstmidnighti = firstmidnighti, ws2 = ws2,
                                  midnightsi = midnightsi, params_247 = params_247, qcheck = qcheck,
-                                 acc.metric = acc.metric)
+                                 acc.metric = acc.metric, params_phyact = params_phyact)
   cosinor_coef = output_avday$cosinor_coef
   
   #--------------------------------------------------------------

@@ -108,6 +108,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         extractfilenames, referencefnames, folderstructure,
                         fullfilenames, foldername, ffdone, verbose) {
     tail_expansion_log =  NULL
+    filename_dir = NULL # to be loaded
     fnames.ms1 = dir(paste(metadatadir, "/meta/basic", sep = ""))
     fnames.ms2 = dir(paste(metadatadir, "/meta/ms2.out", sep = ""))
     fnames.ms4 = dir(paste(metadatadir, "/meta/ms4.out", sep = ""))
@@ -600,11 +601,12 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                            rawlevels_fname = rawlevels_fname,
                                            DaCleanFile = DaCleanFile,
                                            includedaycrit.part5 = params_cleaning[["includedaycrit.part5"]],
+                                           includenightcrit.part5 = params_cleaning[["includenightcrit.part5"]],
                                            ID = ID,
                                            params_output = params_output,
                                            params_247 = params_247,
-                                           filename = filename,
-                                           timewindow = timewindowi)
+                                           Lnames = Lnames, timewindow = timewindowi,
+                                           filename = filename)
                   }
                 }
               }

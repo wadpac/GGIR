@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 With the metric values imputed in the previous chapter, GGIR part 2 offers a first descriptive analysis of the data.
 Although we will have to wait till later GGIR parts (chapters) to see the segmentation of days in waking and sleep hours, there is already enough that can be quantified at this point.
-In this chapter we focus on descriptives of the data that are informative even without the knowledge on when the participant was sleeping or awake.
+In this chapter we focus on descriptive analysis of the data that are informative even without the knowledge on when the participant was sleeping or awake.
 
 ## Data quality indicators
 
@@ -29,7 +29,7 @@ Descriptive variables are calculated and reported for valid days only, where the
 
 ### Average acceleration
 
-Average acceleration is known to be correlated with the activity-related energy expenditure.
+Average acceleration is known to be correlated with the total activity-related energy expenditure.
 GGIR part 2 provide two types of average acceleration:
 
 -   Average per day, only stored when the day was considered valid.
@@ -39,9 +39,9 @@ GGIR part 2 provide two types of average acceleration:
 
 ### Acceleration distribution
 
-To get a more detailed description of the data, looking at the distribution of acceleration values can be informative. GGIR facilitates this in two ways:
+The distribution of acceleration values can be informative too. GGIR facilitates this in two ways:
 
-1.  By specifying the quantiles of the distribution with parameter `qlevels`, which are fed to the build-in R function `quantile`, GGIR gives us the metric values corresponding to such quantiles (a quantile multiplied by 100 is the same as a percentile).
+1.  By specifying the quantiles of the distribution with parameter `qlevels`, which are fed to the base R function `quantile`, GGIR gives us the acceleration metric values corresponding to such quantiles (a quantile multiplied by 100 is the same as a percentile).
 
 2.  By describing the time spent in acceleration ranges, which are defined by parameter `ilevels` .
 
@@ -58,17 +58,17 @@ M10, as used in circadian rhythm research that also can be derived with GGIR (se
 
 To use the MX metrics as proposed by Rowlands et al., specify the durations of the 24h day during which you want to identify the accelerations values.
 For example, to generate the minimum acceleration value for the most active accumulated 30 minutes, you can call `qlevels = (1410/1440)`.
-This parameter also accepts nested terms to generate multiple MX metrics. For example, to call M60, M30, and M10, you can specify the following:
+This parameter also accepts a vector to generate multiple MX metrics. For example, to call M60, M30, and M10, you can specify the following:
 
 `qlevels = c(c(1380/1440), c(1410/1440), c(1430/1440))`.
 
 Note: If time segments shorter than 24 hours are specified in parameter `qwindow`, such as the 8-hour school day (as described in [Fairclough et al 2020](https://pubmed.ncbi.nlm.nih.gov/31593604/)), the denominator in `qlevels` should change from 1440 (24h) to the specific segment length. In this example, we would use 480 (8h). Accordingly, the argument to call M60, M30, and M10 would be:
 
-`qlevels = c(c(1380/1440), c(1410/1440), c(1430/1440))`.
+`qlevels = c(c(420/480), c(450/480), c(470/480))`.
 
 At the moment, this only works for one segment length and GGIR does not facilitate the generation of MX metrics for multiple unequal time segments within the same GGIR function call. 
 
-The output in the part 2 summary files will refer to this as a percentile of the day.
+The output in the part 2 summary report file will refer to this as a percentile of the day.
 Thus, for a 24-h day, M30 will appear as “p97.91666_ENMO_mg_0.24hr”.
 To create the radar plots of these MX metrics as first described by [Rowlands et al.](https://pubmed.ncbi.nlm.nih.gov/31808014/), this [GitHub repository](https://github.com/Maylor8/RadarPlotGenerator) provides the R code and detailed instructions on how to make the radar plots using your own data.
 

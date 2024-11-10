@@ -1,5 +1,5 @@
 library(GGIR)
-context("cosinorAnalyses")
+context("cosinor_IS_IV_Analyses")
 
 test_that("cosinorAnalyses provides expected output", {
   ActCosDummy = function(epochSizeSeconds, missingdata = FALSE, timeOffsetHours = 0) {
@@ -13,9 +13,11 @@ test_that("cosinorAnalyses provides expected output", {
     if (missingdata == TRUE) {
       is.na(counts[N:floor(N * 2)]) = TRUE
     }
+    # Plot code below commented out, but useful for debugging to 
+    # understand how dummy time series looks like.
     # x11()
     # plot(log((counts * 1000) + 1), type = "l")
-    mod = cosinorAnalyses(Xi = log((counts * 1000) + 1), epochsize = epochSizeSeconds, timeOffsetHours = timeOffsetHours)
+    mod = cosinor_IS_IV_Analyses(Xi = counts * 1000, epochsize = epochSizeSeconds, timeOffsetHours = timeOffsetHours)
     mod$coefext = mod$coefext[which(names(mod$coefext) != "cosinor_ts")]
     return(mod)
   }
@@ -51,8 +53,8 @@ test_that("cosinorAnalyses provides expected output", {
   expect_equal(coef60$coefext$params$R2, 0.8976208, tolerance  = 0.01)
   
   # IV IS
-  expect_equal(coef60$IVIS$InterdailyStability, 0.9945789, tolerance  = 0.01)
-  expect_equal(coef60$IVIS$IntradailyVariability, 1.14, tolerance  = 0.01)
+  expect_equal(coef60$IVIS$InterdailyStability, 1, tolerance  = 0.01)
+  expect_equal(coef60$IVIS$IntradailyVariability, 0.06774028, tolerance  = 0.01)
   
   fields_to_compare = c("minimum", "amp", "alpha", "beta", "acrotime", "DownMesor", "MESOR")
   expect_equal(coef60$coefext[fields_to_compare], coef300$coefext[fields_to_compare], tolerance = 0.1)

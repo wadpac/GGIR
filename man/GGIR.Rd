@@ -903,6 +903,16 @@ GGIR(mode = 1:5,
         when value above 1 used as absolute number of valid hours required.
         Do not confuse this argument with argument \code{includedaycrit} which is
         only used in GGIR part 2 and applies to the entire day.}
+        
+      \item{includenightcrit.part5}{
+        Numeric (default = 0).
+        Inclusion criteria used in part 5 for number of valid hours during the 
+        sleep period hours of a day (the night),
+        when value is smaller than or equal to 1 used as fraction of sleep period hours, 
+        when value above 1 used as absolute number of valid hours required.
+        Do not confuse this argument with argument \code{includenightcrit} which is
+        only used in GGIR part 4 and applies to the entire 24 hour window from 
+        noon to noon or 6pm to 6pm.}
 
       \item{segmentWEARcrit.part5}{
         Numeric (default = 0.5).
@@ -961,6 +971,12 @@ GGIR(mode = 1:5,
         the full longsize window. For the 2013 method the longsize window is centered 
         in the centre of the mediumsize window, while in the 2023 method the longsizewindow 
         is aligned with its left edge to the left edge of the mediumsize window.
+      }
+      
+      \item{includecrit.part6}{
+        Numeric (default = c(2/3, 2/3))
+        Vector of two with the minimum fraction of valid data required for day
+        and spt time, respectively. This criteria is only used for circadian rhythm analysis.
       }
     }
   }
@@ -1333,24 +1349,16 @@ GGIR(mode = 1:5,
         number of levels.}
 
       \item{IVIS_windowsize_minutes}{
-        Numeric (default = 60).
-        Window size of the Intradaily Variability (IV) and Interdaily
-        Stability (IS) metrics in minutes, needs to be able to add up to 24 hours.}
+        This argument has been deprecated.}
 
       \item{IVIS_epochsize_seconds}{
-        Numeric (default = NULL).
-        This argument is deprecated.}
+        This argument has been deprecated.}
 
       \item{IVIS.activity.metric}{
-        Numeric (default = 2).
-        Metric used for activity calculation.
-        Value = 1, uses continuous scaled acceleration.
-        Value = 2, tries to collapse acceleration into a binary score of rest
-        versus active to try to simulate the original approach.}
+        This argument has been deprecated.}
 
       \item{IVIS_acc_threshold}{
-        Numeric (default = 20).
-        Acceleration threshold to distinguish inactive from active.}
+        This argument has been deprecated.}
 
       \item{qM5L5}{
         Numeric (default = NULL).
@@ -1386,10 +1394,14 @@ GGIR(mode = 1:5,
         over which L5M5 needs to be calculated. Now this is done with argument qwindow.}
 
       \item{cosinor}{
-        Boolean (default = FALSE). Whether to apply the cosinor analysis from the ActCR package.}
+        Boolean (default = FALSE). Whether to apply the cosinor analysis from the ActCR package in part 2.
+        In part 6 cosinor analysis is applied by default and cannot be turned off.}
         
       \item{part6CR}{
-        Boolean (default = FALSE) to indicate whether circadian rhythm analysis should be run by part 6.
+        Boolean (default = FALSE) to indicate whether circadian rhythm analysis should
+        be run by part 6, this includes: cosinor analysis, extended cosinor analysis,
+        IS, IV, and phi. Optionally this can be expanded with detrended fluctutation analysis
+        which is controlled by parameter `part6DFA`.
       }
       \item{part6HCA}{
         Boolean (default = FALSE) to indicate whether Household Co Analysis should 
@@ -1405,6 +1417,10 @@ GGIR(mode = 1:5,
         c("W1", "W-1") goes from the first till the last wakeup, c("H5", "H-5") 
         ignores the first and last 5 hours, and c("O2", "W10") goes from the second
         onset till the 10th wakeup time.
+      }
+      \item{part6DFA}{
+        Boolean (default = FALSE) to indicate whether to perform Detrended Fluctuation
+        Analysis. Turned off by default because it can be time consuming.
       }
     }
   }

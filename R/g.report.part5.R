@@ -26,6 +26,15 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
         includeday_wearPercentage = 0
         includeday_absolute = params_cleaning[["includedaycrit.part5"]] * 60
       }
+      if (params_cleaning[["includenightcrit.part5"]] >= 0 &
+          params_cleaning[["includenightcrit.part5"]] <= 1) { # if includenightcrit.part5 is used as a ratio
+        includenight_wearPercentage = params_cleaning[["includenightcrit.part5"]] * 100
+        includenight_absolute = 0
+      } else if (params_cleaning[["includenightcrit.part5"]] > 1 &
+                 params_cleaning[["includenightcrit.part5"]] <= 25) { # if includenightcrit.part5 is used like params_cleaning[["includenightcrit"]] as a number of hours
+        includenight_wearPercentage = 0
+        includenight_absolute = params_cleaning[["includenightcrit.part5"]] * 60
+      }
       include_window = rep(TRUE, nrow(x))
       if (length(params_cleaning[["data_cleaning_file"]]) > 0) { # allow for forced relying on guider based on external params_cleaning[["data_cleaning_file"]]
         DaCleanFile = data.table::fread(params_cleaning[["data_cleaning_file"]], data.table = FALSE)
@@ -47,8 +56,12 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
       
       x$wear_min_day = (1 - (x$nonwear_perc_day / 100)) * x$dur_day_min #valid minute during waking hours
       x$wear_perc_day = 100 - x$nonwear_perc_day #wear percentage during waking hours
+      x$wear_min_spt = (1 - (x$nonwear_perc_spt / 100)) * x$dur_spt_min #valid minute during waking hours
+      x$wear_perc_spt = 100 - x$nonwear_perc_spt #wear percentage during waking hours
+
       x$lastHour = as.numeric(x$lastHour)
       x$calendar_date = as.Date(x$calendar_date)
+
       minimumValidMinutesMM = 0 # default
       if (length(params_cleaning[["includedaycrit"]]) == 2) {
         minimumValidMinutesMM = params_cleaning[["includedaycrit"]][2] * 60
@@ -63,6 +76,8 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
       if (window == "WW" | window == "OO") {
         indices = which(x$wear_perc_day >= includeday_wearPercentage &
                           x$wear_min_day >= includeday_absolute &
+                          x$wear_perc_spt >= includenight_wearPercentage &
+                          x$wear_min_spt >= includenight_absolute &
                           x$dur_spt_min > 0 & x$dur_day_min > 0 &
                           ((x$lastWindow == TRUE & x$lastHour >= 15 & (x$lastDate - x$calendar_date) >= -1 & window == "WW") |
                              (x$lastWindow == TRUE & x$lastHour >= 9 & (x$lastDate - x$calendar_date) >= -1 & window == "OO") |
@@ -72,6 +87,8 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
       } else if (window == "MM") {
         indices = which(x$wear_perc_day >= includeday_wearPercentage &
                           x$wear_min_day >= includeday_absolute &
+                          x$wear_perc_spt >= includenight_wearPercentage &
+                          x$wear_min_spt >= includenight_absolute &
                           x$dur_spt_min > 0 & x$dur_day_min > 0 &
                           ((x$lastWindow == TRUE & x$lastHour > 9 & (x$lastDate - x$calendar_date) >= -1) |
                              x$lastWindow == FALSE) &
