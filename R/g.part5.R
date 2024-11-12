@@ -211,7 +211,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         S = sib.cla.sum
         rm(sib.cla.sum)
         def = unique(S$definition)
-        cut = which(S$fraction.night.invalid > 0.7 | S$nsib.periods == 0)
+        cut = which(S$fraction.night.invalid > 0.9 | S$nsib.periods == 0)
         if (length(cut) > 0) S = S[-cut,]
         if (params_general[["part5_agg2_60seconds"]] == TRUE) {
           ts_backup = ts
