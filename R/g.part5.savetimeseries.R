@@ -73,8 +73,9 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
     }
     # round acceleration values to 3 digits to reduce storage space
     mdat$ACC = round(mdat$ACC, digits = 3)
-    # round light data to 0 digits to reduce storage space
+    # round some columns to reduce storage space
     if ("lightpeak" %in% names(mdat)) mdat$lightpeak = round(mdat$lightpeak)
+    if ("temperature" %in% names(mdat)) mdat$temperature = round(mdat$temperature, digits = 2)
     if (params_output[["save_ms5raw_without_invalid"]] == TRUE) {
       # Remove days based on data_cleaning_file
       if (length(DaCleanFile) > 0) { 

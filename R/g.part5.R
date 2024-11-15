@@ -70,7 +70,11 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
     load(sleeplogRDA)
     if (length(logs_diaries) > 0) {# new format
       if (is.list(logs_diaries)) { # advanced format
-        sleeplog = logs_diaries$sleeplog
+        if (params_sleep[["sleepwindowType"]] == "TimeInBed" && length(logs_diaries$bedlog) > 0) {
+          sleeplog = logs_diaries$bedlog
+        } else {
+          sleeplog = logs_diaries$sleeplog
+        }
       } else {
         sleeplog = logs_diaries
       }
@@ -207,7 +211,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         S = sib.cla.sum
         rm(sib.cla.sum)
         def = unique(S$definition)
-        cut = which(S$fraction.night.invalid > 0.7 | S$nsib.periods == 0)
+        cut = which(S$fraction.night.invalid > 0.9 | S$nsib.periods == 0)
         if (length(cut) > 0) S = S[-cut,]
         if (params_general[["part5_agg2_60seconds"]] == TRUE) {
           ts_backup = ts
@@ -284,11 +288,22 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               # only include angle if angle is present
               angleColName = grep(pattern = "angle", x = names(ts), value = TRUE)
               if (lightpeak_available == TRUE) {
-                ts = aggregate(ts[, c("ACC","sibdetection", "diur", "nonwear", angleColName, "lightpeak", "lightpeak_imputationcode")],
-                               by = list(ts$time_num), FUN = function(x) mean(x))
+                light_columns = c("lightpeak", "lightpeak_imputationcode")
               } else {
-                ts = aggregate(ts[,c("ACC","sibdetection", "diur", "nonwear", angleColName)],
-                               by = list(ts$time_num), FUN = function(x) mean(x))
+                light_columns = NULL
+              }
+              temperature_col = grep(pattern = "temperature", x = names(ts), value = TRUE)
+              
+              stepcount_available = ifelse("step_count" %in% names(ts), yes = TRUE, no = FALSE)
+                
+              if (stepcount_available) {
+                step_count_tmp = aggregate(ts$step_count, by = list(ts$time_num), FUN = function(x) sum(x))
+                colnames(step_count_tmp)[2] = "step_count"
+              }
+              ts = aggregate(ts[,c("ACC","sibdetection", "diur", "nonwear", angleColName, light_columns, temperature_col)],
+                             by = list(ts$time_num), FUN = function(x) mean(x))
+              if (stepcount_available) {
+                ts = merge(x = ts, y = step_count_tmp, by = "Group.1")
               }
               ts$sibdetection = round(ts$sibdetection)
               ts$diur = round(ts$diur)
@@ -322,6 +337,26 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               IDtmp = as.character(ID)
               sibreport = g.sibreport(ts, ID = IDtmp, epochlength = ws3new, logs_diaries,
                                       desiredtz = params_general[["desiredtz"]])
+              
+              # Add self-reported classes to ts object
+              ts$selfreported = NA
+              for (srType in c("sleeplog", "nap", "nonwear", "bedlog")) {
+                sr_index = which(sibreport$type == srType)
+                if (length(sr_index) > 0) {
+                  for (sii in sr_index) {
+                    ts_index = which(ts$time >= sibreport$start[sii] & ts$time < sibreport$end[sii])
+                    ts_index1 = ts_index[which(is.na(ts$selfreported[ts_index]))]
+                    ts_index2 = ts_index[which(!is.na(ts$selfreported[ts_index]))]
+                    if (length(ts_index1) > 0) {
+                      ts$selfreported[ts_index1] = srType
+                    }
+                    if (length(ts_index2) > 0) {
+                      ts$selfreported[ts_index2] = paste0(ts$selfreported[ts_index2], "+", srType)
+                    }
+                  }
+                }
+              }
+              ts$selfreported = as.factor(ts$selfreported)
               # store in csv file:
               ms5.sibreport = "/meta/ms5.outraw/sib.reports"
               if (!file.exists(paste(metadatadir, ms5.sibreport, sep = ""))) {
@@ -336,6 +371,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
               # nap/sib/nonwear overlap analysis
               if (length(params_sleep[["nap_model"]]) > 0 & length(sibreport) > 0) {
+                #===========================================
+                # THIS IS THE OLD NAP DETECTION IMPLEMENTATION
                 # nap detection
                 if (params_general[["acc.metric"]] != "ENMO" |
                     params_sleep[["HASIB.algo"]] != "vanHees2015") {
@@ -453,7 +490,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                               epochSize = ws3new)
                       # This will be an object with numeric qwindow values for all individuals and days
                     }
-                    lastDay = ifelse(Nwindows > 0, yes = FALSE, no = TRUE) # skip while loop if there are no days to analyses
+                    lastDay = ifelse(Nwindows > 0 && length(nightsi) > 0, yes = FALSE, no = TRUE) # skip while loop if there are no days to analyses
                     wi = 1
                     while (lastDay == FALSE) { #loop through windows
                       # Define indices of start and end of the day window (e.g. midnight-midnight, or waking-up or wakingup
@@ -563,12 +600,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                   }
                   if (params_output[["save_ms5rawlevels"]] == TRUE || params_247[["part6HCA"]] == TRUE || params_247[["part6CR"]] == TRUE) {
                     legendfile = paste0(metadatadir,ms5.outraw,"/behavioralcodes",as.Date(Sys.time()),".csv")
-                    if (file.exists(legendfile) == FALSE) {
-                      legendtable = data.frame(class_name = Lnames, class_id = 0:(length(Lnames) - 1), stringsAsFactors = FALSE)
-                      data.table::fwrite(legendtable, file = legendfile, row.names = FALSE,
-                                         sep = params_output[["sep_reports"]],
-                                         dec = params_output[["dec_reports"]])
-                    }
+                    legendtable = data.frame(class_name = Lnames, class_id = 0:(length(Lnames) - 1), stringsAsFactors = FALSE)
+                    data.table::fwrite(legendtable, file = legendfile, row.names = FALSE,
+                                       sep = params_output[["sep_reports"]],
+                                       dec = params_output[["dec_reports"]])
                     # I moved this bit of code to the end, because we want guider to be included (VvH April 2020)
                     rawlevels_fname =  paste0(metadatadir, ms5.outraw, "/", TRLi, "_", TRMi, "_", TRVi, "/",
                                               gsub(pattern = "[.]|rdata|csv|cwa|gt3x|bin",
@@ -578,8 +613,14 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     if (params_output[["do.sibreport"]] == TRUE & length(params_sleep[["nap_model"]]) > 0) {
                       napNonwear_col = "nap1_nonwear2"
                     } else {
-                      napNonwear_col = c()
+                      napNonwear_col = NULL
                     }
+                    if (params_output[["do.sibreport"]]  == TRUE) {
+                      selfreported_col = "selfreported"
+                    } else {
+                      selfreported_col = NULL
+                    }
+                    
                     if (lightpeak_available == TRUE) {
                       lightpeak_col = "lightpeak"
                     } else {
@@ -593,9 +634,14 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     if (length(temperature_col) == 0) {
                       temperature_col = NULL
                     }
+                    step_count_col = grep(pattern = "step_count", x = names(ts), value = TRUE)
+                    if (length(step_count_col) == 0) {
+                      step_count_col = NULL
+                    }
                     g.part5.savetimeseries(ts = ts[, c("time", "ACC", "diur", "nonwear",
-                                                       "guider", "window", napNonwear_col,
-                                                       lightpeak_col, angle_col, temperature_col)],
+                                                       "guider", "window", "sibdetection", napNonwear_col,
+                                                       lightpeak_col, selfreported_col,
+                                                       angle_col, temperature_col, step_count_col)],
                                            LEVELS = LEVELS,
                                            desiredtz = params_general[["desiredtz"]],
                                            rawlevels_fname = rawlevels_fname,
@@ -725,7 +771,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                            "g.part5.handle_lux_extremes", "g.part5.lux_persegment",
                            "g.part5.savetimeseries", "g.part5.wakesleepwindows",
                            "g.part5.onsetwaketiming", "g.part5_analyseSegment",
-                           "g.part5_initialise_ts",
+                           "g.part5_initialise_ts", "g.part5.analyseRest",
                            "g.fragmentation", "g.intensitygradient")
       errhand = 'stop'
     }

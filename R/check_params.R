@@ -32,7 +32,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     numeric_params = c("anglethreshold", "timethreshold", "longitudinal_axis", 
                        "possible_nap_window", "possible_nap_dur",
                        "colid", "coln1", "def.noc.sleep", "nnights", 
-                       "sleepefficiency.metric", "possible_nap_edge_acc", "HDCZA_threshold")
+                       "sleepefficiency.metric", "possible_nap_edge_acc", "HDCZA_threshold",
+                       "possible_nap_gap")
     boolean_params = c("ignorenonwear", "HASPT.ignore.invalid",
                        "relyonguider", "sleeplogidnum", "sib_must_fully_overlap_with_TimeInBed")
     character_params = c("HASPT.algo", "HASIB.algo", "Sadeh_axis", "nap_model",
@@ -83,7 +84,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     numeric_params = c("qlevels", "ilevels", "IVIS_windowsize_minutes", "IVIS_epochsize_seconds",
                        "IVIS.activity.metric", "IVIS_acc_threshold",
                        "qM5L5", "MX.ig.min.dur", "M5L5res", "winhr", "LUXthresholds", "LUX_cal_constant",
-                       "LUX_cal_exponent", "LUX_day_segments", "L5M5window")
+                       "LUX_cal_exponent", "LUX_day_segments", "L5M5window", "clevels")
     boolean_params = c("cosinor", "part6CR", "part6HCA", "part6DFA")
     character_params = c("qwindow_dateformat", "part6Window")
     check_class("247", params = params_247, parnames = numeric_params, parclass = "numeric")
@@ -113,13 +114,15 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     check_class("cleaning", params = params_cleaning, parnames = character_params, parclass = "character")
   }
   if (length(params_output) > 0) {
-    numeric_params = c("viewingwindow", "criterror")
+    numeric_params = c("viewingwindow", "criterror", "visualreport_hrsPerRow",
+                       "visualreport_validcrit")
     boolean_params = c("epochvalues2csv", "save_ms5rawlevels", "save_ms5raw_without_invalid",
                        "storefolderstructure", "dofirstpage", "visualreport", "week_weekend_aggregate.part5",
                        "do.part3.pdf", "outliers.only", "do.visual", "do.sibreport", "visualreport_without_invalid",
-                       "do.part2.pdf", "require_complete_lastnight_part5")
+                       "do.part2.pdf", "old_visualreport", "require_complete_lastnight_part5")
+
     character_params = c("save_ms5raw_format", "timewindow", "sep_reports", "sep_config",
-                         "dec_reports", "dec_config")
+                         "dec_reports", "dec_config", "visualreport_focus")
     check_class("output", params = params_output, parnames = numeric_params, parclass = "numeric")
     check_class("output", params = params_output, parnames = boolean_params, parclass = "boolean")
     check_class("output", params = params_output, parnames = character_params, parclass = "character")
@@ -186,6 +189,18 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     } else if (length(params_sleep[["def.noc.sleep"]]) == 2) {
       params_sleep[["HASPT.algo"]] = "notused"
     }
+    if (length(params_sleep[["possible_nap_gap"]]) != 1) {
+      stop(paste0("Parameter possible_nap_gap has length ", length(params_sleep[["possible_nap_gap"]]), 
+                  " while length 1 is expected"), call. = FALSE)
+    }
+    if (length(params_sleep[["possible_nap_window"]]) != 2) {
+      stop(paste0("Parameter possible_nap_window has length ", length(params_sleep[["possible_nap_window"]]), 
+                  " while length 2 is expected"), call. = FALSE)
+    }
+    if (length(params_sleep[["possible_nap_dur"]]) != 2) {
+      stop(paste0("Parameter possible_nap_dur has length ", length(params_sleep[["possible_nap_dur"]]), 
+                  " while length 2 is expected"), call. = FALSE)
+    }
   }
   
   if (length(params_metrics) > 0 & length(params_sleep) > 0) {
@@ -239,8 +254,11 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_sleep[["sleepwindowType"]] = "TimeInBed"
     }
     
-    if (length(params_sleep[["loglocation"]]) == 0 & params_sleep[["HASPT.algo"]][1] != "HorAngle" & params_sleep[["sleepwindowType"]] != "SPT") {
-      warning("\nAuto-updating sleepwindowType to SPT because no sleeplog used and neither HASPT.algo HorAngle used.", call. = FALSE)
+    if (length(params_sleep[["loglocation"]]) == 0 &
+        params_sleep[["HASPT.algo"]][1] != "HorAngle" &
+        params_sleep[["HASPT.algo"]][1] != "NotWorn" &
+        params_sleep[["sleepwindowType"]] != "SPT") {
+      warning("\nAuto-updating sleepwindowType to SPT because no sleeplog used and neither HASPT.algo HorAngle or NotWorn used.", call. = FALSE)
       params_sleep[["sleepwindowType"]] = "SPT"
     }
   }
@@ -305,9 +323,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_phyact[["mvpadur"]] = c(1,5,10)
       warning("\nmvpadur needs to be a vector with length three, value now reset to default c(1, 5, 10)", call. = FALSE)
     }
-    if (length(params_phyact[["threshold.lig"]]) == 1 &&
+    if ((length(params_phyact[["threshold.lig"]]) == 1 &&
         length(params_phyact[["threshold.mod"]]) == 1 &&
-        length(params_phyact[["threshold.vig"]]) == 1) {
+        length(params_phyact[["threshold.vig"]]) == 1) | is.null(params_phyact[["part6_threshold_combi"]])) {
       params_phyact[["part6_threshold_combi"]] = paste(params_phyact[["threshold.lig"]],
                                                        params_phyact[["threshold.mod"]],
                                                        params_phyact[["threshold.vig"]], sep = "_")
@@ -330,6 +348,10 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     if (params_output[["sep_config"]] == params_output[["dec_config"]]) {
       stop(paste0("\nYou have set sep_config and dec_config both to ",
                   params_output[["sep_config"]], " this is ambiguous. Please fix."))
+    }
+    if (params_output[["visualreport_hrsPerRow"]] < 24 ||
+        params_output[["visualreport_hrsPerRow"]] > 48) {
+      stop("Parameter visualreport_hrsPerRow is expected to be set in the range 24-48")
     }
   }
   # params 247
@@ -360,6 +382,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_output[["save_ms5raw_format"]] = unique(c(params_output[["save_ms5raw_format"]], "RData"))
       params_output[["save_ms5rawlevels"]] = TRUE
       params_output[["save_ms5raw_without_invalid"]] = FALSE
+    }
+    if (length(params_247[["clevels"]]) == 1) {
+      warning("\nParameter clevels expects a number vector of at least 2 values, current length is 1", call. = FALSE)
     }
   }
   if (!is.null(params_general[["expand_tail_max_hours"]])) {

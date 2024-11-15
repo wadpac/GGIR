@@ -24,8 +24,9 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                         sleeplogsep = NULL, sleepwindowType = "SPT",
                         possible_nap_window = c(9, 18),
                         possible_nap_dur = c(15, 240),
-                        nap_model = c(), sleepefficiency.metric = 1,
+                        possible_nap_gap = 0,
                         possible_nap_edge_acc = Inf,
+                        nap_model = c(), sleepefficiency.metric = 1,
                         HDCZA_threshold = c(),
                         sib_must_fully_overlap_with_TimeInBed = TRUE)
   }
@@ -78,7 +79,7 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                       L5M5window = c(0, 24), cosinor = FALSE,
                       part6CR = FALSE, part6HCA = FALSE,
                       part6Window = c("start", "end"),
-                      part6DFA = FALSE)
+                      clevels = c(30, 150), part6DFA = FALSE)
   }
   if ("phyact" %in% topic) {
     params_phyact = list(mvpathreshold = 100, boutcriter = 0.8,
@@ -88,7 +89,7 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                          threshold.mod = 100, threshold.vig = 400,
                          boutdur.mvpa = c(1,5,10), boutdur.in = c(10,20,30),
                          boutdur.lig = c(1,5,10), frag.metrics = c(),
-                         part6_threshold_combi = "40_100_400")
+                         part6_threshold_combi = NULL)
   }
   if ("cleaning" %in% topic) {
     params_cleaning = list(includedaycrit = 16, ndayswindow = 7,
@@ -120,7 +121,9 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                          sep_reports = ",", sep_config = ",", 
                          dec_reports = ".", dec_config = ".", 
                          visualreport_without_invalid = TRUE,
-                         require_complete_lastnight_part5 = FALSE)
+                         old_visualreport = TRUE, visualreport_hrsPerRow = 36,
+                         visualreport_focus = "day",
+                         visualreport_validcrit = 0, require_complete_lastnight_part5 = FALSE)
 
   }
   if ("general" %in% topic) {

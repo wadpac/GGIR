@@ -35,7 +35,11 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
     logs_diaries = g.loadlog(params_sleep[["loglocation"]], coln1 = params_sleep[["coln1"]], colid = params_sleep[["colid"]],
                              meta.sleep.folder = meta.sleep.folder,
                              desiredtz = params_general[["desiredtz"]])
-    sleeplog = logs_diaries$sleeplog
+    if (params_sleep[["sleepwindowType"]] == "TimeInBed" && length(logs_diaries$bedlog) > 0) {
+      sleeplog = logs_diaries$bedlog
+    } else {
+      sleeplog = logs_diaries$sleeplog
+    }
     save(logs_diaries, file = paste0(metadatadir,"/meta/sleeplog.RData"))
   }
   #------------------------------------------------

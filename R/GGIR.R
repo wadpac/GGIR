@@ -422,20 +422,32 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     
     if (length(files.available) > 0) {
       if (verbose == TRUE) print_console_header("Generate visual reports")
-      g.plot5(metadatadir = metadatadir,
-              dofirstpage = params_output[["dofirstpage"]],
-              viewingwindow = params_output[["viewingwindow"]],
-              f0 = f0, f1 = f1,
-              overwrite = params_general[["overwrite"]],
-              metric = params_general[["acc.metric"]],
-              desiredtz = params_general[["desiredtz"]],
-              threshold.lig = params_phyact[["threshold.lig"]],
-              threshold.mod = params_phyact[["threshold.mod"]],
-              threshold.vig = params_phyact[["threshold.vig"]],
-              visualreport_without_invalid = params_output[["visualreport_without_invalid"]],
-              includedaycrit = params_cleaning[["includedaycrit"]][1],
-              includenightcrit = params_cleaning[["includenightcrit"]],
-              verbose = TRUE)
+      if (params_output[["old_visualreport"]] == TRUE) {
+        g.plot5(metadatadir = metadatadir,
+                dofirstpage = params_output[["dofirstpage"]],
+                viewingwindow = params_output[["viewingwindow"]],
+                f0 = f0, f1 = f1,
+                overwrite = params_general[["overwrite"]],
+                metric = params_general[["acc.metric"]],
+                desiredtz = params_general[["desiredtz"]],
+                threshold.lig = params_phyact[["threshold.lig"]],
+                threshold.mod = params_phyact[["threshold.mod"]],
+                threshold.vig = params_phyact[["threshold.vig"]],
+                visualreport_without_invalid = params_output[["visualreport_without_invalid"]],
+                includedaycrit = params_cleaning[["includedaycrit"]][1],
+                includenightcrit = params_cleaning[["includenightcrit"]],
+                verbose = TRUE)
+      }
+      # The new visual report
+      visualReport(metadatadir = metadatadir,
+                   f0 = f0, f1 = f1,
+                   overwrite = params_general[["overwrite"]],
+                   desiredtz = params_general[["desiredtz"]],
+                   verbose = TRUE,
+                   part6_threshold_combi = params_phyact[["part6_threshold_combi"]],
+                   GGIRversion = GGIRversion,
+                   params_sleep = params_sleep,
+                   params_output = params_output)
     }
   }
 }
