@@ -479,25 +479,41 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                                                    "_mn", sep = ""), paste("SriFractionValid_", TW, "_", udefn[j], "_sd", sep = ""))
                   cnt = cnt + 27
                   if (params_sleep[["sleepwindowType"]] == "TimeInBed") {
-                    personSummary[i, (cnt + 1)] = mean(nightsummary.tmp$sleepefficiency[indexUdef], na.rm = TRUE)
-                    personSummary[i, (cnt + 2)] = sd(nightsummary.tmp$sleepefficiency[indexUdef], na.rm = TRUE)
-                    personSummarynames = c(personSummarynames, paste("sleep_efficiency_", TW, "_", udefn[j],
-                                                                     "_mn", sep = ""), paste("sleep_efficiency_", TW, "_", udefn[j], "_sd", sep = ""))
-                    cnt = cnt + 2
+                    sleepefficiency = nightsummary.tmp$sleepefficiency[indexUdef]
                     latency = nightsummary.tmp$sleeplatency[indexUdef]
-                    if (params_sleep[["sib_must_fully_overlap_with_TimeInBed"]] == FALSE) {
+                    if (params_sleep[["sib_must_fully_overlap_with_TimeInBed"]][1] == FALSE) {
                       negative_latency = which(latency < 0)
                       N_neg_lat = length(negative_latency)
                       if (N_neg_lat > 0) latency = latency[-negative_latency]
                       personSummary[i, (cnt + 1)] = N_neg_lat
                       personSummarynames = c(personSummarynames, "N_nights_negative_latency")
                       cnt = cnt + 1
-                      meanLatency = ifelse(test = length(latency) > 0, yes = mean(latency, na.rm = TRUE), no = NA)
-                      sdLatency = ifelse(test = length(latency) > 1, yes = sd(latency, na.rm = TRUE), no = NA)
+                      Nlatency = length(latency)
+                      if (Nlatency > 0) {
+                        meanLatency = mean(latency, na.rm = TRUE)
+                        meanSleepefficiency = mean(sleepefficiency, na.rm = TRUE)
+                      } else {
+                        meanLatency = NA
+                        meanSleepefficiency = NA
+                      }
+                      if (Nlatency > 1) {
+                        sdLatency = sd(latency, na.rm = TRUE)
+                        sdSleepefficiency = sd(sleepefficiency, na.rm = TRUE)
+                      } else {
+                        sdLatency = NA
+                        sdSleepefficiency = NA
+                      }
                     } else {
-                      meanLatency = mean(nightsummary.tmp$sleeplatency[indexUdef], na.rm = TRUE)
-                      sdLatency = sd(nightsummary.tmp$sleeplatency[indexUdef], na.rm = TRUE)
+                      meanLatency = mean(latency, na.rm = TRUE)
+                      meanSleepefficiency = mean(sleepefficiency, na.rm = TRUE)
+                      sdLatency = sd(latency, na.rm = TRUE)
+                      sdSleepefficiency = sd(sleepefficiency, na.rm = TRUE)
                     }
+                    personSummary[i, (cnt + 1)] = meanSleepefficiency
+                    personSummary[i, (cnt + 2)] = sdSleepefficiency
+                    personSummarynames = c(personSummarynames, paste("sleep_efficiency_", TW, "_", udefn[j],
+                                                                     "_mn", sep = ""), paste("sleep_efficiency_", TW, "_", udefn[j], "_sd", sep = ""))
+                    cnt = cnt + 2
                     personSummary[i, (cnt + 1)] = meanLatency
                     personSummary[i, (cnt + 2)] = sdLatency
                     personSummarynames = c(personSummarynames, paste("sleeplatency_", TW, "_", udefn[j],

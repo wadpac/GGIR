@@ -1279,9 +1279,14 @@ GGIR(mode = 1:5,
       }
 
       \item{sib_must_fully_overlap_with_TimeInBed}{
-        Boolean (default = TRUE).
-        To indicate whether sib must fully overlap with TimeInBed to be considered sleep.
-        Only considered when parameter \code{sleepwindowType = "TimeInBed"}.
+        Boolean (default = c(TRUE, TRUE)).
+        To indicate whether sib must fully overlap with TimeInBed to be considered sleep
+        for the start and end of time in bed, respectively.
+        Only considered when parameter \code{sleepwindowType = "TimeInBed"}. Note
+        that negative sleep latency, if any, will be reported in the night summary 
+        report (part4_nightsummary_sleep csv files) but these negative sleep latency 
+        and corresponding sleep efficiency values when calculating the person summary
+        aggregate as stored in the person level report (part4_summary_sleep csv files).
       }
 
     }

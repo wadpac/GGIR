@@ -28,7 +28,7 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                         possible_nap_edge_acc = Inf,
                         nap_model = c(), sleepefficiency.metric = 1,
                         HDCZA_threshold = c(),
-                        sib_must_fully_overlap_with_TimeInBed = TRUE)
+                        sib_must_fully_overlap_with_TimeInBed = c(TRUE, TRUE))
   }
   if ("metrics" %in% topic) {
     params_metrics = list(do.anglex = FALSE, do.angley = FALSE, do.anglez = TRUE,
