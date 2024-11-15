@@ -234,21 +234,22 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
             # This is why we need to do + 1 if the recording starts at midnight.
             deltadate = deltadate + 1
           }
-          # handle missing dates
-          ndates = as.numeric(diff(range(Sdates_correct[!is.na(Sdates_correct)]))) + 1
-          if (ndates > nnights) {
-            extraColumns = matrix("", nrow(newsleeplog), max(c((ndates - nnights)*2, 100)) + 1)
-            newsleeplog = cbind(newsleeplog, extraColumns)
-            newbedlog = cbind(newbedlog, extraColumns)
-            extraColumns = matrix("", nrow(naplog), max(c((ndates - nnights)*2, 100)) + 1)
-            naplog = cbind(naplog, extraColumns)
-            nonwearlog = cbind(nonwearlog, extraColumns)
-            nnights = ndates
-          }
+          
           if (length(Sdates_correct) == 0 | is.na(startdate_sleeplog) == TRUE) {
             warning(paste0("\nSleeplog for ID: ",ID," not used because first date",
                            " not within 30 days of first date in accerometer recording"), call. = FALSE)
           } else {
+            # handle missing dates
+            ndates = as.numeric(diff(range(Sdates_correct[!is.na(Sdates_correct)]))) + 1
+            if (ndates > nnights) {
+              extraColumns = matrix("", nrow(newsleeplog), max(c((ndates - nnights)*2, 100)) + 1)
+              newsleeplog = cbind(newsleeplog, extraColumns)
+              newbedlog = cbind(newbedlog, extraColumns)
+              extraColumns = matrix("", nrow(naplog), max(c((ndates - nnights)*2, 100)) + 1)
+              naplog = cbind(naplog, extraColumns)
+              nonwearlog = cbind(nonwearlog, extraColumns)
+              nnights = ndates
+            }
             # only attempt to use sleeplog if start date could be recognised
             # Add row to newsleeplog if somehow there are not enough rows
             if (count > nrow(newsleeplog)) {

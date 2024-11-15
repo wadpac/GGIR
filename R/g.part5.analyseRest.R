@@ -60,7 +60,7 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
   if (params_sleep[["possible_nap_gap"]] > 0) {
     sibreport$gap2next = NA
     Nrow = nrow(sibreport)
-    sibreport$gap2next[1:(Nrow - 1)] = as.numeric(sibreport$start[2:Nrow]) - as.numeric(sibreport$end[1:(Nrow - 1)])
+    sibreport$gap2next[1:(Nrow - 1)] = (as.numeric(sibreport$start[2:Nrow]) - as.numeric(sibreport$end[1:(Nrow - 1)])) / 60
     sibreport$gap2next[which(sibreport$type != "sib" | sibreport$gap2next < 0)] = NA
     iter = 1
     while (iter < nrow(sibreport)) {
@@ -136,12 +136,22 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
     # update ts time series with the classified naps
     if ("sib" %in% srep_tmp$type) {
       sibnaps = which(srep_tmp$type == "sib")
+      srep_tmp_rowsdelete = NULL
       if (length(sibnaps) > 0) {
         for (sni in 1:length(sibnaps)) {
           sibnap = which(ts$time >= srep_tmp$start[sibnaps[sni]] & ts$time <= srep_tmp$end[sibnaps[sni]])
           if (length(sibnap) > 0) {
-            ts$sibdetection[sibnap] = 2
+            # Only consider nap it does not overlap for more than 10% with known nonwear.
+            fractionInvalid = length(which(ts$nonwear[sibnap] == 1)) / length(sibnap)
+            if (fractionInvalid < 0.1) {
+              ts$sibdetection[sibnap] = 2
+            } else {
+              srep_tmp_rowsdelete = c(srep_tmp_rowsdelete , sibnaps[sni])
+            }
           }
+        }
+        if (!is.null(srep_tmp_rowsdelete )) {
+          srep_tmp = srep_tmp[-srep_tmp_rowsdelete,]
         }
       }
     }
