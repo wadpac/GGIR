@@ -1264,18 +1264,31 @@ GGIR(mode = 1:5,
         calculated as detected sleep time during the SPT window divided by detected
         duration in sleep period time plus sleep latency (where sleep latency refers
         to the difference between time in bed and sleep onset). sleepefficiency.metric is only considered
-        when argument \code{sleepwindowType = "TimeInBed"}}
+        when parameter \code{sleepwindowType = "TimeInBed"}}
         
       \item{possible_nap_edge_acc}{
         Numeric (default = Inf).
         Maximum acceleration before or after the SIB for the nap to be considered.
         By default this will allow all possible naps.
       }
+
       \item{possible_nap_gap}{
         Numeric (default = 0).
         Time gap expressed in seconds that is allowed between the sustained 
         inactivity bouts that form the naps.
       }
+
+      \item{sib_must_fully_overlap_with_TimeInBed}{
+        Boolean (default = c(TRUE, TRUE)).
+        To indicate whether sib must fully overlap with TimeInBed to be considered sleep
+        for the start and end of time in bed, respectively.
+        Only considered when parameter \code{sleepwindowType = "TimeInBed"}. Note
+        that negative sleep latency, if any, will be reported in the night summary 
+        report (part4_nightsummary_sleep csv files) but these negative sleep latency 
+        and corresponding sleep efficiency values when calculating the person summary
+        aggregate as stored in the person level report (part4_summary_sleep csv files).
+      }
+
     }
   }
 
@@ -1298,7 +1311,7 @@ GGIR(mode = 1:5,
         format of the activity diary is: First column headers followed by one row 
         per recording, first column is recording ID, which needs to match with the 
         ID GGIR extracts from the accelerometer file. Followed by date column in 
-        format "23-04-2017", where date format is specified by argument 
+        format "23-04-2017", where date format is specified by parameter
         \code{qwindow_dateformat} (below). Use the character combination date, 
         Date or DATE in the column name. This is followed by one or multiple columns 
         with start times for the activity types in that day format in hours:minutes:seconds. 
@@ -1312,7 +1325,7 @@ GGIR(mode = 1:5,
         size (epoch length), the next epoch is considered (e.g., with epoch of 5 
         seconds, 8:00:02 will be redefined as 8:00:05 in the activity log).
         When using the qwindow functionality in combination with GGIR part 5 then
-        make sure to check that arguments \code{segmentWEARcrit.part5} and 
+        make sure to check that parameters \code{segmentWEARcrit.part5} and 
         \code{segmentDAYSPTcrit.part5} are specified to your research needs.
         }
 
@@ -1334,7 +1347,7 @@ GGIR(mode = 1:5,
         Vector of percentiles for which value needs to be extracted. These need to 
         be expressed as a fraction of 1, e.g., c(0.1, 0.5, 0.75). There is no limit 
         to the number of percentiles. If left empty then percentiles will not be extracted. 
-        Distribution will be derived from short epoch metric data. Argument qlevels 
+        Distribution will be derived from short epoch metric data. Parameter qlevels 
         can for example be used for the MX-metrics (e.g. Rowlands et al) as discussed in the
         \href{https://cran.r-project.org/package=GGIR/vignettes/GGIR.html}{main package vignette}}
 
@@ -1349,7 +1362,7 @@ GGIR(mode = 1:5,
         Numeric (default = NULL).
         Levels for acceleration value frequency distribution
         in m\emph{g} used for intensity gradient calculation (according to the method by
-        Rowlands 2018). By default this is argument is empty and the intensity gradient
+        Rowlands 2018). By default this is parameter is empty and the intensity gradient
         calculation is not done. The user can either provide a single value (any) to
         make the intensity gradient use the bins \code{iglevels = c(seq(0,4000,by=25), 8000)}
         or the user could specify their own distribution. There is no constriction to the
@@ -1359,7 +1372,8 @@ GGIR(mode = 1:5,
         This argument has been deprecated.}
 
       \item{IVIS_epochsize_seconds}{
-        This argument has been deprecated.}
+        Numeric (default = NULL).
+        This parameter has been deprecated.}
 
       \item{IVIS.activity.metric}{
         This argument has been deprecated.}
@@ -1396,9 +1410,9 @@ GGIR(mode = 1:5,
         the LUX analysis.}
 
       \item{L5M5window}{
-        Argument deprecated after version 1.5-24.
-        This argument used to define the start and end time, in 24 hour clock hours,
-        over which L5M5 needs to be calculated. Now this is done with argument qwindow.}
+        Has been deprecated after version 1.5-24.
+        This parameter used to define the start and end time, in 24 hour clock hours,
+        over which L5M5 needs to be calculated. Now this is done with parameter qwindow.}
 
       \item{cosinor}{
         Boolean (default = FALSE). Whether to apply the cosinor analysis from the ActCR package in part 2.
@@ -1491,7 +1505,7 @@ GGIR(mode = 1:5,
         inactivity bouts (SIB). If set to TRUE and when an advanced sleep diary is
         available in part 4 then part 5 will use this to generate summary statistics
         on the overlap between self-reported nonwear and napping with SIB. Here,
-        SIB can be filter based on argument possible_nap_edge_acc and the first value
+        SIB can be filter based on parameter possible_nap_edge_acc and the first value
         of possible_nap_dur}
 
       \item{do.visual}{
@@ -1506,7 +1520,7 @@ GGIR(mode = 1:5,
         In \link{g.part4}: Only used if \code{do.visual = TRUE}. If FALSE,
         all available nights are included in the visual representation of the data and sleeplog.
         If TRUE, then only nights with a difference in onset or waking time
-        larger than the variable of argument \code{criterror} will be included.}
+        larger than the variable of parameter \code{criterror} will be included.}
 
       \item{criterror}{
         Numeric (default = 3).
@@ -1550,19 +1564,19 @@ GGIR(mode = 1:5,
 
       \item{sep_reports}{
         Character (default = ",").
-        Value used as sep argument in \link[data.table]{fwrite} for writing csv reports.}
+        Value used as sep parameter in \link[data.table]{fwrite} for writing csv reports.}
         
       \item{dec_reports}{
         Character (default = ".").
-        Value used as dec argument in \link[data.table]{fwrite} for writing csv reports.}
+        Value used as dec parameter in \link[data.table]{fwrite} for writing csv reports.}
 
       \item{sep_config}{
         Character (default = ",").
-        Value used as sep argument in \link[data.table]{fwrite} for writing csv config file.}
+        Value used as sep parameter in \link[data.table]{fwrite} for writing csv config file.}
         
       \item{dec_config}{
         Character (default = ".").
-        Value used as dec argument in \link[data.table]{fwrite} for writing csv config file.}
+        Value used as dec parameter in \link[data.table]{fwrite} for writing csv config file.}
 
       \item{visualreport_without_invalid}{
           Boolean (default = TRUE).
