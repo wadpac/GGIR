@@ -1282,6 +1282,7 @@ GGIR(mode = 1:5,
         Boolean (default = TRUE).
         To indicate whether sib must fully overlap with TimeInBed to be considered sleep.
         Only considered when parameter \code{sleepwindowType = "TimeInBed"}.
+      }
 
     }
   }
