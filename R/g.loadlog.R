@@ -164,7 +164,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
     }
   }
   count = 1 # to keep track of row in new sleeplog matrix
-  naplog = nonwearlog = newsleeplog = c()
+  naplog = nonwearlog = newsleeplog = imputecodelog = c()
   if (advanced_sleeplog ==  TRUE) {
     # assumptions:
     # if date occurs in column names we assume it is an advanced sleeplogreport
@@ -183,6 +183,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
       onsetcols = grep(pattern = "onset",x = colnames(S), value = FALSE, ignore.case = TRUE)
       napcols = grep(pattern = "nap",x = colnames(S), value = FALSE, ignore.case = TRUE)
       nonwearcols = grep(pattern = "nonwear",x = colnames(S), value = FALSE, ignore.case = TRUE)
+      imputecols = grep(pattern = "impute",x = colnames(S), value = FALSE, ignore.case = TRUE)
       # Create new sleeplog consisting of:
       # - original ID column
       # - empty columns if relevant to make sleeplog match accelerometer recording, make sure coln1 argument is used
@@ -191,8 +192,12 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
       newbedlog = matrix("", nrow(S), max(c(nnights*2, 100)) + 1)
       naplog = matrix("", nrow(S)*nnights * 5, 50) #ID date start end
       nonwearlog = matrix("", nrow(S)*nnights * 5, 50) #ID date start end
-      napcnt = 1
-      nwcnt = 1
+      if (length(imputecols) > 0) {
+        imputecodelog = matrix("", nrow(S)*nnights * 2, 50) #ID date start end
+      } else {
+        imputecodelog = NULL
+      }
+      napcnt = nwcnt = iccnt = 1
       IDcouldNotBeMatched = TRUE
       for (i in 1:nrow(S)) { # loop through rows in sleeplog
         ID = S[i,colid]
@@ -291,9 +296,10 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
                 } else {
                   newbedlog_times = c(newbedlog_times, "", "")
                 }
-                # Also grap nap and non-wear info and put those in separate matrix:
+                # Also grap nap, non-wear, and imputation code info and put those in separate matrices:
                 naps = napcols[which(napcols  > curdatecol & napcols < nextdatecol)]
                 nonwears = nonwearcols[which(nonwearcols  > curdatecol & nonwearcols < nextdatecol)]
+                imputecodes = imputecols[which(imputecols  > curdatecol & imputecols < nextdatecol)]
                 if (length(naps) > 0) {
                   naplog[napcnt, 1] = ID
                   naplog[napcnt, 2] = S[i, curdatecol]
@@ -305,6 +311,12 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
                   nonwearlog[nwcnt, 2] = S[i, curdatecol]
                   nonwearlog[nwcnt, 3:(2 + length(nonwears))] = as.character(S[i, nonwears ])
                   nwcnt = nwcnt + 1
+                }
+                if (length(imputecodes) > 0) {
+                  imputecodelog[iccnt, 1] = ID
+                  imputecodelog[iccnt, 2] = S[i, curdatecol]
+                  imputecodelog[iccnt, 3:(2 + length(imputecodes))] = gsub("[^0-9.-]", "", as.character(S[i, imputecodes ]))
+                  iccnt = iccnt + 1
                 }
               } else {
                 newsleeplog_times = c(newsleeplog_times, "", "")
@@ -342,6 +354,10 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
       }
       if (length(nonwearlog) > 0) {
         nonwearlog = remove_empty_rows_cols(nonwearlog, name = "nonwear")
+      }
+      if (length(imputecodelog) > 0) {
+        imputecodelog = remove_empty_rows_cols(imputecodelog, name = "imputecode")
+        colnames(imputecodelog)[3] = "imputecode"
       }
       
       if (length(newsleeplog) > 0) {
@@ -386,5 +402,6 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
     bedlog = NULL
   }
   invisible(list(sleeplog = sleeplog, nonwearlog = nonwearlog, naplog = naplog, bedlog = bedlog,
+                 imputecodelog = imputecodelog,
                  dateformat = dateformat_correct))
 }

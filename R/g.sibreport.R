@@ -37,6 +37,7 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
     naplog = logs_diaries$naplog
     sleeplog = logs_diaries$sleeplog
     bedlog = logs_diaries$bedlog
+    imputecodelog = logs_diaries$imputecodelog
     dateformat = logs_diaries$dateformat
 
     firstDate = as.Date(ts$time[1])
@@ -127,6 +128,32 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
     nonwearlogreport = extract_logs(nonwearlog, ID, logname = "nonwear")
     sleeplogreport = extract_logs(sleeplog, ID, logname = "sleeplog", firstDate = firstDate)
     bedlogreport = extract_logs(bedlog, ID, logname = "bedlog", firstDate = firstDate)
+    # add imputecodelog
+    if (length(imputecodelog) > 0) {
+      addDate = function(x) {
+        start_time = as.POSIXct(x$start, "")
+        x$date = as.Date(start_time)
+        start_hour = as.numeric(format(start_time, "%H"))
+        start_am = which(x$date < 12)
+        if (length(start_am) > 0) {
+          x$date[start_am] = x$date[start_am] - 1
+        }
+        return(x)
+      }
+      if (length(sleeplogreport) > 0) sleeplogreport = addDate(sleeplogreport)
+      if (length(bedlogreport) > 0) bedlogreport = addDate(bedlogreport)
+      
+      imputecodelog_tmp = imputecodelog[which(imputecodelog$ID == ID), ]
+      imputecodelog_tmp$date = as.Date(imputecodelog_tmp$date, "%d/%m/%Y")
+      if (length(sleeplogreport) > 0) {
+        sleeplogreport = merge(sleeplogreport, imputecodelog_tmp, by = c("ID", "date"))
+        sleeplogreport = sleeplogreport[, which(colnames(sleeplogreport) != "date")]
+      }
+      if (length(bedlogreport) > 0) {
+        bedlogreport = merge(bedlogreport, imputecodelog_tmp, by = c("ID", "date"))
+        bedlogreport = bedlogreport[, which(colnames(bedlogreport) != "date")]
+      }
+    }
     logreport = sibreport
     # append all together in one output data.frame
     if (length(logreport) > 0 & length(naplogreport) > 0) {
@@ -145,7 +172,13 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
       logreport = sleeplogreport
     }
     if (length(logreport) > 0 & length(bedlogreport) > 0) {
-      logreport = merge(logreport, bedlogreport, by = c("ID", "type", "start", "end", "duration"), all = TRUE)
+      if ("imputecode" %in% colnames(logreport) && "imputecode" %in% colnames(bedlogreport)) {
+        include_imputecode = "imputecode"
+      } else {
+        include_imputecode = NULL
+      }
+      logreport = merge(logreport, bedlogreport,
+                        by = c("ID", "type", "start", "end", "duration", include_imputecode), all = TRUE)
     } else if (length(logreport) == 0 & length(bedlogreport) > 0) {
       logreport = bedlogreport
     }

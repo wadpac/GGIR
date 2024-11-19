@@ -340,11 +340,23 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               
               # Add self-reported classes to ts object
               ts$selfreported = NA
+              
+              if ("imputecode" %in% colnames(sibreport)) {
+                if ("logImputationCode" %in% colnames(ts) == FALSE) {
+                  ts$diaryImputationCode = NA
+                }
+                addImputationCode = TRUE
+              } else {
+                addImputationCode = FALSE
+              }
               for (srType in c("sleeplog", "nap", "nonwear", "bedlog")) {
                 sr_index = which(sibreport$type == srType)
                 if (length(sr_index) > 0) {
                   for (sii in sr_index) {
                     ts_index = which(ts$time >= sibreport$start[sii] & ts$time < sibreport$end[sii])
+                    if (addImputationCode == TRUE && srType %in% c("sleeplog", "bedlog")) {
+                      ts$diaryImputationCode[ts_index] = as.numeric(sibreport$imputecode[sii])
+                    }
                     ts_index1 = ts_index[which(is.na(ts$selfreported[ts_index]))]
                     ts_index2 = ts_index[which(!is.na(ts$selfreported[ts_index]))]
                     if (length(ts_index1) > 0) {
@@ -638,10 +650,17 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     if (length(step_count_col) == 0) {
                       step_count_col = NULL
                     }
+                    
+                    diaryImputationCode_col = grep(pattern = "diaryImputationCode", 
+                                                   x = names(ts), value = TRUE)
+                    if (length(diaryImputationCode_col) == 0) {
+                      diaryImputationCode_col = NULL
+                    }
                     g.part5.savetimeseries(ts = ts[, c("time", "ACC", "diur", "nonwear",
                                                        "guider", "window", "sibdetection", napNonwear_col,
                                                        lightpeak_col, selfreported_col,
-                                                       angle_col, temperature_col, step_count_col)],
+                                                       angle_col, temperature_col, step_count_col,
+                                                       diaryImputationCode_col)],
                                            LEVELS = LEVELS,
                                            desiredtz = params_general[["desiredtz"]],
                                            rawlevels_fname = rawlevels_fname,
