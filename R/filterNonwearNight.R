@@ -53,10 +53,21 @@ filterNonwearNight = function(r1, metalong, qwindowImp, desiredtz,
       r1B$date = as.Date(metalong$time_POSIX)
       for (qi in 1:nrow(qwindowImp)) {
         qwindow_temp = qwindowImp$qwindow_values[[qi]]
+        # filter only SPT and time in bed reports
+        qwindow_temp = qwindow_temp[grep(pattern = "bed|wakeup|sleeponset", x = qwindowImp$qwindow_names[[qi]])]
+        qwindow_temp = sort(qwindow_temp)
         if (length(qwindow_temp) > 3) {
-          # if diary has at least two timestamps other than 0 and 24
-          start = rev(qwindow_temp)[2]
-          end = qwindow_temp[2]
+          # convert to continuous scale to ease finding start and end
+          below18 = which(qwindow_temp < 18)
+          if (length(below18) > 0) {
+            qwindow_temp = qwindow_temp[below18] + 24
+          }
+          start = min(qwindow_temp)
+          end = max(qwindow_temp)
+          if (length(below18) > 0) {
+            start = ifelse(start > 24, yes = start - 24, no = start)
+            end = ifelse(end > 24, yes = end - 24, no = end)
+          }
           if (start > end) {
             r1B$filterWindow[which(r1B$date == qwindowImp$date[qi] & 
                                      r1B$hr >= start |

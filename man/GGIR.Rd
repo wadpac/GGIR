@@ -986,7 +986,7 @@ GGIR(mode = 1:5,
         defined by activity diary file and a diary entry is missing use midnight-6am
         as fall back setting. The main purpose of this functionality is to offer
         the option to ignore short lasting nonwear episodes during the night
-        when there is suspicious that these are falsely detect, e.g. in individuals
+        when there is suspicion that these are falsely detect, e.g. in individuals
         with extended motionless sleep periods caused by medication.}
       
       \item{nonwearFilterWindow}{
