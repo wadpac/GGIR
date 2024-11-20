@@ -123,8 +123,7 @@ aggregateEvent = function(metric_name, epochsize,
     for (winhr_value in params_247[["winhr"]]) {
       MXLXout = MXLX(Y = cadence, X = winhr_value, epochSize = epochsize,
                      tseg = tseg,
-                     resolutionMin = params_247[["M5L5res"]],
-                     shift = tseg[1]) # we apply shift because cadence is also shifted
+                     resolutionMin = params_247[["M5L5res"]])
       # Describe for MX and LX:
       LXMXwindow_name = anwi_nameindices[anwi_index]
       for (WX in c("L", "M")) {

@@ -1,4 +1,4 @@
-MXLX = function(Y = NULL, X = 5, epochSize = 1, tseg = c(0, 24), resolutionMin = 10, shift = 0) {
+MXLX = function(Y = NULL, X = 5, epochSize = 1, tseg = c(0, 24), resolutionMin = 10) {
   # Y 24 hours of data
   # tseg is vector of length 2 with the start and end time as hour in the day
   # X is the window size in hours to look for
@@ -15,7 +15,7 @@ MXLX = function(Y = NULL, X = 5, epochSize = 1, tseg = c(0, 24), resolutionMin =
   nsh = 60 / resolutionMin # number of steps per hour
   nes = (resolutionMin * 60) / epochSize # number of epochs per step
   if (do.MXLX == TRUE) { # only do the analysis if Y has values other than zero
-    Y = Y[((((tseg[1] - shift) * 3600)/epochSize) + 1):(((tseg[2] - shift) * 3600)/epochSize)]
+    Y = Y[((((tseg[1] - tseg[1]) * 3600)/epochSize) + 1):(((tseg[2] - tseg[1]) * 3600)/epochSize)]
     Nwindows = Nwindows * nsh
     rollingMean = matrix(NA, Nwindows, 1)
     for (hri in 1:Nwindows) { #e.g.9am-9pm
@@ -45,9 +45,9 @@ MXLX = function(Y = NULL, X = 5, epochSize = 1, tseg = c(0, 24), resolutionMin =
     
     
     #Note it is + 1 because first epoch is one and not zero:
-    LXstart = ((LXhr - shift) * (3600 / epochSize)) + 1
+    LXstart = ((LXhr - tseg[1]) * (3600 / epochSize)) + 1
     LXend = LXstart + (X * (3600 / epochSize)) - 1
-    MXstart = ((MXhr - shift) * (3600 / epochSize)) + 1 
+    MXstart = ((MXhr - tseg[1]) * (3600 / epochSize)) + 1 
     MXend = MXstart + (X * (3600 / epochSize)) - 1
     
     MXLX = data.frame(LXhr = LXhr[1],
