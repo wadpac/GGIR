@@ -54,7 +54,7 @@ filterNonwearNight = function(r1, metalong, qwindowImp, desiredtz,
       for (qi in 1:nrow(qwindowImp)) {
         qwindow_temp = qwindowImp$qwindow_values[[qi]]
         # filter only SPT and time in bed reports
-        qwindow_temp = qwindow_temp[grep(pattern = "bed|wakeup|sleeponset", x = qwindowImp$qwindow_names[[qi]])]
+        qwindow_temp = qwindow_temp[grep(pattern = "bed|wakeup|sleeponset|lights", x = qwindowImp$qwindow_names[[qi]])]
         qwindow_temp = sort(qwindow_temp)
         if (length(qwindow_temp) > 3) {
           # convert to continuous scale to ease finding start and end
