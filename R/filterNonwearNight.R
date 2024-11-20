@@ -53,11 +53,15 @@ filterNonwearNight = function(r1, metalong, qwindowImp, desiredtz,
       r1B$date = as.Date(metalong$time_POSIX)
       for (qi in 1:nrow(qwindowImp)) {
         qwindow_temp = qwindowImp$qwindow_values[[qi]]
+        # Only consider window when both start and end are reported
+        available = c(length(grep(pattern = "inbed|sleeponset|lightsout", x = qwindowImp$qwindow_names[[qi]])) > 0,
+                      length(grep(pattern = "outbed|wakeup|lightsoff", x = qwindowImp$qwindow_names[[qi]])) > 0)
         # filter only SPT and time in bed reports
         qwindow_temp = qwindow_temp[grep(pattern = "bed|wakeup|sleeponset|lights", x = qwindowImp$qwindow_names[[qi]])]
         qwindow_temp = sort(qwindow_temp)
+        # Ignore if somehow only teh default window is available
         isDefaultWindow = length(qwindow_temp) == 2 && qwindow_temp[1] == 0 && qwindow_temp[2] == 24
-        if (length(qwindow_temp) > 1 && isDefaultWindow == FALSE) {
+        if (length(qwindow_temp) > 1 && isDefaultWindow == FALSE && all(available)) {
           # convert to continuous scale to ease finding start and end
           below18 = which(qwindow_temp < 18)
           if (length(below18) > 0) {
