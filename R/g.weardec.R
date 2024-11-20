@@ -1,5 +1,8 @@
-g.weardec = function(M,wearthreshold, ws2, nonWearEdgeCorrection = TRUE) {
+g.weardec = function(M, wearthreshold, ws2, params_cleaning = NULL,
+                     desiredtz = "", qwindowImp = c()) {
   metalong = M$metalong
+  nonWearEdgeCorrection = params_cleaning[["nonWearEdgeCorrection"]]
+  # eni = which(colnames(metalong) == "en") # Commented out March 9 2023, because it was not used
   nsi = which(colnames(metalong) == "nonwearscore")
   csi = which(colnames(metalong) == "clippingscore")
   NLongEpochs = nrow(metalong)
@@ -14,6 +17,17 @@ g.weardec = function(M,wearthreshold, ws2, nonWearEdgeCorrection = TRUE) {
   r1 = r2 = r3 = matrix(0, nrow(metalong), 1)
   r1[turnoffnonw] = 1 # non-weartime
   r2[turnoffclip] = 1 # clipping
+  
+  #----------------------------------------------------------------
+  # Optionally ignore short lasting nonwear during the night
+  if (!is.null(params_cleaning[["nonwearFiltermaxHours"]])) {
+    fnn = filterNonwearNight(r1, metalong, qwindowImp, desiredtz, params_cleaning, ws2)
+    r1[, 1] = fnn$r1
+    nonwearHoursFiltered = fnn$nonwearHoursFiltered
+    nonwearEventsFiltered = fnn$nonwearEventsFiltered
+  } else {
+    nonwearEventsFiltered = nonwearHoursFiltered = 0
+  }
   r1 = c(0, r1, 0)
   r2 = c(0, r2, 0)
   r3 = c(0, r3, 0)
@@ -94,6 +108,8 @@ g.weardec = function(M,wearthreshold, ws2, nonWearEdgeCorrection = TRUE) {
     r2 = r2,
     r3 = r3,
     LC = LC,
-    LC2 = LC2
+    LC2 = LC2,
+    nonwearHoursFiltered = nonwearHoursFiltered,
+    nonwearEventsFiltered = nonwearEventsFiltered
   ))
 }

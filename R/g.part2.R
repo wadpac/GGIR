@@ -150,13 +150,20 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
             }
           }
         }
+        qwindowImp = params_247[["qwindow"]]
+        if (inherits(qwindowImp, "data.frame")) {
+          qwindowImp = qwindowImp[which(qwindowImp$ID == ID),]
+          if (nrow(qwindowImp) == 0) {
+            qwindowImp = NULL
+          }
+        }
         IMP = g.impute(M, I,
                        params_cleaning = params_cleaning,
                        dayborder = params_general[["dayborder"]],
                        desiredtz = params_general[["desiredtz"]],
                        TimeSegments2Zero = TimeSegments2Zero,
                        acc.metric = params_general[["acc.metric"]],
-                       ID = ID)
+                       ID = ID, qwindowImp = qwindowImp)
         
         if (params_cleaning[["do.imp"]] == FALSE) { #for those interested in sensisitivity analysis
           IMP$metashort = M$metashort
