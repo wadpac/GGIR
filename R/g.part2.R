@@ -156,6 +156,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           if (nrow(qwindowImp) == 0) {
             qwindowImp = NULL
           }
+        } else {
+          qwindowImp = NULL
         }
         IMP = g.impute(M, I,
                        params_cleaning = params_cleaning,

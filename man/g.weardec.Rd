@@ -47,9 +47,10 @@
 \examples{
   data(data.getmeta)
   params_cleaning = load_params()$params_cleaning
+  params_cleaning[["nonwearFilterWindow"]] = c(22, 7)
   output = g.weardec(M = data.getmeta, wearthreshold = 2, ws2 = 900,  
                       params_cleaning = params_cleaning,
-                      desiredtz = "", qwindowImp = c(0, 6, 21, 24))
+                      desiredtz = "", qwindowImp = NULL)
 }
 \keyword{internal}
 \author{
