@@ -314,7 +314,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     }
     if (any(params_cleaning[["includecrit.part6"]] < 0) | any(params_cleaning[["includecrit.part6"]] > 1)) {
       stop("Values of includecrit.part6 are not in the range [0, 1]. Please fix.")
-
     }
   }
   if (length(params_phyact) > 0) {
