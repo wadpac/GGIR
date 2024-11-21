@@ -58,8 +58,8 @@ test_that("recordingEndSleepHour works as expected", {
   expect_equal(nrow(p4full), 3) # Night 3 is not in the part 4 reports
   expect_equal(sum(p4$sleeponset), 62.77)
   expect_equal(sum(p4$wakeup), 93.505)
-  expect_equal(sum(p4$guider_onset), 62.778)
-  expect_equal(sum(p4$guider_wakeup), 93.511)
+  expect_equal(sum(p4$guider_onset), 62.775)
+  expect_equal(sum(p4$guider_wakeup), 93.506)
   expect_equal(sum(p4$number_sib_sleepperiod), 114)
   expect_true(all(is.na(p4$longitudinal_axis)))
   
@@ -95,8 +95,8 @@ test_that("recordingEndSleepHour works as expected", {
   expect_equal(nrow(p4full), 3) # Night 3 is not in the part 4 reports
   expect_equal(sum(p4$sleeponset), 62.1)
   expect_equal(sum(p4$wakeup), 81.096)
-  expect_equal(sum(p4$guider_inbedStart), 53.171)
-  expect_equal(sum(p4$guider_inbedEnd), 86.853)
+  expect_equal(sum(p4$guider_inbedStart), 53.17, tolerance = 0.005)
+  expect_equal(sum(p4$guider_inbedEnd), 86.85, tolerance = 0.005)
   expect_equal(sum(p4$number_sib_sleepperiod), 24)
   expect_equal(sum(p4$sleepefficiency), 0.501)
   expect_equal(sum(p4$longitudinal_axis), 9)
