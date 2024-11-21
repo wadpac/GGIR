@@ -79,7 +79,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
       endTurnZero = which(timelinePOSIX == TimeSegments2Zero$windowend[kli])
       r1long[startTurnZero:endTurnZero] = 0
       # Force ENMO and other acceleration metrics to be zero for these intervals
-      M$metashort[startTurnZero:endTurnZero,which(colnames(M$metahosrt) %in% c("timestamp","anglex","angley","anglez") == FALSE)] = 0
+      M$metashort[startTurnZero:endTurnZero,which(colnames(M$metashort) %in% c("timestamp","anglex","angley","anglez") == FALSE)] = 0
     }
     # collaps r1long (short epochs) back to r1 (long epochs)
     r1longc = cumsum(c(0,r1long))
@@ -368,7 +368,17 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
       # last day
       lastday = metr[(((ndays - 1)*wpd) + 1):length(metr)]
       imp[1:length(lastday),ndays] = as.numeric(lastday)
-      imp3 = rowMeans(imp, na.rm = TRUE)
+      if (colnames(metashort)[mi] == "step_count") {
+        # Median per row, which equals to median for one time point in the 'average' day
+        # (median day would be a better term in this context)
+        # chances are high that this will often be zero, because a person
+        # would have to walk on a certain time point in the day for more than half of
+        # each day in the to get a median above zero
+        imp3 = apply(imp, 1, median, na.rm = TRUE)
+      } else {
+        # mean per row, which equals to mean or one time point in the 'average' day
+        imp3 = rowMeans(imp, na.rm = TRUE)
+      }
       dcomplscore = length(which(is.nan(imp3) == F | is.na(imp3) == F)) / length(imp3)
       
       if (length(imp3) < wpd)  {
