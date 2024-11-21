@@ -75,10 +75,15 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
         if (qwindow[1] != 0) qwindow = c(0, qwindow)
         if (qwindow[length(qwindow)] != 24) qwindow = c(qwindow, 24)
       }
+      # define segments names
       breaks = qwindow2timestamp(qwindow, epochSize)
       startOfSegments = breaks[-length(breaks)]
       endOfSegments = subtractEpochFromTimeName(breaks[-1], epochSize)
       segments_timing = paste(startOfSegments, endOfSegments, sep = "-")
+      if (length(startOfSegments) > 1) {
+        # then, add full MM window
+        segments_timing = c(paste(firstepoch, lastepoch, sep = "-"), segments_timing)
+      }
       if (24 %in% qwindow) {
         # 24:00:00: probably does not exist, replace by last timestamp in a day
         # here, we consider N epochs per day plus 1 hour just in case we are deriving this in
@@ -100,7 +105,6 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
       }
       # build up segments
       segments = list(qqq)
-      segments_timing = c(paste(firstepoch, lastepoch, sep = "-"), segments_timing)
       segments_names = "MM"
       si = 2
       do.segments = TRUE
