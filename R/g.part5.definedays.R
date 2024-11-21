@@ -86,7 +86,7 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
       breaks_i = c()
       for (bi in 1:length(breaks)) {
         if (any(grepl(breaks[bi], ts$time[fullQqq]))) {
-          breaks_i[bi] = fullQqq[grep(breaks[bi], ts$time[fullQqq])]
+          breaks_i[bi] = fullQqq[grep(breaks[bi], ts$time[fullQqq])][1]
         } else {
           breaks_i[bi] = qqq[1]
         }
