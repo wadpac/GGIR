@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.1-?
+
+- Part 2: Code revisions in preparation for expansion of functionality to better facilitate external function produced event data. #653
+
 # CHANGES IN GGIR VERSION 3.1-6
 
 - Part 6:
