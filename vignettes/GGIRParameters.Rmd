@@ -189,6 +189,7 @@ find a description and default value for all the arguments.
 | relyonsleeplog              | 4                 | deprecated               |
 | sleepefficiency.metric      | 4                 | params_sleep             |
 | def.noc.sleep               | 4                 | params_sleep             |
+| sib_must_fully_overlap_with_TimeInBed  | 4      | params_sleep             |
 | data_cleaning_file          | 4, 5              | params_cleaning          |
 | excludefirst.part4          | 4                 | params_cleaning          |
 | excludelast.part4           | 4                 | params_cleaning          |

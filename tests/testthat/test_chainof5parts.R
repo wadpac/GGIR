@@ -188,8 +188,11 @@ test_that("chainof5parts", {
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   vis_sleep_file = "output_test/results/visualisation_sleep.pdf"
-  g.report.part4(datadir = fn, metadatadir = metadatadir, loglocation = sleeplog_fn,
-                 f0 = 1, f1 = 1, params_output = params_output, verbose = FALSE)
+  params_sleep = load_params()$params_sleep
+  params_sleep[["loglocation"]] = sleeplog_fn
+  g.report.part4(datadir = fn, metadatadir = metadatadir, 
+                 f0 = 1, f1 = 1, params_sleep = params_sleep,
+                 params_output = params_output, verbose = FALSE)
   expect_true(dir.exists(dirname))
   expect_true(file.exists(vis_sleep_file))
   expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(6))

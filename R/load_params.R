@@ -27,7 +27,8 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                         possible_nap_gap = 0,
                         possible_nap_edge_acc = Inf,
                         nap_model = c(), sleepefficiency.metric = 1,
-                        HDCZA_threshold = c())
+                        HDCZA_threshold = c(),
+                        sib_must_fully_overlap_with_TimeInBed = c(TRUE, TRUE))
   }
   if ("metrics" %in% topic) {
     params_metrics = list(do.anglex = FALSE, do.angley = FALSE, do.anglez = TRUE,
@@ -88,7 +89,7 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                          threshold.mod = 100, threshold.vig = 400,
                          boutdur.mvpa = c(1,5,10), boutdur.in = c(10,20,30),
                          boutdur.lig = c(1,5,10), frag.metrics = c(),
-                         part6_threshold_combi = "40_100_400")
+                         part6_threshold_combi = NULL)
   }
   if ("cleaning" %in% topic) {
     params_cleaning = list(includedaycrit = 16, ndayswindow = 7,

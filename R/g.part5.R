@@ -211,7 +211,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         S = sib.cla.sum
         rm(sib.cla.sum)
         def = unique(S$definition)
-        cut = which(S$fraction.night.invalid > 0.7 | S$nsib.periods == 0)
+        cut = which(S$fraction.night.invalid > 0.9 | S$nsib.periods == 0)
         if (length(cut) > 0) S = S[-cut,]
         if (params_general[["part5_agg2_60seconds"]] == TRUE) {
           ts_backup = ts
@@ -292,6 +292,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               } else {
                 light_columns = NULL
               }
+              temperature_col = grep(pattern = "temperature", x = names(ts), value = TRUE)
               
               stepcount_available = ifelse("step_count" %in% names(ts), yes = TRUE, no = FALSE)
                 
@@ -299,7 +300,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                 step_count_tmp = aggregate(ts$step_count, by = list(ts$time_num), FUN = function(x) sum(x))
                 colnames(step_count_tmp)[2] = "step_count"
               }
-              ts = aggregate(ts[,c("ACC","sibdetection", "diur", "nonwear", angleColName, light_columns)],
+              ts = aggregate(ts[,c("ACC","sibdetection", "diur", "nonwear", angleColName, light_columns, temperature_col)],
                              by = list(ts$time_num), FUN = function(x) mean(x))
               if (stepcount_available) {
                 ts = merge(x = ts, y = step_count_tmp, by = "Group.1")
@@ -370,6 +371,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
               # nap/sib/nonwear overlap analysis
               if (length(params_sleep[["nap_model"]]) > 0 & length(sibreport) > 0) {
+                #===========================================
+                # THIS IS THE OLD NAP DETECTION IMPLEMENTATION
                 # nap detection
                 if (params_general[["acc.metric"]] != "ENMO" |
                     params_sleep[["HASIB.algo"]] != "vanHees2015") {
@@ -487,7 +490,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                               epochSize = ws3new)
                       # This will be an object with numeric qwindow values for all individuals and days
                     }
-                    lastDay = ifelse(Nwindows > 0, yes = FALSE, no = TRUE) # skip while loop if there are no days to analyses
+                    lastDay = ifelse(Nwindows > 0 && length(nightsi) > 0, yes = FALSE, no = TRUE) # skip while loop if there are no days to analyses
                     wi = 1
                     while (lastDay == FALSE) { #loop through windows
                       # Define indices of start and end of the day window (e.g. midnight-midnight, or waking-up or wakingup

@@ -35,7 +35,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "sleepefficiency.metric", "possible_nap_edge_acc", "HDCZA_threshold",
                        "possible_nap_gap")
     boolean_params = c("ignorenonwear", "HASPT.ignore.invalid",
-                       "relyonguider", "sleeplogidnum")
+                       "relyonguider", "sleeplogidnum", "sib_must_fully_overlap_with_TimeInBed")
     character_params = c("HASPT.algo", "HASIB.algo", "Sadeh_axis", "nap_model",
                          "sleeplogsep", "sleepwindowType", "loglocation")
     check_class("Sleep", params = params_sleep, parnames = numeric_params, parclass = "numeric")
@@ -323,9 +323,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_phyact[["mvpadur"]] = c(1,5,10)
       warning("\nmvpadur needs to be a vector with length three, value now reset to default c(1, 5, 10)", call. = FALSE)
     }
-    if (length(params_phyact[["threshold.lig"]]) == 1 &&
+    if ((length(params_phyact[["threshold.lig"]]) == 1 &&
         length(params_phyact[["threshold.mod"]]) == 1 &&
-        length(params_phyact[["threshold.vig"]]) == 1) {
+        length(params_phyact[["threshold.vig"]]) == 1) | is.null(params_phyact[["part6_threshold_combi"]])) {
       params_phyact[["part6_threshold_combi"]] = paste(params_phyact[["threshold.lig"]],
                                                        params_phyact[["threshold.mod"]],
                                                        params_phyact[["threshold.vig"]], sep = "_")

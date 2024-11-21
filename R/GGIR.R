@@ -380,10 +380,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       if (N.files.ms4.out < f1) f1 = N.files.ms4.out
       if (f1 == 0) f1 = N.files.ms4.out
       g.report.part4(datadir = datadir, metadatadir = metadatadir, f0 = f0, f1 = f1,
-                     loglocation = params_sleep[["loglocation"]],
                      data_cleaning_file = params_cleaning[["data_cleaning_file"]],
-                     sleepwindowType = params_sleep[["sleepwindowType"]],
-                     params_output = params_output,
+                     params_sleep = params_sleep, params_output = params_output,
                      verbose = verbose)
     }
   }
@@ -451,14 +449,5 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                    params_sleep = params_sleep,
                    params_output = params_output)
     }
-    # g.plot_ts(metadatadir = metadatadir,
-    #           viewingwindow = params_output[["viewingwindow"]],
-    #           f0 = f0, f1 = f1,
-    #           overwrite = params_general[["overwrite"]],
-    #           desiredtz = params_general[["desiredtz"]],
-    #           verbose = TRUE,
-    #           part6_threshold_combi = params_phyact[["part6_threshold_combi"]])
-    
-    
   }
 }

@@ -44,6 +44,7 @@ export(g.analyse, g.calibrate,
        part6PairwiseAggregation, g.part6, g.report.part6, check_log, g.report.part5_dictionary,
        visualReport, DFA, ABI, SSP)
 
+
 importFrom("grDevices", "colors", "dev.off", "pdf",
            "rgb", "rainbow", "palette", "adjustcolor", "gray.colors")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",

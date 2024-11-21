@@ -617,25 +617,33 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                 # spo is now a data.frame of start and end for each sib (sustained inactivity bout)
                 # Classify as being part of the guider window or not
                 for (evi in 1:nrow(spo)) {
-                  if (spo$start[evi] < GuiderWake & spo$end[evi] > GuiderOnset) {
-                    if (params_sleep[["sleepwindowType"]] == "TimeInBed") {
-                      if (spo$end[evi] < GuiderWake & spo$start[evi] > GuiderOnset) {
-                        # if using a time in bed reference, then sleep can never 
-                        # start before time in bed
-                        spo$overlapGuider[evi] = 1  #All sib that start after guider onset and end before guider wake
+                  if (spo$start[evi] < GuiderWake && spo$end[evi] > GuiderOnset) {
+                    if (params_sleep[["sleepwindowType"]] == "TimeInBed" &&
+                        sum(params_sleep[["sib_must_fully_overlap_with_TimeInBed"]]) != 0) {
+                      if (all(params_sleep[["sib_must_fully_overlap_with_TimeInBed"]]) &&
+                          spo$start[evi] > GuiderOnset && spo$end[evi] < GuiderWake) {
+                        spo$overlapGuider[evi] = 1  # Consider only full overlap
+                      }
+                      if (all(params_sleep[["sib_must_fully_overlap_with_TimeInBed"]] == c(FALSE, TRUE)) &&
+                          spo$end[evi] < GuiderWake) {
+                        spo$overlapGuider[evi] = 1 # Consider only full overlap
+                      }
+                      if (all(params_sleep[["sib_must_fully_overlap_with_TimeInBed"]] == c(TRUE, FALSE)) &&
+                          spo$start[evi] > GuiderOnset) {
+                        spo$overlapGuider[evi] = 1  # Consider only full overlap
                       }
                     } else {
-                      spo$overlapGuider[evi] = 1  # All sib that end after guider onset and start before guider wake
+                      spo$overlapGuider[evi] = 1  # Consider partial overlap
                     }
                     if (params_sleep[["relyonguider"]] == TRUE | relyonguider_thisnight == TRUE) {
                       # Redefine sib start and end if it overlaps with guider
                       # to match guider 
-                      if ((spo$start[evi] < GuiderWake & spo$end[evi] > GuiderWake) |
-                          (spo$start[evi] < GuiderWake & spo$end[evi] < spo$start[evi])) {
+                      if ((spo$start[evi] < GuiderWake && spo$end[evi] > GuiderWake) |
+                          (spo$start[evi] < GuiderWake && spo$end[evi] < spo$start[evi])) {
                         spo$end[evi] = GuiderWake
                       }
-                      if ((spo$start[evi] < GuiderOnset & spo$end[evi] > GuiderOnset) |
-                          (spo$end[evi] > GuiderOnset & spo$end[evi] < spo$start[evi])) {
+                      if ((spo$start[evi] < GuiderOnset && spo$end[evi] > GuiderOnset) |
+                          (spo$end[evi] > GuiderOnset && spo$end[evi] < spo$start[evi])) {
                         spo$start[evi] = GuiderOnset
                       }
                     }
@@ -734,7 +742,6 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   }
                   delta_t1 = diff(as.numeric(spocum.t$end))
                   spocum.t$overlapGuider = correct01010pattern(spocum.t$overlapGuider)
-                  
                   #----------------------------
                   nightsummary[sumi, 1] = accid
                   nightsummary[sumi, 2] = j  #night

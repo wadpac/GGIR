@@ -56,6 +56,7 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
             
             tmp = log[i,] # convert into timestamps
             # only attempt if there are at least 2 timestamps to process
+            if (ncol(tmp) <= 2) next
             nonempty = which(tmp[3:ncol(tmp)] != "" & tmp[3:ncol(tmp)] != "NA")
             if (length(nonempty) > 1) {
               date = as.Date(tmp[1,2], format = dateformat)
@@ -98,8 +99,8 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
                                            end = rep("", Nevents),
                                            duration = rep(0, Nevents), stringsAsFactors = FALSE)
                 for (bi in 1:Nevents) {
-                  tt1 = as.POSIXlt(timestamps[(bi * 2) - 1], tz = desiredtz)
-                  tt2 = as.POSIXlt(timestamps[(bi * 2)], tz = desiredtz)
+                  tt1 = as.POSIXct(timestamps[(bi * 2) - 1], tz = desiredtz)
+                  tt2 = as.POSIXct(timestamps[(bi * 2)], tz = desiredtz)
                   logreport_tmp$start[bi]  = format(tt1)
                   logreport_tmp$end[bi] = format(tt2)
                   if (length(unlist(strsplit(logreport_tmp$start[bi], " "))) == 1) {
@@ -151,5 +152,7 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
   } else {
     logreport = sibreport
   }
+  logreport$start = as.POSIXct(logreport$start, tz = desiredtz)
+  logreport$end = as.POSIXct(logreport$end, tz = desiredtz)
   return(logreport)
 }
