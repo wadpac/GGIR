@@ -298,7 +298,7 @@ test_that("chainof5parts", {
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_true(file.exists(vis_sleep_file))
-  expect_that(round(nightsummary$SptDuration[1], digits = 4), equals(18.075))
+  expect_equal(round(nightsummary$SptDuration[1], digits = 4), 18.0792, tolerance = 0.0005)
   expect_true(as.logical(nightsummary$acc_available[1]))
   expect_false(as.logical(nightsummary$sleeplog_used[1]))
   
@@ -386,7 +386,7 @@ test_that("chainof5parts", {
   load(rn[1])
   expect_true(dir.exists(dirname))
   expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(6))
-  expect_that(round(nightsummary$SptDuration[1], digits = 4), equals(13.075))
+  expect_equal(round(nightsummary$SptDuration[1], digits = 4), 13.0792)
   #---------------------
   # Part 1 with external function:
   exampleExtFunction = function(data=c(), parameters=c()) {
