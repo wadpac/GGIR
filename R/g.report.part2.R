@@ -1,5 +1,5 @@
 g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
-                          store.long = FALSE, params_output, verbose = TRUE,
+                          store.long = FALSE, params_output, myfun = c(), verbose = TRUE,
                           desiredtz = "") {
   ms2.out = "/meta/ms2.out"
   if (file.exists(paste0(metadatadir,ms2.out))) {
@@ -156,7 +156,6 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
         C$tempoffset = c(0, 0, 0)
       }
       if (length(M$NFilePagesSkipped) == 0) M$NFilePagesSkipped = 0 # to make the code work for historical part1 output.
-      
       fname2store = unlist(strsplit(fnames[i], "eta_|[.]RDat"))[2]
       QC = data.frame(filename = fname2store,
                       file.corrupt = M$filecorrupt,
@@ -172,7 +171,6 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
                       n.hours.considered = C$nhoursused, QCmessage = C$QCmessage, mean.temp = tmean,
                       device.serial.number = deviceSerialNumber,
                       NFilePagesSkipped = M$NFilePagesSkipped, stringsAsFactors = FALSE)
-      
       if (is.null(I$sf) == TRUE) {
         # When ActiGraph is corrupt
         # Note that QC shape is consistent here
@@ -185,6 +183,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
         }
         next()
       }
+      
       filehealth_cols = grep(pattern = "filehealth", x = names(SUMMARY), value = FALSE)
       if (length(filehealth_cols) > 0) {
         # migrate filehealth columns to QC report, only applicable to Axivity data
@@ -236,8 +235,57 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     if (M$filecorrupt == FALSE & M$filetooshort == FALSE & exists("IMP")) rm(IMP)
     rm(M); rm(I)
     if (params_output[["do.part2.pdf"]] == TRUE) dev.off()
+    
+    #--------------------------------------
+    # Store Event reports
+    # split daySUMMARY in two files and reoder EventVariable names if they exist
+    ds_names = names(daySUMMARY)
+    EventVars = grep(pattern = "ExtFunEvent_", x = ds_names, value = FALSE)
+    NotEventVars = grep(pattern = "ExtFunEvent_", x = ds_names, value = FALSE, invert = TRUE)
+    eventName = "event"
+    if (length(myfun) > 0) {
+      if ("name" %in% names(myfun)) {
+        eventName =  myfun$name
+      }
+    }
+    if (length(EventVars) > 0) {
+      dayEVENTSUMMARY = daySUMMARY[ , c("ID", "filename", "calendar_date",
+                                        "N valid hours", "N hours", "weekday",
+                                        sort(names(daySUMMARY[, EventVars])))]
+      names(dayEVENTSUMMARY) = gsub(pattern = "ExtFunEvent_", replacement = "", x = names(dayEVENTSUMMARY))
+      daySUMMARY = daySUMMARY[,NotEventVars]
+      dayEVENTSUMMARY_clean = tidyup_df(dayEVENTSUMMARY)
+      #-----------------------------------------------------------------------
+      # November 2024:
+      # TEMPORARILY REMOVE ALL NEW STEP VARIABLES TO FACILITATE
+      # MERGE OF MOST WORK RELATED TO EVENT DETECTION WITH MASTER BRANCH 
+      # WITHOUT RELEASING NEW VARIABLES YET
+      dayEVENTSUMMARY_clean = dayEVENTSUMMARY_clean[, grep(pattern = "cad_|_cad|Bout_|accatleast|count_acc",
+                                                           x = colnames(dayEVENTSUMMARY_clean),
+                                                           invert = TRUE)]
+      #-----------------------------------------------------------------------
+      data.table::fwrite(x = dayEVENTSUMMARY_clean,
+                         file = paste0(metadatadir, "/results/part2_day", eventName, "summary.csv"),
+                         row.names = F, na = "")
+    }
+    # split SUMMARY in two files and reoder EventVariable names if they exist
+    s_names = names(SUMMARY)
+    EventVars = grep(pattern = "ExtFunEvent_", x = s_names, value = FALSE)
+    NotEventVars = grep(pattern = "ExtFunEvent_", x = s_names, value = FALSE, invert = TRUE)
+    if (length(EventVars) > 0) {
+      EVENTSUMMARY = SUMMARY[ , c("ID", "filename", "start_time",
+                                  "wear_dur_def_proto_day",
+                                  sort(names(SUMMARY[, EventVars])))]
+      names(EVENTSUMMARY) = gsub(pattern = "ExtFunEvent_", replacement = "", x = names(EVENTSUMMARY))
+      SUMMARY = SUMMARY[,NotEventVars]
+      EVENTSUMMARY_clean = tidyup_df(EVENTSUMMARY)
+      data.table::fwrite(x = EVENTSUMMARY_clean,
+                         file =  paste0(metadatadir, "/results/part2_", eventName, "summary.csv"),
+                         row.names = F, na = "")
+    }
+    #-----------------------------
+    # tidy up data.frames
     if (length(SUMMARY) > 0 & length(daySUMMARY) > 0) {
-      # tidy up data.frames
       SUMMARY_clean = tidyup_df(SUMMARY)
       daySUMMARY_clean = tidyup_df(daySUMMARY)
       daySUMMARY_clean$start_time = daySUMMARY_clean$calendar_date
