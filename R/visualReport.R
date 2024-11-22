@@ -334,7 +334,22 @@ visualReport = function(metadatadir = c(),
         mtext(text = toptext, side = 3, line = 0, cex = 0.5,
               at = mdat$timestamp[window_edges[wei]])
         
-        
+      }
+    }
+    # diaryImputationCode availabe
+    if ("diaryImputationCode" %in% names(mdat)) {
+      temp_index_0 = pmax(1, round(nrow(mdat) * (hrsPerRow - 24) / 24))
+      diaryImputationCode = unique(mdat$diaryImputationCode[temp_index_0:nrow(mdat)])
+      diaryImputationCode = diaryImputationCode[is.na(diaryImputationCode) == FALSE]
+      if (length(diaryImputationCode) > 0) {
+        diaryImputationCode = unlist(strsplit(as.character(diaryImputationCode), ""))
+        missingZeros = 4 - length(diaryImputationCode)
+        if (missingZeros > 0) {
+          diaryImputationCode = c(rep("0", missingZeros), diaryImputationCode)
+        }
+        diaryImputationCode = paste0(diaryImputationCode, collapse = "")
+        diaryImputationCode = paste0("diary imputation: ", diaryImputationCode)
+        mtext(text = diaryImputationCode, side = 4, line = -2, cex = 0.3, las = 1)
       }
     }
   }
