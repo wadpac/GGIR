@@ -17,6 +17,8 @@ this is consistent with functionality in the past. #1223
 
 - Part 2: Code revisions in preparation for expansion of functionality to better facilitate external function produced event data. #653 and #1228
 
+- Part 2: Add parameters nonwearFiltermaxHours and nonwearFilterWindow to give use the option to filter short lasting nighttime nonwear #1218.
+
 # CHANGES IN GGIR VERSION 3.1-6
 
 - Part 6:

@@ -5,24 +5,19 @@ filterNonwearNight = function(r1, metalong, qwindowImp, desiredtz,
   nonwearEventsFiltered = nonwearHoursFiltered = 0
   # Identify method to use
   if (!is.null(nonwearFilterWindow)) {
-    filter_method = 1 # set window as provide by use
+    filter_method = 1 # set window as provided by user
   } else {
     # If nonwearFilterWindow is not provided then
-    # assumption is the qwindow is available
+    # assumption is that qwindow is available
     errorMessage = paste0("Please specify parameter nonwearFilterWindow or ",
-                          "qwindow with length > 3 to ",
-                          "define the window used for filtering short nonwear")
+                          "qwindow as diary with columns to define the window for ",
+                          "filtering short nonwear. See documentation for ",
+                          "parameter nonwearFiltermaxHours")
     if (!is.null(qwindowImp)) {
       if (inherits(qwindowImp, "data.frame")) {
         filter_method = 2
       } else {
-        if (length(qwindowImp) > 3) {
-          filter_method = 3
-          nonwearFilterWindow = c(rev(qwindowImp)[2], qwindowImp[2])
-        } else {
-          # qwindow does not have more than 3 values
-          stop(errorMessage, call. = FALSE)    
-        }
+        stop(errorMessage, call. = FALSE)
       }
     } else {
       # qwindow not available

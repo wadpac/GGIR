@@ -105,9 +105,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   if (length(params_cleaning) > 0) {
     numeric_params = c("includedaycrit", "ndayswindow", "data_masking_strategy", "maxdur", "hrs.del.start",
                        "hrs.del.end", "includedaycrit.part5", "minimum_MM_length.part5",
-                       "includenightcrit", "max_calendar_days", "includecrit.part6", 
-                       "includenightcrit.part5", "nonwearFiltermaxHours",
-                       "nonwearFilterWindow")
+                       "includenightcrit", "max_calendar_days", "includecrit.part6", "includenightcrit.part5",
+                       "nonwearFiltermaxHours", "nonwearFilterWindow")
+
     boolean_params = c("excludefirstlast.part5", "do.imp", "excludefirstlast",
                        "excludefirst.part4", "excludelast.part4", "nonWearEdgeCorrection")
     character_params = c("data_cleaning_file", "TimeSegments2ZeroFile")
@@ -318,7 +318,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
           warning(paste0("The NonwearFilter applied to window starting at ", 
                          params_cleaning[["nonwearFilterWindow"]][1], " and ending at ",
                          params_cleaning[["nonwearFilterWindow"]][2], 
-                         " this probably not the night, please check that order of",
+                         " this is probably not the night, please check that order of",
                          " values in nonwearFilterWindow is correct"), call. = FALSE)
         }
       }
