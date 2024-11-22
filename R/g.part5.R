@@ -343,7 +343,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               
               if ("imputecode" %in% colnames(sibreport)) {
                 if ("logImputationCode" %in% colnames(ts) == FALSE) {
-                  ts$diaryImputationCode = NA
+                  ts$diaryImputationCode = NA # initialise value
                 }
                 addImputationCode = TRUE
               } else {

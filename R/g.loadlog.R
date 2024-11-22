@@ -358,6 +358,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
       if (length(imputecodelog) > 0) {
         imputecodelog = remove_empty_rows_cols(imputecodelog, name = "imputecode")
         colnames(imputecodelog)[3] = "imputecode"
+        imputecodelog$date = as.Date(imputecodelog$date, dateformat_correct)
       }
       
       if (length(newsleeplog) > 0) {

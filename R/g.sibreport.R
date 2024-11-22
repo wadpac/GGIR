@@ -144,7 +144,6 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
       if (length(bedlogreport) > 0) bedlogreport = addDate(bedlogreport)
       
       imputecodelog_tmp = imputecodelog[which(imputecodelog$ID == ID), ]
-      imputecodelog_tmp$date = as.Date(imputecodelog_tmp$date, "%d/%m/%Y")
       if (length(sleeplogreport) > 0) {
         sleeplogreport = merge(sleeplogreport, imputecodelog_tmp, by = c("ID", "date"))
         sleeplogreport = sleeplogreport[, which(colnames(sleeplogreport) != "date")]
