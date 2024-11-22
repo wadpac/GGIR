@@ -75,87 +75,34 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
         if (qwindow[1] != 0) qwindow = c(0, qwindow)
         if (qwindow[length(qwindow)] != 24) qwindow = c(qwindow, 24)
       }
-      # define segments names
+      # define segments timing in H:M:S format
       breaks = qwindow2timestamp(qwindow, epochSize)
       startOfSegments = breaks[-length(breaks)]
       endOfSegments = subtractEpochFromTimeName(breaks[-1], epochSize)
+      if (length(startOfSegments) > 1) { # when qwindow segments are defined, add fullwindow at the beginning
+        startOfSegments = c(firstepoch, startOfSegments)
+        endOfSegments = c(lastepoch, endOfSegments)
+      } 
       segments_timing = paste(startOfSegments, endOfSegments, sep = "-")
-      if (length(startOfSegments) > 1) {
-        # then, add full MM window
-        segments_timing = c(paste(firstepoch, lastepoch, sep = "-"), segments_timing)
+      # define segment names based on qnames or segmentX
+      if (is.null(qnames)) {
+        segments_names = paste0("segment", 0:length(segments_timing))
+        segments_names = gsub("segment0", "MM", segments_names)
+      } else {
+        segments_names = c("MM", paste(qnames[-length(qnames)], qnames[-1], sep = "-"))
       }
-      if (24 %in% qwindow) {
-        # 24:00:00: probably does not exist, replace by last timestamp in a day
-        # here, we consider N epochs per day plus 1 hour just in case we are deriving this in
-        # a 25-hour daylight saving time day
-        NepochPerDayPlusOneHr = ((25*3600) / epochSize)
-        latest_time_in_day = max(format(ts$time[1:pmin(Nts, NepochPerDayPlusOneHr)], format = "%H:%M:%S"))
-        breaks = gsub(pattern = "24:00:00", replacement = latest_time_in_day, x = breaks)
-      }
-      breaks_i = breaks_available = rep(NA, length(breaks))
-      hms_time = format(ts$time, "%H:%M:%S")
-      for (bi in 1:length(breaks)) {
-        if (any(grepl(breaks[bi], hms_time[fullQqq]))) {
-          breaks_i[bi] = fullQqq[grep(breaks[bi], hms_time[fullQqq])]
-          breaks_available[bi] = TRUE
-        } else {
-          breaks_i[bi] = NA # this epoch is not in the time series for this day
-          breaks_available[bi] = FALSE
-        }
-      }
-      # build up segments
-      segments = list(qqq)
-      segments_names = "MM"
-      si = 2
-      do.segments = TRUE
-      if (length(qwindow) == 2) {
-        if (all((qwindow) == c(0, 24))) {
-          do.segments = FALSE
-        }
-      }
-      if (do.segments == TRUE) {
-        for (bi in 1:(length(breaks) - 1)) {
-          minusOne = ifelse(breaks[bi + 1] == lastepoch, 0, 1) 
-          segment_available = 1 # 1=full segment available in day, 0.5=partial segment, 0=not available
-          if (breaks_available[bi] != breaks_available[bi + 1]) {
-            # one of the breaks is available, but the other is not
-            if (is.na(breaks_i[bi])) breaks_i[bi] = 1 # missing segStart, first day starting after segStart
-            if (is.na(breaks_i[bi + 1])) { # missing segEnd, last day finishing before segEnd
-              breaks_i[bi + 1] = max(fullQqq)
-              minusOne = 0
-            }
-            segment_available = 0.5
-          } else if (breaks_available[bi] == FALSE & breaks_available[bi + 1] == FALSE) { 
-            # if neither of segStart, segEnd is in the times of the day, then this is a missing segment
-            segments[[si]] = c(NA, NA)
-            segment_available = 0
-          }
-          if (minusOne == 1) {
-            if (segment_available > 0) {
-              segments[[si]] = c(breaks_i[bi], breaks_i[bi + 1] - 1)
-              if (segments[[si]][2] == 0) {
-                # if first epoch in time series is start of next segment (and not end of current segment)
-                segments[[si]] = c(NA, NA)
-                segment_available = 0
-              }
-            }
-          } else {
-            if (segment_available > 0) {
-              segments[[si]] = c(breaks_i[bi], breaks_i[bi + 1])
-            }
-          }
-          if (segment_available > 0) {
-            if (segments[[si]][2] < segments[[si]][1]) segments[[si]][2] = segments[[si]][1]
-          }
-          if (is.null(qnames)) {
-            segments_names[si] = paste0("segment", bi)
-          } else {
-            segments_names[si] = paste(qnames[si - 1], qnames[si], sep = "-")
-          }
-          si = si + 1 
-        }
-      }
+      # Get indices in ts for segments start and end limits
+      hms = format(ts$time[fullQqq], format = "%H:%M:%S")
+      segments = vector("list", length = length(segments_timing))
       names(segments) = segments_timing
+      for (si in 1:length(segments_timing)) {
+        s0s1 = unlist(strsplit(segments_timing[si], split = "[-]"))
+        s0s1 = format(s0s1, format = "%H:%M:%S")
+        # tryCatch is needed in the case that the segment is not available in ts,
+        # then a no non-missing values warning would be triggered by the which function
+        segments[[si]] = tryCatch(range(fullQqq[which(hms >= s0s1[1] & hms <= s0s1[2])]), #segStart and segEnd
+                                  warning = function(w) rep(NA, 2))
+      }
     }
   } else if (timewindowi == "WW" || timewindowi == "OO") {
     windowEdge = ifelse(timewindowi == "WW", yes = -1, no = 1)
