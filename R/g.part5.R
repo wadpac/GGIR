@@ -487,9 +487,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             }
                             if (timewindowi == "MM" & si > 1) { # because first segment is always full window
                               if (("segment" %in% colnames(ts)) == FALSE) ts$segment = NA
-                              ts$segment[segStart:segEnd] = si
+                              if (!is.na(segStart) && !is.na(segEnd)) {
+                                ts$segment[segStart:segEnd] = si
+                              }
                             }
-                            
                             # Already store basic information about the file
                             # in the output matrix: 
                             dsummary[si,fi:(fi + 1)] = c(ID, fnames.ms3[i])
