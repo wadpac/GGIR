@@ -19,6 +19,8 @@ this is consistent with functionality in the past. #1223
 
 - Part 2: Add parameters nonwearFiltermaxHours and nonwearFilterWindow to give use the option to filter short lasting nighttime nonwear #1218.
 
+- Part 5: Improved handling of partially available and non-available qwindow segments in the recording #1229
+
 # CHANGES IN GGIR VERSION 3.1-6
 
 - Part 6:
