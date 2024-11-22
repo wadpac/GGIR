@@ -4,6 +4,8 @@
 
 - Part 2: Code revisions in preparation for expansion of functionality to better facilitate external function produced event data. #653 and #1228
 
+- Part 5: Improved handling of partially available and non-available qwindow segments in the recording #1229
+
 # CHANGES IN GGIR VERSION 3.1-6
 
 - Part 6:
