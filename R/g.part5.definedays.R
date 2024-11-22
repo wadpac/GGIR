@@ -86,7 +86,7 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
       segments_timing = paste(startOfSegments, endOfSegments, sep = "-")
       # define segment names based on qnames or segmentX
       if (is.null(qnames)) {
-        segments_names = paste0("segment", 0:length(segments_timing))
+        segments_names = paste0("segment", 0:(length(segments_timing) - 1))
         segments_names = gsub("segment0", "MM", segments_names)
       } else {
         segments_names = c("MM", paste(qnames[-length(qnames)], qnames[-1], sep = "-"))
