@@ -454,6 +454,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                                 epochSize = ws3new)
                         # This will be an object with numeric qwindow values for all individuals and days
                       } else {
+                        # ignore the diary specified by qwindow because user only want to use
+                        # it for filtering night time nonwear in part 2, but not as a way to
+                        # do day segment analysis.
                         params_247[["qwindow"]] = c(0, 24)
                       }
                     }
