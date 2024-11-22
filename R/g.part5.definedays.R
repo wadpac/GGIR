@@ -92,7 +92,7 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
         latest_time_in_day = max(format(ts$time[1:pmin(Nts, NepochPerDayPlusOneHr)], format = "%H:%M:%S"))
         breaks = gsub(pattern = "24:00:00", replacement = latest_time_in_day, x = breaks)
       }
-      breaks_i = breaks_available = c()
+      breaks_i = breaks_available = rep(NA, length(breaks))
       hms_time = format(ts$time, "%H:%M:%S")
       for (bi in 1:length(breaks)) {
         if (any(grepl(breaks[bi], hms_time[fullQqq]))) {

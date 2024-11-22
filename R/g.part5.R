@@ -481,7 +481,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             }
                             if (timewindowi == "MM" & si > 1) { # because first segment is always full window
                               if (("segment" %in% colnames(ts)) == FALSE) ts$segment = NA
-                              if (!is.na(segStart) & !is.na(segEnd)) {
+                              if (!is.na(segStart) && !is.na(segEnd)) {
                                 ts$segment[segStart:segEnd] = si
                               }
                             }
