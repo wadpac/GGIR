@@ -18,12 +18,15 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   params_output = params$params_output
   params_general = params$params_general
   #-----------------------------
-  use_qwindow_as_diary = TRUE # If there is a diary specified via qwindow use it
+  use_qwindow_as_diary = TRUE # If there is a diary specified via qwindow use it as qwindow
   if (is.numeric(params_247[["qwindow"]])) {
     params_247[["qwindow"]] = params_247[["qwindow"]][order(params_247[["qwindow"]])]
   } else if (is.character(params_247[["qwindow"]])) {
     if (length(grep(pattern = "onlyfilter", x = params_247[["qwindow"]])) > 0) {
-      use_qwindow_as_diary = FALSE # Do not use it if it has the word onlyfilter
+      # Do not use diary specified for qwindow if it has the word
+      # "onlyfilter", but use it for filterning nighttime nonwear
+      # note that this filtering is only use if parameter nonwearFiltermaxHours is specified.
+      use_qwindow_as_diary = FALSE 
     }
     params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]],
                                             params_247[["qwindow_dateformat"]],
@@ -156,7 +159,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         }
         qwindowImp = params_247[["qwindow"]]
         if (use_qwindow_as_diary == FALSE) {
-          # reset qwindow to default
+          # reset qwindow to default, because it is only used
+          # for filtering short nighttime nonwear 
           params_247[["qwindow"]] = c(0, 24)
         }
         if (inherits(qwindowImp, "data.frame")) {
