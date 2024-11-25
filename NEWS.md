@@ -1,4 +1,4 @@
-# CHANGES IN GGIR VERSION 3.1-?
+# CHANGES IN GGIR VERSION 3.1-7
 
 - Part 3: Improved handling of DST, #1225
 
