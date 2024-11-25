@@ -46,9 +46,8 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
   
   #==========================
   # The following is to avoid issue with merging sleep variables from part 4
-  # This code extract them the time series (ts) object created in g.part5
-  # Note that this means that for MM windows there can be multiple or no wake or onsets
-  date = as.Date(ts$time[segStart + 1], tz = params_general[["desiredtz"]])
+  # Note that this means that for MM windows there can be multiple or no wake or onsets in window
+  date = as.Date(ts$time[qqq[1]], tz = params_general[["desiredtz"]]) # changed segStart for qqq[1] in case segment is not available in this day
   if (add_one_day_to_next_date == TRUE & timewindowi %in% c("WW", "OO")) { # see below for explanation
     date = date + 1
     add_one_day_to_next_date = FALSE
@@ -115,7 +114,10 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
                                  sumSleep$acc_available[dayofinterest])
     ds_names[fi:(fi + 5)] = c("night_number", "daysleeper", "cleaningcode",
                               "guider", "sleeplog_used", "acc_available");      fi = fi + 6
-    ts$guider[segStart:segEnd] = sumSleep$guider[dayofinterest] # add guider also to timeseries
+    if (!is.na(segStart) & !is.na(segEnd)) {
+      # segment available in time series
+      ts$guider[segStart:segEnd] = sumSleep$guider[dayofinterest] # add guider also to timeseries
+    }
   } else {
     dsummary[si,fi:(fi + 5)] = rep(NA, 6)
     ds_names[fi:(fi + 5)] = c("night_number",
@@ -129,8 +131,8 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
   # which differs between MM and WW
   # Also, it allows for the analysis of the first day for those studies 
   # in which the accelerometer is started during the morning and the first day is of interest.
-  # qqq1 is the start of the day
-  # qqq2 is the end of the day
+  # qqq1 is the start of the day/segment
+  # qqq2 is the end of the day/segment
   qqq1 = segStart
   qqq2 = segEnd
   # keep track of threshold value
@@ -138,8 +140,12 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
   ds_names[fi:(fi + 2)] = c("TRLi", "TRMi", "TRVi")
   fi = fi + 3
   wlih = ((qqq2 - qqq1) + 1)/((60/ws3new) * 60)
-  if (qqq1 > length(LEVELS)) qqq1 = length(LEVELS)
-  sse = qqq1:qqq2
+  if (!is.na(qqq1)) {
+    if (qqq1 > length(LEVELS)) qqq1 = length(LEVELS)
+    sse = qqq1:qqq2
+  } else {
+    sse = NULL
+  }
   doNext = FALSE
   if (length(sse) >= 1) { #next
     #============================================================

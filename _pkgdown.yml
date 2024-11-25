@@ -8,11 +8,7 @@ template:
   includes:
     in_header:
       <script defer data-domain="pkgdown.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
-  opengraph:
-    twitter:
-      creator: "@RpackageGGIR"
-      card: summary_large_image
-      
+
 authors:
   sidebar:
     roles: [aut]
@@ -34,10 +30,6 @@ navbar:
     contributing:
       text: Contributing
       href: articles/chapter0_Contributing.html
-    twitter:
-      icon: fa-twitter
-      href: https://twitter.com/RpackageGGIR
-      aria-label: Twitter
     chapters:
       text: The book
       menu:
@@ -90,11 +82,13 @@ navbar:
           href: articles/Cookbook.html
   structure:
     left:  [chapters, annexes, installation, intro, news, contributing, help]
-    right: [search, github, twitter]
+    right: [search, github]
 
 news:
   cran_dates: TRUE
   releases:
+  - text: "Version 3.1-5"
+    href: https://www.accelting.com/updates/ggir-release-3-1-5/
   - text: "Version 3.1-0"
     href: https://www.accelting.com/updates/ggir-release-3-1-0/
   - text: "Version 3.0-0"
