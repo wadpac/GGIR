@@ -13,11 +13,15 @@ this is consistent with functionality in the past. #1223
 
 - Part 2: Code revisions in preparation for expansion of functionality to better facilitate external function produced event data. #653
 
+- Part 2: Add parameters nonwearFiltermaxHours and nonwearFilterWindow to give use the option to filter short lasting nighttime nonwear #1218.
+
+# CHANGES IN GGIR VERSION 3.1-7
+
 - Part 3: Improved handling of DST, #1225
 
 - Part 2: Code revisions in preparation for expansion of functionality to better facilitate external function produced event data. #653 and #1228
 
-- Part 2: Add parameters nonwearFiltermaxHours and nonwearFilterWindow to give use the option to filter short lasting nighttime nonwear #1218.
+- Part 1: Ad-hoc csv file formats (read.myacc.csv functionality) now also excepts "UNIXmsec" as optional timestamp format. #1233
 
 - Part 5: Improved handling of partially available and non-available qwindow segments in the recording #1229
 
