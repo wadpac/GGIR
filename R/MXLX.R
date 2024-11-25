@@ -16,7 +16,7 @@ MXLX = function(Y = NULL, X = 5, epochSize = 1, tseg = c(0, 24), resolutionMin =
   nEpochsPerStep = (resolutionMin * 60) / epochSize # number of epochs per step
   if (do.MXLX == TRUE) { # only do the analysis if Y has values other than zero
     Y = Y[((((tseg[1] - tseg[1]) * 3600)/epochSize) + 1):(((tseg[2] - tseg[1]) * 3600)/epochSize)]
-    Nwindows = Nwindows * nStepsPerHour
+    Nwindows = ceiling(Nwindows * nStepsPerHour)
     rollingMean = matrix(NA, Nwindows, 1)
     for (hri in 1:Nwindows) { #e.g.9am-9pm
       # start and end in terms of steps

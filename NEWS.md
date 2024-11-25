@@ -6,6 +6,10 @@
 
 - Part 2: Add parameters nonwearFiltermaxHours and nonwearFilterWindow to give use the option to filter short lasting nighttime nonwear #1218.
 
+- Part 1: Ad-hoc csv file formats (read.myacc.csv functionality) now also excepts "UNIXmsec" as optional timestamp format. #1233
+
+- Part 5: Improved handling of partially available and non-available qwindow segments in the recording #1229
+
 # CHANGES IN GGIR VERSION 3.1-6
 
 - Part 6:
