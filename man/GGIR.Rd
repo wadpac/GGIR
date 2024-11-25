@@ -433,7 +433,8 @@ GGIR(mode = 1:5,
 
       \item{rmc.unit.time}{
         Character (default = "POSIX").
-        Character with unit of timestamps: "POSIX", "UNIXsec" (seconds since origin, see argument \code{rmc.origin}),
+        Character with unit of timestamps: "POSIX", "UNIXsec" (seconds since origin, 
+        see argument \code{rmc.origin}), "UNIXmsec" (same as UNIXsec but in milliseconds),
         "character", or "ActivPAL" (exotic timestamp format only used in the ActivPAL
         activity monitor).}
 
@@ -969,21 +970,37 @@ GGIR(mode = 1:5,
         in the middle. The 2023 version differs in which it would flag as nonwear 
         the full longsize window. For the 2013 method the longsize window is centered 
         in the centre of the mediumsize window, while in the 2023 method the longsizewindow 
-        is aligned with its left edge to the left edge of the mediumsize window.}
+        is aligned with its left edge to the left edge of the mediumsize window.
+      }
       
       \item{includecrit.part6}{
         Numeric (default = c(2/3, 2/3))
         Vector of two with the minimum fraction of valid data required for day
-        and spt time, respectively. This criteria is only used for circadian rhythm analysis.
-      }
+        and spt time, respectively. This criteria is only used for circadian 
+        rhythm analysis.}
 
       \item{nonwearFiltermaxHours}{
         Numeric (default = NULL).
-        If not NULL, ignore detected nonwear periods during window as defined by
-        NonwearFilterWindow. If NonwearFilterWindow is not provided use the outer 
-        segments as specified by parameter \code{qwindow}. If \code{qwindow} is
-        defined by activity diary file and a diary entry is missing use midnight-6am
-        as fall back setting. The main purpose of this functionality is to offer
+        If not NULL, ignore detected nonwear periods that last shorter than
+        nonwearFiltermaxHours during a window as defined by
+        parameter \code{NonwearFilterWindow}. If NonwearFilterWindow is not 
+        provided (set to NULL as is the default) check
+        whether \code{qwindow} is defined as activity diary file and whether it has 
+        timestamps that allow for defining a time in bed, SPT or lightsoff window.
+        For this the code looks for column names in the diary with the terms inbed,
+        sleeponset, or lightsout to define the start of the window.
+        Further, to define the end of the window the code looks for columns outbed,
+        wakeup, or lightsoff. If yes, it uses the largest of the windows that can
+        be defined with these timestamps. If not, use midnight-6am
+        as fall back setting. You may realise that these columns are the same as the
+        advanced format for the sleelog accepted by GGIR part 4. So, if you already
+        have an advanced format sleeplog for part 4 then you can provide this as value
+        for the qwindow parameter.  If you want to
+        use \code{qwindow} to guide the nonwear filtering as described in here but 
+        do not want GGIR to use it for day segment analysis in part 2 or 5 then 
+        make sure the diary filename includes the word "onlyfilter" to tell GGIR to 
+        only use qwindow for nonwear filtering.
+        The main purpose of this functionality is to offer
         the option to ignore short lasting nonwear episodes during the night
         when there is suspicion that these are falsely detect, e.g. in individuals
         with extended motionless sleep periods caused by medication.}
@@ -992,7 +1009,6 @@ GGIR(mode = 1:5,
         Numeric (default = NULL).
         Vector of length 2 to specify the start and end hour of the night to be used
         for the functionality as described above for NonwearFiltermaxHours.}
-
     }
   }
 
@@ -1454,6 +1470,12 @@ GGIR(mode = 1:5,
         ignores the first and last 5 hours, and c("O2", "W10") goes from the second
         onset till the 10th wakeup time.
       }
+
+      \item{part6DFA}{
+        Boolean (default = FALSE) to indicate whether to perform Detrended Fluctuation
+        Analysis. Turned off by default because it can be time consuming.
+      }
+
       \item{clevels}{
         Numeric vector (default = c(30, 150)) with length 2 to indicate cadence ranges used 
         when summarising step counts, if available. When set to NULL, step counts will not be

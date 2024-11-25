@@ -264,8 +264,14 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                               desiredtz = params_general[["desiredtz"]],
                               sibDefinition = sibDef,
                               nightsi)
-          # Fix missing nights in part 4 data:
-          summarysleep_tmp2 = g.part5.fixmissingnight(summarysleep_tmp2, sleeplog = sleeplog, ID)
+          if (nrow(summarysleep_tmp2) > 0) {
+            if (!all(is.na(summarysleep_tmp$sleepparam))) {
+              # Fix missing nights in part 4 data:
+              summarysleep_tmp2 = g.part5.fixmissingnight(summarysleep_tmp2, sleeplog = sleeplog, ID)
+            } else {
+              summarysleep_tmp2 = summarysleep_tmp2[-which(is.na(summarysleep_tmp$sleepparam)), ]
+            }
+          }
           #Initialise diur variable, which will  indicate the diurnal rhythm: 0 if wake/daytime, 1 if sleep/nighttime
           ts$diur = 0
           if (nrow(summarysleep_tmp2) > 0) {
@@ -497,10 +503,17 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     qqq_backup = c()
                     add_one_day_to_next_date = FALSE
                     if (is.character(params_247[["qwindow"]])) {
-                      params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]],
-                                                              params_247[["qwindow_dateformat"]],
-                                                              epochSize = ws3new)
-                      # This will be an object with numeric qwindow values for all individuals and days
+                      if (length(grep(pattern = "onlyfilter", x = params_247[["qwindow"]])) > 0) {
+                        params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]],
+                                                                params_247[["qwindow_dateformat"]],
+                                                                epochSize = ws3new)
+                        # This will be an object with numeric qwindow values for all individuals and days
+                      } else {
+                        # ignore the diary specified by qwindow because user only want to use
+                        # it for filtering night time nonwear in part 2, but not as a way to
+                        # do day segment analysis.
+                        params_247[["qwindow"]] = c(0, 24)
+                      }
                     }
                     lastDay = ifelse(Nwindows > 0 && length(nightsi) > 0, yes = FALSE, no = TRUE) # skip while loop if there are no days to analyses
                     wi = 1
@@ -530,9 +543,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             }
                             if (timewindowi == "MM" & si > 1) { # because first segment is always full window
                               if (("segment" %in% colnames(ts)) == FALSE) ts$segment = NA
-                              ts$segment[segStart:segEnd] = si
+                              if (!is.na(segStart) && !is.na(segEnd)) {
+                                ts$segment[segStart:segEnd] = si
+                              }
                             }
-                            
                             # Already store basic information about the file
                             # in the output matrix: 
                             dsummary[si,fi:(fi + 1)] = c(ID, fnames.ms3[i])

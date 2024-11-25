@@ -41,9 +41,8 @@ export(g.analyse, g.calibrate,
        convertEpochData, appendRecords, extractID,
        g.part5_analyseSegment, g.part5_initialise_ts,
        g.part5.analyseRest, part6AlignIndividuals,
-       part6PairwiseAggregation, g.part6, g.report.part6, check_log, g.report.part5_dictionary,
-       visualReport, DFA, ABI, SSP)
-
+       part6PairwiseAggregation, g.part6, g.report.part6, 
+       check_log, g.report.part5_dictionary, DFA, ABI, SSP, visualReport)
 
 importFrom("grDevices", "colors", "dev.off", "pdf",
            "rgb", "rainbow", "palette", "adjustcolor", "gray.colors")

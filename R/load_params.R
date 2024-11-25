@@ -79,7 +79,8 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                       L5M5window = c(0, 24), cosinor = FALSE,
                       part6CR = FALSE, part6HCA = FALSE,
                       part6Window = c("start", "end"),
-                      clevels = c(30, 150), part6DFA = FALSE)
+                      part6DFA = FALSE, clevels = c(30, 150))
+
   }
   if ("phyact" %in% topic) {
     params_phyact = list(mvpathreshold = 100, boutcriter = 0.8,
@@ -107,10 +108,10 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                            segmentWEARcrit.part5 = 0.5,
                            segmentDAYSPTcrit.part5 = c(0.9, 0),
                            study_dates_file = c(), study_dates_dateformat = "%d-%m-%Y",
-                           nonwearFiltermaxHours = NULL,
-                           nonwearFilterWindow = NULL,
                            includecrit.part6 = c(2/3, 2/3),
-                           includenightcrit.part5 = 0)
+                           includenightcrit.part5 = 0,
+                           nonwearFiltermaxHours = NULL,
+                           nonwearFilterWindow = NULL)
   }
   if ("output" %in% topic) {
     params_output = list(epochvalues2csv = FALSE, save_ms5rawlevels = FALSE,

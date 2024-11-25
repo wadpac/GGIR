@@ -2,7 +2,6 @@ g.weardec = function(M, wearthreshold, ws2, params_cleaning = NULL,
                      desiredtz = "", qwindowImp = c()) {
   metalong = M$metalong
   nonWearEdgeCorrection = params_cleaning[["nonWearEdgeCorrection"]]
-  # eni = which(colnames(metalong) == "en") # Commented out March 9 2023, because it was not used
   nsi = which(colnames(metalong) == "nonwearscore")
   csi = which(colnames(metalong) == "clippingscore")
   NLongEpochs = nrow(metalong)
