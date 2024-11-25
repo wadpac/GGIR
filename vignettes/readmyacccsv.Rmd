@@ -17,7 +17,7 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-**NOTE: If you are viewing this page via CRAN note that additional documentation can be found in the [GGIR GitHub pages](https://wadpac.github.io/GGIR/).**
+**NOTE: If you are viewing this page via CRAN note that the main GGIR documentation has been migrated to the [GGIR GitHub pages](https://wadpac.github.io/GGIR/).**
 
 # Introduction
 
@@ -69,7 +69,7 @@ Below we present a summary of the available input arguments. Please see the [par
 ### Arguments for files including timestamps
 
 - `rmc.col.time` - Scalar with column (number) in which the timestamps are stored. Leave in default setting if timestamps are not stored.
-- `rmc.unit.time` - Character with unit of timestamps: "POSIX", "UNIXsec" (seconds since origin, see argument rmc.origin), "character", or "ActivPAL" (exotic timestamp format only used in the ActivPAL activity monitor).
+- `rmc.unit.time` - Character with unit of timestamps: "POSIX", "UNIXsec" (seconds since origin, see argument rmc.origin), "UNIXmsec" (milliseconds since origin, see argument rmc.origin), "character", or "ActivPAL" (exotic timestamp format only used in the ActivPAL activity monitor).
 - `rmc.format.time` - Character string giving a date-time format as used by \link[base]{strptime}. Only used for rmc.unit.time: character and POSIX.
 - `rmc.origin` - Origin of time when unit of time is UNIXsec, e.g. 1970-1-1.
 

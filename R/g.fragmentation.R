@@ -108,6 +108,14 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   } else {
     do.frag = FALSE
   }
+  # define expected output to standardize length and output names
+  if ("TP" %in% frag.metrics) {
+    output[["TP_IN2PA"]] = output[["TP_PA2IN"]] = output[["Nfrag_IN2PA"]] = output[["Nfrag_PA2IN"]] = NA
+    output[["TP_IN2LIPA"]] = output[["Nfrag_IN2LIPA"]] = NA
+    output[["TP_IN2MVPA"]] = output[["Nfrag_IN2MVPA"]] = NA
+    output[["Nfrag_LIPA"]] = output[["mean_dur_LIPA"]] = NA
+    output[["Nfrag_MVPA"]] = output[["mean_dur_MVPA"]] = NA
+  }
   if (Nepochs > 1 & mode == "day") { # metrics that require more than just binary
     #====================================================
     # Convert LEVELS in three classes: Inactivity (1), Light = LIPA (2), and MVPA (3)
@@ -144,7 +152,6 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
   }
   #====================================================
   # Binary fragmentation for the metrics that do not depend on multiple classes
-  
   if (mode == "day") {
     x = rep(0,Nepochs)
     is.na(x[is.na(LEVELS)]) = TRUE
@@ -155,7 +162,6 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     out = TransProb(x, a = 1, b = 0) #IN <-> PA
     output[["Nfrag_PA"]] = out$Nba
     output[["Nfrag_IN"]] = out$Nab
-    
     # Define default values
     if ("mean" %in% frag.metrics) {
       output[["mean_dur_PA"]] = output[["mean_dur_IN"]] = 0

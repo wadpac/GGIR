@@ -16,23 +16,16 @@ editor_options:
     wrap: 72
 ---
 
-GGIR documentation is openly available for users in several places:
+The website in front of you is the main source of GGIR documentation, which we recommend as starting point for new users.
 
--   **This [dedicated website](https://wadpac.github.io/GGIR/)** containing instructions to install, get started, specific documentation on the GGIR pipeline and functionalities. as well as parameter documentation.
+Additionally, technical function documentation can be found in the [package refence manual on CRAN](https://cran.r-project.org/package=GGIR/GGIR.pdf) or via the R(Studio) console as in `?GGIR`. We do not recommend this for new users.
 
--   The **GGIR function documentation**, to which you can get access to
-    directly from R:
-
-``` r
-library(GGIR)
-?GGIR
-```
 
 ## Questions and problems
 
 For general questions and issues please join the [GGIR google
 group](https://groups.google.com/forum/#!forum/RpackageGGIR) and create
-a new thread. When you report a problem in this group always try to create a minimalistic example that someone else can use to reproduce and investigate your problem.
+a new thread. When you report a problem in this group always try to create a minimal example that someone else can use to reproduce and investigate your problem.
 
 However, if you are familiar with GitHub, you are also welcome to report
 your issue via the [GitHub issue

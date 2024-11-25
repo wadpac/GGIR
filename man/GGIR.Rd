@@ -434,7 +434,8 @@ GGIR(mode = 1:5,
 
       \item{rmc.unit.time}{
         Character (default = "POSIX").
-        Character with unit of timestamps: "POSIX", "UNIXsec" (seconds since origin, see argument \code{rmc.origin}),
+        Character with unit of timestamps: "POSIX", "UNIXsec" (seconds since origin, 
+        see argument \code{rmc.origin}), "UNIXmsec" (same as UNIXsec but in milliseconds),
         "character", or "ActivPAL" (exotic timestamp format only used in the ActivPAL
         activity monitor).}
 
