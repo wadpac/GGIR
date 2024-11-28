@@ -28,12 +28,12 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     pdfpagecount = 1 # counter to keep track of files being processed (for pdf)
     pdffilenumb = 1 #counter to keep track of number of pdf-s being generated
     SUMMARY = daySUMMARY = c()
-    
+
     if (length(f0) ==  0) f0 = 1
     if (length(f1) ==  0) f1 = length(fnames)
     if (f0 > length(fnames)) f0 = 1
     if (f1 > length(fnames)) f1 = length(fnames)
-    
+
     #-----------------------------
     # Loop through all the files
     for (i in f0:f1) {
@@ -91,7 +91,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
           }
         }
       }
-      
+
       if (length(SUMMARY) == 0 | length(daySUMMARY) == 0) {
         warning("No summary data available to be stored in csv-reports", call. = FALSE)
       }
@@ -117,7 +117,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
         hvalues[pp] = c("not stored in header")
       }
       mon = I$monn
-      
+
       if (mon == "genea") {
         deviceSerialNumber = hvalues[which(hnames == "Serial_Number")] #serial number
       } else if (mon == "geneactive") {
@@ -134,12 +134,8 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       } else if (I$monc %in% c(5, 98, 99)) { #movisense 5, Actiwatch 98, Sensewear 99
         deviceSerialNumber = "not extracted"
       } else if (I$monc == 0) {
-        if (header != "no header") {
-          deviceSerialNumber = hvalues[which(hnames == "device_serial_number")]
-          if (length(deviceSerialNumber) == 0) {
-            deviceSerialNumber = "not extracted"
-          }
-        } else {
+        deviceSerialNumber = hvalues[which(hnames == "device_serial_number")]
+        if (length(deviceSerialNumber) == 0) {
           deviceSerialNumber = "not extracted"
         }
       }
@@ -183,7 +179,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
         }
         next()
       }
-      
+
       filehealth_cols = grep(pattern = "filehealth", x = names(SUMMARY), value = FALSE)
       if (length(filehealth_cols) > 0) {
         # migrate filehealth columns to QC report, only applicable to Axivity data
@@ -235,7 +231,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     if (M$filecorrupt == FALSE & M$filetooshort == FALSE & exists("IMP")) rm(IMP)
     rm(M); rm(I)
     if (params_output[["do.part2.pdf"]] == TRUE) dev.off()
-    
+
     #--------------------------------------
     # Store Event reports
     # split daySUMMARY in two files and reoder EventVariable names if they exist
@@ -258,7 +254,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       #-----------------------------------------------------------------------
       # November 2024:
       # TEMPORARILY REMOVE ALL NEW STEP VARIABLES TO FACILITATE
-      # MERGE OF MOST WORK RELATED TO EVENT DETECTION WITH MASTER BRANCH 
+      # MERGE OF MOST WORK RELATED TO EVENT DETECTION WITH MASTER BRANCH
       # WITHOUT RELEASING NEW VARIABLES YET
       dayEVENTSUMMARY_clean = dayEVENTSUMMARY_clean[, grep(pattern = "cad_|_cad|Bout_|accatleast|count_acc",
                                                            x = colnames(dayEVENTSUMMARY_clean),
@@ -294,7 +290,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       new_var = which(colnames(daySUMMARY_clean) == "start_time")
       daySUMMARY_clean = daySUMMARY_clean[, c(old_vars[1:3], new_var, old_vars[4:length(old_vars)])]
       # format calendar dates
-      dd = iso8601chartime2POSIX(daySUMMARY_clean$calendar_date, tz = desiredtz) 
+      dd = iso8601chartime2POSIX(daySUMMARY_clean$calendar_date, tz = desiredtz)
       daySUMMARY_clean$calendar_date = format(dd, format = "%Y-%m-%d")
       #===============================================================================
       # store final matrices again
