@@ -166,7 +166,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         if (inherits(qwindowImp, "data.frame")) {
           qwindowImp = qwindowImp[which(qwindowImp$ID == ID),]
           if (nrow(qwindowImp) == 0) {
-            qwindowImp = NULL
+            qwindowImp = c(0, 6) # If participant not present in diary
           }
         } else {
           qwindowImp = NULL
