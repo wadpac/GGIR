@@ -1,4 +1,4 @@
-# CHANGES IN GGIR VERSION 3.1-7
+# CHANGES IN GGIR VERSION 3.1-?
 
 - Part 4: Parameter sib_must_fully_overlap_with_TimeInBed added to control whether sib should overlap fully with the start and/or end of time in bed to be consider sleep (default TRUE),
 this is consistent with functionality in the past. #1223
@@ -12,6 +12,8 @@ this is consistent with functionality in the past. #1223
 - Part 4 + 5 + visualreport: If sleeplog has both reported sleeplog and time in bed process both. In part 4 we will still use one of the two but in the visualreport we display both. #967
 
 - Part 2: Code revisions in preparation for expansion of functionality to better facilitate external function produced event data. #653
+
+# CHANGES IN GGIR VERSION 3.1-7
 
 - Part 3: Improved handling of DST, #1225
 
