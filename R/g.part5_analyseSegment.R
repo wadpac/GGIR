@@ -165,36 +165,29 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     #=======================================================
     # nap/sib/nonwear overlap analysis
     #=======================================================
-    if (params_output[["do.sibreport"]]  == TRUE) {
-      if (!is.null(sibreport) &&
-          length(sibreport[[1]]) > 1)  {
-        restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
-                                           ds_names = ds_names, fi = fi, di = si,
-                                           ts = ts[sse[ts$diur[sse] == 0], ],
-                                           tz = params_general[["desiredtz"]],
-                                           params_sleep = params_sleep)
-        fi = restAnalyses$fi
-        si = restAnalyses$di
-        ts[sse[ts$diur[sse] == 0], ] = restAnalyses$ts
-        dsummary = restAnalyses$dsummary
-        ds_names = restAnalyses$ds_names
-        
-        # If naps detected add these to LEVELS
-        detectedNaps = which(ts$sibdetection[sse] == 2)
-        if (length(detectedNaps) > 0) {
-          if ("day_nap" %in% Lnames) {
-            LEVELS[sse[detectedNaps]] = length(Lnames) - 1
-          } else {
-            LEVELS[sse[detectedNaps]] = length(Lnames)
-          }
+    if (params_output[["do.sibreport"]]  == TRUE & !is.null(sibreport))  {
+      restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
+                                         ds_names = ds_names, fi = fi, di = si,
+                                         ts = ts[sse[ts$diur[sse] == 0], ],
+                                         tz = params_general[["desiredtz"]],
+                                         params_sleep = params_sleep)
+      fi = restAnalyses$fi
+      si = restAnalyses$di
+      ts[sse[ts$diur[sse] == 0], ] = restAnalyses$ts
+      dsummary = restAnalyses$dsummary
+      ds_names = restAnalyses$ds_names
+      
+      # If naps detected add these to LEVELS
+      detectedNaps = which(ts$sibdetection[sse] == 2)
+      if (length(detectedNaps) > 0) {
+        if ("day_nap" %in% Lnames) {
+          LEVELS[sse[detectedNaps]] = length(Lnames) - 1
+        } else {
+          LEVELS[sse[detectedNaps]] = length(Lnames)
         }
-        if ("day_nap" %in% Lnames == FALSE) {
-          Lnames = c(Lnames, "day_nap")
-        }
-      } else {
-        dsummary[si, fi] = 0
-        ds_names[fi] = "sibreport_n_items"
-        fi = fi + 35
+      }
+      if ("day_nap" %in% Lnames == FALSE) {
+        Lnames = c(Lnames, "day_nap")
       }
     }
     #===============================================

@@ -301,8 +301,6 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
     } else {
       fi  =  fi + 25
     }
-  } else {
-    fi  =  fi + 34
   }
   invisible(list(fi = fi, di = di, ds_names = ds_names, dsummary = dsummary, ts = ts))
 }

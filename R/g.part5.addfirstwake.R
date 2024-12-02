@@ -24,10 +24,8 @@ g.part5.addfirstwake = function(ts, summarysleep, nightsi, sleeplog, ID,
   if (length(nightsi) < 2) {
     return(ts)
   }
-  if (!is.na(firstwake) && firstwake > nightsi[2] ||
-      (summarysleep$sleeponset[1] < 18 &&
-       summarysleep$wakeup[1] < 18 &&
-       firstwake < nightsi[2])) { 
+  if (firstwake > nightsi[2] | (summarysleep$sleeponset[1] < 18 &
+                                summarysleep$wakeup[1] < 18 & firstwake < nightsi[2])) { 
     wake_night1_index = c()
     if (length(sleeplog) > 0) {
       # use sleeplog for waking up after first night
@@ -53,10 +51,10 @@ g.part5.addfirstwake = function(ts, summarysleep, nightsi, sleeplog, ID,
           if (wake_night1_index > Nts) wake_night1_index = Nts
           if (wake_night1_index < 1) wake_night1_index = 1
         } else { # use SPTE algorithm as plan B
-          wake_night1_index = nightsi[1] + round((SPTE_end[1] - 24) * Nepochsinhour)
+          wake_night1_index = nightsi[1] + round((SPTE_end[1]-24) * Nepochsinhour)
         }
       } else { # use SPTE algorithm as plan B
-        wake_night1_index = nightsi[1] + round((SPTE_end[1] - 24) * Nepochsinhour)
+        wake_night1_index = nightsi[1] + round((SPTE_end[1]-24) * Nepochsinhour)
       }
     } else if (length(SPTE_end) > 0 & length(sleeplog) == 0) {
       # use SPTE algortihm for waking up after first night
