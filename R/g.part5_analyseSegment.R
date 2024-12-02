@@ -412,17 +412,24 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     #=======================================================
     # nap/sib/nonwear overlap analysis
     #=======================================================
-    if (params_output[["do.sibreport"]]  == TRUE & !is.null(sibreport))  {
-      restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
-                                         ds_names = ds_names, fi = fi, di = si,
-                                         ts = ts[sse[ts$diur[sse] == 0], ],
-                                         tz = params_general[["desiredtz"]],
-                                         params_sleep = params_sleep)
-      fi = restAnalyses$fi
-      si = restAnalyses$di
-      ts[sse[ts$diur[sse] == 0], ] = restAnalyses$ts
-      dsummary = restAnalyses$dsummary
-      ds_names = restAnalyses$ds_names
+    if (params_output[["do.sibreport"]]  == TRUE) {
+      if (!is.null(sibreport) &&
+          length(sibreport[[1]]) > 1)  {
+        restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
+                                           ds_names = ds_names, fi = fi, di = si,
+                                           ts = ts[sse[ts$diur[sse] == 0], ],
+                                           tz = params_general[["desiredtz"]],
+                                           params_sleep = params_sleep)
+        fi = restAnalyses$fi
+        si = restAnalyses$di
+        ts[sse[ts$diur[sse] == 0], ] = restAnalyses$ts
+        dsummary = restAnalyses$dsummary
+        ds_names = restAnalyses$ds_names
+      } else {
+        dsummary[si, fi] = 0
+        ds_names[fi] = "sibreport_n_items"
+        fi = fi + 35
+      }
     }
     #===============================================
     # FOLDER STRUCTURE
