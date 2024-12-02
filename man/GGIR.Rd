@@ -998,8 +998,8 @@ GGIR(mode = 1:5,
         for the qwindow parameter.  If you want to
         use \code{qwindow} to guide the nonwear filtering as described in here but 
         do not want GGIR to use it for day segment analysis in part 2 or 5 then 
-        make sure the diary filename includes the word "onlyfilter" to tell GGIR to 
-        only use qwindow for nonwear filtering.
+        make sure the diary filename includes the word "onlyfilter" or "filteronly"
+        to tell GGIR to only use qwindow for nonwear filtering.
         The main purpose of this functionality is to offer
         the option to ignore short lasting nonwear episodes during the night
         when there is suspicion that these are falsely detect, e.g. in individuals

@@ -8,20 +8,18 @@ filterNonwearNight = function(r1, metalong, qwindowImp, desiredtz,
     filter_method = 1 # set window as provided by user
   } else {
     # If nonwearFilterWindow is not provided then
-    # assumption is that qwindow is available
-    errorMessage = paste0("Please specify parameter nonwearFilterWindow or ",
-                          "qwindow as diary with columns to define the window for ",
-                          "filtering short nonwear. See documentation for ",
-                          "parameter nonwearFiltermaxHours")
-    if (!is.null(qwindowImp)) {
-      if (inherits(qwindowImp, "data.frame")) {
-        filter_method = 2
-      } else {
-        stop(errorMessage, call. = FALSE)
-      }
+    # look for qwindow is available
+    if (is.null(qwindowImp)) {
+      stop(paste0("Please specify parameter nonwearFilterWindow or ",
+                  "qwindow as diary with columns to define the window for ",
+                  "filtering short nonwear. See documentation for ",
+                  "parameter nonwearFiltermaxHours"), call. = FALSE)
+    }
+    if (inherits(qwindowImp, "data.frame")) {
+      filter_method = 2 # Use it as a dataframe
     } else {
-      # qwindow not available
-      stop(errorMessage, call. = FALSE)
+      filter_method = 1 
+      nonwearFilterWindow = qwindowImp
     }
   }
   # Get metalong timestamps
@@ -36,7 +34,8 @@ filterNonwearNight = function(r1, metalong, qwindowImp, desiredtz,
     r1B$lengths = (r1B$lengths * ws2) / 3600 # convert unit from epoch to hours
     r1B$filterWindow = 0
     # Define night window
-    if (filter_method %in% c(1, 3)) { # set window same for all recordings
+    if (filter_method == 1) { 
+      # set window same for all recordings
       if (nonwearFilterWindow[1] > nonwearFilterWindow[2]) {
         r1B$filterWindow[which(r1B$hr >= nonwearFilterWindow[1] |
                                  r1B$hr < nonwearFilterWindow[2])] = 1
@@ -44,7 +43,8 @@ filterNonwearNight = function(r1, metalong, qwindowImp, desiredtz,
         r1B$filterWindow[which(r1B$hr >= nonwearFilterWindow[1] &
                                  r1B$hr < nonwearFilterWindow[2])] = 1
       }
-    } else if (filter_method == 2) { # based on qwindow specific per participant
+    } else if (filter_method == 2) { 
+      # window defined by diary input from qwindow specific per participant
       r1B$date = as.Date(metalong$time_POSIX)
       for (qi in 1:nrow(qwindowImp)) {
         qwindow_temp = qwindowImp$qwindow_values[[qi]]
@@ -78,6 +78,7 @@ filterNonwearNight = function(r1, metalong, qwindowImp, desiredtz,
                                      r1B$hr < end)] = 1
           }
         } else {
+          # If diary has one date missing use default window
           r1B$filter_method[which(r1B$hr >= 0 &
                                     r1B$hr < 6)] = 4
           # use midnight - 6am as fall back option

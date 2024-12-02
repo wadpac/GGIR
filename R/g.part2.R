@@ -22,9 +22,9 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   if (is.numeric(params_247[["qwindow"]])) {
     params_247[["qwindow"]] = params_247[["qwindow"]][order(params_247[["qwindow"]])]
   } else if (is.character(params_247[["qwindow"]])) {
-    if (length(grep(pattern = "onlyfilter", x = params_247[["qwindow"]])) > 0) {
+    if (length(grep(pattern = "onlyfilter|filteronly", x = params_247[["qwindow"]])) > 0) {
       # Do not use diary specified for qwindow if it has the word
-      # "onlyfilter", but use it for filterning nighttime nonwear
+      # "onlyfilter" or "filteronly", but use it for filterning nighttime nonwear
       # note that this filtering is only use if parameter nonwearFiltermaxHours is specified.
       use_qwindow_as_diary = FALSE 
     }
@@ -190,7 +190,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         if (inherits(qwindowImp, "data.frame")) {
           qwindowImp = qwindowImp[which(qwindowImp$ID == ID),]
           if (nrow(qwindowImp) == 0) {
-            qwindowImp = NULL
+            qwindowImp = c(0, 6) # If participant not present in diary
           }
         } else {
           qwindowImp = NULL

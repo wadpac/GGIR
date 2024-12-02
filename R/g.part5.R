@@ -503,7 +503,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     qqq_backup = c()
                     add_one_day_to_next_date = FALSE
                     if (is.character(params_247[["qwindow"]])) {
-                      if (length(grep(pattern = "onlyfilter", x = params_247[["qwindow"]])) > 0) {
+                      if (length(grep(pattern = "onlyfilter|filteronly", x = params_247[["qwindow"]])) > 0) {
                         params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]],
                                                                 params_247[["qwindow_dateformat"]],
                                                                 epochSize = ws3new)

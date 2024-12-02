@@ -11,8 +11,6 @@ this is consistent with functionality in the past. #1223
 
 - Part 4 + 5 + visualreport: If sleeplog has both reported sleeplog and time in bed process both. In part 4 we will still use one of the two but in the visualreport we display both. #967
 
-- Part 2: Code revisions in preparation for expansion of functionality to better facilitate external function produced event data. #653
-
 - Part 2: Add parameters nonwearFiltermaxHours and nonwearFilterWindow to give use the option to filter short lasting nighttime nonwear #1218.
 
 # CHANGES IN GGIR VERSION 3.1-7
