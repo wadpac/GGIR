@@ -15,8 +15,6 @@ this is consistent with functionality in the past. #1223
 
 # CHANGES IN GGIR VERSION 3.1-7
 
-# CHANGES IN GGIR VERSION 3.1-7
-
 - Part 3: Improved handling of DST, #1225
 
 - Part 2: Code revisions in preparation for expansion of functionality to better facilitate external function produced event data. #653 and #1228

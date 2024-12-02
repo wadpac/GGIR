@@ -299,7 +299,7 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
       dsummary = so$dsummary; ds_names = so$ds_names; fi = so$fi
       rm(srep_tmp)
     } else {
-      fi  =  fi + 33
+      fi  =  fi + 25
     }
   } else {
     fi  =  fi + 34
