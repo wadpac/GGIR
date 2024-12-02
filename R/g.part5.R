@@ -78,6 +78,20 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   } else {
     sleeplog = logs_diaries = c()
   }
+  # Extract activity diary if applicable
+  if (is.character(params_247[["qwindow"]])) {
+    if (length(grep(pattern = "onlyfilter|filteronly", x = params_247[["qwindow"]])) > 0) {
+      params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]],
+                                              params_247[["qwindow_dateformat"]],
+                                              epochSize = ws3new)
+      # This will be an object with numeric qwindow values for all individuals and days
+    } else {
+      # ignore the diary specified by qwindow because user only want to use
+      # it for filtering night time nonwear in part 2, but not as a way to
+      # do day segment analysis.
+      params_247[["qwindow"]] = c(0, 24)
+    }
+  }
   #------------------------------------------------
   # specify parameters
   ffdone = fnames.ms5 #ffdone is now a list of files that have already been processed by g.part5
@@ -453,19 +467,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     indjump = 1
                     qqq_backup = c()
                     add_one_day_to_next_date = FALSE
-                    if (is.character(params_247[["qwindow"]])) {
-                      if (length(grep(pattern = "onlyfilter|filteronly", x = params_247[["qwindow"]])) > 0) {
-                        params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]],
-                                                                params_247[["qwindow_dateformat"]],
-                                                                epochSize = ws3new)
-                        # This will be an object with numeric qwindow values for all individuals and days
-                      } else {
-                        # ignore the diary specified by qwindow because user only want to use
-                        # it for filtering night time nonwear in part 2, but not as a way to
-                        # do day segment analysis.
-                        params_247[["qwindow"]] = c(0, 24)
-                      }
-                    }
                     lastDay = ifelse(Nwindows > 0, yes = FALSE, no = TRUE) # skip while loop if there are no days to analyses
                     wi = 1
                     while (lastDay == FALSE) { #loop through windows
