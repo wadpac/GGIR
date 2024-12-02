@@ -225,7 +225,7 @@ test_that("chainof5parts", {
   expect_true(dir.exists(dirname))
   expect_true(file.exists(rn[1]))
   expect_that(nrow(output),equals(5))
-  expect_that(ncol(output),equals(184))
+  expect_that(ncol(output),equals(187))
   expect_that(round(as.numeric(output$wakeup[2]), digits = 4), equals(36))
   expect_that(as.numeric(output$dur_day_spt_min[4]), equals(1150)) # WW window duration
   expect_that(as.numeric(output$dur_day_spt_min[5]), equals(1680)) # OO window duration
