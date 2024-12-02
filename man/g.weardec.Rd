@@ -8,7 +8,8 @@
   whether the accelerometer was worn
 }
 \usage{
-  g.weardec(M, wearthreshold, ws2, nonWearEdgeCorrection = TRUE)
+  g.weardec(M, wearthreshold, ws2, params_cleaning = NULL,
+            desiredtz = "", qwindowImp = c())
 }
 \arguments{
   \item{M}{
@@ -21,11 +22,15 @@
     Large windowsize used in seconds to apply non-wear detection
     Small window size not needed, because this is inherent to the object M
   }
-  \item{nonWearEdgeCorrection}{
-    Boolean to indicated whether the EdgeCorrection as described in 2013
-    should be applied (default = TRUE, which is consistent with how code has been)
+  \item{params_cleaning}{
+    Parameters object with cleaning paramete, see \link{GGIR}.
   }
-  
+  \item{desiredtz}{
+    See \link{GGIR}
+  }
+  \item{qwindowImp}{
+    See \link{g.impute}
+  }
 }
 \value{
   \itemize{
@@ -41,7 +46,11 @@
 }
 \examples{
   data(data.getmeta)
-  output = g.weardec(M = data.getmeta, wearthreshold = 2, ws2 = 900)
+  params_cleaning = load_params()$params_cleaning
+  params_cleaning[["nonwearFilterWindow"]] = c(22, 7)
+  output = g.weardec(M = data.getmeta, wearthreshold = 2, ws2 = 900,  
+                      params_cleaning = params_cleaning,
+                      desiredtz = "", qwindowImp = NULL)
 }
 \keyword{internal}
 \author{

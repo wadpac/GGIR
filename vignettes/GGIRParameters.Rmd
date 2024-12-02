@@ -129,6 +129,8 @@ find a description and default value for all the arguments.
 | max_calendar_days           | 2                 | params_cleaning          |
 | includedaycrit              | 2, 5              | params_cleaning          |
 | nonWearEdgeCorrection       | 2                 | params_cleaning          |
+| nonwearFiltermaxHours       | 2                 | params_cleaning          |
+| nonwearFilterWindow         | 2                 | params_cleaning          |
 | L5M5window                  | 2                 | params_247               |
 | M5L5res                     | 2, 5              | params_247               |
 | winhr                       | 2, 5              | params_247               |

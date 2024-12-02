@@ -52,6 +52,8 @@ Part 2 generates the following output:
 | complete_24hcycle | Completeness score: Fraction of 15 minute windows per 24 hours for which no valid data is available at any day of the measurement. |
 | meas_dur_def_proto_day | measurement duration according to protocol (days): Measurement duration (days) minus the hours that are ignored at the beginning and end of the measurement motivated by protocol design |
 | wear_dur_def_proto_day | wear duration duration according to protocol (days): So, if the protocol was seven days of measurement, then wearing the accelerometer for 8 days and recording data for 8 days will still make that the wear duration is 7 days |
+| nonwear_hours_filtered | Total number of nonwear hours filtered, only stored when using parameter `nonwearFiltermaxHours` |
+| nonwear_events_filtered   | Total number of nonwear events filtered, only stored when using parameter `nonwearFiltermaxHours` |
 | calib_err | Calibration error (static estimate) Estimated based on all 'non-movement' periods in the measurement after applying the autocalibration. |
 | calib_status | Calibration status: Summary statement about the status of the calibration error minimisation |
 | ENMO_fullRecordingMean | ENMO is the main summary measure of acceleration. The value presented is the average ENMO over all the available data normalised per 24-hour cycles (diurnal balanced), with invalid data imputed by the average at similar time points on different days of the week. In addition to ENMO it is possible to extract other acceleration metrics (i.e. BFEN, HFEN, HFENplus). We emphasize that it is calculated over the full recording because the alternative is that a variable is only calculated overmeasurement days with sufficient valid hours of data. |

@@ -107,6 +107,8 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                            segmentWEARcrit.part5 = 0.5,
                            segmentDAYSPTcrit.part5 = c(0.9, 0),
                            study_dates_file = c(), study_dates_dateformat = "%d-%m-%Y",
+                           nonwearFiltermaxHours = NULL,
+                           nonwearFilterWindow = NULL,
                            includecrit.part6 = c(2/3, 2/3),
                            includenightcrit.part5 = 0)
   }
