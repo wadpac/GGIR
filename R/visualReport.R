@@ -192,10 +192,6 @@ visualReport = function(metadatadir = c(),
           t1 = mdat$timestamp[endi = newi$endi]
           y0 = 25
           y1 = 50
-          if (legend_items$name[labi] == "nap") {
-            y1 = 100
-          }
-          
           col = legend_items$col[labi]
           rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1, col = col, border = FALSE)
         }
@@ -490,12 +486,12 @@ visualReport = function(metadatadir = c(),
                                      colour = c("#FF00FF", "#FFD700", "#7CFC00", "red"),
                                      level = 1, reverse = TRUE) #"#222255" #
         # SIB (day time)
-        legend_items$col = c(legend_items$col, "steelblue1") #"#56B4E9" "#D55E00""#E69F00") "#56B4E9"
+        legend_items$col = c(legend_items$col, "#56B4E9") #"#D55E00""#E69F00") "#56B4E9"
         legend_items$name = c(legend_items$name, "sib")
         legend_items$code = c(legend_items$code, -1)
         legend_items$level = c(legend_items$level, 2)
         
-        legend_items$col = c(legend_items$col, "steelblue4") # "#D55E00""#E69F00") "#56B4E9" "#0072B2"
+        legend_items$col = c(legend_items$col, "blue3") # "#D55E00""#E69F00") "#56B4E9" "#0072B2"
         legend_items$name = c(legend_items$name, "nap")
         legend_items$code = c(legend_items$code, -1)
         legend_items$level = c(legend_items$level, 2)

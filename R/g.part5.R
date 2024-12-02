@@ -106,15 +106,12 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   params_phyact[["boutdur.in"]] = sort(params_phyact[["boutdur.in"]],decreasing = TRUE)
   #--------------------------------
   # get full file path and folder name if requested by end-user and keep this for storage in output
-  if (params_output[["storefolderstructure"]] == TRUE && dir.exists(datadir)) {
+  if (params_output[["storefolderstructure"]] == TRUE) {
     extractfilenames = function(x) as.character(unlist(strsplit(x,".RDa"))[1])
     referencefnames = sapply(fnames.ms3,extractfilenames)
     folderstructure = getfolderstructure(datadir,referencefnames)
     fullfilenames = folderstructure$fullfilenames
     foldername = folderstructure$foldername
-  } else {
-    referencefnames = fullfilenames = gsub(pattern = "[.]RData", replacement = "", x = fnames.ms3)
-    foldername = rep("", length(fnames.ms3))
   }
   if (f0 > length(fnames.ms3)) f0 = 1
   if (f1 == 0 | length(f1) == 0 | f1 > length(fnames.ms3))  f1 = length(fnames.ms3)
@@ -127,7 +124,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         params_cleaning = c(), params_output = c(),
                         params_general = c(), ms5.out, ms5.outraw,
                         fnames.ms3, sleeplog, logs_diaries,
-                        referencefnames, folderstructure,
+                        extractfilenames, referencefnames, folderstructure,
                         fullfilenames, foldername, ffdone, verbose) {
     tail_expansion_log =  NULL
     filename_dir = NULL # to be loaded
@@ -610,8 +607,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             # timeList
                             ts = timeList$ts
                             ws3new = timeList$epochSize
-                            Lnames = levelList$Lnames = timeList$Lnames
-                            LEVELS = levelList$LEVELS = timeList$LEVELS
                             if (doNext == TRUE) next
                           }
                           #===============================================
@@ -634,11 +629,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                   if (params_output[["save_ms5rawlevels"]] == TRUE || params_247[["part6HCA"]] == TRUE || params_247[["part6CR"]] == TRUE) {
                     legendfile = paste0(metadatadir,ms5.outraw,"/behavioralcodes",as.Date(Sys.time()),".csv")
                     legendtable = data.frame(class_name = Lnames, class_id = 0:(length(Lnames) - 1), stringsAsFactors = FALSE)
-                    if (!file.exists(legendfile)) {
-                      data.table::fwrite(legendtable, file = legendfile, row.names = FALSE,
-                                         sep = params_output[["sep_reports"]],
-                                         dec = params_output[["dec_reports"]])
-                    }
+                    data.table::fwrite(legendtable, file = legendfile, row.names = FALSE,
+                                       sep = params_output[["sep_reports"]],
+                                       dec = params_output[["dec_reports"]])
                     # I moved this bit of code to the end, because we want guider to be included (VvH April 2020)
                     rawlevels_fname =  paste0(metadatadir, ms5.outraw, "/", TRLi, "_", TRMi, "_", TRVi, "/",
                                               gsub(pattern = "[.]|rdata|csv|cwa|gt3x|bin",
@@ -758,10 +751,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               output$GGIRversion = GGIRversion
               # Capture final timestamp to ease filtering last window in g.report.part5
               last_timestamp = time_POSIX[length(time_POSIX)] 
-              
-              # move experimental nap columns to the end of output
-              output = output[, c(grep(pattern = "denap|srnap|srnonw|sibreport_n_items", x = names(output), invert = TRUE, value = FALSE),
-                                  grep(pattern = "denap|srnap|srnonw|sibreport_n_items", x = names(output), invert = FALSE, value = FALSE))]
               save(output, tail_expansion_log, GGIRversion, last_timestamp,
                    file = paste(metadatadir, ms5.out, "/", fnames.ms3[i], sep = ""))
             }
@@ -832,7 +821,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                   params_cleaning, params_output,
                                                   params_general, ms5.out, ms5.outraw,
                                                   fnames.ms3, sleeplog, logs_diaries,
-                                                  referencefnames, folderstructure,
+                                                  extractfilenames, referencefnames, folderstructure,
                                                   fullfilenames, foldername, ffdone, verbose)
                                      })
                                      return(tryCatchResult)
@@ -853,7 +842,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                  params_cleaning, params_output,
                  params_general, ms5.out, ms5.outraw,
                  fnames.ms3, sleeplog, logs_diaries,
-                 referencefnames, folderstructure,
+                 extractfilenames, referencefnames, folderstructure,
                  fullfilenames, foldername, ffdone, verbose)
     }
   }
