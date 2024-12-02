@@ -84,7 +84,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   }
   # Extract activity diary if applicable
   if (is.character(params_247[["qwindow"]])) {
-    if (length(grep(pattern = "onlyfilter|filteronly", x = params_247[["qwindow"]])) > 0) {
+    if (length(grep(pattern = "onlyfilter|filteronly", x = params_247[["qwindow"]])) == 0) {
       epochSize_tmp = ifelse(params_general[["part5_agg2_60seconds"]], yes = 60, no = params_general[["windowsizes"]][1])
       params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]],
                                               params_247[["qwindow_dateformat"]],
