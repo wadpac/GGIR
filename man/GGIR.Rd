@@ -1667,7 +1667,7 @@ GGIR(mode = 1:5,
       \item{method_research_vars}{
         Character (default = NULL).
         Vector with names of methodological variable categories to store in the
-        csv output files. Currently on "naps" is available which affects the part5
+        csv output files. Currently on "nap" is available which affects the part5
         output. The variables are intended for methodological research only and
         are by default turned off.
       }
