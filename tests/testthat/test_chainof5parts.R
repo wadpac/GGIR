@@ -231,8 +231,9 @@ test_that("chainof5parts", {
   expect_that(as.numeric(output$dur_day_spt_min[5]), equals(1680)) # OO window duration
   dirname_raw = "output_test/meta/ms5.outraw/40_100_400"
   rn2 = dir(dirname_raw,full.names = TRUE, recursive = T)
-  expect_true(file.exists(rn2[1]))
-  TSFILE = read.csv(rn2[1])
+  rn2_index = grep(pattern = "[.]csv", x = rn2, value = FALSE)
+  expect_true(file.exists(rn2[rn2_index]))
+  TSFILE = read.csv(rn2[rn2_index])
   expect_that(nrow(TSFILE),equals(2820))
   expect_equal(ncol(TSFILE), 14)
   expect_equal(length(unique(TSFILE$class_id)), 11)
