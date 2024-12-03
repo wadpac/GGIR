@@ -5,8 +5,6 @@ this is consistent with functionality in the past. #1223
 
 - Part 5: Expand functionality for exploring the role of naps
 
-- Part 5: Added basic step_count-based summary statistics in part 5 csv reports which can be controlled with new parameter clevels. #653
-
 - Visual report: Add new visualreport that is automatically generated when visualreport = TRUE. Add parameter old_visualreport to turn off the old visualreport generation. #1173
 
 - Part 4 + 5 + visualreport: If sleeplog has both reported sleeplog and time in bed process both. In part 4 we will still use one of the two but in the visualreport we display both. #967

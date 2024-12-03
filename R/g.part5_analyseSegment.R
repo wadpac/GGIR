@@ -263,29 +263,29 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     dsummary[si, fi] = mean(ts$ACC[sse], na.rm = TRUE)
     ds_names[fi] = "ACC_day_spt_mg";      fi = fi + 1
     
-    #======================================================
-    # STEPS... (IF STEP_COUNT IS AVAILABLE)
-    if ("step_count" %in% names(ts)) {
-      if (length(params_247[["clevels"]]) > 1) {
-        for (windowhalf in c("day", "spt")) {
-          step_subsegment = sse[ts$diur[sse] == ifelse(windowhalf == "day", yes = 0, no = 1)]
-          cadence = ts$step_count[step_subsegment] / (60 / ws3new)
-          step_count = ts$step_count[step_subsegment]
-          for (cleveli in 1:(length(params_247[["clevels"]]) - 1)) {
-            cadence_condition_met = which(cadence >= params_247[["clevels"]][cleveli] &
-                                            cadence < params_247[["clevels"]][cleveli + 1])
-            dsummary[si, fi] = floor(sum(step_count[cadence_condition_met]))
-            tmp_ending_of_name = paste0("in_candence_", params_247[["clevels"]][cleveli],
-                                        "_", params_247[["clevels"]][cleveli + 1], "_spm")
-            ds_names[fi] = paste0("STEPS_", windowhalf, "_count_", tmp_ending_of_name)
-            fi = fi + 1
-            dsummary[si, fi] = length(step_count[cadence_condition_met]) * (ws3new / 60)
-            ds_names[fi] = paste0("STEPS_", windowhalf, "_min_", tmp_ending_of_name)
-            fi = fi + 1
-          }
-        }
-      }
-    }
+    # #======================================================
+    # # STEPS... (IF STEP_COUNT IS AVAILABLE)
+    # if ("step_count" %in% names(ts)) {
+    #   if (length(params_247[["clevels"]]) > 1) {
+    #     for (windowhalf in c("day", "spt")) {
+    #       step_subsegment = sse[ts$diur[sse] == ifelse(windowhalf == "day", yes = 0, no = 1)]
+    #       cadence = ts$step_count[step_subsegment] / (60 / ws3new)
+    #       step_count = ts$step_count[step_subsegment]
+    #       for (cleveli in 1:(length(params_247[["clevels"]]) - 1)) {
+    #         cadence_condition_met = which(cadence >= params_247[["clevels"]][cleveli] &
+    #                                         cadence < params_247[["clevels"]][cleveli + 1])
+    #         dsummary[si, fi] = floor(sum(step_count[cadence_condition_met]))
+    #         tmp_ending_of_name = paste0("in_candence_", params_247[["clevels"]][cleveli],
+    #                                     "_", params_247[["clevels"]][cleveli + 1], "_spm")
+    #         ds_names[fi] = paste0("STEPS_", windowhalf, "_count_", tmp_ending_of_name)
+    #         fi = fi + 1
+    #         dsummary[si, fi] = length(step_count[cadence_condition_met]) * (ws3new / 60)
+    #         ds_names[fi] = paste0("STEPS_", windowhalf, "_min_", tmp_ending_of_name)
+    #         fi = fi + 1
+    #       }
+    #     }
+    #   }
+    # }
     #===============================================
     # QUANTILES...
     WLH = ((qqq2 - qqq1) + 1)/((60/ws3new) * 60)
