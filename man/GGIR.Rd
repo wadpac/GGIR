@@ -1249,7 +1249,10 @@ GGIR(mode = 1:5,
       \item{nap_model}{
         Character (default = NULL).
         To specify classification model. Currently the only option is "hip3yr", which
-        corresponds to a model trained with hip data in 3-3.5 olds trained with parent diary data.}
+        corresponds to a model trained with hip data in 3-3.5 olds trained with 
+        parent diary data. This parameter cannnot be used in combination with the 
+        newer parameters possible_nap_window and possible_nap_dur, please 
+        leave \code{nap_model = NULL}.}
 
       \item{longitudinal_axis}{
         Integer (default = NULL).
@@ -1275,18 +1278,20 @@ GGIR(mode = 1:5,
         \code{timethreshold = c(5,10)}.}
 
       \item{possible_nap_window}{
-        Numeric (default = c(9, 18)).
+        Numeric (default = NULL).
         Numeric vector of length two with range in clock hours during which naps are
         assumed to take place, e.g., \code{possible_nap_window = c(9, 18)}. Currently
         used in the context of an explorative nap classification algortihm that
-        was trained in 3.5 year olds. }
+        was trained in 3.5 year olds. The nap classification is only applied
+        if both \code{possible_nap_window} and \code{possible_nap_dur} are both specified}
 
       \item{possible_nap_dur}{
-        Numeric (default = c(15, 240)).
+        Numeric (default = NULL).
         Numeric vector of length two with range in duration (minutes) of a nap,
         e.g., \code{possible_nap_dur = c(15, 240)}. Currently
         used in the context of an explorative nap classification algortihm that
-        was trained in 3.5 year olds.}
+        was trained in 3.5 year olds. The nap classification is only applied
+        if both \code{possible_nap_window} and \code{possible_nap_dur} are both specified}
         
       \item{sleepefficiency.metric}{
         Numeric (default = 1).

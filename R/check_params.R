@@ -195,13 +195,29 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       stop(paste0("Parameter possible_nap_gap has length ", length(params_sleep[["possible_nap_gap"]]), 
                   " while length 1 is expected"), call. = FALSE)
     }
-    if (length(params_sleep[["possible_nap_window"]]) != 2) {
+    if (!is.null(params_sleep[["possible_nap_window"]]) &&
+        length(params_sleep[["possible_nap_window"]]) != 2) {
       stop(paste0("Parameter possible_nap_window has length ", length(params_sleep[["possible_nap_window"]]), 
                   " while length 2 is expected"), call. = FALSE)
     }
-    if (length(params_sleep[["possible_nap_dur"]]) != 2) {
+    if (!is.null(params_sleep[["possible_nap_dur"]]) &&
+        length(params_sleep[["possible_nap_dur"]]) != 2) {
       stop(paste0("Parameter possible_nap_dur has length ", length(params_sleep[["possible_nap_dur"]]), 
                   " while length 2 is expected"), call. = FALSE)
+    }
+    if (!is.null(params_sleep[["possible_nap_window"]]) &&
+        !is.null(params_sleep[["possible_nap_dur"]])) {
+      params_output[["do.sibreport"]] = TRUE
+      params_output[["save_ms5raw_format"]] = unique(c(params_output[["save_ms5raw_format"]], "RData"))
+      params_output[["save_ms5rawlevels"]] = TRUE
+      params_output[["save_ms5raw_without_invalid"]] = FALSE
+      
+      if (!is.null(params_sleep[["nap_model"]])) {
+        stop(paste0("Parameter nap_model is specific to the old experimental nap",
+                    " detection model. You cannot use this in combination with the ",
+                    "new parameters possible_nap_window and possible_nap_dur and
+                    need to set nap_model = NULL"))
+      }
     }
   }
   

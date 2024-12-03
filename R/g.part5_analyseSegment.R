@@ -165,7 +165,9 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     #=======================================================
     # nap/sib/nonwear overlap analysis
     #=======================================================
-    if (params_output[["do.sibreport"]]  == TRUE) {
+    if (params_output[["do.sibreport"]]  == TRUE &&
+        !is.null(params_sleep[["possible_nap_window"]]) &&
+        !is.null(params_sleep[["possible_nap_dur"]])) {
       restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
                                          ds_names = ds_names, fi = fi, di = si,
                                          ts = ts[sse[ts$diur[sse] == 0], ],
@@ -464,7 +466,9 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
                   segStartEnd = c(segStart, segEnd),
                   columnIndex = fi)
   timeList = list(ts = ts,
-                  epochSize = ws3new)
+                  epochSize = ws3new,
+                  LEVELS = LEVELS,
+                  Lnames = Lnames)
   invisible(list(
     indexlog = indexlog,
     ds_names = ds_names,
