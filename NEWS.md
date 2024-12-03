@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.1-?
+
+- Part 2: Add parameters nonwearFiltermaxHours and nonwearFilterWindow to give user the option to filter short lasting nighttime nonwear #1218.
+
 # CHANGES IN GGIR VERSION 3.1-7
 
 - Part 3: Improved handling of DST, #1225
