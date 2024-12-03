@@ -1250,9 +1250,7 @@ GGIR(mode = 1:5,
         Character (default = NULL).
         To specify classification model. Currently the only option is "hip3yr", which
         corresponds to a model trained with hip data in 3-3.5 olds trained with 
-        parent diary data. This parameter cannnot be used in combination with the 
-        newer parameters possible_nap_window and possible_nap_dur, please 
-        leave \code{nap_model = NULL}.}
+        parent diary data.}
 
       \item{longitudinal_axis}{
         Integer (default = NULL).
@@ -1573,23 +1571,24 @@ GGIR(mode = 1:5,
 
       \item{visualreport}{
         Boolean (default = TRUE).
-        If TRUE, then generate visual report based on combined output
-        from \link{g.part2} and \link{g.part4}. Please note that the visual report
-        was initially developed to provide something to show to study participants
-        and not for data quality checking purposes. Over time we have improved
-        the visual report to also be useful for QC-ing the data. However, some of
-        the scorings as shown in the visual report are created for the visual report
-        only and may not reflect the scorings in the main GGIR analyses as reported in the
-        quantitative csv-reports. Most of our effort in the past 10 years has gone
-        into making sure that the csv-report are correct, while the visualreport has
-        mostly been a side project. This is unfortunate and we hope to find funding
-        in the future to design a new report specifically for the purpose of
-        QC-ing the analyses done by GGIR.}
+        If TRUE, store two visualreports in outputfolder 'results/file summary reports'
+        with names starting with "Report_..." and 
+        "Time_report...". The report "Report_..." has been in GGIR for years 
+        and is based on combined output GGIR part 2 and 4. It was initially only a
+        quick development attempt to have something to show to study participants.
+        This report is not designed for data quality checking purposes as it makes
+        not attempt to exactly visualise the classifications made in part 5.
+        Given the number of inaccuracies this report
+        will eventually be deprecated from GGIR. To turn
+        off the old report use \code{old_visualreport = FALSE}.
+        "Time_report", is a new report as
+        of GGIR 3.1-8 and is specifically aimed at supporting data quality checks 
+        as it shows the time series data as generated and used in GGIR part 5. }.
 
       \item{viewingwindow}{
         Numeric (default = 1).
         Centre the day as displayed around noon (\code{viewingwindow = 1}) or around 
-        midnight (\code{viewingwindow = 2}) in the visual report generated with 
+        midnight (\code{viewingwindow = 2}) in the "Report_" visual report generated with 
         \code{visualreport = TRUE}.}
 
       \item{week_weekend_aggregate.part5}{
@@ -1601,8 +1600,8 @@ GGIR(mode = 1:5,
       \item{dofirstpage}{
         Boolean (default = TRUE).
         To indicate whether a first page with histograms summarizing the whole
-        measurement should be added in the file summary reports generated 
-        with \code{visualreport = TRUE}.}
+        measurement should be added in the file summary reports named "Report_" 
+        generated with \code{visualreport = TRUE}.}
 
       \item{sep_reports}{
         Character (default = ",").
@@ -1622,8 +1621,8 @@ GGIR(mode = 1:5,
 
       \item{visualreport_without_invalid}{
           Boolean (default = TRUE).
-          If TRUE, then reports generated with \code{visualreport = TRUE} only show
-          the windows with sufficiently valid data according to \code{includedaycrit}
+          If TRUE, then reports generated with \code{visualreport = TRUE} named "Report_"
+          only show the windows with sufficiently valid data according to \code{includedaycrit}
           when viewingwindow = 1 or \code{includenightcrit} when viewingwindow = 2}
 
       \item{require_complete_lastnight_part5}{    
@@ -1642,13 +1641,15 @@ GGIR(mode = 1:5,
       
       \item{visualreport_hrsPerRow}{
         Numeric (default = 36).
-        Width of the plots in the new visualreport expressed in hours.
+        Width of the plots in the new visualreport (named "Time_report...") 
+        expressed in hours.
         Expected to be in the range 24-48. If more than 24 then the extra time overlaps
         with the beginning of the next plot.}
       
       \item{visualreport_focus}{
          Character (default = "day")
-         Whether new visual report focussed on day. If set ot "nigth" the focus will be
+         Whether new visual report (names start with "Time_report...") focuss on day
+         or night. If set ot "night" the focus will be
          on the night.
       }
       
@@ -1656,6 +1657,7 @@ GGIR(mode = 1:5,
          Numeric (default = 0).
          Value between 0 and 1 representing the fraction of data in a plot 
          that is expected to be valid. If this criteria is not met the row is skipped.
+         Only used in new visual report (names start with "Time_report...").
       }
     }
   }

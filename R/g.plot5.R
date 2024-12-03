@@ -49,8 +49,10 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
                " recordings as a final step in the GGIR pipeline. This can take a while as",
                " it is done file-by-file. If you do not want the visualreports then you",
                " can kill the process (Ctrl-C or ESC) as that will not affect the",
-               " rest of the analyses and reports. To avoid this next time, ",
-               " change Boolean argument 'visualreport' to FALSE."))
+               " rest of the analyses and reports. To avoid this next time,",
+               " set parameter 'old_visualreport' to FALSE to only derive the new",
+               " reports. Alternatively, set 'visualreport' to FALSE which", 
+               " suppresses both report types."))
   }
   # loop through files
   for (i in f0:f1) {
@@ -909,7 +911,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
                 mtext(paste0("Filename: ", fnames_ms1_stripped[sel]),
                       side = 3, line = 0, outer = TRUE, font = 2, cex = 0.6)
                 mtext(text = paste0("Warning: This GGIR legacy report is not intended to be used for data quality assessment,",
-                                    " To visually quality check your data see file names starting with Time_report_ "),
+                                    " To quality check your data visually see file names starting with Time_report_ "),
                       side = 3, line = 1, outer = TRUE, font = 2, cex = 0.7
                 )
               }
