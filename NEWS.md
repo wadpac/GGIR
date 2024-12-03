@@ -3,7 +3,7 @@
 - Part 4: Parameter sib_must_fully_overlap_with_TimeInBed added to control whether sib should overlap fully with the start and/or end of time in bed to be consider sleep (default TRUE),
 this is consistent with functionality in the past. #1223
 
-- Part 5: Expand functionality for exploring the role of naps
+- Part 5: Expand functionality for exploring possibility of nap detection
 
 - Visual report: Add new visualreport that is automatically generated when visualreport = TRUE. Add parameter old_visualreport to turn off the old visualreport generation. #1173
 
