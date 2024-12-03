@@ -177,6 +177,7 @@ find a description and default value for all the arguments.
 | coln1                       | 4                 | params_sleep             |
 | possible_nap_window         | 5                 | params_sleep             |
 | possible_nap_dur            | 5                 | params_sleep             |
+| possible_nap_gap            | 5                 | params_sleep             |
 | do.visual                   | 4                 | params_output            |
 | outliers.only               | 4                 | params_output            |
 | excludefirstlast            | 4                 | params_cleaning          |
