@@ -11,6 +11,9 @@ this is consistent with functionality in the past. #1223
 
 - Part 2: Add parameters nonwearFiltermaxHours and nonwearFilterWindow to give user the option to filter short lasting nighttime nonwear #1218.
 
+- Part 5 and 6: part6_threshold_combi when not specified now defaults to first threshold as
+specified for light, moderate and vigorous intensity respectively.
+
 # CHANGES IN GGIR VERSION 3.1-7
 
 - Part 3: Improved handling of DST, #1225
