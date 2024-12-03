@@ -1483,9 +1483,10 @@ GGIR(mode = 1:5,
       }
 
       \item{clevels}{
+        Not fully operational yet, to be actived in 2025.
         Numeric vector (default = c(30, 150)) with length 2 to indicate cadence ranges used 
         when summarising step counts, if available. When set to NULL, step counts will not be
-        summarised in part 5 output.
+        summarised in part 5 output. 
       }
 
       \item{part6DFA}{
