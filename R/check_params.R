@@ -124,7 +124,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "do.part2.pdf", "old_visualreport", "require_complete_lastnight_part5")
 
     character_params = c("save_ms5raw_format", "timewindow", "sep_reports", "sep_config",
-                         "dec_reports", "dec_config", "visualreport_focus")
+                         "dec_reports", "dec_config", "visualreport_focus", "method_research_vars")
     check_class("output", params = params_output, parnames = numeric_params, parclass = "numeric")
     check_class("output", params = params_output, parnames = boolean_params, parclass = "boolean")
     check_class("output", params = params_output, parnames = character_params, parclass = "character")

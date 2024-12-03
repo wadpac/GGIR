@@ -759,8 +759,12 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               # Capture final timestamp to ease filtering last window in g.report.part5
               last_timestamp = time_POSIX[length(time_POSIX)] 
               # move experimental nap columns to the end of output
-              output = output[, c(grep(pattern = "denap|srnap|srnonw|sibreport_n_items", x = names(output), invert = TRUE, value = FALSE),
-                                  grep(pattern = "denap|srnap|srnonw|sibreport_n_items", x = names(output), invert = FALSE, value = FALSE))]
+              if ("nap" %in% params_output[["method_research_vars"]]) {
+                output = output[, c(grep(pattern = "denap|srnap|srnonw|sibreport_n_items", x = names(output), invert = TRUE, value = FALSE),
+                                    grep(pattern = "denap|srnap|srnonw|sibreport_n_items", x = names(output), invert = FALSE, value = FALSE))]
+              } else {
+                output = output[, grep(pattern = "denap|srnap|srnonw|sibreport_n_items", x = names(output), invert = TRUE, value = FALSE)]
+              }
               save(output, tail_expansion_log, GGIRversion, last_timestamp,
                    file = paste(metadatadir, ms5.out, "/", fnames.ms3[i], sep = ""))
             }

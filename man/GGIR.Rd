@@ -1250,7 +1250,11 @@ GGIR(mode = 1:5,
         Character (default = NULL).
         To specify classification model. Currently the only option is "hip3yr", which
         corresponds to a model trained with hip data in 3-3.5 olds trained with 
-        parent diary data.}
+        parent diary data. This functionality is currently superseded by
+        nap detection which is triggered by \code{possible_nap_window}
+        and \code{possible_nap_dur}. Leave nap_model as NULL when using the new
+        functionality. More documentation to follow in 2025 when development work 
+        has completed.}
 
       \item{longitudinal_axis}{
         Integer (default = NULL).
@@ -1278,18 +1282,17 @@ GGIR(mode = 1:5,
       \item{possible_nap_window}{
         Numeric (default = NULL).
         Numeric vector of length two with range in clock hours during which naps are
-        assumed to take place, e.g., \code{possible_nap_window = c(9, 18)}. Currently
-        used in the context of an explorative nap classification algortihm that
-        was trained in 3.5 year olds. The nap classification is only applied
-        if both \code{possible_nap_window} and \code{possible_nap_dur} are both specified}
+        assumed to take place, e.g., \code{possible_nap_window = c(9, 18)}. The nap 
+        classification is only applied
+        if both \code{possible_nap_window} and \code{possible_nap_dur} are both specified.
+        More documentation to follow in 2025 when development work has completed.}
 
       \item{possible_nap_dur}{
         Numeric (default = NULL).
         Numeric vector of length two with range in duration (minutes) of a nap,
-        e.g., \code{possible_nap_dur = c(15, 240)}. Currently
-        used in the context of an explorative nap classification algortihm that
-        was trained in 3.5 year olds. The nap classification is only applied
-        if both \code{possible_nap_window} and \code{possible_nap_dur} are both specified}
+        e.g., \code{possible_nap_dur = c(15, 240)}. The nap classification is only applied
+        if both \code{possible_nap_window} and \code{possible_nap_dur} are both specified.
+        More documentation to follow in 2025 when development work has completed.}
         
       \item{sleepefficiency.metric}{
         Numeric (default = 1).
@@ -1658,6 +1661,14 @@ GGIR(mode = 1:5,
          Value between 0 and 1 representing the fraction of data in a plot 
          that is expected to be valid. If this criteria is not met the row is skipped.
          Only used in new visual report (names start with "Time_report...").
+      }
+      
+      \item{method_research_vars}{
+        Character (default = NULL).
+        Vector with names of methodological variable categories to store in the
+        csv output files. Currently on "naps" is available which affects the part5
+        output. The variables are intended for methodological research only and
+        are by default turned off.
       }
     }
   }
