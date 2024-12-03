@@ -364,7 +364,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       if (length(f0) == 0) f0 = 1
       if (f1 == 0) f1 = N.files.ms2.out
       if (length(params_247[["qwindow"]]) > 2 |
-          is.character(params_247[["qwindow"]]) |
+          (is.character(params_247[["qwindow"]]) && length(grep(pattern = "onlyfilter|filteronly", x = params_247[["qwindow"]])) == 0) |
           (length(params_247[["qwindow"]]) == 2 & !all(c(0, 24) %in% params_247[["qwindow"]]))) {
         store.long = TRUE
       } else {

@@ -408,7 +408,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 # Then also extract count metric
                 
                 varnum_event = as.numeric(as.matrix(vari[,ExtFunColsi]))
-                if (NRV != length(averageday[, ExtFunColsi])) {
+                if (NRV < length(averageday[, ExtFunColsi])) {
                   if (di == 1) {
                     varnum_event = c(averageday[1:abs(deltaLength), ExtFunColsi], varnum_event)
                   } else {

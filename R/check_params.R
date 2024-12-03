@@ -104,7 +104,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   if (length(params_cleaning) > 0) {
     numeric_params = c("includedaycrit", "ndayswindow", "data_masking_strategy", "maxdur", "hrs.del.start",
                        "hrs.del.end", "includedaycrit.part5", "minimum_MM_length.part5",
-                       "includenightcrit", "max_calendar_days", "includecrit.part6", "includenightcrit.part5")
+                       "includenightcrit", "max_calendar_days", "includecrit.part6", "includenightcrit.part5",
+                       "nonwearFiltermaxHours", "nonwearFilterWindow")
     boolean_params = c("excludefirstlast.part5", "do.imp", "excludefirstlast",
                        "excludefirst.part4", "excludelast.part4", "nonWearEdgeCorrection")
     character_params = c("data_cleaning_file", "TimeSegments2ZeroFile")
@@ -283,6 +284,27 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                      " a fraction of the day between zero and one or the number ",
                      "of hours in a day."))
     }
+    if (!is.null(params_cleaning[["nonwearFiltermaxHours"]])) {
+      if (params_cleaning[["nonwearFiltermaxHours"]] < 0 ||
+          params_cleaning[["nonwearFiltermaxHours"]] > 12) {
+        stop("Parameters nonwearFiltermaxHours is expected to have a value > 0 and < 12")
+      }
+      if (!is.null(params_cleaning[["nonwearFilterWindow"]])) {
+        if (length(params_cleaning[["nonwearFilterWindow"]]) != 2) {
+          stop("Parameter nonwearFilterWindow does not have expected length of 2, please fix.", call. = FALSE)
+        }
+        if (params_cleaning[["nonwearFilterWindow"]][1] < params_cleaning[["nonwearFilterWindow"]][2] &&
+            params_cleaning[["nonwearFilterWindow"]][2] > 18 &&
+            params_cleaning[["nonwearFilterWindow"]][1] < 12) {
+          warning(paste0("The NonwearFilter applied to window starting at ", 
+                         params_cleaning[["nonwearFilterWindow"]][1], " and ending at ",
+                         params_cleaning[["nonwearFilterWindow"]][2], 
+                         " this is probably not the night, please check that order of",
+                         " values in nonwearFilterWindow is correct"), call. = FALSE)
+        }
+      }
+    }
+
     if (params_cleaning[["includenightcrit.part5"]] < 0) {
       stop("\nNegative value of includenightcrit.part5 is not allowed, please change.")
     } else if (params_cleaning[["includenightcrit.part5"]]  > 24) {

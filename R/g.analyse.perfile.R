@@ -57,6 +57,12 @@ g.analyse.perfile = function(I, C, metrics_nav,
   s_names[vi:(vi + 4)] = c("clipping_score", "meas_dur_dys", "complete_24hcycle", 
                            "meas_dur_def_proto_day", "wear_dur_def_proto_day")
   vi = vi + 5
+  if (!is.null(params_cleaning[["nonwearFiltermaxHours"]])) {
+    filesummary[vi] = dataqual_summary$nonwearHoursFiltered
+    filesummary[vi + 1] = dataqual_summary$nonwearEventsFiltered
+    s_names[vi:(vi + 1)] = c("nonwear_hours_filtered", "nonwear_events_filtered")
+    vi = vi + 2
+  }
   # calibration error after auto-calibration
   if (length(C$cal.error.end) == 0)   C$cal.error.end = c(" ")
   filesummary[vi] = C$cal.error.end
