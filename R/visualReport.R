@@ -403,7 +403,7 @@ visualReport = function(metadatadir = c(),
                                pattern = "codes", full.names = TRUE)
       df = file.info(legendfiles)
       legendfiles = rownames(df)[which.max(df$mtime)]
-      legendF = read.csv(rownames(df)[which.max(df$mtime)])
+      legendF = data.table::fread(file = rownames(df)[which.max(df$mtime)], data.table = FALSE)
       BCN = legendF$class_name # behavioural class names (characters)
       BCC = legendF$class_id # behavioural class codes (numeric)
 
