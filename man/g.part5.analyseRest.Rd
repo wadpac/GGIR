@@ -10,9 +10,8 @@
 \usage{
   g.part5.analyseRest(sibreport = NULL, dsummary = NULL,
                                 ds_names = NULL, fi = NULL,
-                                di = NULL, time = NULL, tz = NULL,
-                                possible_nap_dur = 0,
-                                possible_nap_edge_acc = Inf)
+                                di = NULL, ts = NULL, tz = NULL,
+                                params_sleep = NULL)
 }
 \arguments{
   \item{sibreport}{
@@ -31,18 +30,14 @@
   \item{di}{
     Numeric scalar to indicate recording index, created internally by \link{g.part5}
   }
-  \item{time}{
-    Daytime section of time column from the ts object, created internally by \link{g.part5},
+  \item{ts}{
+    Data.frame with time series object passed on from \link{g.part5_analyseSegment} and \link{g.part5},
   }
   \item{tz}{
     Timezone database name
   }
-  \item{possible_nap_dur}{
-    Minimum sib duration to be considered. For self-reported naps/nonwear
-    there is a minimum duration of 1 epoch.
-  }
-  \item{possible_nap_edge_acc}{
-    Maximum acceleration before or after the SIB for it to be considered.
+  \item{params_sleep}{
+    See \link{GGIR}
   }
 }
 \value{
