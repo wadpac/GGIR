@@ -184,7 +184,14 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
   } else {
     logreport = sibreport
   }
-  logreport$start = as.POSIXct(logreport$start, tz = desiredtz)
-  logreport$end = as.POSIXct(logreport$end, tz = desiredtz)
+  # add midnight timetimes which got lost
+  convert2POSIX = function(x) {
+    if (length(unlist(strsplit(x, " "))) == 1) {
+      x = paste0(x, " 00:00:00")
+    }
+    return(x)
+  }
+  logreport$start = as.POSIXct(unlist(lapply(X = logreport$start, FUN = convert2POSIX)), tz = desiredtz)
+  logreport$end = as.POSIXct(unlist(lapply(X = logreport$end, FUN = convert2POSIX)), tz = desiredtz)
   return(logreport)
 }
