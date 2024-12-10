@@ -1364,6 +1364,10 @@ GGIR(mode = 1:5,
         When using the qwindow functionality in combination with GGIR part 5 then
         make sure to check that parameters \code{segmentWEARcrit.part5} and 
         \code{segmentDAYSPTcrit.part5} are specified to your research needs.
+        When using an activity diary be aware that any column name including the words
+        "impute" or "uncertain" will be ignored. This means you can, for you own 
+        convenience, add columns to log which timestamps have been manually imputed 
+        or are considered uncertain.
         }
 
       \item{qwindow_dateformat}{
