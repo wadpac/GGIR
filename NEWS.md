@@ -14,6 +14,8 @@ this is consistent with functionality in the past. #1223
 - Part 5 and 6: part6_threshold_combi when not specified now defaults to first threshold as
 specified for light, moderate and vigorous intensity respectively.
 
+- Part 4: Handle unexpected combinations of sleep diary column names. For example, if only inbed and wakeup are available then treat these as the time in bed period, while if only sleeponset and outbed are available then these are treated as SPT window.
+
 # CHANGES IN GGIR VERSION 3.1-7
 
 - Part 3: Improved handling of DST, #1225
