@@ -11,26 +11,6 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
     }
     return(invalid)
   }
-  # handle_spt_gaps = function(s2, e2, s3, e3, 
-  #                            spt_max_gap_epochs) {
-  #   outofsptblock = integer()
-  #   if (length(s3) > 0) { # there are at least 1 gap between candidate guider windows
-  #     gaps = matrix(0, length(s3), 3) #characteristics of all gaps in between guider periods
-  #     for (gapi in 1:length(s3)) {
-  #       gaps[gapi,1] = abs(e2[gapi] - s2[gapi]) # length of guider preceding gap
-  #       gaps[gapi,2] = abs(e3[gapi] - s3[gapi]) # length of gap
-  #       gaps[gapi,3] = abs(e2[gapi + 1] - s2[gapi + 1]) # length of guider following gap
-  #       if (gaps[gapi, 2] < spt_max_gap_epochs &
-  #           (gaps[gapi, 2] / (gaps[gapi, 1] + gaps[gapi, 3])) < 0.3) {
-  #         # if gap is < than spt_max_gap (60 min)
-  #         # & gap < 30% of surrounding candidate spt windows
-  #         # then fill gap between candidate spt blocks
-  #         outofsptblock = c(outofsptblock, gapi)
-  #       }
-  #     }
-  #   }
-  #   invisible(outofsptblock)
-  # }
   # main code -----------------
   if (HASPT.algo != "notused") {
     if (HASPT.algo == "HDCZA") { # original, default
@@ -137,9 +117,6 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
           e3 = e3[-length(e3)]
         }
       }
-      # spt_max_gap_epochs = (60/ws3)*spt_max_gap*1
-      # outofsptblock = handle_spt_gaps(s2, e2, s3, e3, 
-      #                                 spt_max_gap_epochs)
       outofsptblock = which((e3 - s3) < ((60/ws3)*spt_max_gap*1))
       if (length(outofsptblock) > 0) { # only fill up gap if there are gaps
         s4 = s3[outofsptblock]
