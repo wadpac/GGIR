@@ -1,3 +1,12 @@
+# CHANGES IN GGIR VERSION 3.1-?
+
+- Part 4: 
+
+  - Identification of daylight saving time days in the detection of the spt is improved as it had the risk to misclassify partial first/last days as daylight saving time.
+  
+  - In days classified as daysleeper, the window over which the fraction_night_invalid is calculated now also shifts to 6pm-6pm, as it used to report the nonwear within 12pm-12pm.
+  
+
 # CHANGES IN GGIR VERSION 3.1-8
 
 - Part 4: 
