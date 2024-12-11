@@ -65,7 +65,6 @@ GGIR provides the following metrics over the time windows calculated, i.e., full
 
 On a side note - If you multiply Acceleration by Duration for a given class, and by that combine the information from both variables, you would arrive at a volume measure of behaviour. This is similar to the construct of calories over time. I think this would be a much richer way of describing the data as opposed to the conventional approach that only looks at either time spent per behavioural class or average acceleration in an entire day.
 
-
 ### Complementary variables
 
 If your primary interest is on sleep research then we recommend you to work with the GGIR part 4 reports. However, for those who want to look at interactions between behaviour and sleep, GGIR part 5 reports include sleep estimates as used for the part 5 analysis. Note that in part 5 the criteria for sleep estimate inclusion are different than for part 4. In part 5 we are happy with any estimate, even if the accelerometer was not worn during the night.
