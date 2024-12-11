@@ -180,8 +180,9 @@
   except rmc.file, rmc.nrow, and  rmc.skip as input for function \link{GGIR} or \link{g.part1} and also specify argument rmc.noise, which is not part of this function but needed to tell GGIR what noise level to expect in the data. The rmc.noise is taken from the params_rawdata object if not explicitly specified by user.
 }
 \value{
-  List with objects data holding the time series of acceleration, and
-  header if it was available in the orignal file.
+  List with objects data holding the time series of acceleration with among others
+  a column named "time" that holds the time expressed in seconds since 1-1-1970, and
+  header if a header was present in the input file.
 }
 \examples{
 

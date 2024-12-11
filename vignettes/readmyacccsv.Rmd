@@ -116,7 +116,7 @@ Before we can use this with GGIR, we first test read this file using the `read.m
 
 ```{R,eval=FALSE}
 library(GGIR)
-read.myacc.csv(rmc.file = "C:/mystudy/mydata/datafile.csv",
+data = read.myacc.csv(rmc.file = "C:/mystudy/mydata/datafile.csv",
                rmc.nrow = Inf,
                rmc.skip = 0,
                rmc.dec = ".",
@@ -131,6 +131,9 @@ read.myacc.csv(rmc.file = "C:/mystudy/mydata/datafile.csv",
                desiredtz = "Europe/London",
                rmc.sf = 100)
 ```
+
+The object data is a list with a data.frame name data and a header.
+The time column in the data.frame represents timestamps expressed in seconds since 1-1-1970.
 
 ## Example using the shell function
 
