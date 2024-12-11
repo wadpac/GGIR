@@ -8,8 +8,8 @@
 <title>9. Sleep Fundamentals: Guiding sleep detection • GGIR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="9. Sleep Fundamentals: Guiding sleep detection">
 <script defer data-domain="pkgdown.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
 </head>
@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -333,12 +333,13 @@ columns are recognised by GGIR as any column name with the word “date”
 in it. The advanced sleep log format is recognised by GGIR by looking
 out for the occurrence of at least two column names with the word “date”
 in their name. Wakeup times are recognised with the words “wakeup” in
-the column name. Sleeponset, to bed or in bed times are recognised as
-the columns with any of the following character combinations in their
-name: “onset”, “inbed”, “tobed”, or “lightsout”. Napping times are
-recognised by columns with the word “nap” in their name. Nonwear times
-are recognised by columns with the word “nonwear” in their
-name.</p></li>
+the column name. Sleeponset times are recognised as columns with the
+word “onset” in the column name. Time of going to bed is recognised by
+column names “lightsout”, “inbed”, “tobed”, or “bedstart”. Time of
+getting up is recognised by column names “lightson”, “outbed”, or
+“bedend”. Napping times are recognised by columns with the word “nap” in
+their name. Nonwear times are recognised by columns with the word
+“nonwear” in their name.</p></li>
 <li><p>GGIR guesses the data format by looping over common date formats.
 If the date falls within 30 days of the start date of the accelerometer
 recording then the date format is assumed to be found. It starts with
@@ -487,7 +488,9 @@ worn during the waking hour of the day.</p></li>
 <li><p>If we want the guider to consider invalid segments as no movement
 period set parameter <code>HASPT.ignore.invalid = NA</code>. This
 approach may be helpful for studies where the accelerometer is often not
-worn during the night.</p></li>
+worn during the night. If this is used, the guider name in the output
+will be shown with “+invalid” at the end, e.g. “HDCZA+invalid”, to
+reflect that the guider was enhanced.</p></li>
 </ol>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
