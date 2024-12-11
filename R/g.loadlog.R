@@ -144,7 +144,12 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
       startdates = as.data.frame(data.table::rbindlist(startdates, fill = TRUE))
       
       startdates$startAtMidnight = FALSE
-      startdates$startAtMidnight[grep(pattern = "00:00:00", x = startdates$rec_starttime)] = TRUE
+      # If recording starts at midnight or before 4am that first half night
+      # is still counted in part 3, which means that the start date of the recording
+      # does not equal the start date of the nights. Via startdates$startAtMidnight
+      # we correct for this
+      starthour = as.numeric(format(as.POSIXct(x = startdates$rec_starttime, format = "%Y-%m-%dT%H:%M:%S%z", tz = desiredtz), format = "%H"))
+      startdates$startAtMidnight[which(starthour <= 4)] = TRUE
       colnames(startdates)[1:2] = c("ID", "startdate")
       startdates$startdate = as.Date(iso8601chartime2POSIX(startdates$startdate, tz = desiredtz), tz = desiredtz)
     } else {
@@ -279,7 +284,21 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
                 curdatecol = datecols[ind]
                 nextdatecol =  datecols[which(datecols > curdatecol)[1]]
                 if (is.na(nextdatecol)) nextdatecol = ncol(S) + 1
-                
+                # Handle mixed reporting of time in bed and SPT"
+                if (length(bedendcols) == 0 & length(bedstartcols) != 0 &
+                    length(onsetcols) == 0 & length(wakecols) != 0) {
+                  # bedstart and wakeup are present, but bedend and sleeponset not,
+                  # treat wake as bedend such that this can be treated as time in bed period
+                  bedendcols = wakecols
+                  wakecols = NULL
+                }
+                if (length(bedendcols) != 0 & length(bedstartcols) == 0 &
+                    length(onsetcols) != 0 & length(wakecols) == 0) {
+                  # bedend and onsetpresent, but bedstart and wakeup not,
+                  # treat bedend as wakeup such that this can be treat as SPT
+                  wakecols = bedendcols
+                  bedendcols = NULL
+                }
                 # Sleeplog:
                 onseti = onsetcols[which(onsetcols > curdatecol & onsetcols < nextdatecol)]
                 wakeupi = wakecols[which(wakecols > nextdatecol)[1]]
@@ -392,7 +411,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
   }
   nnights = nnights + deltadate + 1 # to account for the possibility of extra night at the beginning of recording
   # # From here we continue with original code focused on sleeplog only
-  if (exists("S")) {
+  if (exists("S") && ncol(S) > 0) {
     sleeplog = adjustLogFormat(S, nnights, mode = "sleeplog")
   } else {
     sleeplog = NULL
