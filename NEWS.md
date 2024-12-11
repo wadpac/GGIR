@@ -1,6 +1,20 @@
 # CHANGES IN GGIR VERSION 3.1-?
 
+- Part 4: Parameter sib_must_fully_overlap_with_TimeInBed added to control whether sib should overlap fully with the start and/or end of time in bed to be considered sleep (default TRUE),
+this is consistent with functionality in the past. #1223
+
+- Part 5: Expand functionality for exploring possibility of nap detection, this includes the addition of new parameter possible_nap_gap.
+
+- Visual report: Added new visualreport that is automatically generated when visualreport = TRUE and intended to eventually replace the problematic legacy report. Add parameter old_visualreport to turn off the old visualreport generation. #1173
+
+- Part 4 + 5 + visualreport: If sleeplog has both reported sleeplog and time in bed process both. In part 4 we will still use one of the two but in the visualreport we display both. #967
+
 - Part 2: Add parameters nonwearFiltermaxHours and nonwearFilterWindow to give user the option to filter short lasting nighttime nonwear #1218.
+
+- Part 5 and 6: part6_threshold_combi when not specified now defaults to first threshold as
+specified for light, moderate and vigorous intensity respectively.
+
+- Part 4: Handle unexpected combinations of sleep diary column names. For example, if only inbed and wakeup are available then treat these as the time in bed period, while if only sleeponset and outbed are available then these are treated as SPT window.
 
 # CHANGES IN GGIR VERSION 3.1-7
 

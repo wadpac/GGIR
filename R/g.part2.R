@@ -28,10 +28,34 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       # note that this filtering is only use if parameter nonwearFiltermaxHours is specified.
       use_qwindow_as_diary = FALSE 
     }
-    params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]],
-                                            params_247[["qwindow_dateformat"]],
-                                            epochSize = params_general[["windowsizes"]][1])
-    # This will be an object with numeric qwindow values for all individuals and days
+    tmp_activityDiary_file = paste0(metadatadir, "/activityDiary.RData")
+    convertActivityLog = TRUE
+    if (file.exists(tmp_activityDiary_file)) {
+      days_since_created = as.numeric(difftime(time2 = as.Date(Sys.time()),
+                                              time1 =  as.Date(file.info(tmp_activityDiary_file)$ctime), units = "days"))
+      if (days_since_created < 90) { # file created in the last 90 days
+        convertActivityLog = FALSE
+      }
+    }
+    if (convertActivityLog) {
+      if (verbose == TRUE) cat("\nConverting activity diary...")
+      # This will be an object with numeric qwindow values for all individuals and days
+      params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]],
+                                              params_247[["qwindow_dateformat"]],
+                                              epochSize = params_general[["windowsizes"]][1])
+      qwindow = params_247[["qwindow"]]
+      save(qwindow, file = tmp_activityDiary_file)
+    } else {
+      if (verbose == TRUE) {
+        cat(paste0("\nReloading previously converted activity diary file, ",
+                   "if you want to re-convert the diary then delete file ",
+                   "'activityDiary.RData' first before re-running GGIR."))
+      }
+      load(tmp_activityDiary_file)
+      params_247[["qwindow"]] = qwindow
+    }
+    rm(qwindow)
+
   }
   #---------------------------------
   # Specifying directories with meta-data and extracting filenames

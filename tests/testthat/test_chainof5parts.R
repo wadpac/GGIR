@@ -188,8 +188,11 @@ test_that("chainof5parts", {
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   vis_sleep_file = "output_test/results/visualisation_sleep.pdf"
-  g.report.part4(datadir = fn, metadatadir = metadatadir, loglocation = sleeplog_fn,
-                 f0 = 1, f1 = 1, params_output = params_output, verbose = FALSE)
+  params_sleep = load_params()$params_sleep
+  params_sleep[["loglocation"]] = sleeplog_fn
+  g.report.part4(datadir = fn, metadatadir = metadatadir, 
+                 f0 = 1, f1 = 1, params_sleep = params_sleep,
+                 params_output = params_output, verbose = FALSE)
   expect_true(dir.exists(dirname))
   expect_true(file.exists(vis_sleep_file))
   expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(6))
@@ -204,7 +207,11 @@ test_that("chainof5parts", {
           overwrite = TRUE, excludefirstlast = FALSE, do.parallel = do.parallel,
           frag.metrics = "all", save_ms5rawlevels = TRUE,
           part5_agg2_60seconds = TRUE, do.sibreport = TRUE, nap_model = "hip3yr",
-          iglevels = 1, timewindow = c("MM", "WW", "OO"))
+          iglevels = 1, timewindow = c("MM", "WW", "OO"),
+          possible_nap_window = c(0, 24),
+          possible_nap_dur = c(0, 240),
+          possible_nap_edge_acc = Inf,
+          possible_nap_gap = 0)
   sibreport_dirname = "output_test/meta/ms5.outraw/sib.reports"
   expect_true(dir.exists(sibreport_dirname))
   expect_true(file.exists(paste0(sibreport_dirname, "/sib_report_123A_testaccfile_T5A5.csv")))
@@ -218,17 +225,18 @@ test_that("chainof5parts", {
   expect_true(dir.exists(dirname))
   expect_true(file.exists(rn[1]))
   expect_that(nrow(output),equals(5))
-  expect_that(ncol(output),equals(184))
+  expect_that(ncol(output),equals(160))
   expect_that(round(as.numeric(output$wakeup[2]), digits = 4), equals(36))
   expect_that(as.numeric(output$dur_day_spt_min[4]), equals(1150)) # WW window duration
   expect_that(as.numeric(output$dur_day_spt_min[5]), equals(1680)) # OO window duration
   dirname_raw = "output_test/meta/ms5.outraw/40_100_400"
   rn2 = dir(dirname_raw,full.names = TRUE, recursive = T)
-  expect_true(file.exists(rn2[1]))
-  TSFILE = read.csv(rn2[1])
+  rn2_index = grep(pattern = "[.]csv", x = rn2, value = FALSE)
+  expect_true(file.exists(rn2[rn2_index]))
+  TSFILE = read.csv(rn2[rn2_index])
   expect_that(nrow(TSFILE),equals(2820))
-  expect_equal(ncol(TSFILE), 12)
-  expect_equal(length(unique(TSFILE$class_id)), 10)
+  expect_equal(ncol(TSFILE), 14)
+  expect_equal(length(unique(TSFILE$class_id)), 11)
   #GGIR
   suppressWarnings(GGIR(mode = c(2,3,4,5), datadir = fn, outputdir = getwd(),
                         studyname = "test", f0 = 1, f1 = 1,
