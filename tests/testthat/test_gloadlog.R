@@ -93,7 +93,7 @@ test_that("gloadlog is able to load different log formats", {
   save(ID, rec_starttime, file = "mytestdir/dummyms3.RData")
   logs6 = g.loadlog(loglocation = fn, coln1 = 2, colid = 1,
                     meta.sleep.folder = tempdir , desiredtz = "")
-  expect_equal(nrow(logs6$sleeplog), 0)
+  expect_equal(logs6$sleeplog, NULL)
   expect_equal(nrow(logs6$bedlog), 3)
   expect_equal(colnames(logs6$bedlog), c("ID", "night", "duration", "bedstart", "bedend"))
   expect_equal(logs6$bedlog$night, c("1", "2", "3"))
