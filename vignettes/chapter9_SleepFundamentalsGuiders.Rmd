@@ -104,7 +104,7 @@ Relative to the basic sleeplog format the advanced sleep log format comes with t
 
 - Leave cells for missing values blank.
 
-- Column names are critical for the advanced sleeplog format: Date columns are recognised by GGIR as any column name with the word "date" in it. The advanced sleep log format is recognised by GGIR by looking out for the occurrence of at least two column names with the word "date" in their name. Wakeup times are recognised with the words "wakeup" in the column name. Sleeponset, to bed or in bed times are recognised as the columns with any of the following character combinations in their name: "onset", "inbed", "tobed", or "lightsout". Napping times are recognised by columns with the word "nap" in their name. Nonwear times are recognised by columns with the word "nonwear" in their name.
+- Column names are critical for the advanced sleeplog format: Date columns are recognised by GGIR as any column name with the word "date" in it. The advanced sleep log format is recognised by GGIR by looking out for the occurrence of at least two column names with the word "date" in their name. Wakeup times are recognised with the words "wakeup" in the column name. Sleeponset times are recognised as columns with the word "onset" in the column name. Time of going to bed is recognised by column names "lightsout", "inbed", "tobed", or "bedstart". Time of getting up is recognised by column names "lightson", "outbed", or "bedend". Napping times are recognised by columns with the word "nap" in their name. Nonwear times are recognised by columns with the word "nonwear" in their name.
 
 - GGIR guesses the data format by looping over common date formats. If the date falls within 30 days of the start date of the accelerometer recording then the date format is assumed to be found. It starts with attempting “Y-m-d” (as in 2015-06-25).
 
@@ -176,4 +176,4 @@ Depending on study protocol we may want to interpret invalid data (typically non
 
 2. If we want to guider to ignore all invalid segment despite our efforts to impute it, see `HASPT.ignore.invalid = TRUE`. This approach may be helpful for studies where the accelerometer is often not worn during the waking hour of the day.
 
-3. If we want the guider to consider invalid segments as no movement period set parameter `HASPT.ignore.invalid = NA`. This approach may be helpful for studies where the accelerometer is often not worn during the night.
+3. If we want the guider to consider invalid segments as no movement period set parameter `HASPT.ignore.invalid = NA`. This approach may be helpful for studies where the accelerometer is often not worn during the night. If this is used, the guider name in the output will be shown with "+invalid" at the end, e.g. "HDCZA+invalid", to reflect that the guider was enhanced.

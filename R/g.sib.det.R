@@ -227,8 +227,17 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
           qqq1 = 1 # preceding noon (not available in recording)
           qqq2 = midnightsi[1] + (twd[1] * (3600 / ws3))# first noon in recording
         } else {
-          qqq1 = midnightsi[j] + (twd[1] * (3600 / ws3)) #preceding noon
+          qqq1 = midnightsi[j] + (twd[1] * (3600 / ws3)) + 1 #preceding noon
           qqq2 = midnightsi[j] + (twd[2] * (3600 / ws3)) #next noon
+        }
+        # twd assumed 24 hour window, which is not the case for DST
+        if (qqq2 < length(time)) {
+          qqq2_hour = as.numeric(format(iso8601chartime2POSIX(time[qqq2], tz = desiredtz), "%H"))
+          if (qqq2_hour == 11) {
+            qqq2 = qqq2 + (3600 / ws3)
+          } else if (qqq2_hour == 13) {
+            qqq2 = qqq2 - (3600 / ws3)
+          }
         }
         sptei = sptei + 1
         if (qqq2 - qqq1 < 60) next # skip night if it has less than 60 epochs

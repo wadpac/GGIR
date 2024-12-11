@@ -25,27 +25,28 @@ appendRecords = function(metadatadir, desiredtz = "", idloc = 1, maxRecordingInt
         } else {
           N = overlap - 1
         }
-        NEWSHORT = df[nrow(df), ]
-        NEWSHORT[1:N, ] = NEWSHORT
-        T0 = as.POSIXct(x = NEWSHORT$timestamp[1], format = "%Y-%m-%dT%H:%M:%S%z", tz = tz) + epochSize
-        NEWSHORT$timestamp = POSIXtime2iso8601(seq(T0, T0 + (N * epochSize) - 1, by =  epochSize), tz)
-        if (pattern != "long") {
-          NEWSHORT[, grep(pattern = pattern, x = colnames(NEWSHORT), invert = TRUE, ignore.case = TRUE)] = 0
-        } else {
-          enCol = grep("en", colnames(NEWSHORT), ignore.case = TRUE)
-          NEWSHORT[, enCol] = 1
-          NEWSHORT$clippingscore = 0
-          NEWSHORT$nonwearscore = 3
-          if (any(colnames(NEWSHORT) %in% c("lightmean", "lightpeak"))) {
-            NEWSHORT$lightmean = 0
-            NEWSHORT$lightpeak = 0
+        if (N > 0) {
+          NEWSHORT = df[nrow(df), ]
+          NEWSHORT[1:N, ] = NEWSHORT
+          T0 = as.POSIXct(x = NEWSHORT$timestamp[1], format = "%Y-%m-%dT%H:%M:%S%z", tz = tz) + epochSize
+          NEWSHORT$timestamp = POSIXtime2iso8601(seq(T0, T0 + (N * epochSize) - 1, by =  epochSize), tz)
+          if (pattern != "long") {
+            NEWSHORT[, grep(pattern = pattern, x = colnames(NEWSHORT), invert = TRUE, ignore.case = TRUE)] = 0
+          } else {
+            enCol = grep("en", colnames(NEWSHORT), ignore.case = TRUE)
+            NEWSHORT[, enCol] = 1
+            NEWSHORT$clippingscore = 0
+            NEWSHORT$nonwearscore = 3
+            if (any(colnames(NEWSHORT) %in% c("lightmean", "lightpeak"))) {
+              NEWSHORT$lightmean = 0
+              NEWSHORT$lightpeak = 0
+            }
+            if ("temperaturemean" %in% colnames(NEWSHORT)) {
+              NEWSHORT$temperaturemean = 0
+            }
           }
-          if ("temperaturemean" %in% colnames(NEWSHORT)) {
-            NEWSHORT$temperaturemean = 0
-          }
+          df = rbind(df, NEWSHORT)
         }
-      
-        df = rbind(df, NEWSHORT)
         return(df)
       }
       # insert missing values in metashort

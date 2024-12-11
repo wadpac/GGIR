@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-**NOTE: If you are viewing this page via CRAN note that additional documentation can be found in the [GGIR GitHub pages](https://wadpac.github.io/GGIR/).**
+**NOTE: If you are viewing this page via CRAN note that the main GGIR documentation has been migrated to the [GGIR GitHub pages](https://wadpac.github.io/GGIR/).**
 
 # Introduction
 
@@ -93,6 +93,7 @@ function should be used for the aggregation, e.g. mean, sum, median.
 - `timestamp` Boolean to indicated whether timestamps  (seconds since 1-1-1970) should be passed on to the external 
     function as first columm of the data matrix..
 - `reporttype` Character to indicate the type of reporting by GGIR: "scalar" if it should be averaged per day, "event" if it should be summed per day, or "type" if it is categorical variable that can only be aggregated per day by tabulating it.
+- `name` Character to indicate the name of the entity being detected in the cases of event detection, this name is used in the output filename, e.g. part2_stepsummary.csv when name is "step". At the moment name is only use for event detection algorithms
 
 Next, add a call to GGIR function GGIR with `myfun` provided as one of its arguments:
 
