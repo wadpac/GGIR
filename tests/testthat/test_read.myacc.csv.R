@@ -47,6 +47,18 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
   testfile[4] = "testcsv4.csv"
   write.csv(S3, file = testfile[4], row.names = FALSE)
   
+  # UNIXsec
+  testfile[5] = "testcsv5.csv"
+  S5 = S1
+  S5$time = as.numeric(S5$time)
+  write.csv(S5, file = testfile[5], row.names = FALSE)
+  
+  # UNIXmsec
+  testfile[6] = "testcsv6.csv"
+  S6 = S5
+  S6$time = S6$time * 1000
+  write.csv(S6, file = testfile[6], row.names = FALSE)
+  
   # attempt to load
   D1 = read.myacc.csv(rmc.file = testfile[1], rmc.nrow = 20, rmc.dec = ".",
                       rmc.firstrow.acc = 1, rmc.firstrow.header = c(),
@@ -195,6 +207,29 @@ test_that("read.myacc.csv can handle files without header, no decimal places in 
   expect_true(D4$data[1, 4])
   expect_that(ncol(D4$data), equals(4))
   expect_that(D4$header, equals("no header"))
+  
+  # Timestamps in UNIXsec
+  D5 = read.myacc.csv(rmc.file = testfile[5], rmc.nrow = 20, rmc.dec = ".",
+                      rmc.firstrow.acc = 1, rmc.firstrow.header = c(),
+                      rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time = 2,
+                      rmc.unit.acc = "g", 
+                      rmc.unit.time = "UNIXsec",
+                      desiredtz = "Europe/London", rmc.sf = sf)
+  
+  expect_equal(mean(D5$data$x), 0.1078671, tol = 0.0001)
+  expect_equal(mean(D5$data$y), -0.06675716, tol = 0.0001)
+  expect_equal(D5$data$time[1], 1667394076, tol = 0.1)
+  
+  # Timestamps in UNIXmsec
+  D6 = read.myacc.csv(rmc.file = testfile[6], rmc.nrow = 20, rmc.dec = ".",
+                      rmc.firstrow.acc = 1, rmc.firstrow.header = c(),
+                      rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time = 2,
+                      rmc.unit.acc = "g", 
+                      rmc.unit.time = "UNIXmsec",
+                      desiredtz = "Europe/London", rmc.sf = sf)
+  expect_equal(mean(D6$data$x), 0.1078671, tol = 0.0001)
+  expect_equal(mean(D6$data$y), -0.06675716, tol = 0.0001)
+  expect_equal(D6$data$time[1], 1667394076, tol = 0.1)
   
   for (i in 1:length(testfile)) {
     expect_true(file.exists(testfile[i]))

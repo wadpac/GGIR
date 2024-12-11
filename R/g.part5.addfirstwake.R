@@ -24,8 +24,10 @@ g.part5.addfirstwake = function(ts, summarysleep, nightsi, sleeplog, ID,
   if (length(nightsi) < 2) {
     return(ts)
   }
-  if (firstwake > nightsi[2] | (summarysleep$sleeponset[1] < 18 &
-                                summarysleep$wakeup[1] < 18 & firstwake < nightsi[2])) { 
+  if (!is.na(firstwake) && firstwake > nightsi[2] ||
+      (summarysleep$sleeponset[1] < 18 &&
+       summarysleep$wakeup[1] < 18 &&
+       firstwake < nightsi[2])) {
     wake_night1_index = c()
     if (length(sleeplog) > 0) {
       # use sleeplog for waking up after first night
@@ -68,7 +70,7 @@ g.part5.addfirstwake = function(ts, summarysleep, nightsi, sleeplog, ID,
     if (length(wake_night1_index) == 0) {
       # use waking up from next day and subtract 24 hours,
       # the final option if neither of the above routes works
-      wake_night1_index = (firstwake - (24* ((60/epochSize)*60))) + 1
+      wake_night1_index = (firstwake - (24 * ((60 / epochSize) * 60))) + 1
     }
     if (is.na(wake_night1_index)) wake_night1_index = 0
     if (wake_night1_index < firstwake & wake_night1_index > 1 &

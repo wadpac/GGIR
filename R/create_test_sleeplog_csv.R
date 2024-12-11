@@ -2,7 +2,8 @@ create_test_sleeplog_csv = function(Nnights = 7,
                                     storagelocation = c(),
                                     advanced = FALSE,
                                     sep = ",",
-                                    begin_date = "2016/06/25") {
+                                    begin_date = "2016/06/25",
+                                    type = "sleeplog") {
   
   # function to create a test sleeplog file needed for testing GGIR
   # Nnights is the number of nights the sleeplog has
@@ -28,7 +29,7 @@ create_test_sleeplog_csv = function(Nnights = 7,
     dates = seq(as.Date(begin_date), as.Date(begin_date) + Nnights, by = 1)
     Cnames = c(
       "_wakeup",
-      "_inbed",
+      "_onset",
       "_nap1_start",
       "_nap1_end",
       "_nap2_start",
@@ -36,6 +37,14 @@ create_test_sleeplog_csv = function(Nnights = 7,
       "_nonwear1_off",
       "_nonwear1_on"
     )
+    if (type == "bedlog") {
+      Cnames[1:2] = c("_bedstart", "_bedend")
+    }
+    if (type == "both") {
+      Cnames = c(Cnames[1:2], c("_bedend", "_bedstart"), Cnames[3:8])
+      bedtimes = c("08:00:00", "22:00:00")
+      times = c(times[1:2], bedtimes, times[3:8])
+    }
     names = "ID"
     log = c()
     for (di in 1:length(dates)) {

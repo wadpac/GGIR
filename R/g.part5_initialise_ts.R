@@ -39,6 +39,11 @@ g.part5_initialise_ts = function(IMP, M, params_247, params_general, longitudina
     ts = data.frame(time = IMP$metashort[,1], ACC = IMP$metashort[,params_general[["acc.metric"]]] * scale,
                     guider = rep("unknown", nrow(IMP$metashort)))
   }
+  if ("step_count" %in% colnames(IMP$metashort)) {
+    ts$step_count = 0
+    ts$step_count = IMP$metashort$step_count
+  }
+  
   Nts = nrow(ts)
   # add non-wear column
   nonwear = IMP$rout[,5]
