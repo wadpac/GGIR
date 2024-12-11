@@ -83,7 +83,7 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
                 hour = as.numeric(format(timestamps, "%H"))
                 if (!is.null(firstDate)) {
                   # sleeplog start and/or ending after midnight
-                  AM = which(hour < 12)
+                  AM = which(hour <= 12)
                   if (length(AM) > 0) {
                     timestamps[AM] = as.POSIXlt(paste0(date + 1, " ", times[AM]), tz = desiredtz)
                   }
