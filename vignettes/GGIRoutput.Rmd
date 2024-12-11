@@ -296,71 +296,71 @@ For example, the following files will be generated if the threshold configuratio
 
 | (Term in) variable name | Description |
 |--------------------------|----------------------------------------------|
-| sleeponset | onset of sleep expressed in hours since the midnight in the night preceding the night of interest, e.g. 26 is 2am. |
-| wakeup | waking up time express in the same way as sleeponset. |
-| sleeponset_ts | onset of sleep expressed as a timestamp hours:minutes:seconds |
-| daysleeper | if 0 then the person woke up before noon, if 1 then the person woke up after noon |
-| cleaningcode | See paragraph [Cleaningcode](https://wadpac.github.io/GGIR/articles/chapter10_SleepAnalysis.html#cleaningcode). |
-| dur_day_spt_min | Total length of daytime waking hours and spt combined (typically 24 hours for MM report). |
-| `dur_` | duration of a behavioral class that will be specified int he rest of the variable name |
-| `ACC_` | (average) acceleration according to default metric specific by acc.metric |
-| `_spt_wake_` | Wakefulness within the Sleep period time window. |
-| `_spt_sleep_` | Sleep within the Sleep period time window. |
-| `_IN_` | Inactivity. Note that we use the term inactivity instead of sedentary behaviour for the lowest intensity level of behaviour. The reason for this is that GGIR does not attempt to classifying the activity type sitting at the moment, by which we feel that using the term sedentary behaviour would fail to communicate that. |
-| `_LIG_` | Light activity |
-| `_MOD_` | Moderate activity |
-| `_VIG_` | Vigorous activity |
-| `_MVPA_` | Moderate or Vigorous activity |
-| `_unbt_` | Unbouted |
-| `_bts_` | Bouts (also known as sojourns), which are segments that for which the acceleration is within a specified range for a specified fraction of the time. |
-| `_bts_1_10_` | Bouts lasting at least 1 minute and less than 10 minutes (1 and 9.99 minutes are included, but 10 minutes is not). |
-| Nblock | number of blocks of a certain behavioral class, not these are not bouts but a count of the number of times the behavioral class occurs without interruptions. |
-| WW | in filename refers to analyses based on the timewindow from waking to waking up |
-| MM | in filename refers to analyses done on windows between midnight and midnight |
-| calendar_date | calendar date on which the window started in day/month/year format. So, for WW window this could mean that you have two windows starting on the same date. |
-| weekday | weekday on which the window started. So, for WW window this could mean that you have two windows starting on the weekday. |
-| `_total_IN` | total time spent in inactivity (no distinction between bouted or unbouted behavior, this is a simple count of the number of epochs that meet the threshold criteria. |
-| `_total_LIG` | total time spent in light activity. |
-| nonwear_perc_day | Non-wear percentage during the waking hours of this day. |
-| nonwear_perc_spt | Non-wear percentage during the spt hours of this day. |
-| nonwear_perc_day_spt | Non-wear percentage during the whole day, including waking and spt. |
-| dur_day_min | Duration of waking hours within this day window |
-| dur_spt_min | Duration of Sleep Period Time within this day window. |
-| dur_day_spt_min | Duration this day window, including both waking hours and SPT. |
-| sleep_efficiency_after_onset | sleep_efficiency_after_onset in part 5 is not the same as in part 4, but calculated as the percentage of sleep within the sleep period time window. The conventional approach is the approach used in part 4. |
-| L5TIME | Timing of least active 5hrs, expressed as timestamp in the day |
-| M5TIME | Timing of most active 5hrs |
-| L5TIME_num, M5TIME_num | Timing of least/most active 5hrs, expressed as hours in the day. Note that L5/M5 timing variables are difficult to average across days because 23:00 and 1:00 would average to noon and not to midnight. So, caution is needed when interpreting person averages. |
-| L5VALUE | Acceleration value for least active 5hrs |
-| M5VALUE | Acceleration value for most active 5hrs |
-| `ig_` | All variables related to intensity gradient analysis |
-| `_gradient` | Gradient from intensity gradient analysis proposed by [Rowlands et al. 2018](https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx) for the waking hours window (`_day_`) and for the full window (`_day_spt_`) |
-| `_intercept` | Intercept from intensity gradient analysis proposed by [Rowlands et al. 2018](https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx) for the waking hours window (`_day_`) and for the full window (`_day_spt_`) |
-| `_rsquared` | r squared from intensity gradient analysis proposed by [Rowlands et al. 2018](https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx) for the waking hours window (`_day_`) and for the full window (`_day_spt_`) |
-| `FRAG_` | All variables related to behavioural fragmentation analysis |
-| `TP_` | Transition probability |
-| PA2IN | Physical activity fragments followed by inactivity fragments |
-| IN2PA | Physical inactivity fragments followed by activity fragments |
-| Nfrag | Number of fragments |
-| IN2LIPA | Inactivity fragments followed by LIPA |
-| IN2MVPA | Inactivity fragments followed by MVPA |
-| `mean_dur` | mean duration of a fragment category |
-| `Gini_dur` | Gini index |
-| `CoV_dur` | Coefficient of Variation |
-| alpha | Power law exponent |
-| `x0.5` | Derived from power law exponent alpha, see [Chastin et al. 201 0](https://doi.org/10.1016/j.gaitpost.2009.09.002) |
-| `W0.5` | Derived from power law exponent alpha, see [Chastin et al. 201 0](https://doi.org/10.1016/j.gaitpost.2009.09.002) |
-| nap_count | Total number of naps, only calculated when argument do.sibreport = TRUE, currently optimised for 3.5-year olds. See function documentation for function `g.part5.classifyNaps` in the [GGIR function documentation (pdf)](https:/CRAN.R-project.org/package=GGIR/GGIR.pdf). |
-| nap_totalduration | Total nap duration, only calculated when argument do.sibreport = TRUE, currently optimised for 3.5-year old. See function documentation for function `g.part5.classifyNaps` in the [GGIR function documentation (pdf)](https:/CRAN.R-project.org/package=GGIR/GGIR.pdf). |
-| sibreport_n_items | Only created if `do.sibreport = TRUE`. Number of items in the sibreport |
-| sibreport_n_items_day | Only created if `do.sibreport = TRUE`. Number of items in the sibreport for this specific day |
-| nbouts_day_X | Only created if `do.sibreport = TRUE`. Number of bouts in a day of X where X can be sib (sustained inactivity bout), srnap (self-reported nap) or srnonw (self-reported nonwear) |
-| noverl_X | Only created if `do.sibreport = TRUE`. Number of overlapping bouts in a day of X where X can be sib_srnap, sib_srnonw, srnap_sib, or srnonw_sib |
+| sleeponset  | onset of sleep expressed in hours since the midnight in the night preceding the night of interest, e.g. 26 is 2am.        |
+| wakeup      | waking up time express in the same way as sleeponset.       |
+| sleeponset_ts           | onset of sleep expressed as a timestamp hours:minutes:seconds           |
+| daysleeper  | if 0 then the person woke up before noon, if 1 then the person woke up after noon    |
+| cleaningcode| See paragraph [Cleaningcode](https://wadpac.github.io/GGIR/articles/chapter10_SleepAnalysis.html#cleaningcode).   |
+| dur_day_spt_min         | Total length of daytime waking hours and spt combined (typically 24 hours for MM report).        |
+| `dur_`      | duration of a behavioral class that will be specified int he rest of the variable name           |
+| `ACC_`      | (average) acceleration according to default metric specific by acc.metric|
+| `_spt_wake_`| Wakefulness within the Sleep period time window.|
+| `_spt_sleep_`           | Sleep within the Sleep period time window.     |
+| `_IN_`      | Inactivity. Note that we use the term inactivity instead of sedentary behaviour for the lowest intensity level of behaviour. The reason for this is that GGIR does not attempt to classifying the activity type sitting at the moment, by which we feel that using the term sedentary behaviour would fail to communicate that.|
+| `_LIG_`     | Light activity        |
+| `_MOD_`     | Moderate activity     |
+| `_VIG_`     | Vigorous activity     |
+| `_MVPA_`    | Moderate or Vigorous activity      |
+| `_unbt_`    | Unbouted  |
+| `_bts_`     | Bouts (also known as sojourns), which are segments that for which the acceleration is within a specified range for a specified fraction of the time.|
+| `_bts_1_10_`| Bouts lasting at least 1 minute and less than 10 minutes (1 and 9.99 minutes are included, but 10 minutes is not).        |
+| Nblock      | number of blocks of a certain behavioral class, not these are not bouts but a count of the number of times the behavioral class occurs without interruptions.   |
+| WW          | in filename refers to analyses based on the timewindow from waking to waking up      |
+| MM          | in filename refers to analyses done on windows between midnight and midnight         |
+| calendar_date           | calendar date on which the window started in day/month/year format. So, for WW window this could mean that you have two windows starting on the same date.      |
+| weekday     | weekday on which the window started. So, for WW window this could mean that you have two windows starting on the weekday. |
+| `_total_IN` | total time spent in inactivity (no distinction between bouted or unbouted behavior, this is a simple count of the number of epochs that meet the threshold criteria.        |
+| `_total_LIG`| total time spent in light activity.|
+| nonwear_perc_day        | Non-wear percentage during the waking hours of this day.    |
+| nonwear_perc_spt        | Non-wear percentage during the spt hours of this day.       |
+| nonwear_perc_day_spt    | Non-wear percentage during the whole day, including waking and spt.     |
+| dur_day_min | Duration of waking hours within this day window|
+| dur_spt_min | Duration of Sleep Period Time within this day window.       |
+| dur_day_spt_min         | Duration this day window, including both waking hours and SPT.          |
+| sleep_efficiency_after_onset        | sleep_efficiency_after_onset in part 5 is not the same as in part 4, but calculated as the percentage of sleep within the sleep period time window. The conventional approach is the approach used in part 4.    |
+| L5TIME      | Timing of least active 5hrs, expressed as timestamp in the day          |
+| M5TIME      | Timing of most active 5hrs         |
+| L5TIME_num, M5TIME_num  | Timing of least/most active 5hrs, expressed as hours in the day. Note that L5/M5 timing variables are difficult to average across days because 23:00 and 1:00 would average to noon and not to midnight. So, caution is needed when interpreting person averages.   |
+| L5VALUE     | Acceleration value for least active 5hrs       |
+| M5VALUE     | Acceleration value for most active 5hrs        |
+| `ig_`       | All variables related to intensity gradient analysis |
+| `_gradient`   | Gradient from intensity gradient analysis proposed by [Rowlands et al. 2018](https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx) for the waking hours window (`_day_`) and for the full window (`_day_spt_`)      |
+| `_intercept`  | Intercept from intensity gradient analysis proposed by [Rowlands et al. 2018](https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx) for the waking hours window (`_day_`) and for the full window (`_day_spt_`)      |
+| `_rsquared`   | r squared from intensity gradient analysis proposed by [Rowlands et al. 2018](https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx) for the waking hours window (`_day_`) and for the full window (`_day_spt_`)      |
+| `FRAG_`     | All variables related to behavioural fragmentation analysis |
+| `TP_`       | Transition probability|
+| PA2IN       | Physical activity fragments followed by inactivity fragments|
+| IN2PA       | Physical inactivity fragments followed by activity fragments|
+| Nfrag       | Number of fragments   |
+| IN2LIPA     | Inactivity fragments followed by LIPA          |
+| IN2MVPA     | Inactivity fragments followed by MVPA          |
+| `mean_dur`  | mean duration of a fragment category           |
+| `Gini_dur`  | Gini index|
+| `CoV_dur`   | Coefficient of Variation           |
+| alpha       | Power law exponent    |
+| `x0.5`      | Derived from power law exponent alpha, see [Chastin et al. 201 0](https://doi.org/10.1016/j.gaitpost.2009.09.002)        |
+| `W0.5`      | Derived from power law exponent alpha, see [Chastin et al. 201 0](https://doi.org/10.1016/j.gaitpost.2009.09.002)        |
+| nap_count   | Total number of naps, only calculated when argument do.sibreport = TRUE, currently optimised for 3.5-year olds. See function documentation for function `g.part5.classifyNaps` in the [GGIR function documentation (pdf)](https:/CRAN.R-project.org/package=GGIR/GGIR.pdf). |
+| nap_totalduration       | Total nap duration, only calculated when argument do.sibreport = TRUE, currently optimised for 3.5-year old. See function documentation for function `g.part5.classifyNaps` in the [GGIR function documentation (pdf)](https:/CRAN.R-project.org/package=GGIR/GGIR.pdf).    |
+| sibreport_n_items	| Only created if `do.sibreport = TRUE`. Number of items in the sibreport |
+| sibreport_n_items_day |	Only created if `do.sibreport = TRUE`. Number of items in the sibreport for this specific day |
+| nbouts_X | Only created if `do.sibreport = TRUE`. Number of bouts in a day of X where X can be a detected nap (denap), srnap (self-reported nap) or srnonw (self-reported nonwear) |
+| noverl_X | Only created if `do.sibreport = TRUE`. Number of overlapping bouts in a day of X where X can be denap_srnap, denap_srnonw, srnap_denap, or srnonw_denap |
 | frag_mean_dur_X_day | Only created if `do.sibreport = TRUE`. Mean duration of X per day, where X can be sib, srnap or srnonw |
-| dur_day_X_min | Only created if `do.sibreport = TRUE`. Total duration in minutes of X per day, where X can be sib, srnap or srnonw |
-| mdur_X_overl_Y | Only created if `do.sibreport = TRUE`. Mean duration of the overlap between X and Y, which are combinations of sib, srnap or srnonw |
-| tdur_X_overl_Y | Only created if `do.sibreport = TRUE`. Total duration in minutes of the overlap between X and Y, which are combinations of sib, srnap or srnonw |
-| perc_X_overl_Y | Only created if `do.sibreport = TRUE`. Percentage of overlap between X and Y, which are combinations of sib, srnap or srnonw |
+| dur_X_min | Only created if `do.sibreport = TRUE`. Total duration in minutes of X per day, where X can be detect nap (denap), srnap or srnonw |
+| mdur_X_overl_Y | Only created if `do.sibreport = TRUE`. Mean duration of the overlap between X and Y, which are combinations of denap, srnap or srnonw |
+| tdur_X_overl_Y | Only created if `do.sibreport = TRUE`. Total duration in minutes of the overlap between X and Y, which are combinations of denap, srnap or srnonw |
+| perc_X_overl_Y | Only created if `do.sibreport = TRUE`. Percentage of overlap between X and Y, which are combinations of denap, srnap or srnonw |
 
 **Special note if you are working on compositional data analysis:**
 

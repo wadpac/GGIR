@@ -177,6 +177,7 @@ find a description and default value for all the arguments.
 | coln1                       | 4                 | params_sleep             |
 | possible_nap_window         | 5                 | params_sleep             |
 | possible_nap_dur            | 5                 | params_sleep             |
+| possible_nap_gap            | 5                 | params_sleep             |
 | do.visual                   | 4                 | params_output            |
 | outliers.only               | 4                 | params_output            |
 | excludefirstlast            | 4                 | params_cleaning          |
@@ -186,6 +187,7 @@ find a description and default value for all the arguments.
 | relyonsleeplog              | 4                 | deprecated               |
 | sleepefficiency.metric      | 4                 | params_sleep             |
 | def.noc.sleep               | 4                 | params_sleep             |
+| sib_must_fully_overlap_with_TimeInBed  | 4      | params_sleep             |
 | data_cleaning_file          | 4, 5              | params_cleaning          |
 | excludefirst.part4          | 4                 | params_cleaning          |
 | excludelast.part4           | 4                 | params_cleaning          |
