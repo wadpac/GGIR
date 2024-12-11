@@ -260,7 +260,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_sleep[["def.noc.sleep"]] = 1
     }
     
-    if ("HorAngle" %in% params_sleep[["HASPT.algo"]] & params_sleep[["sleepwindowType"]] != "TimeInBed") {
+    if (params_sleep[["HASPT.algo"]][1] == "HorAngle" & params_sleep[["sleepwindowType"]] != "TimeInBed") {
       warning("\nHASPT.algo is set to HorAngle, therefore auto-updating sleepwindowType to TimeInBed", call. = FALSE)
       params_sleep[["sleepwindowType"]] = "TimeInBed"
     }
