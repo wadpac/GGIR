@@ -17,7 +17,7 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-**NOTE: If you are viewing this page via CRAN note that additional documentation can be found in the [GGIR GitHub pages](https://wadpac.github.io/GGIR/).**
+**NOTE: If you are viewing this page via CRAN note that the main GGIR documentation has been migrated to the [GGIR GitHub pages](https://wadpac.github.io/GGIR/).**
 
 # Introduction
 

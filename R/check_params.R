@@ -105,7 +105,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   if (length(params_cleaning) > 0) {
     numeric_params = c("includedaycrit", "ndayswindow", "data_masking_strategy", "maxdur", "hrs.del.start",
                        "hrs.del.end", "includedaycrit.part5", "minimum_MM_length.part5",
-                       "includenightcrit", "max_calendar_days", "includecrit.part6", "includenightcrit.part5")
+                       "includenightcrit", "max_calendar_days", "includecrit.part6", "includenightcrit.part5",
+                       "nonwearFiltermaxHours", "nonwearFilterWindow")
+
     boolean_params = c("excludefirstlast.part5", "do.imp", "excludefirstlast",
                        "excludefirst.part4", "excludelast.part4", "nonWearEdgeCorrection")
     character_params = c("data_cleaning_file", "TimeSegments2ZeroFile")
@@ -122,7 +124,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "do.part2.pdf", "old_visualreport", "require_complete_lastnight_part5")
 
     character_params = c("save_ms5raw_format", "timewindow", "sep_reports", "sep_config",
-                         "dec_reports", "dec_config", "visualreport_focus")
+                         "dec_reports", "dec_config", "visualreport_focus", "method_research_vars")
     check_class("output", params = params_output, parnames = numeric_params, parclass = "numeric")
     check_class("output", params = params_output, parnames = boolean_params, parclass = "boolean")
     check_class("output", params = params_output, parnames = character_params, parclass = "character")
@@ -193,13 +195,22 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       stop(paste0("Parameter possible_nap_gap has length ", length(params_sleep[["possible_nap_gap"]]), 
                   " while length 1 is expected"), call. = FALSE)
     }
-    if (length(params_sleep[["possible_nap_window"]]) != 2) {
+    if (!is.null(params_sleep[["possible_nap_window"]]) &&
+        length(params_sleep[["possible_nap_window"]]) != 2) {
       stop(paste0("Parameter possible_nap_window has length ", length(params_sleep[["possible_nap_window"]]), 
                   " while length 2 is expected"), call. = FALSE)
     }
-    if (length(params_sleep[["possible_nap_dur"]]) != 2) {
+    if (!is.null(params_sleep[["possible_nap_dur"]]) &&
+        length(params_sleep[["possible_nap_dur"]]) != 2) {
       stop(paste0("Parameter possible_nap_dur has length ", length(params_sleep[["possible_nap_dur"]]), 
                   " while length 2 is expected"), call. = FALSE)
+    }
+    if (!is.null(params_sleep[["possible_nap_window"]]) &&
+        !is.null(params_sleep[["possible_nap_dur"]])) {
+      params_output[["do.sibreport"]] = TRUE
+      params_output[["save_ms5raw_format"]] = unique(c(params_output[["save_ms5raw_format"]], "RData"))
+      params_output[["save_ms5rawlevels"]] = TRUE
+      params_output[["save_ms5raw_without_invalid"]] = FALSE
     }
   }
   
@@ -301,6 +312,27 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                      " a fraction of the day between zero and one or the number ",
                      "of hours in a day."))
     }
+    if (!is.null(params_cleaning[["nonwearFiltermaxHours"]])) {
+      if (params_cleaning[["nonwearFiltermaxHours"]] < 0 ||
+          params_cleaning[["nonwearFiltermaxHours"]] > 12) {
+        stop("Parameters nonwearFiltermaxHours is expected to have a value > 0 and < 12")
+      }
+      if (!is.null(params_cleaning[["nonwearFilterWindow"]])) {
+        if (length(params_cleaning[["nonwearFilterWindow"]]) != 2) {
+          stop("Parameter nonwearFilterWindow does not have expected length of 2, please fix.", call. = FALSE)
+        }
+        if (params_cleaning[["nonwearFilterWindow"]][1] < params_cleaning[["nonwearFilterWindow"]][2] &&
+            params_cleaning[["nonwearFilterWindow"]][2] > 18 &&
+            params_cleaning[["nonwearFilterWindow"]][1] < 12) {
+          warning(paste0("The NonwearFilter applied to window starting at ", 
+                         params_cleaning[["nonwearFilterWindow"]][1], " and ending at ",
+                         params_cleaning[["nonwearFilterWindow"]][2], 
+                         " this is probably not the night, please check that order of",
+                         " values in nonwearFilterWindow is correct"), call. = FALSE)
+        }
+      }
+    }
+
     if (params_cleaning[["includenightcrit.part5"]] < 0) {
       stop("\nNegative value of includenightcrit.part5 is not allowed, please change.")
     } else if (params_cleaning[["includenightcrit.part5"]]  > 24) {

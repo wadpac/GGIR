@@ -225,17 +225,18 @@ test_that("chainof5parts", {
   expect_true(dir.exists(dirname))
   expect_true(file.exists(rn[1]))
   expect_that(nrow(output),equals(5))
-  expect_that(ncol(output),equals(184))
+  expect_that(ncol(output),equals(160))
   expect_that(round(as.numeric(output$wakeup[2]), digits = 4), equals(36))
   expect_that(as.numeric(output$dur_day_spt_min[4]), equals(1150)) # WW window duration
   expect_that(as.numeric(output$dur_day_spt_min[5]), equals(1680)) # OO window duration
   dirname_raw = "output_test/meta/ms5.outraw/40_100_400"
   rn2 = dir(dirname_raw,full.names = TRUE, recursive = T)
-  expect_true(file.exists(rn2[1]))
-  TSFILE = read.csv(rn2[1])
+  rn2_index = grep(pattern = "[.]csv", x = rn2, value = FALSE)
+  expect_true(file.exists(rn2[rn2_index]))
+  TSFILE = read.csv(rn2[rn2_index])
   expect_that(nrow(TSFILE),equals(2820))
   expect_equal(ncol(TSFILE), 14)
-  expect_equal(length(unique(TSFILE$class_id)), 10)
+  expect_equal(length(unique(TSFILE$class_id)), 11)
   #GGIR
   suppressWarnings(GGIR(mode = c(2,3,4,5), datadir = fn, outputdir = getwd(),
                         studyname = "test", f0 = 1, f1 = 1,

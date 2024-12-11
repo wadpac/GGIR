@@ -22,8 +22,8 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                         relyonguider = FALSE,
                         def.noc.sleep = 1,
                         sleeplogsep = NULL, sleepwindowType = "SPT",
-                        possible_nap_window = c(9, 18),
-                        possible_nap_dur = c(15, 240),
+                        possible_nap_window = NULL,
+                        possible_nap_dur = NULL,
                         possible_nap_gap = 0,
                         possible_nap_edge_acc = Inf,
                         nap_model = c(), sleepefficiency.metric = 1,
@@ -79,7 +79,8 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                       L5M5window = c(0, 24), cosinor = FALSE,
                       part6CR = FALSE, part6HCA = FALSE,
                       part6Window = c("start", "end"),
-                      clevels = c(30, 150), part6DFA = FALSE)
+                      part6DFA = FALSE, clevels = c(30, 150))
+
   }
   if ("phyact" %in% topic) {
     params_phyact = list(mvpathreshold = 100, boutcriter = 0.8,
@@ -108,7 +109,9 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                            segmentDAYSPTcrit.part5 = c(0.9, 0),
                            study_dates_file = c(), study_dates_dateformat = "%d-%m-%Y",
                            includecrit.part6 = c(2/3, 2/3),
-                           includenightcrit.part5 = 0)
+                           includenightcrit.part5 = 0,
+                           nonwearFiltermaxHours = NULL,
+                           nonwearFilterWindow = NULL)
   }
   if ("output" %in% topic) {
     params_output = list(epochvalues2csv = FALSE, save_ms5rawlevels = FALSE,
@@ -123,7 +126,8 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                          visualreport_without_invalid = TRUE,
                          old_visualreport = TRUE, visualreport_hrsPerRow = 36,
                          visualreport_focus = "day",
-                         visualreport_validcrit = 0, require_complete_lastnight_part5 = FALSE)
+                         visualreport_validcrit = 0, require_complete_lastnight_part5 = FALSE,
+                         method_research_vars = NULL)
 
   }
   if ("general" %in% topic) {

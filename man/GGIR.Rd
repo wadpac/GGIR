@@ -433,7 +433,8 @@ GGIR(mode = 1:5,
 
       \item{rmc.unit.time}{
         Character (default = "POSIX").
-        Character with unit of timestamps: "POSIX", "UNIXsec" (seconds since origin, see argument \code{rmc.origin}),
+        Character with unit of timestamps: "POSIX", "UNIXsec" (seconds since origin, 
+        see argument \code{rmc.origin}), "UNIXmsec" (same as UNIXsec but in milliseconds),
         "character", or "ActivPAL" (exotic timestamp format only used in the ActivPAL
         activity monitor).}
 
@@ -949,16 +950,15 @@ GGIR(mode = 1:5,
         at valid data during waking hours.}
 
       \item{max_calendar_days}{
-      Numeric (default = 0).
-      The maximum number of calendar days to include (set to zero if unknown).}
+        Numeric (default = 0).
+        The maximum number of calendar days to include (set to zero if unknown).}
 
       \item{nonWearEdgeCorrection}{
-      Boolean (default = TRUE).
+        Boolean (default = TRUE).
         If TRUE then the non-wear detection around the edges of the recording (first
         and last 3 hours) are corrected following description in vanHees2013 as
         has been the default since then. This functionality is advisable when working 
-        with sleep clinic or exercise lab data typically lasting less than a day.
-      }
+        with sleep clinic or exercise lab data typically lasting less than a day.}
 
       \item{nonwear_approach}{
         Character (default = "2023").
@@ -976,8 +976,39 @@ GGIR(mode = 1:5,
       \item{includecrit.part6}{
         Numeric (default = c(2/3, 2/3))
         Vector of two with the minimum fraction of valid data required for day
-        and spt time, respectively. This criteria is only used for circadian rhythm analysis.
-      }
+        and spt time, respectively. This criteria is only used for circadian 
+        rhythm analysis.}
+
+      \item{nonwearFiltermaxHours}{
+        Numeric (default = NULL).
+        If not NULL, ignore detected nonwear periods that last shorter than
+        nonwearFiltermaxHours during a window as defined by
+        parameter \code{NonwearFilterWindow}. If NonwearFilterWindow is not 
+        provided (set to NULL as is the default) check
+        whether \code{qwindow} is defined as activity diary file and whether it has 
+        timestamps that allow for defining a time in bed, SPT or lightsoff window.
+        For this the code looks for column names in the diary with the terms inbed,
+        sleeponset, or lightsout to define the start of the window.
+        Further, to define the end of the window the code looks for columns outbed,
+        wakeup, or lightsoff. If yes, it uses the largest of the windows that can
+        be defined with these timestamps. If not, use midnight-6am
+        as fall back setting. You may realise that these columns are the same as the
+        advanced format for the sleelog accepted by GGIR part 4. So, if you already
+        have an advanced format sleeplog for part 4 then you can provide this as value
+        for the qwindow parameter.  If you want to
+        use \code{qwindow} to guide the nonwear filtering as described in here but 
+        do not want GGIR to use it for day segment analysis in part 2 or 5 then 
+        make sure the diary filename includes the word "onlyfilter" or "filteronly"
+        to tell GGIR to only use qwindow for nonwear filtering.
+        The main purpose of this functionality is to offer
+        the option to ignore short lasting nonwear episodes during the night
+        when there is suspicion that these are falsely detect, e.g. in individuals
+        with extended motionless sleep periods caused by medication.}
+      
+      \item{nonwearFilterWindow}{
+        Numeric (default = NULL).
+        Vector of length 2 to specify the start and end hour of the night to be used
+        for the functionality as described above for NonwearFiltermaxHours.}
     }
   }
 
@@ -1218,7 +1249,12 @@ GGIR(mode = 1:5,
       \item{nap_model}{
         Character (default = NULL).
         To specify classification model. Currently the only option is "hip3yr", which
-        corresponds to a model trained with hip data in 3-3.5 olds trained with parent diary data.}
+        corresponds to a model trained with hip data in 3-3.5 olds trained with 
+        parent diary data. This functionality is currently superseded by
+        nap detection which is triggered by \code{possible_nap_window}
+        and \code{possible_nap_dur}. Leave nap_model as NULL when using the new
+        functionality. More documentation to follow in 2025 when development work 
+        has completed.}
 
       \item{longitudinal_axis}{
         Integer (default = NULL).
@@ -1244,18 +1280,19 @@ GGIR(mode = 1:5,
         \code{timethreshold = c(5,10)}.}
 
       \item{possible_nap_window}{
-        Numeric (default = c(9, 18)).
+        Numeric (default = NULL).
         Numeric vector of length two with range in clock hours during which naps are
-        assumed to take place, e.g., \code{possible_nap_window = c(9, 18)}. Currently
-        used in the context of an explorative nap classification algortihm that
-        was trained in 3.5 year olds. }
+        assumed to take place, e.g., \code{possible_nap_window = c(9, 18)}. The nap 
+        classification is only applied
+        if both \code{possible_nap_window} and \code{possible_nap_dur} are both specified.
+        More documentation to follow in 2025 when development work has completed.}
 
       \item{possible_nap_dur}{
-        Numeric (default = c(15, 240)).
+        Numeric (default = NULL).
         Numeric vector of length two with range in duration (minutes) of a nap,
-        e.g., \code{possible_nap_dur = c(15, 240)}. Currently
-        used in the context of an explorative nap classification algortihm that
-        was trained in 3.5 year olds.}
+        e.g., \code{possible_nap_dur = c(15, 240)}. The nap classification is only applied
+        if both \code{possible_nap_window} and \code{possible_nap_dur} are both specified.
+        More documentation to follow in 2025 when development work has completed.}
         
       \item{sleepefficiency.metric}{
         Numeric (default = 1).
@@ -1327,6 +1364,10 @@ GGIR(mode = 1:5,
         When using the qwindow functionality in combination with GGIR part 5 then
         make sure to check that parameters \code{segmentWEARcrit.part5} and 
         \code{segmentDAYSPTcrit.part5} are specified to your research needs.
+        When using an activity diary be aware that any column name including the words
+        "impute" or "uncertain" will be ignored. This means you can, for you own 
+        convenience, add columns to log which timestamps have been manually imputed 
+        or are considered uncertain.
         }
 
       \item{qwindow_dateformat}{
@@ -1439,10 +1480,17 @@ GGIR(mode = 1:5,
         ignores the first and last 5 hours, and c("O2", "W10") goes from the second
         onset till the 10th wakeup time.
       }
+
+      \item{part6DFA}{
+        Boolean (default = FALSE) to indicate whether to perform Detrended Fluctuation
+        Analysis. Turned off by default because it can be time consuming.
+      }
+
       \item{clevels}{
+        Not fully operational yet, to be actived in 2025.
         Numeric vector (default = c(30, 150)) with length 2 to indicate cadence ranges used 
         when summarising step counts, if available. When set to NULL, step counts will not be
-        summarised in part 5 output.
+        summarised in part 5 output. 
       }
 
       \item{part6DFA}{
@@ -1531,23 +1579,24 @@ GGIR(mode = 1:5,
 
       \item{visualreport}{
         Boolean (default = TRUE).
-        If TRUE, then generate visual report based on combined output
-        from \link{g.part2} and \link{g.part4}. Please note that the visual report
-        was initially developed to provide something to show to study participants
-        and not for data quality checking purposes. Over time we have improved
-        the visual report to also be useful for QC-ing the data. However, some of
-        the scorings as shown in the visual report are created for the visual report
-        only and may not reflect the scorings in the main GGIR analyses as reported in the
-        quantitative csv-reports. Most of our effort in the past 10 years has gone
-        into making sure that the csv-report are correct, while the visualreport has
-        mostly been a side project. This is unfortunate and we hope to find funding
-        in the future to design a new report specifically for the purpose of
-        QC-ing the analyses done by GGIR.}
+        If TRUE, store two visualreports in outputfolder 'results/file summary reports'
+        with names starting with "Report_..." and 
+        "Time_report...". The report "Report_..." has been in GGIR for years 
+        and is based on combined output GGIR part 2 and 4. It was initially only a
+        quick development attempt to have something to show to study participants.
+        This report is not designed for data quality checking purposes as it makes
+        not attempt to exactly visualise the classifications made in part 5.
+        Given the number of inaccuracies this report
+        will eventually be deprecated from GGIR. To turn
+        off the old report use \code{old_visualreport = FALSE}.
+        "Time_report", is a new report as
+        of GGIR 3.1-8 and is specifically aimed at supporting data quality checks 
+        as it shows the time series data as generated and used in GGIR part 5. }.
 
       \item{viewingwindow}{
         Numeric (default = 1).
         Centre the day as displayed around noon (\code{viewingwindow = 1}) or around 
-        midnight (\code{viewingwindow = 2}) in the visual report generated with 
+        midnight (\code{viewingwindow = 2}) in the "Report_" visual report generated with 
         \code{visualreport = TRUE}.}
 
       \item{week_weekend_aggregate.part5}{
@@ -1559,8 +1608,8 @@ GGIR(mode = 1:5,
       \item{dofirstpage}{
         Boolean (default = TRUE).
         To indicate whether a first page with histograms summarizing the whole
-        measurement should be added in the file summary reports generated 
-        with \code{visualreport = TRUE}.}
+        measurement should be added in the file summary reports named "Report_" 
+        generated with \code{visualreport = TRUE}.}
 
       \item{sep_reports}{
         Character (default = ",").
@@ -1580,8 +1629,8 @@ GGIR(mode = 1:5,
 
       \item{visualreport_without_invalid}{
           Boolean (default = TRUE).
-          If TRUE, then reports generated with \code{visualreport = TRUE} only show
-          the windows with sufficiently valid data according to \code{includedaycrit}
+          If TRUE, then reports generated with \code{visualreport = TRUE} named "Report_"
+          only show the windows with sufficiently valid data according to \code{includedaycrit}
           when viewingwindow = 1 or \code{includenightcrit} when viewingwindow = 2}
 
       \item{require_complete_lastnight_part5}{    
@@ -1600,13 +1649,15 @@ GGIR(mode = 1:5,
       
       \item{visualreport_hrsPerRow}{
         Numeric (default = 36).
-        Width of the plots in the new visualreport expressed in hours.
+        Width of the plots in the new visualreport (named "Time_report...") 
+        expressed in hours.
         Expected to be in the range 24-48. If more than 24 then the extra time overlaps
         with the beginning of the next plot.}
       
       \item{visualreport_focus}{
          Character (default = "day")
-         Whether new visual report focussed on day. If set ot "nigth" the focus will be
+         Whether new visual report (names start with "Time_report...") focuss on day
+         or night. If set ot "night" the focus will be
          on the night.
       }
       
@@ -1614,6 +1665,15 @@ GGIR(mode = 1:5,
          Numeric (default = 0).
          Value between 0 and 1 representing the fraction of data in a plot 
          that is expected to be valid. If this criteria is not met the row is skipped.
+         Only used in new visual report (names start with "Time_report...").
+      }
+      
+      \item{method_research_vars}{
+        Character (default = NULL).
+        Vector with names of methodological variable categories to store in the
+        csv output files. Currently on "nap" is available which affects the part5
+        output. The variables are intended for methodological research only and
+        are by default turned off.
       }
     }
   }

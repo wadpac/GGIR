@@ -24,8 +24,10 @@ g.part5.addfirstwake = function(ts, summarysleep, nightsi, sleeplog, ID,
   if (length(nightsi) < 2) {
     return(ts)
   }
-  if (firstwake > nightsi[2] | (summarysleep$sleeponset[1] < 18 &
-                                summarysleep$wakeup[1] < 18 & firstwake < nightsi[2])) { 
+  if (!is.na(firstwake) && firstwake > nightsi[2] ||
+      (summarysleep$sleeponset[1] < 18 &&
+       summarysleep$wakeup[1] < 18 &&
+       firstwake < nightsi[2])) {
     wake_night1_index = c()
     if (length(sleeplog) > 0) {
       # use sleeplog for waking up after first night
