@@ -1,8 +1,8 @@
 # CHANGES IN GGIR VERSION 3.1-?
 
-- Part 4: 
+- Part 3: 
 
-  - Identification of daylight saving time days in the detection of the spt is improved as it had the risk to misclassify partial first/last days as daylight saving time.
+  - Identification of daylight saving time days in the detection of the spt is improved as it had the risk to misclassify partial last days as daylight saving time.
   
   - In days classified as daysleeper, the window over which the fraction_night_invalid is calculated now also shifts to 6pm-6pm, as it used to report the nonwear within 12pm-12pm.
   
@@ -15,10 +15,6 @@
 this is consistent with functionality in the past. #1223
 
   - Handle unexpected combinations of sleep diary column names. For example, if only inbed and wakeup are available then treat these as the time in bed period, while if only sleeponset and outbed are available then these are treated as SPT window.
-  
-  - Identification of daylight saving time days in the detection of the spt is improved as it had the risk to misclassify partial first/last days as daylight saving time.
-  
-  - In days classified as daysleeper, the window over which the fraction_night_invalid is calculated now also shifts to 6pm-6pm, as it used to report the nonwear within 12pm-12pm.
   
 - Part 5: Expand functionality for exploring possibility of nap detection, this includes the addition of new parameter possible_nap_gap.
 
