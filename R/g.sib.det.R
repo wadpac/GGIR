@@ -21,6 +21,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
   # So, out of convenience I keep the object name SPTE. 
   dstime_handling_check = function(tmpTIME = tmpTIME, spt_estimate = spt_estimate, tz = c(),
                                    calc_SPTE_end = c(), calc_SPTE_start = c()) {
+    # Function to readjust estimated SPTE_start and SPTE_end in DST days
     t = tmpTIME[c(1, spt_estimate$SPTE_start, spt_estimate$SPTE_end)]
     timezone = format(GGIR::iso8601chartime2POSIX(t, tz = tz), "%z")
     if (length(unique(timezone)) == 1) {
@@ -32,6 +33,14 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
       offset = sign * (hours + minutes / 60)
       offset = offset[2:3] - offset[1]
       return(c(calc_SPTE_start + offset[1], calc_SPTE_end + offset[2]))
+    }
+  }
+  decide_guider = function(HASPT.algo, nonwear_percentage) {
+    # Function to decide the guider to use in the case that HASPT.algo is of length 2
+    if (HASPT.algo[1] == "NotWorn" && nonwear_percentage < 25 && length(HASPT.algo) == 2) {
+      return(2)
+    } else {
+      return(1)
     }
   }
   #==================================================
@@ -230,13 +239,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         detection.failed = FALSE
         # Calculate nonwear percentage for this window
         nonwear_percentage = (length(which(invalid[qqq1:qqq2] == 1)) /  (qqq2 - qqq1 + 1)) * 100
-        guider_to_use = 1
-        if (params_sleep[["HASPT.algo"]][1] == "NotWorn" &&
-            nonwear_percentage < 25 &&
-            length(params_sleep[["HASPT.algo"]]) == 2) {
-          # Nonwear percentage was low, so use alternative guider specified as second element
-          guider_to_use = 2
-        }
+        guider_to_use = decide_guider(params_sleep[["HASPT.algo"]], nonwear_percentage)
         #------------------------------------------------------------------
         # calculate L5 because this is used as back-up approach
         tmpACC = ACC[qqq1:qqq2]
@@ -293,13 +296,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
             if (newqqq2 < length(anglez) & (newqqq2 - newqqq1) > (23*(3600/ws3)) ) {
               # Recalculate nonwear percentage for new window (6pm to 6pm)
               nonwear_percentage = (length(which(invalid[newqqq1:newqqq2] == 1)) /  (newqqq2 - newqqq1 + 1)) * 100
-              guider_to_use = 1
-              if (params_sleep[["HASPT.algo"]][1] == "NotWorn" &&
-                  nonwear_percentage < 25 &&
-                  length(params_sleep[["HASPT.algo"]]) == 2) {
-                # Nonwear percentage was low, so use alternative guider specified as second element
-                guider_to_use = 2
-              }
+              guider_to_use = decide_guider(params_sleep[["HASPT.algo"]], nonwear_percentage)
               # new TIME (6pm tp 6pm)
               tmpTIME = time[newqqq1:newqqq2]
               if (params_sleep[["HASPT.algo"]][guider_to_use] != "NotWorn") {
