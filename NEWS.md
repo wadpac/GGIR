@@ -1,8 +1,21 @@
+# CHANGES IN GGIR VERSION 3.1-?
+
+- Part 3: 
+
+  - Identification of daylight saving time days in the detection of the spt is improved as it had the risk to misclassify partial last days as daylight saving time.
+  
+  - In days classified as daysleeper, the window over which the fraction_night_invalid is calculated now also shifts to 6pm-6pm, as it used to report the nonwear within 12pm-12pm.
+  
+
 # CHANGES IN GGIR VERSION 3.1-8
 
-- Part 4: Parameter sib_must_fully_overlap_with_TimeInBed added to control whether sib should overlap fully with the start and/or end of time in bed to be considered sleep (default TRUE),
+- Part 4: 
+
+  - Parameter sib_must_fully_overlap_with_TimeInBed added to control whether sib should overlap fully with the start and/or end of time in bed to be considered sleep (default TRUE),
 this is consistent with functionality in the past. #1223
 
+  - Handle unexpected combinations of sleep diary column names. For example, if only inbed and wakeup are available then treat these as the time in bed period, while if only sleeponset and outbed are available then these are treated as SPT window.
+  
 - Part 5: Expand functionality for exploring possibility of nap detection, this includes the addition of new parameter possible_nap_gap.
 
 - Visual report: Added new visualreport that is automatically generated when visualreport = TRUE and intended to eventually replace the problematic legacy report. Add parameter old_visualreport to turn off the old visualreport generation. #1173
@@ -13,8 +26,6 @@ this is consistent with functionality in the past. #1223
 
 - Part 5 and 6: part6_threshold_combi when not specified now defaults to first threshold as
 specified for light, moderate and vigorous intensity respectively.
-
-- Part 4: Handle unexpected combinations of sleep diary column names. For example, if only inbed and wakeup are available then treat these as the time in bed period, while if only sleeponset and outbed are available then these are treated as SPT window.
 
 # CHANGES IN GGIR VERSION 3.1-7
 
