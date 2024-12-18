@@ -1,7 +1,7 @@
 g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                      acc.metric = "ENMO", desiredtz = "",
                      myfun=c(), sensor.location = "wrist",
-                     params_sleep = c(), zc.scale = 1, ...) {
+                     params_sleep = c(), zc.scale = 1,...) {
   #get input variables
   input = list(...)
   if (length(input) > 0 || length(params_sleep) == 0) {
@@ -15,7 +15,11 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
     params_sleep = params$params_sleep
   }
   #==============================================================
-  perc = 10; spt_threshold = 15; sptblocksize = 30; spt_max_gap = 60 # default configurations (keep hardcoded for now
+  # perc = 10; spt_threshold = 15; sptblocksize = 30; spt_max_gap = 60 # default configurations (keep hardcoded for now
+  if (!"perc" %in% names(input)) perc = 10
+  if (!"spt_threshold" %in% names(input)) spt_threshold = 15
+  if (!"sptblocksize" %in% names(input)) sptblocksize = 30
+  if (!"spt_max_gap" %in% names(input)) spt_max_gap = 60
   # Abbreviaton SPTE = Sleep Period Time Estimate, although in case of HorAngle it is the Time in Bed estimate
   # but then we would have to come up with yet another term to represent the main sleep and/or time in bed window of the day
   # So, out of convenience I keep the object name SPTE. 
