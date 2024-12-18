@@ -61,6 +61,7 @@
 <url><loc>https://wadpac.github.io/GGIR/reference/DFA.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/extractID.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/extract_params.html</loc></url>
+<url><loc>https://wadpac.github.io/GGIR/reference/filterNonwearNight.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/g.abr.day.names.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/g.analyse.avday.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/g.analyse.html</loc></url>
@@ -145,6 +146,7 @@
 <url><loc>https://wadpac.github.io/GGIR/reference/SSP.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/tidyup_df.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/updateBlocksize.html</loc></url>
+<url><loc>https://wadpac.github.io/GGIR/reference/visualReport.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/RELEASE_CYCLE.html</loc></url>
 </urlset>
 

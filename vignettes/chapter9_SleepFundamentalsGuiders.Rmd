@@ -176,4 +176,4 @@ Depending on study protocol we may want to interpret invalid data (typically non
 
 2. If we want to guider to ignore all invalid segment despite our efforts to impute it, see `HASPT.ignore.invalid = TRUE`. This approach may be helpful for studies where the accelerometer is often not worn during the waking hour of the day.
 
-3. If we want the guider to consider invalid segments as no movement period set parameter `HASPT.ignore.invalid = NA`. This approach may be helpful for studies where the accelerometer is often not worn during the night.
+3. If we want the guider to consider invalid segments as no movement period set parameter `HASPT.ignore.invalid = NA`. This approach may be helpful for studies where the accelerometer is often not worn during the night. If this is used, the guider name in the output will be shown with "+invalid" at the end, e.g. "HDCZA+invalid", to reflect that the guider was enhanced.

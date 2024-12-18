@@ -1,4 +1,4 @@
-# CHANGES IN GGIR VERSION 3.1-?
+# CHANGES IN GGIR VERSION 3.1-8
 
 - Part 4: Parameter sib_must_fully_overlap_with_TimeInBed added to control whether sib should overlap fully with the start and/or end of time in bed to be considered sleep (default TRUE),
 this is consistent with functionality in the past. #1223
