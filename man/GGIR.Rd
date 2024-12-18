@@ -1228,16 +1228,20 @@ GGIR(mode = 1:5,
         If \code{TRUE}, invalid time segments are ignored (i.e., they cannot 
         contribute to the guider). If \code{NA}, then invalid time segments are 
         considered to be no movement segments and can contribute to the guider.
+        Further, the guider name in the output will be shown with "+invalid" 
+        its end, e.g. "HDCZA+invalid", to reflect the \code{NA} setting.
         When HASPT.algo is "NotWorn", HASPT.ignore.invalid is automatically set to
-        NA.
+        NA. 
         }
 
       \item{HASIB.algo}{
         Character (default = "vanHees2015").
         To indicate which algorithm should be used to define the
         sustained inactivity bouts (i.e., likely sleep).
-        Options: "vanHees2015", "Sadeh1994", "Galland2012".}
-
+        Options: "vanHees2015", "Sadeh1994", "Galland2012", "NotWorn". See vignette
+        \href{https://wadpac.github.io/GGIR/articles/chapter8_SleepFundamentalsSibs.html}{chapter 8}
+        for details.}
+        
       \item{Sadeh_axis}{
         Character (default = "Y").
         To indicate which axis to use for the Sadeh1994 algorithm, and  other algortihms
