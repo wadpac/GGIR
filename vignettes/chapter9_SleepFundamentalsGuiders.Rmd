@@ -100,6 +100,8 @@ Relative to the basic sleeplog format the advanced sleep log format comes with t
 
 - Per calendar date there is a column for wakeup time and followed by a column for onset or in-bed time. Note that this is different from the basic sleep log, where wakeup time follows the column for onset or in-bed time. So, the advanced sleep log is calendar date oriented: asking the participant when they woke up and when the fell asleep on a certain date. However, if the sleep onset time is at 2am, you should still fill in the 02:00:00, even though it is the 02:00:00 of the next calendar date.
 
+- If no timestamps are known for a certain date, you can skip this date from the sleep log. Note that this is different from the basic format sleep log where columns will have to be left empty for missing night(s).
+
 - You can add columns relating to self-reported napping time and nonwear time. These are not used for the sleep analysis in g.part3 and g.part4, but used in g.part5 to facilitate napping analysis, see argument `do.sibreport` and the paragraph on naps. Multiple naps and multiple nonwear periods can be entered per day.
 
 - Leave cells for missing values blank.

@@ -1,4 +1,4 @@
-# CHANGES IN GGIR VERSION 3.1-?
+# CHANGES IN GGIR VERSION 3.1-9
 
 - Part 3: 
 
@@ -6,6 +6,9 @@
   
   - In days classified as daysleeper, the window over which the fraction_night_invalid is calculated now also shifts to 6pm-6pm, as it used to report the nonwear within 12pm-12pm.
   
+- Vignette: Document that missing dates can be skipped i advanced format sleeplog
+
+- Step detection: Include R script for Verisense step detection inside GitHub repository 'user-scripts' folder to ease future maintenance.
 
 # CHANGES IN GGIR VERSION 3.1-8
 
