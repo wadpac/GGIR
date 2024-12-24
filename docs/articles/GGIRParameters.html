@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -2315,7 +2315,10 @@ guidance on how to use “NotWorn”.</p>
 </h4>
 <p>Character (default = “vanHees2015”). To indicate which algorithm
 should be used to define the sustained inactivity bouts (i.e., likely
-sleep). Options: “vanHees2015”, “Sadeh1994”, “Galland2012”.</p>
+sleep). Options: “vanHees2015”, “Sadeh1994”, “Galland2012”, “NotWorn”.
+See vignette
+://wadpac.github.io/GGIR/articles/chapter8_SleepFundamentalsSibs.htmlchapter
+8 for details.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="sadeh_axis">Sadeh_axis<a class="anchor" aria-label="anchor" href="#sadeh_axis"></a>
@@ -2341,8 +2344,9 @@ imputed angle or activity metric during the invalid time segments are
 used. If TRUE, invalid time segments are ignored (i.e., they cannot
 contribute to the guider). If NA, then invalid time segments are
 considered to be no movement segments and can contribute to the guider.
-When HASPT.algo is “NotWorn”, HASPT.ignore.invalid is automatically set
-to NA.</p>
+Further, the guider name in the output will be shown with “+invalid” its
+end, e.g. “HDCZA+invalid”, to reflect the NA setting. When HASPT.algo is
+“NotWorn”, HASPT.ignore.invalid is automatically set to NA.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="loglocation">loglocation<a class="anchor" aria-label="anchor" href="#loglocation"></a>

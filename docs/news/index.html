@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,14 +77,27 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.1-9" id="changes-in-ggir-version-31-9">CHANGES IN GGIR VERSION 3.1-9<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-31-9"></a></h2>
+<ul><li>
+<p>Part 3:</p>
+<ul><li><p>Identification of daylight saving time days in the detection of the spt is improved as it had the risk to misclassify partial last days as daylight saving time.</p></li>
+<li><p>In days classified as daysleeper, the window over which the fraction_night_invalid is calculated now also shifts to 6pm-6pm, as it used to report the nonwear within 12pm-12pm.</p></li>
+</ul></li>
+<li><p>Vignette: Document that missing dates can be skipped i advanced format sleeplog</p></li>
+<li><p>Step detection: Include R script for Verisense step detection inside GitHub repository ‘user-scripts’ folder to ease future maintenance.</p></li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.1-8" id="changes-in-ggir-version-31-8">CHANGES IN GGIR VERSION 3.1-8<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-31-8"></a></h2>
-<ul><li><p>Part 4: Parameter sib_must_fully_overlap_with_TimeInBed added to control whether sib should overlap fully with the start and/or end of time in bed to be considered sleep (default TRUE), this is consistent with functionality in the past. <a href="https://github.com/wadpac/GGIR/issues/1223" class="external-link">#1223</a></p></li>
+<ul><li>
+<p>Part 4:</p>
+<ul><li><p>Parameter sib_must_fully_overlap_with_TimeInBed added to control whether sib should overlap fully with the start and/or end of time in bed to be considered sleep (default TRUE), this is consistent with functionality in the past. <a href="https://github.com/wadpac/GGIR/issues/1223" class="external-link">#1223</a></p></li>
+<li><p>Handle unexpected combinations of sleep diary column names. For example, if only inbed and wakeup are available then treat these as the time in bed period, while if only sleeponset and outbed are available then these are treated as SPT window.</p></li>
+</ul></li>
 <li><p>Part 5: Expand functionality for exploring possibility of nap detection, this includes the addition of new parameter possible_nap_gap.</p></li>
 <li><p>Visual report: Added new visualreport that is automatically generated when visualreport = TRUE and intended to eventually replace the problematic legacy report. Add parameter old_visualreport to turn off the old visualreport generation. <a href="https://github.com/wadpac/GGIR/issues/1173" class="external-link">#1173</a></p></li>
 <li><p>Part 4 + 5 + visualreport: If sleeplog has both reported sleeplog and time in bed process both. In part 4 we will still use one of the two but in the visualreport we display both. <a href="https://github.com/wadpac/GGIR/issues/967" class="external-link">#967</a></p></li>
 <li><p>Part 2: Add parameters nonwearFiltermaxHours and nonwearFilterWindow to give user the option to filter short lasting nighttime nonwear <a href="https://github.com/wadpac/GGIR/issues/1218" class="external-link">#1218</a>.</p></li>
 <li><p>Part 5 and 6: part6_threshold_combi when not specified now defaults to first threshold as specified for light, moderate and vigorous intensity respectively.</p></li>
-<li><p>Part 4: Handle unexpected combinations of sleep diary column names. For example, if only inbed and wakeup are available then treat these as the time in bed period, while if only sleeponset and outbed are available then these are treated as SPT window.</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.1-7" id="changes-in-ggir-version-31-7">CHANGES IN GGIR VERSION 3.1-7<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-31-7"></a></h2>
