@@ -278,7 +278,8 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
             }
             newsleeplog[count ,1] = ID
             newbedlog[count ,1] = ID
-            newsleeplog_times = newbedlog_times = c()
+            newsleeplog_times = newbedlog_times = rep("time", 100)
+            newCounter = 1
             expected_dates = seq(startdate_sleeplog - deltadate, startdate_sleeplog + nnights, by = 1)
             # loop over expect dates giving start date of sleeplog
             for (ni in 1:(length(expected_dates) - 1)) {
@@ -291,7 +292,11 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
                 }
                 curdatecol = datecols[ind]
                 nextdatecol =  datecols[which(datecols > curdatecol)[1]]
-                if (is.na(nextdatecol)) nextdatecol = ncol(S) + 1
+                lastday = FALSE
+                if (is.na(nextdatecol)) {
+                  nextdatecol = ncol(S) + 1
+                  lastday = TRUE
+                }
                 # Handle mixed reporting of time in bed and SPT"
                 if (length(bedendcols) == 0 & length(bedstartcols) != 0 &
                     length(onsetcols) == 0 & length(wakecols) != 0) {
@@ -309,19 +314,29 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
                 }
                 # Sleeplog:
                 onseti = onsetcols[which(onsetcols > curdatecol & onsetcols < nextdatecol)]
-                wakeupi = wakecols[which(wakecols > nextdatecol)[1]]
-                if (length(onseti) == 1 & length(wakeupi) == 1) {
-                  newsleeplog_times = c(newsleeplog_times, S[i,onseti], S[i,wakeupi])
+                if (lastday == FALSE) {
+                  wakeupi = wakecols[which(wakecols > nextdatecol)[1]]
+                  wakeuptime = S[i,wakeupi]
                 } else {
-                  newsleeplog_times = c(newsleeplog_times, "", "")
+                  wakeuptime = ""
+                }
+                if (length(onseti) == 1 & length(wakeupi) == 1) {
+                  newsleeplog_times[newCounter:(newCounter + 1)] = c(S[i,onseti], wakeuptime)
+                } else {
+                  newsleeplog_times[newCounter:(newCounter + 1)] = c("", "")
                 }
                 # time in bed
                 bedstarti = bedstartcols[which(bedstartcols > curdatecol & bedstartcols < nextdatecol)]
-                bedendi = bedendcols[which(bedendcols > nextdatecol)[1]]
-                if (length(bedstarti) == 1 & length(bedendi) == 1) {
-                  newbedlog_times = c(newbedlog_times, S[i,bedstarti], S[i,bedendi])
+                if (lastday == FALSE) {
+                  bedendi = bedendcols[which(bedendcols > nextdatecol)[1]]
+                  bedendtime = S[i,bedendi]
                 } else {
-                  newbedlog_times = c(newbedlog_times, "", "")
+                  bedendtime = ""
+                }
+                if (length(bedstarti) == 1 & length(bedendi) == 1) {
+                  newbedlog_times[newCounter:(newCounter + 1)] = c(S[i,bedstarti], bedendtime)
+                } else {
+                  newbedlog_times[newCounter:(newCounter + 1)] = c("", "")
                 }
                 # Also grap nap, non-wear, and imputation code info and put those in separate matrices:
                 naps = napcols[which(napcols  > curdatecol & napcols < nextdatecol)]
@@ -346,10 +361,17 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
                   iccnt = iccnt + 1
                 }
               } else {
-                newsleeplog_times = c(newsleeplog_times, "", "")
-                newbedlog_times = c(newbedlog_times, "", "")
+                newsleeplog_times[newCounter:(newCounter + 1)] = c("", "")
+                newbedlog_times[newCounter:(newCounter + 1)] = c("", "")
+              }
+              newCounter = newCounter + 2
+              if (newCounter > length(newbedlog_times) - 5) {
+                newbedlog_times = c(newbedlog_times, rep("time", 100))
+                newsleeplog_times = c(newsleeplog_times, rep("time", 100))
               }
             }
+            newsleeplog_times = newsleeplog_times[which(newsleeplog_times != "time")]
+            newbedlog_times = newbedlog_times[which(newbedlog_times != "time")]
             # add columns to sleeplog
             extracols = (length(newsleeplog_times) + 2) - ncol(newsleeplog)
             if (extracols > 0) {
