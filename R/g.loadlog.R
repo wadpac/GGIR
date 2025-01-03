@@ -204,30 +204,38 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
       }
       napcnt = nwcnt = iccnt = 1
       IDcouldNotBeMatched = TRUE
+      dateformat_found = FALSE
       for (i in 1:nrow(S)) { # loop through rows in sleeplog
         ID = S[i,colid]
         if (ID %in% startdates$ID == TRUE) { # matching ID in acc data, if not ignore ID
           IDcouldNotBeMatched = FALSE
           startdate_acc = as.Date(startdates$startdate[which(startdates$ID == ID)], tz = desiredtz)
-          startdate_sleeplog = S[i, datecols[1]]
+          startdate_sleeplog = as.character(S[i, datecols[1:pmin(length(datecols), 5)]])
           Sdates_correct = c()
+          dateformats_to_consider = c("%Y-%m-%d", "%d-%m-%Y", "%m-%d-%Y", "%Y-%d-%m",
+                                      "%y-%m-%d", "%d-%m-%y", "%m-%d-%y", "%y-%d-%m",
+                                      "%Y/%m/%d", "%d/%m/%Y", "%m/%d/%Y", "%Y/%d/%m",
+                                      "%y/%m/%d", "%d/%m/%y", "%m/%d/%y", "%y/%d/%m")
+          if (dateformat_found == TRUE && dateformats_to_consider[1] != dateformat_correct) {
+            # If found then first try that before trying anything else
+            dateformats_to_consider = c(dateformat_correct, dateformats_to_consider)
+          }
           # Detect data format in sleeplog:
-          for (dateformat in c("%Y-%m-%d", "%d-%m-%Y", "%m-%d-%Y", "%Y-%d-%m",
-                               "%y-%m-%d", "%d-%m-%y", "%m-%d-%y", "%y-%d-%m",
-                               "%Y/%m/%d", "%d/%m/%Y", "%m/%d/%Y", "%Y/%d/%m",
-                               "%y/%m/%d", "%d/%m/%y", "%m/%d/%y", "%y/%d/%m")) {
+          for (dateformat in dateformats_to_consider) {
             startdate_sleeplog_tmp = as.Date(startdate_sleeplog, format = dateformat, tz = desiredtz)
             Sdates = as.Date(as.character(S[i,datecols]), format = dateformat, tz = desiredtz)
             if (length(which(diff(which(is.na(Sdates))) > 1)) > 0) {
               stop(paste0("\nSleeplog for ID: ", ID, " has missing date(s)"), call. = FALSE)
             }
-            if (is.na(startdate_sleeplog_tmp) == FALSE) {
+            if (all(is.na(startdate_sleeplog_tmp) == FALSE)) {
               deltadate = as.numeric(startdate_sleeplog_tmp - startdate_acc)
-              if (is.na(deltadate) == FALSE) {
-                if (abs(deltadate) < 30) {
-                  startdate_sleeplog = startdate_sleeplog_tmp
+              if (all(is.na(deltadate) == FALSE)) {
+                if (all(abs(deltadate) < 30)) {
+                  startdate_sleeplog = startdate_sleeplog_tmp[1]
                   Sdates_correct = Sdates
                   dateformat_correct = dateformat
+                  deltadate = deltadate[1]
+                  dateformat_found = TRUE
                   break
                 }
               }
