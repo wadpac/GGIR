@@ -218,7 +218,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
                                       "%y/%m/%d", "%d/%m/%y", "%m/%d/%y", "%y/%d/%m")
           if (dateformat_found == TRUE && dateformats_to_consider[1] != dateformat_correct) {
             # If found then first try that before trying anything else
-            dateformats_to_consider = c(dateformat_correct, dateformats_to_consider)
+            dateformats_to_consider = unique(c(dateformat_correct, dateformats_to_consider))
           }
           # Detect data format in sleeplog:
           for (dateformat in dateformats_to_consider) {
