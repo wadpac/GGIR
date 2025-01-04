@@ -241,6 +241,11 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
               }
             }
           }
+          if (deltadate > 300) {
+            warning(paste0("For ID ", ID, " the sleeplog start date is more than 300 days separated ",
+                           "from the dates in the accelerometer recording, this may indicate a ",
+                           "problem with date formats or their recognition, please check."), call. = FALSE)
+          }
           if (startdates$startAtMidnight[which(startdates$ID == ID)] == TRUE) {
             # If the first day in the advanced sleeplog is 28/11 
             # and the recording starts at midnight 27/11 00:00:00
@@ -259,6 +264,10 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
           } else {
             # handle missing dates
             ndates = as.numeric(diff(range(Sdates_correct[!is.na(Sdates_correct)]))) + 1
+            if (ndates > 300) warning(paste0("For ID ", ID, " the sleeplog has has ",
+                                             "more than 300 missing dates, this may ",
+                                             "indicate a problem with date format ",
+                                             "recognition. Please check."), call. = FALSE)
             if (ndates > nnights) {
               extraColumns = matrix("", nrow(newsleeplog), max(c((ndates - nnights)*2, 100)) + 1)
               newsleeplog = cbind(newsleeplog, extraColumns)
