@@ -33,7 +33,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   }
   if (dolog == TRUE) {
     sleeplogRDataFile = paste0(metadatadir,"/meta/sleeplog.RData")
-    # only re-process sleeplog if RData file does not exist or is from a date equal to or before the sleeplog
+    # only re-process sleeplog if sleeplog.RData does not exist or if sleeplog
+    # is from a date equal to or after sleeplog.RData
     if (!file.exists(sleeplogRDataFile) || 
         as.Date(file.info(params_sleep[["loglocation"]])$ctime) >= as.Date(file.info(sleeplogRDataFile)$ctime)) {
       logs_diaries = g.loadlog(params_sleep[["loglocation"]], 
