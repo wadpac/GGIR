@@ -4,7 +4,7 @@
 
   - Speed up the loading of advanced format sleeplog
   
-  - Improve automated recognition of data format in sleeplog
+  - Improve automated recognition of date format in sleeplog
 
 # CHANGES IN GGIR VERSION 3.1-9
 
