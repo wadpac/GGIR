@@ -53,10 +53,10 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
     }
     sleeplog$night = as.numeric(sleeplog$night)
     sleeplog$duration = as.numeric(sleeplog$duration)
-  }
-  if (is.null(logs_diaries$sleeplog) && is.null(logs_diaries$bedlog)) {
-    dolog = FALSE
-    rm(sleeplog)
+    if (is.null(logs_diaries$sleeplog) && is.null(logs_diaries$bedlog)) {
+      dolog = FALSE
+      rm(sleeplog)
+    }
   }
   #------------------------------------------------
   # get list of accelerometer milestone data files from sleep (produced by g.part3)
