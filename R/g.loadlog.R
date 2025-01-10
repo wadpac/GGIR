@@ -277,6 +277,12 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
               nonwearlog = cbind(nonwearlog, extraColumns)
               nnights = ndates
             }
+            if (startdate_sleeplog - deltadate > startdate_sleeplog + nnights) {
+              warning(paste0("Accelerometer recording for ID ",
+                             ID, " does not overlap with sleeplog date",
+                             " range"), call. = FALSE)
+              next
+            } 
             # only attempt to use sleeplog if start date could be recognised
             # Add row to newsleeplog if somehow there are not enough rows
             if (count > nrow(newsleeplog)) {
@@ -450,12 +456,12 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
   }
   nnights = nnights + deltadate + 1 # to account for the possibility of extra night at the beginning of recording
   # # From here we continue with original code focused on sleeplog only
-  if (exists("S") && ncol(S) > 0) {
+  if (exists("S") && ncol(S) > 0 && nnights > 0) {
     sleeplog = adjustLogFormat(S, nnights, mode = "sleeplog")
   } else {
     sleeplog = NULL
   }
-  if (exists("B")) {
+  if (exists("B") && nnights > 0) {
     bedlog = adjustLogFormat(B, nnights, mode = "bedlog")
   } else {
     bedlog = NULL
