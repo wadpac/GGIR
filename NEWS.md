@@ -1,3 +1,11 @@
+# CHANGES IN GGIR VERSION 3.1-10
+
+- Part 4:
+
+  - Speed up the loading of advanced format sleeplog
+  
+  - Improve automated recognition of date format in sleeplog
+
 # CHANGES IN GGIR VERSION 3.1-9
 
 - Part 3: 

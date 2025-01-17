@@ -32,15 +32,31 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
     dolog = FALSE
   }
   if (dolog == TRUE) {
-    logs_diaries = g.loadlog(params_sleep[["loglocation"]], coln1 = params_sleep[["coln1"]], colid = params_sleep[["colid"]],
-                             meta.sleep.folder = meta.sleep.folder,
-                             desiredtz = params_general[["desiredtz"]])
+    sleeplogRDataFile = paste0(metadatadir,"/meta/sleeplog.RData")
+    # only re-process sleeplog if sleeplog.RData does not exist or if sleeplog
+    # is from a date equal to or after sleeplog.RData
+    if (!file.exists(sleeplogRDataFile) || 
+        as.Date(file.info(params_sleep[["loglocation"]])$ctime) >= as.Date(file.info(sleeplogRDataFile)$ctime)) {
+      logs_diaries = g.loadlog(params_sleep[["loglocation"]], 
+                               coln1 = params_sleep[["coln1"]],
+                               colid = params_sleep[["colid"]],
+                               meta.sleep.folder = meta.sleep.folder,
+                               desiredtz = params_general[["desiredtz"]])
+      save(logs_diaries, file = sleeplogRDataFile)
+    } else {
+      load(file = sleeplogRDataFile)
+    }
     if (params_sleep[["sleepwindowType"]] == "TimeInBed" && length(logs_diaries$bedlog) > 0) {
       sleeplog = logs_diaries$bedlog
     } else {
       sleeplog = logs_diaries$sleeplog
     }
-    save(logs_diaries, file = paste0(metadatadir,"/meta/sleeplog.RData"))
+    sleeplog$night = as.numeric(sleeplog$night)
+    sleeplog$duration = as.numeric(sleeplog$duration)
+    if (is.null(logs_diaries$sleeplog) && is.null(logs_diaries$bedlog)) {
+      dolog = FALSE
+      rm(sleeplog)
+    }
   }
   #------------------------------------------------
   # get list of accelerometer milestone data files from sleep (produced by g.part3)
