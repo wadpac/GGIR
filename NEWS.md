@@ -1,3 +1,13 @@
+# CHANGES IN GGIR VERSION 3.1-??
+
+- Part 2: Correct identification of number of files for part 2 generation
+
+- Part 4: Further improvements to handling dates in sleeplog as a follow-up to work on #1243
+
+- Part 2 and 4: Both activity diary and sleep diary are now always reloaded if GGIR's copy of it (in .RData) is older than diary itself.
+
+- Part 2: Make sure event diary is save to csv with intended sep and dec rather than default.
+
 # CHANGES IN GGIR VERSION 3.1-10
 
 - Part 4:
