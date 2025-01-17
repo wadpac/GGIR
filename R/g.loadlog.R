@@ -204,6 +204,11 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
       }
       napcnt = nwcnt = iccnt = 1
       IDcouldNotBeMatched = TRUE
+      dateformat_found = FALSE
+      dateformats_to_consider = c("%Y-%m-%d", "%d-%m-%Y", "%m-%d-%Y", "%Y-%d-%m",
+                                  "%y-%m-%d", "%d-%m-%y", "%m-%d-%y", "%y-%d-%m",
+                                  "%Y/%m/%d", "%d/%m/%Y", "%m/%d/%Y", "%Y/%d/%m",
+                                  "%y/%m/%d", "%d/%m/%y", "%m/%d/%y", "%y/%d/%m")
       for (i in 1:nrow(S)) { # loop through rows in sleeplog
         ID = S[i,colid]
         if (ID %in% startdates$ID == TRUE) { # matching ID in acc data, if not ignore ID
@@ -211,12 +216,14 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
           startdate_acc = as.Date(startdates$startdate[which(startdates$ID == ID)], tz = desiredtz)
           startdate_sleeplog = S[i, datecols[1]]
           Sdates_correct = c()
-          # Detect data format in sleeplog:
-          for (dateformat in c("%Y-%m-%d", "%d-%m-%Y", "%m-%d-%Y", "%Y-%d-%m",
-                               "%y-%m-%d", "%d-%m-%y", "%m-%d-%y", "%y-%d-%m",
-                               "%Y/%m/%d", "%d/%m/%Y", "%m/%d/%Y", "%Y/%d/%m",
-                               "%y/%m/%d", "%d/%m/%y", "%m/%d/%y", "%y/%d/%m")) {
-            startdate_sleeplog_tmp = as.Date(startdate_sleeplog, format = dateformat, tz = desiredtz)
+          if (dateformat_found == TRUE && dateformats_to_consider[1] != dateformat_correct) {
+            # If found then first try that before trying anything else
+            dateformats_to_consider = unique(c(dateformat_correct, dateformats_to_consider))
+          }
+          # Detect date format in sleeplog:
+          for (dateformat in dateformats_to_consider) {
+            startdate_sleeplog_tmp = as.Date(startdate_sleeplog[which(startdate_sleeplog != "")], format = dateformat, tz = desiredtz)
+            if (is.null(startdate_sleeplog_tmp)) next
             Sdates = as.Date(as.character(S[i,datecols]), format = dateformat, tz = desiredtz)
             if (length(which(diff(which(is.na(Sdates))) > 1)) > 0) {
               stop(paste0("\nSleeplog for ID: ", ID, " has missing date(s)"), call. = FALSE)
@@ -232,6 +239,17 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
                 }
               }
             }
+          }
+          if (is.null(Sdates_correct)) {
+            # skip this row because it is empty
+            warning(paste0("\nSkip sleeplow row for ID: ", ID,
+                           " because it has no date(s)"), call. = FALSE)
+            next
+          }
+          if (deltadate > 300) {
+            warning(paste0("For ID ", ID, " the sleeplog start date is more than 300 days separated ",
+                           "from the dates in the accelerometer recording, this may indicate a ",
+                           "problem with date formats or their recognition, please check."), call. = FALSE)
           }
           if (startdates$startAtMidnight[which(startdates$ID == ID)] == TRUE) {
             # If the first day in the advanced sleeplog is 28/11 
