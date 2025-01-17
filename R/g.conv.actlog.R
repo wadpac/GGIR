@@ -4,7 +4,7 @@ g.conv.actlog = function(qwindow, qwindow_dateformat="%d-%m-%Y", epochSize = 5) 
   # local functions:
   time2numeric = function(x) {
     x = unlist(x)
-    x = x[grep(pattern = "impute|uncertain", x = names(x), invert = TRUE)]
+    x = x[grep(pattern = "impute|imputa|uncertain", x = names(x), invert = TRUE)]
     c2t = function(x2) {
       tmp = as.numeric(unlist(strsplit(as.character(x2),":")))
       if (length(tmp) == 2) hourinday = tmp[1] + (tmp[2]/60)

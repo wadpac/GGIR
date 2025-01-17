@@ -36,7 +36,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
     # only re-process sleeplog if sleeplog.RData does not exist or if sleeplog
     # is from a date equal to or after sleeplog.RData
     if (!file.exists(sleeplogRDataFile) || 
-        as.Date(file.info(params_sleep[["loglocation"]])$ctime) >= as.Date(file.info(sleeplogRDataFile)$ctime)) {
+        file.info(params_sleep[["loglocation"]])$ctime >= file.info(sleeplogRDataFile)$ctime) {
       logs_diaries = g.loadlog(params_sleep[["loglocation"]], 
                                coln1 = params_sleep[["coln1"]],
                                colid = params_sleep[["colid"]],
