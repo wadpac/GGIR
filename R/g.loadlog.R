@@ -244,7 +244,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
           }
           if (is.null(Sdates_correct)) {
             # skip this row because it is empty
-            warning(paste0("\nSkip sleeplow row for ID: ", ID,
+            warning(paste0("\nSkipping sleeplog row for ID ", ID,
                            " because it has no date(s)"), call. = FALSE)
             next
           }
