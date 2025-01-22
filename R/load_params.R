@@ -83,7 +83,7 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
 
   }
   if ("phyact" %in% topic) {
-    params_phyact = list(mvpathreshold = 100, boutcriter = 0.8,
+    params_phyact = list(mvpathreshold = NULL, boutcriter = NULL,
                          mvpadur = c(1,5,10),
                          boutcriter.in = 0.9, boutcriter.lig = 0.8,
                          boutcriter.mvpa = 0.8, threshold.lig = 40,

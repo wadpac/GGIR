@@ -10,17 +10,17 @@ check_params = function(params_sleep = c(), params_metrics = c(),
           x = params[[parname]]
           if (parclass == "numeric") {
             if (!is.numeric(x)) {
-              stop(paste0("\n", category, " argument ", parname, " is not ", parclass))
+              stop(paste0("\n", category, " parameter ", parname, " is not ", parclass))
             }
           }
           if (parclass == "boolean") {
             if (!is.logical(x)) {
-              stop(paste0("\n", category, " argument ", parname, " is not ", parclass))
+              stop(paste0("\n", category, " parameter ", parname, " is not ", parclass))
             }
           }
           if (parclass == "character") {
             if (!is.character(x)) {
-              stop(paste0("\n", category, " argument ", parname, " is not ", parclass))
+              stop(paste0("\n", category, " parameter ", parname, " is not ", parclass))
             }
           }
         }
@@ -168,14 +168,14 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     if (params_metrics[["do.brondcounts"]] == TRUE) {
       stop(paste0("\nThe brondcounts option has been deprecated following issues with the ",
                   "activityCounts package. We will reinsert brondcounts ",
-                  "once the issues are resolved. Consider using argument do.neishabouricounts, ",
+                  "once the issues are resolved. Consider using parameter do.neishabouricounts, ",
                   "for more information see package documentation."), call. = FALSE)
     }
   }
   
   if (length(params_rawdata) > 0) {
     if (params_rawdata[["frequency_tol"]] < 0 | params_rawdata[["frequency_tol"]] > 1) {
-      stop(paste0("\nArgument frequency_tol is ", params_rawdata[["frequency_tol"]],
+      stop(paste0("\nParameter frequency_tol is ", params_rawdata[["frequency_tol"]],
                   " , please adjust such that it is a number between 0 and 1"))
     }
   }
@@ -218,7 +218,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     
     if (params_sleep[["HASIB.algo"]] %in% c("Sadeh1994", "Galland2012", "ColeKripke1992") == TRUE) {
       if (params_sleep[["Sadeh_axis"]] %in% c("X","Y","Z") == FALSE) {
-        warning("Argument Sadeh_axis does not have meaningful value, it needs to be X, Y or Z (capital)", call. = FALSE)
+        warning("Parameter Sadeh_axis does not have meaningful value, it needs to be X, Y or Z (capital)", call. = FALSE)
       }
       if (params_sleep[["Sadeh_axis"]] == "X" & params_metrics[["do.zcx"]] == FALSE) params_metrics[["do.zcx"]] =  TRUE
       if (params_sleep[["Sadeh_axis"]] == "Y" & params_metrics[["do.zcy"]] == FALSE) params_metrics[["do.zcy"]] =  TRUE
@@ -233,7 +233,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         params_sleep[["HASPT.algo"]][1] %in% c("notused", "NotWorn") == FALSE) {
       if (params_metrics[["do.anglex"]] == FALSE | params_metrics[["do.angley"]] == FALSE | params_metrics[["do.anglez"]] == FALSE) {
         warning(paste0("\nWhen working with hip data all three angle metrics are needed,",
-                       "so GGIR now auto-sets arguments do.anglex, do.angley, and do.anglez to TRUE."), call. = FALSE)
+                       "so GGIR now auto-sets parameters do.anglex, do.angley, and do.anglez to TRUE."), call. = FALSE)
         params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = params_metrics[["do.anglez"]] = TRUE
       }
       if (length(params_sleep[["HASPT.algo"]]) == 1 && params_sleep[["HASPT.algo"]][1] != "HorAngle") {
@@ -256,7 +256,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     if (length(params_sleep[["loglocation"]]) > 0 & length(params_sleep[["def.noc.sleep"]]) != 1) {
       warning(paste0("\nloglocation was specified and def.noc.sleep does not have length of 1, this is not compatible. ",
                      " We assume you want to use the sleeplog and misunderstood",
-                     " argument def.noc.sleep. Therefore, we will reset def.noc.sleep to its default value of 1"), call. = FALSE)
+                     " parameter def.noc.sleep. Therefore, we will reset def.noc.sleep to its default value of 1"), call. = FALSE)
       params_sleep[["def.noc.sleep"]] = 1
     }
     
@@ -281,21 +281,21 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_cleaning[["data_masking_strategy"]] = params_cleaning[["strategy"]]
     }
     if (params_cleaning[["data_masking_strategy"]] %in% c(2, 4) & params_cleaning[["hrs.del.start"]] != 0) {
-      warning(paste0("\nSetting argument hrs.del.start in combination with data_masking_strategy = ",
+      warning(paste0("\nSetting parameter hrs.del.start in combination with data_masking_strategy = ",
                      params_cleaning[["data_masking_strategy"]]," is not meaningful, because this is only used when straytegy = 1"), call. = FALSE)
     }
     if (params_cleaning[["data_masking_strategy"]] %in% c(2, 4) & params_cleaning[["hrs.del.end"]] != 0) {
-      warning(paste0("\nSetting argument hrs.del.end in combination with data_masking_strategy = ",
+      warning(paste0("\nSetting parameter hrs.del.end in combination with data_masking_strategy = ",
                      params_cleaning[["data_masking_strategy"]]," is not meaningful, because this is only used when straytegy = 1"), call. = FALSE)
     }
     if (!(params_cleaning[["data_masking_strategy"]] %in% c(3, 5)) & params_cleaning[["ndayswindow"]] != 7) {
-      warning(paste0("\nSetting argument ndayswindow in combination with data_masking_strategy = ",
+      warning(paste0("\nSetting parameter ndayswindow in combination with data_masking_strategy = ",
                      params_cleaning[["data_masking_strategy"]]," is not meaningful, because this is only used when data_masking_strategy = 3 or data_masking_strategy = 5"), call. = FALSE)
     }
     if (params_cleaning[["data_masking_strategy"]] == 5 &
         params_cleaning[["ndayswindow"]] != round(params_cleaning[["ndayswindow"]])) {
       newValue = round(params_cleaning[["ndayswindow"]])
-      warning(paste0("\nArgument ndayswindow has been rounded from ",
+      warning(paste0("\nParameter ndayswindow has been rounded from ",
                      params_cleaning[["ndayswindow"]], " to ", newValue, " days",
                      "because when data_masking_strategy == 5 we expect an integer value", call. = FALSE))
       params_cleaning[["ndayswindow"]] = newValue
@@ -347,13 +347,19 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   if (length(params_phyact) > 0) {
     if (length(params_phyact[["bout.metric"]]) > 0 |
         length(params_phyact[["closedbout"]]) > 0) {
-      warning(paste0("\nArguments bout.metric and closedbout are no longer used",
-                     " by GGIR, we now use one piece of code stored in",
+      warning(paste0("\nParameters bout.metric and closedbout are no longer used",
+                     " by GGIR and ignored, we now use one piece of code stored in",
                      " function g.getbout."), call. = FALSE)
     }
     if (length(params_phyact[["mvpadur"]]) != 3) {
       params_phyact[["mvpadur"]] = c(1,5,10)
       warning("\nmvpadur needs to be a vector with length three, value now reset to default c(1, 5, 10)", call. = FALSE)
+    }
+    if (is.null(params_phyact[["mvpathreshold"]]) == TRUE) {
+      params_phyact[["mvpathreshold"]] = params_phyact[["threshold.mod"]]
+    }
+    if (is.null(params_phyact[["boutcriter"]]) == TRUE) {
+      params_phyact[["boutcriter"]] = params_phyact[["boutcriter.mvpa"]]
     }
     if ((length(params_phyact[["threshold.lig"]]) == 1 &&
         length(params_phyact[["threshold.mod"]]) == 1 &&
@@ -423,7 +429,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     if (is.null(params_general[["recordingEndSleepHour"]]) & params_general[["expand_tail_max_hours"]] != 0) {
       params_general[["recordingEndSleepHour"]] = 24 - params_general[["expand_tail_max_hours"]] # redefine the argument
       params_general[["expand_tail_max_hours"]] = NULL # set to null so that it keeps this configuration in the config file for the next run of the script.
-      stop("\nThe argument expand_tail_max_hours has been replaced by",
+      stop("\nThe parameter expand_tail_max_hours has been replaced by",
            " recordingEndSleepHour which has a different definition. Please",
            " see the documentation for further details and replace",
            " expand_tail_max_hour in your function call and config.csv file.", call. = FALSE)
@@ -475,7 +481,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         }
         warning(paste0("\nWhen dataFormat is set to ", params_general[["dataFormat"]],
                        " we assume that only metric ZCY is extracted and",
-                       " GGIR ignores all other metric requests. So, you should set arguments ",
+                       " GGIR ignores all other metric requests. So, you should set parameters ",
                        paste0(metricsNotFalse, collapse = " & "), " to FALSE"), call. = FALSE)
         # Turn all commonly used metrics to FALSE
         params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = FALSE
@@ -515,7 +521,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         }
         warning(paste0("\nWhen dataFormat is set to ukbiobank",
                        " we assume that only metric LFENMO is extracted and",
-                       " GGIR ignores all other metric requests. So, you should set arguments ",
+                       " GGIR ignores all other metric requests. So, you should set parameters ",
                        paste0(metricsNotFalse, collapse = " & "), " to FALSE"), call. = FALSE)
         # Turn all commonly used metrics to FALSE
         params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = FALSE
@@ -573,7 +579,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
            call. = FALSE)
     }
     if (length(params_cleaning[["segmentDAYSPTcrit.part5"]]) != 2) {
-      stop("\nArgument segmentDAYSPTcrit.part5 is expected to be a numeric vector of length 2", call. = FALSE)
+      stop("\nParameter segmentDAYSPTcrit.part5 is expected to be a numeric vector of length 2", call. = FALSE)
     }
     if (any(params_cleaning[["segmentDAYSPTcrit.part5"]] < 0) | 
         any(params_cleaning[["segmentDAYSPTcrit.part5"]] > 1)) {

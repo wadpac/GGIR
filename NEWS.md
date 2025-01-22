@@ -1,4 +1,36 @@
-# CHANGES IN GGIR VERSION 3.1-?
+# CHANGES IN GGIR VERSION 3.1-??
+
+- Part 2:
+
+  - Fix bug in determining the number of files to be included in the part 2 report. This does not affect subsequent GGIR parts but does affect the part 2 report which may have had less recordings than expected. #1252
+
+  - Speed up activity diary extraction. #1250
+
+  - Make sure event diary is saved to csv with intended sep and dec arguments rather than default.
+  
+  - Simplify MVPA parameter specification in part 2 (mvpathreshold, boutcriter) by copying values from corresponding parameters in part 5 (threshold.mod and boutcriter.mvpa) if not specified. #1247
+
+- Part 2 and 4: Both activity diary and sleep diary are now always reloaded if the derived copy of it (in .RData) is older than the diary itself. #1250
+
+- Visual report: Recently added visual report is now also able to handle recordings with only 1 valid data, these were previously skipped. #1246
+
+- Part 4:
+
+  - Improvements to handling dates in sleeplog as a follow-up to work on #1243
+  
+  - Added warning when there are two accelerometer recordings with the same ID.
+
+  - Change extraction of imputation code from sleep diary, which is now assumed to correspond to preceding night. This is now also documented. #1251
+
+# CHANGES IN GGIR VERSION 3.1-10
+
+- Part 4:
+
+  - Speed up the loading of advanced format sleeplog
+  
+  - Improve automated recognition of date format in sleeplog
+
+# CHANGES IN GGIR VERSION 3.1-9
 
 - Part 3: 
 
@@ -6,6 +38,9 @@
   
   - In days classified as daysleeper, the window over which the fraction_night_invalid is calculated now also shifts to 6pm-6pm, as it used to report the nonwear within 12pm-12pm.
   
+- Vignette: Document that missing dates can be skipped i advanced format sleeplog
+
+- Step detection: Include R script for Verisense step detection inside GitHub repository 'user-scripts' folder to ease future maintenance.
 
 # CHANGES IN GGIR VERSION 3.1-8
 

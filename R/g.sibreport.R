@@ -40,7 +40,7 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
     imputecodelog = logs_diaries$imputecodelog
     dateformat = logs_diaries$dateformat
 
-    firstDate = as.Date(ts$time[1])
+    firstDate = as.Date(ts$time[1], tz = desiredtz)
     extract_logs = function(log, ID, logname, firstDate = NULL) {
       logreport = c()
       if (length(log) > 0) {
@@ -60,7 +60,7 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
             if (ncol(tmp) <= 2) next
             nonempty = which(tmp[3:ncol(tmp)] != "" & tmp[3:ncol(tmp)] != "NA")
             if (length(nonempty) > 1) {
-              date = as.Date(tmp[1,2], format = dateformat)
+              date = as.Date(tmp[1,2], format = dateformat, tz = desiredtz)
               times = as.character(unlist(tmp[1,3:ncol(tmp)]))
               times = grep(pattern = "NA", value = TRUE, invert = TRUE, x = times)
               times = gsub(pattern = " ", replacement = "", x = times)
@@ -130,11 +130,11 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
     bedlogreport = extract_logs(bedlog, ID, logname = "bedlog", firstDate = firstDate)
     # add imputecodelog
     if (length(imputecodelog) > 0) {
-      addDate = function(x) {
-        start_time = as.POSIXct(x$start, "")
-        x$date = as.Date(start_time)
+      addDate = function(x, tz = desiredtz) {
+        start_time = as.POSIXct(x$start, tz = tz)
+        x$date = as.Date(start_time, tz = tz)
         start_hour = as.numeric(format(start_time, "%H"))
-        start_am = which(x$date < 12)
+        start_am = which(start_hour < 12)
         if (length(start_am) > 0) {
           x$date[start_am] = x$date[start_am] - 1
         }

@@ -1018,7 +1018,9 @@ GGIR(mode = 1:5,
     \describe{
 
       \item{mvpathreshold}{
-        Numeric (default = 100).
+        Numeric (default = NULL).
+        Legacy parameter, if not provided GGIR uses the value of \code{threshold.mod} 
+        for this.
         Acceleration threshold for MVPA estimation in GGIR \link{g.part2}.
         This can be a single number or an vector of numbers,
         e.g., \code{mvpathreshold = c(100, 120)}.
@@ -1027,11 +1029,13 @@ GGIR(mode = 1:5,
         MVPA is not estimated.}
 
       \item{mvpadur}{
-        Numeric (default = 10).
+        Numeric (default = c(1, 5, 10)).
         The bout duration(s) for which MVPA will be calculated. Only used in GGIR \link{g.part2}.}
 
       \item{boutcriter}{
-        Numeric (default = 0.8).
+        Numeric (default = NULL).
+        Legacy parameter, if not provided GGIR uses the value of \code{boutcriter.mvpa} 
+        for this.
         A number between 0 and 1, it defines what fraction of a bout needs to be above the
         mvpathreshold, only used in GGIR \link{g.part2}.}
 
@@ -1119,6 +1123,11 @@ GGIR(mode = 1:5,
         part 5 to be used for part 6. For example, "40_100_120". If left in default value
         GGIR will use the first threshold value from parameters \code{threshold.lig},
         \code{threshold.mod}, and \code{threshold.vig}.
+      }
+      \item{bout.metric}{
+        Deprecated parameter that was previously used to choose which
+        bout detection metric (algorithm) GGIR should use. GGIR now uses only one 
+        algorithm.
       }
     }
   }
