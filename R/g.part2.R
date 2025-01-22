@@ -28,10 +28,10 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       # note that this filtering is only use if parameter nonwearFiltermaxHours is specified.
       use_qwindow_as_diary = FALSE 
     }
-    tmp_activityDiary_file = paste0(metadatadir, "/activityDiary.RData")
+    tmp_activityDiary_file = paste0(metadatadir, "/meta/activityDiary.RData")
     
     if (!file.exists(tmp_activityDiary_file) || (file.exists(tmp_activityDiary_file) && 
-        file.info(params_247[["qwindow"]])$ctime >= file.info(tmp_activityDiary_file)$ctime)) {
+        file.info(params_247[["qwindow"]])$mtime >= file.info(tmp_activityDiary_file)$mtime)) {
       if (verbose == TRUE) cat("\nConverting activity diary...")
       # This will be an object with numeric qwindow values for all individuals and days
       params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]],
