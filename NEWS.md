@@ -1,4 +1,4 @@
-# CHANGES IN GGIR VERSION 3.1-??
+# CHANGES IN GGIR VERSION 3.1-11
 
 - Part 2:
 
@@ -21,6 +21,10 @@
   - Added warning when there are two accelerometer recordings with the same ID.
 
   - Change extraction of imputation code from sleep diary, which is now assumed to correspond to preceding night. This is now also documented. #1251
+  
+- Part 1, 5 and 6:
+
+  - Update code to be backward compatible with R 4.2.0
 
 # CHANGES IN GGIR VERSION 3.1-10
 
