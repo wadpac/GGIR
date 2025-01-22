@@ -2,15 +2,15 @@
 
 - Part 2:
 
-  - Fix bug in determining the number of files to be included in the part 2 report.
+  - Fix bug in determining the number of files to be included in the part 2 report. This does not affect subsequent GGIR parts but does affect the part 2 report which may have had less recordings than expected. #1252
 
-  - Speed up activity diary extraction.
+  - Speed up activity diary extraction. #1250
 
   - Make sure event diary is saved to csv with intended sep and dec arguments rather than default.
 
-- Part 2 and 4: Both activity diary and sleep diary are now always reloaded if the derived copy of it (in .RData) is older than the diary itself.
+- Part 2 and 4: Both activity diary and sleep diary are now always reloaded if the derived copy of it (in .RData) is older than the diary itself. #1250
 
-- Visual report: Recently added visual report is now also able to handle recordings with only 1 valid data, these were previously skipped.
+- Visual report: Recently added visual report is now also able to handle recordings with only 1 valid data, these were previously skipped. #1246
 
 - Part 4:
 
@@ -18,7 +18,7 @@
   
   - Added warning when there are two accelerometer recordings with the same ID.
 
-  - Change extraction of imputation code from sleep diary, which is now assumed to correspond to preceding night. This is now also documented.
+  - Change extraction of imputation code from sleep diary, which is now assumed to correspond to preceding night. This is now also documented. #1251
 
 # CHANGES IN GGIR VERSION 3.1-10
 
