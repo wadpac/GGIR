@@ -23,8 +23,9 @@ g.part5.wakesleepwindows = function(ts, part4_output, desiredtz, nightsi,
   # Round seconds to integer number of epoch lengths (needed if cleaningcode = 5).
   round_seconds_to_epochSize = function(x, epochSize) {
     if (length(as.numeric(unlist(strsplit(x,":")))) == 3) {
-      xPOSIX = as.POSIXct(x, format = "%H:%M:%S")
-      xPOSIX_rounded = as.POSIXct(round(as.numeric(xPOSIX) / epochSize) * epochSize)
+      xPOSIX = as.POSIXct(x, format = "%H:%M:%S", origin = "1970-01-01")
+      xPOSIX_rounded = as.POSIXct(round(as.numeric(xPOSIX) / epochSize) * epochSize,
+                                  origin = "1970-01-01")
       x = format(xPOSIX_rounded, format = "%H:%M:%S")
     } else {
       x = ""
@@ -67,7 +68,8 @@ g.part5.wakesleepwindows = function(ts, part4_output, desiredtz, nightsi,
     w1[k] = paste(tt[3],"-", tt[2], "-", tt[1], " ", as.character(defWA_ts), sep = "")
     # if time is beyond 24 then change the date
     if (defSO >= 24) { 
-      w0[k] = as.character(as.POSIXlt(w0[k],tz = desiredtz) + (24*3600))
+      tmp_w0 = as.POSIXlt(w0[k],tz = desiredtz, origin = "1970-01-01")
+      w0[k] = as.character(tmp_w0 + (24*3600))
     }
     if (defWA >= 24 |
         (part4_output$daysleeper[k] == 1 & defWA < 18)) {
