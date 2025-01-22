@@ -127,16 +127,16 @@ g.imputeTimegaps = function(x, sf, k=0.25, impute = TRUE,
           Rversion_lt_420 = as.numeric(R.Version()$major) >= 4 && as.numeric(R.Version()$minor) > 2
           for (i in gap90i) { 
             imp = imp + 1
-            # In the next bit of code we use data.table to extract hour and minute from timestamps
-            # however this does not work for older version of R
             if (Rversion_lt_420) {
               time_i = x$time[i]
               time_ip1 = x$time[i + 1]
             } else {
-              # In R 4.2 and early numeric time cannot be provide to data.table
-              # In GMT because at this point we do not care about the specific time
-              # because this is removed at the end of the function, we only use it
-              # to identify time gaps and their size
+              # Further down data.table is used to extract hour and minute from time stamps
+              # In R 4.2.0 and earlier numeric time cannot be provided to data.table
+              # For those older version of R convert timestamp format
+              # Tz is set to GMT because at this point we do not care about the specific time
+              # as time is removed at the end of the function, we only use it
+              # to identify time gaps and their size.
               time_i = as.POSIXct(x$time[i], origin = "1970-01-01", tz = "GMT")
               time_ip1 = as.POSIXct(x$time[i + 1], origin = "1970-01-01", tz = "GMT")
             }
