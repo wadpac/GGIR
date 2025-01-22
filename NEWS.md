@@ -7,6 +7,8 @@
   - Speed up activity diary extraction. #1250
 
   - Make sure event diary is saved to csv with intended sep and dec arguments rather than default.
+  
+  - Simplify MVPA parameter specification in part 2 (mvpathreshold, boutcriter) by copying values from corresponding parameters in part 5 (threshold.mod and boutcriter.mvpa) if not specified. #1247
 
 - Part 2 and 4: Both activity diary and sleep diary are now always reloaded if the derived copy of it (in .RData) is older than the diary itself. #1250
 
