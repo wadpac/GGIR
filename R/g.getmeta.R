@@ -88,9 +88,9 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   if (length(nmetrics) == 0) {
     warning("No metrics selected.", call. = FALSE)
   }
-
+  
   ws3 = params_general[["windowsizes"]][1]; ws2 = params_general[["windowsizes"]][2]; ws = params_general[["windowsizes"]][3]
-
+  
   PreviousEndPage = c()
   
   filequality = data.frame(filetooshort = FALSE, filecorrupt = FALSE,
@@ -115,18 +115,18 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   mon = INFI$monc
   dformat = INFI$dformc
   sf = INFI$sf
-
+  
   if (is.null(sf)) { # sf is NULL for corrupt files
     return(invisible(list(filecorrupt = TRUE, filetooshort = FALSE, NFilePagesSkipped = 0,
-                     metalong = c(), metashort = c(), wday = c(), wdayname = c(),
-                     windowsizes = c(), bsc_qc = bsc_qc, QClog = NULL)))
+                          metalong = c(), metashort = c(), wday = c(), wdayname = c(),
+                          windowsizes = c(), bsc_qc = bsc_qc, QClog = NULL)))
   }
-
+  
   hvars = g.extractheadervars(INFI)
   deviceSerialNumber = hvars$deviceSerialNumber
-
+  
   # get now-wear, clip, and blocksize parameters (thresholds)
-  if (mon == MONITOR$PARMAY_MTX) params_rawdata[["dynrange"]] = GGIRread::readMatrix(datafile, return = "dynrange")
+  if (mon == MONITOR$PARMAY_MTX) params_rawdata[["dynrange"]] = GGIRread::readParmayMatrix(datafile, return = "dynrange")
   ncb_params = get_nw_clip_block_params(monc = mon, dformat = dformat,
                                         deviceSerialNumber = deviceSerialNumber,
                                         sf = sf,
@@ -142,15 +142,15 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   NR = ceiling(nev / (sf*ws3)) + 1000 #NR = number of 'ws3' second rows (this is for 10 days at 80 Hz)
   metashort = matrix(" ",NR,(1 + nmetrics)) #generating output matrix for acceleration signal
   QClog = NULL
-
+  
   #===============================================
   # Read file
   isLastBlock = FALSE # dummy variable part "end of loop mechanism"
-
+  
   PreviousLastValue = c(0, 0, 1)
   PreviousLastTime = NULL
   header = NULL
-
+  
   while (LD > 1) {
     if (verbose == TRUE) {
       if (i  == 1) {
@@ -169,12 +169,12 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                             params_rawdata = params_rawdata, params_general = params_general, 
                             header = header)
     header = accread$header
-
+    
     if ("PreviousLastValue" %in% names(accread$P)) { # output when reading ad-hoc csv
       PreviousLastValue = accread$P$PreviousLastValue
       PreviousLastTime = accread$P$PreviousLastTime
     } 
-        
+    
     filequality = accread$filequality
     filetooshort = filequality$filetooshort
     filecorrupt = filequality$filecorrupt
@@ -189,10 +189,10 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       data = accread$P$data
       QClog = rbind(QClog, accread$P$QClog)
       rm(accread)
-
+      
       if (i == 1) {
         light.available = ("light" %in% colnames(data))
-
+        
         use.temp = ("temperature" %in% colnames(data))
         if (use.temp) {
           if (mean(data$temperature[1:10], na.rm = TRUE) > 50) {
@@ -200,7 +200,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             use.temp = FALSE
           }
         }
-
+        
         # output matrix for 15 minutes summaries
         if (!use.temp && !light.available) {
           metalong = matrix(" ", ((nev/(sf*ws2)) + 100), 4)
@@ -216,7 +216,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           metricnames_long = c("timestamp","nonwearscore","clippingscore","lightmean","lightpeak","temperaturemean","EN")
         }
       }
-
+      
       if (params_rawdata[["imputeTimegaps"]] && (dformat == FORMAT$CSV ||
                                                  dformat == FORMAT$AD_HOC_CSV ||
                                                  dformat == FORMAT$GT3X)) {
@@ -234,9 +234,9 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         QClog = rbind(QClog, P$QClog)
         rm(P)
       }
-
+      
       gc()
-
+      
       data = as.matrix(data, rownames.force = FALSE)
       #add leftover data from last time
       if (nrow(S) > 0) {
@@ -268,7 +268,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         
         rm(SWMT)
       }
-
+      
       LD = nrow(data)
       if (LD < (ws*sf) && i == 1) {
         warning('\nWarning data too short for doing non-wear detection 3\n')
@@ -313,7 +313,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         if (use.temp) {
           temperature = data[, "temperature"]
         }
-
+        
         # rescale data
         data[, c("x", "y", "z")] = scale(data[, c("x", "y", "z")], center = -offset, scale = 1/scale)
         if (use.temp && length(meantempcal) > 0) {
@@ -322,7 +322,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                      temperature)
           data[, c("x", "y", "z")] = data[, c("x", "y", "z")] + scale(yy, center = rep(meantempcal,3), scale = 1/tempoffset)
         }
-
+        
         EN = sqrt(data[, "x"]^2 + data[, "y"]^2 + data[, "z"]^2) # Do not delete Used for long epoch calculation
         accmetrics = g.applymetrics(data = data,
                                     sf = sf, ws3 = ws3,
@@ -419,7 +419,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         col_mli = 2
         metalong[count2:((count2 - 1) + length(NWav)),col_mli] = NWav; col_mli = col_mli + 1
         metalong[count2:((count2 - 1) + length(NWav)),col_mli] = CWav; col_mli = col_mli + 1
-
+        
         if(light.available) {
           #light (running mean)
           lightc = cumsum(c(0,light))
@@ -436,31 +436,31 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
               lightmax[li] = max(light[((li - 1) * (ws2 * sf)):(li * (ws2 * sf))])
             }
           }
-
+          
           metalong[(count2):((count2 - 1) + length(NWav)), col_mli] = round(lightmean, digits = n_decimal_places)
           col_mli = col_mli + 1
           metalong[(count2):((count2 - 1) + length(NWav)), col_mli] = round(lightmax, digits = n_decimal_places)
           col_mli = col_mli + 1
         }
-
+        
         if(use.temp) {
           #temperature (running mean)
           temperaturec = cumsum(c(0, temperature))
           select = seq(1, length(temperaturec), by = (ws2 * sf))
           temperatureb = diff(temperaturec[round(select)]) / abs(diff(round(select)))
           rm(temperaturec)
-
+          
           metalong[(count2):((count2 - 1) + length(NWav)), col_mli] = round(temperatureb, digits = n_decimal_places)
           col_mli = col_mli + 1
         }
-
+        
         #EN going from sample to ws2
         ENc = cumsum(c(0, EN))
         select = seq(1, length(ENc), by = (ws2 * sf)) #<= EN is derived from data, so it needs the new sf
         ENb = diff(ENc[round(select)]) / abs(diff(round(select)))
         rm(ENc, EN)
         metalong[(count2):((count2 - 1) + length(NWav)), col_mli] = round(ENb, digits = n_decimal_places)
-
+        
         if (exists("remaining_epochs")) {
           # Impute long gaps at epoch levels, because imputing them at raw level would
           # be too memory hungry

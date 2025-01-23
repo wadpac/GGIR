@@ -109,7 +109,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         }
       } else if (mon == MONITOR$PARMAY_MTX) {
         header = NULL
-        sf = GGIRread::readMatrix(datafile, return = "sf")
+        sf = GGIRread::readParmayMatrix(datafile, return = "sf")
       } else {
         stop(paste0("\nError processing ", filename, ": unrecognised .bin file"))
       }

@@ -337,10 +337,10 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     }, silent = TRUE)
     if (length(sf) == 0) sf = params_rawdata[["rmc.sf"]]
   } else if (mon == MONITOR$PARMAY_MTX && dformat == FORMAT$BIN) {
-    try(expr = {P = GGIRread::readMatrix(bin_file = filename, return = "all",
-                                         start = startpage, end = endpage, 
-                                         desiredtz = desiredtz, configtz = configtz,
-                                         interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
+    try(expr = {P = GGIRread::readParmayMatrix(bin_file = filename, return = "all",
+                                               start = startpage, end = endpage, 
+                                               desiredtz = desiredtz, configtz = configtz,
+                                               interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
     # fix colnames to match expectations of GGIR
     colnames(P$data) = gsub("acc_", "", colnames(P$data))
     colnames(P$data) = gsub("ambient_temp", "temperature", colnames(P$data))
