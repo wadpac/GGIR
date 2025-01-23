@@ -2,10 +2,7 @@
 
 - Part 2:
 
-  - Fix bug in determining the number of files to be included in the part 2 report. 
-  It may affect the part 2 csv report which may have had less recordings than expected 
-  even though the missing recordings are just processed and visible in the output of 
-  subsequent parts. #1252
+  - Fix bug in determining the files to be included in the part 2 report, which only considered the first N files processed by part 2 while using this N when working a file name list produced by part 1 which can be longer #1252
 
   - Speed up activity diary extraction. #1250
 
@@ -17,7 +14,7 @@
   boutcriter.mvpa). #1247
 
 - Part 2 and 4: Both activity diary and sleep diary are now always reloaded if the derived 
-copy of it (in .RData) is older than the diary itself. #1250
+copy of it (in .RData) is older than the diary itself or if the diary name has changed. #1250
 
 - Visual report: Recently added visual report is now also able to handle epoch sizes not equal 
 to 1 minutes, and now also able to handle recordings 
