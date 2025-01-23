@@ -2,17 +2,25 @@
 
 - Part 2:
 
-  - Fix bug in determining the number of files to be included in the part 2 report. It may affect the part 2 csv report which may have had less recordings than expected even though the missing recordings are just processed and visible in the output of subsequent parts. #1252
+  - Fix bug in determining the number of files to be included in the part 2 report. 
+  It may affect the part 2 csv report which may have had less recordings than expected 
+  even though the missing recordings are just processed and visible in the output of 
+  subsequent parts. #1252
 
   - Speed up activity diary extraction. #1250
 
-  - Make sure part 2 event report, e.g. based on step detection, is saved to csv format with intended sep and dec arguments rather than default.
+  - Make sure part 2 event report, e.g. based on step detection, is saved to csv format 
+  with intended sep and dec arguments rather than default.
   
-  - Simplify MVPA parameter specification in part 2 (mvpathreshold, boutcriter). When not specified GGIR copies the corresponding part 5 parameter values (threshold.mod and boutcriter.mvpa). #1247
+  - Simplify MVPA parameter specification in part 2 (mvpathreshold, boutcriter). When not 
+  specified GGIR copies the corresponding part 5 parameter values (threshold.mod and boutcriter.mvpa). #1247
 
-- Part 2 and 4: Both activity diary and sleep diary are now always reloaded if the derived copy of it (in .RData) is older than the diary itself. #1250
+- Part 2 and 4: Both activity diary and sleep diary are now always reloaded if the derived 
+copy of it (in .RData) is older than the diary itself. #1250
 
-- Visual report: Recently added visual report is now also able to handle recordings with only 1 valid data, these were previously skipped. #1246
+- Visual report: Recently added visual report is now also able to handle epoch sizes not equal 
+to 1 minutes, and now also able to handle recordings 
+with only 1 valid day, these were previously skipped. #1246
 
 - Part 4:
 
@@ -20,9 +28,14 @@
   
   - Added warning when there are two accelerometer recordings with the same participant ID.
 
-  - Change extraction of imputation code from sleep diary, which is now assumed to correspond to preceding night. #1251
+  - Change extraction of imputation code from sleep diary, which is now assumed to 
+  correspond to preceding night. #1251
   
 - Part 1, 5 and 6: Update code to be backward compatible with R 4.2.0
+
+- Part 5: Default values for parameters `do.sibreport` and `save_ms5rawlevels` changed
+to TRUE, for `save_ms5raw_format` changed to "RData" in order to ease generating visual 
+report, including our explorative nap detection, and working with part 6.
 
 # CHANGES IN GGIR VERSION 3.1-10
 
