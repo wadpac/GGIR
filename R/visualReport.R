@@ -547,7 +547,7 @@ visualReport = function(metadatadir = c(),
           subploti = c(1, dayedges)
         }
         subploti = cbind(subploti,
-                         c(dayedges + ((hrsPerRow - 24) * epochSize) - 1, nrow(mdat)))
+                         c(dayedges + ((hrsPerRow - 24) * (3600/epochSize)) - 1, nrow(mdat)))
         
         invalid = which(mdat$invalidepoch == 1)
         subploti[which(subploti[,2] > nrow(mdat)), 2] = nrow(mdat)

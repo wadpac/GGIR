@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-11</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -2498,24 +2498,26 @@ stored in the person level report (part4_summary_sleep csv files).</p>
 <div class="section level4">
 <h4 class="unnumbered" id="mvpathreshold">mvpathreshold<a class="anchor" aria-label="anchor" href="#mvpathreshold"></a>
 </h4>
-<p>Numeric (default = 100). Acceleration threshold for MVPA estimation
-in GGIR g.part2. This can be a single number or an vector of numbers,
-e.g., mvpathreshold = c(100, 120). In the latter case the code will
-estimate MVPA separately for each threshold. If this variable is left
-blank, e.g., mvpathreshold = c(), then MVPA is not estimated.</p>
+<p>Numeric (default = NULL). Legacy parameter, if not provided GGIR uses
+the value of threshold.mod for this. Acceleration threshold for MVPA
+estimation in GGIR g.part2. This can be a single number or an vector of
+numbers, e.g., mvpathreshold = c(100, 120). In the latter case the code
+will estimate MVPA separately for each threshold. If this variable is
+left blank, e.g., mvpathreshold = c(), then MVPA is not estimated.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="boutcriter">boutcriter<a class="anchor" aria-label="anchor" href="#boutcriter"></a>
 </h4>
-<p>Numeric (default = 0.8). A number between 0 and 1, it defines what
-fraction of a bout needs to be above the mvpathreshold, only used in
-GGIR g.part2.</p>
+<p>Numeric (default = NULL). Legacy parameter, if not provided GGIR uses
+the value of boutcriter.mvpa for this. A number between 0 and 1, it
+defines what fraction of a bout needs to be above the mvpathreshold,
+only used in GGIR g.part2.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="mvpadur">mvpadur<a class="anchor" aria-label="anchor" href="#mvpadur"></a>
 </h4>
-<p>Numeric (default = 10). The bout duration(s) for which MVPA will be
-calculated. Only used in GGIR g.part2.</p>
+<p>Numeric (default = c(1, 5, 10)). The bout duration(s) for which MVPA
+will be calculated. Only used in GGIR g.part2.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="boutcriter-in">boutcriter.in<a class="anchor" aria-label="anchor" href="#boutcriter-in"></a>
@@ -2845,19 +2847,22 @@ possible.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="save_ms5rawlevels">save_ms5rawlevels<a class="anchor" aria-label="anchor" href="#save_ms5rawlevels"></a>
 </h4>
-<p>Boolean (default = FALSE). In g.part5: Whether to save the time
-series classification (levels) as csv or RData files (as defined by
+<p>Boolean (default = TRUE). In g.part5: Whether to save the time series
+classification (levels) as csv or RData files (as defined by
 save_ms5raw_format). Note that time stamps will be stored in the column
 timenum in UTC format (i.e., seconds from 1970-01-01). To convert
 timenum to time stamp format, you need to specify your desired time
-zone, e.g., as.POSIXct(mdat$timenum, tz = “Europe/London”).</p>
+zone, e.g., as.POSIXct(mdat$timenum, tz = “Europe/London”). If you are
+not using GGIR part 6, not interested in the visualreport generation,
+and not interested in time series then you may want to consider setting
+this parameter to FALSE.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="save_ms5raw_format">save_ms5raw_format<a class="anchor" aria-label="anchor" href="#save_ms5raw_format"></a>
 </h4>
-<p>Character (default = “csv”). In g.part5: To specify how data should
-be stored: either “csv” or “RData”. Only used if save_ms5rawlevels =
-TRUE.</p>
+<p>Character (default = “RData”). In g.part5: To specify how data should
+be stored: “csv”, “RData”, or both via c(“csv”, “RData”). Only used if
+save_ms5rawlevels = TRUE.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="save_ms5raw_without_invalid">save_ms5raw_without_invalid<a class="anchor" aria-label="anchor" href="#save_ms5raw_without_invalid"></a>
@@ -2954,13 +2959,12 @@ mistakes.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="do-sibreport">do.sibreport<a class="anchor" aria-label="anchor" href="#do-sibreport"></a>
 </h4>
-<p>Boolean (default = FALSE). In g.part4: To indicate whether to
-generate report for the sustained inactivity bouts (SIB). If set to TRUE
-and when an advanced sleep diary is available in part 4 then part 5 will
-use this to generate summary statistics on the overlap between
-self-reported nonwear and napping with SIB. Here, SIB can be filter
-based on parameter possible_nap_edge_acc and the first value of
-possible_nap_dur</p>
+<p>Boolean (default = TRUE). In g.part4: To indicate whether to generate
+report for the sustained inactivity bouts (SIB). If set to TRUE and when
+an advanced sleep diary is available in part 4 then part 5 will use this
+to generate summary statistics on the overlap between self-reported
+nonwear and napping with SIB. Here, SIB can be filter based on parameter
+possible_nap_edge_acc and the first value of possible_nap_dur</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="do-part2-pdf">do.part2.pdf<a class="anchor" aria-label="anchor" href="#do-part2-pdf"></a>

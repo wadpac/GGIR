@@ -1,26 +1,41 @@
-# CHANGES IN GGIR VERSION 3.1-??
+# CHANGES IN GGIR VERSION 3.1-11
 
 - Part 2:
 
-  - Fix bug in determining the number of files to be included in the part 2 report. This does not affect subsequent GGIR parts but does affect the part 2 report which may have had less recordings than expected. #1252
+  - Fix bug in determining the number of files to be included in the part 2 report. 
+  It may affect the part 2 csv report which may have had less recordings than expected 
+  even though the missing recordings are just processed and visible in the output of 
+  subsequent parts. #1252
 
   - Speed up activity diary extraction. #1250
 
-  - Make sure event diary is saved to csv with intended sep and dec arguments rather than default.
+  - Make sure part 2 event report, e.g. based on step detection, is saved to csv format 
+  with intended sep and dec arguments rather than default.
   
-  - Simplify MVPA parameter specification in part 2 (mvpathreshold, boutcriter) by copying values from corresponding parameters in part 5 (threshold.mod and boutcriter.mvpa) if not specified. #1247
+  - Simplify MVPA parameter specification in part 2 (mvpathreshold, boutcriter). When not 
+  specified GGIR copies the corresponding part 5 parameter values (threshold.mod and boutcriter.mvpa). #1247
 
-- Part 2 and 4: Both activity diary and sleep diary are now always reloaded if the derived copy of it (in .RData) is older than the diary itself. #1250
+- Part 2 and 4: Both activity diary and sleep diary are now always reloaded if the derived 
+copy of it (in .RData) is older than the diary itself. #1250
 
-- Visual report: Recently added visual report is now also able to handle recordings with only 1 valid data, these were previously skipped. #1246
+- Visual report: Recently added visual report is now also able to handle epoch sizes not equal 
+to 1 minutes, and now also able to handle recordings 
+with only 1 valid day, these were previously skipped. #1246
 
 - Part 4:
 
-  - Improvements to handling dates in sleeplog as a follow-up to work on #1243
+  - Improvements to handling dates in sleeplog as a follow-up to work on #1243 in the previous release.
   
-  - Added warning when there are two accelerometer recordings with the same ID.
+  - Added warning when there are two accelerometer recordings with the same participant ID.
 
-  - Change extraction of imputation code from sleep diary, which is now assumed to correspond to preceding night. This is now also documented. #1251
+  - Change extraction of imputation code from sleep diary, which is now assumed to 
+  correspond to preceding night. #1251
+  
+- Part 1, 5 and 6: Update code to be backward compatible with R 4.2.0
+
+- Part 5: Default values for parameters `do.sibreport` and `save_ms5rawlevels` changed
+to TRUE, for `save_ms5raw_format` changed to "RData" in order to ease generating visual 
+report, including our explorative nap detection, and working with part 6.
 
 # CHANGES IN GGIR VERSION 3.1-10
 
@@ -38,7 +53,7 @@
   
   - In days classified as daysleeper, the window over which the fraction_night_invalid is calculated now also shifts to 6pm-6pm, as it used to report the nonwear within 12pm-12pm.
   
-- Vignette: Document that missing dates can be skipped i advanced format sleeplog
+- Vignette: Now documented that missing dates can be skipped in advanced format sleeplog.
 
 - Step detection: Include R script for Verisense step detection inside GitHub repository 'user-scripts' folder to ease future maintenance.
 
@@ -60,7 +75,7 @@ this is consistent with functionality in the past. #1223
 - Part 2: Add parameters nonwearFiltermaxHours and nonwearFilterWindow to give user the option to filter short lasting nighttime nonwear #1218.
 
 - Part 5 and 6: part6_threshold_combi when not specified now defaults to first threshold as
-specified for light, moderate and vigorous intensity respectively.
+specified for light, moderate and vigorous intensity, respectively.
 
 # CHANGES IN GGIR VERSION 3.1-7
 
@@ -94,7 +109,8 @@ specified for light, moderate and vigorous intensity respectively.
 
   - Moving LXMX from part 5 to part 6 as these are circadian rhythm analysis.
   
-  - Omitted fragmentation metrics for spt window as not meaningful given that part 5 only focusses on valid daytime behaviours.
+  - Omitted fragmentation metrics for spt window as not meaningful given that part 5 only focuses on valid daytime behaviours.
+  
   - includenightcrit.part5 added to allow for controlling inclusion of windows in part 5 based on their amount of valid data during spt window. Default remains the same.
 
   - Fix incorrect usage of part 5 inclusion criteria testing, which used fraction as percentage.

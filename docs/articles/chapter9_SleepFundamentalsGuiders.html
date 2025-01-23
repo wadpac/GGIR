@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-11</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -348,6 +348,13 @@ their name. Nonwear times are recognised by columns with the word
 If the date falls within 30 days of the start date of the accelerometer
 recording then the date format is assumed to be found. It starts with
 attempting “Y-m-d” (as in 2015-06-25).</p></li>
+<li><p>If a column name includes the word “impute” then this column is
+treated as a log of the diary imputation for outside GGIR for the
+preceding night. The value will be shown in the visualreport and is
+stored in the time series by GGIR part 5. The imputation codes we used
+for testing have the format C0000 to indicate no imputation for inbed,
+sleeponset, wakeup and outbed, respectively. If one of the numbers would
+be 1 then that would reflect imputation.</p></li>
 </ul>
 </div>
 </div>

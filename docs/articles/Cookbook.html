@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-11</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -111,10 +111,12 @@
     
     
 <p>In this cook book you will find recipes for using GGIR in specific
-scenarios.</p>
+non-default scenarios.</p>
 <div class="section level2">
 <h2 id="handling-externally-derived-data">Handling externally derived data<a class="anchor" aria-label="anchor" href="#handling-externally-derived-data"></a>
 </h2>
+<p>This refers to the situation where external software or hardware was
+used to derive epoch level aggregates from accelerometer data.</p>
 <div class="section level3">
 <h3 id="actiwatch-data">Actiwatch data<a class="anchor" aria-label="anchor" href="#actiwatch-data"></a>
 </h3>
@@ -144,6 +146,9 @@ scenarios.</p>
 <div class="section level3">
 <h3 id="uk-biobank-data-in--csv-format">UK Biobank data in .CSV format<a class="anchor" aria-label="anchor" href="#uk-biobank-data-in--csv-format"></a>
 </h3>
+<p>This is only applicable the UK Biobank 5 second epoch csv exports and
+NOT to the raw accelerometer data. Please see <a href="https://wadpac.github.io/GGIR/" class="uri">https://wadpac.github.io/GGIR/</a> for all documentation on
+processing raw accelerometer data (multiple values per second).</p>
 <pre><code>GGIR(datadir = "/media/ukbiobank",
    outputdir = "/media/myoutput",
    dataFormat = "ukbiobank_csv",
