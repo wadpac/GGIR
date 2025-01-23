@@ -8,6 +8,8 @@
 
 - Part 2: Make sure event diary is saved to csv with intended sep and dec arguments rather than default.
 
+- Part 1: Implemented functionality to read and process Parmay Matrix sensors data (bin files) #1253
+
 # CHANGES IN GGIR VERSION 3.1-10
 
 - Part 4:
