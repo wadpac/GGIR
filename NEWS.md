@@ -2,9 +2,10 @@
 
 - Part 2:
 
-  - Fix bug in determining the files to be included in the part 2 report, which only 
-  considered the first N files processed by part 2 while using this N when working a 
-  file name list produced by part 1 which can be longer #1252
+  - Fix bug related to determining the files to be included in the part 2 csv report, 
+  causing some files to be unnecessarily excluded from the part 2 csv report if the number
+  of files in the part 2 milestone data is larger than than number of milestone files
+  in the part 1 milestone data. #1252
 
   - Speed up activity diary extraction. #1250
 
