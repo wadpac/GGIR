@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-11</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,13 +77,41 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.1-11" id="changes-in-ggir-version-31-11">CHANGES IN GGIR VERSION 3.1-11<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-31-11"></a></h2>
+<ul><li>
+<p>Part 2:</p>
+<ul><li><p>Fix bug in determining the number of files to be included in the part 2 report. It may affect the part 2 csv report which may have had less recordings than expected even though the missing recordings are just processed and visible in the output of subsequent parts. <a href="https://github.com/wadpac/GGIR/issues/1252" class="external-link">#1252</a></p></li>
+<li><p>Speed up activity diary extraction. <a href="https://github.com/wadpac/GGIR/issues/1250" class="external-link">#1250</a></p></li>
+<li><p>Make sure part 2 event report, e.g. based on step detection, is saved to csv format with intended sep and dec arguments rather than default.</p></li>
+<li><p>Simplify MVPA parameter specification in part 2 (mvpathreshold, boutcriter). When not specified GGIR copies the corresponding part 5 parameter values (threshold.mod and boutcriter.mvpa). <a href="https://github.com/wadpac/GGIR/issues/1247" class="external-link">#1247</a></p></li>
+</ul></li>
+<li><p>Part 2 and 4: Both activity diary and sleep diary are now always reloaded if the derived copy of it (in .RData) is older than the diary itself. <a href="https://github.com/wadpac/GGIR/issues/1250" class="external-link">#1250</a></p></li>
+<li><p>Visual report: Recently added visual report is now also able to handle epoch sizes not equal to 1 minutes, and now also able to handle recordings with only 1 valid day, these were previously skipped. <a href="https://github.com/wadpac/GGIR/issues/1246" class="external-link">#1246</a></p></li>
+<li>
+<p>Part 4:</p>
+<ul><li><p>Improvements to handling dates in sleeplog as a follow-up to work on <a href="https://github.com/wadpac/GGIR/issues/1243" class="external-link">#1243</a> in the previous release.</p></li>
+<li><p>Added warning when there are two accelerometer recordings with the same participant ID.</p></li>
+<li><p>Change extraction of imputation code from sleep diary, which is now assumed to correspond to preceding night. <a href="https://github.com/wadpac/GGIR/issues/1251" class="external-link">#1251</a></p></li>
+</ul></li>
+<li><p>Part 1, 5 and 6: Update code to be backward compatible with R 4.2.0</p></li>
+<li><p>Part 5: Default values for parameters <code>do.sibreport</code> and <code>save_ms5rawlevels</code> changed to TRUE, for <code>save_ms5raw_format</code> changed to “RData” in order to ease generating visual report, including our explorative nap detection, and working with part 6.</p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.1-10" id="changes-in-ggir-version-31-10">CHANGES IN GGIR VERSION 3.1-10<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-31-10"></a></h2>
+<ul><li>
+<p>Part 4:</p>
+<ul><li><p>Speed up the loading of advanced format sleeplog</p></li>
+<li><p>Improve automated recognition of date format in sleeplog</p></li>
+</ul></li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.1-9" id="changes-in-ggir-version-31-9">CHANGES IN GGIR VERSION 3.1-9<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-31-9"></a></h2>
 <ul><li>
 <p>Part 3:</p>
 <ul><li><p>Identification of daylight saving time days in the detection of the spt is improved as it had the risk to misclassify partial last days as daylight saving time.</p></li>
 <li><p>In days classified as daysleeper, the window over which the fraction_night_invalid is calculated now also shifts to 6pm-6pm, as it used to report the nonwear within 12pm-12pm.</p></li>
 </ul></li>
-<li><p>Vignette: Document that missing dates can be skipped i advanced format sleeplog</p></li>
+<li><p>Vignette: Now documented that missing dates can be skipped in advanced format sleeplog.</p></li>
 <li><p>Step detection: Include R script for Verisense step detection inside GitHub repository ‘user-scripts’ folder to ease future maintenance.</p></li>
 </ul></div>
     <div class="section level2">
@@ -97,7 +125,7 @@
 <li><p>Visual report: Added new visualreport that is automatically generated when visualreport = TRUE and intended to eventually replace the problematic legacy report. Add parameter old_visualreport to turn off the old visualreport generation. <a href="https://github.com/wadpac/GGIR/issues/1173" class="external-link">#1173</a></p></li>
 <li><p>Part 4 + 5 + visualreport: If sleeplog has both reported sleeplog and time in bed process both. In part 4 we will still use one of the two but in the visualreport we display both. <a href="https://github.com/wadpac/GGIR/issues/967" class="external-link">#967</a></p></li>
 <li><p>Part 2: Add parameters nonwearFiltermaxHours and nonwearFilterWindow to give user the option to filter short lasting nighttime nonwear <a href="https://github.com/wadpac/GGIR/issues/1218" class="external-link">#1218</a>.</p></li>
-<li><p>Part 5 and 6: part6_threshold_combi when not specified now defaults to first threshold as specified for light, moderate and vigorous intensity respectively.</p></li>
+<li><p>Part 5 and 6: part6_threshold_combi when not specified now defaults to first threshold as specified for light, moderate and vigorous intensity, respectively.</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.1-7" id="changes-in-ggir-version-31-7">CHANGES IN GGIR VERSION 3.1-7<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-31-7"></a></h2>
@@ -121,7 +149,7 @@
 <li>
 <p>Part 5:</p>
 <ul><li><p>Moving LXMX from part 5 to part 6 as these are circadian rhythm analysis.</p></li>
-<li><p>Omitted fragmentation metrics for spt window as not meaningful given that part 5 only focusses on valid daytime behaviours.</p></li>
+<li><p>Omitted fragmentation metrics for spt window as not meaningful given that part 5 only focuses on valid daytime behaviours.</p></li>
 <li><p>includenightcrit.part5 added to allow for controlling inclusion of windows in part 5 based on their amount of valid data during spt window. Default remains the same.</p></li>
 <li><p>Fix incorrect usage of part 5 inclusion criteria testing, which used fraction as percentage.</p></li>
 </ul></li>

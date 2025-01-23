@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-11</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,6 +110,28 @@
 
     
     
+<p>Circadian rhythm are the physical, mental, and behavioral changes an
+organism experiences over a 24-hour cycle. GGIR facilitates a number of
+techniques to quantify the movement-component of circadian rhythms as
+discussed in this chapter.</p>
+<p>Most of the techniques are applied in both GGIR part 2 and 6. The
+main differences between these implementations are:</p>
+<ul>
+<li>In GGIR part 2 the circadian rhythm analysis tries to use every
+valid data point in the recording.</li>
+<li>In GGIR part 6 the circadian rhythm analysis uses a specific time
+window as defined by the user, e.g. from first wake-up time till before
+last wake-up time, and omits entire days that are considered invalid or
+incomplete.</li>
+</ul>
+<p>As a result, when your intention is to compare physical activity or
+sleep estimates derived in GGIR, part 6 estimates ensure that the same
+days and time points are used as in the other parts of GGIR. Whereas,
+part 2 does not attempt to do so.</p>
+<p>Further, part 6 offers a few additional circadian rhythm estimates
+such as DFA (discussed below), and when fragmentation analysis is turned
+on (see parameter <code>frag.metrics</code> as discussed in the <a href="https://wadpac.github.io/GGIR/articles/chapter14_BehaviouralFragmentation.html">next
+chapter</a>) activity and sleep fragmentation are also estimated.</p>
 <div class="section level2">
 <h2 id="mxlx">MXLX<a class="anchor" aria-label="anchor" href="#mxlx"></a>
 </h2>

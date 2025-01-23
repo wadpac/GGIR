@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-11</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -466,27 +466,15 @@ sleep variables in GGIR part 4 output.</td>
 </tr>
 <tr class="odd">
 <td>IS</td>
-<td>inter daily stability. The movement count that is derived for this
-was an attempt to follow the original approach by Eus J. W. Van Someren
-(Chronobiology International. 1999. Volume 16, issue 4).</td>
+<td>Interdaily stability as dicussed in <a href="https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html">chapter
+13</a>
+</td>
 </tr>
 <tr class="even">
 <td>IV</td>
-<td>intra daily variability. In contrast to the original paper, we
-ignore the epoch transitions between the end of a day and the beginning
-of the next day for the numerator of the equation, this to make it a
-true measure of intradaily variability. Same note as for IS: The
-movement count that is derived for this was an attempt to follow the
-original approach.</td>
-</tr>
-<tr class="odd">
-<td>IVIS_windowsize_minutes</td>
-<td>Sizes of the windows based on which IV and IS are calculated (note
-that this is modifiable)</td>
-</tr>
-<tr class="even">
-<td>IVIS_epochsize_seconds</td>
-<td>Argument has been deprecated</td>
+<td>Intradaily variability as dicussed in <a href="https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html">chapter
+13</a>
+</td>
 </tr>
 <tr class="odd">
 <td>phi</td>
@@ -511,137 +499,146 @@ see <a href="https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.ht
 <div class="section level4">
 <h4 id="circadian-rhythm-cosinor">Circadian rhythm: Cosinor<a class="anchor" aria-label="anchor" href="#circadian-rhythm-cosinor"></a>
 </h4>
+<p>The following variables in the GGIR output are derived by the ActCR
+package, the documentation has been copied from ActCR documentation.</p>
 <table class="table">
 <colgroup>
 <col width="36%">
 <col width="63%">
 </colgroup>
 <thead><tr class="header">
-<th>(Part of) variable name</th>
+<th>Variable name</th>
 <th>Description</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>cosinor_</code></td>
-<td>Cosinor analysis estimates such as mes, amp, acrophase, and
-acrotime, as documented in the <a href="https://CRAN.R-project.org/package=ActCR" class="external-link">ActCR</a> package.</td>
+<td>cosinor_mes</td>
+<td>MESOR which is short for midline statistics of rhythm, which is a
+rhythm adjusted mean. This represents mean activity level.</td>
 </tr>
 <tr class="even">
-<td><code>cosinorExt_</code></td>
-<td>Extended Cosinor analysis estimates such as minimum, amp, alpha,
-beta, acrotime, UpMesor, DownMesor, MESOR, and F_pseudo, as documented
-in the <a href="https://CRAN.R-project.org/package=ActCR" class="external-link">ActCR</a>
-package.</td>
+<td>cosinor_amp</td>
+<td>amplitude, a measure of half the extend of predictable variation
+within a cycle.</td>
 </tr>
 <tr class="odd">
+<td>This represents the highest activity one can achieve</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>cosinor_acrophase</td>
+<td>acrophase, a measure of the time of the overall high values
+recurring in each</td>
+</tr>
+<tr class="odd">
+<td>cycle. Here it has a unit of radian. This represents time to reach
+the peak.</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>cosinor_acrotime</td>
+<td>acrotime represents time to reach the peak.</td>
+</tr>
+<tr class="odd">
+<td>cosinor_ndays</td>
+<td>Number of days modeled</td>
+</tr>
+<tr class="even">
+<td>cosinorExt_minimum</td>
+<td>Minimum value of the of the function.</td>
+</tr>
+<tr class="odd">
+<td>cosinorExt_amp</td>
+<td>amplitude, a measure of half the extend of predictable variation
+within a cycle. This represents the highest activity one can
+achieve.</td>
+</tr>
+<tr class="even">
+<td>cosinorExt_alpha</td>
+<td>It determines whether the peaks of the curve are wider than the
+troughs: when alpha is small, the troughs are narrow and the peaks are
+wide; when alpha is large, the troughs are wide and the peaks are
+narrow.</td>
+</tr>
+<tr class="odd">
+<td>cosinorExt_beta</td>
+<td>It dertermines whether the transformed function rises and falls more
+steeply than the cosine curve: large values of beta produce curves that
+are nearly square waves.</td>
+</tr>
+<tr class="even">
+<td>cosinorExt_acrotime</td>
+<td>acrophase is the time of day of the peak in the unit of the time
+(hours)</td>
+</tr>
+<tr class="odd">
+<td>cosinorExt_UpMesor</td>
+<td>Time of day of switch from low to high activity. Represents the
+timing of the rest- activity rhythm. Lower (earlier) values indicate
+increase in activity earlier in the day and suggest a more advanced
+circadian phase.</td>
+</tr>
+<tr class="even">
+<td>cosinorExt_DownMesor</td>
+<td>Time of day of switch from high to low activity. Represents the
+timing of the rest-activity rhythm. Lower (earlier) values indicate
+decline in activity earlier in the day, suggesting a more advanced
+circadian phase.</td>
+</tr>
+<tr class="odd">
+<td>cosinorExt_MESOR</td>
+<td>A measure analogous to the MESOR of the cosine model (or half the
+deflection of the curve) can be obtained from mes=min+amp/2. However, it
+goes through the middle of the peak, and is therefore not equal to the
+MESOR of the cosine model, which is the mean of the data.</td>
+</tr>
+<tr class="even">
+<td>cosinorExt_ndays</td>
+<td>Number of days modeled.</td>
+</tr>
+<tr class="odd">
+<td>cosinorExt_F_pseudo</td>
+<td>Measure the improvement of the fit obtained by the non-linear
+estimation of the transformed cosine model</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Additionally, GGIR derives:</strong></p>
+<table class="table">
+<colgroup>
+<col width="36%">
+<col width="63%">
+</colgroup>
+<thead><tr class="header">
+<th>Variable name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>cosinor_timeOffsetHours</td>
+<td>(Only used for code development purposes) Time offset in hours
+between midnight and the start of the time series used for cosinor
+analysis</td>
+</tr>
+<tr class="even">
+<td>cosinor_R2</td>
+<td>Squared correlated coefficient between fitted and log-transformed
+original time series.</td>
+</tr>
+<tr class="odd">
+<td>cosinorExt_R2</td>
+<td>Squared correlated coefficient between fitted and log-transformed
+original time series.</td>
+</tr>
+<tr class="even">
 <td><code>cosinorIV</code></td>
 <td>Cosinor analysis compatible estimate of the Intradaily Variability
 (IV)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>cosinorIS</code></td>
 <td>Cosinor analysis compatible estimate of Interdaily Stability
 (IS)</td>
-</tr>
-<tr class="odd">
-<td>cosinor_timeOffsetHours</td>
-<td>Offset between start time series as used and midnight</td>
-</tr>
-<tr class="even">
-<td>cosinor_mes</td>
-<td>The mean value of the cosinor function fitted to the log transformed
-acceleration signal. Higher values indicate more activity.</td>
-</tr>
-<tr class="odd">
-<td>cosinor_amp</td>
-<td>The amplitude of the cosinor function fitted to the log transformed
-acceleration signal, corresponding to the peak of the function minus the
-mesor. Higher values indicate larger amplitude in the rhythm</td>
-</tr>
-<tr class="even">
-<td>cosinor_acrotime</td>
-<td>Time at which the cosinor function fitted to the log transformed
-acceleration signal reaches its maximum</td>
-</tr>
-<tr class="odd">
-<td>cosinor_acrophase</td>
-<td>Acrotime expressed in radians</td>
-</tr>
-<tr class="even">
-<td>cosinor_ndays</td>
-<td>Number of days used for the cosinor analysis.</td>
-</tr>
-<tr class="odd">
-<td>cosinor_R2</td>
-<td>Measure of goodness of fit of the cosinor function to the log
-transformed acceleration signal. Higher values indicate better goodness
-of fit.</td>
-</tr>
-<tr class="even">
-<td>cosinorExt_minimum</td>
-<td>(copied from ActCR documentation) Minimum value of the function</td>
-</tr>
-<tr class="odd">
-<td>cosinorExt_amp</td>
-<td>(copied from ActCR documentation) Amplitude, a measure of half the
-extend of predictable variation within a cycle. This represents the
-highest activity one can achieve.</td>
-</tr>
-<tr class="even">
-<td>cosinorExt_alpha</td>
-<td>(copied from ActCR documentation) It determines whether the peaks of
-the curve are wider than the troughs: when alpha is small, the troughs
-are narrow and the peaks are wide; when alpha is large, the troughs are
-wide and the peaks are narrow.</td>
-</tr>
-<tr class="odd">
-<td>cosinorExt_beta</td>
-<td>(copied from ActCR documentation) It dertermines whether the
-transformed function rises and falls more steeply than the cosine curve:
-large values of beta produce curves that are nearly square waves.</td>
-</tr>
-<tr class="even">
-<td>cosinorExt_acrotime</td>
-<td>(copied from ActCR documentation) acrophase is the time of day of
-the peak in the unit of the time (hours)</td>
-</tr>
-<tr class="odd">
-<td>cosinorExt_UpMesor</td>
-<td>(copied from ActCR documentation) Time of day of switch from low to
-high activity. Represents the timing of the rest- activity rhythm. Lower
-(earlier) values indicate increase in activity earlier in the day and
-suggest a more advanced circadian phase.</td>
-</tr>
-<tr class="even">
-<td>cosinorExt_DownMesor</td>
-<td>(copied from ActCR documentation) Time of day of switch from high to
-low activity. Represents the timing of the rest-activity rhythm. Lower
-(earlier) values indicate decline in activity earlier in the day,
-suggesting a more advanced circadian phase.</td>
-</tr>
-<tr class="odd">
-<td>cosinorExt_MESOR</td>
-<td>(copied from ActCR documentation) A measure analogous to the MESOR
-of the cosine model (or half the deflection of the curve) can be
-obtained from mes=min+amp/2. However, it goes through the middle of the
-peak, and is therefore not equal to the MESOR of the cosine model, which
-is the mean of the data</td>
-</tr>
-<tr class="even">
-<td>cosinorExt_ndays</td>
-<td>(copied from ActCR documentation) Number of days modeled.</td>
-</tr>
-<tr class="odd">
-<td>cosinorExt_F_pseudo</td>
-<td>(copied from ActCR documentation) Measure the improvement of the fit
-obtained by the non-linear estimation of the transformed cosine
-model</td>
-</tr>
-<tr class="even">
-<td>cosinorExt_R2</td>
-<td>Measure of goodness of fit of the extended cosinor function to the
-log transformed acceleration signal. Higher values indicate better
-goodness of fit.</td>
 </tr>
 </tbody>
 </table>
@@ -701,7 +698,8 @@ measurement</td>
 <tr class="odd">
 <td>L5hr_ENMO_mg_0-24h</td>
 <td>Hour on which L5 starts for these 24 hours (defined with metric
-ENMO)</td>
+ENMO), on a continuous scale relative to the preceding midnight such
+that 2am is 26 and 6am is 30</td>
 </tr>
 <tr class="even">
 <td>L5_ENMO_mg_0-24h</td>
@@ -1711,6 +1709,9 @@ above.</td>
 overlap with part 5, but are now derived based on the for the full time
 series only, whereas part 5 only presents these variables per day window
 which is then aggregated at person level.</p>
+<div class="section level4">
+<h4 id="mxlx-output-variables">MXLX output variables<a class="anchor" aria-label="anchor" href="#mxlx-output-variables"></a>
+</h4>
 <table class="table">
 <colgroup>
 <col width="36%">
@@ -1722,30 +1723,87 @@ which is then aggregated at person level.</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td>L5TIME</td>
-<td>Timing of least active 5hrs, expressed as timestamp in the day</td>
+<td>L5VALUE, M5VALUE</td>
+<td>Acceleration value for least (L5) and most (M5) active consecutive
+5hrs per 24 hours</td>
 </tr>
 <tr class="even">
-<td>M5TIME</td>
-<td>Timing of most active 5hrs</td>
+<td>L5TIME_clock, M5TIME_clock</td>
+<td>Clock time of L5 and M5, e.g. 15:00</td>
 </tr>
 <tr class="odd">
 <td>L5TIME_num, M5TIME_num</td>
-<td>Timing of least/most active 5hrs, expressed as hours in the day.
-Note that L5/M5 timing variables are difficult to average across days
-because 23:00 and 1:00 would average to noon and not to midnight. So,
-caution is needed when interpreting person averages.</td>
+<td>Timing of L5 and M5, expressed as hours relative to previous
+midnight, meaning that 2am would be 26. This is done to ease averaging
+acros days/persons.</td>
 </tr>
 <tr class="even">
-<td>L5VALUE</td>
-<td>Acceleration value for least active 5hrs</td>
+<td>M5_mean_peakLUX</td>
+<td>Mean peak lux during M5</td>
 </tr>
 <tr class="odd">
-<td>M5VALUE</td>
-<td>Acceleration value for most active 5hrs</td>
+<td>M5_max_peakLUX</td>
+<td>Max peak lux during M5</td>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="section level4">
+<h4 id="cosinor-output-variables">Cosinor output variables<a class="anchor" aria-label="anchor" href="#cosinor-output-variables"></a>
+</h4>
+<p>These variables names are consistent with the variable names <a href="https://wadpac.github.io/GGIR/articles/GGIRoutput.html#circadian-rhythm-cosinor">as
+discussed for GGIR part 2 output</a>.</p>
+</div>
+<div class="section level4">
+<h4 id="other-output-variables-in-part-6">Other output variables in part 6<a class="anchor" aria-label="anchor" href="#other-output-variables-in-part-6"></a>
+</h4>
+<table class="table">
+<colgroup>
+<col width="36%">
+<col width="63%">
+</colgroup>
+<thead><tr class="header">
+<th>Variable name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>IS</td>
+<td>Interdaily Stability</td>
+</tr>
+<tr class="even">
+<td>IV</td>
+<td>Intradaily Variability</td>
+</tr>
+<tr class="odd">
+<td>phi</td>
+<td>See <a href="https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html#phi">section
+on phy in chapter 13</a>
+</td>
+</tr>
+<tr class="even">
+<td><code>FRAG_</code></td>
+<td>Fragmentation variables, as also <a href="https://wadpac.github.io/GGIR/articles/GGIRoutput.html#fragmentation">discussed
+for part 5 output</a>. Only difference now is that fragmentation
+variables name ending with <code>_day</code> are specific to the waking
+hours of a day, while variable names ending iwht <code>_spt</code> are
+specific to the SPT window.</td>
+</tr>
+<tr class="odd">
+<td>SSP</td>
+<td>See <a href="https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html#self-similarity-paramerter-ssp">section
+on SSP in chapter 13</a>
+</td>
+</tr>
+<tr class="even">
+<td>ABI</td>
+<td>See <a href="https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html#activity-balance-index-abi">section
+on ABI in chapter 13</a>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
