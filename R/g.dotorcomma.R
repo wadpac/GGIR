@@ -46,7 +46,7 @@ g.dotorcomma = function(inputfile, dformat, mon, ...) {
                                                  start = 1, end = 3)}, silent = TRUE)
       if (!exists("deci")) stop("Problem with reading .bin file in GGIR function dotorcomma")
       if (is.na(as.numeric(deci$data.out[2, 2])) == T & decn == ".") decn = ","
-    } else if (mon == MONITOR$MATRIX) {
+    } else if (mon == MONITOR$PARMAY_MTX) {
       decn = "." 
     }
   } else if (dformat == FORMAT$CWA) {

@@ -13,7 +13,7 @@ inspect_binFile_brand = function(filename) {
     header_raw = raw[513:516]
     header = rawToChar(header_raw[header_raw != 0], multiple = FALSE)
     # if matrix device, header is MDTC, otherwise it is a corrupt file
-    if (header == "MDTC") mon = MONITOR$MATRIX
+    if (header == "MDTC") mon = MONITOR$PARMAY_MTX
   }
   return(mon)
 }

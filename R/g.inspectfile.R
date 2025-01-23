@@ -70,7 +70,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       mon = MONITOR$MOVISENS
       sf = 64
       header = "no header"
-    } else if (dformat == FORMAT$BIN) { # .bin and not movisens, could be GENEActiv or Matrix
+    } else if (dformat == FORMAT$BIN) { # .bin and not movisens, could be GENEActiv or Parmay Matrix
       mon = inspect_binFile_brand(filename = datafile)
       # try read the file as if it is a geneactiv and store output in variable 'isitageneactive'
       if (mon == MONITOR$GENEACTIV) {
@@ -107,9 +107,9 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         } else {
           stop(paste0("\nError processing ", filename, ": possibibly a corrupt GENEActive file"))
         }
-      } else if (mon == MONITOR$MATRIX) {
+      } else if (mon == MONITOR$PARMAY_MTX) {
         header = NULL
-        sf = GGIRread::inspectMatrix(datafile, return = "sf")
+        sf = GGIRread::readMatrix(datafile, return = "sf")
       } else {
         stop(paste0("\nError processing ", filename, ": unrecognised .bin file"))
       }
@@ -159,7 +159,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   # main script
   filename = unlist(strsplit(as.character(datafile),"/"))
   filename = filename[length(filename)]
-  monnames = c("genea", "geneactive", "actigraph", "axivity", "movisens", "verisense", "matrix") #monitor names
+  monnames = c("genea", "geneactive", "actigraph", "axivity", "movisens", "verisense", "parmay_mtx") #monitor names
   fornames = c("bin", "csv", "wav", "cwa", "csv", "gt3x", "BIN") #format names
   
   if (length(filename) == 0) {
@@ -246,7 +246,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         filename = unlist(strsplit(as.character(datafile),"/"))
         filename = filename[length(filename) - 1]
       }
-    } else if (mon == MONITOR$MATRIX) {
+    } else if (mon == MONITOR$PARMAY_MTX) {
       H = "file does not have header" # these files have no header
     }
   } else if (dformat == FORMAT$CSV) {

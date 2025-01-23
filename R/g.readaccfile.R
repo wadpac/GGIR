@@ -20,29 +20,30 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
   desiredtz = params_general[["desiredtz"]]
   configtz = params_general[["configtz"]]
   if (length(configtz) == 0) configtz = desiredtz
-
+  
   I = inspectfileobject
   mon = I$monc
   if (mon == MONITOR$VERISENSE) mon = MONITOR$ACTIGRAPH
   dformat = I$dformc
   sf = I$sf
   decn = I$decn
-
+  
   if ((mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) ||
       (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) || 
       dformat == FORMAT$AD_HOC_CSV) {
     blocksize = blocksize * 300
   }
-
+  
   if (blocknumber < 1) blocknumber = 1
-
+  
   # startpage should only be specified for blocknumber 1.
   # The next time (blocknumber > 1) the startpage will be derived from the previous
   # endpage and the blocksize.
-
+  
   if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) || dformat == FORMAT$GT3X ||
-      (mon == MONITOR$MOVISENS && dformat == FORMAT$BIN)) {
-    # for GENEActiv binary data, gt3x format data, and Movisens data,
+      (mon == MONITOR$MOVISENS && dformat == FORMAT$BIN) || 
+      (mon == MONITOR$PARMAY_MTX && dformat == FORMAT$BIN)) {
+    # for GENEActiv binary data, gt3x format data, Movisens data, and Matrix data, 
     # page selection is defined from start to end **including end**
     if (blocknumber > 1 && length(PreviousEndPage) != 0) {
       startpage = PreviousEndPage + 1
@@ -50,7 +51,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       startpage = blocksize * (blocknumber - 1) + 1 # pages are numbered starting with page 1
     }
     endpage = startpage + blocksize - 1 # -1 because both startpage and endpage will be read,
-                                        # and we want to read blocksize # of samples
+    # and we want to read blocksize # of samples
   } else {
     # for other monitor brands and data formats
     # page selection is defined from start to end **excluding end itself**,
@@ -59,7 +60,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       startpage = PreviousEndPage
     } else {
       startpage = blocksize * (blocknumber - 1) # pages are numbered starting with page 0
-
+      
       if (mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) {
         headerlength = 10
         startpage = startpage + headerlength
@@ -67,17 +68,17 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     }
     endpage = startpage + blocksize
   }
-
+  
   P = c()
   isLastBlock = FALSE
-
+  
   if (mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) {    
     try(expr = {P = GGIRread::readGENEActiv(filename = filename, start = startpage,
                                             end = endpage, desiredtz = desiredtz,
                                             configtz = configtz)}, silent = TRUE)
     if (length(P) > 0 && ("data.out" %in% names(P))) {
       names(P)[names(P) == "data.out"] = "data"
-
+      
       if (nrow(P$data) < (blocksize*300)) {
         isLastBlock = TRUE
       }
@@ -92,7 +93,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       on.exit(sink())
       invisible(force(x))
     }
-
+    
     # skip 1 more row only if the file has a header. Only the first chunk of data can have a header.
     if (blocknumber == 1) {
       testheader =  quiet(data.table::fread(filename, nrows = 2, skip = 10,
@@ -130,7 +131,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                               configtz = configtz,
                                               interpolationType = params_rawdata[["interpolationType"]],
                                               header = header)
-            }, silent = TRUE)
+        }, silent = TRUE)
         return(P)
       }
     } else {
@@ -143,11 +144,11 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                               interpolationType = params_rawdata[["interpolationType"]],
                                               frequency_tol = params_rawdata[["frequency_tol"]],
                                               header = header)
-            }, silent = TRUE)
+        }, silent = TRUE)
         return(P)
       }
     }
-
+    
     P = apply_readAxivity(bstart = startpage, bend = endpage)
     if (length(P) == 0) { 
       # If data reading is not successful then try following steps to retrieve issue
@@ -174,7 +175,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
         P = apply_readAxivity(bstart = startpage, bend = endpage)
         if (length(P) > 1) { # data reading succesful
           filequality$NFilePagesSkipped = NFilePagesSkipped # store number of pages jumped
-
+          
           # Add replications of Ptest to the beginning of P to achieve same data 
           # length as under normal conditions
           P$data = rbind(do.call("rbind",
@@ -189,26 +190,26 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
   } else if (mon == MONITOR$AXIVITY && dformat == FORMAT$CSV) {
     try(expr = {
       rawData = data.table::fread(filename, nrows = blocksize,
-                            skip = startpage,
-                            dec = decn, showProgress = FALSE, header = FALSE,
-                            data.table=FALSE, stringsAsFactors=FALSE)
+                                  skip = startpage,
+                                  dec = decn, showProgress = FALSE, header = FALSE,
+                                  data.table=FALSE, stringsAsFactors=FALSE)
     }, silent = TRUE)
     if (length(rawData) > 0) {
       if (nrow(rawData) < blocksize) {
         isLastBlock = TRUE
       }
-
+      
       rawTime = rawData[,1]
-
+      
       if(class(rawTime)[1] == "character") {
         # If timestamps in the csv file are formatted (Y-M-D h:m:s.f), but some of the dates are formatted poorly,
         # data.table::fread() might have trouble parsing them as timestamps, and will instead return them as strings. 
         # as.POSIXct() is less brittle and might still be able to parse such timestamps, but it will be a very slow process.
         # For instance, one omGUI export contained timestamps like "2023-11-11 15:22:60.000" (which should normally be "2023-11-11 15:23:00.000").
         # data.table::fread() couldn't parse this but as.POSIXct() could, albeit very slowly.
-
+        
         rawTime = as.POSIXct(rawTime, tz=configtz, origin = "1970-01-01")
-
+        
         # if as.POSIXct() also failed to parse this data as timestamps, there's nothing else we can do.
         if(class(rawTime)[1] != "POSIXct") {
           stop(paste0("Corrupt timestamp data in ", filename),  call. = FALSE)
@@ -224,7 +225,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
         if (!is.numeric(rawTime) && configtz != "") {
           rawTime = lubridate::force_tz(rawTime, configtz)
         }
-
+        
         # A similar thing needs to be done if the csv file contains Unix timestamps as well.
         # OmGui converts device timestamps to Unix timestamps as if the timestamps were originally in UTC.
         # So we need to convert the Unix timestamp into a hh:mm:ss format, then force that timestamp
@@ -234,15 +235,15 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
           rawTime = lubridate::force_tz(rawTime, configtz)
         }
       }
-
+      
       rawTime = as.numeric(rawTime)
-
+      
       # resample the acceleration data, because AX3 data is stored at irregular time points
       rawAccel = as.matrix(rawData[,2:4])
       step = 1/sf
       timeRes = seq(rawTime[1], rawTime[length(rawTime)], step)
       timeRes = timeRes[1 : (length(timeRes) - 1)]
-
+      
       # at the moment the function is designed for reading the 3 acceleration channels only,
       # because that is the situation of the use-case we had.
       accelRes = GGIRread::resample(rawAccel, rawTime, timeRes, nrow(rawAccel), params_rawdata[["interpolationType"]]) # this is now the resampled acceleration data
@@ -280,7 +281,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       colnames(P$data)[colnames(P$data) == "X"] = "x"
       colnames(P$data)[colnames(P$data) == "Y"] = "y"
       colnames(P$data)[colnames(P$data) == "Z"] = "z"
-
+      
       # read.gt3x::read.gt3x returns timestamps as POSIXct with GMT timezone, but they are actally in local time of the device.
       # Don't just convert timezones, instead force the correct local timezone of the device (configtz)
       # while keeping the same hh:mm:ss time.
@@ -298,7 +299,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
         endpage = endpage + 1
       }
     }
-
+    
     try(expr = {P = read.myacc.csv(rmc.file = filename,
                                    rmc.nrow = blocksize, rmc.skip = startpage,
                                    rmc.dec = params_rawdata[["rmc.dec"]],
@@ -335,8 +336,19 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                    header = header)
     }, silent = TRUE)
     if (length(sf) == 0) sf = params_rawdata[["rmc.sf"]]
-  }
-
+  } else if (mon == MONITOR$PARMAY_MTX && dformat == FORMAT$BIN) {
+    try(expr = {P = GGIRread::readMatrix(bin_file = filename, return = "all",
+                                         start = startpage, end = endpage, 
+                                         desiredtz = desiredtz, configtz = configtz,
+                                         interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
+    # fix colnames to match expectations of GGIR
+    colnames(P$data) = gsub("acc_", "", colnames(P$data))
+    colnames(P$data) = gsub("ambient_temp", "temperature", colnames(P$data))
+    if (P$lastchunk) {
+      isLastBlock = TRUE
+    }
+  } 
+  
   # if first block isn't read then the file is probably corrupt
   if (length(P$data) <= 1 || nrow(P$data) == 0) {
     P = c()
@@ -349,17 +361,17 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
   } else if (nrow(P$data) < (sf * ws * 2 + 1)) {
     # a shorter chunk of data than expected was read
     isLastBlock = TRUE
-
+    
     if (blocknumber == 1) {
       # not enough data for analysis
       P = c()
       filequality$filetooshort = TRUE
     }
   }
-
+  
   # remove any columns we don't need/expect
   P$data = P$data[,which(colnames(P$data) %in% c("x", "y", "z", "time", "light", "temperature", "wear"))]
-
+  
   # every column except for time and wear should be numeric.
   # If it isn't, some non-numeric input was present, and we don't know how to deal with it.
   for (col in c("x", "y", "z", "light", "temperature")) {
@@ -367,24 +379,24 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       stop(paste0("Corrupt file. ", col, " column contains non-numeric data."))
     }
   }
-
+  
   # the wear column should be logical, but we will coerse it to numeric right away,
   # so that later it could be combined with the other numeric columns into a numeric matrix
-
+  
   if ("wear" %in% colnames(P$data)) {
     if (!is.logical(P$data$wear)) {
       stop("Corrupt file. The wear column should contail TRUE/FALSE values.")
     }
     P$data$wear = as.numeric(P$data$wear)
   }
-
+  
   # the time column at this point will be either Unix timestamps or POSIXct objects.
   # If POSIXct, we'll convert them to Unix timestamps, so that later this column 
   # could be combined with the other numeric columns into a numeric matrix
   if (("time" %in% colnames(P$data)) && !is.numeric(P$data$time)) { 
     P$data$time = as.numeric(P$data$time)
   }
-
+  
   invisible(list(P = P,
                  filequality = filequality,
                  isLastBlock = isLastBlock,

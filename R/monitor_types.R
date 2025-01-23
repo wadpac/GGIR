@@ -1,4 +1,4 @@
-MONITOR = setNames(0:7, c("AD_HOC", "GENEA", "GENEACTIV", "ACTIGRAPH", "AXIVITY",  "MOVISENS", "VERISENSE", "MATRIX")) # GENEA is deprecated
+MONITOR = setNames(0:7, c("AD_HOC", "GENEA", "GENEACTIV", "ACTIGRAPH", "AXIVITY",  "MOVISENS", "VERISENSE", "PARMAY_MTX")) # GENEA is deprecated
 MONITOR = as.environment(as.list(MONITOR))
 lockEnvironment(MONITOR, bindings = TRUE)
 
