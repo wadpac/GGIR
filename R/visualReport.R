@@ -545,10 +545,10 @@ visualReport = function(metadatadir = c(),
         } else {
           # recording does not start at edge
           subploti = c(1, dayedges)
+          dayEnds = c(dayedges + ((hrsPerRow - 24) * (3600/epochSize)) - 1, nrow(mdat))
+          
         }
-        subploti = cbind(subploti,
-                         c(dayedges + ((hrsPerRow - 24) * (3600/epochSize)) - 1, nrow(mdat)))
-        
+        subploti = cbind(subploti, dayEnds)
         invalid = which(mdat$invalidepoch == 1)
         subploti[which(subploti[,2] > nrow(mdat)), 2] = nrow(mdat)
         NdaysPerPage = 8
