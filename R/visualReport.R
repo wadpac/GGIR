@@ -37,7 +37,8 @@ visualReport = function(metadatadir = c(),
   }  
   
   panelplot = function(mdat, ylabels_plot2, binary_vars,
-                       BCN, BCC, title = "", hrsPerRow = NULL, plotid = 0, 
+                       behavioral_code_names, behavioral_codes, title = "", 
+                       hrsPerRow = NULL, plotid = 0, 
                        legend_items = NULL, lux_available = FALSE,
                        step_count_available = FALSE, epochSize = 60, focus = "day",
                        temperature_available = FALSE) {
@@ -357,16 +358,17 @@ visualReport = function(metadatadir = c(),
     }
   }
   
-  gen_col_names = function(BCN, BCC = NULL, name, legend_items, colour = NULL,
+  gen_col_names = function(behavioral_code_names, behavioral_codes = NULL,
+                           name, legend_items, colour = NULL,
                            level = NULL, reverse = TRUE) {
     # generate colour and names for legend
-    vars = grep(pattern = name, x = BCN, value = TRUE)
+    vars = grep(pattern = name, x = behavioral_code_names, value = TRUE)
     Nitems = length(vars)
     if (Nitems > 0) {
       legend_items$name = c(legend_items$name, vars)
       legend_items$level = c(legend_items$level, rep(level, Nitems))
-      if (!is.null(BCC)) {
-        legend_items$code = c(legend_items$code, BCC[which(BCN %in% vars)])
+      if (!is.null(behavioral_codes)) {
+        legend_items$code = c(legend_items$code, behavioral_codes[which(behavioral_code_names %in% vars)])
       } else {
         legend_items$code = c(legend_items$code, rep(-1, Nitems))
       }
@@ -404,33 +406,29 @@ visualReport = function(metadatadir = c(),
       df = file.info(legendfiles)
       legendfiles = rownames(df)[which.max(df$mtime)]
       legendF = data.table::fread(file = rownames(df)[which.max(df$mtime)], data.table = FALSE)
-      BCN = legendF$class_name # behavioural class names (characters)
-      BCC = legendF$class_id # behavioural class codes (numeric)
-
-      
-      neworder = c(grep(pattern = "sleep", x = BCN), grep(pattern = "IN", x = BCN),
-                   grep(pattern = "LIG", x = BCN), grep(pattern = "MOD", x = BCN),
-                   grep(pattern = "VIG", x = BCN), grep(pattern = "MVPA", x = BCN)) 
-      BCN = BCN[neworder]
-      BCC = BCC[neworder]
-      # class2remove = grep(pattern = "spt_wake", x = BCN, invert = FALSE, value = FALSE)
-      # BCN = BCN[-class2remove]
-      # BCC = BCC[BCC %in% BCC[class2remove] == FALSE]
-      BCN = gsub(pattern = "day_|spt_", replacement = "", x = BCN)
-      BCN = gsub(pattern = "sleep", replacement = "spt_sleep", x = BCN)
-      BCN = gsub(pattern = "wake_IN", replacement = "spt_wake_inactive", x = BCN)
-      BCN = gsub(pattern = "wake_LIG", replacement = "spt_wake_lipa", x = BCN)
-      BCN = gsub(pattern = "wake_MOD", replacement = "spt_wake_moderate", x = BCN)
-      BCN = gsub(pattern = "wake_VIG", replacement = "spt_wake_vigorous", x = BCN)
-      BCN = tolower(BCN)
-      BCN = gsub(pattern = "lig_", replacement = "lipa_", x = BCN)
-      BCN = gsub(pattern = "in_bts", replacement = "inactive_bts", x = BCN)
-      BCN = gsub(pattern = "in_unbt", replacement = "inactive_unbt", x = BCN)
+      behavioral_code_names = legendF$class_name # behavioural class names (characters)
+      behavioral_codes = legendF$class_id # behavioural class codes (numeric)
+      # reorder and rename behavioural class names and codes:
+      neworder = c(grep("sleep", x = behavioral_code_names), grep("IN", x = behavioral_code_names),
+                   grep("LIG", x = behavioral_code_names), grep("MOD", x = behavioral_code_names),
+                   grep("VIG", x = behavioral_code_names), grep("MVPA", x = behavioral_code_names)) 
+      behavioral_code_names = behavioral_code_names[neworder]
+      behavioral_codes = behavioral_codes[neworder]
+      behavioral_code_names = gsub("day_|spt_", "", x = behavioral_code_names)
+      behavioral_code_names = gsub("sleep", "spt_sleep", x = behavioral_code_names)
+      behavioral_code_names = gsub("wake_IN", "spt_wake_inactive", x = behavioral_code_names)
+      behavioral_code_names = gsub("wake_LIG", "spt_wake_lipa", x = behavioral_code_names)
+      behavioral_code_names = gsub("wake_MOD", "spt_wake_moderate", x = behavioral_code_names)
+      behavioral_code_names = gsub("wake_VIG", "spt_wake_vigorous", x = behavioral_code_names)
+      behavioral_code_names = tolower(behavioral_code_names)
+      behavioral_code_names = gsub("lig_", "lipa_", x = behavioral_code_names)
+      behavioral_code_names = gsub("in_bts", "inactive_bts", x = behavioral_code_names)
+      behavioral_code_names = gsub("in_unbt", "inactive_unbt", x = behavioral_code_names)
       # move unbouted to the end for logical order
-      neworder = c(grep(pattern = "unbt", x = BCN, invert = TRUE),
-                   grep(pattern = "unbt", x = BCN)) 
-      BCN = BCN[neworder]
-      BCC = BCC[neworder]
+      neworder = c(grep(pattern = "unbt", x = behavioral_code_names, invert = TRUE),
+                   grep(pattern = "unbt", x = behavioral_code_names)) 
+      behavioral_code_names = behavioral_code_names[neworder]
+      behavioral_codes = behavioral_codes[neworder]
       # loop through files
       for (i in f0:f1) {
         load(file = paste0(metadatadir, "/meta/ms5.outraw/",
@@ -442,6 +440,7 @@ visualReport = function(metadatadir = c(),
         mdat$sib[which(mdat$SleepPeriodTime == 1)] = 0
         if (i == f0) {
           ylabels_plot2 = NULL
+          # rename selfreported terminology
           if ("selfreported" %in% colnames(mdat) &&
               !is.null(params_sleep) &&
               !is.null(params_sleep[["loglocation"]])) {
@@ -449,21 +448,22 @@ visualReport = function(metadatadir = c(),
           }
           binary_vars = c("SleepPeriodTime", "sibdetection", "invalidepoch")
           ylabels_plot2 = c(binary_vars, ylabels_plot2)
-          ylabels_plot2 = gsub(pattern = "invalidepoch", replacement = "invalid", x = ylabels_plot2)
-          ylabels_plot2 = gsub(pattern = "SleepPeriodTime", replacement = "spt", x = ylabels_plot2)
-          ylabels_plot2 = gsub(pattern = "sibdetection", replacement = "sib", x = ylabels_plot2)
-          ylabels_plot2 = gsub(pattern = "nap", replacement = "diary_nap", x = ylabels_plot2)
-          ylabels_plot2 = gsub(pattern = "nonwear", replacement = "diary_nonwear", x = ylabels_plot2)
-          ylabels_plot2 = gsub(pattern = "sleeplog", replacement = "diary_sleepwindow", x = ylabels_plot2)
-          ylabels_plot2 = gsub(pattern = "bedlog", replacement = "diary_timeinbed", x = ylabels_plot2)
+          ylabels_plot2 = gsub("invalidepoch", "invalid", x = ylabels_plot2)
+          ylabels_plot2 = gsub("SleepPeriodTime", "spt", x = ylabels_plot2)
+          ylabels_plot2 = gsub("sibdetection", "sib", x = ylabels_plot2)
+          ylabels_plot2 = gsub("nap", "diary_nap", x = ylabels_plot2)
+          ylabels_plot2 = gsub("nonwear", "diary_nonwear", x = ylabels_plot2)
+          ylabels_plot2 = gsub("sleeplog", "diary_sleepwindow", x = ylabels_plot2)
+          ylabels_plot2 = gsub("bedlog", "diary_timeinbed", x = ylabels_plot2)
           ylabels_plot2 = tolower(ylabels_plot2)
         }
         if ("selfreported" %in% colnames(mdat)) {
           sr_levelnames = levels(mdat$selfreported)
-          sr_levelnames = gsub(pattern = "nap", replacement = "diary_nap", x = sr_levelnames)
-          sr_levelnames = gsub(pattern = "nonwear", replacement = "diary_nonwear", x = sr_levelnames)
+          sr_levelnames = gsub("nap", "diary_nap", x = sr_levelnames)
+          sr_levelnames = gsub("nonwear", "diary_nonwear", x = sr_levelnames)
           levels(mdat$selfreported) = sr_levelnames
         }
+        # assess which information is available
         if ("lightpeak" %in% colnames(mdat)) {
           lux_available = TRUE
         } else {
@@ -500,24 +500,34 @@ visualReport = function(metadatadir = c(),
         legend_items$level = c(legend_items$level, 2)
         
         # Sleep in SPT
-        legend_items = gen_col_names(BCN, BCC = BCC, name = "spt_sleep", #sleep_in_spt
+        legend_items = gen_col_names(behavioral_code_names,
+                                     behavioral_codes = behavioral_codes,
+                                     name = "spt_sleep", #sleep_in_spt
                                      legend_items = legend_items, colour = "white", #"#F0E442"
                                      level = 2)
         # Wake in SPT
-        legend_items = gen_col_names(BCN, BCC = BCC, name = "spt_wake", #sleep_in_spt
+        legend_items = gen_col_names(behavioral_code_names,
+                                     behavioral_codes = behavioral_codes,
+                                     name = "spt_wake", #sleep_in_spt
                                      legend_items = legend_items, colour = "yellow3",
                                      level = 2, reverse = FALSE)
         # Inactivity
-        not_spt = grep(pattern = "spt", x = BCN, invert = TRUE)
-        legend_items = gen_col_names(BCN = BCN[not_spt], BCC = BCC[not_spt], name = "inactive",
+        not_spt = grep(pattern = "spt", x = behavioral_code_names, invert = TRUE)
+        legend_items = gen_col_names(behavioral_code_names = behavioral_code_names[not_spt],
+                                     behavioral_codes = behavioral_codes[not_spt],
+                                     name = "inactive",
                                      legend_items = legend_items, colour = "#CC79A7",
                                      level = 2, reverse = FALSE)
         # LIPA
-        legend_items = gen_col_names(BCN = BCN[not_spt], BCC = BCC[not_spt], name = "lipa",
+        legend_items = gen_col_names(behavioral_code_names = behavioral_code_names[not_spt],
+                                     behavioral_codes = behavioral_codes[not_spt],
+                                     name = "lipa",
                                      legend_items = legend_items, colour = "#009E73",
                                      level = 2, reverse = FALSE)
         # MVPA
-        legend_items = gen_col_names(BCN = BCN[not_spt], BCC = BCC[not_spt], name = "mod|vig|mvpa",
+        legend_items = gen_col_names(behavioral_code_names = behavioral_code_names[not_spt],
+                                     behavioral_codes = behavioral_codes[not_spt],
+                                     name = "mod|vig|mvpa",
                                      legend_items = legend_items, colour = "#D55E00",
                                      level = 2, reverse = FALSE)
         # Invalid
@@ -526,7 +536,7 @@ visualReport = function(metadatadir = c(),
         legend_items$code = c(legend_items$code, -1)
         legend_items$level = c(legend_items$level, 0)
         
-        simple_filename = gsub(pattern = ".RData", replacement = "", x = fnames.ms5raw[i] )
+        simple_filename = gsub(pattern = ".RData", "", x = fnames.ms5raw[i] )
         hrsPerRow = params_output[["visualreport_hrsPerRow"]]
         focus = params_output[["visualreport_focus"]]
         if (focus == "day") {
@@ -538,10 +548,11 @@ visualReport = function(metadatadir = c(),
                              format(mdat$timestamp, "%M") == "00" &
                              format(mdat$timestamp, "%S") == "00")
         }
-        
+        # Identify indices for start and end of each window
         if (dayedges[1] == 1) {
           # recording starts at edge
           subploti = dayedges
+          dayEnds = c(dayedges[2:length(dayedges)] + ((hrsPerRow - 24) * (3600/epochSize)) - 1, nrow(mdat))
         } else {
           # recording does not start at edge
           subploti = c(1, dayedges)
@@ -574,14 +585,14 @@ visualReport = function(metadatadir = c(),
             next
           }
         }
-        
+        # Generate pdf
         pdf(paste0(metadatadir, "/results/file summary reports/Time_report_",
                    simple_filename, ".pdf"), paper = "a4",
             width = 0, height = 0)
         par(mfrow = c(NdaysPerPage, 1), mgp = c(2, 0.8, 0), omi = c(0, 0, 0, 0), bty = "n")
         cntplot = 0
         if (nrow(subploti) > 0) {
-          for (ani in 1:nrow(subploti)) {
+          for (ani in 1:nrow(subploti)) { # loop across subplots
             if (cntplot >= 8) cntplot = 0
             if (cntplot == 0) {
               par(mar = c(3, 0, 1.5, 2.5))
@@ -602,7 +613,6 @@ visualReport = function(metadatadir = c(),
                   legendnames[boutvars[bvi]] = paste0(tmp_split[1], " ",tmp_split[2], 
                                                       " [", tmp_split[3], ",", tmp_split[4], ")")
                 }
-                
               }
               legendnames[boutvars] = paste0(legendnames[boutvars], " mins")
               legendcolors = legend_items$col
@@ -626,7 +636,6 @@ visualReport = function(metadatadir = c(),
                 RecDurUnit = "hours"
               } 
               if (desiredtz == "") desiredtz = Sys.timezone()
-              
               if (nchar(simple_filename) > 10) {
                 added_text1 = "Start of filename: "
                 added_text2 = "..."
@@ -653,13 +662,12 @@ visualReport = function(metadatadir = c(),
             if (subploti[ani, 2] - subploti[ani, 1] > 60 * (60/epochSize)) { # we need at least 1 hour for the ticks
               panelplot(mdat[(subploti[ani, 1] + 1):subploti[ani, 2], ],
                         ylabels_plot2, binary_vars,
-                        BCN, BCC, title = "", hrsPerRow = hrsPerRow, plotid = ani,
+                        behavioral_code_names, behavioral_codes, title = "", hrsPerRow = hrsPerRow, plotid = ani,
                         legend_items = legend_items, lux_available = lux_available,
                         step_count_available = step_count_available, epochSize = epochSize,
                         focus = focus, temperature_available = temperature_available)
               cntplot = cntplot + 1
             }
-            
           }
         }
         dev.off()
