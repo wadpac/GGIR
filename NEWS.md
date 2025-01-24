@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.2-0
+
+- Visual report: Bug fixed in handling recordings that start at midnight #1257
+
 # CHANGES IN GGIR VERSION 3.1-11
 
 - Part 2:
