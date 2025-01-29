@@ -364,9 +364,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     if ((length(params_phyact[["threshold.lig"]]) == 1 &&
         length(params_phyact[["threshold.mod"]]) == 1 &&
         length(params_phyact[["threshold.vig"]]) == 1) | is.null(params_phyact[["part6_threshold_combi"]])) {
-      params_phyact[["part6_threshold_combi"]] = paste(params_phyact[["threshold.lig"]],
-                                                       params_phyact[["threshold.mod"]],
-                                                       params_phyact[["threshold.vig"]], sep = "_")
+      params_phyact[["part6_threshold_combi"]] = paste(params_phyact[["threshold.lig"]][1],
+                                                       params_phyact[["threshold.mod"]][1],
+                                                       params_phyact[["threshold.vig"]][1], sep = "_")
     }
   }
   # params output 

@@ -1,7 +1,11 @@
 # CHANGES IN GGIR VERSION 3.2-0
 
-- Visual report: Bug fixed in handling recordings that start at midnight #1257
+- New visual report: Bug fixed in handling recordings that start at midnight #1257
 
+- Part 6 and new visual report: Fix bug related to determining the combination of thresholds to use for the 
+  visual report and for part 6 analyses when there are several options and 
+  part6_threshold_combi is NULL. #1260
+  
 # CHANGES IN GGIR VERSION 3.1-11
 
 - Part 2:
