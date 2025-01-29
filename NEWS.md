@@ -1,3 +1,9 @@
+# CHANGES IN GGIR VERSION 3.X-Y
+
+- Part 6 and visual report: Fix bug related to determining the combination of threhsolds to use for the 
+  visual report and for part 6 analyses when there are several options and 
+  part6_threshold_combi is NULL. #1260
+  
 # CHANGES IN GGIR VERSION 3.1-11
 
 - Part 2:
