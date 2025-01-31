@@ -5,7 +5,9 @@
 - Part 6 and new visual report: Fix bug related to determining the combination of thresholds to use for the 
   visual report and for part 6 analyses when there are several options and 
   part6_threshold_combi is NULL. #1260
-  
+
+- Part 6: Revise fix to #1181 and #1245 in 3.1-11 as it slowed down part 6 substantially. #1263
+
 # CHANGES IN GGIR VERSION 3.1-11
 
 - Part 2:
@@ -40,7 +42,7 @@ with only 1 valid day, these were previously skipped. #1246
   - Change extraction of imputation code from sleep diary, which is now assumed to 
   correspond to preceding night. #1251
   
-- Part 1, 5 and 6: Update code to be backward compatible with R 4.2.0
+- Part 1, 5 and 6: Update code to be backward compatible with R 4.2.0 #1181 and #1245
 
 - Part 5: Default values for parameters `do.sibreport` and `save_ms5rawlevels` changed
 to TRUE, for `save_ms5raw_format` changed to "RData" in order to ease generating visual 

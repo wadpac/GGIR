@@ -1,7 +1,7 @@
 library(GGIR)
 context("g.part6")
 
-test_that("Part 6 with household co-analysis", {
+test_that("Part 6 can run household co-analysis and Circadian Rhythm analysis", {
 
   # Create test files for household co-analysis
   metadatadir = "./output_testpart6"
