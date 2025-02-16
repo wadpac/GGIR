@@ -205,7 +205,7 @@ test_that("chainof5parts", {
           data_masking_strategy = 1, maxdur = Ndays, hrs.del.start = 0, hrs.del.end = 0,
           loglocation = sleeplog_fn,
           overwrite = TRUE, excludefirstlast = FALSE, do.parallel = do.parallel,
-          frag.metrics = "all", save_ms5rawlevels = TRUE,
+          frag.metrics = "all", save_ms5rawlevels = TRUE, save_ms5raw_format = "csv",
           part5_agg2_60seconds = TRUE, do.sibreport = TRUE, nap_model = "hip3yr",
           iglevels = 1, timewindow = c("MM", "WW", "OO"),
           possible_nap_window = c(0, 24),

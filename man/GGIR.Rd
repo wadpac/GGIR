@@ -1017,7 +1017,9 @@ GGIR(mode = 1:5,
     \describe{
 
       \item{mvpathreshold}{
-        Numeric (default = 100).
+        Numeric (default = NULL).
+        Legacy parameter, if not provided GGIR uses the value of \code{threshold.mod} 
+        for this.
         Acceleration threshold for MVPA estimation in GGIR \link{g.part2}.
         This can be a single number or an vector of numbers,
         e.g., \code{mvpathreshold = c(100, 120)}.
@@ -1026,11 +1028,13 @@ GGIR(mode = 1:5,
         MVPA is not estimated.}
 
       \item{mvpadur}{
-        Numeric (default = 10).
+        Numeric (default = c(1, 5, 10)).
         The bout duration(s) for which MVPA will be calculated. Only used in GGIR \link{g.part2}.}
 
       \item{boutcriter}{
-        Numeric (default = 0.8).
+        Numeric (default = NULL).
+        Legacy parameter, if not provided GGIR uses the value of \code{boutcriter.mvpa} 
+        for this.
         A number between 0 and 1, it defines what fraction of a bout needs to be above the
         mvpathreshold, only used in GGIR \link{g.part2}.}
 
@@ -1118,6 +1122,11 @@ GGIR(mode = 1:5,
         part 5 to be used for part 6. For example, "40_100_120". If left in default value
         GGIR will use the first threshold value from parameters \code{threshold.lig},
         \code{threshold.mod}, and \code{threshold.vig}.
+      }
+      \item{bout.metric}{
+        Deprecated parameter that was previously used to choose which
+        bout detection metric (algorithm) GGIR should use. GGIR now uses only one 
+        algorithm.
       }
     }
   }
@@ -1528,18 +1537,20 @@ GGIR(mode = 1:5,
         "OO" (sleep onset to sleep onset), or any combination of them.}
 
       \item{save_ms5rawlevels}{
-        Boolean (default = FALSE).
+        Boolean (default = TRUE).
         In \link{g.part5}: Whether to save the time series classification (levels)
         as csv or RData files (as defined by \code{save_ms5raw_format}). Note that 
         time stamps will be stored in the column \code{timenum} in UTC format (i.e., 
         seconds from 1970-01-01). To convert timenum to time stamp format, you 
         need to specify your desired time zone, e.g., 
-        \code{as.POSIXct(mdat$timenum, tz = "Europe/London")}.}
+        \code{as.POSIXct(mdat$timenum, tz = "Europe/London")}. If you are not using
+        GGIR part 6, not interested in the visualreport generation, and not interested
+        in time series then you may want to consider setting this parameter to FALSE.}
 
       \item{save_ms5raw_format}{
-        Character (default = "csv").
-        In \link{g.part5}: To specify how data should be stored: either "csv" or 
-        "RData". Only used if \code{save_ms5rawlevels = TRUE}.}
+        Character (default = "RData").
+        In \link{g.part5}: To specify how data should be stored: "csv", 
+        "RData", or both via c("csv", "RData"). Only used if \code{save_ms5rawlevels = TRUE}.}
 
       \item{save_ms5raw_without_invalid}{
         Boolean (default = TRUE).
@@ -1552,7 +1563,7 @@ GGIR(mode = 1:5,
         Here, non-wear time is imputed where possible.}
 
       \item{do.sibreport}{
-        Boolean (default = FALSE).
+        Boolean (default = TRUE).
         In \link{g.part4}: To indicate whether to generate report for the sustained 
         inactivity bouts (SIB). If set to TRUE and when an advanced sleep diary is
         available in part 4 then part 5 will use this to generate summary statistics

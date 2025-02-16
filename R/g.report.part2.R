@@ -266,7 +266,8 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       #-----------------------------------------------------------------------
       data.table::fwrite(x = dayEVENTSUMMARY_clean,
                          file = paste0(metadatadir, "/results/part2_day", eventName, "summary.csv"),
-                         row.names = F, na = "")
+                         row.names = F, na = "", sep = params_output[["sep_reports"]],
+                         dec = params_output[["dec_reports"]])
     }
     # split SUMMARY in two files and reoder EventVariable names if they exist
     s_names = names(SUMMARY)
@@ -281,7 +282,8 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       EVENTSUMMARY_clean = tidyup_df(EVENTSUMMARY)
       data.table::fwrite(x = EVENTSUMMARY_clean,
                          file =  paste0(metadatadir, "/results/part2_", eventName, "summary.csv"),
-                         row.names = F, na = "")
+                         row.names = F, na = "", sep = params_output[["sep_reports"]],
+                         dec = params_output[["dec_reports"]])
     }
     #-----------------------------
     # tidy up data.frames
