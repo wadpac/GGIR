@@ -64,7 +64,12 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   
   fnames.ms5 = dir(paste(metadatadir, "/meta/ms5.out", sep = ""))
   # path to sleeplog milestonedata, if it exists:
-  sleeplogRDA = paste(metadatadir, "/meta/sleeplog.RData", sep = "")
+  
+  if (length(params_sleep[["loglocation"]]) > 0) {
+    sleeplogRDA = paste0(metadatadir,"/meta/sleeplog_", basename(params_sleep[["loglocation"]]), ".RData")
+  } else {
+    sleeplogRDA = paste(metadatadir, "/meta/sleeplog.RData", sep = "")
+  }
   if (file.exists(sleeplogRDA) == TRUE) {
     sleeplog = logs_diaries = c()
     load(sleeplogRDA)

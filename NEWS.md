@@ -1,11 +1,19 @@
+# CHANGES IN GGIR VERSION 3.2-0
+
+- New visual report: Bug fixed in handling recordings that start at midnight #1257
+
+- Part 6 and new visual report: Fix bug related to determining the combination of thresholds to use for the 
+  visual report and for part 6 analyses when there are several options and 
+  part6_threshold_combi is NULL. #1260
+  
 # CHANGES IN GGIR VERSION 3.1-11
 
 - Part 2:
 
-  - Fix bug in determining the number of files to be included in the part 2 report. 
-  It may affect the part 2 csv report which may have had less recordings than expected 
-  even though the missing recordings are just processed and visible in the output of 
-  subsequent parts. #1252
+  - Fix bug related to determining the files to be included in the part 2 csv report, 
+  causing some files to be unnecessarily excluded from the part 2 csv report if the number
+  of files in the part 2 milestone data is larger than than number of milestone files
+  in the part 1 milestone data. #1252
 
   - Speed up activity diary extraction. #1250
 
@@ -13,10 +21,11 @@
   with intended sep and dec arguments rather than default.
   
   - Simplify MVPA parameter specification in part 2 (mvpathreshold, boutcriter). When not 
-  specified GGIR copies the corresponding part 5 parameter values (threshold.mod and boutcriter.mvpa). #1247
+  specified, GGIR copies the values from the corresponding part 5 parameter values (threshold.mod and 
+  boutcriter.mvpa). #1247
 
 - Part 2 and 4: Both activity diary and sleep diary are now always reloaded if the derived 
-copy of it (in .RData) is older than the diary itself. #1250
+copy of it (in .RData) is older than the diary itself or if the diary name has changed. #1250
 
 - Visual report: Recently added visual report is now also able to handle epoch sizes not equal 
 to 1 minutes, and now also able to handle recordings 
@@ -55,20 +64,22 @@ report, including our explorative nap detection, and working with part 6.
   
 - Vignette: Now documented that missing dates can be skipped in advanced format sleeplog.
 
-- Step detection: Include R script for Verisense step detection inside GitHub repository 'user-scripts' folder to ease future maintenance.
+- Step detection: I have included the Verisense step detection R script inside GitHub repository folder 'user-scripts' to ease future maintenance. Verisense does not seem to be interested in maintaining their code, causing confusion about the latest version and people reaching out to me with questions.
 
 # CHANGES IN GGIR VERSION 3.1-8
 
 - Part 4: 
 
-  - Parameter sib_must_fully_overlap_with_TimeInBed added to control whether sib should overlap fully with the start and/or end of time in bed to be considered sleep (default TRUE),
-this is consistent with functionality in the past. #1223
+  - Parameter sib_must_fully_overlap_with_TimeInBed added to control whether sustained inactivity bouts (sib) 
+  must overlap fully with the start and/or end of time in bed to be considered 
+  sleep (default TRUE), this is consistent with functionality in the past, but 
+  offers the freedom to experiment with alternative settings. #1223
 
   - Handle unexpected combinations of sleep diary column names. For example, if only inbed and wakeup are available then treat these as the time in bed period, while if only sleeponset and outbed are available then these are treated as SPT window.
   
-- Part 5: Expand functionality for exploring possibility of nap detection, this includes the addition of new parameter possible_nap_gap.
+- Part 5: Expanded functionality for exploring possibility of nap detection, this includes the addition of new parameter possible_nap_gap.
 
-- Visual report: Added new visualreport that is automatically generated when visualreport = TRUE and intended to eventually replace the problematic legacy report. Add parameter old_visualreport to turn off the old visualreport generation. #1173
+- Visual report: Added new visualreport that is automatically generated when visualreport = TRUE (default) and intended to eventually replace the problematic legacy report. You can set parameter old_visualreport = TRUE to turn off the old visualreport generation. #1173
 
 - Part 4 + 5 + visualreport: If sleeplog has both reported sleeplog and time in bed process both. In part 4 we will still use one of the two but in the visualreport we display both. #967
 
@@ -95,11 +106,17 @@ specified for light, moderate and vigorous intensity, respectively.
 
   - Add fragmentation metrics, same function as in part 5 but now applied at recording level #839
   
-  - Circadian rhythm analysis now ignore invalid nights controlled with new parameter "includecrit.part6".
+  - Circadian rhythm analysis now ignores invalid nights controlled with new parameter "includecrit.part6".
   
   - Circadian rhythm analysis now provides consistent results for both regardless of whether time series are stored with or without valid windows with parameter save_ms5raw_without_invalid.
 
-- Part 2 + 6: Revised and simplified IV and IS calculation which now ignores invalid timestamps and also comes with phi statistic (credits: Ian Meneghel Danilevicz). In part 2 we used to have 2 calculation, which is now replaced by just one and applied to all valid data points in the recordings. In part 6 this is repeated by for the time window as specified with parameter part6Window. Further, IVIS now uses argument threshold.lig as threshold to distinguish inactivity from active.
+- Part 2 + 6: Revised and simplified IV and IS calculation which now ignores 
+invalid timestamps and also comes with phi statistic (credits: Ian Meneghel Danilevicz). 
+In part 2 we used to have 2 calculations, which is now replaced by just one and 
+applied to all valid data points in the recordings. In part 6 this is repeated 
+for the time window as specified with parameter part6Window. Further, IVIS 
+now uses argument threshold.lig as threshold to distinguish inactivity from 
+active, instead of a hardcoded threshold of 20 mg.
 
 - Part 2: Increase sensitivity clipping detection from 80% to 30% of a window. If the long epoch has more than 30% of its values close to the dynamic range of the sensor then it will be labelled as clipping.
 
@@ -113,7 +130,7 @@ specified for light, moderate and vigorous intensity, respectively.
   
   - includenightcrit.part5 added to allow for controlling inclusion of windows in part 5 based on their amount of valid data during spt window. Default remains the same.
 
-  - Fix incorrect usage of part 5 inclusion criteria testing, which used fraction as percentage.
+  - Fix incorrect usage of part 5 inclusion criteria, which used fraction as percentage.
 
 # CHANGES IN GGIR VERSION 3.1-5
 

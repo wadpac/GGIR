@@ -32,7 +32,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
     dolog = FALSE
   }
   if (dolog == TRUE) {
-    sleeplogRDataFile = paste0(metadatadir,"/meta/sleeplog.RData")
+    sleeplogRDataFile = paste0(metadatadir,"/meta/sleeplog_", basename(params_sleep[["loglocation"]]), ".RData")
     # only re-process sleeplog if sleeplog.RData does not exist or if sleeplog
     # is from a date equal to or after sleeplog.RData
     if (!file.exists(sleeplogRDataFile) || 
