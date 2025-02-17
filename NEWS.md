@@ -8,6 +8,8 @@
 
 - Part 6: Revise fix to #1181 and #1245 in 3.1-11 as it slowed down part 6 substantially. #1263
 
+- Part 2: Bug fixed in handling part 1 output with the uncommon scenario of having only 1 metric (in object metashort) #1265
+  
 # CHANGES IN GGIR VERSION 3.1-11
 
 - Part 2:
