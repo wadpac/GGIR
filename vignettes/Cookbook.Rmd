@@ -28,8 +28,11 @@ This refers to the situation where external software or hardware was used to der
 GGIR(datadir = "/media/actiwatch_awd", # folder with epoch level .AWD file
   outputdir = "/media/myoutput",
   dataFormat = "actiwatch_awd",
-  extEpochData_timeformat = "\%m/\%d/\%Y \%H:\%M:\%S",
+  extEpochData_timeformat = "%d-%b-%Y %H:%M:%S",
   windowsizes = c(60, 900, 3600), # 60 is the expected epoch length
+  do.zcy = TRUE,
+  do.enmo = FALSE,
+  do.anglez = FALSE,
   HASIB.algo = "Sadeh1994",
   def.noc.sleep = c()) # <= because we cannot use HDCZA for ZCY
 ```
@@ -40,7 +43,7 @@ GGIR(datadir = "/media/actiwatch_awd", # folder with epoch level .AWD file
 GGIR(datadir = "/media/actiwatch_csv", # folder with epoch level .AWD file
   outputdir = "/media/myoutput",
   dataFormat = "actiwatch_csv",
-  extEpochData_timeformat = "\%m/\%d/\%Y \%H:\%M:\%S",
+  extEpochData_timeformat = "%m/%d/%Y %H:%M:%S",
   windowsizes = c(15, 900, 3600), # 15 is the expected epoch length
   HASIB.algo = "Sadeh1994",
   def.noc.sleep = c()) # <= because we cannot use HDCZA for ZCY
@@ -56,7 +59,7 @@ documentation on processing raw accelerometer data (multiple values per second).
 GGIR(datadir = "/media/ukbiobank",
    outputdir = "/media/myoutput",
    dataFormat = "ukbiobank_csv",
-   extEpochData_timeformat = "\%m/\%d/\%Y \%H:\%M:\%S",
+   extEpochData_timeformat = "%m/%d/%Y %H:%M:%S",
    windowsizes = c(5, 900, 3600), # We know that data was stored in 5 second epoch
    desiredtz = "Europe/London") # We know that data was collected in the UK
 ```
@@ -71,7 +74,7 @@ GGIR(datadir = "/examplefiles",
    threshold.in = round(100 * (5/60), digits = 2),
    threshold.mod = round(2500 * (5/60), digits = 2),
    threshold.vig = round(10000 * (5/60), digits = 2),
-   extEpochData_timeformat = "\%m/\%d/\%Y \%H:\%M:\%S",
+   extEpochData_timeformat = "%m/%d/%Y %H:%M:%S",
    do.neishabouricounts = TRUE,
    acc.metric = "NeishabouriCount_x")
 ```        
@@ -86,7 +89,7 @@ GGIR(datadir = "C:/yoursenseweardatafolder",
     threshold.mod = 3,
     threshold.vig = 6,
     dataFormat = "sensewear_xls",
-    extEpochData_timeformat = "\%d-\%b-\%Y \%H:\%M:\%S",
+    extEpochData_timeformat = "%d-%b-%Y %H:%M:%S",
     HASPT.algo = "NotWorn")
 ```
 
