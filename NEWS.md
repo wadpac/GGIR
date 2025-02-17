@@ -6,6 +6,8 @@
   visual report and for part 6 analyses when there are several options and 
   part6_threshold_combi is NULL. #1260
   
+- Part 2: Bug fixed in handling part 1 output with the uncommon scenario of having only 1 metric (in object metashort) #1265
+  
 # CHANGES IN GGIR VERSION 3.1-11
 
 - Part 2:
