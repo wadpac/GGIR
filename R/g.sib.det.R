@@ -104,6 +104,12 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
     }
     ACC = as.numeric(as.matrix(IMP$metashort[,which(colnames(IMP$metashort) == acc.metric)]))
     night = rep(0, length(ACC))
+    
+    if ("marker" %in% colnames(IMP$metashort)) {
+      MARKER = as.numeric(as.matrix(IMP$metashort[,which(colnames(IMP$metashort) == "marker")]))
+    } else {
+      MARKER = NULL
+    }
     if (params_sleep[["HASIB.algo"]] == "Sadeh1994" | 
         params_sleep[["HASIB.algo"]] == "Galland2012" |
         params_sleep[["HASIB.algo"]] == "ColeKripke1992") { # extract zeroCrossingCount
@@ -157,7 +163,8 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                     time = time, anglez = anglez, ws3 = ws3,
                     zeroCrossingCount = zeroCrossingCount,
                     BrondCount = BrondCount,
-                    NeishabouriCount = NeishabouriCount, activity = ACC)
+                    NeishabouriCount = NeishabouriCount, activity = ACC,
+                    marker = MARKER)
     } else { # getSleepFromExternalFunction == TRUE
       # Code now uses the sleep estimates from the external function
       # So, the assumption is that the external function provides a 

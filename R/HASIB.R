@@ -1,7 +1,7 @@
 HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold = c(), 
                  time = c(), anglez = c(), ws3 = c(), 
                  zeroCrossingCount = c(), BrondCount = c(), NeishabouriCount = c(),
-                 activity = NULL) {
+                 activity = NULL, marker = NULL) {
   epochsize = ws3 #epochsize in seconds
   sumPerWindow = function(x, epochsize, summingwindow = 60) {
     x2 = cumsum(c(0, x))
@@ -216,6 +216,10 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
       if (count_type == "NeishabouriCount") colnames(sib_classification)[cti] = paste0(HASIB.algo, "_Neishabouri")
       cti = cti + 1
     }
+  } else if (HASIB.algo == "Oakley") {  
+    # activity
+    # marker
+    
   } else if (HASIB.algo == "NotWorn") {  
     # For the rare study protocols where sensor is not worn during the night
     # there is no point in looking at sleep. Nonetheless for the GGIR 
