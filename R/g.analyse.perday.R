@@ -207,7 +207,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
     daysummary[di,(fi + 3)] = nhours
     ds_names[fi:(fi + 3)] = c("calendar_date","bodylocation","N valid hours","N hours")
     fi = fi + 4
-    vari = vari[,2:ncol(vari)] # remove timestamp now it is no longer needed
+    vari = vari[,2:ncol(vari), drop = FALSE] # remove timestamp now it is no longer needed, drop = FALSE ensures it is not coerced to numeric if only 1 metric is calculated
     colnames(averageday) = colnames(vari)
     
     if (length(params_247[["qwindow"]]) > 0) {
