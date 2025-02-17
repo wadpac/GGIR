@@ -426,7 +426,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 }
               }
               #=====
-              gUnitMetric = length(grep(x = colnames(metashort)[mi], pattern = "BrondCount|ZCX|ZCY|ZCZ|NeishabouriCount|ExtAct", invert = TRUE)) > 0
+              gUnitMetric = length(grep(x = colnames(vari)[mi], pattern = "BrondCount|ZCX|ZCY|ZCZ|marker|NeishabouriCount|ExtAct", invert = TRUE)) > 0
               UnitReScale = ifelse(test = gUnitMetric, yes = 1000, no = 1)
               # Starting filling output matrix daysummary with variables per day segment and full day.
               if (minames[mi] %in% c("ZCX", "ZCY", "ZCZ", "BrondCount_x", "BrondCount_y",

@@ -18,7 +18,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
     mat = mat[seq(1, nrow(mat), by = step), , drop = FALSE]
     mat = apply(mat, 2, diff)
     # Correct non incremental variables
-    for (niv in c("sleep", "ExtSleep", "light", "nonwear")) {
+    for (niv in c("sleep", "ExtSleep", "light", "nonwear", "marker")) {
       if (niv %in% colnames(D)) D[, niv] = round(D[, niv] / step)
     }
     # Incremental variables are counts, calories, ExtAct as so far
