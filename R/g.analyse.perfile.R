@@ -73,6 +73,10 @@ g.analyse.perfile = function(I, C, metrics_nav,
   q0 = length(AveAccAve24hr) + 1
   filesummary[(vi + 2):(vi + q0)] = AveAccAve24hr
   colnames_to_lookat = paste0(colnames_to_lookat, "_fullRecordingMean")
+  step_count_var = grep("step_count", x = colnames_to_lookat)
+  if (length(step_count_var) > 0) {
+    colnames_to_lookat[step_count_var] = paste0("ExtFunEvent_", colnames_to_lookat[step_count_var])
+  }
   s_names[vi:(vi + q0)] = c("calib_err",
                             "calib_status", colnames_to_lookat)
   vi = vi + q0 + 2

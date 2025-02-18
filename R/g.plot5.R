@@ -912,7 +912,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
                       side = 3, line = 0, outer = TRUE, font = 2, cex = 0.6)
                 mtext(text = paste0("Warning: This GGIR legacy report is not intended to be used for data quality assessment,",
                                     " To quality check your data visually see file names starting with Time_report_ "),
-                      side = 3, line = 1, outer = TRUE, font = 2, cex = 0.7
+                      side = 3, line = 1, outer = TRUE, font = 2, cex = 0.6
                 )
               }
             }

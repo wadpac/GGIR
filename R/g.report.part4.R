@@ -574,7 +574,13 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         }
         #######################################################
         if (nrow(nightsummary) == 0) {
-          if (verbose == TRUE) cat("\nreport not stored, because no results available")
+          if (verbose == TRUE) {
+            if (dotwice == 1) {
+              cat("\npart 4 full report not stored, because no results available")
+            } else {
+              cat("\npart 4 cleaned report not stored, because no results available")
+            }
+          }
         } else {
           nightsummary_clean = tidyup_df(nightsummary)
           personSummary_clean = tidyup_df(personSummary)
