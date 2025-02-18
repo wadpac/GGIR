@@ -11,7 +11,8 @@
   HASIB(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold = c(), 
                  time = c(), anglez = c(), ws3 = c(), zeroCrossingCount = c(),
                  BrondCount = c(),
-                 NeishabouriCount = c(), activity = NULL, marker = NULL)
+                 NeishabouriCount = c(), activity = NULL,
+                 oakley_threshold = NULL)
 }
 \arguments{
   \item{HASIB.algo}{
@@ -47,8 +48,8 @@
     Acceleration metric used is specified by argument \code{acc.metric} 
     elsewhere in GGIR.
   }
-  \item{marker}{
-    If present, marker button data. Currently only used for Oakley algorithm.
+  \item{oakley_threshold}{
+    See \link{GGIR}
   }
 }
 \value{

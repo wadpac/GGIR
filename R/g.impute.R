@@ -379,6 +379,9 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
         # would have to walk on a certain time point in the day for more than half of
         # each day in the to get a median above zero
         imp3 = apply(imp, 1, median, na.rm = TRUE)
+      } else if (colnames(metashort)[mi] == "marker") {
+        imp[is.na(imp)] <- 0 # to prevent imputation of marker data
+        imp3 = apply(imp, 1, min, na.rm = TRUE)
       } else {
         # mean per row, which equals to mean or one time point in the 'average' day
         imp3 = rowMeans(imp, na.rm = TRUE)

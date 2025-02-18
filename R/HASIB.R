@@ -1,7 +1,7 @@
 HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold = c(), 
                  time = c(), anglez = c(), ws3 = c(), 
                  zeroCrossingCount = c(), BrondCount = c(), NeishabouriCount = c(),
-                 activity = NULL, marker = NULL) {
+                 activity = NULL, oakley_threshold = NULL) {
   epochsize = ws3 #epochsize in seconds
   sumPerWindow = function(x, epochsize, summingwindow = 60) {
     x2 = cumsum(c(0, x))
@@ -190,6 +190,9 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
     if (length(BrondCount) > 0) count_types = c(count_types, "BrondCount")
     if (length(NeishabouriCount) > 0) count_types = c(count_types, "NeishabouriCount")
     sib_classification = as.data.frame(matrix(0, Nvalues, length(count_types)))
+    if (epochsize > 60) {
+      stop("Oakley algorithm is not designed for epochs larger than 1 minute")
+    }
     cti = 1
     for (count_type in count_types) {
       # Aggregate per minute
@@ -216,10 +219,60 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
       if (count_type == "NeishabouriCount") colnames(sib_classification)[cti] = paste0(HASIB.algo, "_Neishabouri")
       cti = cti + 1
     }
-  } else if (HASIB.algo == "Oakley") {  
-    # activity
-    # marker
-    
+  } else if (HASIB.algo == "Oakley1997") {  
+    count_types = c()
+    if (length(zeroCrossingCount) > 0) count_types = "zeroCrossingCount"
+    if (length(BrondCount) > 0) count_types = c(count_types, "BrondCount")
+    if (length(NeishabouriCount) > 0) count_types = c(count_types, "NeishabouriCount")
+    sib_classification = as.data.frame(matrix(0, Nvalues, length(count_types)))
+    cti = 1
+    for (count_type in count_types) {
+      if (epochsize %in% c(15, 30, 60) == FALSE) {
+        # aggregate to 30 or 60 seconds
+        if (epochsize < 30 && 30 %% epochsize == 0) {
+          aggwindow = 30
+        } else {
+          aggwindow = 60
+        }
+        if (count_type == "zeroCrossingCount") {
+          counts = sumPerWindow(zeroCrossingCount, epochsize = epochsize, summingwindow = aggwindow)
+        } else if (count_type == "BrondCount") {
+          counts = sumPerWindow(BrondCount, epochsize = epochsize, summingwindow = aggwindow)
+        } else if (count_type == "NeishabouriCount") {
+          counts = sumPerWindow(NeishabouriCount, epochsize = epochsize, summingwindow = aggwindow)
+        }
+      } else {
+        counts = zeroCrossingCount
+        aggwindow = epochsize
+      }
+      # Oakley coefficients are epoch size specific
+      if (aggwindow == 15) {
+        oakley_coef = c(rep(0.04, 4), rep(0.20, 4), 4, rep(0.20, 4), rep(0.04, 4))
+      } else if (aggwindow == 30) {
+        oakley_coef = c(0.04, 0.04, 0.20, 0.20, 2.0, 0.2, 0.2, 0.04, 0.04)
+      } else if (aggwindow == 60) {
+        oakley_coef = c(0.04, 0.2, 1, 0.20, 0.04)
+      }
+      # Apply coefficients to estimate sleep
+      Noak = length(oakley_coef)
+      counts_matrix = create_rollfun_mat(counts, Ncol = Noak)
+      counts_matrix = counts_matrix[Noak:(nrow(counts_matrix) - (Noak - 1)),]
+      PS = rowSums(counts_matrix * oakley_coef)
+      rm(counts_matrix)
+      PSscores = rep(0, length(PS))
+      PSsibs = which(PS < oakley_threshold)
+      if (length(PSsibs) > 0) {
+        PSscores[PSsibs] = 1 # sleep
+      }
+      # Resample to original resolution and ensure length matches length of time
+      sib_classification[,cti] = reformat_output(x = PSscores, time,
+                                                 new_epochsize = epochsize,
+                                                 current_epochsize = aggwindow)
+      if (count_type == "BrondCount") colnames(sib_classification)[cti] = paste0(HASIB.algo, "_Brond")
+      if (count_type == "zeroCrossingCount") colnames(sib_classification)[cti] = paste0(HASIB.algo, "_ZC")
+      if (count_type == "NeishabouriCount") colnames(sib_classification)[cti] = paste0(HASIB.algo, "_Neishabouri")
+      cti = cti + 1
+    }
   } else if (HASIB.algo == "NotWorn") {  
     # For the rare study protocols where sensor is not worn during the night
     # there is no point in looking at sleep. Nonetheless for the GGIR 

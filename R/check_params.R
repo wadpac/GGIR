@@ -33,7 +33,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "possible_nap_window", "possible_nap_dur",
                        "colid", "coln1", "def.noc.sleep", "nnights", 
                        "sleepefficiency.metric", "possible_nap_edge_acc", "HDCZA_threshold",
-                       "possible_nap_gap")
+                       "possible_nap_gap", "oakley_threshold")
     boolean_params = c("ignorenonwear", "HASPT.ignore.invalid",
                        "relyonguider", "sleeplogidnum", "sib_must_fully_overlap_with_TimeInBed")
     character_params = c("HASPT.algo", "HASIB.algo", "Sadeh_axis", "nap_model",
@@ -461,8 +461,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       if (params_metrics[["do.zcy"]] == FALSE | params_general[["acc.metric"]] != "ZCY") {
         params_metrics[["do.zcy"]] = TRUE
         params_general[["acc.metric"]] = "ZCY"
-        warning(paste0("\nWhen dataFormat is set to ", params_general[["dataFormat"]],
-                       " we assume that metric is ZCY, this is now used"), call. = FALSE)
+        # Note that for the calculation this does not have any effect
+        # we do this to make sure the count metric as provide by Actiwatch 
+        # has a name the rest of GGIR can deal with
       }
       if (params_metrics[["do.anglex"]] == TRUE |
           params_metrics[["do.angley"]] == TRUE |
@@ -493,9 +494,10 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       }
       if (length(params_sleep) > 0) {
         if (params_sleep[["Sadeh_axis"]] != "Y") {
-          params_sleep[["Sadeh_axis"]] = TRUE
-          warning(paste0("\nWhen dataFormat is set to ", params_general[["dataFormat"]],
-                         " we assume that Sadeh_axis Y, this is now overwritten"), call. = FALSE)
+          params_sleep[["Sadeh_axis"]] = "Y"
+          # Note that for the calculation this does not have any effect
+          # we do this to make sure the count metric as provide by Actiwatch 
+          # has a name the rest of GGIR can deal with
         }
         if (params_sleep[["HASIB.algo"]] == "vanHees2015") {
           stop(paste0("\nSleep algorithm ", params_sleep[["HASIB.algo"]], " is not a valid",

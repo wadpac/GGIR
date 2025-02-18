@@ -11,7 +11,7 @@ test_that("load_params can load parameters", {
   
   # Test length of objects
   expect_equal(length(params), 8)
-  expect_equal(length(params$params_sleep), 24)
+  expect_equal(length(params$params_sleep), 25)
   expect_equal(length(params$params_metrics), 41)
   expect_equal(length(params$params_rawdata), 39)
   expect_equal(length(params$params_247), 24)
@@ -183,17 +183,6 @@ test_that("load_params can load parameters", {
   params_general = params$params_general
   params_metrics = params$params_metrics
   
-  # if dataFormat = "actiwatch_awd", then Sadeh_axis = "Y"
-  params_general$dataFormat = "actiwatch_awd"
-  params_sleep$Sadeh_axis = "X"
-  params_sleep$HASIB.algo = "Sadeh1994"
-  expect_warning(check_params(params_general = params_general,
-                              params_metrics = params_metrics,
-                              params_sleep = params_sleep),
-                 regexp = "we assume that Sadeh_axis Y")
-  params_general = params$params_general
-  params_sleep = params$params_sleep
-
   # if dataFormat = "ukbiobank", then acc.metric = "LFENMO"
   params_general$dataFormat = "ukbiobank"
   check = expect_warning(check_params(params_general = params_general,

@@ -112,7 +112,8 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
     }
     if (params_sleep[["HASIB.algo"]] == "Sadeh1994" | 
         params_sleep[["HASIB.algo"]] == "Galland2012" |
-        params_sleep[["HASIB.algo"]] == "ColeKripke1992") { # extract zeroCrossingCount
+        params_sleep[["HASIB.algo"]] == "ColeKripke1992" |
+        params_sleep[["HASIB.algo"]] == "Oakley1997") { # extract zeroCrossingCount
       zeroCrossingCount =  IMP$metashort[,which(colnames(IMP$metashort) == paste0("ZC", params_sleep[["Sadeh_axis"]]))]
       zeroCrossingCount = fix_NA_invector(zeroCrossingCount)
       zeroCrossingCount = zeroCrossingCount * zc.scale
@@ -164,7 +165,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                     zeroCrossingCount = zeroCrossingCount,
                     BrondCount = BrondCount,
                     NeishabouriCount = NeishabouriCount, activity = ACC,
-                    marker = MARKER)
+                    oakley_threshold = params_sleep[["oakley_threshold"]])
     } else { # getSleepFromExternalFunction == TRUE
       # Code now uses the sleep estimates from the external function
       # So, the assumption is that the external function provides a 

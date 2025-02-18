@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.2-1
+
+- Add Oakley sleep detection algorithm #1267
+
 # CHANGES IN GGIR VERSION 3.2-0
 
 - New visual report: Bug fixed in handling recordings that start at midnight #1257

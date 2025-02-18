@@ -1339,6 +1339,11 @@ GGIR(mode = 1:5,
         and corresponding sleep efficiency values when calculating the person summary
         aggregate as stored in the person level report (part4_summary_sleep csv files).
       }
+      
+      \item{oakley_threshold}{
+        Numeric (default = 20)
+        Threshold as used by the Oakley algorithm, original suggestionw as 20, 40 or 80.
+      }
 
     }
   }
