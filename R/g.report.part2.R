@@ -280,6 +280,15 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       names(EVENTSUMMARY) = gsub(pattern = "ExtFunEvent_", replacement = "", x = names(EVENTSUMMARY))
       SUMMARY = SUMMARY[,NotEventVars]
       EVENTSUMMARY_clean = tidyup_df(EVENTSUMMARY)
+      
+      #-----------------------------------------------------------------------
+      # January 2024:
+      # TEMPORARILY REMOVE ALL NEW STEP VARIABLES TO FACILITATE
+      # MERGE OF MOST WORK RELATED TO EVENT DETECTION WITH MASTER BRANCH 
+      # WITHOUT RELEASING NEW VARIABLES YET
+      EVENTSUMMARY_clean = EVENTSUMMARY_clean[, grep(pattern = "cad_|_cad|Bout_|accatleast|count_acc",
+                                                           x = colnames(EVENTSUMMARY_clean),
+                                                           invert = TRUE)]
       data.table::fwrite(x = EVENTSUMMARY_clean,
                          file =  paste0(metadatadir, "/results/part2_", eventName, "summary.csv"),
                          row.names = F, na = "", sep = params_output[["sep_reports"]],
