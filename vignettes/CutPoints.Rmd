@@ -351,7 +351,7 @@ mode was used and if so, how it was accounted for in the data processing.
 
 For a more elaborate reflection on the limitations of cut-points and a motivation
 why cut-points still have value in GGIR see:
-<https://www.accelting.com/updates/why-does-ggir-facilitate-cut-points/>
+<https://www.accelting.com/why-does-ggir-facilitate-cut-points/>
 
 
 # References
