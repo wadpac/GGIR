@@ -1,5 +1,6 @@
 HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
                  HASPT.algo="HDCZA", HDCZA_threshold = c(), invalid,
+                 HorAngle_threshold = 60,
                  HASPT.ignore.invalid=FALSE, activity = NULL) {
   tib.threshold = SPTE_start = SPTE_end = part3_guider = c()
   # internal functions ---------
@@ -41,7 +42,7 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       # x = absolute angle
       # threshold = 45 degrees
       x = abs(angle)
-      threshold = 60
+      threshold = HorAngle_threshold
     } else if (HASPT.algo == "NotWorn") {
       # When protocol is to not wear sensor during the night,
       # and data is collected in count units we do not know angle

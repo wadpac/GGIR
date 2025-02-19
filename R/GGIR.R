@@ -287,11 +287,15 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   if (dopart3 == TRUE) {
     if (verbose == TRUE) print_console_header("Part 3")
     if (f1 == 0) f1 = length(dir(paste0(metadatadir,"/meta/basic")))
+    if (!"HorAngle_threshold" %in% names(input)) input$HorAngle_threshold = 60
     g.part3(metadatadir = metadatadir, f0 = f0, f1 = f1, myfun = myfun,
             params_sleep = params_sleep, params_output = params_output,
             params_metrics = params_metrics,
             params_general = params_general,
-            verbose = verbose)
+            verbose = verbose,
+            sptblocksize = input$sptblocksize,
+            spt_max_gap = input$spt_max_gap,
+            HorAngle_threshold = input$HorAngle_threshold)
   }
   if (dopart4 == TRUE) {
     if (verbose == TRUE) print_console_header("Part 4")

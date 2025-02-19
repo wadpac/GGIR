@@ -1,7 +1,7 @@
 g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                      acc.metric = "ENMO", desiredtz = "",
                      myfun=c(), sensor.location = "wrist",
-                     params_sleep = c(), zc.scale = 1,...) {
+                     params_sleep = c(), zc.scale = 1, ...) {
   #get input variables
   input = list(...)
   if (length(input) > 0 || length(params_sleep) == 0) {
@@ -15,11 +15,17 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
     params_sleep = params$params_sleep
   }
   #==============================================================
-  # perc = 10; spt_threshold = 15; sptblocksize = 30; spt_max_gap = 60 # default configurations (keep hardcoded for now
-  if (!"perc" %in% names(input)) perc = 10
-  if (!"spt_threshold" %in% names(input)) spt_threshold = 15
-  if (!"sptblocksize" %in% names(input)) sptblocksize = 30
-  if (!"spt_max_gap" %in% names(input)) spt_max_gap = 60
+  # perc = 10; spt_threshold = 15; sptblocksize = 30; spt_max_gap = 60 # default configurations
+  if (!"perc" %in% names(input)) input$perc = 10
+  if (!"spt_threshold" %in% names(input)) input$spt_threshold = 15
+  if (!"sptblocksize" %in% names(input)) input$sptblocksize = 30
+  if (!"spt_max_gap" %in% names(input)) input$spt_max_gap = 60
+  if (!"HorAngle_threshold" %in% names(input)) input$HorAngle_threshold = 60
+  params_sleep[["HDCZA_threshold"]] = c(input$perc, input$spt_threshold)
+  sptblocksize = input$sptblocksize
+  spt_max_gap = input$spt_max_gap
+  HorAngle_threshold = input$HorAngle_threshold
+  
   # Abbreviaton SPTE = Sleep Period Time Estimate, although in case of HorAngle it is the Time in Bed estimate
   # but then we would have to come up with yet another term to represent the main sleep and/or time in bed window of the day
   # So, out of convenience I keep the object name SPTE. 
@@ -277,9 +283,10 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
           spt_estimate = HASPT(angle = tmpANGLE, ws3 = ws3,
                                sptblocksize = sptblocksize, spt_max_gap = spt_max_gap,
                                HASPT.algo = params_sleep[["HASPT.algo"]][guider_to_use],
-                               invalid = invalid[qqq1:qqq2], # load only invalid time in the night of interest (i.e., qqq1:qqq2)
+                               invalid = invalid[qqq1:qqq2],
                                HDCZA_threshold = params_sleep[["HDCZA_threshold"]],
                                HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
+                               HorAngle_threshold = HorAngle_threshold,
                                activity = tmpACC)
         } else {
           spt_estimate = list(SPTE_end = NULL, SPTE_start = NULL, tib.threshold = NULL, part3_guider = NULL)
@@ -319,6 +326,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                                        invalid = invalid[newqqq1:newqqq2],
                                        HDCZA_threshold = params_sleep[["HDCZA_threshold"]],
                                        HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
+                                       HorAngle_threshold = HorAngle_threshold,
                                        activity = ACC[newqqq1:newqqq2])
               if (length(spt_estimate_tmp$SPTE_start) > 0) {
                 # If new SPTE_end is beyond noon (qqq2) then use the new SPTE_end
