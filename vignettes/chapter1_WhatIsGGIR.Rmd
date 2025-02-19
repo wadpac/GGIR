@@ -75,7 +75,7 @@ A second problem with data-driven methods is that they heavily depend on the ava
 
 We argue that such reliable criterion methods do not exist for physical behaviour measurement:
 
-1.  Indirect calorimetry and the indicators of energy metabolism that can be derived from it are unable to account for the activity type specific role of body weight on energy metabolism. This makes it impossible to make a standardised comparison of the energy cost of different activity types across individuals that differ in body weight. See also reflections in [this blog post](https://www.accelting.com/updates/why-does-ggir-facilitate-cut-points/).
+1.  Indirect calorimetry and the indicators of energy metabolism that can be derived from it are unable to account for the activity type specific role of body weight on energy metabolism. This makes it impossible to make a standardised comparison of the energy cost of different activity types across individuals that differ in body weight. See also reflections in [this blog post](https://www.accelting.com/why-does-ggir-facilitate-cut-points/).
 2.  Polysomnography (PSG) is the standard in sleep research. PSG offers a physiological definition of sleep that is impossible to capture directly with a movement sensor. Therefore, we are forced to simplify our definition of ‘sleep’ towards a definition that can be captured by a movement sensor. As a result, the act of evaluating an accelerometer on its ability to classify sleep with PSG becomes somewhat meaningless as we already know that we are not measuring the same construct as PSG.
 3.  Activity types are ambiguous to define given the high number of ways they can be performed. This introduces a fundamental level of uncertainty about the robustness of models outside the datasets and context they were developed in.
 
@@ -88,10 +88,7 @@ GGIR is one of the very few research tools in this field that has a permissive l
 
 ## Documentation structure and origin
 
-We have structured the chapters in line with the GGIR training course we have been organising in recent years.
-The documentation that existed before was a collection of ad-hoc written paragraphs, that lacked a clear overarching structure and narrative.
-As a result, it was difficult to use the documentation in the training course.
-Further, we also wanted to provide a good level of documentation for those who do not follow the course or want to refresh their understanding of GGIR.
+We have structured the chapters in line with the GGIR training course we have been organising in recent years. Further, we also wanted to provide a good level of documentation for those who do not follow the course or want to refresh their understanding of GGIR.
 
 The documentation is mainly written in a narrative style where we have tried to explain both the theory and practice of all GGIR functionalities. As mentioned above, GGIR offers a vast amount of functionality. If you arrive here with the expectation to find a quick instruction to run and use GGIR in your research then we have to disappoint you. Learning to use GGIR requires some time investment.
 
@@ -99,6 +96,5 @@ Everything you need to type in your R script is `highlighted like this`.
 
 This documentation is not intended as an academic review: We only cite publications to clarify the origin of algorithms and we only discuss what is part of GGIR.
 
-
 Finally, the first version of this documentation was sponsored by Accelting with the commitment that this will remain available as free open-access documentation.
-However, open documentation is much easier to maintain as a community: We would be grateful for your help to improve the documentation either by giving feedback (e.g. via v.vanhees at accelting dot com), pull requests (for those who know how to do it), or financially. For example, it would be great if we had funding for creating high quality complementary info graphics and videos.
+However, open documentation is best maintained as a community: We would be grateful for your help to improve the documentation either by giving feedback (e.g. via v.vanhees at accelting dot com), pull requests (for those who know how to do it), or financially to sponsor time investments. For example, it would be great if we had funding for creating high quality complementary info graphics and videos.

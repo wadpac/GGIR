@@ -1533,7 +1533,7 @@ GGIR(mode = 1:5,
         In \link{g.part2}: Whether to generate a pdf for \link{g.part2}.}
 
       \item{do.part3.pdf}{
-        Boolean (default = TRUE).
+        Boolean (default = FALSE).
         In \link{g.part3}: Whether to generate a pdf for \link{g.part3}.}
 
       \item{timewindow}{

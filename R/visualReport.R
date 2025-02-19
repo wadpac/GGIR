@@ -586,7 +586,7 @@ visualReport = function(metadatadir = c(),
           }
         }
         # Generate pdf
-        pdf(paste0(metadatadir, "/results/file summary reports/Time_report_",
+        pdf(paste0(metadatadir, "/results/file summary reports/report_",
                    simple_filename, ".pdf"), paper = "a4",
             width = 0, height = 0)
         par(mfrow = c(NdaysPerPage, 1), mgp = c(2, 0.8, 0), omi = c(0, 0, 0, 0), bty = "n")

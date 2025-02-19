@@ -421,6 +421,12 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_output[["save_ms5rawlevels"]] = TRUE
       params_output[["save_ms5raw_without_invalid"]] = FALSE
     }
+    
+    if (params_247[["part6CR"]] == FALSE && params_247[["part6HCA"]] == FALSE) {
+      warning(paste0("Both part6CR and part6HCA are set to FALSE by which there is ",
+                     "not analysis to be run in part 6."), call. = FALSE)
+    }
+    
     if (length(params_247[["clevels"]]) == 1) {
       warning("\nParameter clevels expects a number vector of at least 2 values, current length is 1", call. = FALSE)
     }

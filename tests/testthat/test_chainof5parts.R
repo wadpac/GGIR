@@ -252,7 +252,7 @@ test_that("chainof5parts", {
   expect_true(file.exists("output_test/results/part2_summary.csv"))
   expect_true(file.exists("output_test/results/part4_nightsummary_sleep_cleaned.csv"))
   expect_true(file.exists("output_test/results/part4_summary_sleep_cleaned.csv"))
-  expect_true(file.exists("output_test/results/file summary reports/Report_123A_testaccfile.csv.pdf"))
+  expect_true(file.exists("output_test/results/file summary reports/old_report_123A_testaccfile.csv.pdf"))
   expect_true(file.exists("output_test/results/part5_daysummary_MM_L40M100V400_T5A5.csv"))
   expect_true(file.exists("output_test/results/part5_daysummary_WW_L40M100V400_T5A5.csv"))
   expect_true(file.exists("output_test/results/part5_daysummary_OO_L40M100V400_T5A5.csv"))

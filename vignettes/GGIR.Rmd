@@ -98,7 +98,7 @@ the option to book your training. Do you have questions about the
 training or the booking process? Do not hesitate to contact us via:
 [training\@accelting.com](mailto:training@accelting.com){.email}.
 
-Also of interest may be the brief [free R introduction tutorial](https://www.accelting.com/updates/short-r-tutorial/).
+Also of interest may be the brief [free R introduction tutorial](https://www.accelting.com/short-r-tutorial/).
 
 
 **Change log**
