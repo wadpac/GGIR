@@ -2,16 +2,28 @@
 
 - New visual report: Bug fixed in handling recordings that start at midnight #1257
 
+- Part 2:
+
+  - Bug fixed in handling part 1 output with the uncommon scenario of having only 1 metric (in object metashort) #1265
+
+  - Make sure all event variables are stored in event summary and advanced event variables are skipped until testing is finished #635
+
 - Part 6 and new visual report: Fix bug related to determining the combination of thresholds to use for the 
   visual report and for part 6 analyses when there are several options and 
   part6_threshold_combi is NULL. #1260
-  
-- Part 2: Bug fixed in handling part 1 output with the uncommon scenario of having only 1 metric (in object metashort) #1265
 
 - Part 6: Improve robustness of column name initialization for part6 output #1240
 
-- Part 2: Make sure all event variables are stored in event summary and advanced event variables are skipped until testing is finished #635
+- Visualisations:
+
+  - The new and old general pdf report have been renamed to clarify which one is old (eventually to be deprecated) and which one is new.
+
+  - Report_...pdf has been renamed to old_report_...pdf.
+
+  - Time_report...pdf has been renamed to report_...pdf
   
+- Part 3: Default for parameter do.part3.pdf changed from TRUE to FALSE because this visualisation has become redundant with the addition of the new general visual report.
+
 # CHANGES IN GGIR VERSION 3.1-11
 
 - Part 2:
