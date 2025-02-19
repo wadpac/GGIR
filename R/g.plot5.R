@@ -97,7 +97,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
         ws3 = M$windowsizes[1]
         ws2 = M$windowsizes[2]
         if (nrow(sib.cla.sum) == 0) next
-        pdf(paste0(metadatadir, "/results/file summary reports/Report_",
+        pdf(paste0(metadatadir, "/results/file summary reports/old_report_",
                    fnames_ms1_stripped[sel], ".pdf"), paper = "a4",
             width = 0, height = 0)
         
