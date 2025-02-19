@@ -16,12 +16,10 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
   }
   #==============================================================
   # perc = 10; spt_threshold = 15; sptblocksize = 30; spt_max_gap = 60 # default configurations
-  if (!"perc" %in% names(input)) input$perc = 10
   if (!"spt_threshold" %in% names(input)) input$spt_threshold = 15
   if (!"sptblocksize" %in% names(input)) input$sptblocksize = 30
   if (!"spt_max_gap" %in% names(input)) input$spt_max_gap = 60
   if (!"HorAngle_threshold" %in% names(input)) input$HorAngle_threshold = 60
-  params_sleep[["HDCZA_threshold"]] = c(input$perc, input$spt_threshold)
   sptblocksize = input$sptblocksize
   spt_max_gap = input$spt_max_gap
   HorAngle_threshold = input$HorAngle_threshold
