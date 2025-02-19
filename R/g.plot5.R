@@ -49,8 +49,10 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
                " recordings as a final step in the GGIR pipeline. This can take a while as",
                " it is done file-by-file. If you do not want the visualreports then you",
                " can kill the process (Ctrl-C or ESC) as that will not affect the",
-               " rest of the analyses and reports. To avoid this next time, ",
-               " change Boolean argument 'visualreport' to FALSE."))
+               " rest of the analyses and reports. To avoid this next time,",
+               " set parameter 'old_visualreport' to FALSE to only derive the new",
+               " reports. Alternatively, set 'visualreport' to FALSE which", 
+               " suppresses both report types."))
   }
   # loop through files
   for (i in f0:f1) {
@@ -86,16 +88,18 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
                    fnames_ms1_stripped[sel], " because part 4 output was not available."
             )
           )
-          next()
+          next
         }
-        pdf(paste0(metadatadir, "/results/file summary reports/Report_",
-                   fnames_ms1_stripped[sel], ".pdf"), paper = "a4",
-            width = 0, height = 0)
+       
         sib.cla.sum = c()
         load(paste0(ms3dir,"/",fname_ms3[i]))
         load(paste0(ms1dir,"/",fname_ms1[sel]))
         ws3 = M$windowsizes[1]
         ws2 = M$windowsizes[2]
+        if (nrow(sib.cla.sum) == 0) next
+        pdf(paste0(metadatadir, "/results/file summary reports/Report_",
+                   fnames_ms1_stripped[sel], ".pdf"), paper = "a4",
+            width = 0, height = 0)
         
         # P2daysummary_tmp = P2daysummary[which(P2daysummary$filename == fnames_ms1_stripped[sel]),]
         # note that the reports are generated from the raw sleep classification (part4) and no attempt is made to clean it up,
@@ -116,7 +120,7 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           if (includenightcrit > 1) includenightcrit = includenightcrit / 24
           d2excludeb = d2exclude = which(P2daysummary_tmp$`N valid hours` < max(c(includedaycrit,
                                                                                   threshold_hrs_of_data_per_day)))
-          n2excludeb = n2exclude = which(summarysleep_tmp$fraction_night_invalid > includenightcrit
+          n2excludeb = n2exclude = which(summarysleep_tmp$fraction_night_invalid > (1 - includenightcrit)
                                          | summarysleep_tmp$SptDuration == 0)
           
           if (length(d2exclude) > 0) {
@@ -130,13 +134,23 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
             n2exclude = n2excludeb
           }
           # nights missing in sleep summary?
-          allnights = 1:max(summarysleep_tmp$night)
-          missingNights = which(allnights %in% summarysleep_tmp$night == FALSE)
+          if (length(summarysleep_tmp$night) > 0) {
+            allnights = 1:max(summarysleep_tmp$night)
+            missingNights = which(allnights %in% summarysleep_tmp$night == FALSE)
+          } else {
+            missingNights = NULL
+          }
           if (length(missingNights) > 0) {
             n2exclude = sort(unique(c(n2exclude, missingNights)))
           }
           # Account for shift in nights relative to windows
           if (nrow(P2daysummary_tmp) > 0) {
+            # nights missing in sleep summary?
+            allnights = 1:max(summarysleep_tmp$night)
+            missingNights = which(allnights %in% summarysleep_tmp$night == FALSE)
+            if (length(missingNights) > 0) {
+              n2exclude = sort(unique(c(n2exclude, missingNights)))
+            }
             if (P2daysummary_tmp$`N hours`[1] < 24 & P2daysummary_tmp$`N hours`[1] > 12 & length(n2exclude) > 0) {
               # First calendar day is between 12 and 24 hours
               # this means that the first night viewindow (=2) may include some data but
@@ -472,8 +486,8 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
           NGPP = 7 #number of graphs per page
           par(
             mfcol = c(NGPP, 1),
-            mar = c(2, 0.5, 1, 0.5) + 0.1,
-            omi = c(0, 0, 0.1, 0),
+            mar = c(2, 0.5, 2, 0.5) + 0.1,
+            omi = c(0, 0, 0.3, 0),
             mgp = c(2, 0.8, 0)
           )
           daycount = 1
@@ -896,6 +910,10 @@ g.plot5 = function(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
                   ((daycount - 1) / NGPP) == (round((daycount - 1) / NGPP))) {
                 mtext(paste0("Filename: ", fnames_ms1_stripped[sel]),
                       side = 3, line = 0, outer = TRUE, font = 2, cex = 0.6)
+                mtext(text = paste0("Warning: This GGIR legacy report is not intended to be used for data quality assessment,",
+                                    " To quality check your data visually see file names starting with Time_report_ "),
+                      side = 3, line = 1, outer = TRUE, font = 2, cex = 0.7
+                )
               }
             }
             daycount = daycount + 1

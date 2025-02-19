@@ -38,7 +38,11 @@ In both cases the start of the first SIB is then considered sleep onset and the 
 
 For all guiders, other than "HorAngle", parameter `sleepwindowType` is automatically set to "SPT" corresponding to scenario 1, such that no attempt is made to estimate sleep latency or sleep efficiency. 
 
-If you use as guider a sleeplog that reflects the Time in Bed you will need to set parameter `sleepwindowType = “TimeInBed”` to tell GGIR to follow scenario 2.
+If you use as guider a sleeplog that reflects the Time in Bed you will need to set parameter `sleepwindowType = "TimeInBed"` to tell GGIR to follow scenario 2.
+
+However, there is parameter `sib_must_fully_overlap_with_TimeInBed` to suprres the requirement
+of `sleepwindowType = "TimeInBed"` that any SIB fully overlaps with "TimeInBed". For example, if you
+want SIB to only be counted as sleep if they fully overlap with TimeInBed but prefer to rely on SIB to define the end of the night regardless of overlap with TimeInBed set `sib_must_fully_overlap_with_TimeInBed = c(TRUE, FALSE)`.
 
 ## Quality assurance
 

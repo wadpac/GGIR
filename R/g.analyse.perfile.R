@@ -57,6 +57,12 @@ g.analyse.perfile = function(I, C, metrics_nav,
   s_names[vi:(vi + 4)] = c("clipping_score", "meas_dur_dys", "complete_24hcycle", 
                            "meas_dur_def_proto_day", "wear_dur_def_proto_day")
   vi = vi + 5
+  if (!is.null(params_cleaning[["nonwearFiltermaxHours"]])) {
+    filesummary[vi] = dataqual_summary$nonwearHoursFiltered
+    filesummary[vi + 1] = dataqual_summary$nonwearEventsFiltered
+    s_names[vi:(vi + 1)] = c("nonwear_hours_filtered", "nonwear_events_filtered")
+    vi = vi + 2
+  }
   # calibration error after auto-calibration
   if (length(C$cal.error.end) == 0)   C$cal.error.end = c(" ")
   filesummary[vi] = C$cal.error.end
@@ -160,14 +166,7 @@ g.analyse.perfile = function(I, C, metrics_nav,
     if (length(iNA) > 0) filesummary[(vi:(vi + 1))[iNA]] = 0
     s_names[vi:(vi + 1)] = c("N valid WEdays","N valid WKdays")
     vi = vi + 2
-    # Add ISIV to filesummary
-    filesummary[vi:(vi + 2)] = c(output_avday$InterdailyStability, output_avday$IntradailyVariability,
-                                 params_247[["IVIS_windowsize_minutes"]])
-    iNA = which(is.na(filesummary[vi:(vi + 3)]) == TRUE)
-    if (length(iNA) > 0) filesummary[(vi:(vi + 3))[iNA]] = " "
-    s_names[vi:(vi + 2)] = c("IS_interdailystability", "IV_intradailyvariability", "IVIS_windowsize_minutes")
-    vi = vi + 4
-    # Cosinor analysis
+    # Cosinor analysis + IV + IS + phi
     if (length(cosinor_coef) > 0) {
       filesummary[vi]  = c(cosinor_coef$timeOffsetHours)
       s_names[vi] = c("cosinor_timeOffsetHours")
@@ -197,12 +196,13 @@ g.analyse.perfile = function(I, C, metrics_nav,
                                 "cosinorExt_DownMesor", "cosinorExt_MESOR",
                                 "cosinorExt_ndays", "cosinorExt_F_pseudo", "cosinorExt_R2")
       vi = vi + 11
-      filesummary[vi:(vi + 1)]  = c(cosinor_coef$IVIS$InterdailyStability,
-                                    cosinor_coef$IVIS$IntradailyVariability)
-      s_names[vi:(vi + 1)] = c("cosinorIS", "cosinorIV")
-      vi = vi + 2
+      filesummary[vi:(vi + 2)]  = c(cosinor_coef$IVIS$InterdailyStability,
+                                    cosinor_coef$IVIS$IntradailyVariability,
+                                    cosinor_coef$IVIS$phi)
+      s_names[vi:(vi + 2)] = c("IS", "IV", "phi")
+      vi = vi + 3
     } else {
-      vi = vi + 20
+      vi = vi + 21
     }
     
     # Variables per metric - summarise with stratification to weekdays and weekend days
@@ -314,14 +314,11 @@ g.analyse.perfile = function(I, C, metrics_nav,
   }
   daysummary = data.frame(value = daysummary, stringsAsFactors = FALSE)
   names(daysummary) = ds_names
-  
   # remove double columns with 1-6am variables
   columnswith16am = grep("1-6am", x = colnames(daysummary))
   if (length(columnswith16am) > 1) {
     daysummary = daysummary[,-columnswith16am[2:length(columnswith16am)]]
   }
- 
-  
   # tidy up filesummary object
   mw = which(is.na(filesummary) == T)
   mw = c(mw, grep(pattern = "NaN", x = filesummary))

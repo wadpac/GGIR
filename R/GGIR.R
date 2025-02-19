@@ -320,7 +320,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     }
     g.part6(datadir = datadir, metadatadir = metadatadir, f0 = f0, f1 = f1,
             params_general = params_general, params_phyact = params_phyact,
-            params_247 = params_247,
+            params_247 = params_247, params_cleaning = params_cleaning,
             verbose = verbose)
   }
   
@@ -335,7 +335,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                           "GGIRversion",  "dupArgValues", "verbose", "is_GGIRread_installed", 
                           "is_read.gt3x_installed", "is_ActCR_installed", 
                           "is_actilifecounts_installed", "rawaccfiles", "is_readxl_installed", 
-                          "checkFormat", "getExt") == FALSE)]
+                          "checkFormat", "getExt", "rawaccfiles_formats") == FALSE)]
   
   config.parameters = mget(LS)
   config.matrix = as.data.frame(createConfigFile(config.parameters, GGIRversion))
@@ -352,15 +352,13 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   # -----
   # check a few basic assumptions before continuing
   if (length(which(do.report == 2)) > 0) {
-    N.files.ms2.out = length(dir(paste0(metadatadir, "/meta/ms2.out")))
-    if (N.files.ms2.out > 0) {
+    N.files.basic = length(dir(paste0(metadatadir, "/meta/basic")))
+    if (N.files.basic > 0) {
       if (verbose == TRUE) print_console_header("Report part 2")
-      # if (N.files.ms2.out < f0) f0 = 1
-      # if (N.files.ms2.out < f1) f1 = N.files.ms2.out
       if (length(f0) == 0) f0 = 1
-      if (f1 == 0) f1 = N.files.ms2.out
+      if (f1 == 0) f1 = N.files.basic
       if (length(params_247[["qwindow"]]) > 2 |
-          is.character(params_247[["qwindow"]]) |
+          (is.character(params_247[["qwindow"]]) && length(grep(pattern = "onlyfilter|filteronly", x = params_247[["qwindow"]])) == 0) |
           (length(params_247[["qwindow"]]) == 2 & !all(c(0, 24) %in% params_247[["qwindow"]]))) {
         store.long = TRUE
       } else {
@@ -369,7 +367,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       g.report.part2(metadatadir = metadatadir, f0 = f0, f1 = f1,
                      maxdur = params_cleaning[["maxdur"]],
                      store.long = store.long, params_output,
-                     verbose = verbose)
+                     verbose = verbose, desiredtz = params_general[["desiredtz"]])
     }
   }
   if (length(which(do.report == 4)) > 0) {
@@ -380,10 +378,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       if (N.files.ms4.out < f1) f1 = N.files.ms4.out
       if (f1 == 0) f1 = N.files.ms4.out
       g.report.part4(datadir = datadir, metadatadir = metadatadir, f0 = f0, f1 = f1,
-                     loglocation = params_sleep[["loglocation"]],
                      data_cleaning_file = params_cleaning[["data_cleaning_file"]],
-                     sleepwindowType = params_sleep[["sleepwindowType"]],
-                     params_output = params_output,
+                     params_sleep = params_sleep, params_output = params_output,
                      verbose = verbose)
     }
   }
@@ -424,20 +420,32 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     
     if (length(files.available) > 0) {
       if (verbose == TRUE) print_console_header("Generate visual reports")
-      g.plot5(metadatadir = metadatadir,
-              dofirstpage = params_output[["dofirstpage"]],
-              viewingwindow = params_output[["viewingwindow"]],
-              f0 = f0, f1 = f1,
-              overwrite = params_general[["overwrite"]],
-              metric = params_general[["acc.metric"]],
-              desiredtz = params_general[["desiredtz"]],
-              threshold.lig = params_phyact[["threshold.lig"]],
-              threshold.mod = params_phyact[["threshold.mod"]],
-              threshold.vig = params_phyact[["threshold.vig"]],
-              visualreport_without_invalid = params_output[["visualreport_without_invalid"]],
-              includedaycrit = params_cleaning[["includedaycrit"]][1],
-              includenightcrit = params_cleaning[["includenightcrit"]],
-              verbose = TRUE)
+      # The new visual report
+      visualReport(metadatadir = metadatadir,
+                   f0 = f0, f1 = f1,
+                   overwrite = params_general[["overwrite"]],
+                   desiredtz = params_general[["desiredtz"]],
+                   verbose = TRUE,
+                   part6_threshold_combi = params_phyact[["part6_threshold_combi"]],
+                   GGIRversion = GGIRversion,
+                   params_sleep = params_sleep,
+                   params_output = params_output)
+      if (params_output[["old_visualreport"]] == TRUE) {
+        g.plot5(metadatadir = metadatadir,
+                dofirstpage = params_output[["dofirstpage"]],
+                viewingwindow = params_output[["viewingwindow"]],
+                f0 = f0, f1 = f1,
+                overwrite = params_general[["overwrite"]],
+                metric = params_general[["acc.metric"]],
+                desiredtz = params_general[["desiredtz"]],
+                threshold.lig = params_phyact[["threshold.lig"]],
+                threshold.mod = params_phyact[["threshold.mod"]],
+                threshold.vig = params_phyact[["threshold.vig"]],
+                visualreport_without_invalid = params_output[["visualreport_without_invalid"]],
+                includedaycrit = params_cleaning[["includedaycrit"]][1],
+                includenightcrit = params_cleaning[["includenightcrit"]],
+                verbose = TRUE)
+      }
     }
   }
 }

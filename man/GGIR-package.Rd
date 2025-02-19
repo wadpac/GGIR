@@ -6,8 +6,8 @@
 }
 \description{
   Disclaimer: If you are a new GGIR user then please see
-  \href{https://cran.r-project.org/package=GGIR/vignettes/GGIR.html}{package vignette}
-   for an introduction to GGIR.\cr
+  \href{https://wadpac.github.io/GGIR/}{the GGIR github-pages}
+   for a narrative overview of GGIR.\cr
   \cr
   This document is primarily aimed at documenting the functions and their input arguments.\cr
   \cr
@@ -21,8 +21,8 @@
   \tabular{ll}{
   Package: \tab GGIR\cr
   Type: \tab Package\cr
-  Version: \tab 3.1-1\cr
-  Date: \tab 2024-06-04\cr
+  Version: \tab 3.1-11\cr
+  Date: \tab 2025-01-23\cr
   License: \tab Apache License (== 2.0)\cr
   Discussion group: \tab https://groups.google.com/forum/#!forum/rpackageggir\cr
   }

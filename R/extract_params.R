@@ -187,6 +187,9 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
       } else if (aN %in% expected_phyact_params == TRUE) { # phyact
         params_phyact = update_params(x = params_phyact, aN, input)
       } else if (aN %in% expected_cleaning_params == TRUE) { # cleaning
+        if (aN == "data_masking_strategy") { # account for this parameter name change
+          params_cleaning[["strategy"]] = input[[aN]]
+        }
         params_cleaning = update_params(x = params_cleaning, aN, input)
       } else if (aN %in% expected_output_params == TRUE) { # output
         params_output = update_params(x = params_output, aN, input)

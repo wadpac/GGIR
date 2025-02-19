@@ -1,5 +1,5 @@
-pandoc: 3.1.11
-pkgdown: 2.0.9
+pandoc: '3.2'
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   chapter0_Contributing: chapter0_Contributing.html
@@ -10,6 +10,8 @@ articles:
   chapter10_SleepAnalysis: chapter10_SleepAnalysis.html
   chapter11_DescribingDataCutPoints: chapter11_DescribingDataCutPoints.html
   chapter12_TimeUseAnalysis: chapter12_TimeUseAnalysis.html
+  chapter13_CircadianRhythm: chapter13_CircadianRhythm.html
+  chapter14_BehaviouralFragmentation: chapter14_BehaviouralFragmentation.html
   chapter2_Pipeline: chapter2_Pipeline.html
   chapter3_QualityAssessment: chapter3_QualityAssessment.html
   chapter4_AccMetrics: chapter4_AccMetrics.html
@@ -19,6 +21,7 @@ articles:
   chapter8_SleepFundamentalsSibs: chapter8_SleepFundamentalsSibs.html
   chapter9_SleepFundamentalsGuiders: chapter9_SleepFundamentalsGuiders.html
   chapterInProgress: chapterInProgress.html
+  Cookbook: Cookbook.html
   CutPoints: CutPoints.html
   ExternalFunction: ExternalFunction.html
   GGIR: GGIR.html
@@ -27,8 +30,7 @@ articles:
   HouseHoldCoanalysis: HouseHoldCoanalysis.html
   readmyacccsv: readmyacccsv.html
   TutorialDaySegmentAnalyses: TutorialDaySegmentAnalyses.html
-last_built: 2024-06-13T16:13Z
+last_built: 2025-01-23T13:16Z
 urls:
   reference: https://wadpac.github.io/GGIR/reference
   article: https://wadpac.github.io/GGIR/articles
-

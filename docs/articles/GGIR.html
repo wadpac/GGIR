@@ -5,33 +5,25 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="GGIR">
 <title>Accelerometer data processing with GGIR • GGIR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Accelerometer data processing with GGIR">
-<meta property="og:description" content="GGIR">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:creator" content="@RpackageGGIR">
-<meta name="twitter:site" content="@RpackageGGIR">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]--><script defer data-domain="pkgdown.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Accelerometer data processing with GGIR">
+<script defer data-domain="pkgdown.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-11</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -39,84 +31,67 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-the-book">The book</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-the-book">
-    <a class="dropdown-item" href="../articles/chapter1_WhatIsGGIR.html">1. What is GGIR</a>
-    <a class="dropdown-item" href="../articles/chapter2_Pipeline.html">2. The GGIR Pipeline</a>
-    <a class="dropdown-item" href="../articles/chapter3_QualityAssessment.html">3. Data Quality Assurance</a>
-    <a class="dropdown-item" href="../articles/chapter4_AccMetrics.html">4. From Raw Data to Acceleration Metrics</a>
-    <a class="dropdown-item" href="../articles/chapter5_StudyProtocol.html">5. Accounting for Study Protocol</a>
-    <a class="dropdown-item" href="../articles/chapter6_DataImputation.html">6. How GGIR Deals with Invalid Data</a>
-    <a class="dropdown-item" href="../articles/chapter7_DescribingDataWithoutKnowingSleep.html">7. Describing the Data Without Knowing Sleep</a>
-    <a class="dropdown-item" href="../articles/chapter8_SleepFundamentalsSibs.html">8. Sleep Fundamentals - Sustained Inactivity Bout Detection (SIB)</a>
-    <a class="dropdown-item" href="../articles/chapter9_SleepFundamentalsGuiders.html">9. Sleep Fundamentals - Guiding Sleep Detection</a>
-    <a class="dropdown-item" href="../articles/chapter10_SleepAnalysis.html">10. Sleep Analysis</a>
-    <a class="dropdown-item" href="../articles/chapter11_DescribingDataCutPoints.html">11. Physical Activity Fundamentals - Describing the data with cut-points</a>
-    <a class="dropdown-item" href="../articles/chapter12_TimeUseAnalysis.html">12. Time-Use Analysis</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">13. Circadian Rhythm Analysis</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-the-book" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">The book</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-the-book">
+<li><a class="dropdown-item" href="../articles/chapter1_WhatIsGGIR.html">1. What is GGIR</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter2_Pipeline.html">2. The GGIR Pipeline</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter3_QualityAssessment.html">3. Data Quality Assurance</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter4_AccMetrics.html">4. From Raw Data to Acceleration Metrics</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter5_StudyProtocol.html">5. Accounting for Study Protocol</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter6_DataImputation.html">6. How GGIR Deals with Invalid Data</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter7_DescribingDataWithoutKnowingSleep.html">7. Describing the Data Without Knowing Sleep</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter8_SleepFundamentalsSibs.html">8. Sleep Fundamentals - Sustained Inactivity Bout Detection (SIB)</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter9_SleepFundamentalsGuiders.html">9. Sleep Fundamentals - Guiding Sleep Detection</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter10_SleepAnalysis.html">10. Sleep Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter11_DescribingDataCutPoints.html">11. Physical Activity Fundamentals - Describing the data with cut-points</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter12_TimeUseAnalysis.html">12. Time-Use Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter13_CircadianRhythm.html">13. Circadian Rhythm Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter14_BehaviouralFragmentation.html">14. Behavioural Fragmentation</a></li>
+  </ul>
 </li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-annexes">Annexes</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-annexes">
-    <a class="dropdown-item" href="../articles/GGIRParameters.html">GGIR Parameters</a>
-    <a class="dropdown-item" href="../articles/GGIRoutput.html">GGIR Output</a>
-    <a class="dropdown-item" href="../articles/readmyacccsv.html">Reading csv files with raw data</a>
-    <a class="dropdown-item" href="../articles/ExternalFunction.html">Embedding external functions in GGIR</a>
-    <a class="dropdown-item" href="../articles/CutPoints.html">Published cut-points and how to use them</a>
-    <a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a>
-    <a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-annexes" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Annexes</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-annexes">
+<li><a class="dropdown-item" href="../articles/GGIRParameters.html">GGIR Parameters</a></li>
+    <li><a class="dropdown-item" href="../articles/GGIRoutput.html">GGIR Output</a></li>
+    <li><a class="dropdown-item" href="../articles/readmyacccsv.html">Reading csv files with raw data</a></li>
+    <li><a class="dropdown-item" href="../articles/ExternalFunction.html">Embedding external functions in GGIR</a></li>
+    <li><a class="dropdown-item" href="../articles/CutPoints.html">Published cut-points and how to use them</a></li>
+    <li><a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a></li>
+    <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="../articles/chapter0_GetStarted.html">Get started</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/chapter0_GetStarted.html">Get started</a></li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-news">
-    <h6 class="dropdown-header" data-toc-skip>Releases</h6>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-1-0/">Version 3.1-0</a>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-0-0/">Version 3.0-0</a>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-9-0/">Version 2.9-0</a>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-8-0/">Version 2.8-0</a>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-7-1/">Version 2.7-1</a>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-6-0/">Version 2.6-0</a>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-5-0/">Version 2.5-0</a>
-    <div class="dropdown-divider"></div>
-    <a class="dropdown-item" href="../news/index.html">Changelog</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-news">
+<li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-1-5/">Version 3.1-5</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-1-0/">Version 3.1-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-0-0/">Version 3.0-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-9-0/">Version 2.9-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-8-0/">Version 2.8-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-7-1/">Version 2.7-1</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-6-0/">Version 2.6-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-5-0/">Version 2.5-0</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../articles/chapter0_Contributing.html">Contributing</a>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="../articles/chapter0_Support.html">Need help?</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../articles/chapter0_Contributing.html">Contributing</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/chapter0_Support.html">Need help?</a></li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/wadpac/GGIR/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://twitter.com/RpackageGGIR" aria-label="Twitter">
-    <span class="fa fa-twitter"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/wadpac/GGIR/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -125,7 +100,8 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="" class="logo" alt=""><h1>Accelerometer data processing with GGIR</h1>
+
+      <h1>Accelerometer data processing with GGIR</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/wadpac/GGIR/blob/HEAD/vignettes/GGIR.Rmd" class="external-link"><code>vignettes/GGIR.Rmd</code></a></small>
@@ -134,18 +110,11 @@
 
     
     
-<p><img src="GGIR-MASTERLOGO-RGB.png" width="60%" style="border: 0; padding:20px"></p>
-<p>You are now in the main GGIR vignette. See also the complementary
-vignettes on: <a href="https://CRAN.R-project.org/package=GGIR/vignettes/CutPoints.html" class="external-link">Cut-points</a>,
-<a href="https://CRAN.R-project.org/package=GGIR/vignettes/TutorialDaySegmentAnalyses.html" class="external-link">Day
-segment analyses</a>, <a href="https://CRAN.R-project.org/package=GGIR/vignettes/GGIRParameters.html" class="external-link">GGIR
-parameters</a>, <a href="https://CRAN.R-project.org/package=GGIR/vignettes/ExternalFunction.html" class="external-link">Embedding
-external functions (pdf)</a>, and <a href="https://CRAN.R-project.org/package=GGIR/vignettes/readmyacccsv.html" class="external-link">Reading
-ad-hoc csv file formats</a>.</p>
+<p><img src="GGIR-MASTERLOGO-RGB.png" alt="GGIR logo" width="60%" style="border: 0; padding:20px"></p>
 <p><strong>NOTE: With the growing amount of functionality in GGIR we
-have decided to migrate the narrative documentation to the GitHub pages
-of GGIR. This to ease maintenance and accessibility. Therefore, many of
-the sections in this vignette have been replaced by a link to their new
+have decided to migrate the narrative documentation to the <a href="https://wadpac.github.io/GGIR/">GitHub pages of GGIR</a>. This to
+ease maintenance and accessibility. Therefore, many of the sections in
+this vignette have been replaced by a link to their new
 location.</strong></p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
@@ -242,9 +211,10 @@ package with <code>install.packages("read.gt3x")</code>
 <code>do.neishabouricounts = TRUE</code>), install the actilifecounts
 package with <code>install.packages("actilifecounts")</code>
 </li>
-<li>If you want to derive circadian rhythm indicators using the <a href="#cosinor-analysis-and-extended-cosinor-analysis">Cosinor analysis
-and Extended Cosinor analysis</a> (with <code>cosinor = TRUE</code>),
-install the ActCR package with
+<li>If you want to derive circadian rhythm indicators using the [Cosinor
+analysis and Extended Cosinor analysis] (with
+<code>cosinor = TRUE</code> for part 2, in part 6 it is always
+performed), install the ActCR package with
 <code>install.packages("ActCR")</code>
 </li>
 </ul>
@@ -607,7 +577,7 @@ rhythm research - Pdfs with on each page a low resolution plot of the
 data per file and quality indicators - R objects with milestone data -
 Pdfs with a visual summary of the physical activity and sleep patterns
 as identified (see example below)</p>
-<p><img src="reportexample.jpg" width="700px"></p>
+<p><img src="reportexample.jpg" alt="Example visualreport" width="700px"></p>
 <div class="section level3">
 <h3 class="tabset" id="output-part-2">Output part 2<a class="anchor" aria-label="anchor" href="#output-part-2"></a>
 </h3>
@@ -684,6 +654,88 @@ for GGIR.</p>
 in the GGIR github-pages, which is now the main documentation resource
 for GGIR.</p>
 </div>
+</div>
+<div class="section level3">
+<h3 class="tabset" id="output-part-6">Output part 6<a class="anchor" aria-label="anchor" href="#output-part-6"></a>
+</h3>
+<p>When <code>part6CR = TRUE</code> and the vector as specified for
+paramter <code>do.report</code> includes the number 6, a csv report will
+be stored with the following variables:</p>
+<table class="table">
+<colgroup>
+<col width="38%">
+<col width="61%">
+</colgroup>
+<thead><tr class="header">
+<th>Variable name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>ID</td>
+<td>Participant ID extracted from file</td>
+</tr>
+<tr class="even">
+<td>starttime</td>
+<td>Start timestamp for the data as used for the analysis</td>
+</tr>
+<tr class="odd">
+<td>filename</td>
+<td>File name</td>
+</tr>
+<tr class="even">
+<td>N_days</td>
+<td>Number of days in the data as used for the analysis</td>
+</tr>
+<tr class="odd">
+<td>N_valid_days</td>
+<td>Number of valid days in the data as used for the analysis, defined
+as the cumulative number of epoch expressed in days</td>
+</tr>
+<tr class="even">
+<td><code>cosinor_</code></td>
+<td>Cosinor analysis estimates such as mes, amp, acrophase, and
+acrotime, as documented in the <a href="https://CRAN.R-project.org/package=ActCR" class="external-link">Ac tCR</a> package.</td>
+</tr>
+<tr class="odd">
+<td><code>cosinorExt_</code></td>
+<td>Extended Cosinor analysis estimates such as minimum, amp, alpha,
+beta, acrotime, UpMesor, DownMesor, MESOR, and F_pseudo, as documented
+in the <a href="https://CRAN.R-project.org/package=ActCR" class="external-link">Ac tCR</a>
+package.</td>
+</tr>
+<tr class="even">
+<td><code>IV</code></td>
+<td>Intradaily Variability (IV) after Eus J. W. Van Someren
+(Chronobiology International. 1999. Volume 16, issue 4). Implementation
+described in Ian Meneghel Danilevicz et al. <a href="https://doi.org/10.21203/rs.3.rs-3543711/v1" class="external-link uri">https://doi.org/10.21203/rs.3.rs-3543711/v1</a>
+</td>
+</tr>
+<tr class="odd">
+<td><code>IS</code></td>
+<td>Interdaily Stability (IS) after Eus J. W. Van Someren (Chronobiology
+International. 1999. Volume 16, issue 4). Implementation described in
+Ian Meneghel Danilevicz et al. <a href="https://doi.org/10.21203/rs.3.rs-3543711/v1" class="external-link uri">https://doi.org/10.21203/rs.3.rs-3543711/v1</a>
+</td>
+</tr>
+<tr class="even">
+<td>phi</td>
+<td>Ian Meneghel Danilevicz et al. <a href="https://doi.org/10.21203/rs.3.rs-3543711/v1" class="external-link uri">https://doi.org/10.21203/rs.3.rs-3543711/v1</a>
+</td>
+</tr>
+<tr class="odd">
+<td>SSP</td>
+<td>Only created when <code>part6DFA = TRUE</code>. Self-Similarity
+parameter as part of the Detrended Fluctuation Analysis. Implementation
+described in Ian Meneghel Danilevicz et al. <a href="https://doi.org/10.21203/rs.3.rs-3543711/v1" class="external-link uri">https://doi.org/10.21203/rs.3.rs-3543711/v1</a>.</td>
+</tr>
+<tr class="even">
+<td>ABI</td>
+<td>Only created when <code>part6DFA = TRUE</code>. Activity Balance
+Index. Implementation described in Ian Meneghel Danilevicz et al. <a href="https://doi.org/10.21203/rs.3.rs-3543711/v1" class="external-link uri">https://doi.org/10.21203/rs.3.rs-3543711/v1</a>.</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="section level2">
@@ -936,109 +988,9 @@ use GGIR as the name.</p>
 <div class="section level3">
 <h3 id="circadian-rhythm-analyses">Circadian Rhythm analyses<a class="anchor" aria-label="anchor" href="#circadian-rhythm-analyses"></a>
 </h3>
-<div class="section level4">
-<h4 id="mxlx">MXLX<a class="anchor" aria-label="anchor" href="#mxlx"></a>
-</h4>
-<p>Detection of the continuous least (LX) and most (MX) active X hours
-in a day, where X is defined by argument <code>winhr</code>. For both
-GGIR calculates the average acceleration, the start time, and if
-argument <code>iglevels</code> is specified also the intensity gradient.
-If argument <code>winhr</code> is a vector then descriptive values for
-LX and MX are derived per value in <code>winhr</code>. Within GGIR part
-2 MXLX is calculated per calendar day and, if argument
-<code>qwindow</code> is specified, per segment of the day. Within GGIR
-part 5 MXLX is calculated per window, and if used in combination with
-the GENEActiv or Axivity accelerometer brand LUX estimates per LX and MX
-are included.</p>
-<p>The MX metric describe here should not be confused by the MX metrics
-as proposed by <a href="https://doi.org/10.1186/s40798-019-0225-9" class="external-link">Rowlands et al.</a>
-which looks at accumulated most active time which may not always be
-continuous in time. The MX metrics by Rowlands et all are discussed
-further down.</p>
-</div>
-<div class="section level4">
-<h4 id="cosinor-analysis-and-extended-cosinor-analysis">Cosinor analysis and Extended Cosinor analysis<a class="anchor" aria-label="anchor" href="#cosinor-analysis-and-extended-cosinor-analysis"></a>
-</h4>
-<p>The (Extended) Cosinor analysis quantifies the circadian 24 hour
-cycle. To do this GGIR uses R package <a href="https://CRAN.R-project.org/package=ActCR" class="external-link">ActCR</a> as a
-dependency. Specify argument <code>cosinor = TRUE</code> to perform
-these analysis.</p>
-<p>The implementation within GGIR part 2 is as follows:</p>
-<ul>
-<li>Acceleration values are averaged per minute, and then log
-transformation as
-<code>log(acceleration converted to _mg_ + 1)</code>.</li>
-<li>Invalid data points such as caused by non-wear are set to missing
-(NA) in order to prevent the imputation approach used elsewhere in GGIR
-to influence the Cosinor analysis. We do this because imputation
-technique generally come with some assumptions about circadian
-rhythm.</li>
-<li>GGIR looks for the first valid data point in the recording and then
-selects the maximum integer number of recording days following this data
-point and feeds these to the ActCosinor and ActExtendCosinor functions
-of ActCR. The time offset between the start and the following midnight
-is then used to reverse offset the ActCR results, to ensure that
-acrophase and acrotime can be interpreted relative to midnight.</li>
-<li>In relation to Day Saving Time: Duplicated time stamps when clock
-moves backward are ignored and missing time stamps when clock moves
-forward are inserted as missing values.</li>
-<li>Time series corresponding to the fitted models are stored inside the
-part 2 milestone data to facilitate visual inspection. For the moment
-they are not used in any GGIR visualisation, but you may want to look
-them up and try to plot them yourself.</li>
-</ul>
-</div>
-<div class="section level4">
-<h4 id="intradaily-variability-iv-and-interdaily-stability-is">Intradaily Variability (IV) and Interdaily Stability (IS)<a class="anchor" aria-label="anchor" href="#intradaily-variability-iv-and-interdaily-stability-is"></a>
-</h4>
-<div class="section level5">
-<h5 id="iv-and-is---default">IV and IS - Default<a class="anchor" aria-label="anchor" href="#iv-and-is---default"></a>
-</h5>
-<p>The original implementation (argument IVIS.activity.metric = 1) uses
-the continuous numeric acceleration values. However, as we later
-realised this is not compatible with the original approach by van
-Someren and colleagues, which uses a binary distinction between active
-and inactive. Therefore, a second option was added (argument
-IVIS.activity.metric = 2), which needs to be used in combination with
-accelerometer metric ENMO, and collapses the acceleration values into a
-binary score of rest versus active. This is the current default.</p>
-</div>
-<div class="section level5">
-<h5 id="iv-and-is---cosinor-analysis-compatible">IV and IS - Cosinor analysis compatible<a class="anchor" aria-label="anchor" href="#iv-and-is---cosinor-analysis-compatible"></a>
-</h5>
-<p>Disclaimer: The following has been implemented 2022, but is currently
-undergoing critical evaluation. As a result, we may update this
-algorithm during the course of 2023.</p>
-<p>IS is sometimes used as a measure of behavioural robustness when
-conducting Cosinor analysis. However, to work with the combination of
-the two outcomes it seems important that IS is calculated from the same
-time series. Therefore, when <code>cosinor = TRUE</code> IV and IS are
-calculated twice: Once as part of the default IV and IS analysis as
-discussed above, and once as part of the Cosinor analysis using the same
-log transformed time series. More specifically, the IV and IS algorithm
-is applied with <code>IVIS.activity.metric = 2</code> and
-<code>IVIS_acc_threshold = log(20 + 1)</code> to make the binary
-distinction between active and inactive, and
-<code>IVIS_per_daypair = TRUE</code>. The setting
-<code>IVIS_per_daypair</code> was specifically designed for this context
-to handle the potentially missing values in the time series as used for
-Cosinor analysis. Applying the default IVIS algorithm would not be able
-to handle the missing values and would result in a loss of information
-if all non-matching epochs across the entire recording were excluded.
-Instead, IV and IS are calculated as follows:</p>
-<ol style="list-style-type: decimal">
-<li>Per day pair based on matching valid epochs only IV and IS and
-calculated. Here, a log is kept of the number of valid epoch per day
-pair.</li>
-<li>Omit day pairs where the fraction of valid epoch pairs is below 0.66
-(0.66 is hard-coded at the moment).</li>
-<li>Calculate average IS across days weighted by fraction of valid
-epochs per day pairs.</li>
-</ol>
-<p>The new Cosinor-compatible IV and IS estimates are stored as output
-variables <code>cosinorIV</code> and <code>cosinorIS</code>.</p>
-</div>
-</div>
+<p>This section has been migrated to this <a href="https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html">section</a>
+in the GGIR github-pages, which is now the main documentation resource
+for GGIR.</p>
 </div>
 <div class="section level3">
 <h3 id="actigraphs-idle-sleep-mode">ActiGraph’s idle sleep mode<a class="anchor" aria-label="anchor" href="#actigraphs-idle-sleep-mode"></a>
@@ -1202,10 +1154,10 @@ circadian and sleep/wake timing. Scientific Reports. 2017 June 12 <a href="https
 <p>The copyright of the GGIR logo lies with Accelting (Almere, The
 Netherlands), please contact <a href="mailto:v.vanhees@acceleting.com" class="email">v.vanhees@acceleting.com</a> to ask for permission to use
 this logo.</p>
-<p><img src="GGIR-MASTERLOGO-RGB.png" width="60%" style="border: 0; padding:20px"></p>
+<p><img src="GGIR-MASTERLOGO-RGB.png" alt="GGIR logo" width="60%" style="border: 0; padding:20px"></p>
 </div>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
@@ -1216,15 +1168,15 @@ this logo.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>

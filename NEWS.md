@@ -1,10 +1,223 @@
+# CHANGES IN GGIR VERSION 3.2-0
+
+- New visual report: Bug fixed in handling recordings that start at midnight #1257
+
+- Part 6 and new visual report: Fix bug related to determining the combination of thresholds to use for the 
+  visual report and for part 6 analyses when there are several options and 
+  part6_threshold_combi is NULL. #1260
+  
+# CHANGES IN GGIR VERSION 3.1-11
+
+- Part 2:
+
+  - Fix bug related to determining the files to be included in the part 2 csv report, 
+  causing some files to be unnecessarily excluded from the part 2 csv report if the number
+  of files in the part 2 milestone data is larger than than number of milestone files
+  in the part 1 milestone data. #1252
+
+  - Speed up activity diary extraction. #1250
+
+  - Make sure part 2 event report, e.g. based on step detection, is saved to csv format 
+  with intended sep and dec arguments rather than default.
+  
+  - Simplify MVPA parameter specification in part 2 (mvpathreshold, boutcriter). When not 
+  specified, GGIR copies the values from the corresponding part 5 parameter values (threshold.mod and 
+  boutcriter.mvpa). #1247
+
+- Part 2 and 4: Both activity diary and sleep diary are now always reloaded if the derived 
+copy of it (in .RData) is older than the diary itself or if the diary name has changed. #1250
+
+- Visual report: Recently added visual report is now also able to handle epoch sizes not equal 
+to 1 minutes, and now also able to handle recordings 
+with only 1 valid day, these were previously skipped. #1246
+
+- Part 4:
+
+  - Improvements to handling dates in sleeplog as a follow-up to work on #1243 in the previous release.
+  
+  - Added warning when there are two accelerometer recordings with the same participant ID.
+
+  - Change extraction of imputation code from sleep diary, which is now assumed to 
+  correspond to preceding night. #1251
+  
+- Part 1, 5 and 6: Update code to be backward compatible with R 4.2.0
+
+- Part 5: Default values for parameters `do.sibreport` and `save_ms5rawlevels` changed
+to TRUE, for `save_ms5raw_format` changed to "RData" in order to ease generating visual 
+report, including our explorative nap detection, and working with part 6.
+
+# CHANGES IN GGIR VERSION 3.1-10
+
+- Part 4:
+
+  - Speed up the loading of advanced format sleeplog
+  
+  - Improve automated recognition of date format in sleeplog
+
+# CHANGES IN GGIR VERSION 3.1-9
+
+- Part 3: 
+
+  - Identification of daylight saving time days in the detection of the spt is improved as it had the risk to misclassify partial last days as daylight saving time.
+  
+  - In days classified as daysleeper, the window over which the fraction_night_invalid is calculated now also shifts to 6pm-6pm, as it used to report the nonwear within 12pm-12pm.
+  
+- Vignette: Now documented that missing dates can be skipped in advanced format sleeplog.
+
+- Step detection: I have included the Verisense step detection R script inside GitHub repository folder 'user-scripts' to ease future maintenance. Verisense does not seem to be interested in maintaining their code, causing confusion about the latest version and people reaching out to me with questions.
+
+# CHANGES IN GGIR VERSION 3.1-8
+
+- Part 4: 
+
+  - Parameter sib_must_fully_overlap_with_TimeInBed added to control whether sustained inactivity bouts (sib) 
+  must overlap fully with the start and/or end of time in bed to be considered 
+  sleep (default TRUE), this is consistent with functionality in the past, but 
+  offers the freedom to experiment with alternative settings. #1223
+
+  - Handle unexpected combinations of sleep diary column names. For example, if only inbed and wakeup are available then treat these as the time in bed period, while if only sleeponset and outbed are available then these are treated as SPT window.
+  
+- Part 5: Expanded functionality for exploring possibility of nap detection, this includes the addition of new parameter possible_nap_gap.
+
+- Visual report: Added new visualreport that is automatically generated when visualreport = TRUE (default) and intended to eventually replace the problematic legacy report. You can set parameter old_visualreport = TRUE to turn off the old visualreport generation. #1173
+
+- Part 4 + 5 + visualreport: If sleeplog has both reported sleeplog and time in bed process both. In part 4 we will still use one of the two but in the visualreport we display both. #967
+
+- Part 2: Add parameters nonwearFiltermaxHours and nonwearFilterWindow to give user the option to filter short lasting nighttime nonwear #1218.
+
+- Part 5 and 6: part6_threshold_combi when not specified now defaults to first threshold as
+specified for light, moderate and vigorous intensity, respectively.
+
+# CHANGES IN GGIR VERSION 3.1-7
+
+- Part 3: Improved handling of DST, #1225
+
+- Part 2: Code revisions in preparation for expansion of functionality to better facilitate external function produced event data. #653 and #1228
+
+- Part 1: Ad-hoc csv file formats (read.myacc.csv functionality) now also excepts "UNIXmsec" as optional timestamp format. #1233
+
+- Part 5: Improved handling of partially available and non-available qwindow segments in the recording #1229
+
+# CHANGES IN GGIR VERSION 3.1-6
+
+- Part 6:
+
+  - Add DFA functionality #839 (credits: Ian Meneghel Danilevicz and Victor Barreto Mesquita)
+
+  - Add fragmentation metrics, same function as in part 5 but now applied at recording level #839
+  
+  - Circadian rhythm analysis now ignores invalid nights controlled with new parameter "includecrit.part6".
+  
+  - Circadian rhythm analysis now provides consistent results for both regardless of whether time series are stored with or without valid windows with parameter save_ms5raw_without_invalid.
+
+- Part 2 + 6: Revised and simplified IV and IS calculation which now ignores 
+invalid timestamps and also comes with phi statistic (credits: Ian Meneghel Danilevicz). 
+In part 2 we used to have 2 calculations, which is now replaced by just one and 
+applied to all valid data points in the recordings. In part 6 this is repeated 
+for the time window as specified with parameter part6Window. Further, IVIS 
+now uses argument threshold.lig as threshold to distinguish inactivity from 
+active, instead of a hardcoded threshold of 20 mg.
+
+- Part 2: Increase sensitivity clipping detection from 80% to 30% of a window. If the long epoch has more than 30% of its values close to the dynamic range of the sensor then it will be labelled as clipping.
+
+- Part 4: Now also has copy of part 5 variable ACC_spt_mg.
+
+- Part 5:
+
+  - Moving LXMX from part 5 to part 6 as these are circadian rhythm analysis.
+  
+  - Omitted fragmentation metrics for spt window as not meaningful given that part 5 only focuses on valid daytime behaviours.
+  
+  - includenightcrit.part5 added to allow for controlling inclusion of windows in part 5 based on their amount of valid data during spt window. Default remains the same.
+
+  - Fix incorrect usage of part 5 inclusion criteria, which used fraction as percentage.
+
+# CHANGES IN GGIR VERSION 3.1-5
+
+- Part 5: 
+
+  - Add parameters require_complete_lastnight_part5 to control whether last window is included if last night is incomplete. #1196
+
+  - Handle sleeplog times beyond the end of the recording. #1206
+
+  - Fixed minor bug in g.part5.addfirstwake causing the first wake is not correctly added when no SIBs are detected in between the start of the recorded and the algorithm or diary based estimate of wakeup time. #1198
+
+  - Revise MM window definition in daylight saving time days, as it assumed fixed day duration of 24 hours #1211 
+
+- General: GGIR version look-up in .onattach() no longer crashes when computer is offline, fixes #1203.
+
+- Reports: The calendar_date and filename columns in csv reports have been standardized, as %Y-%m-%d and the input accelerometer file name, respectively. #1197
+
+- Part 1: Reverse default value for nonwear_range_threshold as changed in 3.1-3 back to 150 as more research needed to support the change. #1172
+
+- Part 1: Tidied up code in internal function detect_nonwear_clipping.R to ease future reviews. #1212
+
+- Part 4: Undo changes to 3 line in g.part4 function from commit 3b9e2b7 (in between 3.1-1 and 3.1-2 release in June 2024) which broke functionality for handling sleep that starts before the double DST hour in the autumn and ends inside it. #1221
+
+# CHANGES IN GGIR VERSION 3.1-4
+
+- Part 3: Update threshold used for HorAngle to 60 degree, and auto-setting HASPT.ignore.invalid to NA when NotWorn guider is used. #1186
+
+- Part 4:
+
+  - Fixed issue with merging sleeplog advanced format and acc data starting at midnight, #1188
+  
+  - When sleeplog column name is accidentally left empty generate error message, #1138.
+
+  - Improved logging of what guider was used when using NotWorn and optional backup guider, #1156
+
+  - Skip night in part 4 csv report if guider was NotWorn, #1156
+  
+- Part 5: Fixed bug in g.part5.wakesleepwindows causing the first SPT window in a recording incorrectly to be  defined from the first timestamp in the recording. For details see: #1192
+
+
+# CHANGES IN GGIR VERSION 3.1-3
+
+- Report part 4 and 5:
+
+  - Fix bug at identifying days and nights specified in the data_cleaning_file #1168
+
+- Part 5: Data dictionary generates error when no valid days are seen dictionary, fixed #1176
+  
+- Part 5: Fix bug in addition of first wake-up time if not present #1179
+
+- Part 2: Correctly skip MXLX calculation when it cannot be calculated, which caused error when trying to use the output. Fixes #1180
+
+- Part 1: Add parameter nonwear_range_threshold to control range threshold for nonwear detection,
+this used to be a constant. And default changed to 50mg. #1172
+
+- Part 4: Improved error message when a sleeplog timestamp is not in expected format. #1184
+
 # CHANGES IN GGIR VERSION 3.1-2
+
+- Part 1:
+
+  - Enable timegap imputation for ad-hoc csv data. #1154
+
+  - Reduce constraints on value for parameter chunksize #1155.
+
+  - When appending records ignore files that have not enough data to produce meaningful metashort and metalong objects in part 1. #1162
 
 - Parts 2-5: Give more informative error when folders with expected milestone files are empty. #1144
 
-- Report part 5: fix bug that was introduced on 2024-Feb-19 in the calculation of wear percentage #1148
+- Part 3: Fix handling of recordings with only 1 midnight that start before 4am. #1160
+
+- Part 3 and 4:
+
+  - Revise NotWorn algorithm to work with both count and raw data with varying degrees of nonwear. Further, when parameter HASPT.algo is set to NotWorn then a second guider can now optionally be specified in case the accelerometer unexpectedly worn by the participant. #1089
+
+  - Fix bug in detection of waking up after noon, referred to as daysleeper. #1165
+
+- Report part 5:
+
+  - fix bug that was introduced on 2024-Feb-19 in the calculation of wear percentage #1148
+  
+  - Rename variable sleep_efficiency to sleep_efficiency_after_onset, #1157
 
 - Vignette: Migrated many sections from main CRAN vignette to wadpac.github.io/GGIR/
+
+- Visualreport: Improve handling of recordings where the accelerometer was not worn.
+
 
 # CHANGES IN GGIR VERSION 3.1-1
 

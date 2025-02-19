@@ -17,21 +17,22 @@ knitr::opts_chunk$set(
 ## A brief overview
 
 [GGIR](https://CRAN.R-project.org/package=GGIR) is an R-package primarily designed to process multi-day ***raw*** accelerometer data for physical activity, sleep, and circadian rhythm research.
-The term ***raw*** refers to data being expressed in m/s<sup>2</sup> or gravitational acceleration as opposed to the previous generation of accelerometers which stored data in accelerometer brand-specific units.
+The term ***raw*** refers to data being expressed in gravitational units (1 _g_ equal gravitational acceleration, which on average is 9.81 m/s<sup>2</sup>) as opposed to the previous generation of accelerometers which stored data in accelerometer brand-specific units at epoch level, typically 5, 30, or 60 seconds in length.
 Despite the focus on the raw data, GGIR also offers functionality to process previous-generation accelerometer data.
-The signal processing for raw data includes automatic calibration to gravity, detection of abnormally high values, imputation of raw-level time gaps (only for specific sensor brands), and calculation of orientation angle and average magnitude acceleration based on a variety of metrics.
+The signal processing for raw data includes many steps that are explained in these pages. For example, automatic calibration to gravity, detection of abnormally high values, imputation of raw-level time gaps (only for specific sensor brands), and calculation of orientation angle and average magnitude acceleration based on a variety of metrics.
 Next, the signal processing for both raw and previous-generation data continue with the detection of non-wear and epoch-level imputation.
-Finally, GGIR uses all this information to describe the data at multiple time resolutions on data quality and data summary metrics that could be interpreted as estimates of physical activity, inactivity, sleep, and circadian rhythm.
+Finally, GGIR uses all this information to describe the data on data quality and data summary metrics that could be interpreted as estimates of physical activity, inactivity, sleep, and circadian rhythm.
+
 The time resolutions of GGIR output are:
 
 -   **Per recording**, which typically matches to one participant ID.
--   **Per sequence of recordings** with matching participant IDs, which are optionally appended. For details on how to use this, see documentation on parameter `maxRecordingInterval` and documentation on how to use parameters as explained further down.
 -   **Calendar day** with an option to specify the day border timing with midnight as default.
--   **Night** defined from noon-noon, unless the person woke up after noon, which is when the sleep algorithm will re-focus on the window 6pm-6pm.
+-   **Night** a period of time where a participant is likely to have their main daily sleep period, where the initial focus is on the time window defined from noon to noon the next day, unless the person wakes up after noon the next day, in that case the focus shifts to 6pm to 6pm the next day.
 -   **Day segment**, which can be defined via code to indicate timing of the segments within a day standardised for all recordings and days in a dataset or via diary file, where the segment definition is allowed to vary per recording and day.
--   **Window between Waking-up to Waking-up** the following day.
--   **Window between Sleep onset to sleep onset** the following day.
--   **Epoch by epoch time series**, where an epoch length is set by the user at for example 5 seconds.
+-   **Window defined from Waking-up after main sleep period to Waking-up after the next main sleep period**.
+-   **Window defined from Sleep onset at the start of the main sleep period to sleep onset at the start of the next main sleep period**.
+-   **Epoch-level time series**, where an epoch length is set by the user at for example 5 seconds.
+-   **(Optionally, not by default) Per sequence of recordings with matching participant IDs**. For example, when a person is tracked first with one accelerometer and then the accelerometer is replaced by a different accelerometers. For details on how to use this, see documentation on GGIR parameter `maxRecordingInterval` and documentation on how to use GGIR parameters as explained further down.
 
 ## Key strengths
 
@@ -60,22 +61,22 @@ GGIR would not be what it is without all their efforts.
 The research field is highly heterogeneous in: the choice of sensor brand, data format, the study protocols used, and the research questions it tries to answer.
 At the same time many within the field lack the time or skills to write their own custom data processing software.
 GGIR aims to be flexible to handle all these different scenarios and at the same time remain accessible to those who lack time or skills to write software.
-Further, we hope GGIR is of use to those without the financial resources for commercial software, although we would like stress that we are not a charity and depend on paid or unpaid voluntary efforts from contributors.
+Further, we hope GGIR is of use to those without the financial resources for commercial software, although we would like stress that we are not a charity and depend on paid and unpaid contributions from the community.
 
 ### Algorithm design
 
-The philosophy behind the algorithms as implemented in GGIR is that biologically explainable (heuristic) approaches to data analyses are preferable over purely data-driven approaches, unless there is no other way.
-The idea is that to advance knowledge in this field of research, it is essential to have an understanding of the causal relation between the phenomena being observed (e.g. body movement), the way an (acceleration) sensor works, what we do with the data produced, and how we interpret the data.
-In contrast, data-driven methods look by design for optimal correlation with data and are not or much less concerned with such causal links.
-Identical to how correlation is not necessarily equal to causation in health research, it can also confound the process of measurement.
-Some examples: We may be able to capture the differences in acceleration that correlate with different activity types or different levels of energy expenditure but that does not mean that we actually measure the activity type or the energy expenditure level.
-Ignoring such aspects can easily lead to overestimating the value of accelerometers to measure those constructs and to underestimate the value of an accelerometer to capture acceleration as a useful measure of behaviour if appropriately used and interpreted.
+The philosophy behind the algorithms as implemented in GGIR is that biomechanical explainable (heuristic or knowledge driven) approaches to measurement in science are preferable over purely data-driven approaches. Please note the specification to the scientific context rather than measurement in general, e.g. consumer wearables. Only when a knowledge driven approach is unrealistic we can consider a data-driven approach. 
+
+The idea of a knowledge driven approach is that in order to advance insight, it is essential to have an understanding of the causal relation between the phenomena being observed (e.g. acceleration of one body part), the way the (acceleration) sensor works, what we do with the data produced, and how we interpret the data. For example, we know that body acceleration relates to energy expenditure because of physics and human physiology. The abundance of scientific publications that have reported a positive correlation between accelerometer data and energy expenditure only served to confirm prior knowledge.
+
+In contrast, data-driven methods focus on optimal correlation between sensor data and reference labels or values, and are much less concerned with causal associations that are the focus of knowledge driven approaches, as defined above. Identical to how correlation is not necessarily equal to causation in health research, the process of measurement can also be confounded. Some examples: We may see differences in body acceleration patterns that correlate with different activity types or different levels of energy expenditure, but that does not mean that we actually measure those activity types or energy expenditure levels. Ignoring this distinction can easily lead to overestimating the value of an accelerometer for measuring those constructs (activity type, etc) and to underestimate the value of an accelerometer of capturing acceleration as a useful measure of behaviour, if appropriately used and interpreted.
 
 A second problem with data-driven methods is that they heavily depend on the availability of reliable criterion methods.
-It is argued that such reliable criterion methods do not exist:
+
+We argue that such reliable criterion methods do not exist for physical behaviour measurement:
 
 1.  Indirect calorimetry and the indicators of energy metabolism that can be derived from it are unable to account for the activity type specific role of body weight on energy metabolism. This makes it impossible to make a standardised comparison of the energy cost of different activity types across individuals that differ in body weight. See also reflections in [this blog post](https://www.accelting.com/updates/why-does-ggir-facilitate-cut-points/).
-2.  Polysomnography offers a physiological definition of sleep that is impossible to capture with a movement sensor forcing us to simplify our definition of ‘sleep’ towards a definition a movement sensor can capture, by which ‘validation’ with polysomnography becomes somewhat meaningless as we already know that we are no longer measuring the same construct.
+2.  Polysomnography (PSG) is the standard in sleep research. PSG offers a physiological definition of sleep that is impossible to capture directly with a movement sensor. Therefore, we are forced to simplify our definition of ‘sleep’ towards a definition that can be captured by a movement sensor. As a result, the act of evaluating an accelerometer on its ability to classify sleep with PSG becomes somewhat meaningless as we already know that we are not measuring the same construct as PSG.
 3.  Activity types are ambiguous to define given the high number of ways they can be performed. This introduces a fundamental level of uncertainty about the robustness of models outside the datasets and context they were developed in.
 
 As a result, it is essential to put strong emphasis on algorithms that have descriptive value on their own regardless of whether they offer a high correlation with supposed criterion methods.
@@ -92,10 +93,12 @@ The documentation that existed before was a collection of ad-hoc written paragra
 As a result, it was difficult to use the documentation in the training course.
 Further, we also wanted to provide a good level of documentation for those who do not follow the course or want to refresh their understanding of GGIR.
 
-The documentation is mainly written in a narrative style where we have tried to explain both the theory and practice of all GGIR functionalities.
+The documentation is mainly written in a narrative style where we have tried to explain both the theory and practice of all GGIR functionalities. As mentioned above, GGIR offers a vast amount of functionality. If you arrive here with the expectation to find a quick instruction to run and use GGIR in your research then we have to disappoint you. Learning to use GGIR requires some time investment.
+
 Everything you need to type in your R script is `highlighted like this`.
 
 This documentation is not intended as an academic review: We only cite publications to clarify the origin of algorithms and we only discuss what is part of GGIR.
 
+
 Finally, the first version of this documentation was sponsored by Accelting with the commitment that this will remain available as free open-access documentation.
-However, things like this are much easier to maintain as a community: We would be grateful for your help to improve the documentation either by giving feedback, pull requests (for those who know how to do it), or financially.
+However, open documentation is much easier to maintain as a community: We would be grateful for your help to improve the documentation either by giving feedback (e.g. via v.vanhees at accelting dot com), pull requests (for those who know how to do it), or financially. For example, it would be great if we had funding for creating high quality complementary info graphics and videos.

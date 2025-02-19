@@ -5,33 +5,25 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="GGIR">
 <title>3. Data Quality Assurance • GGIR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="3. Data Quality Assurance">
-<meta property="og:description" content="GGIR">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:creator" content="@RpackageGGIR">
-<meta name="twitter:site" content="@RpackageGGIR">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]--><script defer data-domain="pkgdown.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="3. Data Quality Assurance">
+<script defer data-domain="pkgdown.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-11</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -39,84 +31,67 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-the-book">The book</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-the-book">
-    <a class="dropdown-item" href="../articles/chapter1_WhatIsGGIR.html">1. What is GGIR</a>
-    <a class="dropdown-item" href="../articles/chapter2_Pipeline.html">2. The GGIR Pipeline</a>
-    <a class="dropdown-item" href="../articles/chapter3_QualityAssessment.html">3. Data Quality Assurance</a>
-    <a class="dropdown-item" href="../articles/chapter4_AccMetrics.html">4. From Raw Data to Acceleration Metrics</a>
-    <a class="dropdown-item" href="../articles/chapter5_StudyProtocol.html">5. Accounting for Study Protocol</a>
-    <a class="dropdown-item" href="../articles/chapter6_DataImputation.html">6. How GGIR Deals with Invalid Data</a>
-    <a class="dropdown-item" href="../articles/chapter7_DescribingDataWithoutKnowingSleep.html">7. Describing the Data Without Knowing Sleep</a>
-    <a class="dropdown-item" href="../articles/chapter8_SleepFundamentalsSibs.html">8. Sleep Fundamentals - Sustained Inactivity Bout Detection (SIB)</a>
-    <a class="dropdown-item" href="../articles/chapter9_SleepFundamentalsGuiders.html">9. Sleep Fundamentals - Guiding Sleep Detection</a>
-    <a class="dropdown-item" href="../articles/chapter10_SleepAnalysis.html">10. Sleep Analysis</a>
-    <a class="dropdown-item" href="../articles/chapter11_DescribingDataCutPoints.html">11. Physical Activity Fundamentals - Describing the data with cut-points</a>
-    <a class="dropdown-item" href="../articles/chapter12_TimeUseAnalysis.html">12. Time-Use Analysis</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">13. Circadian Rhythm Analysis</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-the-book" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">The book</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-the-book">
+<li><a class="dropdown-item" href="../articles/chapter1_WhatIsGGIR.html">1. What is GGIR</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter2_Pipeline.html">2. The GGIR Pipeline</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter3_QualityAssessment.html">3. Data Quality Assurance</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter4_AccMetrics.html">4. From Raw Data to Acceleration Metrics</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter5_StudyProtocol.html">5. Accounting for Study Protocol</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter6_DataImputation.html">6. How GGIR Deals with Invalid Data</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter7_DescribingDataWithoutKnowingSleep.html">7. Describing the Data Without Knowing Sleep</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter8_SleepFundamentalsSibs.html">8. Sleep Fundamentals - Sustained Inactivity Bout Detection (SIB)</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter9_SleepFundamentalsGuiders.html">9. Sleep Fundamentals - Guiding Sleep Detection</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter10_SleepAnalysis.html">10. Sleep Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter11_DescribingDataCutPoints.html">11. Physical Activity Fundamentals - Describing the data with cut-points</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter12_TimeUseAnalysis.html">12. Time-Use Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter13_CircadianRhythm.html">13. Circadian Rhythm Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter14_BehaviouralFragmentation.html">14. Behavioural Fragmentation</a></li>
+  </ul>
 </li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-annexes">Annexes</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-annexes">
-    <a class="dropdown-item" href="../articles/GGIRParameters.html">GGIR Parameters</a>
-    <a class="dropdown-item" href="../articles/GGIRoutput.html">GGIR Output</a>
-    <a class="dropdown-item" href="../articles/readmyacccsv.html">Reading csv files with raw data</a>
-    <a class="dropdown-item" href="../articles/ExternalFunction.html">Embedding external functions in GGIR</a>
-    <a class="dropdown-item" href="../articles/CutPoints.html">Published cut-points and how to use them</a>
-    <a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a>
-    <a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-annexes" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Annexes</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-annexes">
+<li><a class="dropdown-item" href="../articles/GGIRParameters.html">GGIR Parameters</a></li>
+    <li><a class="dropdown-item" href="../articles/GGIRoutput.html">GGIR Output</a></li>
+    <li><a class="dropdown-item" href="../articles/readmyacccsv.html">Reading csv files with raw data</a></li>
+    <li><a class="dropdown-item" href="../articles/ExternalFunction.html">Embedding external functions in GGIR</a></li>
+    <li><a class="dropdown-item" href="../articles/CutPoints.html">Published cut-points and how to use them</a></li>
+    <li><a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a></li>
+    <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="../articles/chapter0_GetStarted.html">Get started</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/chapter0_GetStarted.html">Get started</a></li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-news">
-    <h6 class="dropdown-header" data-toc-skip>Releases</h6>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-1-0/">Version 3.1-0</a>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-0-0/">Version 3.0-0</a>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-9-0/">Version 2.9-0</a>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-8-0/">Version 2.8-0</a>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-7-1/">Version 2.7-1</a>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-6-0/">Version 2.6-0</a>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-5-0/">Version 2.5-0</a>
-    <div class="dropdown-divider"></div>
-    <a class="dropdown-item" href="../news/index.html">Changelog</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-news">
+<li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-1-5/">Version 3.1-5</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-1-0/">Version 3.1-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-0-0/">Version 3.0-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-9-0/">Version 2.9-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-8-0/">Version 2.8-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-7-1/">Version 2.7-1</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-6-0/">Version 2.6-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-5-0/">Version 2.5-0</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../articles/chapter0_Contributing.html">Contributing</a>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="../articles/chapter0_Support.html">Need help?</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../articles/chapter0_Contributing.html">Contributing</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/chapter0_Support.html">Need help?</a></li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/wadpac/GGIR/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://twitter.com/RpackageGGIR" aria-label="Twitter">
-    <span class="fa fa-twitter"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/wadpac/GGIR/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -125,7 +100,8 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="" class="logo" alt=""><h1>3. Data Quality Assurance</h1>
+
+      <h1>3. Data Quality Assurance</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/wadpac/GGIR/blob/HEAD/vignettes/chapter3_QualityAssessment.Rmd" class="external-link"><code>vignettes/chapter3_QualityAssessment.Rmd</code></a></small>
@@ -135,51 +111,68 @@
     
     
 <p>Data quality assurance is an important part of GGIR. GGIR undertakes
-several key tasks aimed at evaluating and where possible enhancing the
-quality of the data, as well as documenting how data was enhanced. These
-tasks include time gap identification and imputation, automatic
-calibration of the sensors, identification of periods when sensors were
-not worn, and scrutiny for segments of the signal exhibiting sustained,
-unusually high accelerations that are rarely encountered in real-world
-scenarios.</p>
+several key tasks aimed at evaluating, and, where possible, enhancing
+the quality of the data, as well as documenting what was done. These
+tasks are explained in this chapter.</p>
 <div class="section level2">
 <h2 id="time-gaps-identification-and-imputation">Time gaps identification and imputation<a class="anchor" aria-label="anchor" href="#time-gaps-identification-and-imputation"></a>
 </h2>
-<p>The time gap identification and imputation functionality offered by
-GGIR is exclusive to ActiGraph gt3x files, Axivity cwa files, and ad-hoc
-csv files. This is because there are potential time gaps within files of
-these formats. GGIR has been developed to efficiently identify and
-manage these time gaps.</p>
+<p>Accelerometer data stored in binary format (e.g. .bin or .cwa) is
+typically structured in data blocks. Each data block has a header at the
+top and a constant number of data points per block, usually the
+equivalent of a few seconds of data. For the Axivity accelerometer with
+data stored in ‘.cwa’ file format those blocks can, on rare occasions,
+be corrupted and unreadable, therefore creating a gap in the information
+recorded.</p>
+<p>For the ActiGraph accelerometer, but also some other sensor brands
+that export data in ‘csv’ file format, it is possible that the recording
+stops at certain time and starts recording after some time, therefore
+creating a time gap.</p>
+<p>GGIR has been developed to efficiently identify and manage these time
+gaps.</p>
 <div class="section level3">
 <h3 id="time-gaps-in-axivity-cwa-files">Time gaps in Axivity cwa files<a class="anchor" aria-label="anchor" href="#time-gaps-in-axivity-cwa-files"></a>
 </h3>
 <p>Although this is not expected to occur often, Axivity cwa data can
-come with faulty data blocks. In Axivity cwa files, a data block
-represents a few seconds of data. For example, faulty blocks may occur
-when the device is connected to a computer with a USB cable. To address
-this, R package <code>GGIRread</code>, which is used by GGIR to read cwa
-files, identifies these faulty blocks and imputes them by the last
-recorded non-faulty acceleration value normalised to 1 <em>g</em>.</p>
-<p>Axivity devices are expected by design to have a slightly variable
-sampling rate, which is accounted for by resampling the data. The
-interpolation technique used for resampling is set by parameter
-<code>interpolationType</code> and uses linear interpolation by default
-(<code>interpolationType = 1</code>), but you can also set it to nearest
-neighbour interpolation (<code>interpolationType = 2</code>). As a
-quality assurance, <code>GGIRread</code> keeps track of the variation in
-sampling rate per data block and automatically imputes blocks where the
-sampling rate deviates by more than 10% from the expected sampling rate.
-If you are unhappy with this threshold, then note that you can change
-this percentage with parameter <code>frequency_tol</code>. Biased
-sampling rates of this kind are expected to be extremely rare, but we
-nonetheless like to be able to account for them.</p>
-<p>Additionally, to monitor this process, <code>GGIRread</code> logs a
-series of file health statistics which are stored by GGIR in the
+come with faulty data blocks. By ‘faulty’ we mean that the data in the
+block is not interpretable. For example, faulty blocks may occur when
+the device in recording mode is connected to a computer with a USB
+cable. To address this, the R package <code>GGIRread</code>, as used by
+GGIR to read cwa files, identifies these faulty blocks and imputes them
+by the last recorded non-faulty acceleration value normalised to 1
+<em>g</em> (<em>g</em> is the unit for gravitational acceleration).</p>
+<p>The sampling rate of an accelerometer refers to the number of data
+points recorded and stored per second. Axivity devices are expected by
+design to have a slightly variable sampling rate over time, which is
+accounted for by interpolating the data after it is loaded into R. For
+example, the data may have been collected at 99.7 Hertz for one block,
+and the interpolation technique will then interpolate the data such that
+it is 100 Hertz. The interpolation happens inside the R package
+<code>GGIRread</code>. The exact technique used for the interpolation is
+set by parameter <code>interpolationType</code> and uses linear
+interpolation by default (<code>interpolationType = 1</code>), but you
+can also set it to nearest neighbour interpolation
+(<code>interpolationType = 2</code>). As a quality assurance,
+<code>GGIRread</code> keeps track of the variation in sampling rate per
+data block and automatically imputes blocks (smallest segment of data in
+a cwa file, typically a few seconds long) where the sampling rate
+deviates by more than 10% from the expected sampling rate. The
+imputation technique is the same as for the time gaps as detailed
+earlier in this section. If you are unhappy with the 10% threshold then
+you have the possibility of changing this percentage with the parameter
+<code>frequency_tol</code>. Biased sampling rates of this kind are
+expected to be extremely rare and are not expected to affect normal
+research conditions, but we nonetheless like to be able to account for
+them.</p>
+<p>Additionally, to monitor this process of handling faulty blocks and
+outliers in sampling rate, <code>GGIRread</code> logs a series of file
+health statistics which are stored by GGIR in the
 ‘data_quality_report.csv’ file located within the ‘QC’ folder of the
-output directory ‘results’. Within this file, variable names prefixed
+output directory ‘results’ (see previous chapter for discussion on GGIR
+output). The data quality report, comes with variable names prefixed
 with ‘filehealth’, detailing the number and duration of time gaps
-detected during recording, as well as number of epochs with 5-10% and
-more than 10% biases in the sampling rate.</p>
+detected during the recording(s), as well as number of epochs that have
+5-10% or more than 10% bias in sampling rate.</p>
 </div>
 <div class="section level3">
 <h3 id="time-gaps-in-actigraph-gt3x-and-ad-hoc-csv-files">Time gaps in ActiGraph gt3x and ad-hoc csv files<a class="anchor" aria-label="anchor" href="#time-gaps-in-actigraph-gt3x-and-ad-hoc-csv-files"></a>
@@ -190,37 +183,38 @@ conserve battery life and reduce data size. However, this feature
 results in recorded signals containing intermittent time gaps that must
 be accounted for during data processing.</p>
 <p>For example, ActiGraph has the option called ‘idle sleep mode’ in
-their devices, which makes data collection pause when there is no
-movement for a sustained period of time. The ActiGraph’s idle sleep mode
-is <a href="https://actigraphcorp.my.site.com/support/s/article/Idle-Sleep-Mode-Explained" class="external-link">explained</a>
+their devices, which pauses data collection when no movement is detected
+for a sustained period of time. The ActiGraph’s idle sleep mode is <a href="https://actigraphcorp.my.site.com/support/s/article/Idle-Sleep-Mode-Explained" class="external-link">explained</a>
 on the manufacturer’s website.</p>
-<p>GGIR imputes gaps shorter than 90 minutes at raw data level, using
-the last known recorded value normalised to 1 <em>g</em>. However, gaps
-longer than 90 minutes are imputed at epoch level to make the data
-processing more memory efficient and faster. These time gaps in the data
-are considered non-wear time in GGIR. This implies that we trust the
-accelerometer to only cause time gaps when it is not worn, although
-there is always a risk of sleep/sedentary misclassification. GGIR logs
-the number and duration of the time gaps found in the
-‘data_quality_report.csv’ file located within the ‘QC’ folder of the
-output directory ‘results’.</p>
+<p>The time gaps in the data are considered non-wear time in GGIR. GGIR
+imputes gaps shorter than 90 minutes at raw data level, using the last
+recorded value (meaning before the gap) normalised to 1 <em>g</em>. This
+approach assumes that accelerometer was kept in the same orientation as
+it was last observed. On the contrary, gaps longer than 90 minutes are
+imputed at epoch level to make the data processing more memory efficient
+and faster. The epoch level imputation is discussed in <a href="https://wadpac.github.io/GGIR/articles/chapter6_DataImputation.html">chapter
+6</a>. The number and duration of the time gaps found are logged by GGIR
+in the ‘data_quality_report.csv’ file located within the ‘QC’ folder of
+the output directory ‘results’ (see previous chapter for discussion on
+GGIR output).</p>
 <p>Studies often forget to clarify whether the accelerometers were
 configured to pause data collection during periods of no movement and,
 if so, how the resulting time gaps were accounted for in the data
 processing. Especially, if the device firmware or manufacturer software
 already imputes the time gaps that can cause significant bias to the
-GGIR estimates. More generally speaking, we advise:</p>
+GGIR estimates. More generally speaking, we advise to:</p>
 <ul>
-<li><p>to disable such functionality if possible as it harms the
-transparency and reproducibility since no mechanism exists to replicate
-the time gaps in other accelerometer brands and it is likely to
-challenge accurate assessment of sleep and sedentary behaviour.</p></li>
-<li><p>that data collected with ‘idle sleep mode’ or similar
+<li><p>Report whether ‘idle sleep mode’ or similar functionalities were
+used.</p></li>
+<li><p>Disable such functionality, if possible, as it harms the
+transparency and reproducibility of research. Indeed, no mechanism
+exists to replicate the time gaps in other accelerometer brands, and it
+is likely to challenge accurate assessment of sleep and sedentary
+behaviour.</p></li>
+<li><p>That data collected with ‘idle sleep mode’ or similar
 functionalities is not referred to as raw data accelerometry, because
 the data collection process has involved proprietary pre-processing
 steps which violate the core principle of raw data collection.</p></li>
-<li><p>to report whether ‘idle sleep mode’ or similar functionalities
-were used.</p></li>
 </ul>
 </div>
 <div class="section level3">
@@ -241,26 +235,60 @@ with the time gaps already imputed).</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="auto-calibration-algorithm">Auto-calibration algorithm<a class="anchor" aria-label="anchor" href="#auto-calibration-algorithm"></a>
+<h2 id="accelerometer-sensor-calibration">Accelerometer sensor calibration<a class="anchor" aria-label="anchor" href="#accelerometer-sensor-calibration"></a>
 </h2>
+<p>Many measurement tools require calibration ranging from weighting
+scales to Oxygen sensor to accelerometers. Without good calibration we
+risk that the error causes by lack of calibration undermines accurate
+and reliable measurement.</p>
+<p>Confusingly for accelerometers, the field has for a long time assumed
+that accelerometer need to be calibrated relative to energy expenditure.
+This is incorrect because energy expenditure is an entirely different
+construct. The true reference for accelerometer sensors is acceleration
+which we can calibrate with gravitational acceleration as a
+reference.</p>
 <p>An acceleration sensor works based on the principle that acceleration
 is captured mechanically and converted into an electrical signal. The
 relationship between the electrical signal and the acceleration is
-usually assumed to be linear, involving an offset and a gain factor. We
-shall refer to the establishment of the offset and gain factor as the
-sensor calibration procedure. Accelerometers are usually calibrated as
-part of the manufacturing process under non-movement conditions using
-the local gravitational acceleration as a reference. The manufacturer
-calibration can later be evaluated by holding each sensor axis parallel
-(up and down) or perpendicular to the direction of gravity; readings for
-each axis should be ±1 and 0 <em>g</em>, respectively. However, this
-procedure can be cumbersome in studies with a high throughput.
-Furthermore, such a calibration check will not be possible for data that
-have been collected in the past and for which the corresponding
-accelerometer device does not exist anymore. Techniques have been
-proposed that can check and correct for calibration error based on the
-collected triaxial accelerometer data in the participant’s daily life
-without additional experiments, referred to as auto-calibration.</p>
+usually assumed to be linear, involving an offset and a gain factor. If
+you are not familiar with these terms, you could compare it with a
+simple regression equation where the offset is the Beta0 (Y-intercept)
+and the gain is the Beta1 (slope). Therefore, an offset is a number that
+we add to the signal to adjust for systematic error (bias) and a gain is
+a number with which we multiply the signal to scale it, in order to
+adjust it for relative error. We shall refer to the establishment of the
+offset and gain factor as the sensor calibration procedure.</p>
+<p>There are three types of calibration:</p>
+<ul>
+<li>Factory calibration, done by industry (always done, but may need
+refinement afterward).</li>
+<li>Manual calibration, done by researcher (not advisable and in some
+cases not even possible.</li>
+<li>Auto-calibration, done by algorithms on real life study data (most
+common scenario to refine the factory calibration).</li>
+</ul>
+<ol style="list-style-type: decimal">
+<li>Accelerometers are usually calibrated as part of the manufacturing
+process under non-movement conditions using the local gravitational
+acceleration as a reference, this is referred to as factory
+calibration.</li>
+<li>The manufacturer calibration can later be evaluated by holding each
+sensor axis parallel (up and down) or perpendicular to the direction of
+gravity; readings for each axis should be ±1.000 and 0.000 <em>g</em>,
+respectively. With these one could derive correction coefficients per
+axis. However, this procedure can be cumbersome in studies with a high
+throughput. Furthermore, such a calibration check will not be possible
+for data that has been collected in the past and for which the
+corresponding accelerometer device does not exist anymore. That is the
+reason why this calibraton is not advisable and in some cases not
+possible.</li>
+<li>Finally, the auto-calibration is the type of calibration done by an
+algorithm using your already collected real world data withoutb the need
+for additional experiments, which we will explain in more detail.</li>
+</ol>
+<div class="section level3">
+<h3 id="auto-calibration-algorithm">Auto-calibration algorithm<a class="anchor" aria-label="anchor" href="#auto-calibration-algorithm"></a>
+</h3>
 <p>The general principle of these techniques is that a recording of
 acceleration is screened for non-movement periods. Next, the rolling
 average over the non-movement periods is taken from each of the three
@@ -286,76 +314,68 @@ turned off with the parameter <code>do.cal = FALSE</code>. We do not
 recommend turning off the auto-calibration unless you have strong
 reasons to do so.</p>
 </div>
+</div>
 <div class="section level2">
 <h2 id="non-wear-detection">Non-wear detection<a class="anchor" aria-label="anchor" href="#non-wear-detection"></a>
 </h2>
-<p>Accelerometer non-wear time is detected on the basis of statistics
-derived from a rolling time window over the raw data. A time interval is
-classified as non-wear if both of the following criteria are met for at
-least two out of the three accelerometer axes:</p>
-<ul>
-<li>The standard deviation of the accelerations is less than
-accelerometer brand-specific reference values, which for most brands is
-13.0 m<em>g</em> (<span class="math inline">\(1 mg = 0.00981
-m·s^−2\)</span>)</li>
-<li>The range of accelerations (i.e., maximum value <em>minus</em>
-minimum value) is less than 50 m<em>g</em>.</li>
-</ul>
-<p>The size of the rolling time window and the size of the steps it
-takes in time are defined by parameter <code>windowsizes</code>, a
-vector with length three. More specifically, the first value is used as
-epoch size for acceleration metric calculation and not used for non-wear
-detection, the second value is the resolution of the classification (
-default = 15 min) and the third value is the window size use for
-classification (default = 60 min) are used.</p>
-<p>How it then labels the data depends on how parameter
-<code>nonwear_approach</code> is specified. At the moment there are two
-options: <code>nonwear_approach = "2013"</code> and
-<code>nonwear_approach = "2023"</code> (default). This initial detection
-and labelling of non-wear periods occurs in GGIR part 1.</p>
+<p>It can happen that a study participant does not wear the
+accelerometer. This can happen for a variety of reasons: getting tired
+of wearing the accelerometer, forgetting to put the accelerometer back
+on after a short moment of not wearing it, or getting instructed by the
+researcher to take it off. However, when accelerometer are not worn,
+they still collect data. When the accelerometer is lying still, the data
+collected looks like as if the participant that is supposed to wear it
+does is not moving. If left undetected, not wearing the accelerometer
+would bias the estimates of time spent in inactive behaviours.</p>
+<p>Accelerometer non-wear time is detected by GGIR by looking at the
+standard deviation and range in the raw acceleration signals. If the
+time window over which these statistical values are calculated is long
+enough, they turn out to be a reliable indicators of whether the
+accelerometer is worn or not.</p>
+<p>More specifically, the standard deviation and value range (i.e.,
+maximum value <em>minus</em> minimum value) are calculated per 60 minute
+windows that start every 15 minutes (e.g. 14:00, 14:15, etc.) . The
+overlapping nature of the time windows is needed to improve precision.
+Each time window is labelled as non-wear, if at least the statistical
+values of 2 out of the 3 axes meet brand specific thresholds. As a
+result, since multiple overlapping time windows classify the same 15
+minutes, each 15 minute window is classified multiple times. If the
+non-wear criteria are met for any of these windows that overlap with the
+15-minute window, it will be labelled as non-wear. For most brands it is
+13.0 m<em>g</em> and less than 50 m<em>g</em>.</p>
+<p>The size of the time window (60 minutes) and the size of the time
+intervals of 15 minutes are defined by the parameter
+<code>windowsizes</code>, which has three values. More specifically, the
+first value is not used for non-wear detection but discussed in the next
+chapter, the second value defines the above mentioned intervals of 15
+minutes , and the third value is the above mentioned 60 minutes time
+window.</p>
+<p>The non-wear classification, as discussed above, is the default as of
+2023. Prior to this, GGIR had a slightly different non-wear detection
+algorithm which is still available via parameter
+<code>nonwear_approach</code> but we do not recommend you to use it.</p>
 <div class="section level3">
-<h3 id="approaches-to-detect-non-wear-2013-and-2023-algorithms">Approaches to detect non-wear: 2013 and 2023 algorithms<a class="anchor" aria-label="anchor" href="#approaches-to-detect-non-wear-2013-and-2023-algorithms"></a>
+<h3 id="identifying-implausible-wear-time">Identifying implausible wear time<a class="anchor" aria-label="anchor" href="#identifying-implausible-wear-time"></a>
 </h3>
-<div class="section level4">
-<h4 id="nonwear_approach-2013">nonwear_approach = “2013”<a class="anchor" aria-label="anchor" href="#nonwear_approach-2013"></a>
-</h4>
-<p>The 2013 approach is a revision of an approach first described in a
-<a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0022922" class="external-link">2011
-PLoSONE publication</a>. It applies the criteria discussed above to a
-rolling 60-minute window to classify the 15 minute window in its centre.
-This means that the windows overlap by 22.5 minutes.</p>
-</div>
-<div class="section level4">
-<h4 id="nonwear_approach-2023">nonwear_approach = “2023”<a class="anchor" aria-label="anchor" href="#nonwear_approach-2023"></a>
-</h4>
-<p>The 2023 version of the algorithm uses the criteria applied to the
-60-minute window to assign a non-wear score to that entire window.
-Instead of centering the 60 minute window in the middle of the 15 minute
-window, the 60 minute window’s left edge is aligned to the left edge of
-the 15 minute window. As a result, each 15-minute window is classified
-multiple times given that multiple steps of the rolling window
-classification will overlap with it. If the non-wear criteria are met
-for any of these windows that overlap with the 15-minute window, it will
-be labelled as non-wear.</p>
-</div>
-</div>
-<div class="section level3">
-<h3 id="relabelling-implausible-wear-as-non-wear">Relabelling implausible wear as non-wear<a class="anchor" aria-label="anchor" href="#relabelling-implausible-wear-as-non-wear"></a>
-</h3>
-<p>Inspection of non-wear classifications indicated that the algorithm
-as described above does not cope well with periods of monitor
-transportation per post. Here, long periods of non-wear are briefly
-interrupted by periods of movement, which are interpreted by the
-algorithm as monitor wear. Therefore, in GGIR part 2, the detected
-non-wear from part 1 is screened for implausible wear periods which are
-then relabelled as non-wear. All detected wear-periods of less than six
-hours and less than 30% of the combined duration of their bordering
-non-wear periods are relabelled as non-wear. Additionally, all
-wear-periods of less than three hours and which form less than 80% of
-their bordering non-wear periods are classified as non-wear. The
-motivation for selecting a relatively high criterion (&lt; 30%) in
-combination with a long period (6 hrs) and a low criterion (&lt; 80%) in
-combination with a short period (3 hrs) is that long periods are more
+<p>It can happen that time classified as wear time is implausible for
+example when the accelerometer is in the post or moved around by the
+researcher ahead of the actually intended wear period.</p>
+<p>For example, when the accelerometer is in the post long periods of
+non-wear are briefly interrupted by periods of movement, which are
+interpreted by the algorithm as monitor wear. Therefore, in GGIR part 2,
+the detected non-wear from GGIR part 1 is checked for implausible wear
+periods which are then relabelled as non-wear. If you are not sure what
+we mean by part 1 and 2 then see <a href="https://wadpac.github.io/GGIR/articles/chapter1_WhatIsGGIR.html">chapter
+1</a>, which gives an overview. GGIR part 2 performs this check as
+follows: First , all detected wear-periods that last less than six
+hours, and have a duration less than 30% of the combined duration of
+their bordering non-wear periods, are relabelled as non-wear. Second,
+all remaining wear-periods of less than three hours, and which form less
+than 80% of their bordering non-wear periods, are classified as
+non-wear.</p>
+<p>The motivation for selecting a relatively high criterion (&lt; 30%)
+in combination with a long period (6 hrs) and a low criterion (&lt; 80%)
+in combination with a short period (3 hrs) is that long periods are more
 likely to be actually related to monitor wear time. To illustrate the
 algorithm we created a visual model, see picture below. Here, units of
 time are presented in squares and marked grey if detected as non-wear
@@ -363,28 +383,29 @@ time. Period C is detected as wear-time and borders to non-wear periods
 B and D. If the length of C is less than six hours and C divided by the
 sum of B and D is less than 0.3 then the first criteria is met and block
 C is turned into a non-wear period.</p>
-<p><img src="nonwearimage.jpg" width="400px"></p>
+<p><img src="nonwearimage.jpg" alt="Model to illustrate rescoring of nonwear" width="400px"></p>
 <p>Visual inspection of &gt;100 traces from a large observational study
 revealed that applying this stage three times iteratively allowed for
 improved classification of periods characterised by intermittent periods
 of non-wear and apparent wear.</p>
 </div>
 <div class="section level3">
-<h3 id="relabelling-the-wear-in-the-beginning-and-end-of-the-recording">Relabelling the wear in the beginning and end of the recording<a class="anchor" aria-label="anchor" href="#relabelling-the-wear-in-the-beginning-and-end-of-the-recording"></a>
+<h3 id="implausible-wear-at-the-beginning-and-end-of-the-recording">Implausible wear at the beginning and end of the recording<a class="anchor" aria-label="anchor" href="#implausible-wear-at-the-beginning-and-end-of-the-recording"></a>
 </h3>
-<p>The final 24 hours are often considered the period in which the
-accelerometer is potentially taken off but moved because of
-transportation, e.g., by the mail service. All wear-periods in the final
-24 hrs of each measurement shorter than three hours and preceded by at
-least one hour of non-wear time are classified as non-wear.</p>
-<p>Finally, if the measurement starts or ends with a period of less than
-three hours of wear followed or preceded by non-wear (any length) then
+<p>Based on experience, some participants take off the accelerometer in
+the final 24 hours of recording before the actual end. However, this may
+be hard to detect as the accelerometer may still be moved. Therefore,
+GGIR relabels all wear-periods in the final 24 hrs of each recording
+shorter than three hours and preceded by at least one hour of non-wear
+time as non-wear.</p>
+<p>Finally, if the recording starts or ends with a period of less than
+three hours of wear followed or preceded by non-wear (any length), then
 this period of wear is classified as non-wear. These additional criteria
-for screening the beginning and end of the accelerometer file reflect
-the likelihood of movements that are involved when starting the
-accelerometer or downloading the data from the accelerometer. This final
-check can be turned off with parameter
-<code>nonWearEdgeCorrection</code>, which may be relevant when
+for screening the beginning and end of the accelerometer file are
+intended to filter out the movements related to attaching the
+accelerometer at the start or downloading the data from the
+accelerometer at the end. This final check can be turned off with
+parameter <code>nonWearEdgeCorrection</code>, which may be relevant when
 processing accelerometer data collected during single-night
 polysomnography studies.</p>
 </div>
@@ -404,11 +425,12 @@ accelerating object). For example, for a dynamic range of 8<em>g</em>,
 accelerations over 7.5<em>g</em> would be marked as “clipping”. The
 window is also classified as clipping if any value in the window is
 larger than 150% the dynamic range of the sensor. Given that clipping
-rarely happens it is reported by GGIR as part of non-wear time. They are
-treated the same and by merging them we arrive at a single indicator for
-the amount of valid data. However, to keep track of the occurrence of
-clipping time, GGIR does report the fraction of 15-minute windows during
-which clipping occurs, see section on output below.</p>
+rarely happens it is reported by GGIR as part of non-wear time. Both
+clipping and non-wear are treated the same and by merging them we arrive
+at a single indicator for the amount of invalid data. However, to keep
+track of the occurrence of clipping time, GGIR does report the fraction
+of 15-minute windows in a recording during which clipping occurs, see
+section on output below.</p>
 </div>
 <div class="section level2">
 <h2 id="key-parameters">Key parameters<a class="anchor" aria-label="anchor" href="#key-parameters"></a>
@@ -464,7 +486,7 @@ which clipping occurs, see section on output below.</p>
 <tr class="odd">
 <td>calib_err</td>
 <td>Calibration error (static estimate) Estimated based on all
-‘non-movement’ periods in the measurement after applying the
+‘non-movement’ periods in the recording after applying the
 autocalibration</td>
 <td>part2_summary.csv</td>
 </tr>
@@ -482,10 +504,10 @@ calibration error minimisation</td>
 </tr>
 <tr class="even">
 <td>N hours</td>
-<td>Number of hours of measurement in a day, which typically is 24,
-unless it is a day on which the clock changes (DST) resulting in 23 or
-25 hours. The value can be less than 23 if the measurement started or
-ended this day</td>
+<td>Number of hours of recording in a day, which typically is 24, unless
+it is a day on which the clock changes (DST) resulting in 23 or 25
+hours. The value can be less than 23 if the recording started or ended
+this day</td>
 <td>part2_summary.csv and part2_daysummary.csv</td>
 </tr>
 <tr class="odd">
@@ -496,7 +518,7 @@ ended this day</td>
 <tr class="even">
 <td>fraction_night_invalid</td>
 <td>Fraction of the night (noon-noon or 6pm-6pm) for which the data was
-invalid, e.g. monitor not worn or no accelerometer measurement
+invalid, e.g. monitor not worn or no accelerometer recording
 started/ended within the night</td>
 <td>part4_nightsummary and part4_summary_sleep</td>
 </tr>
@@ -527,14 +549,14 @@ at least 80% of the time. This should be 0</td>
 <tr class="odd">
 <td>cal.error.start</td>
 <td>Calibration error (static estimate) Estimated based on all
-‘non-movement’ periods in the measurement before applying the
+‘non-movement’ periods in the recording before applying the
 autocalibration</td>
 <td>QC/data_quality_report.csv</td>
 </tr>
 <tr class="even">
 <td>cal.error.end</td>
 <td>Calibration error (static estimate) Estimated based on all
-‘non-movement’ periods in the measurement after applying the
+‘non-movement’ periods in the recording after applying the
 autocalibration</td>
 <td>QC/data_quality_report.csv</td>
 </tr>
@@ -653,7 +675,7 @@ implications for the assessment of human daily physical activity. <a href="https
 One. 2013 Apr 23</a></p></li>
 </ul>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
@@ -664,15 +686,15 @@ One. 2013 Apr 23</a></p></li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>

@@ -1,5 +1,6 @@
 g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
-                          store.long = FALSE, params_output, myfun = c(), verbose = TRUE) {
+                          store.long = FALSE, params_output, myfun = c(), verbose = TRUE,
+                          desiredtz = "") {
   ms2.out = "/meta/ms2.out"
   if (file.exists(paste0(metadatadir,ms2.out))) {
     if (length(dir(paste0(metadatadir,ms2.out))) == 0) {
@@ -254,9 +255,19 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       names(dayEVENTSUMMARY) = gsub(pattern = "ExtFunEvent_", replacement = "", x = names(dayEVENTSUMMARY))
       daySUMMARY = daySUMMARY[,NotEventVars]
       dayEVENTSUMMARY_clean = tidyup_df(dayEVENTSUMMARY)
+      #-----------------------------------------------------------------------
+      # November 2024:
+      # TEMPORARILY REMOVE ALL NEW STEP VARIABLES TO FACILITATE
+      # MERGE OF MOST WORK RELATED TO EVENT DETECTION WITH MASTER BRANCH 
+      # WITHOUT RELEASING NEW VARIABLES YET
+      dayEVENTSUMMARY_clean = dayEVENTSUMMARY_clean[, grep(pattern = "cad_|_cad|Bout_|accatleast|count_acc",
+                                                           x = colnames(dayEVENTSUMMARY_clean),
+                                                           invert = TRUE)]
+      #-----------------------------------------------------------------------
       data.table::fwrite(x = dayEVENTSUMMARY_clean,
                          file = paste0(metadatadir, "/results/part2_day", eventName, "summary.csv"),
-                         row.names = F, na = "")
+                         row.names = F, na = "", sep = params_output[["sep_reports"]],
+                         dec = params_output[["dec_reports"]])
     }
     # split SUMMARY in two files and reoder EventVariable names if they exist
     s_names = names(SUMMARY)
@@ -271,7 +282,8 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       EVENTSUMMARY_clean = tidyup_df(EVENTSUMMARY)
       data.table::fwrite(x = EVENTSUMMARY_clean,
                          file =  paste0(metadatadir, "/results/part2_", eventName, "summary.csv"),
-                         row.names = F, na = "")
+                         row.names = F, na = "", sep = params_output[["sep_reports"]],
+                         dec = params_output[["dec_reports"]])
     }
     #--------------------------------------
     # Store Type reports
@@ -316,7 +328,14 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     if (length(SUMMARY) > 0 & length(daySUMMARY) > 0) {
       SUMMARY_clean = tidyup_df(SUMMARY)
       daySUMMARY_clean = tidyup_df(daySUMMARY)
-      
+      daySUMMARY_clean$start_time = daySUMMARY_clean$calendar_date
+      # reorder to have starttime next to calendar_date
+      old_vars = which(colnames(daySUMMARY_clean) != "start_time")
+      new_var = which(colnames(daySUMMARY_clean) == "start_time")
+      daySUMMARY_clean = daySUMMARY_clean[, c(old_vars[1:3], new_var, old_vars[4:length(old_vars)])]
+      # format calendar dates
+      dd = iso8601chartime2POSIX(daySUMMARY_clean$calendar_date, tz = desiredtz) 
+      daySUMMARY_clean$calendar_date = format(dd, format = "%Y-%m-%d")
       #===============================================================================
       # store final matrices again
       data.table::fwrite(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"),

@@ -43,7 +43,7 @@ g.getM5L5 = function(varnum, epochSize, t0_LFMF, t1_LFMF, M5L5res, winhr,
   ML5N = c(paste0("L", winhr,"hr"), paste0("L", winhr),
            paste0("M", winhr, "hr"), paste0("M", winhr))
   names(M5L5vars) = ML5N
-  if (length(iglevels) > 0 | length(qM5L5 ) > 0) {
+  if ((length(iglevels) > 0 || length(qM5L5 ) > 0) && do.M5L5 == TRUE) { #
     # get indices of window
     L5start = (DAYL5HOUR * (3600 / epochSize)) + 1 # (hour * (number of epochSize epochs in an hour)) + 1 because first epoch is one and not zero
     L5end = L5start + (winhr * (3600 / epochSize))
@@ -59,7 +59,7 @@ g.getM5L5 = function(varnum, epochSize, t0_LFMF, t1_LFMF, M5L5res, winhr,
     }
   }
   #-----------------------
-  if (length(iglevels) > 0 & length(MX.ig.min.dur) == 1) { # intensity gradient (as described by Alex Rowlands 2018)
+  if (length(iglevels) > 0 && length(MX.ig.min.dur) == 1 && do.M5L5 == TRUE) { # intensity gradient (as described by Alex Rowlands 2018)
     if (winhr >= MX.ig.min.dur) {
       for (li in 1:2) { # do twice, once for LX and once for MX
         q49 = c()

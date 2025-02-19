@@ -13,17 +13,11 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-
-```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}
-knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
-```
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-See also complementary vignettes on:
-[General introduction to GGIR](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html), [Cut-points](https://CRAN.R-project.org/package=GGIR/vignettes/CutPoints.html), [GGIR parameters](https://CRAN.R-project.org/package=GGIR/vignettes/GGIRParameters.html), [Embedding external functions (pdf)](https://CRAN.R-project.org/package=GGIR/vignettes/ExternalFunction.html), and [Reading ad-hoc csv file formats](https://CRAN.R-project.org/package=GGIR/vignettes/readmyacccsv.html).
+**NOTE: If you are viewing this page via CRAN note that the main GGIR documentation has been migrated to the [GGIR GitHub pages](https://wadpac.github.io/GGIR/).**
 
 # Introduction
 
@@ -218,7 +212,7 @@ You will find these variables in the part 5 reports, in their bouted, unbouted, 
 total time version of the variables. See [description](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#41_Output_part_5) of GGIR part 5 output in the main GGIR vignette for further details.
 
 
-```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}
+```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"', fig.alt="GGIR logo"}
 knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 ```
 

@@ -7,7 +7,7 @@
   Identifies the most and least active X hours
 }
 \usage{
-   MXLX(Y = NULL, X = 5, epochSize = 1, tseg = c(0, 24), resolutionMin = 10, shift = 0)
+   MXLX(Y = NULL, X = 5, epochSize = 1, tseg = c(0, 24), resolutionMin = 10)
 }
 \arguments{
   \item{Y}{
@@ -20,15 +20,12 @@
     Numeric epoch size in seconds of Y
   }
   \item{tseg}{
-    Numeric vector of length two reflecting the time window in real clock hours
+    Numeric vector of length two reflecting the time windownof Y in real clock hours.
+    For example, if Y represent noon-midnight then
+    set \code{tseg} to c(12, 24).
   }
   \item{resolutionMin}{
     Numeric value to indicate the resolution in minutes of the MX and LX search
-  }
-  \item{shift}{
-    Numeric value to indicate the shift in hours of the start of vector Y relative 
-    to the beginning of the day. For example, if Y represent noon-midnight then
-    \code{shift} should be set to 12 and \code{tseg} to c(12, 24).
   }
 }
 \value{

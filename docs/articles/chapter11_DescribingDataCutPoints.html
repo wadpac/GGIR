@@ -5,33 +5,25 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="GGIR">
 <title>11. Physical Activity Fundamentals: Describing the data with cut-points • GGIR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="11. Physical Activity Fundamentals: Describing the data with cut-points">
-<meta property="og:description" content="GGIR">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:creator" content="@RpackageGGIR">
-<meta name="twitter:site" content="@RpackageGGIR">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]--><script defer data-domain="pkgdown.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="11. Physical Activity Fundamentals: Describing the data with cut-points">
+<script defer data-domain="pkgdown.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-11</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -39,84 +31,67 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-the-book">The book</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-the-book">
-    <a class="dropdown-item" href="../articles/chapter1_WhatIsGGIR.html">1. What is GGIR</a>
-    <a class="dropdown-item" href="../articles/chapter2_Pipeline.html">2. The GGIR Pipeline</a>
-    <a class="dropdown-item" href="../articles/chapter3_QualityAssessment.html">3. Data Quality Assurance</a>
-    <a class="dropdown-item" href="../articles/chapter4_AccMetrics.html">4. From Raw Data to Acceleration Metrics</a>
-    <a class="dropdown-item" href="../articles/chapter5_StudyProtocol.html">5. Accounting for Study Protocol</a>
-    <a class="dropdown-item" href="../articles/chapter6_DataImputation.html">6. How GGIR Deals with Invalid Data</a>
-    <a class="dropdown-item" href="../articles/chapter7_DescribingDataWithoutKnowingSleep.html">7. Describing the Data Without Knowing Sleep</a>
-    <a class="dropdown-item" href="../articles/chapter8_SleepFundamentalsSibs.html">8. Sleep Fundamentals - Sustained Inactivity Bout Detection (SIB)</a>
-    <a class="dropdown-item" href="../articles/chapter9_SleepFundamentalsGuiders.html">9. Sleep Fundamentals - Guiding Sleep Detection</a>
-    <a class="dropdown-item" href="../articles/chapter10_SleepAnalysis.html">10. Sleep Analysis</a>
-    <a class="dropdown-item" href="../articles/chapter11_DescribingDataCutPoints.html">11. Physical Activity Fundamentals - Describing the data with cut-points</a>
-    <a class="dropdown-item" href="../articles/chapter12_TimeUseAnalysis.html">12. Time-Use Analysis</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">13. Circadian Rhythm Analysis</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-the-book" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">The book</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-the-book">
+<li><a class="dropdown-item" href="../articles/chapter1_WhatIsGGIR.html">1. What is GGIR</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter2_Pipeline.html">2. The GGIR Pipeline</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter3_QualityAssessment.html">3. Data Quality Assurance</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter4_AccMetrics.html">4. From Raw Data to Acceleration Metrics</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter5_StudyProtocol.html">5. Accounting for Study Protocol</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter6_DataImputation.html">6. How GGIR Deals with Invalid Data</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter7_DescribingDataWithoutKnowingSleep.html">7. Describing the Data Without Knowing Sleep</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter8_SleepFundamentalsSibs.html">8. Sleep Fundamentals - Sustained Inactivity Bout Detection (SIB)</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter9_SleepFundamentalsGuiders.html">9. Sleep Fundamentals - Guiding Sleep Detection</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter10_SleepAnalysis.html">10. Sleep Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter11_DescribingDataCutPoints.html">11. Physical Activity Fundamentals - Describing the data with cut-points</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter12_TimeUseAnalysis.html">12. Time-Use Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter13_CircadianRhythm.html">13. Circadian Rhythm Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter14_BehaviouralFragmentation.html">14. Behavioural Fragmentation</a></li>
+  </ul>
 </li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-annexes">Annexes</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-annexes">
-    <a class="dropdown-item" href="../articles/GGIRParameters.html">GGIR Parameters</a>
-    <a class="dropdown-item" href="../articles/GGIRoutput.html">GGIR Output</a>
-    <a class="dropdown-item" href="../articles/readmyacccsv.html">Reading csv files with raw data</a>
-    <a class="dropdown-item" href="../articles/ExternalFunction.html">Embedding external functions in GGIR</a>
-    <a class="dropdown-item" href="../articles/CutPoints.html">Published cut-points and how to use them</a>
-    <a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a>
-    <a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-annexes" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Annexes</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-annexes">
+<li><a class="dropdown-item" href="../articles/GGIRParameters.html">GGIR Parameters</a></li>
+    <li><a class="dropdown-item" href="../articles/GGIRoutput.html">GGIR Output</a></li>
+    <li><a class="dropdown-item" href="../articles/readmyacccsv.html">Reading csv files with raw data</a></li>
+    <li><a class="dropdown-item" href="../articles/ExternalFunction.html">Embedding external functions in GGIR</a></li>
+    <li><a class="dropdown-item" href="../articles/CutPoints.html">Published cut-points and how to use them</a></li>
+    <li><a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a></li>
+    <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="../articles/chapter0_GetStarted.html">Get started</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/chapter0_GetStarted.html">Get started</a></li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-news">
-    <h6 class="dropdown-header" data-toc-skip>Releases</h6>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-1-0/">Version 3.1-0</a>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-0-0/">Version 3.0-0</a>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-9-0/">Version 2.9-0</a>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-8-0/">Version 2.8-0</a>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-7-1/">Version 2.7-1</a>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-6-0/">Version 2.6-0</a>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-5-0/">Version 2.5-0</a>
-    <div class="dropdown-divider"></div>
-    <a class="dropdown-item" href="../news/index.html">Changelog</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-news">
+<li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-1-5/">Version 3.1-5</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-1-0/">Version 3.1-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-0-0/">Version 3.0-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-9-0/">Version 2.9-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-8-0/">Version 2.8-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-7-1/">Version 2.7-1</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-6-0/">Version 2.6-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-5-0/">Version 2.5-0</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../articles/chapter0_Contributing.html">Contributing</a>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="../articles/chapter0_Support.html">Need help?</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../articles/chapter0_Contributing.html">Contributing</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/chapter0_Support.html">Need help?</a></li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/wadpac/GGIR/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://twitter.com/RpackageGGIR" aria-label="Twitter">
-    <span class="fa fa-twitter"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/wadpac/GGIR/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -125,7 +100,8 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="" class="logo" alt=""><h1>11. Physical Activity Fundamentals: Describing the data with cut-points</h1>
+
+      <h1>11. Physical Activity Fundamentals: Describing the data with cut-points</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/wadpac/GGIR/blob/HEAD/vignettes/chapter11_DescribingDataCutPoints.Rmd" class="external-link"><code>vignettes/chapter11_DescribingDataCutPoints.Rmd</code></a></small>
@@ -134,71 +110,62 @@
 
     
     
-<p>Descriptive variables such as average acceleration as discussed in
-the previous chapter are powerful indicators of physical activity.
-Extensive evidence exists on the association between magnitude of
-acceleration as captured by an accelerometer and physical activity
-related energy expenditure as measured by indirect calorimetry. The
-value of MX metrics and intensity gradient as discussed in chapter 7 has
-been shown in several studies (for example: <a href="https://pubmed.ncbi.nlm.nih.gov/31318713/" class="external-link">Rowlands, 2019a</a>; <a href="https://pubmed.ncbi.nlm.nih.gov/31808014/" class="external-link">Rowlands 2019b</a>).
-However, historically the physical activity research community has been
-keen on having a single or a small number of measures of physical
-activity that can be expressed in the unit minutes per day.</p>
 <div class="section level2">
-<h2 id="mvpa-lipa-and-inactivity">MVPA, LIPA, and Inactivity<a class="anchor" aria-label="anchor" href="#mvpa-lipa-and-inactivity"></a>
+<h2 id="why-behavioural-classes">Why behavioural classes?<a class="anchor" aria-label="anchor" href="#why-behavioural-classes"></a>
 </h2>
-<div class="section level3">
-<h3 id="construct-definition">Construct definition<a class="anchor" aria-label="anchor" href="#construct-definition"></a>
-</h3>
-<p>A popular approach to describe time series data in physical activity
-research is to distinguish so called intensity levels. Here, the
-community distinguishes sedentary behaviour (SB), light physical
-activity (LIPA), moderate, and vigorous physical activity. The latter
-two categories are often combined into moderate or vigorous physical
-activity (MVPA).</p>
-<p>The exact definition of these levels is poor which has caused
-methodological discrepancies for decades:</p>
-<ul>
-<li><p>Intensity levels are defined based on metabolic equality of task
-(MET), which is based on oxygen consumption measured with indirect
-calorimetry divided by body weight. MET as a construct fail to normalise
-for body weight by which comparisons of individuals or activity types
-that have a different relation with body weight are bound to drive
-differences.</p></li>
-<li><p>The MET thresholds themselves (e.g. 3 MET) has a different
-meaning per person as MET value is not only driven by what people do in
-terms of movement but also their fitness and anthropometry.</p></li>
-<li><p>Lack of consensus on how to handle the temporal nature of
-behaviour. For example, is a few seconds enough to define a behaviour or
-do we require minimum time duration?</p></li>
-<li><p>Criterion methods are hard to standardise across studies. For
-example, the studies differ in specific equipment, study protocols, and
-preparation of the data from the criterion method.</p></li>
-</ul>
+<p>Descriptive variables such as average acceleration per day or
+recording as discussed in the previous chapter are powerful indicators
+of physical activity. Extensive evidence exists on their association
+with physical activity related energy expenditure as measured by
+indirect calorimetry. Similarly, the scientific value of MX metrics and
+intensity gradient as discussed in chapter 7 has been shown in several
+studies (for example: <a href="https://pubmed.ncbi.nlm.nih.gov/31318713/" class="external-link">Rowlands, 2019a</a>; <a href="https://pubmed.ncbi.nlm.nih.gov/31808014/" class="external-link">Rowlands 2019b</a>).
+However, the physical activity research community has historically
+expressed a strong interest in measures of physical activity that can be
+expressed as time per behavioural class per day. In this chapter we will
+discuss how GGIR facilitates this.</p>
 </div>
-<div class="section level3">
-<h3 id="classification-with-accelerometer-data">Classification with accelerometer data<a class="anchor" aria-label="anchor" href="#classification-with-accelerometer-data"></a>
-</h3>
-<p>From an accelerometer data processing perspective time spent in
-intensity levels is often simplified to time spent below, above, or
-between certain acceleration level(s) chosen to make a crude separation
-of the intensity levels. The acceleration magnitude(s) to use as
-threshold(s), is often referred to as cut-point in the literature.</p>
-<p>Time spent below, above, or between the cut-point(s) is intended to
-be a crude indicator of time spent in behaviours and sufficient to rank
+<div class="section level2">
+<h2 id="construct-definition">Construct definition<a class="anchor" aria-label="anchor" href="#construct-definition"></a>
+</h2>
+<p>A popular approach to define behavioural classes in physical activity
+research is to distinguish so called intensity levels. Here, it is
+common to distinguish sedentary behaviour (SB), light physical activity
+(LIPA), moderate, and vigorous physical activity. The latter two
+categories are often combined into moderate or vigorous physical
+activity (MVPA). Inside GGIR we refer to sedentary behaviour as
+inactivity to emphasize that our methods quantify mainly a lack of
+activity rather than being in sitting or reclying posture.</p>
+<p>However, intensity levels as behavioural classes lack a feasible
+operational construct definition which has caused methodological
+discrepancies for decades. An elaborate reflection on this can be found
+in <a href="https://www.accelting.com/updates/why-does-ggir-facilitate-cut-points/" class="external-link">this
+blog post</a>.</p>
+<p>This situation has forced us to be pragmatic and use a operational
+construct definition of intensity levels that is feasible for
+accelerometer data.</p>
+</div>
+<div class="section level2">
+<h2 id="classification-based-on-cut-points">Classification based on cut-points<a class="anchor" aria-label="anchor" href="#classification-based-on-cut-points"></a>
+</h2>
+<p>It is common to classify intensity levels from accelerometer data by
+evaluating whether the acceleration is below, above, or between certain
+acceleration level(s). The acceleration magnitude(s) to use as
+threshold(s), are also known as cut-points.</p>
+<p>The use of thresholds (cut-points) is intended to be a crude
+indicator of time spent in intensity levels and sufficient to rank
 individuals on their amount of time spent in these behaviours. The
-simple threshold approach has indisputably been the most powerful method
-so far to drive physical activity research.</p>
-<p>In GGIR part 2, only MVPA is estimate. The threshold(s) for MVPA as
-used in GGIR part 2 are set with parameter <code>mvpathreshold</code>.
-You can specify a single value or a vector of multiple values, time
-spent in MVPA will then be derived with each of them. However, the
-threshold is not the only parameters to influence time spent in MVPA, as
-we will discussed in the following paragraphs.</p>
+cut-point approach has indisputably been the most powerful method so far
+to drive physical activity research.</p>
+<p>See <a href="https://wadpac.github.io/GGIR/articles/CutPoints.html">published
+cut-points and how to use them</a> as guidance for choosing cut-points
+for your dataset.</p>
+<p>As discussed in more detail further down, the acceleration
+(intensity) level classification is done in GGIR parts 2 and 5.</p>
 </div>
-<div class="section level3">
-<h3 id="role-of-epoch-length">Role of epoch length<a class="anchor" aria-label="anchor" href="#role-of-epoch-length"></a>
-</h3>
+<div class="section level2">
+<h2 id="epoch-length">Epoch length<a class="anchor" aria-label="anchor" href="#epoch-length"></a>
+</h2>
 <p>Although accelerometers collect data at much higher sampling
 frequency, we only work with aggregated values (e.g. 1 or 5 second
 epochs) for the following reasons:</p>
@@ -226,15 +193,20 @@ are therefore easier to use without bout detection.</p>
 the first value of the vector specified by parameter
 <code>windowsizes</code>. Although we discuss epoch length here in the
 context of MVPA, please note that epoch length influences many of the
-outcomes by GGIR.</p>
+outcomes by GGIR such as sleep analysis. GGIR part 5 offers the option
+to aggregate the time series to a 1 minute epoch length in order to do
+physical activity research at 1 minute resolution while leaving the
+sleep detection that relies on a shorter epoch length untouched (see
+parameter <code>part5_agg2_60seconds=TRUE</code>).</p>
 </div>
-<div class="section level3">
-<h3 id="bout-detection">Bout detection<a class="anchor" aria-label="anchor" href="#bout-detection"></a>
-</h3>
-<p>A bout is a time segment that meets specific temporal criteria and
-has frequently been used in the physical activity research. GGIR
-facilitates processing data both with and without accounting for bouts.
-The motivation to look for bouts can be one of the following:</p>
+<div class="section level2">
+<h2 id="bout-detection">Bout detection<a class="anchor" aria-label="anchor" href="#bout-detection"></a>
+</h2>
+<p>Behavioural bouts have been used frequently and are defined as
+sustained time spent ina behavioural class while adhering to specific
+temporal criteria. GGIR facilitates processing data both with and
+without accounting for bouts. The motivation to look for bouts can be
+one of the following:</p>
 <ul>
 <li><p>With the idea that only behaviour with a certain minimum duration
 contributes to certain physiological benefits.</p></li>
@@ -242,8 +214,10 @@ contributes to certain physiological benefits.</p></li>
 self-report data, only sensitive to duration of specific
 duration.</p></li>
 <li><p>To aid studying the fragmentation of behaviour.</p></li>
+<li><p>To account for the sporadic nature of behaviour when working with
+short epochs.</p></li>
 </ul>
-<p>To define a bout we need to answer series of question:</p>
+<p>To define a bout we need to answer a series of questions:</p>
 <ol style="list-style-type: decimal">
 <li>What should the cut-point be?</li>
 <li>What should the epoch length be?</li>
@@ -264,14 +238,19 @@ bout is part of a longer Inactivity bout which of the two prevails?</li>
 <p>User decides on:</p>
 <ul>
 <li><p>Acceleration thresholds for light, moderate, and vigorous
-intensity</p></li>
+intensity with <code>mvpathreshold</code> for part 2,
+<code>threshold.lig</code>, <code>threshold.mod</code>, and
+<code>threshold.vig</code> for part 5.</p></li>
 <li><p>Fraction of time for which cut-point criteria need to be met
-(light, inactive, MVPA)</p></li>
-<li><p>Bout duration range. For example, a simple scenario could be to
-consider all bouts of a minimum length of 10 minutes, while it is also
-possible to subdivide them in bouts lasting [1, 5) [5, 10) and [10, ∞)
-minutes.</p></li>
-<li><p>Epoch length.</p></li>
+(light, inactive, MVPA) with <code>boutcriter</code> for part 2 and
+<code>boutcriter.lig</code>, <code>boutcriter.mod</code>, and
+<code>boutcriter.vig</code> for part 5.</p></li>
+<li><p>Bout duration range. In part 2 with <code>mvpadur</code> and in
+part 5 with <code>boutdur.lig</code>, <code>boutdur.mod</code>, and
+<code>boutdur.mvpa</code>. This functionality is slightly different
+between part 2 and part 5 as discussed further down.</p></li>
+<li><p>Epoch length with <code>windowsizes</code> and
+<code>part5_agg2_60second</code>.</p></li>
 </ul>
 <p>User does NOT decide on:</p>
 <ul>
@@ -284,169 +263,60 @@ MVPA.</p></li>
 Light)</p></li>
 </ul>
 </div>
-<div class="section level3">
-<h3 id="differences-in-physical-activity-estimates-in-part-2-and-5">Differences in physical activity estimates in part 2 and 5<a class="anchor" aria-label="anchor" href="#differences-in-physical-activity-estimates-in-part-2-and-5"></a>
-</h3>
+<div class="section level2">
+<h2 id="controlling-the-time-window-of-analysis">Controlling the time window of analysis<a class="anchor" aria-label="anchor" href="#controlling-the-time-window-of-analysis"></a>
+</h2>
+<p>As discussed in chapter 7, it is possible to tell both GGIR part 2
+and part 5 to extract variables per segment of the day. We do this with
+parameter <code>qwindow</code> for which you can find a detailed
+discussion in Annex <a href="https://wadpac.github.io/GGIR/articles/TutorialDaySegmentAnalyses.html">Day
+segment analysis</a>.</p>
+</div>
+<div class="section level2">
+<h2 id="key-parameters">Key parameters<a class="anchor" aria-label="anchor" href="#key-parameters"></a>
+</h2>
 <p>The parameters needed for MVPA estimates in GGIR part 2 are different
 from the parameters used for estimating MVPA, LIPA and Inactivity in
 part 5.</p>
+<div class="section level3">
+<h3 id="physical-activity-cut-point-parameter-ggir-part-2">Physical activity cut-point parameter GGIR part 2<a class="anchor" aria-label="anchor" href="#physical-activity-cut-point-parameter-ggir-part-2"></a>
+</h3>
+<p>In GGIR part 2, only MVPA is estimated since sleep has not been
+classified at that point. The threshold(s) for MVPA as used in GGIR part
+2 are set with parameter <code>mvpathreshold</code>. You can specify a
+single value or a vector of multiple values, time spent in MVPA will
+then be derived with each of them.</p>
 <p>GGIR part 2 always provides six distinct approaches to MVPA
 calculation that are controlled with parameters
 <code>mvpathreshold</code>, <code>boutcriter</code>,
 <code>mvpadur</code>, and the first element of vector
-<code>windowsdur</code>. Here, MVPA provides time spent in MVPA based
+<code>windowsizes</code>. Here, MVPA provides time spent in MVPA based
 on:</p>
 <ul>
 <li><p>5 second, 1 minute or 5 minute epochs and no bouts</p></li>
 <li><p>5 second epochs and 3 different minimum bout duration as
 specified with parameter <code>mvpadur</code>.</p></li>
 </ul>
+</div>
+<div class="section level3">
+<h3 id="physical-activity-cut-point-parameter-ggir-part-5">Physical activity cut-point parameter GGIR part 5<a class="anchor" aria-label="anchor" href="#physical-activity-cut-point-parameter-ggir-part-5"></a>
+</h3>
 <p>The bout durations are each used for separate estimates and not used
 complimentary to each other as is the case in part 5. For example,
 specifying <code>boutdur.mod = c(5, 10)</code> in part 5 will result in
 an estimate of time spent in bouts lasting from 5 till 10 minutes and in
-bouts lasting 10 minutes and longer.</p>
+bouts lasting 10 minutes and longer. For example, a simple scenario
+could be to consider all bouts of a minimum length of 10 minutes, while
+it is also possible to subdivide them in bouts lasting [1, 5) [5, 10)
+and [10, ∞) minutes.</p>
+<p>All parameters related to cut-points and bout detection are listed
+under <a href="https://wadpac.github.io/GGIR/articles/GGIRParameters.html#physical-activity-parameters">“Physical
+activity parameters”</a>.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="controlling-the-time-window-of-analysis">Controlling the time window of analysis:<a class="anchor" aria-label="anchor" href="#controlling-the-time-window-of-analysis"></a>
+<h2 id="related-output">Related output<a class="anchor" aria-label="anchor" href="#related-output"></a>
 </h2>
-<p>As discussed in chapter 7, it is possible to tell both GGIR part 2
-and part 5 to extract variables per segment of the day. We do this with
-parameter <code>qwindow</code> for which you can find a detailed
-discussion in Annex Day segment analysis.</p>
-</div>
-<div class="section level2">
-<h2 id="behavioural-fragmentation">Behavioural fragmentation<a class="anchor" aria-label="anchor" href="#behavioural-fragmentation"></a>
-</h2>
-<p>In addition to classifying the time spent in each behavioural class
-it is also informative to study the fragmentation of behaviours.</p>
-<div class="section level3">
-<h3 id="classes-of-behaviour-used-to-study-fragmentation">Classes of behaviour used to study fragmentation<a class="anchor" aria-label="anchor" href="#classes-of-behaviour-used-to-study-fragmentation"></a>
-</h3>
-<p>In GGIR, a fragment for daytime is a defined as a sequence of epochs
-that belong to one of the four categories:</p>
-<ol style="list-style-type: decimal">
-<li>Inactivity</li>
-<li>Light Physical Activity (LIPA)</li>
-<li>Moderate or Vigorous Physical Acitivty (MVPA)</li>
-<li>Physical activity (can be either LIPA or MVPA)</li>
-</ol>
-<p>Each of these categories represents the combination of bouted and
-unbouted time in the respective categories. Inactivity and physical
-activity add up to a full day (outside SPT), as well as inactivity, LIPA
-and MVPA. The fragmentation metrics are applied in function
-<code>g.fragmentation</code>.</p>
-<p>A fragment of SPT is defined as a sequence of epochs that belong to
-one of the four categories:</p>
-<ol style="list-style-type: decimal">
-<li>Estimated sleep</li>
-<li>Estimated wakefulness</li>
-<li>Inactivity</li>
-<li>Physical activity (can be either LIPA or MVPA)</li>
-</ol>
-<p>Note that from the metrics below only fragmentation metrics
-<code>TP</code> and <code>NFrag</code> are calculated for the SPT
-fragments.</p>
-<p>With parameter <code>frag.metrics="all"</code> we can tell GGIR part
-5 to derive behavioural fragmentation metrics for daytime and
-(separately) for spt. You may want to consider combining this with
-parameter <code>part5_agg2_60seconds=TRUE</code> as that will aggregate
-the time series to 1 minute resolution as is common in behavioural
-fragmentation literature.</p>
-</div>
-<div class="section level3">
-<h3 id="fragmentation-metrics">Fragmentation metrics<a class="anchor" aria-label="anchor" href="#fragmentation-metrics"></a>
-</h3>
-<ul>
-<li><p>Coefficient of Variance (<code>CoV</code>) is calculated
-according to <a href="https://doi.org/10.1016/j.apmr.2014.08.023" class="external-link">Blikman et
-al. 2014</a>, which entails dividing the standard deviation by the mean
-lognormal transformed fragment length (minutes).</p></li>
-<li><p>Transition probability (<code>TP</code>) from Inactivity (IN) to
-Physical activity (IN2PA), from Physical activity to inactivity (PA2IN),
-and from IN to LIPA or MVPA are all calculated according to Danilevicz
-et al. 2023 10.21203/rs.3.rs-3543711/v1.</p></li>
-<li><p>Gini index is calculated with function <code>Gini</code> from the
-<code>ineq</code> R package, and with <code>ineq</code> argument
-<code>corr</code> set to TRUE.</p></li>
-<li><p>Power law exponent metrics: Alpha, x0.5, and W0.5 are calculated
-according to <a href="https://doi.org/10.1016/j.gaitpost.2009.09.002" class="external-link">Chastin et
-al. 2010</a>.</p></li>
-<li><p>Number of fragment per minutes (<code>NFragPM</code>) is
-calculated identical to metric <code>fragmentation index</code> in <a href="https://academic.oup.com/ageing/article/41/1/111/46538" class="external-link">Chastin et
-al. 2012</a>, but it is renamed here to be a more specific reflection of
-the calculation. The term <code>fragmentation index</code> appears too
-generic given that all fragmentation metrics inform us about
-fragmentation. Please note that this is close to the metrics for
-transition probability, because total number divided by total sum in
-duration equals 1 divided by average duration. Although the exact math
-is slightly different.</p></li>
-</ul>
-<div class="section level4">
-<h4 id="conditions-for-calculation-and-value-when-condition-is-not-met">Conditions for calculation and value when condition is not met<a class="anchor" aria-label="anchor" href="#conditions-for-calculation-and-value-when-condition-is-not-met"></a>
-</h4>
-<ul>
-<li><p>Metrics <code>Gini</code> and <code>CoV</code> are only
-calculated if there are at least 10 fragments (e.g. 5 inactive and 5
-active). If this condition is not met the metric value will be set to
-missing.</p></li>
-<li><p>Metrics related to power law exponent alpha are also only
-calculated when there are at least 10 fragments, but with the additional
-condition that the standard deviation in fragment duration is not zero.
-If these conditions are not met the metric value will be set to
-missing.</p></li>
-<li><p>Other metrics related to binary fragmentation
-(<code>mean_dur_PA</code> and <code>mean_dur_IN</code>), are calculated
-when there are at least 2 fragments (1 inactive, 1 active). If this
-condition is not met the value will is set to zero.</p></li>
-<li><p>Metrics related to <code>TP</code> are calculated if: There is at
-least 1 inactivity fragment AND (1 LIPA OR 1 MVPA fragment). If this
-condition is not met the <code>TP</code> metric value is set to
-zero.</p></li>
-</ul>
-<p>To keep an overview of which recording days met the criteria for
-non-zero standard deviation and at least ten fragments, GGIR part 5
-stores variable <code>Nvaliddays_AL10F</code> at person level (i.e.,
-number of valid days with at least 10 fragments), and
-<code>SD_dur</code> (i.e., standard deviation of fragment durations) at
-day level as well as aggregated per person.</p>
-<ul>
-<li>GGIR derives fragmentation metrics per waking hours of the day in
-part 5 and per recording in part 6. Calculation per day allows us to
-explore and possibly account for behavioural differences between days of
-the week. However, for rare behaviours a day level estimate could be
-considered less robust than the recording level estimates as generated
-in part 6.</li>
-</ul>
-</div>
-<div class="section level4">
-<h4 id="differences-with-r-package-actfrag">Differences with R package ActFrag:<a class="anchor" aria-label="anchor" href="#differences-with-r-package-actfrag"></a>
-</h4>
-<p>The fragmentation functionality was initially inspired on the great
-work done by Dr. Junrui Di and colleagues in R package ActFrag, as
-described in <a href="https://www.biorxiv.org/content/10.1101/182337v1" class="external-link">Junrui Di et
-al. 2017</a>. However, we made a couple of a different decisions that
-may affect comparability:</p>
-<ul>
-<li><p>Transition probability is according to Danilevicz et al. 2023
-10.21203/rs.3.rs-3543711/v1</p></li>
-<li><p>Power law alpha exponent metrics were calculated according to <a href="https://doi.org/10.1016/j.gaitpost.2009.09.002" class="external-link">Chastin et al.
-2010</a> using the theoretical minimum fragment duration instead of the
-observed minimum fragment duration.</p></li>
-</ul>
-</div>
-</div>
-<div class="section level3">
-<h3 id="key-arguments">Key arguments<a class="anchor" aria-label="anchor" href="#key-arguments"></a>
-</h3>
-<p>The parameters related to cut-points and bout detection are all
-concentrated in the “Physical activity parameters” as discussed in <a href="https://cran.r-project.org/" class="external-link uri">https://cran.r-project.org/</a>
-package=GGIR/vignettes/GGIRParameters.html.</p>
-</div>
-<div class="section level3">
-<h3 id="related-output">Related output<a class="anchor" aria-label="anchor" href="#related-output"></a>
-</h3>
 <p>In GGIR part 2 csv reports you will find:</p>
 <ul>
 <li>Time spent in MVPA</li>
@@ -457,13 +327,14 @@ package=GGIR/vignettes/GGIRParameters.html.</p>
 <li>Time spent in LIPA</li>
 <li>Time spent in inactivity (abbreviated as IN)</li>
 </ul>
-<p>In chapter 7 we discussed the structure of the part 2 output and in
-chapter 11 will provide a more detailed discuss of all the part 5
-output. Further, for a detailed discussion of specific all output
-variables in all parts see <a href="https://cran.r-project.org/web/packages/GGIR/vignettes/GGIR.html#4_Inspecting_the_results" class="external-link uri">https://cran.r-project.org/web/packages/GGIR/vignettes/GGIR.html#4_Inspecting_the_results</a></p>
+<p>In <a href="https://wadpac.github.io/GGIR/articles/chapter7_DescribingDataWithoutKnowingSleep.html">chapter
+7</a> we discussed the structure of the part 2 output. The next chapter
+(<a href="https://wadpac.github.io/GGIR/articles/chapter12_TimeUseAnalysis.html">chapter
+12</a>) will provide a more detailed discussion of all the part 5
+output. For an overview of output variables see the <a href="https://wadpac.github.io/GGIR/articles/GGIRoutput.html">GGIR
+output annex</a>.</p>
 </div>
-</div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
@@ -474,15 +345,15 @@ variables in all parts see <a href="https://cran.r-project.org/web/packages/GGIR
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>

@@ -188,8 +188,11 @@ test_that("chainof5parts", {
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   vis_sleep_file = "output_test/results/visualisation_sleep.pdf"
-  g.report.part4(datadir = fn, metadatadir = metadatadir, loglocation = sleeplog_fn,
-                 f0 = 1, f1 = 1, params_output = params_output, verbose = FALSE)
+  params_sleep = load_params()$params_sleep
+  params_sleep[["loglocation"]] = sleeplog_fn
+  g.report.part4(datadir = fn, metadatadir = metadatadir, 
+                 f0 = 1, f1 = 1, params_sleep = params_sleep,
+                 params_output = params_output, verbose = FALSE)
   expect_true(dir.exists(dirname))
   expect_true(file.exists(vis_sleep_file))
   expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(6))
@@ -202,9 +205,13 @@ test_that("chainof5parts", {
           data_masking_strategy = 1, maxdur = Ndays, hrs.del.start = 0, hrs.del.end = 0,
           loglocation = sleeplog_fn,
           overwrite = TRUE, excludefirstlast = FALSE, do.parallel = do.parallel,
-          frag.metrics = "all", save_ms5rawlevels = TRUE,
+          frag.metrics = "all", save_ms5rawlevels = TRUE, save_ms5raw_format = "csv",
           part5_agg2_60seconds = TRUE, do.sibreport = TRUE, nap_model = "hip3yr",
-          iglevels = 1, timewindow = c("MM", "WW", "OO"))
+          iglevels = 1, timewindow = c("MM", "WW", "OO"),
+          possible_nap_window = c(0, 24),
+          possible_nap_dur = c(0, 240),
+          possible_nap_edge_acc = Inf,
+          possible_nap_gap = 0)
   sibreport_dirname = "output_test/meta/ms5.outraw/sib.reports"
   expect_true(dir.exists(sibreport_dirname))
   expect_true(file.exists(paste0(sibreport_dirname, "/sib_report_123A_testaccfile_T5A5.csv")))
@@ -217,18 +224,19 @@ test_that("chainof5parts", {
   
   expect_true(dir.exists(dirname))
   expect_true(file.exists(rn[1]))
-  expect_that(nrow(output),equals(5)) # changed because OO window is exported
-  expect_that(ncol(output),equals(198))
+  expect_that(nrow(output),equals(5))
+  expect_that(ncol(output),equals(160))
   expect_that(round(as.numeric(output$wakeup[2]), digits = 4), equals(36))
   expect_that(as.numeric(output$dur_day_spt_min[4]), equals(1150)) # WW window duration
   expect_that(as.numeric(output$dur_day_spt_min[5]), equals(1680)) # OO window duration
   dirname_raw = "output_test/meta/ms5.outraw/40_100_400"
   rn2 = dir(dirname_raw,full.names = TRUE, recursive = T)
-  expect_true(file.exists(rn2[1]))
-  TSFILE = read.csv(rn2[1])
-  expect_that(nrow(TSFILE),equals(1150))
-  expect_equal(ncol(TSFILE), 12)
-  expect_equal(length(unique(TSFILE$class_id)), 10)
+  rn2_index = grep(pattern = "[.]csv", x = rn2, value = FALSE)
+  expect_true(file.exists(rn2[rn2_index]))
+  TSFILE = read.csv(rn2[rn2_index])
+  expect_that(nrow(TSFILE),equals(2820))
+  expect_equal(ncol(TSFILE), 14)
+  expect_equal(length(unique(TSFILE$class_id)), 11)
   #GGIR
   suppressWarnings(GGIR(mode = c(2,3,4,5), datadir = fn, outputdir = getwd(),
                         studyname = "test", f0 = 1, f1 = 1,
@@ -298,7 +306,7 @@ test_that("chainof5parts", {
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_true(file.exists(vis_sleep_file))
-  expect_that(round(nightsummary$SptDuration[1], digits = 4), equals(18.075))
+  expect_equal(round(nightsummary$SptDuration[1], digits = 4), 18.0792, tolerance = 0.0005)
   expect_true(as.logical(nightsummary$acc_available[1]))
   expect_false(as.logical(nightsummary$sleeplog_used[1]))
   
@@ -386,9 +394,9 @@ test_that("chainof5parts", {
   load(rn[1])
   expect_true(dir.exists(dirname))
   expect_that(round(nightsummary$number_sib_wakinghours[1], digits = 4), equals(6))
-  expect_that(round(nightsummary$SptDuration[1], digits = 4), equals(13.075))
+  expect_equal(round(nightsummary$SptDuration[1], digits = 4), 13.0792)
   #---------------------
-  # Part 1 with external function and selectdaysfile:
+  # Part 1 with external function:
   exampleExtFunction = function(data=c(), parameters=c()) {
     data = data.frame(data, agglevel = round((1:nrow(data)) / (30 * 60 * 15)))
     output = aggregate(data, by = list(data$agglevel), FUN = mean)
@@ -405,14 +413,6 @@ test_that("chainof5parts", {
                 outputtype = "numeric", #"numeric" (averaging is possible), "category" (majority vote)
                 aggfunction = mean,
                 timestamp = as.numeric(Sys.time())) # for unit test only
-  # create selectdaysfile
-  SDF = matrix("", 1, 3)
-  SDF[1, 1] = "MOS2D12345678"
-  SDF[1, 2:3] =  c("23-05-2016", "24-05-2016")
-  colnames(SDF) = c("Monitor", "Day1", "Day2")
-  selectdaysfile = "selectdaysfile.csv"
-  write.csv(SDF, file = selectdaysfile)
-  
   
   g.part1(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
           overwrite = TRUE, desiredtz = desiredtz,
@@ -424,7 +424,7 @@ test_that("chainof5parts", {
           do.dev_roll_med_acc_x = TRUE, do.dev_roll_med_acc_y = TRUE, do.dev_roll_med_acc_z = TRUE,
           do.bfx = TRUE, do.bfy = TRUE, do.bfz = TRUE, do.hfen = TRUE,
           do.hfx = TRUE, do.hfy = TRUE, do.hfz = TRUE, do.lfen = TRUE,
-          do.enmoa = TRUE, selectdaysfile = selectdaysfile, verbose = FALSE)
+          do.enmoa = TRUE, verbose = FALSE)
   
   rn = dir("output_test/meta/basic/", full.names = TRUE)
   load(rn[1])
@@ -438,8 +438,6 @@ test_that("chainof5parts", {
   expect_equal(mean(M$metashort$dev_roll_med_acc_x, na.rm = T), 0.007, tolerance = 3)
   expect_equal(mean(M$metashort$ENMOa, na.rm = T), 0.03, tolerance = 3)
   
-  
-  if (file.exists(selectdaysfile)) file.remove(selectdaysfile)
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
   if (file.exists(fn)) unlink(fn)
   if (file.exists(sleeplog_fn)) file.remove(sleeplog_fn)

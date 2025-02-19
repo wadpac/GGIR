@@ -16,39 +16,20 @@ editor_options:
     wrap: 72
 ---
 
-GGIR documentation is openly available for users in several places:
+The website in front of you is the main source of GGIR documentation, which we recommend as starting point for new users.
 
--   **This [dedicated website](https://wadpac.github.io/GGIR/)**
-    containing instructions to install, get started, and specific
-    documentation on the GGIR pipeline and functionalities.
+Additionally, technical function documentation can be found in the [package refence manual on CRAN](https://cran.r-project.org/package=GGIR/GGIR.pdf) or via the R(Studio) console as in `?GGIR`. We do not recommend this for new users.
 
--   **Vignettes available on
-    [CRAN](https://cran.r-project.org/package=GGIR/index.html)**,
-    containing an overview of GGIR and dedicated vignettes for some
-    specific functionalities.
 
--   **The [GGIR configuration parameters
-    vignette](https://cran.r-project.org/package=GGIR/vignettes/GGIRParameters.html)**
-    explains each of the parameters that can be used in GGIR and how to
-    use them.
+## Questions and problems
 
--   The **GGIR function documentation**, to which you can get access to
-    directly from R:
-
-``` r
-library(GGIR)
-?GGIR
-```
-
-## Question and problems
-
-For general questions and issues please visit the [GGIR google
+For general questions and issues please join the [GGIR google
 group](https://groups.google.com/forum/#!forum/RpackageGGIR) and create
-a new thread.
+a new thread. When you report a problem in this group always try to create a minimal example that someone else can use to reproduce and investigate your problem.
 
 However, if you are familiar with GitHub, you are also welcome to report
 your issue via the [GitHub issue
-tracker](https://github.com/wadpac/GGIR/issues).
+tracker](https://github.com/wadpac/GGIR/issues). Please use the message template as displayed.
 
 Note that support in these places is based on voluntary efforts and we
 encourage you to try and help other users with questions.
@@ -70,29 +51,6 @@ please find out more on the
 [website](https://www.accelting.com/ggir-training/). If you have
 questions, please do not hesitate to reach out via:
 [training\@accelting.com](mailto:training@accelting.com).
-
-At the moment, the available training services are:
-
--   The [**GGIR standard
-    training**](https://www.accelting.com/ggir-standard-training/),
-    aimed at training you in both the hands-on use and understanding of
-    GGIR's key functionalities and algorithms for common use-cases.
-
--   The [**R essentials for
-    GGIR**](https://www.accelting.com/r-essentials-for-ggir/), designed
-    to train you in the basic R skills needed for using GGIR. Also of
-    interest may be the brief and [free R introduction
-    tutorial](https://www.accelting.com/updates/short-r-tutorial/).
-
--   The [**Private training in
-    GGIR**](https://www.accelting.com/ggir-private-training-info/),
-    dedicated to teach you how to use GGIR with a strong focus on the
-    aspects relevant to you and your research projects.
-
--   The [**Extra GGIR support
-    session**](https://www.accelting.com/ggir-training/#:~:text=GGIR%20private%20training%22/%3E-,Extra%20GGIR%20support%20session,-Aim%3A%20Single%20session),
-    a single session aimed at answering specific questions or addressing
-    the challenges you may run into.
 
 ## Dedicated support
 

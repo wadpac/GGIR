@@ -13,16 +13,11 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}
-knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
-```
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-See also complementary vignettes on:
-[General introduction to GGIR](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html), [Cut-points](https://CRAN.R-project.org/package=GGIR/vignettes/CutPoints.html), [Day segment analyses](https://CRAN.R-project.org/package=GGIR/vignettes/TutorialDaySegmentAnalyses.html), [GGIR parameters](https://CRAN.R-project.org/package=GGIR/vignettes/GGIRParameters.html), and [Embedding external functions (pdf)](https://CRAN.R-project.org/package=GGIR/vignettes/ExternalFunction.html).
+**NOTE: If you are viewing this page via CRAN note that the main GGIR documentation has been migrated to the [GGIR GitHub pages](https://wadpac.github.io/GGIR/).**
 
 # Introduction
 
@@ -38,11 +33,11 @@ However, the accelerometer manufacturers are proliferating with an increasing nu
 
 **How it works:**
 
-Internally GGIR loads csv files with accelerometer data and standardises the output format to make the data compatible with other GGIR functions. Data format standardisation includes unit of measurement, timestamp, header format, and column locations.
+Internally GGIR loads csv files with accelerometer data and standardises the output format to make the data compatible with other GGIR functions. Data format standardisation includes unit of measurement, timestamp, file header format, and column locations.
 
 # The read.myacc.csv function
 
-As for the rest of GGIR functions, `read.myacc.csv` is intended to be used within function `GGIR`. All the arguments of the `read.myacc.csv` can be easily recognized as they all start by "rmc". The GGIR function checks whether the argument `rmc.firstrow.acc` is provided by the user; in such case, GGIR will attempt to read the data with `read.myacc.csv`. In other words you always need to specify `rmc.firstrow.acc` to use `read.myacc.csv`.
+As for the rest of GGIR functions, `read.myacc.csv` is intended to be used within function `GGIR`. All the arguments of the `read.myacc.csv` can be easily recognized as they all start by "rmc". GGIR checks whether argument `rmc.firstrow.acc` is provided by the user; in such case, GGIR will attempt to read the data with function `read.myacc.csv`. In other words you always need to specify `rmc.firstrow.acc` to use `read.myacc.csv`. Further, we recommend that you always first test the function argument settings by first trying to use function `read.myacc.csv` on its own. When that works copy the arguments to you GGIR call.
 
 ## Input arguments
 
@@ -58,23 +53,23 @@ Below we present a summary of the available input arguments. Please see the [par
 - `rmc.dec` - Decimal separator used for numbers, same as dec argument in \link[utils]{read.csv} and in data.table::\link[data.table]{fread}. If not "." (default) then usually ",".
 - `rmc.firstrow.acc` - First row (number) of the acceleration data.
 - `rmc.unit.acc` - Character with unit of acceleration values: "g", "mg", or "bit".
-- `rmc.desiredtz` - Timezone in which device was worn.
-- `rmc.confgitz` - Timezone in which device was configured.
+- `desiredtz` - Timezone in which device was worn.
+- `confgitz` - Timezone in which device was configured.
 - `rmc.sf` - Sample rate in Hertz, if this is stored in the file header then that will be used instead.
 
 ### Arguments for files containing a header {#header}
 
-- `rmc.firstrow.header` - First row (number) of the header. Leave blank (default) if the file does not have a header.
+- `rmc.firstrow.header` - First row (number) of the file header. Leave blank (default) if the file does not have a file header. Not to be confused with a one row column header, a file header typically takes up several rows and has one or two columns. If the header has two columns, the first column is assumed to be the header item names and the second column is assumed to have the header item values. If the header has one column then it is assumed that each value contains both the name and the value of the item.
 - `rmc.header.length` - If file has header, specify header length (numeric).
-- `rmc.headername.sf` - If file has a header, row name (character) under which the sample frequency can be found.
-- `rmc.headername.sn` - If file has a header, row name (character) under which the serial number can be found.
-- `rmc.headername.recordingid` -  If file has a header, row name (character) under which the recording ID can be found.
-- `rmc.header.structure` - Character used to split the header name from the header value, e.g. ":" or " ".
+- `rmc.headername.sf` - If file has a header, row name (character) under which the sample frequency can be found, e.g. "sample_rate".
+- `rmc.headername.sn` - If file has a header, row name (character) under which the serial number can be found, e.g. "serial_number".
+- `rmc.headername.recordingid` -  If file has a header, row name (character) under which the recording ID can be found, e.g. "ID".
+- `rmc.header.structure` - Character used to split the header name from the header value, e.g. ":" if a header value would look like "ID: 123" or " " if the ehader value would be like "ID 123".
 
 ### Arguments for files including timestamps
 
 - `rmc.col.time` - Scalar with column (number) in which the timestamps are stored. Leave in default setting if timestamps are not stored.
-- `rmc.unit.time` - Character with unit of timestamps: "POSIX", "UNIXsec" (seconds since origin, see argument rmc.origin), "character", or "ActivPAL" (exotic timestamp format only used in the ActivPAL activity monitor).
+- `rmc.unit.time` - Character with unit of timestamps: "POSIX", "UNIXsec" (seconds since origin, see argument rmc.origin), "UNIXmsec" (milliseconds since origin, see argument rmc.origin), "character", or "ActivPAL" (exotic timestamp format only used in the ActivPAL activity monitor).
 - `rmc.format.time` - Character string giving a date-time format as used by \link[base]{strptime}. Only used for rmc.unit.time: character and POSIX.
 - `rmc.origin` - Origin of time when unit of time is UNIXsec, e.g. 1970-1-1.
 
@@ -115,13 +110,13 @@ dateTime | acc_x | acc_y | acc_z | ambient_temp
 1/1/2022 16:48:26.069|-0.42431641|0.4189581|-0.76171875|24
 1/1/2022 16:48:26.079|-0.42138672|0.41993469|-0.76513672|24
 
-This file contains timestamps in the column 1 (formatted as "%d/%m/%Y %H:%M:%OS"), the acceleration signals (in _g_'s) for the x, y, and z axis in the columns 2, 3, and 4, respectively, and temperature information in Celsius in the column 5. Also, this file has no header.
+This file contains timestamps in the column 1 (formatted as "%d/%m/%Y %H:%M:%OS"), the acceleration signals (in _g_'s) for the x, y, and z axis in the columns 2, 3, and 4, respectively, and temperature information in Celsius in the column 5. Also, this file has no file header.
 
-First, we test read this file using the `read.myacc.csv` function in GGIR as follows.
+Before we can use this with GGIR, we first test read this file using the `read.myacc.csv` function directly.
 
 ```{R,eval=FALSE}
 library(GGIR)
-read.myacc.csv(rmc.file = "C:/mystudy/mydata/datafile.csv",
+data = read.myacc.csv(rmc.file = "C:/mystudy/mydata/datafile.csv",
                rmc.nrow = Inf,
                rmc.skip = 0,
                rmc.dec = ".",
@@ -133,9 +128,12 @@ read.myacc.csv(rmc.file = "C:/mystudy/mydata/datafile.csv",
                rmc.unit.temp = "C",
                rmc.unit.time = "POSIX",
                rmc.format.time = "%d/%m/%Y %H:%M:%OS",
-               rmc.desiredtz = "Europe/London",
+               desiredtz = "Europe/London",
                rmc.sf = 100)
 ```
+
+The object data is a list with a data.frame name data and a header.
+The time column in the data.frame represents timestamps expressed in seconds since 1-1-1970.
 
 ## Example using the shell function
 
@@ -161,7 +159,7 @@ GGIR(
              rmc.unit.temp = "C", 
              rmc.unit.time = "POSIX",
              rmc.format.time = "%d/%m/%Y %H:%M:%OS",
-             rmc.desiredtz = "Europe/London",
+             desiredtz = "Europe/London",
              rmc.sf = 100,
              rmc.noise = 0.013
 )
@@ -171,6 +169,6 @@ GGIR(
 
 
 
-```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}
+```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"', fig.alt="GGIR logo"}
 knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 ```

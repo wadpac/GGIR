@@ -16,7 +16,7 @@ editor_options:
     wrap: 72
 ---
 
-```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}
+```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"', fig.alt="GGIR logo"}
 knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 ```
 
@@ -24,11 +24,7 @@ knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
-You are now in the main GGIR vignette. See also the complementary vignettes on: [Cut-points](https://CRAN.R-project.org/package=GGIR/vignettes/CutPoints.html), [Day segment analyses](https://CRAN.R-project.org/package=GGIR/vignettes/TutorialDaySegmentAnalyses.html), [GGIR parameters](https://CRAN.R-project.org/package=GGIR/vignettes/GGIRParameters.html), [Embedding external functions (pdf)](https://CRAN.R-project.org/package=GGIR/vignettes/ExternalFunction.html), and [Reading ad-hoc csv file formats](https://CRAN.R-project.org/package=GGIR/vignettes/readmyacccsv.html).
-
-
-**NOTE: With the growing amount of functionality in GGIR we have decided to migrate the narrative documentation to the GitHub pages of GGIR. This to ease maintenance and accessibility. Therefore, many of the sections in this vignette have been replaced by a link to their new location.**
+**NOTE: With the growing amount of functionality in GGIR we have decided to migrate the narrative documentation to the [GitHub pages of GGIR](https://wadpac.github.io/GGIR/). This to ease maintenance and accessibility. Therefore, many of the sections in this vignette have been replaced by a link to their new location.**
 
 # Introduction
 
@@ -144,7 +140,7 @@ additional packages:
 -   If you want to derive Neishabouricounts (with `do.neishabouricounts = TRUE`),
     install the actilifecounts package with `install.packages("actilifecounts")`
 -   If you want to derive circadian rhythm indicators using the [Cosinor analysis and Extended Cosinor analysis] 
-    (with `cosinor = TRUE`), install the ActCR package with `install.packages("ActCR")`
+    (with `cosinor = TRUE` for part 2, in part 6 it is always performed), install the ActCR package with `install.packages("ActCR")`
 
 ## Prepare folder structure
 
@@ -436,7 +432,7 @@ data per file and quality indicators - R objects with milestone data -
 Pdfs with a visual summary of the physical activity and sleep patterns
 as identified (see example below)
 
-```{r, out.width = "700px",echo=FALSE}
+```{r, out.width = "700px",echo=FALSE, fig.alt="Example visualreport"}
 knitr::include_graphics("reportexample.jpg")
 ```
 
@@ -447,7 +443,6 @@ This section has been migrated to this [section](https://wadpac.github.io/GGIR/a
 ### Person level summary
 
 This section has been migrated to this [section](https://wadpac.github.io/GGIR/articles/GGIRoutput.html) in the GGIR github-pages, which is now the main documentation resource for GGIR.
-
 
 ### Day level summary
 
@@ -484,6 +479,28 @@ This section has been migrated to this [section](https://wadpac.github.io/GGIR/a
 ### Person level summary
 
 This section has been migrated to this [section](https://wadpac.github.io/GGIR/articles/GGIRoutput.html) in the GGIR github-pages, which is now the main documentation resource for GGIR.
+
+
+## Output part 6 {.tabset}
+
+When `part6CR = TRUE` and the vector as specified for paramter `do.report` includes the number 6, a csv report will be stored with the following variables:
+
+
+| Variable name               | Description                                  |
+|-----------------------------|----------------------------------------------|
+| ID                          | Participant ID extracted from file           |
+| starttime                   | Start timestamp for the data as used for the analysis    |
+| filename	                  | File name                 |
+| N_days	                    | Number of days in the data as used for the analysis |
+| N_valid_days                | Number of valid days in the data as used for the analysis, defined as the cumulative number of epoch expressed in days |
+| `cosinor_`         | Cosinor analysis estimates such as mes, amp, acrophase, and acrotime, as documented in the [Ac tCR](https://CRAN.R-project.org/package=ActCR) package.   |
+| `cosinorExt_`      | Extended Cosinor analysis estimates such as minimum, amp, alpha, beta, acrotime, UpMesor, DownMesor, MESOR, and F_pseudo, as documented in the [Ac tCR](https://CRAN.R-project.org/package=ActCR) package.|
+| `IV`  | Intradaily Variability (IV) after Eus J. W. Van Someren (Chronobiology International. 1999. Volume 16, issue 4). Implementation described in Ian Meneghel Danilevicz et al. https://doi.org/10.21203/rs.3.rs-3543711/v1      |
+| `IS`  | Interdaily Stability (IS) after Eus J. W. Van Someren (Chronobiology International. 1999. Volume 16, issue 4). Implementation described in Ian Meneghel Danilevicz et al. https://doi.org/10.21203/rs.3.rs-3543711/v1 |
+| phi     | Ian Meneghel Danilevicz  et al. https://doi.org/10.21203/rs.3.rs-3543711/v1    |
+| SSP     | Only created when `part6DFA = TRUE`. Self-Similarity parameter as part of the Detrended Fluctuation Analysis. Implementation described in Ian Meneghel Danilevicz et al. https://doi.org/10.21203/rs.3.rs-3543711/v1.    |
+| ABI     | Only created when `part6DFA = TRUE`. Activity Balance Index. Implementation described in Ian Meneghel Danilevicz et al. https://doi.org/10.21203/rs.3.rs-3543711/v1.|
+
 
 # Motivation and clarification
 
@@ -678,101 +695,7 @@ I wanted a short name and not to spend too much time finding it. The abbreviatio
 
 ## Circadian Rhythm analyses
 
-### MXLX
-
-Detection of the continuous least (LX) and most (MX) active X hours in a day, where X
-is defined by argument `winhr`. For both GGIR calculates the average
-acceleration, the start time, and if argument `iglevels` is specified
-also the intensity gradient. If argument `winhr` is a vector then
-descriptive values for LX and MX are derived per value in `winhr`.
-Within GGIR part 2 MXLX is calculated per calendar day and, if argument
-`qwindow` is specified, per segment of the day. Within GGIR part 5 MXLX
-is calculated per window, and if used in combination with the GENEActiv or Axivity
-accelerometer brand LUX estimates per LX and MX are included.
-
-The MX metric describe here should not be confused by the MX metrics as proposed
-by [Rowlands et al.](https://doi.org/10.1186/s40798-019-0225-9) which looks at
-accumulated most active time which may not always be continuous in time.
-The MX metrics by Rowlands et all are discussed further down.
-
-### Cosinor analysis and Extended Cosinor analysis
-
-The (Extended) Cosinor analysis quantifies the circadian 24 hour cycle.
-To do this GGIR uses R package
-[ActCR](https://CRAN.R-project.org/package=ActCR) as a dependency.
-Specify argument `cosinor = TRUE` to perform these analysis.
-
-The implementation within GGIR part 2 is as follows:
-
--   Acceleration values are averaged per minute, and then log
-    transformation as `log(acceleration converted to _mg_ + 1)`.
--   Invalid data points such as caused by non-wear are set to missing
-    (NA) in order to prevent the imputation approach used elsewhere in
-    GGIR to influence the Cosinor analysis. We do this because
-    imputation technique generally come with some assumptions about
-    circadian rhythm.
--   GGIR looks for the first valid data point in the recording and then
-    selects the maximum integer number of recording days following this
-    data point and feeds these to the ActCosinor and ActExtendCosinor
-    functions of ActCR. The time offset between the start and the
-    following midnight is then used to reverse offset the ActCR results,
-    to ensure that acrophase and acrotime can be interpreted relative to
-    midnight.
--   In relation to Day Saving Time: Duplicated time stamps when clock
-    moves backward are ignored and missing time stamps when clock moves
-    forward are inserted as missing values.
--   Time series corresponding to the fitted models are stored inside the
-    part 2 milestone data to facilitate visual inspection. For the
-    moment they are not used in any GGIR visualisation, but you may want
-    to look them up and try to plot them yourself.
-
-### Intradaily Variability (IV) and Interdaily Stability (IS)
-
-#### IV and IS - Default
-
-The original implementation (argument IVIS.activity.metric = 1) uses the
-continuous numeric acceleration values. However, as we later realised
-this is not compatible with the original approach by van Someren and
-colleagues, which uses a binary distinction between active and inactive.
-Therefore, a second option was added (argument IVIS.activity.metric = 2),
-which needs to be used in combination with accelerometer metric ENMO,
-and collapses the acceleration values into a binary score of rest versus
-active. This is the current default.
-
-#### IV and IS - Cosinor analysis compatible
-
-Disclaimer: The following has been implemented 2022, but is currently 
-undergoing critical evaluation. As a result, we may update this algorithm 
-during the course of 2023.
-
-IS is sometimes used as a measure of behavioural robustness when
-conducting Cosinor analysis. However, to work with the combination of
-the two outcomes it seems important that IS is calculated from the same
-time series. Therefore, when `cosinor = TRUE` IV and IS are calculated
-twice: Once as part of the default IV and IS analysis as discussed
-above, and once as part of the Cosinor analysis using the same log
-transformed time series. More specifically, the IV and IS algorithm is
-applied with `IVIS.activity.metric = 2` and
-`IVIS_acc_threshold = log(20 + 1)` to make the binary distinction
-between active and inactive, and `IVIS_per_daypair = TRUE`. The setting
-`IVIS_per_daypair` was specifically designed for this context to handle
-the potentially missing values in the time series as used for Cosinor
-analysis. Applying the default IVIS algorithm would not be able to
-handle the missing values and would result in a loss of information if
-all non-matching epochs across the entire recording were excluded.
-Instead, IV and IS are calculated as follows:
-
-1.  Per day pair based on matching valid epochs only IV and IS and
-    calculated. Here, a log is kept of the number of valid epoch per day
-    pair.
-2.  Omit day pairs where the fraction of valid epoch pairs is below 0.66
-    (0.66 is hard-coded at the moment).
-3.  Calculate average IS across days weighted by fraction of valid
-    epochs per day pairs.
-
-The new Cosinor-compatible IV and IS estimates are stored as output
-variables `cosinorIV` and `cosinorIS`.
-
+This section has been migrated to this [section](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) in the GGIR github-pages, which is now the main documentation resource for GGIR.
 
 ## ActiGraph's idle sleep mode
 
@@ -921,6 +844,6 @@ Netherlands), please contact
 [v.vanhees\@acceleting.com](mailto:v.vanhees@acceleting.com){.email} to
 ask for permission to use this logo.
 
-```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}
+```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"', fig.alt="GGIR logo"}
 knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 ```

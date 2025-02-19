@@ -13,12 +13,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
-```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}
-knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
-```
-
-See also complementary vignettes on:
-[General introduction to GGIR](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html), [Cut-points](https://CRAN.R-project.org/package=GGIR/vignettes/CutPoints.html), [Day segment analyses](https://CRAN.R-project.org/package=GGIR/vignettes/TutorialDaySegmentAnalyses.html), [Embedding externalf unctions](https://CRAN.R-project.org/package=GGIR/vignettes/ExternalFunction.html), and [Reading ad-hoc csv file formats](https://CRAN.R-project.org/package=GGIR/vignettes/readmyacccsv.html).
+**NOTE: If you are viewing this page via CRAN note that the main GGIR documentation has been migrated to the [GGIR GitHub pages](https://wadpac.github.io/GGIR/).**
 
 The GGIR
 [shell function](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#23_GGIR_shell_function)
@@ -115,6 +110,7 @@ find a description and default value for all the arguments.
 | imputeTimegaps              | 1                 | params_rawdata           |
 | dayborder                   | 1, 2, 5           | params_general           |
 | dynrange                    | 1                 | params_rawdata           |
+| nonwear_range_threshold     | 1                 | params_rawdata           |
 | configtz                    | 1                 | params_general           |
 | minimumFileSizeMB           | 1                 | params_rawdata           |
 | interpolationType           | 1                 | params_rawdata           |
@@ -133,6 +129,8 @@ find a description and default value for all the arguments.
 | max_calendar_days           | 2                 | params_cleaning          |
 | includedaycrit              | 2, 5              | params_cleaning          |
 | nonWearEdgeCorrection       | 2                 | params_cleaning          |
+| nonwearFiltermaxHours       | 2                 | params_cleaning          |
+| nonwearFilterWindow         | 2                 | params_cleaning          |
 | L5M5window                  | 2                 | params_247               |
 | M5L5res                     | 2, 5              | params_247               |
 | winhr                       | 2, 5              | params_247               |
@@ -179,6 +177,7 @@ find a description and default value for all the arguments.
 | coln1                       | 4                 | params_sleep             |
 | possible_nap_window         | 5                 | params_sleep             |
 | possible_nap_dur            | 5                 | params_sleep             |
+| possible_nap_gap            | 5                 | params_sleep             |
 | do.visual                   | 4                 | params_output            |
 | outliers.only               | 4                 | params_output            |
 | excludefirstlast            | 4                 | params_cleaning          |
@@ -188,6 +187,7 @@ find a description and default value for all the arguments.
 | relyonsleeplog              | 4                 | deprecated               |
 | sleepefficiency.metric      | 4                 | params_sleep             |
 | def.noc.sleep               | 4                 | params_sleep             |
+| sib_must_fully_overlap_with_TimeInBed  | 4      | params_sleep             |
 | data_cleaning_file          | 4, 5              | params_cleaning          |
 | excludefirst.part4          | 4                 | params_cleaning          |
 | excludelast.part4           | 4                 | params_cleaning          |
@@ -205,6 +205,7 @@ find a description and default value for all the arguments.
 | save_ms5rawlevels           | 5                 | params_output            |
 | part5_agg2_60seconds        | 5                 | params_general           |
 | includedaycrit.part5        | 5                 | params_cleaning          |
+| includenight.part5          | 5                 | params_cleaning          |
 | frag.metrics                | 5                 | params_phyact            |
 | LUXthresholds               | 5                 | params_247               |
 | LUX_cal_constant            | 5                 | params_247               |
@@ -214,6 +215,13 @@ find a description and default value for all the arguments.
 | save_ms5raw_format          | 5                 | params_output            |
 | save_ms5raw_without_invalid | 5                 | params_output            |
 | do.sibreport                | 5                 | params_output            |
+| includecrit.part6           | 6                 | params_cleaning          |
+| part6_threshold_combi       | 6                 | params_phyact            |
+| part6CR                     | 6                 | params_247               |
+| part6HCA                    | 6                 | params_247               |
+| part6Window                 | 6                 | params_247               |
+| part6DFA                    | 6                 | params_247               |
+| require_complete_lastnight_part5 | 5                | params_output            |
 | visualreport_without_invalid| visualreport      | params_output            |
 | dofirstpage                 | visualreport      | params_output            |
 | visualreport                | visualreport      | params_output            |
@@ -293,6 +301,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}
+```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"', fig.alt="GGIR logo"}
 knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 ```

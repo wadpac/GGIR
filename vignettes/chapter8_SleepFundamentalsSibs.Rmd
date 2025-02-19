@@ -36,9 +36,20 @@ This algorithm looks for the periods of time where the z-angle does not change b
 
 **Disclaimer: The status of this SIB algorithm is experimental because it has not been described and evaluated in a peer-reviewed publication yet. This means revisions to the algorithm can be expected as the algorithm matures.**
 
-This algorithm was designed for rare study protocols where sensor is not worn during the night. It should be obvious that this does not facilitate any meaningful sleep analysis. Nonetheless for the rest of GGIR to work we need some estimate of rest and NotWorn offers a pragmatic work around. The algorithm works as follows: First we take the 1 hour rolling max of the activity signal (i.e., acceleration metric defined with parameter `acc.metric`), after which we take consider the 20th percentile as threshold to classify sustained inactivity bouts.
+The algorithms named "NotWorn" for both sib and guider (next chapter) are designed for studies where the instruction is to not wear the accelerometer during the night. It should be obvious that this does not facilitate any meaningful sleep analysis. Nonetheless we need a crude estimate of night time versus day time in order for GGIR part 5 to characterise day time behaviours.
 
-This SIB is used by setting parameter `HASIB.algo = “NotWorn”`
+If this is the case for your dataset then use guider setting `HASPT.algo = "NotWorn"` as discussed in the next chapter. Further, we recommend combining the using of "NotWorn" with: `do.imp = FALSE`, `HASPT.ignore.invalid = NA`, and `ignorenonwear = FALSE`.
+
+The detection of sib periods is based on the acceleration metric as defined with parameter `acc.metric`. 
+
+### Combined with count acceleration metrics
+
+If you are using a count accelereration metric then set `HASIB.algo = "NotWorn"`. In part 4 the sib will be set equal to the detected guider window. So, effectively guider and sib algorithm are identical in this case.
+
+### Combined with gravitational unit acceleration metrics
+
+If you are using an acceleration metrics the expresses acceleration in gravitational units then set `HASIB.algo` as you would do if the accelerometer was expected to be worn and specify a second guider for parameter `HASPT.algo` as discussed int he next chapter, e.g. `HASPT.algo = c("NotWorn", "HDCZA)"`. In this way GGIR will first search for long non-wear periods as indicator of sleep and use those to define the sleep window but if those are not found it will fall back on the sib-algortihm as specified with `HASIB.algo`, e.g. `"vanHees2015"`.
+
 
 ## SIB: Count based algorithms (EXPERIMENTAL) 
 

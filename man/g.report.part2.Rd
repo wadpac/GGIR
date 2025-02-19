@@ -9,7 +9,8 @@
 }
 \usage{
   g.report.part2(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
-  store.long = FALSE, params_output, myfun = c(), verbose = TRUE)
+                  store.long = FALSE, params_output, myfun = c(), 
+                  verbose = TRUE, desiredtz = "")
 }
 \arguments{
   \item{metadatadir}{
@@ -42,6 +43,9 @@
    can be reused in the output filenames.
   }
   \item{verbose}{
+    See details in \link{GGIR}.
+  }
+  \item{desiredtz}{
     See details in \link{GGIR}.
   }
 }

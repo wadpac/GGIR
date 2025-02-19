@@ -14,183 +14,125 @@ knitr::opts_chunk$set(
 )
 ```
 
-Descriptive variables such as average acceleration as discussed in the previous chapter are powerful indicators of physical activity. Extensive evidence exists on the association between magnitude of acceleration as captured by an accelerometer and physical activity related energy expenditure as measured by indirect calorimetry. The value of MX metrics and intensity gradient as discussed in chapter 7 has been shown in several studies (for example: [Rowlands, 2019a](https://pubmed.ncbi.nlm.nih.gov/31318713/); [Rowlands 2019b](https://pubmed.ncbi.nlm.nih.gov/31808014/)). However, historically the physical activity research community has been keen on having a single or a small number of measures of physical activity that can be expressed in the unit minutes per day. 
+## Why behavioural classes?
 
-# MVPA, LIPA, and Inactivity
+Descriptive variables such as average acceleration per day or recording as discussed in the previous chapter are powerful indicators of physical activity. Extensive evidence exists on their association with physical activity related energy expenditure as measured by indirect calorimetry. Similarly, the scientific value of MX metrics and intensity gradient as discussed in chapter 7 has been shown in several studies (for example: [Rowlands, 2019a](https://pubmed.ncbi.nlm.nih.gov/31318713/); [Rowlands 2019b](https://pubmed.ncbi.nlm.nih.gov/31808014/)). However, the physical activity research community has historically expressed a strong interest in measures of physical activity that can be expressed as time per behavioural class per day. In this chapter we will discuss how GGIR facilitates this.
 
 ## Construct definition
 
-A popular approach to describe time series data in physical activity research is to distinguish so called intensity levels. Here, the community distinguishes sedentary behaviour (SB), light physical activity (LIPA), moderate, and vigorous physical activity. The latter two categories are often combined into moderate or vigorous physical activity (MVPA).
+A popular approach to define behavioural classes in physical activity research is to distinguish so called intensity levels. Here, it is common to distinguish sedentary behaviour (SB), light physical activity (LIPA), moderate, and vigorous physical activity. The latter two categories are often combined into moderate or vigorous physical activity (MVPA). Inside GGIR we refer to sedentary behaviour as inactivity to emphasize that our methods quantify mainly a lack of activity rather than being in sitting or reclying posture.
 
-The exact definition of these levels is poor which has caused methodological discrepancies for decades:
+However, intensity levels as behavioural classes lack a feasible operational construct definition which has caused methodological discrepancies for decades. An elaborate reflection on this can be found in [this blog post](https://www.accelting.com/updates/why-does-ggir-facilitate-cut-points/).
 
--	Intensity levels are defined based on metabolic equality of task (MET), which is based on oxygen consumption measured with indirect calorimetry divided by body weight. MET as a construct fail to normalise for body weight by which comparisons of individuals or activity types that have a different relation with body weight are bound to drive differences.
+This situation has forced us to be pragmatic and use a operational construct definition of intensity levels that is feasible for accelerometer data.
 
--	The MET thresholds themselves (e.g. 3 MET) has a different meaning per person as MET value is not only driven by what people do in terms of movement but also their fitness and anthropometry.
+## Classification based on cut-points
 
--	Lack of consensus on how to handle the temporal nature of behaviour. For example, is a few seconds enough to define a behaviour or do we require minimum time duration?
+It is common to classify intensity levels from accelerometer data by evaluating whether the acceleration is below, above, or between certain acceleration level(s). The acceleration magnitude(s) to use as threshold(s), are also known as cut-points.
 
--	Criterion methods are hard to standardise across studies. For example, the studies differ in specific equipment, study protocols, and preparation of the data from the criterion method.
+The use of thresholds (cut-points) is intended to be a crude indicator of time spent in intensity levels and sufficient to rank individuals on their amount of time spent in these behaviours. The cut-point approach has indisputably been the most powerful method so far to drive physical activity research.
 
-## Classification with accelerometer data
+See [published cut-points and how to use them](https://wadpac.github.io/GGIR/articles/CutPoints.html) as guidance for choosing cut-points for your dataset.
 
-From an accelerometer data processing perspective time spent in intensity levels is often simplified to time spent below, above, or between certain acceleration level(s) chosen to make a crude separation of the intensity levels. The acceleration magnitude(s) to use as threshold(s), is often referred to as cut-point in the literature.
 
-Time spent below, above, or between the cut-point(s) is intended to be a crude indicator of time spent in behaviours and sufficient to rank individuals on their amount of time spent in these behaviours. The simple threshold approach has indisputably been the most powerful method so far to drive physical activity research.
+As discussed in more detail further down, the acceleration (intensity) level classification is done in GGIR parts 2 and 5.
 
-In GGIR part 2, only MVPA is estimate. The threshold(s) for MVPA as used in GGIR part 2 are set with parameter `mvpathreshold`. You can specify a single value or a vector of multiple values, time spent in MVPA will then be derived with each of them. However, the threshold is not the only parameters to influence time spent in MVPA, as we will discussed in the following paragraphs.
-
-## Role of epoch length
+## Epoch length
 
 Although accelerometers collect data at much higher sampling frequency, we only work with aggregated values (e.g. 1 or 5 second epochs) for the following reasons:
 
-1. Accelerometers are often used to describe patterns in metabolic energy expenditure. Metabolic energy expenditure is typically defined per breath or per minute (indirect calorimetry), per day (room calorimeter), or per multiple days (doubly labelled water method). In order to evaluate our methods against these reference standards, we need to work with a similar time resolution.
+1.  Accelerometers are often used to describe patterns in metabolic energy expenditure. Metabolic energy expenditure is typically defined per breath or per minute (indirect calorimetry), per day (room calorimeter), or per multiple days (doubly labelled water method). In order to evaluate our methods against these reference standards, we need to work with a similar time resolution.
 
-2. Collapsing the data to epoch summary measures helps to standardise our output across data collected with different sampling frequencies between studies.
+2.  Collapsing the data to epoch summary measures helps to standardise our output across data collected with different sampling frequencies between studies.
 
-3. There is little evidence that the raw data is an accurate representation of body acceleration. All scientific evidence on the validity of accelerometer data has so far been based on epoch aggregates.
+3.  There is little evidence that the raw data is an accurate representation of body acceleration. All scientific evidence on the validity of accelerometer data has so far been based on epoch aggregates.
 
 Short epoch lengths, such as 1 or 5 seconds, are more sensitive to sporadic behaviours and often combined with bout detection to identify MVPA only as a sustained behaviour.
 
 Longer epochs, such as 30 or 60 seconds, do not have this problem and are therefore easier to use without bout detection.
 
-The epoch length in GGIR is by default 5 seconds, and can be set as the first value of the vector specified by parameter `windowsizes`. Although we discuss epoch length here in the context of MVPA, please note that epoch length influences many of the outcomes by GGIR.
+The epoch length in GGIR is by default 5 seconds, and can be set as the first value of the vector specified by parameter `windowsizes`. Although we discuss epoch length here in the context of MVPA, please note that epoch length influences many of the outcomes by GGIR such as sleep analysis. GGIR part 5 offers the option to aggregate the time series to a 1 minute epoch length in order to do physical activity research at 1 minute resolution while leaving the sleep detection that relies on a shorter epoch length untouched (see parameter `part5_agg2_60seconds=TRUE`).
 
 ## Bout detection
 
-A bout is a time segment that meets specific temporal criteria and has frequently been used in the physical activity research. GGIR facilitates processing data both with and without accounting for bouts. The motivation to look for bouts can be one of the following:
+Behavioural bouts have been used frequently and are defined as sustained time spent ina behavioural class while adhering to specific temporal criteria. GGIR facilitates processing data both with and without accounting for bouts. The motivation to look for bouts can be one of the following:
 
--	With the idea that only behaviour with a certain minimum duration contributes to certain physiological benefits.
+-   With the idea that only behaviour with a certain minimum duration contributes to certain physiological benefits.
 
--	To make the classification of behaviour consistent with self-report data, only sensitive to duration of specific duration.
+-   To make the classification of behaviour consistent with self-report data, only sensitive to duration of specific duration.
 
--	To aid studying the fragmentation of behaviour.
+-   To aid studying the fragmentation of behaviour.
 
-To define a bout we need to answer series of question:
+-   To account for the sporadic nature of behaviour when working with short epochs.
 
-1. What should the cut-point be?
-2. What should the epoch length be?
-3. What should minimum duration of bout be?
-4. Should we allow for gaps in a bout as in breaks in the behaviour of interest?
-5. If yes to 4, should this be a percentage of the bout duration, an absolute minimum in seconds, or a combination of both?
-6. If yes to 4, are bout gaps counted towards the time spent in bouts?
-7. Do the first and last epoch need to meet the threshold criteria?
-8. In what order are the bouts extracted? For example, if a short MVPA bout is part of a longer Inactivity bout which of the two prevails?
-9. How many bout categories should there be?
+To define a bout we need to answer a series of questions:
+
+1.  What should the cut-point be?
+2.  What should the epoch length be?
+3.  What should minimum duration of bout be?
+4.  Should we allow for gaps in a bout as in breaks in the behaviour of interest?
+5.  If yes to 4, should this be a percentage of the bout duration, an absolute minimum in seconds, or a combination of both?
+6.  If yes to 4, are bout gaps counted towards the time spent in bouts?
+7.  Do the first and last epoch need to meet the threshold criteria?
+8.  In what order are the bouts extracted? For example, if a short MVPA bout is part of a longer Inactivity bout which of the two prevails?
+9.  How many bout categories should there be?
 
 GGIR facilitates the following freedom in bout detection:
 
 User decides on:
 
--	Acceleration thresholds for light, moderate, and vigorous intensity
+-   Acceleration thresholds for light, moderate, and vigorous intensity with `mvpathreshold` for part 2, `threshold.lig`, `threshold.mod`, and `threshold.vig` for part 5.
 
--	Fraction of time for which cut-point criteria need to be met (light, inactive, MVPA)
+-   Fraction of time for which cut-point criteria need to be met (light, inactive, MVPA) with `boutcriter` for part 2 and `boutcriter.lig`, `boutcriter.mod`, and `boutcriter.vig` for part 5.
 
--	Bout duration range. For example, a simple scenario could be to consider all bouts of a minimum length of 10 minutes, while it is also possible to subdivide them in bouts lasting [1, 5) [5, 10) and [10, ∞) minutes. 
+-   Bout duration range. In part 2 with `mvpadur` and in part 5 with `boutdur.lig`, `boutdur.mod`, and `boutdur.mvpa`. This functionality is slightly different between part 2 and part 5 as discussed further down.
 
--	Epoch length.
+-   Epoch length with `windowsizes` and `part5_agg2_60second`.
 
 User does NOT decide on:
 
--	Maximum bout gap of 1 minute, if the fraction of time for which the cut-point criteria need to be met is less than 100%
+-   Maximum bout gap of 1 minute, if the fraction of time for which the cut-point criteria need to be met is less than 100%
 
--	First and last epoch need to meet cut-point criteria.
+-   First and last epoch need to meet cut-point criteria.
 
--	Number of intensity levels, which are always: inactive, light and MVPA.
+-   Number of intensity levels, which are always: inactive, light and MVPA.
 
--	Order in which bouts are calculated (1 MVPA; 2 inactive; 3 Light)
+-   Order in which bouts are calculated (1 MVPA; 2 inactive; 3 Light)
 
-## Differences in physical activity estimates in part 2 and 5
+## Controlling the time window of analysis
+
+As discussed in chapter 7, it is possible to tell both GGIR part 2 and part 5 to extract variables per segment of the day. We do this with parameter `qwindow` for which you can find a detailed discussion in Annex [Day segment analysis](https://wadpac.github.io/GGIR/articles/TutorialDaySegmentAnalyses.html).
+
+## Key parameters
 
 The parameters needed for MVPA estimates in GGIR part 2 are different from the parameters used for estimating MVPA, LIPA and Inactivity in part 5.
 
-GGIR part 2 always provides six distinct approaches to MVPA calculation that are controlled with parameters `mvpathreshold`, `boutcriter`, `mvpadur`, and the first element of vector `windowsdur`. Here, MVPA provides time spent in MVPA based on:
+### Physical activity cut-point parameter GGIR part 2
 
--	5 second, 1 minute or 5 minute epochs and no bouts
+In GGIR part 2, only MVPA is estimated since sleep has not been classified at that point. The threshold(s) for MVPA as used in GGIR part 2 are set with parameter `mvpathreshold`. You can specify a single value or a vector of multiple values, time spent in MVPA will then be derived with each of them.
 
--	5 second epochs and 3 different minimum bout duration as specified with parameter `mvpadur`.
+GGIR part 2 always provides six distinct approaches to MVPA calculation that are controlled with parameters `mvpathreshold`, `boutcriter`, `mvpadur`, and the first element of vector `windowsizes`. Here, MVPA provides time spent in MVPA based on:
 
-The bout durations are each used for separate estimates and not used complimentary to each other as is the case in part 5. For example, specifying `boutdur.mod = c(5, 10)` in part 5 will result in an estimate of time spent in bouts lasting from 5 till 10 minutes and in bouts lasting 10 minutes and longer.
+-   5 second, 1 minute or 5 minute epochs and no bouts
 
-# Controlling the time window of analysis:
+-   5 second epochs and 3 different minimum bout duration as specified with parameter `mvpadur`.
 
-As discussed in chapter 7, it is possible to tell both GGIR part 2 and part 5 to extract variables per segment of the day. We do this with parameter `qwindow` for which you can find a detailed discussion in Annex Day segment analysis.
+### Physical activity cut-point parameter GGIR part 5
 
-# Behavioural fragmentation
+The bout durations are each used for separate estimates and not used complimentary to each other as is the case in part 5. For example, specifying `boutdur.mod = c(5, 10)` in part 5 will result in an estimate of time spent in bouts lasting from 5 till 10 minutes and in bouts lasting 10 minutes and longer. For example, a simple scenario could be to consider all bouts of a minimum length of 10 minutes, while it is also possible to subdivide them in bouts lasting [1, 5) [5, 10) and [10, ∞) minutes.
 
-In addition to classifying the time spent in each behavioural class it is also informative to study the fragmentation of behaviours.
-
-## Classes of behaviour used to study fragmentation
-
-In GGIR, a fragment for daytime is a defined as a sequence of epochs that belong to one of the four categories:
-
-1. Inactivity
-2. Light Physical Activity (LIPA)
-3. Moderate or Vigorous Physical Acitivty (MVPA)
-4. Physical activity (can be either LIPA or MVPA)
-
-Each of these categories represents the combination of bouted and unbouted time in the respective categories. Inactivity and physical activity add up to a full day (outside SPT), as well as inactivity, LIPA and MVPA. The fragmentation metrics are applied in function `g.fragmentation`. 
-
-A fragment of SPT is defined as a sequence of epochs that belong to one of the four categories:
-
-1. Estimated sleep
-2. Estimated wakefulness
-3. Inactivity
-4. Physical activity (can be either LIPA or MVPA)
-
-Note that from the metrics below only fragmentation metrics `TP` and `NFrag` are calculated for the SPT fragments.
-
-With parameter `frag.metrics="all"` we can tell GGIR part 5 to derive behavioural fragmentation metrics for daytime and (separately) for spt. You may want to consider combining this with parameter `part5_agg2_60seconds=TRUE` as that will aggregate the time series to 1 minute resolution as is common in behavioural fragmentation literature.
-
-## Fragmentation metrics
-
-- Coefficient of Variance (`CoV`) is calculated according to [Blikman et al. 2014](https://doi.org/10.1016/j.apmr.2014.08.023), which entails dividing the standard deviation by the mean lognormal transformed fragment length (minutes).
-
-- Transition probability (`TP`) from Inactivity (IN) to Physical activity (IN2PA), from Physical activity to inactivity (PA2IN), and from IN to LIPA or MVPA are all calculated according to Danilevicz et al. 2023 10.21203/rs.3.rs-3543711/v1.
-
-- Gini index is calculated with function `Gini` from the `ineq` R package, and with `ineq` argument `corr` set to TRUE.
-
-- Power law exponent metrics: Alpha, x0.5, and W0.5 are calculated according to [Chastin et al. 2010](https://doi.org/10.1016/j.gaitpost.2009.09.002).
-
-- Number of fragment per minutes (`NFragPM`) is calculated identical to metric `fragmentation index` in [Chastin et al. 2012](https://academic.oup.com/ageing/article/41/1/111/46538), but it is renamed here to be a more specific reflection of the calculation. The term `fragmentation index` appears too generic given that all fragmentation metrics inform us about fragmentation. Please note that this is close to the metrics for transition probability, because total number divided by total sum in duration equals 1 divided by average duration. Although the exact math is slightly different.
-
-### Conditions for calculation and value when condition is not met
-
-- Metrics `Gini` and `CoV` are only calculated if there are at least 10 fragments (e.g. 5 inactive and 5 active). If this condition is not met the metric value will be set to missing.
-
-- Metrics related to power law exponent alpha are also only calculated when there are at least 10 fragments, but with the additional condition that the standard deviation in fragment duration is not zero. If these conditions are not met the metric value will be set to missing.
-
-- Other metrics related to binary fragmentation (`mean_dur_PA` and `mean_dur_IN`), are calculated when there are at least 2 fragments (1 inactive, 1 active). If this condition is not met the value will is set to zero.
-
-- Metrics related to `TP` are calculated if: There is at least 1 inactivity fragment AND (1 LIPA OR 1 MVPA fragment). If this condition is not met the `TP` metric value is set to zero.
-
-To keep an overview of which recording days met the criteria for non-zero standard deviation and at least ten fragments, GGIR part 5 stores variable `Nvaliddays_AL10F` at person level (i.e., number of valid days with at least 10 fragments), and `SD_dur` (i.e., standard deviation of fragment durations) at day level as well as aggregated per person.
-
-- GGIR derives fragmentation metrics per waking hours of the day in part 5 and per recording in part 6. Calculation per day allows us to explore and possibly account for behavioural differences between days of the week. However, for rare behaviours a day level estimate could be considered less robust than the recording level estimates as generated in part 6.
-
-### Differences with R package ActFrag:
-
-The fragmentation functionality was initially inspired on the great work done by Dr. Junrui Di and colleagues in R package ActFrag, as described in [Junrui Di et al. 2017](https://www.biorxiv.org/content/10.1101/182337v1). However, we made a couple of a different decisions that may affect comparability:
-
--   Transition probability is according to Danilevicz et al. 2023 10.21203/rs.3.rs-3543711/v1
-
--   Power law alpha exponent metrics were calculated according to [Chastin et al.
-    2010](https://doi.org/10.1016/j.gaitpost.2009.09.002) using the theoretical minimum fragment duration instead of the observed minimum fragment duration.
-
-## Key arguments
-
-The parameters related to cut-points and bout detection are all concentrated in the “Physical activity parameters” as discussed in https://cran.r-project.org/ package=GGIR/vignettes/GGIRParameters.html.
+All parameters related to cut-points and bout detection are listed under ["Physical activity parameters"](https://wadpac.github.io/GGIR/articles/GGIRParameters.html#physical-activity-parameters).
 
 ## Related output
 
 In GGIR part 2 csv reports you will find:
 
--	Time spent in MVPA
+-   Time spent in MVPA
 
 In GGIR part 5 csv reports you will find:
 
--	Time spent in MVPA
--	Time spent in LIPA
--	Time spent in inactivity (abbreviated as IN)
+-   Time spent in MVPA
+-   Time spent in LIPA
+-   Time spent in inactivity (abbreviated as IN)
 
-In chapter 7 we discussed the structure of the part 2 output and in chapter 11 will provide a more detailed discuss of all the part 5 output. Further, for a detailed discussion of specific all output variables in all parts see https://cran.r-project.org/web/packages/GGIR/vignettes/GGIR.html#4_Inspecting_the_results
+In [chapter 7](https://wadpac.github.io/GGIR/articles/chapter7_DescribingDataWithoutKnowingSleep.html) we discussed the structure of the part 2 output. The next chapter ([chapter 12](https://wadpac.github.io/GGIR/articles/chapter12_TimeUseAnalysis.html)) will provide a more detailed discussion of all the part 5 output. For an overview of output variables see the [GGIR output annex](https://wadpac.github.io/GGIR/articles/GGIRoutput.html).
