@@ -122,36 +122,13 @@ location.</strong></p>
 <div class="section level3">
 <h3 id="what-is-ggir">What is GGIR?<a class="anchor" aria-label="anchor" href="#what-is-ggir"></a>
 </h3>
-<p><a href="https://CRAN.R-project.org/package=GGIR" class="external-link">GGIR</a> is an
-R-package to process multi-day raw accelerometer data for physical
-activity and sleep research. The term <strong><em>raw</em></strong>
-refers to data being expressed in m/s<sup>2</sup> or gravitational
-acceleration as opposed to the previous generation accelerometers which
-stored data in accelerometer brand specific units. The signal processing
-includes automatic calibration, detection of sustained abnormally high
-values, detection of non-wear and calculation of average magnitude of
-dynamic acceleration based on a variety of metrics. Next, GGIR uses this
-information to describe the data per recording, per day of measurement,
-and (optionally) per segment of a day of measurement, including
-estimates of physical activity, inactivity and sleep. We published an
-overview paper of GGIR in 2019 <a href="https://doi.org/10.1123/jmpb.2018-0063" class="external-link">link</a>.</p>
-<p>This vignette provides a general introduction on how to use GGIR and
-interpret the output, additionally you can find a <a href="https://youtu.be/RuFBCAqFJ2M" class="external-link">introduction video</a> and a <a href="https://youtu.be/S8YPTrYNWdU" class="external-link">mini-tutorial</a> on YouTube. If you
-want to use your own algorithms for raw data then GGIR facilitates this
-with it’s external function embedding feature, documented in a separate
-vignette: <a href="https://CRAN.R-project.org/package=GGIR" class="external-link">Embedding
-external functions in GGIR</a>. GGIR is increasingly being used by
-research groups across the world. A non-exhaustive overview of academic
-publications related to GGIR can be found <a href="https://github.com/wadpac/GGIR/wiki/Publication-list" class="external-link">here</a>. R
-package GGIR would not have been possible without the support of the
-contributors listed in the author list at <a href="https://CRAN.R-project.org/package=GGIR" class="external-link">GGIR</a>, with specific
-code contributions over time since April 2016 (when GGIR development
-moved to GitHub) shown <a href="https://github.com/wadpac/GGIR/graphs/contributors" class="external-link">here</a>.</p>
+<p>This section has been migrated to this <a href="https://wadpac.github.io/GGIR/articles/chapter1_WhatIsGGIR.html">section</a>
+in the GGIR github-pages, which is now the main documentation resource
+for GGIR.</p>
 <p><strong>Cite GGIR:</strong></p>
-<p>When you use GGIR in publications do not forget to cite it properly
-as that makes your research more reproducible and it gives credit to
-it’s developers. See paragraph on <a href="#CitingGGIR">Citing GGIR</a>
-for details.</p>
+<p>This section has been migrated to this <a href="https://wadpac.github.io/GGIR/authors.html#citation">section</a>
+in the GGIR github-pages, which is now the main documentation resource
+for GGIR.</p>
 </div>
 <div class="section level3">
 <h3 id="contributing-support-and-keeping-up-to-date">Contributing, Support, and Keeping up to date<a class="anchor" aria-label="anchor" href="#contributing-support-and-keeping-up-to-date"></a>
@@ -995,13 +972,9 @@ for GGIR.</p>
 <div class="section level3">
 <h3 id="actigraphs-idle-sleep-mode">ActiGraph’s idle sleep mode<a class="anchor" aria-label="anchor" href="#actigraphs-idle-sleep-mode"></a>
 </h3>
-<p>The idle sleep mode is <a href="https://actigraphcorp.my.site.com/support/s/article/Idle-Sleep-Mode-Explained" class="external-link">explained</a>
-on the manufacturer’s website. In short, idle sleep mode is a setting
-that can be turned on or off by the user. When it is turned on the
-device will fall asleep during periods of no movement, resulting in time
-gaps in the data. This functionality was probably introduced to safe
-battery life and minimize data size. However, it also means that we end
-up with time gaps that need to be accounted for.</p>
+<p>This section has been migrated to this <a href="https://wadpac.github.io/GGIR/articles/GGIR.html?q=idle%20slee#actigraphs-idle-sleep-mode">section</a>
+in the GGIR github-pages, which is now the main documentation resource
+for GGIR.</p>
 <div class="section level4">
 <h4 id="time-gap-imputation">Time gap imputation<a class="anchor" aria-label="anchor" href="#time-gap-imputation"></a>
 </h4>
@@ -1027,33 +1000,9 @@ for GGIR.</p>
 <div class="section level3">
 <h3 id="Minimum_recording_duration">Minimum recording duration<a class="anchor" aria-label="anchor" href="#Minimum_recording_duration"></a>
 </h3>
-<p>GGIR has been designed to process multi-day recordings. The minimum
-recording duration considered by GGIR depends on the type of
-analysis:</p>
-<p><strong>Running part 1 and 2</strong></p>
-<ul>
-<li><p>File size; At least 2MB, where 2MB can be adjusted with argument
-minimumFileSizeMB. This should not be changed unless you have good
-reason to believe that a smaller file size is also acceptable.</p></li>
-<li><p>Recording duration: At least two long epoch windows (default 60
-minutes) in g.readaccfile. The size of this epoch can be altered with
-the second and third value of vector argument <code>windowsizes</code>,
-where the third should not be smaller than the second. For example, in
-short lasting lab-experiments you may find it easier to set this to
-<code>windowsizes = c(5, 600, 600)</code> as non-wear detection is
-usually not necessary in lab studies.</p></li>
-</ul>
-<p><strong>Running part 3 and 4</strong></p>
-<ul>
-<li>At least one night of data is expected, where a night is expected to
-have at least the timestamp for midnight. If midnight is not found the
-sleep detection is skipped.</li>
-</ul>
-<p><strong>Running part 5</strong></p>
-<ul>
-<li>Ideally two valid consecutive nights and the waking hours in
-between.</li>
-</ul>
+<p>This section has been migrated to this <a href="https://wadpac.github.io/GGIR/articles/GGIR.html?q=minimum%20recording#Minimum_recording_duration">section</a>
+in the GGIR github-pages, which is now the main documentation resource
+for GGIR.</p>
 </div>
 <div class="section level3">
 <h3 id="lux-sensor-data-processing">LUX sensor data processing<a class="anchor" aria-label="anchor" href="#lux-sensor-data-processing"></a>

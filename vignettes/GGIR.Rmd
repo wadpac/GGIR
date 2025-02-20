@@ -30,43 +30,12 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## What is GGIR?
 
-[GGIR](https://CRAN.R-project.org/package=GGIR) is an R-package to
-process multi-day raw accelerometer data for physical activity and sleep
-research. The term ***raw*** refers to data being expressed in
-m/s<sup>2</sup> or gravitational acceleration as opposed to the previous
-generation accelerometers which stored data in accelerometer brand
-specific units. The signal processing includes automatic calibration,
-detection of sustained abnormally high values, detection of non-wear and
-calculation of average magnitude of dynamic acceleration based on a
-variety of metrics. Next, GGIR uses this information to describe the
-data per recording, per day of measurement, and (optionally) per segment
-of a day of measurement, including estimates of physical activity,
-inactivity and sleep. We published an overview paper of GGIR in 2019
-[link](https://doi.org/10.1123/jmpb.2018-0063).
+This section has been migrated to this [section](https://wadpac.github.io/GGIR/articles/chapter1_WhatIsGGIR.html) in the GGIR github-pages, which is now the main documentation resource for GGIR.
 
-This vignette provides a general introduction on how to use GGIR and
-interpret the output, additionally you can find a [introduction
-video](https://youtu.be/RuFBCAqFJ2M) and a
-[mini-tutorial](https://youtu.be/S8YPTrYNWdU) on YouTube. If you want to
-use your own algorithms for raw data then GGIR facilitates this with
-it's external function embedding feature, documented in a separate
-vignette: [Embedding external functions in
-GGIR](https://CRAN.R-project.org/package=GGIR). GGIR is increasingly
-being used by research groups across the world. A non-exhaustive
-overview of academic publications related to GGIR can be found
-[here](https://github.com/wadpac/GGIR/wiki/Publication-list). R package
-GGIR would not have been possible without the support of the
-contributors listed in the author list at
-[GGIR](https://CRAN.R-project.org/package=GGIR), with specific code
-contributions over time since April 2016 (when GGIR development moved to
-GitHub) shown
-[here](https://github.com/wadpac/GGIR/graphs/contributors).
 
 **Cite GGIR:**
 
-When you use GGIR in publications do not forget to cite it properly as
-that makes your research more reproducible and it gives credit to it's
-developers. See paragraph on [Citing GGIR](#CitingGGIR) for details.
+This section has been migrated to this [section](https://wadpac.github.io/GGIR/authors.html#citation) in the GGIR github-pages, which is now the main documentation resource for GGIR.
 
 ## Contributing, Support, and Keeping up to date
 
@@ -688,7 +657,6 @@ This section has been migrated to this [section](https://wadpac.github.io/GGIR/a
 
 This section has been migrated to this [section](https://wadpac.github.io/GGIR/articles/chapter4_AccMetrics.html#why-ggir-uses-enmo-as-a-default-) in the GGIR github-pages, which is now the main documentation resource for GGIR.
 
-
 ## What does GGIR stand for?
 
 I wanted a short name and not to spend too much time finding it. The abbreviation has lost its functional meaning, which is why we now only use GGIR as the name.
@@ -699,12 +667,7 @@ This section has been migrated to this [section](https://wadpac.github.io/GGIR/a
 
 ## ActiGraph's idle sleep mode
 
-The idle sleep mode is [explained](https://actigraphcorp.my.site.com/support/s/article/Idle-Sleep-Mode-Explained)
-on the manufacturer's website. In short, idle sleep mode is a setting that can
-be turned on or off by the user. When it is turned on the device
-will fall asleep during periods of no movement, resulting in time gaps in the data.
-This functionality was probably introduced to safe battery life and minimize data size.
-However, it also means that we end up with time gaps that need to be accounted for.
+This section has been migrated to this [section](https://wadpac.github.io/GGIR/articles/GGIR.html?q=idle%20slee#actigraphs-idle-sleep-mode) in the GGIR github-pages, which is now the main documentation resource for GGIR.
 
 ### Time gap imputation
 
@@ -723,31 +686,7 @@ This section has been migrated to this [section](https://wadpac.github.io/GGIR/a
 
 ## Minimum recording duration {#Minimum_recording_duration}
 
-GGIR has been designed to process multi-day recordings. The minimum recording duration
-considered by GGIR depends on the type of analysis:
-
-**Running part 1 and 2**
-
-- File size; At least 2MB, where 2MB can be adjusted with argument minimumFileSizeMB. 
-This should not be changed unless you have good reason to believe that a smaller 
-file size is also acceptable.
-
-- Recording duration: At least two long epoch windows 
-(default 60 minutes) in g.readaccfile. The size of this epoch can be altered with
-the second and third value of vector argument `windowsizes`, where the third should not
-be smaller than the second. For example, in short lasting lab-experiments you may
-find it easier to set this to `windowsizes = c(5, 600, 600)` as non-wear detection is
-usually not necessary in lab studies.
-
-**Running part 3 and 4**
-
-- At least one night of data is expected, where a night is expected to have at least the timestamp 
-for midnight. If midnight is not found the sleep detection is skipped.
-
-**Running part 5**
-
-- Ideally two valid consecutive nights and the waking hours in between.
-
+This section has been migrated to this [section](https://wadpac.github.io/GGIR/articles/GGIR.html?q=minimum%20recording#Minimum_recording_duration) in the GGIR github-pages, which is now the main documentation resource for GGIR.
 
 ## LUX sensor data processing
 
