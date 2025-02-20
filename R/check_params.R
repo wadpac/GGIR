@@ -182,7 +182,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   
   if (length(params_sleep) > 0) {
     if (length(params_sleep[["def.noc.sleep"]]) != 2) {
-      if (params_sleep[["HASPT.algo"]][1] %in% c("HorAngle", "NotWorn") == FALSE) {
+      if (params_sleep[["HASPT.algo"]][1] %in% c("HorAngle", "NotWorn", "vanHees2025") == FALSE) {
         params_sleep[["HASPT.algo"]] = "HDCZA"
       }
       if (length(params_sleep[["HASPT.algo"]]) == 2 && params_sleep[["HASPT.algo"]][2] == "NotWorn") {

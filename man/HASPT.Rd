@@ -10,7 +10,8 @@
 \usage{
 HASPT(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5, 
       HASPT.algo="HDCZA", HDCZA_threshold = c(), invalid, 
-      HASPT.ignore.invalid = FALSE, activity = NULL)
+      HASPT.ignore.invalid = FALSE, activity = NULL,
+      marker = NULL, sibs = NULL)
 }
 \arguments{
   \item{angle}{
@@ -41,6 +42,12 @@ HASPT(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
     Magnitude of acceleration, only used when HASPT.algo is set to NotWorn.
     Acceleration metric used is specified by argument \code{acc.metric} 
     elsewhere in GGIR.
+  }
+  \item{marker}{
+    Numeric vector of classified sibs with \code{HASIB}, only used for HASPT.algo vanHees2025.
+  }
+  \item{sibs}{
+    Numeric vector of classified sibs with \code{HASIB}, only used for HASPT.algo vanHees2025.
   }
 }
 \value{

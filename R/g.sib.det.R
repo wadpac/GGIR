@@ -284,7 +284,9 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                                invalid = invalid[qqq1:qqq2], # load only invalid time in the night of interest (i.e., qqq1:qqq2)
                                HDCZA_threshold = params_sleep[["HDCZA_threshold"]],
                                HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
-                               activity = tmpACC)
+                               activity = tmpACC,
+                               marker = MARKER[qqq1:qqq2],
+                               sibs = sleep[qqq1:qqq2, 1])
         } else {
           spt_estimate = list(SPTE_end = NULL, SPTE_start = NULL, tib.threshold = NULL, part3_guider = NULL)
         }
@@ -323,7 +325,9 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                                        invalid = invalid[newqqq1:newqqq2],
                                        HDCZA_threshold = params_sleep[["HDCZA_threshold"]],
                                        HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
-                                       activity = ACC[newqqq1:newqqq2])
+                                       activity = ACC[newqqq1:newqqq2],
+                                       marker = MARKER[newqqq1:newqqq2],
+                                       sibs = sleep[newqqq1:newqqq2, 1])
               if (length(spt_estimate_tmp$SPTE_start) > 0) {
                 # If new SPTE_end is beyond noon (qqq2) then use the new SPTE_end
                 if (spt_estimate_tmp$SPTE_end + newqqq1 >= qqq2) {
