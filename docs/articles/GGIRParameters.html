@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -2853,9 +2853,9 @@ save_ms5raw_format). Note that time stamps will be stored in the column
 timenum in UTC format (i.e., seconds from 1970-01-01). To convert
 timenum to time stamp format, you need to specify your desired time
 zone, e.g., as.POSIXct(mdat$timenum, tz = “Europe/London”). If you are
-not using GGIR part 6, not interested in the visualreport generation,
-and not interested in time series then you may want to consider setting
-this parameter to FALSE.</p>
+not using GGIR part 6, are not interested in the visualreport
+generation, and not interested in time series then you may want to
+consider setting this parameter to FALSE.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="save_ms5raw_format">save_ms5raw_format<a class="anchor" aria-label="anchor" href="#save_ms5raw_format"></a>
@@ -2897,24 +2897,25 @@ onset), or any combination of them.</p>
 </h4>
 <p>Boolean (default = TRUE). To indicate whether a first page with
 histograms summarizing the whole measurement should be added in the file
-summary reports named “Report_” generated with visualreport = TRUE.</p>
+summary reports named “old_report_” generated with visualreport =
+TRUE.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="visualreport">visualreport<a class="anchor" aria-label="anchor" href="#visualreport"></a>
 </h4>
 <p>Boolean (default = TRUE). If TRUE, store two visualreports in
 outputfolder ‘results/file summary reports’ with names starting with
-“Report_…” and “Time_report…”. The report “Report_…” has been in GGIR
-for years and is based on combined output GGIR part 2 and 4. It was
+“old_report_…” and “report…”. The report “old_report_…” has been in GGIR
+for years and is based on combined output from GGIR part 2 and 4. It was
 initially only a quick development attempt to have something to show to
-study participants. This report is not designed for data quality
-checking purposes as it makes not attempt to exactly visualise the
-classifications made in part 5. Given the number of inaccuracies this
-report will eventually be deprecated from GGIR. To turn off the old
-report use old_visualreport = FALSE. “Time_report”, is a new report as
-of GGIR 3.1-8 and is specifically aimed at supporting data quality
-checks as it shows the time series data as generated and used in GGIR
-part 5. .</p>
+study participants back in 2015. This report is not designed for data
+quality checking purposes as it makes no attempt to exactly visualise
+the classifications made in GGIR part 5. Given the number of
+inaccuracies, this report will eventually be deprecated from GGIR. To
+turn off the old report use old_visualreport = FALSE. “report_…”, is a
+new report as of GGIR 3.1-8 and is specifically aimed at supporting data
+quality checks as it shows the time series data as generated and used in
+GGIR part 5. .</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="week_weekend_aggregate-part5">week_weekend_aggregate.part5<a class="anchor" aria-label="anchor" href="#week_weekend_aggregate-part5"></a>
@@ -2927,7 +2928,7 @@ report.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="do-part3-pdf">do.part3.pdf<a class="anchor" aria-label="anchor" href="#do-part3-pdf"></a>
 </h4>
-<p>Boolean (default = TRUE). In g.part3: Whether to generate a pdf for
+<p>Boolean (default = FALSE). In g.part3: Whether to generate a pdf for
 g.part3.</p>
 </div>
 <div class="section level4">
@@ -3000,7 +3001,7 @@ g.part2.</p>
 <h4 class="unnumbered" id="visualreport_without_invalid">visualreport_without_invalid<a class="anchor" aria-label="anchor" href="#visualreport_without_invalid"></a>
 </h4>
 <p>Boolean (default = TRUE). If TRUE, then reports generated with
-visualreport = TRUE named “Report_” only show the windows with
+visualreport = TRUE named “old_report_” only show the windows with
 sufficiently valid data according to includedaycrit when viewingwindow =
 1 or includenightcrit when viewingwindow = 2</p>
 </div>
@@ -3015,7 +3016,7 @@ deprecated</p>
 <h4 class="unnumbered" id="visualreport_hrsperrow">visualreport_hrsPerRow<a class="anchor" aria-label="anchor" href="#visualreport_hrsperrow"></a>
 </h4>
 <p>Numeric (default = 36). Width of the plots in the new visualreport
-(named “Time_report…”) expressed in hours. Expected to be in the range
+(named “report_…”) expressed in hours. Expected to be in the range
 24-48. If more than 24 then the extra time overlaps with the beginning
 of the next plot.</p>
 </div>
@@ -3023,8 +3024,8 @@ of the next plot.</p>
 <h4 class="unnumbered" id="visualreport_focus">visualreport_focus<a class="anchor" aria-label="anchor" href="#visualreport_focus"></a>
 </h4>
 <p>Character (default = “day”) Whether new visual report (names start
-with “Time_report…”) focuss on day or night. If set ot “night” the focus
-will be on the night.</p>
+with “report…”) focuss on day or night. If set ot “night” the focus will
+be on the night.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="visualreport_validcrit">visualreport_validcrit<a class="anchor" aria-label="anchor" href="#visualreport_validcrit"></a>
@@ -3032,7 +3033,7 @@ will be on the night.</p>
 <p>Numeric (default = 0). Value between 0 and 1 representing the
 fraction of data in a plot that is expected to be valid. If this
 criteria is not met the row is skipped. Only used in new visual report
-(names start with “Time_report…”).</p>
+(names start with “report…”).</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="require_complete_lastnight_part5">require_complete_lastnight_part5<a class="anchor" aria-label="anchor" href="#require_complete_lastnight_part5"></a>

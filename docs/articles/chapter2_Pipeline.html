@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -125,17 +125,17 @@ packages are constructed of sub-components, named functions. A single
 function typically allows for doing a specific task. For example, we may
 have the <code>sum</code> function that sums the numbers we provide to
 it. A function can have one or multiple parameters to control the
-functions behaviour. In R these parameters are call function arguments.
-For example, <code>sum</code> has the argument <code>na.rm</code> to
-control what needs to be done with missing values. In GGIR we refer to
-these arguments as parameters.</p>
+functions behaviour. In R these parameters are called function
+arguments. For example, <code>sum</code> has the argument
+<code>na.rm</code> to control what needs to be done with missing values.
+In GGIR we refer to these arguments as parameters.</p>
 <p>GGIR comes with a large number of functions and parameters that
-together form a processing pipeline. To ease interacting with GGIR, it
+together form a processing pipeline. To ease interacting with GGIR, GGIR
 has one central function to act as interface to all functionality. This
 function is also named <code>GGIR</code>. You only need to learn how to
 work with the function <code>GGIR</code>, but it is important to
 understand that in the background this function interacts with all other
-functions in GGIR.</p>
+functions in GGIR and even functions outside GGIR.</p>
 <p>Further, it is important to understand that the
 <code>GGIR package</code> is structured in two complementary ways:</p>
 <ul>
@@ -160,7 +160,8 @@ sequentially to the data:</p>
 <li>
 <strong>Part 1:</strong> Loads the data, works on data quality, and
 stores derived summary measures per time interval, also known as signal
-features or metrics, as needed for the following parts.</li>
+features (referred to as metrics), as needed for the following
+parts.</li>
 <li>
 <strong>Part 2:</strong> Basic data quality assessment based on the
 extract metrics and description of the data per day, per file, and
@@ -184,10 +185,11 @@ category, but also behavioural fragmentation.</li>
 recording such as household co-analysis and circadian rhythm
 analysis.</li>
 </ul>
-<p>The specific order and content of the parts have evolved over time,
-with Part 1 and 2 created in 2011-2013, Part 3 and 4 created in
-2013-2015, Part 5 created in 2017-2020, and Part 6 created in 2023-2024.
-So, the parts also reflect the historical expansion of GGIR.</p>
+<p>The specific order and content of the parts is a result of how GGIR
+evolved over time, with Part 1 and 2 created in 2011-2013, Part 3 and 4
+created in 2013-2015, Part 5 created in 2017-2020, and Part 6 created in
+2023-2024. As such, the parts also reflect the historical expansion of
+GGIR.</p>
 <div class="section level4">
 <h4 id="milestone-data">Milestone data<a class="anchor" aria-label="anchor" href="#milestone-data"></a>
 </h4>
@@ -759,6 +761,36 @@ chapters.</caption>
 <td>dictionary for behavioural codes as used in the time series
 file</td>
 <td></td>
+</tr>
+</tbody>
+</table>
+<p><strong><em>Output files in results/file summary reports
+subfolder:</em></strong></p>
+<p>See parameter <a href="https://wadpac.github.io/GGIR/articles/GGIRParameters.html?q=visualreport#visualreport">visualreport</a>
+for details on these pdf reports.</p>
+<table class="table">
+<caption>A detailed discussion of each output can be found in the other
+chapters.</caption>
+<colgroup>
+<col width="50%">
+<col width="38%">
+<col width="11%">
+</colgroup>
+<thead><tr class="header">
+<th>File name</th>
+<th>Resolution</th>
+<th>GGIR part</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>old_report… .pdf (this is a legacy report)</td>
+<td>Time series of one recording</td>
+<td>5</td>
+</tr>
+<tr class="even">
+<td>report… .pdf</td>
+<td>Time series of one recording</td>
+<td>5</td>
 </tr>
 </tbody>
 </table>
