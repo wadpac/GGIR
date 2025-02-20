@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,12 +77,30 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.2-0" id="changes-in-ggir-version-32-0">CHANGES IN GGIR VERSION 3.2-0<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-32-0"></a></h2>
+<ul><li>
+<p>Part 2:</p>
+<ul><li><p>Bug fixed in handling part 1 output with the uncommon scenario of having only 1 metric (in object metashort) <a href="https://github.com/wadpac/GGIR/issues/1265" class="external-link">#1265</a></p></li>
+<li><p>Make sure all event variables are stored in event summary and advanced event variables are skipped until testing is finished <a href="https://github.com/wadpac/GGIR/issues/635" class="external-link">#635</a></p></li>
+</ul></li>
+<li><p>Part 6 and new visual report: Fix bug related to determining the combination of thresholds to use for the visual report and for part 6 analyses when there are several options and part6_threshold_combi is NULL. <a href="https://github.com/wadpac/GGIR/issues/1260" class="external-link">#1260</a></p></li>
+<li><p>Part 6: Improve robustness of column name initialization for part6 output <a href="https://github.com/wadpac/GGIR/issues/1240" class="external-link">#1240</a></p></li>
+<li>
+<p>Visualisations:</p>
+<ul><li><p>Bug fixed in handling recordings that start at midnight <a href="https://github.com/wadpac/GGIR/issues/1257" class="external-link">#1257</a></p></li>
+<li><p>The new and old general pdf report have been renamed to clarify which one is old (eventually to be deprecated) and which one is new.</p></li>
+<li><p>Report_…pdf has been renamed to old_report_…pdf.</p></li>
+<li><p>Time_report…pdf has been renamed to report_…pdf</p></li>
+</ul></li>
+<li><p>Part 3: Default for parameter do.part3.pdf changed from TRUE to FALSE because this visualisation has become redundant with the addition of the new general visual report.</p></li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.1-11" id="changes-in-ggir-version-31-11">CHANGES IN GGIR VERSION 3.1-11<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-31-11"></a></h2>
 <ul><li>
 <p>Part 2:</p>
-<ul><li><p>Fix bug in determining the files to be included in the part 2 report, which only considered the first N files processed by part 2 while using this N when working a file name list produced by part 1 which can be longer <a href="https://github.com/wadpac/GGIR/issues/1252" class="external-link">#1252</a></p></li>
+<ul><li><p>Fix bug related to determining the files to be included in the part 2 csv report, causing some files to be unnecessarily excluded from the part 2 csv report if the number of files in the part 2 milestone data is smaller than than number of milestone files in the part 1 milestone data, because internally it uses the part 1 milestone data file list as reference. <a href="https://github.com/wadpac/GGIR/issues/1252" class="external-link">#1252</a></p></li>
 <li><p>Speed up activity diary extraction. <a href="https://github.com/wadpac/GGIR/issues/1250" class="external-link">#1250</a></p></li>
-<li><p>Make sure part 2 event report, e.g. based on step detection, is saved to csv format with intended sep and dec arguments rather than default.</p></li>
+<li><p>Make sure part 2 event report, e.g. based on step detection, is saved to csv format with intended sep_reports and dec_reports parameter values rather than default.</p></li>
 <li><p>Simplify MVPA parameter specification in part 2 (mvpathreshold, boutcriter). When not specified, GGIR copies the values from the corresponding part 5 parameter values (threshold.mod and boutcriter.mvpa). <a href="https://github.com/wadpac/GGIR/issues/1247" class="external-link">#1247</a></p></li>
 </ul></li>
 <li><p>Part 2 and 4: Both activity diary and sleep diary are now always reloaded if the derived copy of it (in .RData) is older than the diary itself or if the diary name has changed. <a href="https://github.com/wadpac/GGIR/issues/1250" class="external-link">#1250</a></p></li>

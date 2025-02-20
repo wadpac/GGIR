@@ -4,8 +4,6 @@
 
 # CHANGES IN GGIR VERSION 3.2-0
 
-- New visual report: Bug fixed in handling recordings that start at midnight #1257
-
 - Part 2:
 
   - Bug fixed in handling part 1 output with the uncommon scenario of having only 1 metric (in object metashort) #1265
@@ -19,6 +17,8 @@
 - Part 6: Improve robustness of column name initialization for part6 output #1240
 
 - Visualisations:
+
+  - Bug fixed in handling recordings that start at midnight #1257
 
   - The new and old general pdf report have been renamed to clarify which one is old (eventually to be deprecated) and which one is new.
 
@@ -34,13 +34,14 @@
 
   - Fix bug related to determining the files to be included in the part 2 csv report, 
   causing some files to be unnecessarily excluded from the part 2 csv report if the number
-  of files in the part 2 milestone data is larger than than number of milestone files
-  in the part 1 milestone data. #1252
+  of files in the part 2 milestone data is smaller than than number of milestone files
+  in the part 1 milestone data, because internally it uses the part 1 milestone data
+  file list as reference. #1252
 
   - Speed up activity diary extraction. #1250
 
   - Make sure part 2 event report, e.g. based on step detection, is saved to csv format 
-  with intended sep and dec arguments rather than default.
+  with intended sep_reports and dec_reports parameter values rather than default.
   
   - Simplify MVPA parameter specification in part 2 (mvpathreshold, boutcriter). When not 
   specified, GGIR copies the values from the corresponding part 5 parameter values (threshold.mod and 

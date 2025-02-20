@@ -376,7 +376,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       if (length(formats2keep) > 0) {
         params_output[["save_ms5raw_format"]] = params_output[["save_ms5raw_format"]][formats2keep]
       } else {
-        params_output[["save_ms5raw_format"]] = "csv"# specify as csv if user does not clearly specify format
+        stop("Parameter save_ms5raw_format incorrectly specified, please fix.", call. = FALSE)
       }
     }
     if (params_output[["sep_reports"]] == params_output[["dec_reports"]]) {
@@ -415,11 +415,10 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       }
     }
     # params 247 & params output
-    if (params_247[["part6HCA"]] == TRUE || params_247[["part6CR"]] == TRUE) {
-      # Add RData because part 6 will need it
-      params_output[["save_ms5raw_format"]] = unique(c(params_output[["save_ms5raw_format"]], "RData"))
-      params_output[["save_ms5rawlevels"]] = TRUE
-      params_output[["save_ms5raw_without_invalid"]] = FALSE
+    if (length(params_output[["save_ms5raw_format"]]) == 1 && 
+        params_output[["save_ms5raw_format"]] == "csv") {
+      # always add RData if only csv is specified, because otherwise visualreport cannot be generated
+      params_output[["save_ms5raw_format"]] = c(params_output[["save_ms5raw_format"]], "RData")
     }
     
     if (params_247[["part6CR"]] == FALSE && params_247[["part6HCA"]] == FALSE) {
@@ -429,6 +428,16 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     
     if (length(params_247[["clevels"]]) == 1) {
       warning("\nParameter clevels expects a number vector of at least 2 values, current length is 1", call. = FALSE)
+    }
+  }
+  
+  if (length(params_output) > 0 && length(params_247) > 0) {
+    if (params_247[["part6HCA"]] == TRUE || params_247[["part6CR"]] == TRUE || 
+        params_output[["visualreport"]] == TRUE) {
+      # Add RData because part 6 / visualreport will need it
+      params_output[["save_ms5raw_format"]] = unique(c(params_output[["save_ms5raw_format"]], "RData"))
+      params_output[["save_ms5rawlevels"]] = TRUE
+      params_output[["save_ms5raw_without_invalid"]] = FALSE
     }
   }
   if (!is.null(params_general[["expand_tail_max_hours"]])) {

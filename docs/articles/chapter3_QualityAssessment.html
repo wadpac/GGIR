@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -126,8 +126,8 @@ be corrupted and unreadable, therefore creating a gap in the information
 recorded.</p>
 <p>For the ActiGraph accelerometer, but also some other sensor brands
 that export data in ‘csv’ file format, it is possible that the recording
-stops at certain time and starts recording after some time, therefore
-creating a time gap.</p>
+stops at certain time when it is not moved for a while and starts
+recording after some time, therefore creating a time gap.</p>
 <p>GGIR has been developed to efficiently identify and manage these time
 gaps.</p>
 <div class="section level3">
@@ -238,14 +238,14 @@ with the time gaps already imputed).</p>
 <h2 id="accelerometer-sensor-calibration">Accelerometer sensor calibration<a class="anchor" aria-label="anchor" href="#accelerometer-sensor-calibration"></a>
 </h2>
 <p>Many measurement tools require calibration ranging from weighting
-scales to Oxygen sensor to accelerometers. Without good calibration we
-risk that the error causes by lack of calibration undermines accurate
-and reliable measurement.</p>
+scales for body weight, to Oxygen sensor, to accelerometers. Without
+good calibration we risk that the error caused by lack of calibration
+undermines accurate and reliable measurement.</p>
 <p>Confusingly for accelerometers, the field has for a long time assumed
-that accelerometer need to be calibrated relative to energy expenditure.
-This is incorrect because energy expenditure is an entirely different
-construct. The true reference for accelerometer sensors is acceleration
-which we can calibrate with gravitational acceleration as a
+that accelerometers need to be calibrated relative to energy
+expenditure. This is incorrect because energy expenditure is a different
+physiological construct. The true reference for accelerometer sensors is
+acceleration which we can calibrate with gravitational acceleration as a
 reference.</p>
 <p>An acceleration sensor works based on the principle that acceleration
 is captured mechanically and converted into an electrical signal. The
@@ -263,7 +263,7 @@ offset and gain factor as the sensor calibration procedure.</p>
 <li>Factory calibration, done by industry (always done, but may need
 refinement afterward).</li>
 <li>Manual calibration, done by researcher (not advisable and in some
-cases not even possible.</li>
+cases not even possible).</li>
 <li>Auto-calibration, done by algorithms on real life study data (most
 common scenario to refine the factory calibration).</li>
 </ul>

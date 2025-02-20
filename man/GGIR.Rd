@@ -1550,7 +1550,7 @@ GGIR(mode = 1:5,
         seconds from 1970-01-01). To convert timenum to time stamp format, you 
         need to specify your desired time zone, e.g., 
         \code{as.POSIXct(mdat$timenum, tz = "Europe/London")}. If you are not using
-        GGIR part 6, not interested in the visualreport generation, and not interested
+        GGIR part 6, are not interested in the visualreport generation, and not interested
         in time series then you may want to consider setting this parameter to FALSE.}
 
       \item{save_ms5raw_format}{
@@ -1601,16 +1601,17 @@ GGIR(mode = 1:5,
       \item{visualreport}{
         Boolean (default = TRUE).
         If TRUE, store two visualreports in outputfolder 'results/file summary reports'
-        with names starting with "Report_..." and 
-        "Time_report...". The report "Report_..." has been in GGIR for years 
-        and is based on combined output GGIR part 2 and 4. It was initially only a
-        quick development attempt to have something to show to study participants.
+        with names starting with "old_report_..." and 
+        "report...". The report "old_report_..." has been in GGIR for years 
+        and is based on combined output from GGIR part 2 and 4. It was initially only a
+        quick development attempt to have something to show to study participants back
+        in 2015.
         This report is not designed for data quality checking purposes as it makes
-        not attempt to exactly visualise the classifications made in part 5.
-        Given the number of inaccuracies this report
+        no attempt to exactly visualise the classifications made in GGIR part 5.
+        Given the number of inaccuracies, this report
         will eventually be deprecated from GGIR. To turn
         off the old report use \code{old_visualreport = FALSE}.
-        "Time_report", is a new report as
+        "report_...", is a new report as
         of GGIR 3.1-8 and is specifically aimed at supporting data quality checks 
         as it shows the time series data as generated and used in GGIR part 5. }.
 
@@ -1629,7 +1630,7 @@ GGIR(mode = 1:5,
       \item{dofirstpage}{
         Boolean (default = TRUE).
         To indicate whether a first page with histograms summarizing the whole
-        measurement should be added in the file summary reports named "Report_" 
+        measurement should be added in the file summary reports named "old_report_" 
         generated with \code{visualreport = TRUE}.}
 
       \item{sep_reports}{
@@ -1650,7 +1651,7 @@ GGIR(mode = 1:5,
 
       \item{visualreport_without_invalid}{
           Boolean (default = TRUE).
-          If TRUE, then reports generated with \code{visualreport = TRUE} named "Report_"
+          If TRUE, then reports generated with \code{visualreport = TRUE} named "old_report_"
           only show the windows with sufficiently valid data according to \code{includedaycrit}
           when viewingwindow = 1 or \code{includenightcrit} when viewingwindow = 2}
 
@@ -1670,14 +1671,14 @@ GGIR(mode = 1:5,
       
       \item{visualreport_hrsPerRow}{
         Numeric (default = 36).
-        Width of the plots in the new visualreport (named "Time_report...") 
+        Width of the plots in the new visualreport (named "report_...") 
         expressed in hours.
         Expected to be in the range 24-48. If more than 24 then the extra time overlaps
         with the beginning of the next plot.}
       
       \item{visualreport_focus}{
          Character (default = "day")
-         Whether new visual report (names start with "Time_report...") focuss on day
+         Whether new visual report (names start with "report...") focuss on day
          or night. If set ot "night" the focus will be
          on the night.
       }
@@ -1686,7 +1687,7 @@ GGIR(mode = 1:5,
          Numeric (default = 0).
          Value between 0 and 1 representing the fraction of data in a plot 
          that is expected to be valid. If this criteria is not met the row is skipped.
-         Only used in new visual report (names start with "Time_report...").
+         Only used in new visual report (names start with "report...").
       }
       
       \item{method_research_vars}{

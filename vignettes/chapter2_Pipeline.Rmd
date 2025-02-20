@@ -18,9 +18,9 @@ As explained in chapter 1, GGIR offers a vast amount of functionality. If you ar
 
 ## The GGIR function
 
-As brief introduction for those unfamiliar with R or software, R packages are constructed of sub-components, named functions. A single function typically allows for doing a specific task. For example, we may have the `sum` function that sums the numbers we provide to it. A function can have one or multiple parameters to control the functions behaviour. In R these parameters are call function arguments. For example, `sum` has the argument `na.rm` to control what needs to be done with missing values. In GGIR we refer to these arguments as parameters.
+As brief introduction for those unfamiliar with R or software, R packages are constructed of sub-components, named functions. A single function typically allows for doing a specific task. For example, we may have the `sum` function that sums the numbers we provide to it. A function can have one or multiple parameters to control the functions behaviour. In R these parameters are called function arguments. For example, `sum` has the argument `na.rm` to control what needs to be done with missing values. In GGIR we refer to these arguments as parameters.
 
-GGIR comes with a large number of functions and parameters that together form a processing pipeline. To ease interacting with GGIR, it has one central function to act as interface to all functionality. This function is also named `GGIR`. You only need to learn how to work with the function `GGIR`, but it is important to understand that in the background this function interacts with all other functions in GGIR.
+GGIR comes with a large number of functions and parameters that together form a processing pipeline. To ease interacting with GGIR, GGIR has one central function to act as interface to all functionality. This function is also named `GGIR`. You only need to learn how to work with the function `GGIR`, but it is important to understand that in the background this function interacts with all other functions in GGIR and even functions outside GGIR.
 
 Further, it is important to understand that the `GGIR package` is structured in two complementary ways:
 
@@ -31,14 +31,14 @@ Further, it is important to understand that the `GGIR package` is structured in 
 
 GGIR, has a computational structure of six parts which are applied sequentially to the data:
 
--   **Part 1:** Loads the data, works on data quality, and stores derived summary measures per time interval, also known as signal features or metrics, as needed for the following parts. 
+-   **Part 1:** Loads the data, works on data quality, and stores derived summary measures per time interval, also known as signal features (referred to as metrics), as needed for the following parts. 
 -   **Part 2:** Basic data quality assessment based on the extract metrics and description of the data per day, per file, and optionally per day segment.
 -   **Part 3:** Estimation rest periods, needed for input to Part 4.
 -   **Part 4:** Labels the rest periods derived in Part 3 as sleep per night and per file.
 -   **Part 5:** Compiles time series with classification of sleep and physical behaviour categories by re-using information derived in part 2, 3, and 4. This includes the detection of behavioural bouts, which are time segments where the same behaviour is sustained for duration as specified by the user. Next, Part 5 generates a descriptive summary such as time spent in and average acceleration per behavioural category, but also behavioural fragmentation.
 -   **Part 6:** Facilitates analyses that span the full recording such as household co-analysis and circadian rhythm analysis.
 
-The specific order and content of the parts have evolved over time, with Part 1 and 2 created in 2011-2013, Part 3 and 4 created in 2013-2015, Part 5 created in 2017-2020, and Part 6 created in 2023-2024. So, the parts also reflect the historical expansion of GGIR.
+The specific order and content of the parts is a result of how GGIR evolved over time, with Part 1 and 2 created in 2011-2013, Part 3 and 4 created in 2013-2015, Part 5 created in 2017-2020, and Part 6 created in 2023-2024. As such, the parts also reflect the historical expansion of GGIR.
 
 #### Milestone data
 
@@ -287,3 +287,15 @@ GGIR generates reports in the parts 2, 4, 5, and 6 of the pipeline. With paramet
 | behavioralcodes2023-11-06.csv           | dictionary for behavioural codes as used in the time series file |           |
 
 : A detailed discussion of each output can be found in the other chapters.
+
+***Output files in results/file summary reports subfolder:***
+
+See parameter [visualreport](https://wadpac.github.io/GGIR/articles/GGIRParameters.html?q=visualreport#visualreport) for details on these pdf reports.
+
+| File name                                    | Resolution                        | GGIR part |
+|----------------------------------------------|-----------------------------------|-----------|
+| old_report... .pdf (this is a legacy report) | Time series of one recording      | 5         |
+| report... .pdf                               | Time series of one recording      | 5         |
+
+: A detailed discussion of each output can be found in the other chapters.
+
