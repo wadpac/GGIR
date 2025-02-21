@@ -53,7 +53,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
   if (params_general[["dataFormat"]] == "phb_xlsx") {
     # Philips Health Band data comes with two files per recording that need to be matched
     # Identify all xlsx files
-    xlsx_files = dir(datadir, recursive = FALSE, full.names = TRUE, pattern = "[.]xlsx")
+    xlsx_files = dir(datadir, recursive = TRUE, full.names = TRUE, pattern = "[.]xlsx")
     xlsx_files = xlsx_files[grep(pattern = "sleep|datalist", x = xlsx_files, ignore.case = TRUE)]
     # Identify the pairs by looking for matching ID
     fileOverview = data.frame(filename = xlsx_files)
@@ -239,17 +239,19 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
     }
     
     # filename
-    fname = basename(unlist(fnames[i])[1])
-    
-    outputFileName = paste0(metadatadir, "/meta/basic/meta_", fname, ".RData")
-    
-    skip = TRUE
-    if (params_general[["overwrite"]] == TRUE) {
-      skip = FALSE
-    } else {
-      if (!file.exists(outputFileName)) {
+    if (!all(is.na(unlist(fnames[i])))) {
+      fname = basename(unlist(fnames[i])[1])
+      outputFileName = paste0(metadatadir, "/meta/basic/meta_", fname, ".RData")
+      skip = TRUE
+      if (params_general[["overwrite"]] == TRUE) {
         skip = FALSE
+      } else {
+        if (!file.exists(outputFileName)) {
+          skip = FALSE
+        }
       }
+    } else {
+      skip = TRUE
     }
     if (skip == FALSE) {
       I = I_bu
@@ -334,6 +336,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                                    desiredtz = params_general[["desiredtz"]],
                                    configtz = params_general[["configtz"]],
                                    timeformatName = "extEpochData_timeformat")
+        if (nrow(D$data) < 2) next
         epochSize = difftime(D$data$timestamp[2], D$data$timestamp[1], 
                              units = "secs")
         epSizeShort = as.numeric(epochSize)
@@ -349,6 +352,11 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
           D$data = D$data[, -extraVars, drop = FALSE]
         }
         colnames(D$data)[which(colnames(D$data) == "counts")] = "ExtAct"
+        # PHB can have missing values, which represent detected nonwear
+        na_indices = which(is.na(D$data$ExtAct))
+        if (length(na_indices) > 0) {
+          D$data$ExtAct[na_indices] = -1 # set temporarily to -1
+        }
         D$data = D$data[, grep(pattern = "cardio|heart|sleepevent|battery|duration|missing|activem|vo2|energy|respiration|timestamp",
                                x = colnames(D$data), ignore.case = TRUE, invert = TRUE)]
       } else if (params_general[["dataFormat"]] == "fitbit_json") {
@@ -481,11 +489,12 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         # Using rolling long window sum to indicate whether it is nonwear
         nonwearscore = rep(0, LML)
         ni = 1
+ 
         for (g in seq(from = 1, to = length(imp), by = epSizeLong / epSizeShort)) {
           iend = g + (epSizeNonWear / epSizeShort) - 1
           indices = g:iend
           if (iend <= length(imp)) {
-            if (sum(imp[indices], na.rm = TRUE) == 0) {
+            if (any(imp[indices] < 0) || sum(imp[indices], na.rm = TRUE) <= 0) {
               nonwearscore[ni] = 3
             }
             # For Fitbit and Sensewear we do nonwear detection based on calories
@@ -532,8 +541,12 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                      timestamp = F, 
                      reporttype = c("type"))
       }
+      if (params_general[["dataFormat"]] == "phb_xlsx") {
+        neg_indices = which(D$data$ExtAct < 0)
+        D$data$ExtAct[neg_indices] = 0
+      }
       # create data.frame for metalong, note that light and temperature are just set at zero
-      M$metalong = data.frame(timestamp = time_longEp_8601,nonwearscore = nonwearscore, #rep(0,LML)
+      M$metalong = data.frame(timestamp = time_longEp_8601, nonwearscore = nonwearscore, #rep(0,LML)
                               clippingscore = rep(0,LML), lightmean = rep(0,LML),
                               lightpeak = rep(0,LML), temperaturemean = rep(0,LML), EN = rep(0,LML))
       
