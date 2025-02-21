@@ -375,6 +375,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               }
             }
             #===
+            ExtFunColsi_backup = ExtFunColsi
             for (mi in 1:ncol(vari)) { #run through metrics (for features based on single metrics)
               #=======================================
               # Motivation on the code below:
@@ -397,6 +398,12 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               NRV = length(which(is.na(as.numeric(as.matrix(vari[,mi]))) == FALSE))
               # Note: vari equals the imputed time series (metashort) data from one day
               varnum = as.numeric(as.matrix(vari[,mi])) # Note: varnum is one column of vari
+              if (length(ExtFunColsi_backup) > 0) { # If an external function was used
+                if (mi %in% ExtFunColsi_backup == TRUE) {
+                  rti = which(ExtFunColsi_backup == mi)
+                  ExtFunColsi = ExtFunColsi_backup[rti] # column index where to find the corresponding info
+                }
+              }
               #==============================
               # varnum_step
               isAccMetric = minames[mi] %in% c("ENMO","LFENMO", "BFEN", "EN", "HFEN", "HFENplus", "MAD", "ENMOa",
@@ -639,29 +646,29 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   }
                 }
                 
-                
                 if (length(ExtFunColsi) > 0) { # If events are detected with external function
-                  if (myfun$reporttype == "event") {
-                    # Step bout detection
-                    eventBouts = detectEventBouts(myfun, varnum_event = varnum_event,
-                                                  varnum = varnum,
-                                                  UnitReScale = UnitReScale,
-                                                  daysummary = daysummary,
-                                                  ds_names = ds_names,
-                                                  di = di, fi = fi,
-                                                  ws3 = ws3,
-                                                  boutnameEnding = paste0(cn_metashort[mi],
-                                                                          anwi_nameindices[anwi_index]))
-                    
-                    daysummary = eventBouts$daysummary
-                    ds_names = eventBouts$ds_names
-                    di = eventBouts$di
-                    fi = eventBouts$fi
+                  if (mi %in% ExtFunColsi == TRUE) { # INSERT HERE VARIABLES DERIVED WITH EXTERNAL FUNCTION
+                    if (length(rti) == 1 && myfun$reporttype[rti] == "event") {
+                      # Step bout detection
+                      eventBouts = detectEventBouts(myfun, varnum_event = varnum_event,
+                                                    varnum = varnum,
+                                                    UnitReScale = UnitReScale,
+                                                    daysummary = daysummary,
+                                                    ds_names = ds_names,
+                                                    di = di, fi = fi,
+                                                    ws3 = ws3,
+                                                    boutnameEnding = paste0(cn_metashort[mi],
+                                                                            anwi_nameindices[anwi_index]))
+                      
+                      daysummary = eventBouts$daysummary
+                      ds_names = eventBouts$ds_names
+                      di = eventBouts$di
+                      fi = eventBouts$fi
+                    }
                   }
                 }
               }
               if (mi %in% ExtFunColsi == TRUE) { # INSERT HERE VARIABLES DERIVED WITH EXTERNAL FUNCTION
-                rti = which(ExtFunColsi == mi)
                 if (myfun$reporttype[rti] == "event") { # For the event report type we take the sum
                   
                   segmentInfo = list(anwi_nameindices = anwi_nameindices,
