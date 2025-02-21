@@ -251,12 +251,12 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         #------------------------------------------------------------------
         # calculate L5 because this is used as back-up approach
         tmpACC = ACC[qqq1:qqq2]
-        windowRL = round((3600/ws3)*5)
+        windowRL = round((3600/ws3) * 5)
         if ((windowRL / 2) == round(windowRL / 2)) windowRL = windowRL + 1
         if (length(tmpACC) < windowRL) {  0 # added 4/4/2-17
           L5 = 0
         } else {
-          ZRM = zoo::rollmean(x = c(tmpACC), k = windowRL, fill = "extend", align = "center") #
+          ZRM = zoo::rollmean(x = tmpACC, k = windowRL, fill = "extend", align = "center")
           L5 = which(ZRM == min(ZRM))[1]
           if (sd(ZRM) == 0) {
             L5 = 0
@@ -303,7 +303,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
             }
             if (newqqq2 > length(anglez)) newqqq2 = length(anglez)
             # only try to extract SPT again if it is possible to extract a window of more than 23 hour
-            if (newqqq2 < length(anglez) & (newqqq2 - newqqq1) > (23*(3600/ws3)) ) {
+            if (newqqq2 < length(anglez) & (newqqq2 - newqqq1) > (23 * (3600/ws3)) ) {
               # Recalculate nonwear percentage for new window (6pm to 6pm)
               nonwear_percentage = (length(which(invalid[newqqq1:newqqq2] == 1)) /  (newqqq2 - newqqq1 + 1)) * 100
               guider_to_use = decide_guider(params_sleep[["HASPT.algo"]], nonwear_percentage)
