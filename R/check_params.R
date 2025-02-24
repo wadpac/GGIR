@@ -33,7 +33,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "possible_nap_window", "possible_nap_dur",
                        "colid", "coln1", "def.noc.sleep", "nnights", 
                        "sleepefficiency.metric", "possible_nap_edge_acc", "HDCZA_threshold",
-                       "possible_nap_gap", "oakley_threshold")
+                       "possible_nap_gap", "oakley_threshold",
+                       "MarkerButtonLimit", "minimum_sleep_fraction")
     boolean_params = c("ignorenonwear", "HASPT.ignore.invalid",
                        "relyonguider", "sleeplogidnum", "sib_must_fully_overlap_with_TimeInBed")
     character_params = c("HASPT.algo", "HASIB.algo", "Sadeh_axis", "nap_model",
@@ -182,7 +183,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   
   if (length(params_sleep) > 0) {
     if (length(params_sleep[["def.noc.sleep"]]) != 2) {
-      if (params_sleep[["HASPT.algo"]][1] %in% c("HorAngle", "NotWorn", "ActiWare", "vanHees2025") == FALSE) {
+      if (params_sleep[["HASPT.algo"]][1] %in% c("HorAngle", "NotWorn", "MotionWare", "vanHees2025") == FALSE) {
         params_sleep[["HASPT.algo"]] = "HDCZA"
       }
       if (length(params_sleep[["HASPT.algo"]]) == 2 && params_sleep[["HASPT.algo"]][2] == "NotWorn") {
@@ -419,15 +420,6 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         params_output[["save_ms5raw_format"]] == "csv") {
       # always add RData if only csv is specified, because otherwise visualreport cannot be generated
       params_output[["save_ms5raw_format"]] = c(params_output[["save_ms5raw_format"]], "RData")
-    }
-    
-    if (params_247[["part6CR"]] == FALSE && params_247[["part6HCA"]] == FALSE) {
-      warning(paste0("Both part6CR and part6HCA are set to FALSE by which there is ",
-                     "not analysis to be run in part 6."), call. = FALSE)
-    }
-    
-    if (length(params_247[["clevels"]]) == 1) {
-      warning("\nParameter clevels expects a number vector of at least 2 values, current length is 1", call. = FALSE)
     }
   }
   

@@ -1344,6 +1344,14 @@ GGIR(mode = 1:5,
         Numeric (default = 20)
         Threshold as used by the Oakley algorithm, original suggestionw as 20, 40 or 80.
       }
+      \item{MarkerButtonLimit}{
+        Numeric (default 3)
+        Parameter used by MotionWare guider
+      }
+      \item{minimum_sleep_fraction}{
+        Numeric (default 0.6)
+        Parameter used by MotionWare guider
+      }
 
     }
   }
