@@ -263,7 +263,7 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
     #   # exit function with the result
     #   return(invisible(list(SPTE_start = start, SPTE_end = end, tib.threshold = 0,
     #                  part3_guider = HASPT.algo)))
-    # }
+    }
 
     # Now define nomov periods with the selected strategy for invalid time
     nomov = rep(0,length(x)) # no movement
