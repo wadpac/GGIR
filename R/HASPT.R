@@ -75,53 +75,224 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       # because NotWorn is by definition interested in invalid periods
       # and we definitely do not want to rely on imputed time series
       HASPT.ignore.invalid = NA
-    } else if (HASPT.algo == "vanHees2025") {
-      MarkerButtonLimit = 3
-      MaxSleepGap = 2
-      # ignore all wake  gaps < 120 minutes
-      srle = rle(c(as.numeric(sibs), 0))
-      wakegaps = which(srle$values == 0 & srle$lengths < (60/ws3) * 60 * MaxSleepGap)
-      if (length(wakegaps) > 0) {
-        srle$values[wakegaps] = 1      }
-      sibs = rep(srle$values, srle$lengths)
+    } else if (HASPT.algo == "ActiWare") {
       
-      # keep longest sleep period
-      srle = rle(as.numeric(sibs))
-      if (length(srle$lengths) > 2) {
-        sleepgaps = which(srle$values == 1 & srle$lengths < max(srle$lengths))
-        
-        if (length(sleepgaps) > 0) {
-          srle$values[sleepgaps] = 0
-        }
+      # Auto-Sleep Detection / Marking based on description in
+      # Information bulletin no.3 sleep algorithms by Cambrige Neurotechnologies
+      
+      # parameters that user may want to change
+      MarkerButtonLimit = 3
+      minimum_sleep_fraction = 0.6
+      
+      # (A - classify sleep/wake)
+      if (ws3 == 15) {
+        score_threshold = 1.5
+      } else if (ws3 == 30) {
+        score_threshold = 3
+      } else if (ws3 == 60) {
+        score_threshold = 6
       }
-      sibs = rep(srle$values, srle$lengths)
-      # find start and end
-      start = which(diff(sibs) == 1)
-      end = which(diff(sibs) == -1)
-      # is marker button data present?
-      if (length(marker) > 0) {
-        marker_indices = which(marker == 1)
-        if (length(marker_indices) > 1) {
-          # check for nearby marker buttons and use those 
-          delta_start = abs(start - marker_indices)
-          ds2 = which(delta_start < (60/ws3) * 60 * MarkerButtonLimit)
-          if (length(ds2) > 0) {
-            delta_start = delta_start[ds2]
-            marker_indices2 = marker_indices[ds2]
-            start = marker_indices2[which.min(delta_start)[1]]
+      sleep_wake_score = rep(0, length(activity))
+      sleep_wake_score[which(activity <= score_threshold)] = 1
+      
+      # (B - ignore nonwear)
+      # Ignore all detected nonwear
+      sleep_wake_score[which(invalid == 1)] = 0 
+      
+      # Only do analysis if at least 1 hour of sleep and wake in the data
+      # and less than 33% of the data points is invalid
+      Npoints = length(sleep_wake_score) 
+      start_log = end_log = NULL
+      if (length(which(invalid == 1)) / Npoints <= 0.33 &&
+          length(which(sleep_wake_score == 1)) > 60 * (60/ws3) &&
+          length(which(sleep_wake_score == 0)) > 60 * (60/ws3)) {
+        
+        # (F while loop to repeat steps C, D, E to find all sleep periods) 
+        start_point = 1
+        while (start_point < Npoints - 180 * (60/ws3)) { 
+          # (C - find midpoint)
+          find_midpoint = function(cnt, sleep_wake_score, ws3) {
+            midpoint = NULL
+            avscore = 1
+            while (avscore > 0.2) {
+              j0 = cnt
+              j1 = cnt + ((60/ws3) * 180)
+              if (j1 > Npoints) break
+              avscore = 1 - mean(sleep_wake_score[j0:j1])
+              cnt = cnt + 1
+            }
+            while (avscore < 0.22) {
+              j1 = j1 + 1
+              if (j1 > Npoints) break
+              avscore = 1 - mean(sleep_wake_score[j0:j1])
+            }
+            midpoint = round((j1 - j0) / 2) + j0
+            invisible(list(j0 = j0, j1 = j1, midpoint = midpoint))
           }
-          delta_end = abs(end - marker_indices)
-          de2 = which(delta_end < (60/ws3) * 60 * MarkerButtonLimit)
-          if (length(de2) > 0) {
-            delta_end = delta_end[de2]
-            marker_indices2 = marker_indices[de2]
-            end = marker_indices2[which.min(delta_end)[1]]
+          # use j0 and j1 as estimate for start and end for now
+          fmout = find_midpoint(cnt = start_point, sleep_wake_score, ws3)
+          
+          start = fmout$j0
+          end = fmout$j1
+          midpoint = fmout$midpoint
+          
+          # (D - extend)
+          find_edge = function(x, where, midpoint, minimum_sleep_fraction) {
+            if (where == "before") {
+              xrle = rle(rev(x[1:midpoint]))
+            } else if (where == "after") {
+              xrle = rle(x[midpoint:length(x)])
+            }
+            log_len = 0
+            if (xrle$values[1] == 0) {
+              log_len = log_len + xrle$lengths[1]
+              xrle$values = xrle$values[-1]
+              xrle$lengths = xrle$lengths[-1]
+            }
+            if (length(xrle$values) > 0) {
+              if (xrle$values[1] == 1) {
+                log_len = log_len + xrle$lengths[1]
+                xrle$values = xrle$values[-1]
+                xrle$lengths = xrle$lengths[-1]
+              }
+              Nsegments = length(xrle$lengths)
+              Nout = floor(Nsegments / 2)
+              if (Nsegments > 1) {
+                wakesegs = xrle$lengths[seq(1, by = 2, length.out = Nout)]
+                sleepsegs = xrle$lengths[seq(2, by = 2, length.out = Nout)]
+                fractions = sleepsegs / (sleepsegs + wakesegs)
+                too_little_sleep = which(fractions < minimum_sleep_fraction)[1] - 1
+                if (length(too_little_sleep) == 1 && !is.na(too_little_sleep) &&
+                    too_little_sleep > 0) {
+                  log_len = log_len + sum(xrle$lengths[1:too_little_sleep])
+                }
+              }
+            }
+            if (where == "before") {
+              edge = midpoint - log_len
+            } else if (where == "after") {
+              edge = midpoint + log_len
+            }
+            return(edge)
           }
+          start = find_edge(sleep_wake_score, where = "before", midpoint, minimum_sleep_fraction)
+          end = find_edge(sleep_wake_score, where = "after", midpoint, minimum_sleep_fraction)
+          # (E)
+          # ignore marker button if while loop is stuck
+          do_no_use_marker = FALSE
+          if (length(start_log) > 2 && 
+              start_log[length(start_log)] == start_log[length(start_log) - 1]) {
+            do_no_use_marker = TRUE
+          }
+          # is marker button data present?
+          if (length(marker) > 0 && do_no_use_marker == FALSE) {
+            marker_indices = which(marker == 1)
+            if (length(marker_indices) > 1) {
+              # check for nearby marker buttons and use those
+              delta_start = abs(start - marker_indices)
+              ds2 = which(delta_start < (60/ws3) * 60 * MarkerButtonLimit)
+              if (length(ds2) > 0) {
+                start = rev(marker_indices[ds2])[1] # use last
+              }
+              delta_end = abs(end - marker_indices)
+              de2 = which(delta_end < (60/ws3) * 60 * MarkerButtonLimit)
+              if (length(de2) > 0) {
+                end = rev(marker_indices[de2])[1] # use last
+              }
+            }
+          }
+          start_log = c(start_log, start)
+          end_log = c(end_log, end)
+          start_point = end + (60/ws3) * 60
         }
+        dur_log = end_log - start_log + 1
+        # Keep longest sleep periods, because at the moment GGIR cannot handle multiple sleep periods
+        start = start_log[which.max(dur_log)[1]]
+        end = end_log[which.max(dur_log)[1]]
+      } else {
+        start = 1
+        end = length(sibs)
+        tib.threshold = 0
       }
       # exit function with the result
-      return(invisible(list(SPTE_start = start, SPTE_end = end, tib.threshold = NULL,
-                     part3_guider = HASPT.algo)))
+      return(invisible(list(SPTE_start = start, SPTE_end = end, tib.threshold = 0,
+                            part3_guider = HASPT.algo)))
+    } else if (HASPT.algo == "vanHees2025") {
+      MarkerButtonLimit = 3
+      MaxSleepGap = 1
+      
+      # (A - classify sleep/wake)
+      if (ws3 == 15) {
+        score_threshold = 1.5
+      } else if (ws3 == 30) {
+        score_threshold = 3
+      } else if (ws3 == 60) {
+        score_threshold = 6
+      }
+      sleep_wake_score = rep(0, length(activity))
+      sleep_wake_score[which(activity <= score_threshold)] = 1
+      
+      # (B - ignore nonwear)
+      # Ignore all detected nonwear
+      # sleep_wake_score = sibs
+      sleep_wake_score[which(invalid == 1)] = 0 
+      
+      Npoints = length(sleep_wake_score)
+
+      # only consider when < 33% invalid
+      # - at least 1 hour of wake
+      # - at least 1 hour of sleep
+      if (length(which(invalid == 1)) / Npoints <= 0.33 &&
+          length(which(sleep_wake_score == 1)) > 60 * (60/ws3) &&
+          length(which(sleep_wake_score == 0)) > 60 * (60/ws3)) {
+        # ignore all wake gaps < MaxSleepGap (hours)
+        srle = rle(c(0, as.numeric(sleep_wake_score), 0))
+        wakegaps = which(srle$values == 0 & srle$lengths < (60/ws3) * 60 * MaxSleepGap)
+        if (length(wakegaps) > 0) {
+          wakegaps = wakegaps[which(wakegaps == 1 | wakegaps != length(srle$values))]
+          srle$values[wakegaps] = 1
+        }
+        sleep_wake_score = rep(srle$values, srle$lengths)
+        # keep longest sleep period
+        srle = rle(c(0, as.numeric(sleep_wake_score), 0))
+        if (length(srle$lengths) > 2) {
+          sleepgaps = which(srle$values == 1 & srle$lengths < max(srle$lengths[which(srle$values == 1)]))
+          if (length(sleepgaps) > 0) {
+            srle$values[sleepgaps] = 0
+          }
+        }
+        sleep_wake_score = rep(srle$values, srle$lengths)
+        # find start and end
+        start = which(diff(sleep_wake_score) == 1)
+        end = which(diff(sleep_wake_score) == -1)
+        sleep_wake_score = sleep_wake_score[3:(length(sleep_wake_score) - 2)]
+        # is marker button data present?
+        if (length(marker) > 0) {
+          marker_indices = which(marker == 1)
+          if (length(marker_indices) > 1) {
+            # check for nearby marker buttons and use those
+            delta_start = abs(start - marker_indices)
+            ds2 = which(delta_start < (60/ws3) * 60 * MarkerButtonLimit)
+            if (length(ds2) > 0) {
+              start = rev(marker_indices[ds2])[1] # use last
+            }
+            delta_end = abs(end - marker_indices)
+            de2 = which(delta_end < (60/ws3) * 60 * MarkerButtonLimit)
+            if (length(de2) > 0) {
+              end = rev(marker_indices[de2])[1] # use last
+            }
+          }
+        }
+        if (length(start) > 0 && start != 1) start = start - 1
+        if (length(end) > 0 && end != 1) end = end - 1
+      } else {
+        start = 1
+        end = length(sleep_wake_score)
+        tib.threshold = 0
+      }
+      # exit function with the result
+      return(invisible(list(SPTE_start = start, SPTE_end = end, tib.threshold = 0,
+                            part3_guider = HASPT.algo)))
     }
 
     # Now define nomov periods with the selected strategy for invalid time
