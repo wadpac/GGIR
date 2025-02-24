@@ -216,54 +216,54 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       # exit function with the result
       return(invisible(list(SPTE_start = start, SPTE_end = end, tib.threshold = 0,
                             part3_guider = HASPT.algo)))
-    } else if (HASPT.algo == "vanHees2025") {
-      MarkerButtonLimit = 3
-      MaxSleepGap = 2
-      # ignore all wake  gaps < 120 minutes
-      srle = rle(c(as.numeric(sibs), 0))
-      wakegaps = which(srle$values == 0 & srle$lengths < (60/ws3) * 60 * MaxSleepGap)
-      if (length(wakegaps) > 0) {
-        srle$values[wakegaps] = 1      }
-      sibs = rep(srle$values, srle$lengths)
-      
-      # keep longest sleep period
-      srle = rle(as.numeric(sibs))
-      if (length(srle$lengths) > 2) {
-        sleepgaps = which(srle$values == 1 & srle$lengths < max(srle$lengths))
-        
-        if (length(sleepgaps) > 0) {
-          srle$values[sleepgaps] = 0
-        }
-      }
-      sibs = rep(srle$values, srle$lengths)
-      # find start and end
-      start = which(diff(sibs) == 1)
-      end = which(diff(sibs) == -1)
-      # is marker button data present?
-      if (length(marker) > 0) {
-        marker_indices = which(marker == 1)
-        if (length(marker_indices) > 1) {
-          # check for nearby marker buttons and use those 
-          delta_start = abs(start - marker_indices)
-          ds2 = which(delta_start < (60/ws3) * 60 * MarkerButtonLimit)
-          if (length(ds2) > 0) {
-            delta_start = delta_start[ds2]
-            marker_indices2 = marker_indices[ds2]
-            start = marker_indices2[which.min(delta_start)[1]]
-          }
-          delta_end = abs(end - marker_indices)
-          de2 = which(delta_end < (60/ws3) * 60 * MarkerButtonLimit)
-          if (length(de2) > 0) {
-            delta_end = delta_end[de2]
-            marker_indices2 = marker_indices[de2]
-            end = marker_indices2[which.min(delta_end)[1]]
-          }
-        }
-      }
-      # exit function with the result
-      return(invisible(list(SPTE_start = start, SPTE_end = end, tib.threshold = 0,
-                     part3_guider = HASPT.algo)))
-    }
+    # } else if (HASPT.algo == "vanHees2025") {
+    #   MarkerButtonLimit = 3
+    #   MaxSleepGap = 2
+    #   # ignore all wake  gaps < 120 minutes
+    #   srle = rle(c(as.numeric(sibs), 0))
+    #   wakegaps = which(srle$values == 0 & srle$lengths < (60/ws3) * 60 * MaxSleepGap)
+    #   if (length(wakegaps) > 0) {
+    #     srle$values[wakegaps] = 1      }
+    #   sibs = rep(srle$values, srle$lengths)
+    #   
+    #   # keep longest sleep period
+    #   srle = rle(as.numeric(sibs))
+    #   if (length(srle$lengths) > 2) {
+    #     sleepgaps = which(srle$values == 1 & srle$lengths < max(srle$lengths))
+    #     
+    #     if (length(sleepgaps) > 0) {
+    #       srle$values[sleepgaps] = 0
+    #     }
+    #   }
+    #   sibs = rep(srle$values, srle$lengths)
+    #   # find start and end
+    #   start = which(diff(sibs) == 1)
+    #   end = which(diff(sibs) == -1)
+    #   # is marker button data present?
+    #   if (length(marker) > 0) {
+    #     marker_indices = which(marker == 1)
+    #     if (length(marker_indices) > 1) {
+    #       # check for nearby marker buttons and use those 
+    #       delta_start = abs(start - marker_indices)
+    #       ds2 = which(delta_start < (60/ws3) * 60 * MarkerButtonLimit)
+    #       if (length(ds2) > 0) {
+    #         delta_start = delta_start[ds2]
+    #         marker_indices2 = marker_indices[ds2]
+    #         start = marker_indices2[which.min(delta_start)[1]]
+    #       }
+    #       delta_end = abs(end - marker_indices)
+    #       de2 = which(delta_end < (60/ws3) * 60 * MarkerButtonLimit)
+    #       if (length(de2) > 0) {
+    #         delta_end = delta_end[de2]
+    #         marker_indices2 = marker_indices[de2]
+    #         end = marker_indices2[which.min(delta_end)[1]]
+    #       }
+    #     }
+    #   }
+    #   # exit function with the result
+    #   return(invisible(list(SPTE_start = start, SPTE_end = end, tib.threshold = 0,
+    #                  part3_guider = HASPT.algo)))
+    # }
 
     # Now define nomov periods with the selected strategy for invalid time
     nomov = rep(0,length(x)) # no movement

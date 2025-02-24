@@ -2,7 +2,7 @@
 
 - Add Oakley sleep detection algorithm #1267
 
-- Add guider vanHees2025 to be used with Oakley sleep detection #1267.
+- Add guider MotionWare to be used with Oakley sleep detection #1267.
 
 # CHANGES IN GGIR VERSION 3.2-0
 

@@ -44,10 +44,10 @@ HASPT(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
     elsewhere in GGIR.
   }
   \item{marker}{
-    Numeric vector of classified sibs with \code{HASIB}, only used for HASPT.algo vanHees2025.
+    Numeric vector of classified sibs with \code{HASIB}, used by MotionWare.
   }
   \item{sibs}{
-    Numeric vector of classified sibs with \code{HASIB}, only used for HASPT.algo vanHees2025.
+    Numeric vector of classified sibs with \code{HASIB}, experimental not used at the moment.
   }
 }
 \value{
