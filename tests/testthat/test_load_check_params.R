@@ -161,9 +161,7 @@ test_that("load_params can load parameters", {
   
   # last value in LUX_day_segments should be 24
   params_247$LUX_day_segments = c(9, 18)
-  check = expect_warning(check_params(params_247 = params_247),
-                         paste0("Both part6CR and part6HCA are set to FALSE by which ",
-                                "there is not analysis to be run in part 6."))
+  check = check_params(params_247 = params_247)
   expect_equal(check$params_247$LUX_day_segments[length(check$params_247$LUX_day_segments)], 24)
   params_247 = params$params_247
   

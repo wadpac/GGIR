@@ -203,6 +203,12 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     }
   }
   
+  # This check cannot be part of check_params because it needs to know mode:
+  if (6 %in% mode && params_247[["part6CR"]] == FALSE && params_247[["part6HCA"]]) {
+    warning(paste0("Both part6CR and part6HCA are set to FALSE by which there is ",
+                   "not analysis to be run in part 6."), call. = FALSE)
+  }
+  
   #-----------------------------------------------------------
   # Print GGIR header to console
   GGIRversion = "could not extract version"
