@@ -79,11 +79,12 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       
       # Auto-Sleep Detection / Marking based on description in
       # Information bulletin no.3 sleep algorithms by Cambrige Neurotechnologies
+      # Section 1.6
       
       # parameters that user may want to change
-      
-      minimum_sleep_fraction = 0.6
-      
+      MarkerButtonLimit = 1 #3
+      # minimum_sleep_fraction = 0.6
+      Prescan_Sleep_Fraction = 0.8 #0.8
       # (A - classify sleep/wake)
       if (ws3 == 15) {
         score_threshold = 1.5
@@ -103,6 +104,10 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       # and less than 33% of the data points is invalid
       Npoints = length(sleep_wake_score) 
       start_log = end_log = NULL
+      # initialise output
+      start = 0
+      end = 0 #length(sibs)
+      tib.threshold = 0
       if (length(which(invalid == 1)) / Npoints <= 0.33 &&
           length(which(sleep_wake_score == 1)) > 60 * (60/ws3) &&
           length(which(sleep_wake_score == 0)) > 60 * (60/ws3)) {
@@ -112,20 +117,24 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
           # (C - find midpoint)
           find_midpoint = function(cnt, sleep_wake_score, ws3) {
             midpoint = NULL
-            avscore = 1
-            while (avscore > 0.2) {
+            avscore = 0
+            while (avscore < Prescan_Sleep_Fraction) { #0.8
               j0 = cnt
               j1 = cnt + ((60/ws3) * 180)
               if (j1 > Npoints) break
-              avscore = 1 - mean(sleep_wake_score[j0:j1])
+              avscore = mean(sleep_wake_score[j0:j1])
               cnt = cnt + 1
             }
-            while (avscore < 0.22) {
-              j1 = j1 + 1
-              if (j1 > Npoints) break
-              avscore = 1 - mean(sleep_wake_score[j0:j1])
+            if (avscore >= Prescan_Sleep_Fraction) {
+              while (avscore > Prescan_Sleep_Fraction - 0.02) {
+                j1 = j1 + 1
+                if (j1 > Npoints) break
+                avscore = mean(sleep_wake_score[j0:j1])
+              }
+              midpoint = round((j1 - j0) / 2) + j0
+            } else {
+              j0 = j1 = midpoint = NULL
             }
-            midpoint = round((j1 - j0) / 2) + j0
             invisible(list(j0 = j0, j1 = j1, midpoint = midpoint))
           }
           # use j0 and j1 as estimate for start and end for now
@@ -134,48 +143,48 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
           start = fmout$j0
           end = fmout$j1
           midpoint = fmout$midpoint
-          
-          # (D - extend)
-          find_edge = function(x, where, midpoint, minimum_sleep_fraction) {
-            if (where == "before") {
-              xrle = rle(rev(x[1:midpoint]))
-            } else if (where == "after") {
-              xrle = rle(x[midpoint:length(x)])
-            }
-            log_len = 0
-            if (xrle$values[1] == 0) {
-              log_len = log_len + xrle$lengths[1]
-              xrle$values = xrle$values[-1]
-              xrle$lengths = xrle$lengths[-1]
-            }
-            if (length(xrle$values) > 0) {
-              if (xrle$values[1] == 1) {
-                log_len = log_len + xrle$lengths[1]
-                xrle$values = xrle$values[-1]
-                xrle$lengths = xrle$lengths[-1]
-              }
-              Nsegments = length(xrle$lengths)
-              Nout = floor(Nsegments / 2)
-              if (Nsegments > 1) {
-                wakesegs = xrle$lengths[seq(1, by = 2, length.out = Nout)]
-                sleepsegs = xrle$lengths[seq(2, by = 2, length.out = Nout)]
-                fractions = sleepsegs / (sleepsegs + wakesegs)
-                too_little_sleep = which(fractions < minimum_sleep_fraction)[1] - 1
-                if (length(too_little_sleep) == 1 && !is.na(too_little_sleep) &&
-                    too_little_sleep > 0) {
-                  log_len = log_len + sum(xrle$lengths[1:too_little_sleep])
-                }
-              }
-            }
-            if (where == "before") {
-              edge = midpoint - log_len
-            } else if (where == "after") {
-              edge = midpoint + log_len
-            }
-            return(edge)
-          }
-          start = find_edge(sleep_wake_score, where = "before", midpoint, minimum_sleep_fraction)
-          end = find_edge(sleep_wake_score, where = "after", midpoint, minimum_sleep_fraction)
+          if (is.null(midpoint)) break
+          # # (D - extend)
+          # find_edge = function(x, where, midpoint, minimum_sleep_fraction) {
+          #   if (where == "before") {
+          #     xrle = rle(rev(x[1:midpoint]))
+          #   } else if (where == "after") {
+          #     xrle = rle(x[midpoint:length(x)])
+          #   }
+          #   log_len = 0
+          #   if (xrle$values[1] == 0) {
+          #     log_len = log_len + xrle$lengths[1]
+          #     xrle$values = xrle$values[-1]
+          #     xrle$lengths = xrle$lengths[-1]
+          #   }
+          #   if (length(xrle$values) > 0) {
+          #     if (xrle$values[1] == 1) {
+          #       log_len = log_len + xrle$lengths[1]
+          #       xrle$values = xrle$values[-1]
+          #       xrle$lengths = xrle$lengths[-1]
+          #     }
+          #     Nsegments = length(xrle$lengths)
+          #     Nout = floor(Nsegments / 2)
+          #     if (Nsegments > 1) {
+          #       wakesegs = xrle$lengths[seq(1, by = 2, length.out = Nout)]
+          #       sleepsegs = xrle$lengths[seq(2, by = 2, length.out = Nout)]
+          #       fractions = sleepsegs / (sleepsegs + wakesegs)
+          #       too_little_sleep = which(fractions < minimum_sleep_fraction)[1] - 1
+          #       if (length(too_little_sleep) == 1 && !is.na(too_little_sleep) &&
+          #           too_little_sleep > 0) {
+          #         log_len = log_len + sum(xrle$lengths[1:too_little_sleep])
+          #       }
+          #     }
+          #   }
+          #   if (where == "before") {
+          #     edge = midpoint - log_len
+          #   } else if (where == "after") {
+          #     edge = midpoint + log_len
+          #   }
+          #   return(edge)
+          # }
+          # start = find_edge(sleep_wake_score, where = "before", midpoint, minimum_sleep_fraction)
+          # end = find_edge(sleep_wake_score, where = "after", midpoint, minimum_sleep_fraction)
           # (E)
           # ignore marker button if while loop is stuck
           do_no_use_marker = FALSE
@@ -208,10 +217,6 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
         # Keep longest sleep periods, because at the moment GGIR cannot handle multiple sleep periods
         start = start_log[which.max(dur_log)[1]]
         end = end_log[which.max(dur_log)[1]]
-      } else {
-        start = 1
-        end = length(sibs)
-        tib.threshold = 0
       }
       # exit function with the result
       return(invisible(list(SPTE_start = start, SPTE_end = end, tib.threshold = 0,
