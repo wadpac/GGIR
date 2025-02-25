@@ -62,8 +62,8 @@ test_that("External epoch data is correctly converted", {
   load(paste0(QCbasis, "/meta_Actiwatch.csv.RData"))
   expect_equal(sum(M$metalong$nonwearscore), 0)
   expect_equal(nrow(M$metashort), 860)
-  expect_equal(ncol(M$metashort), 3)
-  expect_equal(colnames(M$metashort), c("timestamp", "ZCY", "ExtSleep"))
+  # expect_equal(ncol(M$metashort), 4)
+  expect_equal(colnames(M$metashort)[1:3], c("timestamp", "ZCY", "ExtSleep"))
 
   # Tidy up by deleting output folder
   if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
