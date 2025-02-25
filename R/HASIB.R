@@ -219,7 +219,9 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
       if (count_type == "NeishabouriCount") colnames(sib_classification)[cti] = paste0(HASIB.algo, "_Neishabouri")
       cti = cti + 1
     }
-  } else if (HASIB.algo == "Oakley1997") {  
+  } else if (HASIB.algo == "Oakley1997") {
+    # Sleep Detection based on description in
+    # Information bulletin no.3 sleep algorithms by Cambrige Neurotechnologies
     count_types = c()
     if (length(zeroCrossingCount) > 0) count_types = "zeroCrossingCount"
     if (length(BrondCount) > 0) count_types = c(count_types, "BrondCount")
@@ -260,7 +262,7 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
       PS = rowSums(counts_matrix * oakley_coef)
       rm(counts_matrix)
       PSscores = rep(0, length(PS))
-      PSsibs = which(PS < oakley_threshold)
+      PSsibs = which(PS <= oakley_threshold)
       if (length(PSsibs) > 0) {
         PSscores[PSsibs] = 1 # sleep
       }
