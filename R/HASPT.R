@@ -82,8 +82,8 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       # Section 1.6
       
       # parameters that user may want to change
-      MarkerButtonLimit = 1 #3
-      # minimum_sleep_fraction = 0.6
+      MarkerButtonLimit = 3
+      minimum_sleep_fraction = 0.6
       Prescan_Sleep_Fraction = 0.8 #0.8
       # (A - classify sleep/wake)
       if (ws3 == 15) {
@@ -144,47 +144,58 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
           end = fmout$j1
           midpoint = fmout$midpoint
           if (is.null(midpoint)) break
-          # # (D - extend)
-          # find_edge = function(x, where, midpoint, minimum_sleep_fraction) {
-          #   if (where == "before") {
-          #     xrle = rle(rev(x[1:midpoint]))
-          #   } else if (where == "after") {
-          #     xrle = rle(x[midpoint:length(x)])
-          #   }
-          #   log_len = 0
-          #   if (xrle$values[1] == 0) {
-          #     log_len = log_len + xrle$lengths[1]
-          #     xrle$values = xrle$values[-1]
-          #     xrle$lengths = xrle$lengths[-1]
-          #   }
-          #   if (length(xrle$values) > 0) {
-          #     if (xrle$values[1] == 1) {
-          #       log_len = log_len + xrle$lengths[1]
-          #       xrle$values = xrle$values[-1]
-          #       xrle$lengths = xrle$lengths[-1]
-          #     }
-          #     Nsegments = length(xrle$lengths)
-          #     Nout = floor(Nsegments / 2)
-          #     if (Nsegments > 1) {
-          #       wakesegs = xrle$lengths[seq(1, by = 2, length.out = Nout)]
-          #       sleepsegs = xrle$lengths[seq(2, by = 2, length.out = Nout)]
-          #       fractions = sleepsegs / (sleepsegs + wakesegs)
-          #       too_little_sleep = which(fractions < minimum_sleep_fraction)[1] - 1
-          #       if (length(too_little_sleep) == 1 && !is.na(too_little_sleep) &&
-          #           too_little_sleep > 0) {
-          #         log_len = log_len + sum(xrle$lengths[1:too_little_sleep])
-          #       }
-          #     }
-          #   }
-          #   if (where == "before") {
-          #     edge = midpoint - log_len
-          #   } else if (where == "after") {
-          #     edge = midpoint + log_len
-          #   }
-          #   return(edge)
-          # }
-          # start = find_edge(sleep_wake_score, where = "before", midpoint, minimum_sleep_fraction)
-          # end = find_edge(sleep_wake_score, where = "after", midpoint, minimum_sleep_fraction)
+          # print(paste0("duration 1 ", (end - start) / (2*60)))
+          # (D - extend)
+          find_edge = function(x, where, midpoint, minimum_sleep_fraction) {
+            if (where == "before") {
+              xrle = rle(rev(x[1:midpoint]))
+            } else if (where == "after") {
+              xrle = rle(x[midpoint:length(x)])
+            }
+            log_len = 0
+
+            if (xrle$values[1] == 0) {
+              # If midpoint equals wake, then always include that segment              
+              log_len = log_len + xrle$lengths[1]
+              xrle$values = xrle$values[-1]
+              xrle$lengths = xrle$lengths[-1]
+            }
+            if (length(xrle$values) > 0) {
+              if (xrle$values[1] == 1) {
+                # Always include first sleep segment
+                log_len = log_len + xrle$lengths[1]
+                xrle$values = xrle$values[-1]
+                xrle$lengths = xrle$lengths[-1]
+              }
+              Nsegments = length(xrle$lengths)
+              Nout = floor(Nsegments / 2)
+              if (Nsegments > 1) {
+                # Explore which extension is possible
+                wakesegs = cumsum(xrle$lengths[seq(1, by = 2, length.out = Nout)])
+                sleepsegs = cumsum(xrle$lengths[seq(2, by = 2, length.out = Nout)])
+                extension_duration = sleepsegs + wakesegs
+                fractions = sleepsegs / (sleepsegs + wakesegs)
+                # ignore (keep) extensions that do not meet sleep fraction
+                too_little_sleep = which(fractions < minimum_sleep_fraction)
+                if (length(too_little_sleep) > 0) {
+                  last_segment = (too_little_sleep[1] - 1) * 2
+                } else {
+                  last_segment = length(xrle$lengths)
+                }
+                if (last_segment > 0 && !is.na(last_segment)) {
+                  log_len = log_len + sum(xrle$lengths[1:last_segment])
+                }
+              }
+            }
+            if (where == "before") {
+              edge = midpoint - log_len
+            } else if (where == "after") {
+              edge = midpoint + log_len
+            }
+            return(edge)
+          }
+          start = find_edge(sleep_wake_score, where = "before", midpoint, minimum_sleep_fraction)
+          end = find_edge(sleep_wake_score, where = "after", midpoint, minimum_sleep_fraction)
           # (E)
           # ignore marker button if while loop is stuck
           do_no_use_marker = FALSE
