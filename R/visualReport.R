@@ -324,6 +324,14 @@ visualReport = function(metadatadir = c(),
         # onset and wake
         if (mdat$SleepPeriodTime[window_edges[wei]] == 1) {
           toptext = paste0("wake-up ", weekdays(mdat$timestamp[window_edges[wei]]))
+          # add guider name
+          # guider names as defined in function g.part5.savetimeseries
+          guider_names = c('unknown', 'sleeplog', 'HDCZA', 'setwindow', 
+                           'L512', 'HorAngle', 'NotWorn')
+          guider_name =  paste0("guided by: ", guider_names[mdat$guider[window_edges[wei]] + 1])
+          text(x = mdat$timestamp[window_edges[wei]], y = 90,
+               labels = guider_name, las = 2, srt = 90, pos = 2,
+               offset = 0.4, adj = 0, cex = 0.6)
         } else {
           toptext = "onset"  
           # add guider name

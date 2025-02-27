@@ -2,6 +2,8 @@
 
 - Part 5: Fix bug in handling diary for daysleepers in the visualreport. This does not affect any other GGIR output. #1272
 
+- Part 5 and visualreport: When wake up time at start of recording is added in part 5 no log was kept of the guider and bedend column was not recognised, this is now fixed. #1273
+
 # CHANGES IN GGIR VERSION 3.2-0
 
 - Part 2:

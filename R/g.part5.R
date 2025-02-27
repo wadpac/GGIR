@@ -329,8 +329,12 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                 step_count_tmp = aggregate(ts$step_count, by = list(ts$time_num), FUN = function(x) sum(x))
                 colnames(step_count_tmp)[2] = "step_count"
               }
+              agg_guider = aggregate(ts$guider,
+                                     by = list(ts$time_num), FUN = function(x) x[1])
+              colnames(agg_guider)[2] = "guider"
               ts = aggregate(ts[,c("ACC","sibdetection", "diur", "nonwear", angleColName, light_columns, temperature_col)],
                              by = list(ts$time_num), FUN = function(x) mean(x))
+              ts = merge(x = ts, y = agg_guider, by = "Group.1")
               if (stepcount_available) {
                 ts = merge(x = ts, y = step_count_tmp, by = "Group.1")
               }
@@ -497,7 +501,11 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                   # now 0.5+6+0.5 midnights and 7 days
                   for (timewindowi in params_output[["timewindow"]]) {
                     nightsi = nightsi_bu
-                    ts$guider = "unknown"
+                    # part3 estimate used for first night then
+                    part3_estimates_firstnight = which(ts$guider == "part3_estimate")
+                    if (length(part3_estimates_firstnight) > 0) {
+                      ts$guider[part3_estimates_firstnight] = rev(params_sleep[["HASPT.algo"]])[1]
+                    }
                     if (timewindowi == "WW") {
                       if (length(FM) > 0) {
                         # ignore first and last midnight because we did not do sleep detection on it
