@@ -323,15 +323,17 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
               temperature_col = grep(pattern = "temperature", x = names(ts), value = TRUE)
               
+              # aggregate steps by taking the sum
               stepcount_available = ifelse("step_count" %in% names(ts), yes = TRUE, no = FALSE)
-                
               if (stepcount_available) {
                 step_count_tmp = aggregate(ts$step_count, by = list(ts$time_num), FUN = function(x) sum(x))
                 colnames(step_count_tmp)[2] = "step_count"
               }
+              # aggregate guider names as the first value per time segment
               agg_guider = aggregate(ts$guider,
                                      by = list(ts$time_num), FUN = function(x) x[1])
               colnames(agg_guider)[2] = "guider"
+              # aggregate all other variables by taking the mean
               ts = aggregate(ts[,c("ACC","sibdetection", "diur", "nonwear", angleColName, light_columns, temperature_col)],
                              by = list(ts$time_num), FUN = function(x) mean(x))
               ts = merge(x = ts, y = agg_guider, by = "Group.1")

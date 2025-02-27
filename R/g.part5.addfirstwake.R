@@ -24,7 +24,7 @@ g.part5.addfirstwake = function(ts, summarysleep, nightsi, sleeplog, ID,
   if (length(nightsi) < 2) {
     return(ts)
   }
-  guider = "unknown"
+  guider = "unknown" # initialise guider name as unknown
   if (!is.na(firstwake) && firstwake > nightsi[2] ||
       (summarysleep$sleeponset[1] < 18 &&
        summarysleep$wakeup[1] < 18 &&

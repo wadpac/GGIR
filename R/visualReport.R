@@ -321,24 +321,21 @@ visualReport = function(metadatadir = c(),
     if (length(window_edges) > 0) {
       abline(v = mdat$timestamp[window_edges], col = "black", lwd = 1.5, lty = 2)
       for (wei in 1:length(window_edges)) {
-        # onset and wake
+        # add text labels for onset, wake, weekday and guider being used
+        # the below guider names are the guider names as defined in 
+        # function g.part5.savetimeseries
+        guider_names = c('unknown', 'sleeplog', 'HDCZA', 'setwindow', 
+                         'L512', 'HorAngle', 'NotWorn')
+        guider_name =  paste0("guided by: ", guider_names[mdat$guider[window_edges[wei]] + 1])        
+        
         if (mdat$SleepPeriodTime[window_edges[wei]] == 1) {
           toptext = paste0("wake-up ", weekdays(mdat$timestamp[window_edges[wei]]))
-          # add guider name
-          # guider names as defined in function g.part5.savetimeseries
-          guider_names = c('unknown', 'sleeplog', 'HDCZA', 'setwindow', 
-                           'L512', 'HorAngle', 'NotWorn')
-          guider_name =  paste0("guided by: ", guider_names[mdat$guider[window_edges[wei]] + 1])
+
           text(x = mdat$timestamp[window_edges[wei]], y = 92,
                labels = guider_name, las = 2, srt = 90, pos = 2,
                offset = 0.4, adj = 0, cex = 0.6)
         } else {
           toptext = "onset"  
-          # add guider name
-          # guider names as defined in function g.part5.savetimeseries
-          guider_names = c('unknown', 'sleeplog', 'HDCZA', 'setwindow', 
-                           'L512', 'HorAngle', 'NotWorn')
-          guider_name =  paste0("guided by: ", guider_names[mdat$guider[window_edges[wei]] + 1])
           text(x = mdat$timestamp[window_edges[wei]], y = 2,
                labels = guider_name, las = 2, srt = 90, pos = 4,
                offset = 0.4, adj = 0, cex = 0.6)
