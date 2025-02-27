@@ -329,7 +329,7 @@ visualReport = function(metadatadir = c(),
           guider_names = c('unknown', 'sleeplog', 'HDCZA', 'setwindow', 
                            'L512', 'HorAngle', 'NotWorn')
           guider_name =  paste0("guided by: ", guider_names[mdat$guider[window_edges[wei]] + 1])
-          text(x = mdat$timestamp[window_edges[wei]], y = 90,
+          text(x = mdat$timestamp[window_edges[wei]], y = 92,
                labels = guider_name, las = 2, srt = 90, pos = 2,
                offset = 0.4, adj = 0, cex = 0.6)
         } else {
@@ -339,7 +339,7 @@ visualReport = function(metadatadir = c(),
           guider_names = c('unknown', 'sleeplog', 'HDCZA', 'setwindow', 
                            'L512', 'HorAngle', 'NotWorn')
           guider_name =  paste0("guided by: ", guider_names[mdat$guider[window_edges[wei]] + 1])
-          text(x = mdat$timestamp[window_edges[wei]], y = 5,
+          text(x = mdat$timestamp[window_edges[wei]], y = 2,
                labels = guider_name, las = 2, srt = 90, pos = 4,
                offset = 0.4, adj = 0, cex = 0.6)
         }
