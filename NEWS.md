@@ -1,8 +1,11 @@
 # CHANGES IN GGIR VERSION 3.2-1
 
-- Add Oakley sleep detection algorithm #1267
+- Part 3: Add Oakley (as used in MotionWare) sleep detection algorithms #1267
 
-- Add guider MotionWare to be used with Oakley sleep detection #1267.
+- Part 5: Fix bug in handling diary for daysleepers in the visualreport. This does not affect any other GGIR output. #1272
+
+- Part 5 and visualreport: When wake up time at start of recording is added in part 5 no log was kept of the guider and bedend column was not recognised, this is now fixed. #1273
+
 
 # CHANGES IN GGIR VERSION 3.2-0
 
