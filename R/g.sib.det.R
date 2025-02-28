@@ -217,6 +217,23 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         midn_start = countmidn
       }
       sptei = 0
+      if (length(MARKER) > 0) {
+        # derive typical marker button times
+        # to fall back on when marker button is missing
+        button_pressed = which(MARKER != 0)
+        if (length(button_pressed) > 0) {
+          newmarkers = button_pressed
+          for (j in -countmidn:countmidn) {
+            newmarkers = button_pressed + (j * 24 * (3600/ws3))
+            newmarkers = newmarkers[which(newmarkers %in% button_pressed == FALSE &
+                                            newmarkers > 0 &
+                                            newmarkers <= length(MARKER))]
+            if (length(newmarkers) > 0) {
+              MARKER[newmarkers] = 0.9 / (abs(j) + 1)
+            }
+          }
+        }
+      }
       for (j in midn_start:(countmidn)) { #Looping over the midnight
         if (j == 0) {
           qqq1 = 1 # preceding noon (not available in recording)
@@ -286,7 +303,8 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                                HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
                                activity = tmpACC,
                                marker = MARKER[qqq1:qqq2],
-                               sibs = sleep[qqq1:qqq2, 1])
+                               sibs = sleep[qqq1:qqq2, 1],
+                               try_marker_button = params_sleep[["consider_marker_button"]])
         } else {
           spt_estimate = list(SPTE_end = NULL, SPTE_start = NULL, tib.threshold = NULL, part3_guider = NULL)
         }
@@ -327,7 +345,8 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                                        HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
                                        activity = ACC[newqqq1:newqqq2],
                                        marker = MARKER[newqqq1:newqqq2],
-                                       sibs = sleep[newqqq1:newqqq2, 1])
+                                       sibs = sleep[newqqq1:newqqq2, 1],
+                                       try_marker_button = params_sleep[["consider_marker_button"]])
               if (length(spt_estimate_tmp$SPTE_start) > 0) {
                 # If new SPTE_end is beyond noon (qqq2) then use the new SPTE_end
                 if (spt_estimate_tmp$SPTE_end + newqqq1 >= qqq2) {

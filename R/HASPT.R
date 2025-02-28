@@ -2,8 +2,67 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
                  HASPT.algo = "HDCZA", HDCZA_threshold = c(), invalid,
                  HASPT.ignore.invalid = FALSE, activity = NULL,
                  marker = NULL,
-                 sibs = NULL) {
+                 sibs = NULL,
+                 try_marker_button = FALSE) {
   tib.threshold = SPTE_start = SPTE_end = part3_guider = c()
+  # Option use of marker button which overrules any guider:
+  
+  #-------------------------------------
+  # Use marker button if possible
+  # Move this to the top where it can be run prior to any guider
+  
+  if (length(marker) > 0 && try_marker_button == TRUE) {
+    button_pressed = which(marker != 0)
+    N_markers = length(button_pressed)
+    # Only consider when there is more than 1 marker and the range spans more than 1 hour
+    fraction_invalid = length(which(invalid == 1)) / length(invalid)
+    if (N_markers > 1 &&
+        diff(range(button_pressed)) * (60/ws3) > 60 &&
+        fraction_invalid < 0.5) {
+      # Consider the 10 marker buttons closest to the day of interest
+      ranking = sort(marker[button_pressed], decreasing = TRUE, index.return = TRUE)$ix
+      button_pressed = button_pressed[ranking[1:pmax(length(which(marker == 1)), 10)]]
+      # find marker pair with lowest amount of activity and longest duration
+      pairs = expand.grid(button_pressed, button_pressed)
+      pairs = pairs[which(pairs$Var1 < pairs$Var2),]
+      # define duration
+      pairs$duration_hours = (pairs$Var2 - pairs$Var1) / (3600/ws3)
+      
+      # ignore pairs that reflect short distances and involve imputed marker
+      pairs$mark1 = marker[pairs$Var1]
+      pairs$mark2 = marker[pairs$Var2]
+      pairs_to_ignore = which(pairs$duration_hours < 3 & (pairs$mark1 < 1 | pairs$mark2 < 1))
+      if (length(pairs_to_ignore) > 0 & length(pairs_to_ignore) < nrow(pairs)) {
+        pairs = pairs[-pairs_to_ignore,]
+      }
+      # define activity
+      pairs$activity = 0
+      if (is.null(activity) && !is.null(sibs)) {
+        activity_tmp = 1 - sibs
+      } else {
+        activity_tmp = activity
+      }
+      invalid_index = which(invalid == 1)
+      if (length(invalid_index) > 0) {
+        activity_tmp[invalid_index] = NA
+      }
+      # browser()
+      for (i in 1:nrow(pairs)) {
+        pairs$activity[i] = mean(activity_tmp[pairs$Var1[i]:pairs$Var2[i]], na.rm = TRUE) + 1
+      }
+      # define score
+      pairs$score = pairs$activity * (abs(pairs$duration_hours - 8) + 0.5)
+      # find winner
+      winner = which.min(pairs$score)[1]
+      start = pairs$Var1[winner]
+      end = pairs$Var2[winner]
+      HASPT.algo = "markerbutton"
+      return(invisible(list(SPTE_start = start, SPTE_end = end,
+                            tib.threshold = 0,
+                            part3_guider = HASPT.algo)))
+    }
+  }
+
   # internal functions ---------
   adjustlength = function(x, invalid) {
     if (length(invalid) > length(x)) {
@@ -78,7 +137,7 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
     } else if (HASPT.algo == "MotionWare") {
       
       # Auto-Sleep Detection / Marking based on description in
-      # Information bulletin no.3 sleep algorithms by Cambrige Neurotechnologies
+      # Information bulletin no.3 sleep algorithms by Cambridge Neurotechnologies
       # Section 1.6
       
       # parameters that user may want to change
@@ -144,7 +203,6 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
           end = fmout$j1
           midpoint = fmout$midpoint
           if (is.null(midpoint)) break
-          # print(paste0("duration 1 ", (end - start) / (2*60)))
           # (D - extend)
           find_edge = function(x, where, midpoint, minimum_sleep_fraction) {
             if (where == "before") {
