@@ -46,20 +46,22 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       if (length(invalid_index) > 0) {
         activity_tmp[invalid_index] = NA
       }
-      # browser()
       for (i in 1:nrow(pairs)) {
         pairs$activity[i] = mean(activity_tmp[pairs$Var1[i]:pairs$Var2[i]], na.rm = TRUE) + 1
       }
       # define score
-      pairs$score = pairs$activity * (abs(pairs$duration_hours - 8) + 0.5)
+      pairs$dur_score = abs(pairs$duration_hours - 8) + 1
+      pairs$score = pairs$activity * pairs$dur_score
       # find winner
       winner = which.min(pairs$score)[1]
-      start = pairs$Var1[winner]
-      end = pairs$Var2[winner]
-      HASPT.algo = "markerbutton"
-      return(invisible(list(SPTE_start = start, SPTE_end = end,
-                            tib.threshold = 0,
-                            part3_guider = HASPT.algo)))
+      if (!is.na(winner)) {
+        start = pairs$Var1[winner]
+        end = pairs$Var2[winner]
+        HASPT.algo = "markerbutton"
+        return(invisible(list(SPTE_start = start, SPTE_end = end,
+                              tib.threshold = 0,
+                              part3_guider = HASPT.algo)))
+      }
     }
   }
 
