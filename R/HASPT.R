@@ -46,15 +46,27 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       if (length(invalid_index) > 0) {
         activity_tmp[invalid_index] = NA
       }
+      pairs$fraction_sibs_outside = NA
+      pairs$fraction_sibs_inside = NA
       for (i in 1:nrow(pairs)) {
-        pairs$activity[i] = mean(activity_tmp[pairs$Var1[i]:pairs$Var2[i]], na.rm = TRUE) + 1
+        i0 = pairs$Var1[i]
+        i1 = pairs$Var2[i]
+        pairs$activity[i] = mean(activity_tmp[i0:i1], na.rm = TRUE) + 1
+        if (i0 > 1 && i1 < length(sibs)) {
+          outside = c(1:(i0 - 1), (i1 + 1):length(sibs))
+          sum_outside = sum(sibs[outside])  / length(outside)
+          sum_inside = sum(sibs[i0:i1]) / (i1 - i0 + 1)
+          pairs$fraction_sibs_inside[i] =  sum_inside
+          pairs$fraction_sibs_outside[i] =  sum_outside
+        }
       }
       # define score
       pairs$dur_score = abs(pairs$duration_hours - 8) + 1
       pairs$score = pairs$activity * pairs$dur_score
       # find winner
       winner = which.min(pairs$score)[1]
-      if (!is.na(winner)) {
+      if (!is.na(winner) &&
+          pairs$fraction_sibs_outside[winner] < pairs$fraction_sibs_inside[winner]) {
         start = pairs$Var1[winner]
         end = pairs$Var2[winner]
         HASPT.algo = "markerbutton"
@@ -292,53 +304,43 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       # exit function with the result
       return(invisible(list(SPTE_start = start, SPTE_end = end, tib.threshold = 0,
                             part3_guider = HASPT.algo)))
-    # } else if (HASPT.algo == "vanHees2025") {
-    #   MarkerButtonLimit = 3
-    #   MaxSleepGap = 2
-    #   # ignore all wake  gaps < 120 minutes
-    #   srle = rle(c(as.numeric(sibs), 0))
-    #   wakegaps = which(srle$values == 0 & srle$lengths < (60/ws3) * 60 * MaxSleepGap)
-    #   if (length(wakegaps) > 0) {
-    #     srle$values[wakegaps] = 1      }
-    #   sibs = rep(srle$values, srle$lengths)
-    #   
-    #   # keep longest sleep period
-    #   srle = rle(as.numeric(sibs))
-    #   if (length(srle$lengths) > 2) {
-    #     sleepgaps = which(srle$values == 1 & srle$lengths < max(srle$lengths))
-    #     
-    #     if (length(sleepgaps) > 0) {
-    #       srle$values[sleepgaps] = 0
-    #     }
-    #   }
-    #   sibs = rep(srle$values, srle$lengths)
-    #   # find start and end
-    #   start = which(diff(sibs) == 1)
-    #   end = which(diff(sibs) == -1)
-    #   # is marker button data present?
-    #   if (length(marker) > 0) {
-    #     marker_indices = which(marker == 1)
-    #     if (length(marker_indices) > 1) {
-    #       # check for nearby marker buttons and use those 
-    #       delta_start = abs(start - marker_indices)
-    #       ds2 = which(delta_start < (60/ws3) * 60 * MarkerButtonLimit)
-    #       if (length(ds2) > 0) {
-    #         delta_start = delta_start[ds2]
-    #         marker_indices2 = marker_indices[ds2]
-    #         start = marker_indices2[which.min(delta_start)[1]]
-    #       }
-    #       delta_end = abs(end - marker_indices)
-    #       de2 = which(delta_end < (60/ws3) * 60 * MarkerButtonLimit)
-    #       if (length(de2) > 0) {
-    #         delta_end = delta_end[de2]
-    #         marker_indices2 = marker_indices[de2]
-    #         end = marker_indices2[which.min(delta_end)[1]]
-    #       }
-    #     }
-    #   }
-    #   # exit function with the result
-    #   return(invisible(list(SPTE_start = start, SPTE_end = end, tib.threshold = 0,
-    #                  part3_guider = HASPT.algo)))
+    } else if (HASPT.algo == "vanHees2025") {
+      start = end = NULL
+      # smooth classification
+      sibs_rm = zoo::rollmean(x = sibs, k = (60/ws3) * 120, fill = NA)
+      sibs[which(sibs_rm > 0.5)] = 1
+      sibs[which(sibs_rm <= 0.5)] = 0
+      # plot(sibs, type = "l", main = "after")
+      MaxSleepGap = 1
+      # ignore all X hour gaps
+      srle = rle(c(0, as.numeric(sibs), 0))
+      wakegaps = which(srle$values == 0 & srle$lengths < (60/ws3) * 60 * 1)
+      if (length(wakegaps) > 0) {
+        srle$values[wakegaps] = 1      }
+      sibs = rep(srle$values, srle$lengths)
+      sibs = sibs[-c(1, length(sibs))]
+      # keep longest sleep period
+      srle = rle(c(0, as.numeric(sibs), 0))
+      if (length(srle$lengths) > 2) {
+        size_longest_sleep = max(srle$lengths[which(srle$values == 1)])
+        sleepgaps = which(srle$values == 1 & srle$lengths < size_longest_sleep)
+        if (length(sleepgaps) > 0) {
+          srle$values[sleepgaps] = 0
+        }
+      }
+      sibs = rep(srle$values, srle$lengths)
+      start = which(diff(sibs) == 1)
+      end = which(diff(sibs) == -1)
+      sibs = sibs[-c(1, length(sibs))]
+      # If start and end are not found try again
+      # with shorter filter window
+      if (length(start) == 0 & length(end) == 0) {
+        start = 1
+        end = length(sibs)
+      }
+      # exit function with the result
+      return(invisible(list(SPTE_start = start, SPTE_end = end, tib.threshold = 0,
+                            part3_guider = HASPT.algo)))
     }
 
     # Now define nomov periods with the selected strategy for invalid time
