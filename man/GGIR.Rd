@@ -1344,7 +1344,18 @@ GGIR(mode = 1:5,
         Numeric (default = 20)
         Threshold as used by the Oakley algorithm, original suggestionw as 20, 40 or 80.
       }
-
+      
+      \item{consider_marker_button}{
+        Boolean (default = FALSE)
+        Whether to consider the marker button as guider. Currently only functional for Actiwatch-type count-accelerometers such as 
+        Philips Health Band and MotionWatch 8. See https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html
+        for details.
+      }
+      
+      \item{impute_marker_button}{
+        Boolean (default = FALSE)
+        Whether to impute marker buttons on other days of the recording.
+      }
     }
   }
 

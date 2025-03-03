@@ -1,6 +1,14 @@
 # CHANGES IN GGIR VERSION 3.2-1
 
-- Part 3: Add Oakley (as used in MotionWare) sleep detection algorithms #1267
+- Part 3:
+
+  - Add sustained inactivity bout detection algorithm that as described in the non-public document by Cambridge Neurotechnologies: Information bulletin no.3 sleep algorithms. To be used with HASIB.algo = "Oakley1997" and for which the threshold can be set with new parameter oakley_threshold. #1267
+
+  - Add new guider "MotionWare" which reflect the auto-detection of sleep as described in the non-public document by Cambridge Neurotechnologies: Information bulletin no.3 sleep algorithms. #1267
+
+  - Add sleep guider "HLRB", a new heuristic algorithm specific to aid detecting the sleep window based on sustained inactivity bouts. Although, intended for Actiwatch data it may also work for other data types.
+
+  - Add option to utilise marker button data from Actiwatch, with new parameter consider_marker_button.
 
 - Part 5: Fix bug in handling diary for daysleepers in the visualreport. This does not affect any other GGIR output. #1272
 

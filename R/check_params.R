@@ -35,8 +35,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "sleepefficiency.metric", "possible_nap_edge_acc", "HDCZA_threshold",
                        "possible_nap_gap", "oakley_threshold")
     boolean_params = c("ignorenonwear", "HASPT.ignore.invalid",
-                       "relyonguider", "sleeplogidnum", "sib_must_fully_overlap_with_TimeInBed",
-                       "consider_marker_button")
+                       "relyonguider", "sleeplogidnum",
+                       "impute_marker_button", "consider_marker_button",
+                       "sib_must_fully_overlap_with_TimeInBed")
     character_params = c("HASPT.algo", "HASIB.algo", "Sadeh_axis", "nap_model",
                          "sleeplogsep", "sleepwindowType", "loglocation")
     check_class("Sleep", params = params_sleep, parnames = numeric_params, parclass = "numeric")
@@ -183,7 +184,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   
   if (length(params_sleep) > 0) {
     if (length(params_sleep[["def.noc.sleep"]]) != 2) {
-      if (params_sleep[["HASPT.algo"]][1] %in% c("HorAngle", "NotWorn", "MotionWare", "vanHees2025") == FALSE) {
+      if (params_sleep[["HASPT.algo"]][1] %in% c("HorAngle", "NotWorn", "MotionWare", "HLRB") == FALSE) {
         params_sleep[["HASPT.algo"]] = "HDCZA"
       }
       if (length(params_sleep[["HASPT.algo"]]) == 2 && params_sleep[["HASPT.algo"]][2] == "NotWorn") {

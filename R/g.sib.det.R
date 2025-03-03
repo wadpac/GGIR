@@ -222,14 +222,16 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         # to fall back on when marker button is missing
         button_pressed = which(MARKER != 0)
         if (length(button_pressed) > 0) {
-          newmarkers = button_pressed
-          for (j in -countmidn:countmidn) {
-            newmarkers = button_pressed + (j * 24 * (3600/ws3))
-            newmarkers = newmarkers[which(newmarkers %in% button_pressed == FALSE &
-                                            newmarkers > 0 &
-                                            newmarkers <= length(MARKER))]
-            if (length(newmarkers) > 0) {
-              MARKER[newmarkers] = 0.9 / (abs(j) + 1)
+          if (params_sleep[["impute_marker_button"]] == TRUE) {
+            newmarkers = button_pressed
+            for (j in -countmidn:countmidn) {
+              newmarkers = button_pressed + (j * 24 * (3600/ws3))
+              newmarkers = newmarkers[which(newmarkers %in% button_pressed == FALSE &
+                                              newmarkers > 0 &
+                                              newmarkers <= length(MARKER))]
+              if (length(newmarkers) > 0) {
+                MARKER[newmarkers] = 0.9 / (abs(j) + 1)
+              }
             }
           }
         }

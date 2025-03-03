@@ -54,25 +54,32 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
         pairs$activity[i] = mean(activity_tmp[i0:i1], na.rm = TRUE) + 1
         if (i0 > 1 && i1 < length(sibs)) {
           outside = c(1:(i0 - 1), (i1 + 1):length(sibs))
-          sum_outside = sum(sibs[outside])  / length(outside)
-          sum_inside = sum(sibs[i0:i1]) / (i1 - i0 + 1)
-          pairs$fraction_sibs_inside[i] =  sum_inside
-          pairs$fraction_sibs_outside[i] =  sum_outside
+          sum_outside = sum(sibs[outside])
+          fraction_outside = sum_outside / length(outside)
+          fraction_inside = sum(sibs[i0:i1]) / (i1 - i0 + 1)
+          pairs$fraction_sibs_inside[i] = fraction_inside
+          pairs$fraction_sibs_outside[i] = fraction_outside
+          # pairs$sum_sibs_outside[i] = sum_outside / (3600/ws3)
+          
         }
       }
-      # define score
-      pairs$dur_score = abs(pairs$duration_hours - 8) + 1
-      pairs$score = pairs$activity * pairs$dur_score
-      # find winner
-      winner = which.min(pairs$score)[1]
-      if (!is.na(winner) &&
-          pairs$fraction_sibs_outside[winner] < pairs$fraction_sibs_inside[winner]) {
-        start = pairs$Var1[winner]
-        end = pairs$Var2[winner]
-        HASPT.algo = "markerbutton"
-        return(invisible(list(SPTE_start = start, SPTE_end = end,
-                              tib.threshold = 0,
-                              part3_guider = HASPT.algo)))
+      # Only consider when fraction sibs outside is less than inside and time spent outside is less than 6 hours
+      pairs = pairs[which(pairs$fraction_sibs_outside < pairs$fraction_sibs_inside),]
+      if (nrow(pairs) > 0) {
+        # Define score
+        pairs$dur_score = pmax(abs(pairs$duration_hours - 8), 1) - 1
+        pairs$score = pairs$activity * pairs$dur_score
+        # find winner
+        winner = which.min(pairs$score)[1]
+        if (!is.na(winner)) {
+          start = pairs$Var1[winner]
+          end = pairs$Var2[winner]
+          # abline(v = c(start, end), col = "red", lwd = 2)
+          HASPT.algo = "markerbutton"
+          return(invisible(list(SPTE_start = start, SPTE_end = end,
+                                tib.threshold = 0,
+                                part3_guider = HASPT.algo)))
+        }
       }
     }
   }
@@ -304,19 +311,18 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       # exit function with the result
       return(invisible(list(SPTE_start = start, SPTE_end = end, tib.threshold = 0,
                             part3_guider = HASPT.algo)))
-    } else if (HASPT.algo == "vanHees2025") {
+    } else if (HASPT.algo == "HLRB") {
       start = end = NULL
       # smooth classification
-      sibs_rm = zoo::rollmean(x = sibs, k = (60/ws3) * 120, fill = NA)
-      sibs[which(sibs_rm > 0.5)] = 1
-      sibs[which(sibs_rm <= 0.5)] = 0
-      # plot(sibs, type = "l", main = "after")
+      sibs = round(zoo::rollmean(x = sibs, k = (60/ws3) * 60, fill = 0))
       MaxSleepGap = 1
       # ignore all X hour gaps
       srle = rle(c(0, as.numeric(sibs), 0))
       wakegaps = which(srle$values == 0 & srle$lengths < (60/ws3) * 60 * 1)
+      wakegaps = wakegaps[which(wakegaps %in% c(1, length(srle$values)) == FALSE)]
       if (length(wakegaps) > 0) {
-        srle$values[wakegaps] = 1      }
+        srle$values[wakegaps] = 1
+      }
       sibs = rep(srle$values, srle$lengths)
       sibs = sibs[-c(1, length(sibs))]
       # keep longest sleep period
@@ -328,7 +334,7 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
           srle$values[sleepgaps] = 0
         }
       }
-      sibs = rep(srle$values, srle$lengths)
+      sibs = c(0, rep(srle$values, srle$lengths), 0)
       start = which(diff(sibs) == 1)
       end = which(diff(sibs) == -1)
       sibs = sibs[-c(1, length(sibs))]

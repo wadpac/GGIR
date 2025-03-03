@@ -11,7 +11,7 @@
 HASPT(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5, 
       HASPT.algo="HDCZA", HDCZA_threshold = c(), invalid, 
       HASPT.ignore.invalid = FALSE, activity = NULL,
-      marker = NULL, sibs = NULL)
+      marker = NULL, sibs = NULL, try_marker_button = FALSE)
 }
 \arguments{
   \item{angle}{
@@ -48,6 +48,9 @@ HASPT(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
   }
   \item{sibs}{
     Numeric vector of classified sibs with \code{HASIB}, experimental not used at the moment.
+  }
+  \item{try_marker_button}{
+    See \link{GGIR}
   }
 }
 \value{
