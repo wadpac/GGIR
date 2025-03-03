@@ -156,9 +156,9 @@ To use this guider set parameter `HASPT.algo = "HorAngle"`
 
 ### Guider: MotionWare (EXPERIMENTAL)
 
-To be completed ...
+The algorithm for auto-detection of sleep as described in the non-public document by Cambridge Neurotechnologies: Information bulletin no.3 sleep algorithms. The algorithm uses a combination of count and marker data to identify the sleep periods in the day, where GGIR for now only retains the longest identified sleep period.
 
-The algorithm for auto-detection of sleep as described in the non-public document by Cambridge Neurotechnologies: Information bulletin no.3 sleep algorithms.
+I have implemented it as an attempt to explore its value.
 
 
 ### Guider: HLRB (EXPERIMENTAL)
