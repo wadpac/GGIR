@@ -18,7 +18,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
     mat = mat[seq(1, nrow(mat), by = step), , drop = FALSE]
     mat = apply(mat, 2, diff)
     # Correct non incremental variables
-    for (niv in c("sleep", "ExtSleep", "light", "nonwear", "marker")) {
+    for (niv in c("sleep", "ExtSleep", "light", "nonwear", "marker", "light")) {
       if (niv %in% colnames(D)) D[, niv] = round(D[, niv] / step)
     }
     # Incremental variables are counts, calories, ExtAct as so far
@@ -255,7 +255,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
     }
     if (skip == FALSE) {
       I = I_bu
-    
+      D_extraVars = NULL
       I$filename = filename_dir = fname
       if (params_general[["dataFormat"]] == "ukbiobank_csv") {
         # read data
@@ -393,8 +393,18 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
       timestamp_POSIX = D$startTime
       epSizeShort = D$epochSize
       D = D$data
+      
       #-----------------------------------
-      # Aggregate epochs if desired epoch length is larger
+      # Aggregate long epochs if desired epoch length is larger
+      if (!is.null(D_extraVars)) {
+        if ("light" %in% colnames(D_extraVars)) {
+          step = epSizeLong %/% epSizeShort
+          D_extraVars = matAggregate(D_extraVars, step)
+        }
+      }
+      
+      #-----------------------------------
+      # Aggregate short epochs if desired epoch length is larger
       desiredEpochSize = params_general[["windowsizes"]][1]
       if (!is.null(desiredEpochSize)) {
         if (desiredEpochSize > epSizeShort) {
@@ -545,11 +555,16 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         neg_indices = which(D$data$ExtAct < 0)
         D$data$ExtAct[neg_indices] = 0
       }
-      # create data.frame for metalong, note that light and temperature are just set at zero
+      # create data.frame for metalong, note that light and temperature are just set at zero by default
       M$metalong = data.frame(timestamp = time_longEp_8601, nonwearscore = nonwearscore, #rep(0,LML)
                               clippingscore = rep(0,LML), lightmean = rep(0,LML),
                               lightpeak = rep(0,LML), temperaturemean = rep(0,LML), EN = rep(0,LML))
-      
+      # If light was loaded (Actiwatch/PHB) then store this in metalong
+      if (!is.null(D_extraVars) && "light" %in% colnames(D_extraVars)) {
+        if (nrow(D_extraVars) == nrow(M$metalong)) {
+          M$metalong$lightpeak = D_extraVars[, "light"]
+        }
+      }
       # update weekday name and number based on actual data
       M$wdayname = weekdays(x = starttime, abbreviate = FALSE)
       M$wday = as.POSIXlt(starttime)$wday + 1
