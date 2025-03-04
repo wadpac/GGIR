@@ -1,5 +1,7 @@
 # CHANGES IN GGIR VERSION 3.2-1
 
+- General: Fix bug in parameter check concerning the recognition of a Boolean vector #1276
+
 - Part 5: Fix bug in handling diary for daysleepers in the visualreport. This does not affect any other GGIR output. #1272
 
 - Part 5 and visualreport: When wake up time at start of recording is added in part 5 no log was kept of the guider and bedend column was not recognised, this is now fixed. #1273

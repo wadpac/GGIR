@@ -503,7 +503,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       }
       if (length(params_sleep) > 0) {
         if (params_sleep[["Sadeh_axis"]] != "Y") {
-          params_sleep[["Sadeh_axis"]] = TRUE
+          params_sleep[["Sadeh_axis"]] = "Y"
           warning(paste0("\nWhen dataFormat is set to ", params_general[["dataFormat"]],
                          " we assume that Sadeh_axis Y, this is now overwritten"), call. = FALSE)
         }
