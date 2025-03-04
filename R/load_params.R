@@ -139,7 +139,8 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                           sensor.location = "wrist",
                           expand_tail_max_hours = NULL, recordingEndSleepHour = NULL,
                           dataFormat = "raw", maxRecordingInterval = NULL,
-                          extEpochData_timeformat = "%d-%m-%Y %H:%M:%S")
+                          extEpochData_timeformat = "%d-%m-%Y %H:%M:%S",
+                          recordingSplitTimes = NULL)
   }
   invisible(list(params_sleep = params_sleep,
                  params_metrics = params_metrics,

@@ -274,7 +274,14 @@ GGIR(mode = 1:5,
         same accelerometer brand are appended. The part 2 csv report
         will show number of appended recordings, sampling rate for each, time overlap or gap 
         and the names of the filenames of the respective recording.}
-        
+      
+      \item{recordingSplitTimes}{
+        Character (default = NULL).
+        To indicate path to csv file with a column that has ID in the column name
+        that holds the participant IDs, followed by columns with either dates or
+        full timestamps on which the recording should be split.
+      }
+      
       \item{extEpochData_timeformat}{
         Character (default = "\%d-\%m-\%Y \%H:\%M:\%S").
         To specify the time format used in the external epoch level data when
