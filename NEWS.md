@@ -1,5 +1,7 @@
 # CHANGES IN GGIR VERSION 3.2-1
 
+- General: Fix bug in parameter check concerning the recognition of a Boolean vector #1276
+
 - Part 3:
 
   - Add sustained inactivity bout detection algorithm that as described in the non-public document by Cambridge Neurotechnologies: Information bulletin no.3 sleep algorithms. To be used with HASIB.algo = "Oakley1997" and for which the threshold can be set with new parameter oakley_threshold. #1267
