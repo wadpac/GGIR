@@ -694,11 +694,16 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     if (length(diaryImputationCode_col) == 0) {
                       diaryImputationCode_col = NULL
                     }
+                    
+                    marker_col = grep(pattern = "marker", x = names(ts), value = TRUE)
+                    if (length(marker_col) == 0) {
+                      marker_col = NULL
+                    }
                     g.part5.savetimeseries(ts = ts[, c("time", "ACC", "diur", "nonwear",
                                                        "guider", "window", "sibdetection", napNonwear_col,
                                                        lightpeak_col, selfreported_col,
                                                        angle_col, temperature_col, step_count_col,
-                                                       diaryImputationCode_col)],
+                                                       diaryImputationCode_col, marker_col)],
                                            LEVELS = LEVELS,
                                            desiredtz = params_general[["desiredtz"]],
                                            rawlevels_fname = rawlevels_fname,

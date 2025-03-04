@@ -162,9 +162,11 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     check_myfun(myfun, params_general[["windowsizes"]])
   }
   
-  if (params_output[["visualreport"]] == TRUE & params_general[["dataFormat"]] != "raw") {
+  if (params_output[["visualreport"]] == TRUE &
+      params_output[["old_visualreport"]] == TRUE &
+      params_general[["dataFormat"]] != "raw") {
     params_output[["visualreport"]] == FALSE
-    warning(paste0("Turning off visualreport generation because",
+    warning(paste0("Turning off old visualreport generation because",
                    " dataFormat is not raw."), call. = FALSE)
   }
   

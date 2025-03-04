@@ -1,5 +1,7 @@
 # CHANGES IN GGIR VERSION 3.2-1
 
+- Part 5: Add marker button data to saved time series and include in visualreport
+
 - General: Fix bug in parameter check concerning the recognition of a Boolean vector #1276
 
 - Part 3:

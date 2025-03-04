@@ -89,6 +89,10 @@ g.part5_initialise_ts = function(IMP, M, params_247, params_general, longitudina
     # repeate values to match resolution of other data
     ts$temperature = repeatvalues(x = temperature, windowsizes = IMP$windowsizes, Nts)
   }
+  if ("marker" %in% colnames(M$metashort)) {
+    ts$marker = NA
+    ts$marker = M$metashort$marker
+  }
   return(ts)
 }
 
