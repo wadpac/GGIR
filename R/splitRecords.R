@@ -1,4 +1,8 @@
-splitRecords = function(metadatadir, desiredtz = "", idloc = 1, recordingSplitTimes = NULL) {
+splitRecords = function(metadatadir, params_general = NULL) {
+  
+  desiredtz = params_general[["desiredtz"]]
+  idloc = params_general[["idloc"]]
+  windowsizes = params_general[["windowsizes"]]
   
   # Declare local functions:
   getInfo = function(fn, idloc, tz) {
@@ -23,83 +27,103 @@ splitRecords = function(metadatadir, desiredtz = "", idloc = 1, recordingSplitTi
   
   S = do.call("rbind", lapply(X = fns, FUN = getInfo, idloc = idloc, tz = desiredtz)) 
   
+  # Ignore recordings that were previously split
+  # The function will always split all files that do not have _split in their name
+  if (length(S) > 0) {
+    S[grep(pattern = "_split", x = basename(S$filename), invert = TRUE), ]
+  }
   
-  splitTime = data.table::fread(recordingSplitTimes)
-  if (length(S) > 0 & !is.null(recordingSplitTimes)) {
-    S = S[!is.na(S$ID),]
-    S = S[order(S$ID, S$start), ]
-    # S$overlap = NA
-    
-    # Identify recordings that can be appended (ID and brand need to match)
-    doubleID = unique(S$ID[duplicated(S[, c("ID", "brand")])])
-    if (length(doubleID) > 0) {
-      for (j in 1:length(doubleID)) {
-        Mlist = Ilist = Clist = list()
-        # Does time interval overlap?
-        # Label the recordings that are groups, this can be more than 2 recordings
-        rowsOfInterest = which(S$ID == doubleID[j])
-        Nrec = length(which(S$ID == doubleID[j]))
-        for (k in Nrec:2) {
-          overlap = as.numeric(difftime(S$end[rowsOfInterest[k - 1]], S$start[rowsOfInterest[k]], units = "secs"))
-          # positive overlap is true overlap, negative overlap is a gap
-          # Add load number
-          S$overlap[rowsOfInterest[k]] = overlap 
-          load(S$filename[rowsOfInterest[k]])
-          Mlist[[k]] = M
-          Ilist[[k]] = I
-          Clist[[k]] = C
-        }
-        # First recording
-        load(S$filename[rowsOfInterest[1]])
-        Mlist[[1]] = M
-        Ilist[[1]] = I
-        Clist[[1]] = C
-        
-        # Append all recordings if they are a sequence of nearby recordings
-        cnt = 0
-        for (k in (Nrec:1)) {
-          if (!is.na(S$overlap[rowsOfInterest[k]])) {
-            interval = S$overlap[rowsOfInterest[k]]
-          } else {
-            interval = -2e10
-          }
-          if (interval > -abs(maxRecordingInterval) * 3600 & k > 1) {
-            # Merge this pair
-            Mlist[[k - 1]] = mergePair(M1 = Mlist[[k - 1]],
-                                       M2 =  Mlist[[k]],
-                                       overlap = S$overlap[rowsOfInterest[k]],
-                                       tz = desiredtz)
-            interval = round(interval / 3600, digits = 3)
-            if ("interval" %in% names(Ilist[[k]])) {
-              Ilist[[k - 1]]$interval = c(Ilist[[k]]$interval, interval)
-            } else {
-              Ilist[[k - 1]]$interval = interval
+  #------------------------------------
+  # Load recordingsSplitTimes
+  splitTime = data.table::fread(params_general[["recording_split_times"]], data.table = FALSE, stringsAsFactors = FALSE, colClasses = "character")
+  
+  # Identify ID columns
+  IDcol = grep(pattern = "ID", x = colnames(splitTime))
+  if (length(IDcol) == 0) {
+    stop(paste0("\nFile specified by recording_split_times does not have a ",
+                "column with ID in it, please fix."), call. = FALSE)
+  }
+  # Make sure timestamps have date and time
+  countSpaces = function(x) {
+    return(length(unlist(strsplit(x, " "))) - 1)
+  }
+  for (j in (IDcol + 1):ncol(splitTime)) {
+    space_count = unlist(lapply(X = splitTime[, j], FUN = countSpaces))
+    no_space = which(space_count == 0)
+    if (length(no_space) > 0) {
+      splitTime[no_space, j] = paste0(splitTime[no_space, j], " 00:00")
+    }
+  }
+  if (length(S) > 0) S = S[!is.na(S$ID),]
+  if (length(S) > 0 & length(splitTime) > 0) {
+    # Identify recordings that need to be split
+    buffer = params_general[["recording_split_overlap"]] * 3600
+    for (j in 1:nrow(S)) {
+      # matching ID(s) between milestone data and splitTime
+      thisID = which(splitTime[, IDcol] == S$ID[j])
+      if (length(thisID) > 0) {
+        for (i in 1:length(thisID)) {
+          splitTime_tmp = as.character(splitTime[thisID[i], (IDcol + 1):ncol(splitTime)])
+          splitTime_tmp = as.POSIXct(splitTime_tmp, tz = desiredtz, format = params_general[["recording_split_timeformat"]])
+          # overlap with range of recording?
+          if (all(S$start[j] <= splitTime_tmp) & all(S$end[j] >= splitTime_tmp)) {
+            # If yes, use those splits to split the recording
+            load(file = S$filename[j])
+            timestamp_short = iso8601chartime2POSIX(x = M$metashort$timestamp, tz = desiredtz)
+            timestamp_long = iso8601chartime2POSIX(x = M$metalong$timestamp, tz = desiredtz)
+            Mbu = M
+            segment_starts = segment_ends = NULL
+            # Define segments
+            if (splitTime_tmp[1] > timestamp_short[1]) {
+              segment_starts = timestamp_short[1]
+              segment_ends = splitTime_tmp[1]
             }
-            # Remove duplicate files
-            unlink(S$filename[rowsOfInterest[k]], recursive = TRUE)
-            cnt = cnt + 1 # keep track of how many files were appended
-          } else {
-            if (cnt > 0) {
-              # we need to have at least two recording appended to make it worth saving the data
-              M = Mlist[[k]]
-              C = Clist[[k]]
-              I = Ilist[[k]]
-              # save as new milestone data for part 1
-              # Note that we also keep copy of I and C for each of the original recordings
-              # this to retain this information for reporting in part 2
-              Nappended = cnt
-              C_list = Clist[c(k:(cnt + 1))]
-              I_list = Ilist[c(k:(cnt + 1))]
-              save(M, C, I, C_list, I_list,
-                   filefoldername, filename_dir, tail_expansion_log, Nappended,
-                   file = S$filename[rowsOfInterest[k]])
+            for (segment_index in 1:length(splitTime_tmp)) {
+              if (segment_index < length(splitTime_tmp)) {
+                segment_starts = c(segment_starts, splitTime_tmp[segment_index])
+                segment_ends = c(segment_ends, splitTime_tmp[segment_index + 1])
+              } else {
+                segment_starts = c(segment_starts, splitTime_tmp[segment_index])
+                segment_ends = c(segment_ends, timestamp_short[length(timestamp_short)])
+              }
             }
-            cnt = 0 # start again
+            # Store each part separately
+            if (length(segment_starts) > 0) {
+              file_was_split = FALSE
+              
+              # round to resolution that matches long epoch
+              segment_starts = as.POSIXct(round(as.numeric(segment_starts) / windowsizes[2]) * windowsizes[2], tz = desiredtz)
+              buffer = round((buffer / 2) / windowsizes[2]) * windowsizes[2]
+              for (g in 1:length(segment_starts)) {
+                # Take subsection
+                segment_short = which(timestamp_short >= segment_starts[g] - buffer &
+                                        timestamp_short < segment_ends[g] + buffer)
+                segment_long = which(timestamp_long >= segment_starts[g] - buffer &
+                                       timestamp_long <= segment_ends[g] + buffer)
+                Nhours_long = length(segment_long) /  (3600 / windowsizes[2])
+                # Only save if there are at least 12 hours of data
+                if (Nhours_long > 12) {
+                  M$metashort = Mbu$metashort[segment_short, ]
+                  M$metalong = Mbu$metalong[segment_long, ]
+                  # Save the split
+                  newRDataFileName = unlist(strsplit(S$filename[j], "[.]RData"))
+                  newRDataFileName = paste0(newRDataFileName, "_split", g, ".RData")
+                  file_was_split = TRUE
+                  save(M, C, I,
+                       filefoldername, filename_dir, tail_expansion_log,
+                       file = newRDataFileName)
+                }
+              }
+              if (file_was_split == TRUE) {
+                # Delete original
+                unlink(S$filename[j], recursive = TRUE)
+              }
+            }
           }
         }
       }
     }
   }
-  # THIS FUNCTION DOES NOT PRODUCE OUTPUT IT ONLY APPENDS FILES
+  # THIS FUNCTION DOES NOT PRODUCE OUTPUT IT ONLY SPLITS FILES
   return(NULL)
 }

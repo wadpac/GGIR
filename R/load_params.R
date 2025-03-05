@@ -140,7 +140,9 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                           expand_tail_max_hours = NULL, recordingEndSleepHour = NULL,
                           dataFormat = "raw", maxRecordingInterval = NULL,
                           extEpochData_timeformat = "%d-%m-%Y %H:%M:%S",
-                          recordingSplitTimes = NULL)
+                          recording_split_times = NULL,
+                          recording_split_timeformat = "%d/%m/%Y %H:%M",
+                          recording_split_overlap = 0)
   }
   invisible(list(params_sleep = params_sleep,
                  params_metrics = params_metrics,

@@ -275,11 +275,23 @@ GGIR(mode = 1:5,
         will show number of appended recordings, sampling rate for each, time overlap or gap 
         and the names of the filenames of the respective recording.}
       
-      \item{recordingSplitTimes}{
+      \item{recording_split_times}{
         Character (default = NULL).
         To indicate path to csv file with a column that has ID in the column name
         that holds the participant IDs, followed by columns with either dates or
         full timestamps on which the recording should be split.
+      }
+      
+      \item{recording_split_timeformat}{
+        Character (default = "\%d/\%m/\%Y \%H:\%M")
+        To indicate timestamp format as used in file as specified with 
+        \code{recording_split_times}.
+      }
+      
+      \item{recording_split_overlap}{
+        Numeric (default = 0).
+        Number of hours to use as buffer when splitting recording. A possitive number
+        means that the split recordings overlap, a nevative number indicates a gap.
       }
       
       \item{extEpochData_timeformat}{
@@ -289,7 +301,8 @@ GGIR(mode = 1:5,
         "actigraph_csv" or "sensewear_xls". For example "\%Y-\%m-\%d \%I:\%M:\%S \%p" for 
         "2023-07-11 01:24:01 PM" or "\%m/\%d/\%Y \%H:\%M:\%S" "2023-07-11 13:24:01"
         }
-      }
+
+    }
     }
 
     \subsection{params_rawdata}{

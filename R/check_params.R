@@ -131,10 +131,12 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   if (length(params_general) > 0) {
     numeric_params = c("maxNcores", "windowsizes", "idloc", "dayborder",
-                       "expand_tail_max_hours", "maxRecordingInterval")
+                       "expand_tail_max_hours", "maxRecordingInterval",
+                       "recording_split_overlap")
     boolean_params = c("overwrite", "print.filename", "do.parallel", "part5_agg2_60seconds")
     character_params = c("acc.metric", "desiredtz", "configtz", "sensor.location", 
-                         "dataFormat", "extEpochData_timeformat", "recordingSplitTimes")
+                         "dataFormat", "extEpochData_timeformat", "recording_split_times",
+                         "recording_split_timeformat")
     check_class("general", params = params_general, parnames = numeric_params, parclass = "numeric")
     check_class("general", params = params_general, parnames = boolean_params, parclass = "boolean")
     check_class("general", params = params_general, parnames = character_params, parclass = "character")

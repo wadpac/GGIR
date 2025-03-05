@@ -272,9 +272,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     if (!is.null(params_general[["recordingSplitTimes"]])) {
       # Split recordings based on user specified time points
       splitRecords(metadatadir = metadatadir,
-                   desiredtz = params_general[["desiredtz"]],
-                   idloc = params_general[["idloc"]],
-                   recordingSplitTimes = params_general[["recordingSplitTimes"]])
+                   params_general = params_general)
     }
     
     if (!is.null(params_general[["maxRecordingInterval"]])) {

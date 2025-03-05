@@ -342,17 +342,17 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 }
               } else {
                 # When it is not the first day of recording
-                if (NRV == 23) { # day has 23 hours (assuming DST)
+                if (NRV == 23 * 60 * (60/ws3)) { # day has 23 hours (assuming DST)
                   # Append data after 2nd hour
                   startMissingHour = 2 * 60 * (60/ws3) + 1
                   enMissingHour = 3 * 60 * (60/ws3)
                   vari = rbind(vari[1:(startMissingHour - 1)], averageday[startMissingHour:enMissingHour, ],
-                           vari[startMissingHour:nrow(vari),])
+                               vari[startMissingHour:nrow(vari), , drop = FALSE])
                 } else { # day has less than 24 hours for another reason
                   # Append the average day to the end
                   a56 = nrow(averageday) - abs(deltaLength) + 1
                   a57 = nrow(averageday)
-                  vari = rbind(vari,averageday[a56:a57,])
+                  vari = rbind(vari, averageday[a56:a57, , drop = FALSE])
                 }
               }
             } else if (deltaLength > 0) { # 25 hour days, assuming DST
