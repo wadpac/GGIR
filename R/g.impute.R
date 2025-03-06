@@ -22,6 +22,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   ws3 = windowsizes[1]
   ws2 = windowsizes[2]
   ws = windowsizes[3]
+  rm(M)
   # What is the minimum number of accelerometer axis needed to meet the criteria for nonwear in order for the data to be detected as nonwear?
   wearthreshold = 2 #needs to be 0, 1 or 2
   # windows per day
@@ -51,7 +52,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   
   #========================================
   # Extracting non-wear and clipping and make decision on which additional time needs to be considered non-wear
-  out = g.weardec(M, wearthreshold, ws2,
+  out = g.weardec(metalong, wearthreshold, ws2,
                   params_cleaning = params_cleaning,
                   desiredtz = desiredtz,
                   qwindowImp = qwindowImp)
@@ -76,14 +77,14 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     r1long = replace(r1long,1:length(r1long),r1)
     r1long = t(r1long)
     dim(r1long) = c((length(r1)*(ws2/ws3)),1)
-    timelinePOSIX = iso8601chartime2POSIX(M$metashort$timestamp,tz = desiredtz)
+    timelinePOSIX = iso8601chartime2POSIX(metashort$timestamp,tz = desiredtz)
     # Combine r1Long with TimeSegments2Zero
     for (kli in 1:nrow(TimeSegments2Zero)) {
       startTurnZero = which(timelinePOSIX == TimeSegments2Zero$windowstart[kli])
       endTurnZero = which(timelinePOSIX == TimeSegments2Zero$windowend[kli])
       r1long[startTurnZero:endTurnZero] = 0
       # Force ENMO and other acceleration metrics to be zero for these intervals
-      M$metashort[startTurnZero:endTurnZero,which(colnames(M$metashort) %in% c("timestamp","anglex","angley","anglez") == FALSE)] = 0
+      metashort[startTurnZero:endTurnZero,which(colnames(metashort) %in% c("timestamp","anglex","angley","anglez") == FALSE)] = 0
     }
     # collaps r1long (short epochs) back to r1 (long epochs)
     r1longc = cumsum(c(0,r1long))
@@ -201,12 +202,12 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   } else if (params_cleaning[["data_masking_strategy"]] %in% c(3, 5)) { #select X most active days
     #==========================================
     # Look out for X most active days and use this to define window of interest
-    if (acc.metric %in% colnames(M$metashort)) {
-      atest = as.numeric(as.matrix(M$metashort[,acc.metric]))
+    if (acc.metric %in% colnames(metashort)) {
+      atest = as.numeric(as.matrix(metashort[,acc.metric]))
     } else {
-      acc.metric = grep("timestamp|angle", colnames(M$metashort),
+      acc.metric = grep("timestamp|angle", colnames(metashort),
                         value = TRUE, invert = TRUE)[1]
-      atest = as.numeric(as.matrix(M$metashort[,acc.metric]))
+      atest = as.numeric(as.matrix(metashort[,acc.metric]))
     }
     r2tempe = rep(r2, each = (ws2/ws3))
     r1tempe = rep(r1, each = (ws2/ws3))
@@ -319,9 +320,9 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   if (params_cleaning[["max_calendar_days"]] > 0) {
     # get dates that are part of the study protocol
     if (study_dates_log_used == TRUE) {
-      dates = as.Date(iso8601chartime2POSIX(M$metalong$timestamp[firstmidnighti:(lastmidnighti - 1)], tz = desiredtz))
+      dates = as.Date(iso8601chartime2POSIX(metalong$timestamp[firstmidnighti:(lastmidnighti - 1)], tz = desiredtz))
     } else {
-      dates = as.Date(iso8601chartime2POSIX(M$metalong$timestamp, tz = desiredtz))
+      dates = as.Date(iso8601chartime2POSIX(metalong$timestamp, tz = desiredtz))
     }
     if (params_cleaning[["max_calendar_days"]] < length(unique(dates))) {
       lastDateToInclude = sort(unique(dates))[params_cleaning[["max_calendar_days"]]]
@@ -350,7 +351,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   if (length(ENi) == 0) ENi = -1
   #==============================
   if (nrow(metashort) > length(r5long)) {
-    metashort = as.matrix(metashort[1:length(r5long),])
+    metashort = metashort[1:length(r5long),]
   }
   wpd = 1440*n_ws3_permin #windows per day
   averageday = matrix(0,wpd,(ncol(metashort) - 1))
