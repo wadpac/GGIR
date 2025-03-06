@@ -566,10 +566,10 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                     " please specify a lower value."), call. = FALSE)
       }
     }
-    if (!is.null(params_general[["recordingSplitTimes"]])) {
-      if (!file.exists(params_general[["recordingSplitTimes"]])) {
-        stop(paste0("File .../", basename(params_general[["recordingSplitTimes"]]),
-                    " as specified with parameter recordingSplitTimes does not exist, ",
+    if (!is.null(params_general[["recording_split_times"]])) {
+      if (!file.exists(params_general[["recording_split_times"]])) {
+        stop(paste0("File .../", basename(params_general[["recording_split_times"]]),
+                    " as specified with parameter recording_split_times does not exist, ",
                     " please fix."), call. = FALSE)
         
       }
