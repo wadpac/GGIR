@@ -108,12 +108,12 @@ splitRecords = function(metadatadir, params_general = NULL) {
                                       timestamp_short < segment_ends[g] + buffer)
               segment_long = which(timestamp_long >= segment_starts[g] - buffer &
                                      timestamp_long <= segment_ends[g] + buffer)
-              # # Experiment with making long a multitude of short
-              # Nshort = length(segment_short)
-              # Nlong = length(segment_long)
-              # segment_short = segment_short[1:pmin(Nshort, Nlong * (windowsizes[2] / windowsizes[1]))]
-              # Nshort = length(segment_short)
-              # segment_long = segment_long[1:pmin(Nlong, floor(Nshort / (windowsizes[2] / windowsizes[1])))]
+              # Make long a multitude of short
+              Nshort = length(segment_short)
+              Nlong = length(segment_long)
+              segment_short = segment_short[1:pmin(Nshort, Nlong * (windowsizes[2] / windowsizes[1]))]
+              Nshort = length(segment_short)
+              segment_long = segment_long[1:pmin(Nlong, floor(Nshort / (windowsizes[2] / windowsizes[1])))]
               
               Nhours_long = length(segment_long) /  (3600 / windowsizes[2])
               # Only save if there are at least 12 hours of data
