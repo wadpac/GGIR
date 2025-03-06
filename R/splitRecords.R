@@ -65,59 +65,73 @@ splitRecords = function(metadatadir, params_general = NULL) {
         for (i in 1:length(thisID)) {
           splitTime_tmp = as.character(splitTime[thisID[i], (IDcol + 1):ncol(splitTime)])
           splitTime_tmp = as.POSIXct(splitTime_tmp, tz = desiredtz, format = params_general[["recording_split_timeformat"]])
-          # overlap with range of recording?
-          if (all(S$start[j] <= splitTime_tmp) & all(S$end[j] >= splitTime_tmp)) {
-            # If yes, use those splits to split the recording
-            load(file = S$filename[j])
-            timestamp_short = iso8601chartime2POSIX(x = M$metashort$timestamp, tz = desiredtz)
-            timestamp_long = iso8601chartime2POSIX(x = M$metalong$timestamp, tz = desiredtz)
-            Mbu = M
-            segment_starts = segment_ends = NULL
-            # Define segments
-            if (splitTime_tmp[1] > timestamp_short[1]) {
-              segment_starts = timestamp_short[1]
-              segment_ends = splitTime_tmp[1]
+          
+          splitTime_tmp = as.POSIXct(round(as.numeric(splitTime_tmp) / windowsizes[2]) * windowsizes[2], tz = desiredtz)
+          # Only consider timestamps that overlap with recording
+          splitTime_tmp = splitTime_tmp[which(splitTime_tmp >= S$start[j] &
+                                                splitTime_tmp <= S$end[j])]
+          if (length(splitTime_tmp) == 0) next
+          if (all(is.na(splitTime_tmp))) {
+            stop(paste0("Timestamp format ", splitTime[thisID[i], (IDcol + 1):ncol(splitTime)],
+                        " not recognised. You may want to check parameter ",
+                        "recording_split_timeformat", call. = FALSE))
+          }
+          # If yes, use those splits to split the recording
+          load(file = S$filename[j])
+          timestamp_short = iso8601chartime2POSIX(x = M$metashort$timestamp, tz = desiredtz)
+          timestamp_long = iso8601chartime2POSIX(x = M$metalong$timestamp, tz = desiredtz)
+          Mbu = M
+          segment_starts = segment_ends = NULL
+          # Define segments
+          if (splitTime_tmp[1] > timestamp_short[1]) {
+            segment_starts = timestamp_short[1]
+            segment_ends = splitTime_tmp[1]
+          }
+          for (segment_index in 1:length(splitTime_tmp)) {
+            if (segment_index < length(splitTime_tmp)) {
+              segment_starts = c(segment_starts, splitTime_tmp[segment_index])
+              segment_ends = c(segment_ends, splitTime_tmp[segment_index + 1])
+            } else {
+              segment_starts = c(segment_starts, splitTime_tmp[segment_index])
+              segment_ends = c(segment_ends, timestamp_short[length(timestamp_short)])
             }
-            for (segment_index in 1:length(splitTime_tmp)) {
-              if (segment_index < length(splitTime_tmp)) {
-                segment_starts = c(segment_starts, splitTime_tmp[segment_index])
-                segment_ends = c(segment_ends, splitTime_tmp[segment_index + 1])
-              } else {
-                segment_starts = c(segment_starts, splitTime_tmp[segment_index])
-                segment_ends = c(segment_ends, timestamp_short[length(timestamp_short)])
-              }
-            }
-            # Store each part separately
-            if (length(segment_starts) > 0) {
-              file_was_split = FALSE
+          }
+          # Store each part separately
+          if (length(segment_starts) > 0) {
+            file_was_split = FALSE
+            # round to resolution that matches long epoch
+            # segment_starts = as.POSIXct(round(as.numeric(segment_starts) / windowsizes[2]) * windowsizes[2], tz = desiredtz)
+            buffer = round((buffer / 2) / windowsizes[2]) * windowsizes[2]
+            for (g in 1:length(segment_starts)) {
+              # Take subsection
+              segment_short = which(timestamp_short >= segment_starts[g] - buffer &
+                                      timestamp_short < segment_ends[g] + buffer)
+              segment_long = which(timestamp_long >= segment_starts[g] - buffer &
+                                     timestamp_long <= segment_ends[g] + buffer)
+              # # Experiment with making long a multitude of short
+              # Nshort = length(segment_short)
+              # Nlong = length(segment_long)
+              # segment_short = segment_short[1:pmin(Nshort, Nlong * (windowsizes[2] / windowsizes[1]))]
+              # Nshort = length(segment_short)
+              # segment_long = segment_long[1:pmin(Nlong, floor(Nshort / (windowsizes[2] / windowsizes[1])))]
               
-              # round to resolution that matches long epoch
-              segment_starts = as.POSIXct(round(as.numeric(segment_starts) / windowsizes[2]) * windowsizes[2], tz = desiredtz)
-              buffer = round((buffer / 2) / windowsizes[2]) * windowsizes[2]
-              for (g in 1:length(segment_starts)) {
-                # Take subsection
-                segment_short = which(timestamp_short >= segment_starts[g] - buffer &
-                                        timestamp_short < segment_ends[g] + buffer)
-                segment_long = which(timestamp_long >= segment_starts[g] - buffer &
-                                       timestamp_long <= segment_ends[g] + buffer)
-                Nhours_long = length(segment_long) /  (3600 / windowsizes[2])
-                # Only save if there are at least 12 hours of data
-                if (Nhours_long > 12) {
-                  M$metashort = Mbu$metashort[segment_short, ]
-                  M$metalong = Mbu$metalong[segment_long, ]
-                  # Save the split
-                  newRDataFileName = unlist(strsplit(S$filename[j], "[.]RData"))
-                  newRDataFileName = paste0(newRDataFileName, "_split", g, ".RData")
-                  file_was_split = TRUE
-                  save(M, C, I,
-                       filefoldername, filename_dir, tail_expansion_log,
-                       file = newRDataFileName)
-                }
+              Nhours_long = length(segment_long) /  (3600 / windowsizes[2])
+              # Only save if there are at least 12 hours of data
+              if (Nhours_long > 2) {
+                M$metashort = Mbu$metashort[segment_short, ]
+                M$metalong = Mbu$metalong[segment_long, ]
+                # Save the split
+                newRDataFileName = unlist(strsplit(S$filename[j], "[.]RData"))
+                newRDataFileName = paste0(newRDataFileName, "_split", g, ".RData")
+                file_was_split = TRUE
+                save(M, C, I,
+                     filefoldername, filename_dir, tail_expansion_log,
+                     file = newRDataFileName)
               }
-              if (file_was_split == TRUE) {
-                # Delete original
-                unlink(S$filename[j], recursive = TRUE)
-              }
+            }
+            if (file_was_split == TRUE) {
+              # Delete original
+              unlink(S$filename[j], recursive = TRUE)
             }
           }
         }
@@ -125,5 +139,5 @@ splitRecords = function(metadatadir, params_general = NULL) {
     }
   }
   # THIS FUNCTION DOES NOT PRODUCE OUTPUT IT ONLY SPLITS FILES
-  return(NULL)
+  return()
 }
