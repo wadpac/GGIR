@@ -4,37 +4,18 @@ splitRecords = function(metadatadir, params_general = NULL) {
   idloc = params_general[["idloc"]]
   windowsizes = params_general[["windowsizes"]]
   
-  # Declare local functions:
-  getInfo = function(fn, idloc, tz) {
-    load(fn)
-    if (is.null(M$metashort)) return()
-    hvars = g.extractheadervars(I)
-    if (exists("Clist")) {
-      ID = NA # If Clist exists then ignore this file as it was previously appended
-    } else {
-      ID = extractID(hvars, idloc, fname = I$filename)
-    }
-    start = as.POSIXct(x = M$metashort$timestamp[1], format = "%Y-%m-%dT%H:%M:%S%z", tz = tz)
-    end = as.POSIXct(x = M$metashort$timestamp[nrow(M$metashort)], format = "%Y-%m-%dT%H:%M:%S%z", tz = tz)
-    info = data.frame(ID = ID, start = start, end = end, filename = fn, brand = I$monn)
-    return(info)
-  }
-  #==================================================
-  # Main code:
   filefoldername = filename_dir = tail_expansion_log = NULL
+  
   # Create overview of all recordings ID, start time, end time, and filename
   fns = dir(paste0(metadatadir, "/meta/basic"), full.names = TRUE)
-  
-  S = do.call("rbind", lapply(X = fns, FUN = getInfo, idloc = idloc, tz = desiredtz)) 
-  
+  S = do.call("rbind", lapply(X = fns, FUN = getPart1BasicInfo, idloc = idloc, tz = desiredtz)) 
   # Ignore recordings that were previously split
   # The function will always split all files that do not have _split in their name
   if (length(S) > 0) {
     S[grep(pattern = "_split", x = basename(S$filename), invert = TRUE), ]
   }
-  
   #------------------------------------
-  # Load recordingsSplitTimes
+  # Load recording split times file
   splitTime = data.table::fread(params_general[["recording_split_times"]], data.table = FALSE, stringsAsFactors = FALSE, colClasses = "character")
   
   # Identify ID columns
@@ -47,11 +28,17 @@ splitRecords = function(metadatadir, params_general = NULL) {
   countSpaces = function(x) {
     return(length(unlist(strsplit(x, " "))) - 1)
   }
+  if (length(grep(pattern = "%H:%M:%S",
+                  x = params_general[["recording_split_timeformat"]])) > 0) {
+    defaultTime = "00:00:00"
+  } else {
+    defaultTime = "00:00"
+  }
   for (j in (IDcol + 1):ncol(splitTime)) {
     space_count = unlist(lapply(X = splitTime[, j], FUN = countSpaces))
     no_space = which(space_count == 0)
     if (length(no_space) > 0) {
-      splitTime[no_space, j] = paste0(splitTime[no_space, j], " 00:00")
+      splitTime[no_space, j] = paste0(splitTime[no_space, j], " ", defaultTime)
     }
   }
   if (length(S) > 0) S = S[!is.na(S$ID),]
@@ -145,7 +132,7 @@ splitRecords = function(metadatadir, params_general = NULL) {
               }
             }
             if (file_was_split == TRUE) {
-              # Delete original
+              # Delete original RData file
               unlink(S$filename[j], recursive = TRUE)
             }
           }

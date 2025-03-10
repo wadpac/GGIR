@@ -6,6 +6,8 @@
 
 - Part 5 and visualreport: When wake up time at start of recording is added in part 5 no log was kept of the guider and bedend column was not recognised, this is now fixed. #1273
 
+- General: Add functionality to split recordings in the analyses, including new parameters recording_split_times, recording_split_overlap, recording_split_timeformat #1278.
+
 # CHANGES IN GGIR VERSION 3.2-0
 
 - Part 2:

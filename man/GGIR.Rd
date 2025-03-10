@@ -301,7 +301,7 @@ GGIR(mode = 1:5,
         argument \code{dataFormat} is set to "actiwatch_csv", "actiwatch_awd", 
         "actigraph_csv" or "sensewear_xls". For example "\%Y-\%m-\%d \%I:\%M:\%S \%p" for 
         "2023-07-11 01:24:01 PM" or "\%m/\%d/\%Y \%H:\%M:\%S" "2023-07-11 13:24:01"
-        }
+      }
 
     }
     }
