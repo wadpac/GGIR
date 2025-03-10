@@ -566,7 +566,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   if (length(params_general) > 0) {
     if (!is.null(params_general[["maxRecordingInterval"]])) {
       if (params_general[["maxRecordingInterval"]] > 24 * 21) {
-        stop(paste0("A maxRecordingInterval value higher than 21 days (504 hours) is permitted,",
+        stop(paste0("A maxRecordingInterval value higher than 21 days (504 hours) is not permitted,",
                     " please specify a lower value."), call. = FALSE)
       }
     }

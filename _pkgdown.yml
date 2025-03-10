@@ -87,22 +87,24 @@ navbar:
 news:
   cran_dates: TRUE
   releases:
+  - text: "Version 3.2-0"
+    href: https://www.accelting.com/ggir-release-3-2-0/
   - text: "Version 3.1-5"
-    href: https://www.accelting.com/updates/ggir-release-3-1-5/
+    href: https://www.accelting.com/ggir-release-3-1-5/
   - text: "Version 3.1-0"
-    href: https://www.accelting.com/updates/ggir-release-3-1-0/
+    href: https://www.accelting.com/ggir-release-3-1-0/
   - text: "Version 3.0-0"
-    href: https://www.accelting.com/updates/ggir-release-3-0-0/
+    href: https://www.accelting.com/ggir-release-3-0-0/
   - text: "Version 2.9-0"
-    href: https://www.accelting.com/updates/ggir-release-2-9-0/
+    href: https://www.accelting.com/ggir-release-2-9-0/
   - text: "Version 2.8-0"
-    href: https://www.accelting.com/updates/ggir-release-2-8-0/
+    href: https://www.accelting.com/ggir-release-2-8-0/
   - text: "Version 2.7-1"
-    href: https://www.accelting.com/updates/ggir-release-2-7-1/
+    href: https://www.accelting.com/ggir-release-2-7-1/
   - text: "Version 2.6-0"
-    href: https://www.accelting.com/updates/ggir-release-2-6-0/
+    href: https://www.accelting.com/ggir-release-2-6-0/
   - text: "Version 2.5-0"
-    href: https://www.accelting.com/updates/ggir-release-2-5-0/
+    href: https://www.accelting.com/ggir-release-2-5-0/
     
 search:
   exclude: ['news/index.html',
@@ -145,7 +147,8 @@ search:
   'reference/load_params.html', 'reference/parametersVignette.html', 'reference/part6AlignIndividuals.html', 
   'reference/part6PairwiseAggregation.html', 'reference/POSIXtime2iso8601.html', 
   'reference/read.myacc.csv.html', 'reference/ShellDoc2Vignette.html', 
-  'reference/tidyup_df.html', 'reference/updateBlocksize.html']
+  'reference/tidyup_df.html', 'reference/updateBlocksize.html',
+  'reference/GGIR.html', 'articles/GGIR.html']
 
 
 

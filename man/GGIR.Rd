@@ -278,9 +278,13 @@ GGIR(mode = 1:5,
       
       \item{recording_split_times}{
         Character (default = NULL).
-        To indicate path to csv file with a column that has ID in the column name
+        To indicate path to a csv file with a column that has ID in the column name
         that holds the participant IDs, followed by columns with either dates or
-        full timestamps on which the recording should be split.
+        full timestamps on which the recording should be split. Here, timestamp
+        format is specified with parameter \code{recording_split_timeformat}.
+        The names of these columns are used to refer to each resulting segment.
+        To prevent extremely long file name GGIR ignores spaces and does not consider
+        more than 8 characters which are forced to lower case.
       }
       
       \item{recording_split_timeformat}{
@@ -301,7 +305,7 @@ GGIR(mode = 1:5,
         argument \code{dataFormat} is set to "actiwatch_csv", "actiwatch_awd", 
         "actigraph_csv" or "sensewear_xls". For example "\%Y-\%m-\%d \%I:\%M:\%S \%p" for 
         "2023-07-11 01:24:01 PM" or "\%m/\%d/\%Y \%H:\%M:\%S" "2023-07-11 13:24:01"
-        }
+      }
 
     }
     }
