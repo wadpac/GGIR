@@ -1,4 +1,5 @@
 getPart1BasicInfo = function(fn, idloc, tz) {
+  M = NULL # load from fn
   load(fn)
   if (is.null(M$metashort)) return()
   hvars = g.extractheadervars(I)
