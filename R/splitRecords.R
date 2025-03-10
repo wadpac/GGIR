@@ -67,10 +67,20 @@ splitRecords = function(metadatadir, params_general = NULL) {
           splitTime_tmp = as.POSIXct(splitTime_tmp, tz = desiredtz, format = params_general[["recording_split_timeformat"]])
           
           splitTime_tmp = as.POSIXct(round(as.numeric(splitTime_tmp) / windowsizes[2]) * windowsizes[2], tz = desiredtz)
+          split_names = colnames(splitTime)[(IDcol + 1):ncol(splitTime)]
           # Only consider timestamps that overlap with recording
-          splitTime_tmp = splitTime_tmp[which(splitTime_tmp >= S$start[j] &
-                                                splitTime_tmp <= S$end[j])]
+          within_time_range = which(splitTime_tmp >= S$start[j] &
+                                      splitTime_tmp <= S$end[j])
+          splitTime_tmp = splitTime_tmp[within_time_range]
+          
           if (length(splitTime_tmp) == 0) next
+          split_names = split_names[within_time_range]
+          # tidy up split_names
+          split_names = tolower(gsub(pattern = " ", replacement = "", x = split_names))
+          split_names = substr(split_names, start = 1, stop = 8) # consider max 8 characters
+          split_names = make.unique(split_names, sep = "") # make names unique
+          if (length(which(duplicated(split_names) == TRUE)) > 0)
+          
           if (all(is.na(splitTime_tmp))) {
             stop(paste0("Timestamp format ", splitTime[thisID[i], (IDcol + 1):ncol(splitTime)],
                         " not recognised. You may want to check parameter ",
@@ -81,19 +91,24 @@ splitRecords = function(metadatadir, params_general = NULL) {
           timestamp_short = iso8601chartime2POSIX(x = M$metashort$timestamp, tz = desiredtz)
           timestamp_long = iso8601chartime2POSIX(x = M$metalong$timestamp, tz = desiredtz)
           Mbu = M
-          segment_starts = segment_ends = NULL
+          segment_names = segment_starts = segment_ends = NULL
           # Define segments
           if (splitTime_tmp[1] > timestamp_short[1]) {
             segment_starts = timestamp_short[1]
             segment_ends = splitTime_tmp[1]
+            segment_names = paste0("startrecordingTO", split_names[1])
           }
           for (segment_index in 1:length(splitTime_tmp)) {
             if (segment_index < length(splitTime_tmp)) {
               segment_starts = c(segment_starts, splitTime_tmp[segment_index])
               segment_ends = c(segment_ends, splitTime_tmp[segment_index + 1])
+              segment_names = c(segment_names, paste0(split_names[segment_index], "TO",
+                                                      split_names[segment_index + 1]))
             } else {
               segment_starts = c(segment_starts, splitTime_tmp[segment_index])
               segment_ends = c(segment_ends, timestamp_short[length(timestamp_short)])
+              segment_names = c(segment_names, paste0(split_names[segment_index],
+                                                      "TOendrecording"))
             }
           }
           # Store each part separately
@@ -122,7 +137,7 @@ splitRecords = function(metadatadir, params_general = NULL) {
                 M$metalong = Mbu$metalong[segment_long, ]
                 # Save the split
                 newRDataFileName = unlist(strsplit(S$filename[j], "[.]RData"))
-                newRDataFileName = paste0(newRDataFileName, "_split", g, ".RData")
+                newRDataFileName = paste0(newRDataFileName, "_split_", segment_names[g], ".RData")
                 file_was_split = TRUE
                 save(M, C, I,
                      filefoldername, filename_dir, tail_expansion_log,

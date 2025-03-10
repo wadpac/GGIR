@@ -277,9 +277,10 @@ GGIR(mode = 1:5,
       
       \item{recording_split_times}{
         Character (default = NULL).
-        To indicate path to csv file with a column that has ID in the column name
+        To indicate path to a csv file with a column that has ID in the column name
         that holds the participant IDs, followed by columns with either dates or
-        full timestamps on which the recording should be split.
+        full timestamps on which the recording should be split. Here, timestamp
+        format is specified with parameter \code{recording_split_timeformat}.
       }
       
       \item{recording_split_timeformat}{
