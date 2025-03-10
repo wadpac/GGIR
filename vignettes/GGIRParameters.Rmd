@@ -116,10 +116,10 @@ find a description and default value for all the arguments.
 | interpolationType           | 1                 | params_rawdata           |
 | expand_tail_max_hours       | deprecated        | params_general           |
 | recordingEndSleepHour       | 1                 | params_general           |
-| maxRecordingInterval        | between 1 and 2   | params_general           |
-| recording_split_times       | between 1 and 2   | params_general           |
-| recording_split_overlap     | between 1 and 2   | params_general           |
-| recording_split_timeformat  | between 1 and 2   | params_general           |
+| maxRecordingInterval        | 1                 | params_general           |
+| recording_split_times       | 1                 | params_general           |
+| recording_split_overlap     | 1                 | params_general           |
+| recording_split_timeformat  | 1                 | params_general           |
 | nonwear_approach            | 1                 | params_general           |
 | dataFormat                  | 1                 | params_general           |
 | extEpochData_timeformat     | 1                 | params_general           |
