@@ -272,7 +272,9 @@ GGIR(mode = 1:5,
         the latest recording. If recordings are separated then the timegap between
         the recordings is filled with data points that resemble monitor not worn.
         The maximum value of maxFile gap is 504 (21 days). Only recordings from the
-        same accelerometer brand are appended. The part 2 csv report
+        same accelerometer brand are appended. This functionality is applied
+        after all other aspect of GGIR part 1 are completed for all input files.
+        The part 2 csv report
         will show number of appended recordings, sampling rate for each, time overlap or gap 
         and the names of the filenames of the respective recording.}
       
@@ -284,7 +286,8 @@ GGIR(mode = 1:5,
         format is specified with parameter \code{recording_split_timeformat}.
         The names of these columns are used to refer to each resulting segment.
         To prevent extremely long file name GGIR ignores spaces and does not consider
-        more than 10 characters which are forced to lower case.
+        more than 10 characters which are forced to lower case. This functionality
+        is applied after all other aspect of GGIR part 1 are completed for all input files.
       }
       
       \item{recording_split_timeformat}{
