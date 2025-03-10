@@ -9,11 +9,6 @@ splitRecords = function(metadatadir, params_general = NULL) {
   # Create overview of all recordings ID, start time, end time, and filename
   fns = dir(paste0(metadatadir, "/meta/basic"), full.names = TRUE)
   S = do.call("rbind", lapply(X = fns, FUN = getPart1BasicInfo, idloc = idloc, tz = desiredtz)) 
-  # Ignore recordings that were previously split
-  # The function will always split all files that do not have _split in their name
-  if (length(S) > 0) {
-    S[grep(pattern = "_split", x = basename(S$filename), invert = TRUE), ]
-  }
   #------------------------------------
   # Load recording split times file
   splitTime = data.table::fread(params_general[["recording_split_times"]], data.table = FALSE, stringsAsFactors = FALSE, colClasses = "character")

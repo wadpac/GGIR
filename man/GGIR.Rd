@@ -281,6 +281,9 @@ GGIR(mode = 1:5,
         that holds the participant IDs, followed by columns with either dates or
         full timestamps on which the recording should be split. Here, timestamp
         format is specified with parameter \code{recording_split_timeformat}.
+        The names of these columns are used to refer to each resulting segment.
+        To prevent extremely long file name GGIR ignores spaces and does not consider
+        more than 8 characters which are forced to lower case.
       }
       
       \item{recording_split_timeformat}{
