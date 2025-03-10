@@ -13,7 +13,7 @@ test_that("Recording can be split", {
   M$metashort$timestamp = POSIXtime2iso8601(x = M$metashort$timestamp, tz = "Europe/London")
   M$metalong$timestamp = POSIXtime2iso8601(x = M$metalong$timestamp, tz = "Europe/London")
   I = data.inspectfile
-  I$filename = "1_bin"
+  I$filename = "1_1-1-1900.bin"
   C = data.calibrate
   
   dn = "./testfolder/meta/basic"
@@ -26,7 +26,7 @@ test_that("Recording can be split", {
        filefoldername = filefoldername,
        filename_dir = filename_dir,
        tail_expansion_log = tail_expansion_log,
-       file = paste0(dn, "/meta_1_bin.RData"))
+       file = paste0(dn, "/meta_1_1-1-1900.bin.RData"))
   
   times_to_split = data.frame(ID = "1", time1 = "2013-11-15 00:05", time2 = "2013-11-16")
   csv_file = "time_chunks_per_participant.csv"
@@ -46,18 +46,18 @@ test_that("Recording can be split", {
   # File created?
   expect_true(dir.exists("./testfolder/meta/basic"))
   expect_equal(length(dir("./testfolder/meta/basic")), 2)
-  expect_true(file.exists("./testfolder/meta/basic/meta_1_bin_split_startrecordingTOtime1.RData"))
-  expect_true(file.exists("./testfolder/meta/basic/meta_1_bin_split_time1TOendrecording.RData"))
+  expect_true(file.exists("./testfolder/meta/basic/meta_1_1-1-1900_split1_startTOtime1.bin.RData"))
+  expect_true(file.exists("./testfolder/meta/basic/meta_1_1-1-1900_split2_time1TOend.bin.RData"))
 
   # File content correct?
-  load("./testfolder/meta/basic/meta_1_bin_split_startrecordingTOtime1.RData")
+  load("./testfolder/meta/basic/meta_1_1-1-1900_split1_startTOtime1.bin.RData")
   expect_equal(nrow(M$metashort), 8100)
   expect_equal(nrow(M$metalong), 45)
   expect_equal(M$metashort$timestamp[1], "2013-11-14T11:45:00+0000")
   expect_equal(tail(M$metashort$timestamp, n = 1), "2013-11-14T22:59:55+0000")
   expect_equal(M$metalong$timestamp[1],  "2013-11-14T11:45:00+0000")
   expect_equal(tail(M$metalong$timestamp, n = 1), "2013-11-14T22:45:00+0000")
-  load("./testfolder/meta/basic/meta_1_bin_split_time1TOendrecording.RData")
+  load("./testfolder/meta/basic/meta_1_1-1-1900_split2_time1TOend.bin.RData")
   expect_equal(nrow(M$metashort), 10619)
   expect_equal(nrow(M$metalong), 58)
   expect_equal(M$metashort$timestamp[1], "2013-11-14T23:00:00+0000")

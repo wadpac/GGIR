@@ -78,7 +78,7 @@ splitRecords = function(metadatadir, params_general = NULL) {
           if (splitTime_tmp[1] > timestamp_short[1]) {
             segment_starts = timestamp_short[1]
             segment_ends = splitTime_tmp[1]
-            segment_names = paste0("startrecordingTO", split_names[1])
+            segment_names = paste0("startTO", split_names[1])
           }
           for (segment_index in 1:length(splitTime_tmp)) {
             if (segment_index < length(splitTime_tmp)) {
@@ -90,7 +90,7 @@ splitRecords = function(metadatadir, params_general = NULL) {
               segment_starts = c(segment_starts, splitTime_tmp[segment_index])
               segment_ends = c(segment_ends, timestamp_short[length(timestamp_short)])
               segment_names = c(segment_names, paste0(split_names[segment_index],
-                                                      "TOendrecording"))
+                                                      "TOend"))
             }
           }
           # Store each part separately
@@ -118,8 +118,15 @@ splitRecords = function(metadatadir, params_general = NULL) {
                 M$metashort = Mbu$metashort[segment_short, ]
                 M$metalong = Mbu$metalong[segment_long, ]
                 # Save the split
-                newRDataFileName = unlist(strsplit(S$filename[j], "[.]RData"))
-                newRDataFileName = paste0(newRDataFileName, "_split_", segment_names[g], ".RData")
+                bsnm = basename(S$filename[j])
+                dirnm = dirname(S$filename[j])
+                fname_tmp = unlist(strsplit(bsnm, "[.]"))
+                newfilebase = paste0(fname_tmp[1:pmax(1, length(fname_tmp) - 2)], collapse = ".")
+                extension = fname_tmp[length(fname_tmp) - 1]
+                newFileName = paste0(newfilebase, "_split", g, "_", segment_names[g], ".", extension)
+                newFileName = paste0(dirnm, "/", newFileName)
+                newRDataFileName = paste0(newFileName, ".RData")
+                I$filename = newFileName
                 file_was_split = TRUE
                 save(M, C, I,
                      filefoldername, filename_dir, tail_expansion_log,
