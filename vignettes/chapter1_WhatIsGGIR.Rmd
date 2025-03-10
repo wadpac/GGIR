@@ -32,7 +32,12 @@ The time resolutions of GGIR output are:
 -   **Window defined from Waking-up after main sleep period to Waking-up after the next main sleep period**.
 -   **Window defined from Sleep onset at the start of the main sleep period to sleep onset at the start of the next main sleep period**.
 -   **Epoch-level time series**, where an epoch length is set by the user at for example 5 seconds.
--   **(Optionally, not by default) Per sequence of recordings with matching participant IDs**. For example, when a person is tracked first with one accelerometer and then the accelerometer is replaced by a different accelerometers. For details on how to use this, see documentation on GGIR parameter `maxRecordingInterval` and documentation on how to use GGIR parameters as explained further down.
+
+
+**Additionally, GGIR facilitates appending or splitting recordings:**
+
+- Appending combines a sequence of recordings with matching participant IDs. For example, when a person is tracked for a couple of weeks with one accelerometer which is replaced after those weeks by a new accelerometer also worn for a couple of weeks. GGIR is able to append these recordings and treat them as a single recording. For details on how to use this, see documentation on GGIR parameter `maxRecordingInterval` and documentation on how to use GGIR parameters as explained further down.
+- Splitting recording into multiple sequential recordings based on user-specified time points. For example, when a person is tracked for multiple weeks and you want to analyse the segment before and after an intervention separately. For details on how GGIR can split a recording into multiple new recordings, see documentation on GGIR parameters `recording_split_times`, `recording_split_overlap`, and `recording_split_timeformat` and documentation on how to use GGIR parameters as explained further down.
 
 ## Key strengths
 
