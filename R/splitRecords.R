@@ -61,8 +61,6 @@ splitRecords = function(metadatadir, params_general = NULL) {
           split_names = tolower(gsub(pattern = " ", replacement = "", x = split_names))
           split_names = substr(split_names, start = 1, stop = 8) # consider max 8 characters
           split_names = make.unique(split_names, sep = "") # make names unique
-          if (length(which(duplicated(split_names) == TRUE)) > 0)
-          
           if (all(is.na(splitTime_tmp))) {
             stop(paste0("Timestamp format ", splitTime[thisID[i], (IDcol + 1):ncol(splitTime)],
                         " not recognised. You may want to check parameter ",
@@ -123,10 +121,15 @@ splitRecords = function(metadatadir, params_general = NULL) {
                 fname_tmp = unlist(strsplit(bsnm, "[.]"))
                 newfilebase = paste0(fname_tmp[1:pmax(1, length(fname_tmp) - 2)], collapse = ".")
                 extension = fname_tmp[length(fname_tmp) - 1]
-                newFileName = paste0(newfilebase, "_split", g, "_", segment_names[g], ".", extension)
+                if (idloc == 6) {
+                  id_separator = "._"
+                } else {
+                  id_separator = "_"
+                }
+                newFileName = paste0(newfilebase, id_separator, "split", g, "_", segment_names[g], ".", extension)
+                I$filename = gsub(pattern = "meta_", replacement = "", x = newFileName)
                 newFileName = paste0(dirnm, "/", newFileName)
                 newRDataFileName = paste0(newFileName, ".RData")
-                I$filename = newFileName
                 file_was_split = TRUE
                 save(M, C, I,
                      filefoldername, filename_dir, tail_expansion_log,
