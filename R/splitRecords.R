@@ -116,19 +116,27 @@ splitRecords = function(metadatadir, params_general = NULL) {
                 M$metashort = Mbu$metashort[segment_short, ]
                 M$metalong = Mbu$metalong[segment_long, ]
                 # Save the split
-                bsnm = basename(S$filename[j])
-                dirnm = dirname(S$filename[j])
-                fname_tmp = unlist(strsplit(bsnm, "[.]"))
+                
+                # Take RData filename and split it based on dot
+                fname_tmp = unlist(strsplit(basename(S$filename[j]), "[.]"))
+                # Last two elements are the RData + Original file extension (e.g. .AWD, .csv)
                 newfilebase = paste0(fname_tmp[1:pmax(1, length(fname_tmp) - 2)], collapse = ".")
+                # Remember original file extension
                 extension = fname_tmp[length(fname_tmp) - 1]
+                # Reassamble file name but use character used for locating the ID
+                # to ensure that the new part never becomes part of the extracted ID
+                # In other words activity and sleep diary (part 2, 4 and 5) can
+                # keep using the general participant ID and do not need to work with
+                # segment specific IDs
                 if (idloc == 6) {
                   id_separator = "._"
                 } else {
                   id_separator = "_"
                 }
                 newFileName = paste0(newfilebase, id_separator, "split", g, "_", segment_names[g], ".", extension)
+                # add back to I$filename because part 2 uses this in the csv report
                 I$filename = gsub(pattern = "meta_", replacement = "", x = newFileName)
-                newFileName = paste0(dirnm, "/", newFileName)
+                newFileName = paste0(dirname(S$filename[j]), "/", newFileName)
                 newRDataFileName = paste0(newFileName, ".RData")
                 file_was_split = TRUE
                 save(M, C, I,
