@@ -46,18 +46,18 @@ test_that("Recording can be split", {
   # File created?
   expect_true(dir.exists("./testfolder/meta/basic"))
   expect_equal(length(dir("./testfolder/meta/basic")), 2)
-  expect_true(file.exists("./testfolder/meta/basic/meta_1_1-1-1900_split1_startTOtime1.bin.RData"))
-  expect_true(file.exists("./testfolder/meta/basic/meta_1_1-1-1900_split2_time1TOend.bin.RData"))
+  expect_true(file.exists("./testfolder/meta/basic/meta_1_1-1-1900_split1_startrecTOtime1.bin.RData"))
+  expect_true(file.exists("./testfolder/meta/basic/meta_1_1-1-1900_split2_time1TOendrec.bin.RData"))
 
   # File content correct?
-  load("./testfolder/meta/basic/meta_1_1-1-1900_split1_startTOtime1.bin.RData")
+  load("./testfolder/meta/basic/meta_1_1-1-1900_split1_startrecTOtime1.bin.RData")
   expect_equal(nrow(M$metashort), 8100)
   expect_equal(nrow(M$metalong), 45)
   expect_equal(M$metashort$timestamp[1], "2013-11-14T11:45:00+0000")
   expect_equal(tail(M$metashort$timestamp, n = 1), "2013-11-14T22:59:55+0000")
   expect_equal(M$metalong$timestamp[1],  "2013-11-14T11:45:00+0000")
   expect_equal(tail(M$metalong$timestamp, n = 1), "2013-11-14T22:45:00+0000")
-  load("./testfolder/meta/basic/meta_1_1-1-1900_split2_time1TOend.bin.RData")
+  load("./testfolder/meta/basic/meta_1_1-1-1900_split2_time1TOendrec.bin.RData")
   expect_equal(nrow(M$metashort), 10619)
   expect_equal(nrow(M$metalong), 58)
   expect_equal(M$metashort$timestamp[1], "2013-11-14T23:00:00+0000")

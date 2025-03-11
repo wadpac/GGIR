@@ -77,6 +77,7 @@ g.report.part6 = function(metadatadir = c(), f0 = c(), f1 = c(),
     #-------------------------------------------------------------
     # store all summaries in csv files
     outputfinal_clean = tidyup_df(outputfinal)
+    outputfinal_clean = addSplitNames(outputfinal_clean) # If recording was split
     data.table::fwrite(outputfinal_clean, paste0(metadatadir, "/results/part6_summary.csv"),
                        row.names = FALSE, na = "", sep = params_output[["sep_reports"]],
                        dec = params_output[["dec_reports"]])

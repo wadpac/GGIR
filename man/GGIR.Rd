@@ -286,8 +286,11 @@ GGIR(mode = 1:5,
         format is specified with parameter \code{recording_split_timeformat}.
         The names of these columns are used to refer to each resulting segment.
         To prevent extremely long file name GGIR ignores spaces and does not consider
-        more than 10 characters which are forced to lower case. This functionality
-        is applied after all other aspect of GGIR part 1 are completed for all input files.
+        more than 10 characters which are forced to lower case. If the recording
+        starts before or ends after the first and last split time then the start and/or
+        end of the recording is also used as split time and referred to as
+        startrec and endrec, respectively. Files are split after all other aspect of
+        GGIR part 1 are completed for all input files.
       }
       
       \item{recording_split_timeformat}{
