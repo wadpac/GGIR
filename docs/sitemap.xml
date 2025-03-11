@@ -36,6 +36,7 @@
 <url><loc>https://wadpac.github.io/GGIR/LICENSE-text.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/news/index.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/ABI.html</loc></url>
+<url><loc>https://wadpac.github.io/GGIR/reference/addSplitNames.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/aggregateEvent.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/appendRecords.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/applyExtFunction.html</loc></url>
@@ -122,6 +123,8 @@
 <url><loc>https://wadpac.github.io/GGIR/reference/g.sibreport.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/g.weardec.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/getfolderstructure.html</loc></url>
+<url><loc>https://wadpac.github.io/GGIR/reference/getPart1BasicInfo.html</loc></url>
+<url><loc>https://wadpac.github.io/GGIR/reference/getSplitNames.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/get_nw_clip_block_params.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/get_starttime_weekday_truncdata.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/GGIR-package.html</loc></url>
@@ -143,6 +146,7 @@
 <url><loc>https://wadpac.github.io/GGIR/reference/POSIXtime2iso8601.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/read.myacc.csv.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/ShellDoc2Vignette.html</loc></url>
+<url><loc>https://wadpac.github.io/GGIR/reference/splitRecords.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/SSP.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/tidyup_df.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/updateBlocksize.html</loc></url>
