@@ -141,9 +141,10 @@ splitRecords = function(metadatadir, params_general = NULL) {
                 file_was_split = TRUE
                 
                 # update weekday code and name
-                M$wday = as.POSIXlt(x = timestamp_short[1], tz = desiredtz)$wday
+                wday = as.POSIXlt(x = timestamp_short[1], tz = desiredtz)$wday + 1
                 weekdays = c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
-                M$wdayname = weekdays[M$wday + 1]
+                M$wday = wday
+                M$wdayname = weekdays[wday]
                 # save
                 save(M, C, I,
                      filefoldername, filename_dir, tail_expansion_log,
