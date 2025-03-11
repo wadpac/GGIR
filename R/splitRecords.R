@@ -58,7 +58,7 @@ splitRecords = function(metadatadir, params_general = NULL) {
           if (length(splitTime_tmp) == 0) next
           split_names = split_names[within_time_range]
           # tidy up split_names
-          split_names = tolower(gsub(pattern = " ", replacement = "", x = split_names))
+          split_names = tolower(gsub(pattern = " |[.]|-", replacement = "", x = split_names))
           split_names = substr(split_names, start = 1, stop = 10) # consider max 8 characters
           split_names = make.unique(split_names, sep = "") # make names unique
           if (all(is.na(splitTime_tmp))) {

@@ -220,7 +220,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                                      doiglevels = doiglevels, nfulldays = nfulldays,
                                      lastmidnight = lastmidnight,
                                      ws3 = ws3, ws2 = ws2, qcheck = qcheck, fname = fname,
-                                     idloc = idloc, sensor.location = sensor.location,
+                                     sensor.location = sensor.location,
                                      wdayname = wdayname,
                                      tooshort = tooshort, includedaycrit = includedaycrit,
                                      quantiletype = quantiletype, doilevels = doilevels, 
@@ -228,8 +228,9 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                                      mvpanames = mvpanames, wdaycode = wdaycode, ID = ID, 
                                      deviceSerialNumber = deviceSerialNumber,
                                      doquan = doquan,  ExtFunColsi = ExtFunColsi,
-                                     myfun = myfun, desiredtz = desiredtz,
-                                     params_247 = params_247, params_phyact = params_phyact)
+                                     myfun = myfun,
+                                     params_247 = params_247, params_phyact = params_phyact,
+                                     params_general = params_general)
   }
   #metashort is shortened from midgnight to midnight if requested (data_masking_strategy 2)
   if (data_masking_strategy == 2) {
