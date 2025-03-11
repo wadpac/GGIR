@@ -309,7 +309,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       # reorder to have starttime next to calendar_date
       old_vars = which(colnames(daySUMMARY_clean) != "start_time")
       new_var = which(colnames(daySUMMARY_clean) == "start_time")
-      daySUMMARY_clean = daySUMMARY_clean[, c(old_vars[1:3], new_var, old_vars[4:length(old_vars)])]
+      daySUMMARY_clean = daySUMMARY_clean[, c(old_vars[1:2], new_var, old_vars[3:length(old_vars)])]
       # format calendar dates
       dd = iso8601chartime2POSIX(daySUMMARY_clean$calendar_date, tz = desiredtz) 
       daySUMMARY_clean$calendar_date = format(dd, format = "%Y-%m-%d")
