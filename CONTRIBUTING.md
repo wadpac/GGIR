@@ -165,6 +165,20 @@ page for the chapter.
 The last step would be committing and pushing your changes to github and making a
 pull request as with any other contribution to the package. 
 
+## Peer-reviewing open pull requests
+
+GGIR is primarily maintained by one person (Vincent) and depends on pro-active community efforts to help screen from problems.
+Therefore, we welcome voluntary efforts to peer-review [open pull requests (PR)](https://github.com/wadpac/GGIR/pulls).
+
+For example, you may be able to provide feedback on or all of the follwoing:
+- Code functionality
+- Code clarity
+- Documentation clarity
+
+To peer-review a PR, please:
+- Leave a comment in a PR to express your interest in peer-reviewing it.
+- Vincent will then add you as a repository collaborator, and will assign you as a reviewer.
+
 ## New release
 
 GGIR follows the [release cycle process described in this document](RELEASE_CYCLE.md).
