@@ -139,6 +139,12 @@ splitRecords = function(metadatadir, params_general = NULL) {
                 I$filename = filename_dir
                 newRDataFileName = paste0(dirname(S$filename[j]), "/", newFileName, ".RData")
                 file_was_split = TRUE
+                
+                # update weekday code and name
+                M$wday = as.POSIXlt(x = timestamp_short[1], tz = desiredtz)$wday
+                weekdays = c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
+                M$wdayname = weekdays[M$wday + 1]
+                # save
                 save(M, C, I,
                      filefoldername, filename_dir, tail_expansion_log,
                      file = newRDataFileName)
