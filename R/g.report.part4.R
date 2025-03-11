@@ -171,7 +171,7 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       } else {
         nightsummary_clean = tidyup_df(nightsummary)
         data.table::fwrite(nightsummary_clean, file = paste(resultfolder, "/results/QC/part4_nightsummary_sleep_full.csv",
-                                                   sep = ""), row.names = FALSE, na = "",
+                                                            sep = ""), row.names = FALSE, na = "",
                            sep = params_output[["sep_reports"]],
                            dec = params_output[["dec_reports"]])
         nightsummary_bu = nightsummary
@@ -286,9 +286,9 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
             personSummary[i, cntt + 9] = length(which(nightsummary.tmp$daysleep[this_sleepparam] == 1 &
                                                         (th3 == "Friday" | th3 == "Saturday")))
             personSummary[i, cntt + 10] = length(which(nightsummary.tmp$daysleep[this_sleepparam] == 1 & 
-                                                        (th3 == "Monday" | th3 == "Tuesday" | 
-                                                           th3 == "Wednesday" | th3 == "Thursday" |
-                                                           th3 == "Sunday")))
+                                                         (th3 == "Monday" | th3 == "Tuesday" | 
+                                                            th3 == "Wednesday" | th3 == "Thursday" |
+                                                            th3 == "Sunday")))
             personSummarynames = c(personSummarynames, paste("n_WEnights_daysleeper", sep = ""), paste("n_WDnights_daysleeper",
                                                                                                        sep = ""))
             cnt = cntt + 10
@@ -368,13 +368,14 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
             if (only.use.sleeplog == FALSE) {
               # when sleep log is not available
               if (dotwice == 2) {
-                CRIT = which(nightsummary$filename == uniquefn[i] & (nightsummary$cleaningcode == 0 | nightsummary$cleaningcode ==
-                                                            1))
+                CRIT = which(nightsummary$filename == uniquefn[i] &
+                               (nightsummary$cleaningcode == 0 | nightsummary$cleaningcode == 1))
               } else {
                 CRIT = which(nightsummary$filename == uniquefn[i])
               }
             } else {
-              CRIT = which(nightsummary$filename == uniquefn[i] & nightsummary$cleaningcode == 0)  #when sleep log is available
+              CRIT = which(nightsummary$filename == uniquefn[i] &
+                             nightsummary$cleaningcode == 0)  #when sleep log is available
             }
             personSummarynames_backup = c()
             if (length(CRIT) > 0) {
@@ -530,7 +531,7 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                     personSummary[i, (cnt + 3)] = mean(nightsummary.tmp$guider_inbedDuration[indexUdef],
                                                        na.rm = TRUE)
                     personSummary[i, (cnt + 4)] = sd(nightsummary.tmp$guider_inbedDuration[indexUdef],
-                                                      na.rm = TRUE)
+                                                     na.rm = TRUE)
                     personSummarynames = c(personSummarynames, paste("guider_inbedDuration_", TW, "_", udefn[j],
                                                                      "_mn", sep = ""), paste("guider_inbedDuration_", TW, "_", udefn[j], "_sd", sep = ""))
                     cnt = cnt + 4
@@ -572,7 +573,16 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
             personSummary = personSummary[, -emptycolumns]
           }
         }
-        #######################################################
+        #----------------------------------------------------
+        # Identify whether recordings where split.
+        # If yes, then extract names for each plot.
+        if (nrow(nightsummary) != 0) {
+          personSummary = addSplitNames(personSummary)
+          if ("split1_name" %in% colnames(personSummary) == TRUE) {
+            nightsummary = addSplitNames(nightsummary)
+          }
+        }
+        #----------------------------------------------------
         if (nrow(nightsummary) == 0) {
           if (verbose == TRUE) {
             if (dotwice == 1) {
@@ -585,22 +595,22 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           nightsummary_clean = tidyup_df(nightsummary)
           personSummary_clean = tidyup_df(personSummary)
           if (dotwice == 1) {
-            data.table::fwrite(nightsummary_clean, file = paste(resultfolder, "/results/QC/part4_nightsummary_sleep_full.csv",
-                                                       sep = ""), row.names = FALSE, na = "",
-                               sep = params_output[["sep_reports"]],
+            csv_name = paste0(resultfolder, "/results/QC/part4_nightsummary_sleep_full.csv")
+            data.table::fwrite(nightsummary_clean, file = csv_name, row.names = FALSE,
+                               na = "", sep = params_output[["sep_reports"]],
                                dec = params_output[["dec_reports"]])
-            data.table::fwrite(personSummary_clean, file = paste(resultfolder, "/results/QC/part4_summary_sleep_full.csv",
-                                                        sep = ""), row.names = FALSE, na = "",
-                               sep = params_output[["sep_reports"]],
+            csv_name = paste0(resultfolder, "/results/QC/part4_summary_sleep_full.csv")
+            data.table::fwrite(personSummary_clean, file = csv_name, row.names = FALSE,
+                               na = "", sep = params_output[["sep_reports"]],
                                dec = params_output[["dec_reports"]])
           } else {
-            data.table::fwrite(nightsummary_clean, file = paste(resultfolder, "/results/part4_nightsummary_sleep_cleaned.csv",
-                                                       sep = ""), row.names = FALSE, na = "",
-                               sep = params_output[["sep_reports"]],
+            csv_name = paste0(resultfolder, "/results/part4_nightsummary_sleep_cleaned.csv")
+            data.table::fwrite(nightsummary_clean, file = csv_name, row.names = FALSE,
+                               na = "", sep = params_output[["sep_reports"]],
                                dec = params_output[["dec_reports"]])
-            data.table::fwrite(personSummary_clean, file = paste(resultfolder, "/results/part4_summary_sleep_cleaned.csv",
-                                                        sep = ""), row.names = FALSE, na = "",
-                               sep = params_output[["sep_reports"]],
+            csv_name = paste0(resultfolder, "/results/part4_summary_sleep_cleaned.csv")
+            data.table::fwrite(personSummary_clean, file = csv_name, row.names = FALSE,
+                               na = "", sep = params_output[["sep_reports"]],
                                dec = params_output[["dec_reports"]])
           }
         }

@@ -1,12 +1,14 @@
 g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                             midnightsi, metashort, averageday,
                             doiglevels, nfulldays,lastmidnight, ws3, ws2, qcheck,
-                            fname, idloc, sensor.location, wdayname, tooshort, includedaycrit,
+                            fname, sensor.location, wdayname, tooshort, includedaycrit,
                             doquan, quantiletype, doilevels, domvpa,
                             mvpanames, wdaycode, ID,
-                            deviceSerialNumber, ExtFunColsi, myfun, desiredtz = "",
+                            deviceSerialNumber, ExtFunColsi, myfun, 
                             params_247 = c(), params_phyact = c(),
+                            params_general = c(),
                             ...) {
+
   #get input variables
   input = list(...)
   
@@ -50,7 +52,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
   }
   unique_dates_recording = unique(as.Date(iso8601chartime2POSIX(time[c(seq(1, length(time),
                                                                            by = (3600/ws2) * 12),
-                                                                       length(time))], tz = desiredtz)))
+                                                                       length(time))], tz = params_general[["desiredtz"]])))
   ExtFunColsi = ExtFunColsi - 1 # subtract 1 because code ignores timestamp
   
   for (di in 1:ndays) { #run through days
@@ -198,8 +200,23 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
     daysummary[di,fi] = ID
     idremember = daysummary[di,fi]
     ds_names[fi] = "ID";      fi = fi + 1
-    daysummary[di,fi] = fname
+    if (!is.null(params_general[["recording_split_times"]])) {
+      filename = fname
+      splitnames = getSplitNames(filename)
+      segment_names = splitnames$segment_names
+      filename = splitnames$filename
+    } else {
+      segment_names = NULL
+      filename = fname
+    }
+    daysummary[di,fi] = filename
     ds_names[fi] = "filename";  fi = fi + 1
+    if (!is.null(params_general[["recording_split_times"]]) && !is.null(segment_names)) {
+      daysummary[di,fi] = segment_names[2]
+      daysummary[di,fi + 1] = segment_names[3]
+      ds_names[fi:(fi + 1)] = c("split1_name","split2_name")
+      fi = fi + 2
+    }
     calendardate = unlist(strsplit(as.character(vari[1,1])," "))[1]
     daysummary[di,fi] = calendardate
     daysummary[di,(fi + 1)] = sensor.location
