@@ -76,7 +76,7 @@ splitRecords = function(metadatadir, params_general = NULL) {
           if (splitTime_tmp[1] > timestamp_short[1]) {
             segment_starts = timestamp_short[1]
             segment_ends = splitTime_tmp[1]
-            segment_names = paste0("startTO", split_names[1])
+            segment_names = paste0("startrecTO", split_names[1])
           }
           for (segment_index in 1:length(splitTime_tmp)) {
             if (segment_index < length(splitTime_tmp)) {
@@ -88,7 +88,7 @@ splitRecords = function(metadatadir, params_general = NULL) {
               segment_starts = c(segment_starts, splitTime_tmp[segment_index])
               segment_ends = c(segment_ends, timestamp_short[length(timestamp_short)])
               segment_names = c(segment_names, paste0(split_names[segment_index],
-                                                      "TOend"))
+                                                      "TOendrec"))
             }
           }
           # Store each part separately
@@ -135,9 +135,9 @@ splitRecords = function(metadatadir, params_general = NULL) {
                 }
                 newFileName = paste0(newfilebase, id_separator, "split", g, "_", segment_names[g], ".", extension)
                 # add back to I$filename because part 2 uses this in the csv report
-                I$filename = gsub(pattern = "meta_", replacement = "", x = newFileName)
-                newFileName = paste0(dirname(S$filename[j]), "/", newFileName)
-                newRDataFileName = paste0(newFileName, ".RData")
+                filename_dir = gsub(pattern = "meta_", replacement = "", x = newFileName)
+                I$filename = filename_dir
+                newRDataFileName = paste0(dirname(S$filename[j]), "/", newFileName, ".RData")
                 file_was_split = TRUE
                 save(M, C, I,
                      filefoldername, filename_dir, tail_expansion_log,
