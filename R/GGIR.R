@@ -269,6 +269,12 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                        params_general = params_general,
                        verbose = verbose)
     }
+    if (!is.null(params_general[["recording_split_times"]])) {
+      # Split recordings based on user specified time points
+      splitRecords(metadatadir = metadatadir,
+                   params_general = params_general)
+    }
+    
     if (!is.null(params_general[["maxRecordingInterval"]])) {
       # Append recordings when ID and brand match and gap between
       # recordings does not exceed maxRecordingInterval,

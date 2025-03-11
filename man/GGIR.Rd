@@ -271,18 +271,48 @@ GGIR(mode = 1:5,
         the latest recording. If recordings are separated then the timegap between
         the recordings is filled with data points that resemble monitor not worn.
         The maximum value of maxFile gap is 504 (21 days). Only recordings from the
-        same accelerometer brand are appended. The part 2 csv report
+        same accelerometer brand are appended. This functionality is applied
+        after all other aspect of GGIR part 1 are completed for all input files.
+        The part 2 csv report
         will show number of appended recordings, sampling rate for each, time overlap or gap 
         and the names of the filenames of the respective recording.}
-        
+      
+      \item{recording_split_times}{
+        Character (default = NULL).
+        To indicate path to a csv file with a column that has ID in the column name
+        that holds the participant IDs, followed by columns with either dates or
+        full timestamps on which the recording should be split. Here, timestamp
+        format is specified with parameter \code{recording_split_timeformat}.
+        The names of these columns are used to refer to each resulting segment.
+        To prevent extremely long file name GGIR ignores spaces and does not consider
+        more than 10 characters which are forced to lower case. If the recording
+        starts before or ends after the first and last split time then the start and/or
+        end of the recording is also used as split time and referred to as
+        startrec and endrec, respectively. Files are split after all other aspect of
+        GGIR part 1 are completed for all input files.
+      }
+      
+      \item{recording_split_timeformat}{
+        Character (default = "\%d/\%m/\%Y \%H:\%M")
+        To indicate timestamp format as used in file as specified with 
+        \code{recording_split_times}.
+      }
+      
+      \item{recording_split_overlap}{
+        Numeric (default = 0).
+        Number of hours to use as buffer when splitting recording. A possitive number
+        means that the split recordings overlap, a nevative number indicates a gap.
+      }
+      
       \item{extEpochData_timeformat}{
         Character (default = "\%d-\%m-\%Y \%H:\%M:\%S").
         To specify the time format used in the external epoch level data when
         argument \code{dataFormat} is set to "actiwatch_csv", "actiwatch_awd", 
         "actigraph_csv" or "sensewear_xls". For example "\%Y-\%m-\%d \%I:\%M:\%S \%p" for 
         "2023-07-11 01:24:01 PM" or "\%m/\%d/\%Y \%H:\%M:\%S" "2023-07-11 13:24:01"
-        }
       }
+
+    }
     }
 
     \subsection{params_rawdata}{
