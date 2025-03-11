@@ -8,6 +8,8 @@ splitRecords = function(metadatadir, params_general = NULL) {
   
   # Create overview of all recordings ID, start time, end time, and filename
   fns = dir(paste0(metadatadir, "/meta/basic"), full.names = TRUE)
+  fns = fns[grep(pattern = "_split", x = basename(fns), invert = TRUE)]
+  if (length(fns) == 0) return()
   S = do.call("rbind", lapply(X = fns, FUN = getPart1BasicInfo, idloc = idloc, tz = desiredtz)) 
   #------------------------------------
   # Load recording split times file
