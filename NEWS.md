@@ -8,6 +8,8 @@
 
 - General: Add functionality to split recordings based on recording specific timestamps or dates, for example useful when studying effect of interventions. This new functionality comes with new parameters recording_split_times, recording_split_overlap, recording_split_timeformat #1278.
 
+- Part 5: Now also runs lux analysis for MM window #1271
+
 # CHANGES IN GGIR VERSION 3.2-0
 
 - Part 2:
