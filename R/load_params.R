@@ -22,12 +22,13 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                         relyonguider = FALSE,
                         def.noc.sleep = 1,
                         sleeplogsep = NULL, sleepwindowType = "SPT",
-                        possible_nap_window = c(9, 18),
-                        possible_nap_dur = c(15, 240),
+                        possible_nap_window = NULL,
+                        possible_nap_dur = NULL,
                         possible_nap_gap = 0,
                         possible_nap_edge_acc = Inf,
                         nap_model = c(), sleepefficiency.metric = 1,
-                        HDCZA_threshold = c())
+                        HDCZA_threshold = c(),
+                        sib_must_fully_overlap_with_TimeInBed = c(TRUE, TRUE))
   }
   if ("metrics" %in% topic) {
     params_metrics = list(do.anglex = FALSE, do.angley = FALSE, do.anglez = TRUE,
@@ -79,10 +80,11 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                       L5M5window = c(0, 24), cosinor = FALSE,
                       part6CR = FALSE, part6HCA = FALSE,
                       part6Window = c("start", "end"),
-                      clevels = c(30, 150), part6DFA = FALSE)
+                      part6DFA = FALSE, clevels = c(30, 150))
+
   }
   if ("phyact" %in% topic) {
-    params_phyact = list(mvpathreshold = 100, boutcriter = 0.8,
+    params_phyact = list(mvpathreshold = NULL, boutcriter = NULL,
                          mvpadur = c(1,5,10),
                          boutcriter.in = 0.9, boutcriter.lig = 0.8,
                          boutcriter.mvpa = 0.8, threshold.lig = 40,
@@ -108,22 +110,25 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                            segmentDAYSPTcrit.part5 = c(0.9, 0),
                            study_dates_file = c(), study_dates_dateformat = "%d-%m-%Y",
                            includecrit.part6 = c(2/3, 2/3),
-                           includenightcrit.part5 = 0)
+                           includenightcrit.part5 = 0,
+                           nonwearFiltermaxHours = NULL,
+                           nonwearFilterWindow = NULL)
   }
   if ("output" %in% topic) {
-    params_output = list(epochvalues2csv = FALSE, save_ms5rawlevels = FALSE,
-                         save_ms5raw_format = "csv", save_ms5raw_without_invalid = TRUE,
+    params_output = list(epochvalues2csv = FALSE, save_ms5rawlevels = TRUE,
+                         save_ms5raw_format = "RData", save_ms5raw_without_invalid = TRUE,
                          storefolderstructure = FALSE, timewindow = c("MM","WW"),
                          viewingwindow = 1, dofirstpage = TRUE, visualreport = TRUE,
-                         week_weekend_aggregate.part5 = FALSE, do.part3.pdf = TRUE,
+                         week_weekend_aggregate.part5 = FALSE, do.part3.pdf = FALSE,
                          outliers.only = FALSE, criterror = 3, do.visual = TRUE,
-                         do.sibreport = FALSE, do.part2.pdf = TRUE,
+                         do.sibreport = TRUE, do.part2.pdf = TRUE,
                          sep_reports = ",", sep_config = ",", 
                          dec_reports = ".", dec_config = ".", 
                          visualreport_without_invalid = TRUE,
                          old_visualreport = TRUE, visualreport_hrsPerRow = 36,
                          visualreport_focus = "day",
-                         visualreport_validcrit = 0, require_complete_lastnight_part5 = FALSE)
+                         visualreport_validcrit = 0, require_complete_lastnight_part5 = FALSE,
+                         method_research_vars = NULL)
 
   }
   if ("general" %in% topic) {
@@ -135,7 +140,10 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                           sensor.location = "wrist",
                           expand_tail_max_hours = NULL, recordingEndSleepHour = NULL,
                           dataFormat = "raw", maxRecordingInterval = NULL,
-                          extEpochData_timeformat = "%d-%m-%Y %H:%M:%S")
+                          extEpochData_timeformat = "%d-%m-%Y %H:%M:%S",
+                          recording_split_times = NULL,
+                          recording_split_timeformat = "%d/%m/%Y %H:%M",
+                          recording_split_overlap = 0)
   }
   invisible(list(params_sleep = params_sleep,
                  params_metrics = params_metrics,

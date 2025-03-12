@@ -13,12 +13,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
-```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"', fig.alt="GGIR logo"}
-knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
-```
-
-See also complementary vignettes on:
-[General introduction to GGIR](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html), [Cut-points](https://CRAN.R-project.org/package=GGIR/vignettes/CutPoints.html), [Day segment analyses](https://CRAN.R-project.org/package=GGIR/vignettes/TutorialDaySegmentAnalyses.html), [Embedding externalf unctions](https://CRAN.R-project.org/package=GGIR/vignettes/ExternalFunction.html), and [Reading ad-hoc csv file formats](https://CRAN.R-project.org/package=GGIR/vignettes/readmyacccsv.html).
+**NOTE: If you are viewing this page via CRAN note that the main GGIR documentation has been migrated to the [GGIR GitHub pages](https://wadpac.github.io/GGIR/).**
 
 The GGIR
 [shell function](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#23_GGIR_shell_function)
@@ -122,6 +117,9 @@ find a description and default value for all the arguments.
 | expand_tail_max_hours       | deprecated        | params_general           |
 | recordingEndSleepHour       | 1                 | params_general           |
 | maxRecordingInterval        | 1                 | params_general           |
+| recording_split_times       | 1                 | params_general           |
+| recording_split_overlap     | 1                 | params_general           |
+| recording_split_timeformat  | 1                 | params_general           |
 | nonwear_approach            | 1                 | params_general           |
 | dataFormat                  | 1                 | params_general           |
 | extEpochData_timeformat     | 1                 | params_general           |
@@ -134,6 +132,8 @@ find a description and default value for all the arguments.
 | max_calendar_days           | 2                 | params_cleaning          |
 | includedaycrit              | 2, 5              | params_cleaning          |
 | nonWearEdgeCorrection       | 2                 | params_cleaning          |
+| nonwearFiltermaxHours       | 2                 | params_cleaning          |
+| nonwearFilterWindow         | 2                 | params_cleaning          |
 | L5M5window                  | 2                 | params_247               |
 | M5L5res                     | 2, 5              | params_247               |
 | winhr                       | 2, 5              | params_247               |
@@ -180,6 +180,7 @@ find a description and default value for all the arguments.
 | coln1                       | 4                 | params_sleep             |
 | possible_nap_window         | 5                 | params_sleep             |
 | possible_nap_dur            | 5                 | params_sleep             |
+| possible_nap_gap            | 5                 | params_sleep             |
 | do.visual                   | 4                 | params_output            |
 | outliers.only               | 4                 | params_output            |
 | excludefirstlast            | 4                 | params_cleaning          |
@@ -189,6 +190,7 @@ find a description and default value for all the arguments.
 | relyonsleeplog              | 4                 | deprecated               |
 | sleepefficiency.metric      | 4                 | params_sleep             |
 | def.noc.sleep               | 4                 | params_sleep             |
+| sib_must_fully_overlap_with_TimeInBed  | 4      | params_sleep             |
 | data_cleaning_file          | 4, 5              | params_cleaning          |
 | excludefirst.part4          | 4                 | params_cleaning          |
 | excludelast.part4           | 4                 | params_cleaning          |

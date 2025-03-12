@@ -22,7 +22,7 @@ Descriptive variables such as average acceleration per day or recording as discu
 
 A popular approach to define behavioural classes in physical activity research is to distinguish so called intensity levels. Here, it is common to distinguish sedentary behaviour (SB), light physical activity (LIPA), moderate, and vigorous physical activity. The latter two categories are often combined into moderate or vigorous physical activity (MVPA). Inside GGIR we refer to sedentary behaviour as inactivity to emphasize that our methods quantify mainly a lack of activity rather than being in sitting or reclying posture.
 
-However, intensity levels as behavioural classes lack a feasible operational construct definition which has caused methodological discrepancies for decades. An elaborate reflection on this can be found in [this blog post](https://www.accelting.com/updates/why-does-ggir-facilitate-cut-points/).
+However, intensity levels as behavioural classes lack a feasible operational construct definition which has caused methodological discrepancies for decades. An elaborate reflection on this can be found in [this blog post](https://www.accelting.com/why-does-ggir-facilitate-cut-points/).
 
 This situation has forced us to be pragmatic and use a operational construct definition of intensity levels that is feasible for accelerometer data.
 

@@ -64,7 +64,12 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   
   fnames.ms5 = dir(paste(metadatadir, "/meta/ms5.out", sep = ""))
   # path to sleeplog milestonedata, if it exists:
-  sleeplogRDA = paste(metadatadir, "/meta/sleeplog.RData", sep = "")
+  
+  if (length(params_sleep[["loglocation"]]) > 0) {
+    sleeplogRDA = paste0(metadatadir,"/meta/sleeplog_", basename(params_sleep[["loglocation"]]), ".RData")
+  } else {
+    sleeplogRDA = paste(metadatadir, "/meta/sleeplog.RData", sep = "")
+  }
   if (file.exists(sleeplogRDA) == TRUE) {
     sleeplog = logs_diaries = c()
     load(sleeplogRDA)
@@ -82,6 +87,21 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   } else {
     sleeplog = logs_diaries = c()
   }
+  # Extract activity diary if applicable
+  if (is.character(params_247[["qwindow"]])) {
+    if (length(grep(pattern = "onlyfilter|filteronly", x = params_247[["qwindow"]])) == 0) {
+      epochSize_tmp = ifelse(params_general[["part5_agg2_60seconds"]], yes = 60, no = params_general[["windowsizes"]][1])
+      params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]],
+                                              params_247[["qwindow_dateformat"]],
+                                              epochSize = epochSize_tmp)
+      # This will be an object with numeric qwindow values for all individuals and days
+    } else {
+      # ignore the diary specified by qwindow because user only want to use
+      # it for filtering night time nonwear in part 2, but not as a way to
+      # do day segment analysis.
+      params_247[["qwindow"]] = c(0, 24)
+    }
+  }
   #------------------------------------------------
   # specify parameters
   ffdone = fnames.ms5 #ffdone is now a list of files that have already been processed by g.part5
@@ -91,12 +111,15 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
   params_phyact[["boutdur.in"]] = sort(params_phyact[["boutdur.in"]],decreasing = TRUE)
   #--------------------------------
   # get full file path and folder name if requested by end-user and keep this for storage in output
-  if (params_output[["storefolderstructure"]] == TRUE) {
+  if (params_output[["storefolderstructure"]] == TRUE && dir.exists(datadir)) {
     extractfilenames = function(x) as.character(unlist(strsplit(x,".RDa"))[1])
     referencefnames = sapply(fnames.ms3,extractfilenames)
     folderstructure = getfolderstructure(datadir,referencefnames)
     fullfilenames = folderstructure$fullfilenames
     foldername = folderstructure$foldername
+  } else {
+    referencefnames = fullfilenames = gsub(pattern = "[.]RData", replacement = "", x = fnames.ms3)
+    foldername = rep("", length(fnames.ms3))
   }
   if (f0 > length(fnames.ms3)) f0 = 1
   if (f1 == 0 | length(f1) == 0 | f1 > length(fnames.ms3))  f1 = length(fnames.ms3)
@@ -109,7 +132,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         params_cleaning = c(), params_output = c(),
                         params_general = c(), ms5.out, ms5.outraw,
                         fnames.ms3, sleeplog, logs_diaries,
-                        extractfilenames, referencefnames, folderstructure,
+                        referencefnames, folderstructure,
                         fullfilenames, foldername, ffdone, verbose) {
     tail_expansion_log =  NULL
     filename_dir = NULL # to be loaded
@@ -211,7 +234,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         S = sib.cla.sum
         rm(sib.cla.sum)
         def = unique(S$definition)
-        cut = which(S$fraction.night.invalid > 0.7 | S$nsib.periods == 0)
+        cut = which(S$fraction.night.invalid > 0.9 | S$nsib.periods == 0)
         if (length(cut) > 0) S = S[-cut,]
         if (params_general[["part5_agg2_60seconds"]] == TRUE) {
           ts_backup = ts
@@ -264,8 +287,14 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                               desiredtz = params_general[["desiredtz"]],
                               sibDefinition = sibDef,
                               nightsi)
-          # Fix missing nights in part 4 data:
-          summarysleep_tmp2 = g.part5.fixmissingnight(summarysleep_tmp2, sleeplog = sleeplog, ID)
+          if (nrow(summarysleep_tmp2) > 0) {
+            if (!all(is.na(summarysleep_tmp$sleepparam))) {
+              # Fix missing nights in part 4 data:
+              summarysleep_tmp2 = g.part5.fixmissingnight(summarysleep_tmp2, sleeplog = sleeplog, ID)
+            } else {
+              summarysleep_tmp2 = summarysleep_tmp2[-which(is.na(summarysleep_tmp$sleepparam)), ]
+            }
+          }
           #Initialise diur variable, which will  indicate the diurnal rhythm: 0 if wake/daytime, 1 if sleep/nighttime
           ts$diur = 0
           if (nrow(summarysleep_tmp2) > 0) {
@@ -294,14 +323,20 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
               temperature_col = grep(pattern = "temperature", x = names(ts), value = TRUE)
               
+              # aggregate steps by taking the sum
               stepcount_available = ifelse("step_count" %in% names(ts), yes = TRUE, no = FALSE)
-                
               if (stepcount_available) {
                 step_count_tmp = aggregate(ts$step_count, by = list(ts$time_num), FUN = function(x) sum(x))
                 colnames(step_count_tmp)[2] = "step_count"
               }
+              # aggregate guider names as the first value per time segment
+              agg_guider = aggregate(ts$guider,
+                                     by = list(ts$time_num), FUN = function(x) x[1])
+              colnames(agg_guider)[2] = "guider"
+              # aggregate all other variables by taking the mean
               ts = aggregate(ts[,c("ACC","sibdetection", "diur", "nonwear", angleColName, light_columns, temperature_col)],
                              by = list(ts$time_num), FUN = function(x) mean(x))
+              ts = merge(x = ts, y = agg_guider, by = "Group.1")
               if (stepcount_available) {
                 ts = merge(x = ts, y = step_count_tmp, by = "Group.1")
               }
@@ -340,11 +375,23 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               
               # Add self-reported classes to ts object
               ts$selfreported = NA
+              
+              if ("imputecode" %in% colnames(sibreport)) {
+                if ("logImputationCode" %in% colnames(ts) == FALSE) {
+                  ts$diaryImputationCode = NA # initialise value
+                }
+                addImputationCode = TRUE
+              } else {
+                addImputationCode = FALSE
+              }
               for (srType in c("sleeplog", "nap", "nonwear", "bedlog")) {
                 sr_index = which(sibreport$type == srType)
                 if (length(sr_index) > 0) {
                   for (sii in sr_index) {
                     ts_index = which(ts$time >= sibreport$start[sii] & ts$time < sibreport$end[sii])
+                    if (addImputationCode == TRUE && srType %in% c("sleeplog", "bedlog")) {
+                      ts$diaryImputationCode[ts_index] = as.numeric(sibreport$imputecode[sii])
+                    }
                     ts_index1 = ts_index[which(is.na(ts$selfreported[ts_index]))]
                     ts_index2 = ts_index[which(!is.na(ts$selfreported[ts_index]))]
                     if (length(ts_index1) > 0) {
@@ -456,7 +503,11 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                   # now 0.5+6+0.5 midnights and 7 days
                   for (timewindowi in params_output[["timewindow"]]) {
                     nightsi = nightsi_bu
-                    ts$guider = "unknown"
+                    # part3 estimate used for first night then
+                    part3_estimates_firstnight = which(ts$guider == "part3_estimate")
+                    if (length(part3_estimates_firstnight) > 0) {
+                      ts$guider[part3_estimates_firstnight] = rev(params_sleep[["HASPT.algo"]])[1]
+                    }
                     if (timewindowi == "WW") {
                       if (length(FM) > 0) {
                         # ignore first and last midnight because we did not do sleep detection on it
@@ -484,12 +535,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     indjump = 1
                     qqq_backup = c()
                     add_one_day_to_next_date = FALSE
-                    if (is.character(params_247[["qwindow"]])) {
-                      params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]],
-                                                              params_247[["qwindow_dateformat"]],
-                                                              epochSize = ws3new)
-                      # This will be an object with numeric qwindow values for all individuals and days
-                    }
                     lastDay = ifelse(Nwindows > 0 && length(nightsi) > 0, yes = FALSE, no = TRUE) # skip while loop if there are no days to analyses
                     wi = 1
                     while (lastDay == FALSE) { #loop through windows
@@ -518,9 +563,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             }
                             if (timewindowi == "MM" & si > 1) { # because first segment is always full window
                               if (("segment" %in% colnames(ts)) == FALSE) ts$segment = NA
-                              ts$segment[segStart:segEnd] = si
+                              if (!is.na(segStart) && !is.na(segEnd)) {
+                                ts$segment[segStart:segEnd] = si
+                              }
                             }
-                            
                             # Already store basic information about the file
                             # in the output matrix: 
                             dsummary[si,fi:(fi + 1)] = c(ID, fnames.ms3[i])
@@ -579,6 +625,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             # timeList
                             ts = timeList$ts
                             ws3new = timeList$epochSize
+                            Lnames = levelList$Lnames = timeList$Lnames
+                            LEVELS = levelList$LEVELS = timeList$LEVELS
                             if (doNext == TRUE) next
                           }
                           #===============================================
@@ -601,9 +649,11 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                   if (params_output[["save_ms5rawlevels"]] == TRUE || params_247[["part6HCA"]] == TRUE || params_247[["part6CR"]] == TRUE) {
                     legendfile = paste0(metadatadir,ms5.outraw,"/behavioralcodes",as.Date(Sys.time()),".csv")
                     legendtable = data.frame(class_name = Lnames, class_id = 0:(length(Lnames) - 1), stringsAsFactors = FALSE)
-                    data.table::fwrite(legendtable, file = legendfile, row.names = FALSE,
-                                       sep = params_output[["sep_reports"]],
-                                       dec = params_output[["dec_reports"]])
+                    if (!file.exists(legendfile)) {
+                      data.table::fwrite(legendtable, file = legendfile, row.names = FALSE,
+                                         sep = params_output[["sep_reports"]],
+                                         dec = params_output[["dec_reports"]])
+                    }
                     # I moved this bit of code to the end, because we want guider to be included (VvH April 2020)
                     rawlevels_fname =  paste0(metadatadir, ms5.outraw, "/", TRLi, "_", TRMi, "_", TRVi, "/",
                                               gsub(pattern = "[.]|rdata|csv|cwa|gt3x|bin",
@@ -638,10 +688,17 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     if (length(step_count_col) == 0) {
                       step_count_col = NULL
                     }
+                    
+                    diaryImputationCode_col = grep(pattern = "diaryImputationCode", 
+                                                   x = names(ts), value = TRUE)
+                    if (length(diaryImputationCode_col) == 0) {
+                      diaryImputationCode_col = NULL
+                    }
                     g.part5.savetimeseries(ts = ts[, c("time", "ACC", "diur", "nonwear",
                                                        "guider", "window", "sibdetection", napNonwear_col,
                                                        lightpeak_col, selfreported_col,
-                                                       angle_col, temperature_col, step_count_col)],
+                                                       angle_col, temperature_col, step_count_col,
+                                                       diaryImputationCode_col)],
                                            LEVELS = LEVELS,
                                            desiredtz = params_general[["desiredtz"]],
                                            rawlevels_fname = rawlevels_fname,
@@ -716,6 +773,13 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               output$GGIRversion = GGIRversion
               # Capture final timestamp to ease filtering last window in g.report.part5
               last_timestamp = time_POSIX[length(time_POSIX)] 
+              # move experimental nap columns to the end of output
+              if ("nap" %in% params_output[["method_research_vars"]]) {
+                output = output[, c(grep(pattern = "denap|srnap|srnonw|sibreport_n_items", x = names(output), invert = TRUE, value = FALSE),
+                                    grep(pattern = "denap|srnap|srnonw|sibreport_n_items", x = names(output), invert = FALSE, value = FALSE))]
+              } else {
+                output = output[, grep(pattern = "denap|srnap|srnonw|sibreport_n_items", x = names(output), invert = TRUE, value = FALSE)]
+              }
               save(output, tail_expansion_log, GGIRversion, last_timestamp,
                    file = paste(metadatadir, ms5.out, "/", fnames.ms3[i], sep = ""))
             }
@@ -786,7 +850,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                   params_cleaning, params_output,
                                                   params_general, ms5.out, ms5.outraw,
                                                   fnames.ms3, sleeplog, logs_diaries,
-                                                  extractfilenames, referencefnames, folderstructure,
+                                                  referencefnames, folderstructure,
                                                   fullfilenames, foldername, ffdone, verbose)
                                      })
                                      return(tryCatchResult)
@@ -807,7 +871,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                  params_cleaning, params_output,
                  params_general, ms5.out, ms5.outraw,
                  fnames.ms3, sleeplog, logs_diaries,
-                 extractfilenames, referencefnames, folderstructure,
+                 referencefnames, folderstructure,
                  fullfilenames, foldername, ffdone, verbose)
     }
   }

@@ -46,9 +46,8 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
   
   #==========================
   # The following is to avoid issue with merging sleep variables from part 4
-  # This code extract them the time series (ts) object created in g.part5
-  # Note that this means that for MM windows there can be multiple or no wake or onsets
-  date = as.Date(ts$time[segStart + 1], tz = params_general[["desiredtz"]])
+  # Note that this means that for MM windows there can be multiple or no wake or onsets in window
+  date = as.Date(ts$time[qqq[1]], tz = params_general[["desiredtz"]]) # changed segStart for qqq[1] in case segment is not available in this day
   if (add_one_day_to_next_date == TRUE & timewindowi %in% c("WW", "OO")) { # see below for explanation
     date = date + 1
     add_one_day_to_next_date = FALSE
@@ -115,7 +114,10 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
                                  sumSleep$acc_available[dayofinterest])
     ds_names[fi:(fi + 5)] = c("night_number", "daysleeper", "cleaningcode",
                               "guider", "sleeplog_used", "acc_available");      fi = fi + 6
-    ts$guider[segStart:segEnd] = sumSleep$guider[dayofinterest] # add guider also to timeseries
+    if (!is.na(segStart) & !is.na(segEnd)) {
+      # segment available in time series
+      ts$guider[segStart:segEnd] = sumSleep$guider[dayofinterest] # add guider also to timeseries
+    }
   } else {
     dsummary[si,fi:(fi + 5)] = rep(NA, 6)
     ds_names[fi:(fi + 5)] = c("night_number",
@@ -129,8 +131,8 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
   # which differs between MM and WW
   # Also, it allows for the analysis of the first day for those studies 
   # in which the accelerometer is started during the morning and the first day is of interest.
-  # qqq1 is the start of the day
-  # qqq2 is the end of the day
+  # qqq1 is the start of the day/segment
+  # qqq2 is the end of the day/segment
   qqq1 = segStart
   qqq2 = segEnd
   # keep track of threshold value
@@ -138,8 +140,12 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
   ds_names[fi:(fi + 2)] = c("TRLi", "TRMi", "TRVi")
   fi = fi + 3
   wlih = ((qqq2 - qqq1) + 1)/((60/ws3new) * 60)
-  if (qqq1 > length(LEVELS)) qqq1 = length(LEVELS)
-  sse = qqq1:qqq2
+  if (!is.na(qqq1)) {
+    if (qqq1 > length(LEVELS)) qqq1 = length(LEVELS)
+    sse = qqq1:qqq2
+  } else {
+    sse = NULL
+  }
   doNext = FALSE
   if (length(sse) >= 1) { #next
     #============================================================
@@ -156,6 +162,36 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     zt_hrs_total = (length(ts$diur[sse]) * ws3new) / 3600 #night and day
     dsummary[si,fi] =  (zt_hrs_nonwear/zt_hrs_total)  * 10000 / 100
     ds_names[fi] = "nonwear_perc_day_spt";      fi = fi + 1
+    #=======================================================
+    # nap/sib/nonwear overlap analysis
+    #=======================================================
+    if (params_output[["do.sibreport"]]  == TRUE &&
+        !is.null(params_sleep[["possible_nap_window"]]) &&
+        !is.null(params_sleep[["possible_nap_dur"]])) {
+      restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
+                                         ds_names = ds_names, fi = fi, di = si,
+                                         ts = ts[sse[ts$diur[sse] == 0], ],
+                                         tz = params_general[["desiredtz"]],
+                                         params_sleep = params_sleep)
+      fi = restAnalyses$fi
+      si = restAnalyses$di
+      ts[sse[ts$diur[sse] == 0], ] = restAnalyses$ts
+      dsummary = restAnalyses$dsummary
+      ds_names = restAnalyses$ds_names
+      
+      # If naps detected add these to LEVELS
+      detectedNaps = which(ts$sibdetection[sse] == 2)
+      if (length(detectedNaps) > 0) {
+        if ("day_nap" %in% Lnames) {
+          LEVELS[sse[detectedNaps]] = length(Lnames) - 1
+        } else {
+          LEVELS[sse[detectedNaps]] = length(Lnames)
+        }
+      }
+      if ("day_nap" %in% Lnames == FALSE) {
+        Lnames = c(Lnames, "day_nap")
+      }
+    }
     #===============================================
     # TIME SPENT IN WINDOWS (window is either midnight-midnight or waking up-waking up)
     test_remember = c(si,fi)
@@ -227,29 +263,29 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     dsummary[si, fi] = mean(ts$ACC[sse], na.rm = TRUE)
     ds_names[fi] = "ACC_day_spt_mg";      fi = fi + 1
     
-    #======================================================
-    # STEPS... (IF STEP_COUNT IS AVAILABLE)
-    if ("step_count" %in% names(ts)) {
-      if (length(params_247[["clevels"]]) > 1) {
-        for (windowhalf in c("day", "spt")) {
-          step_subsegment = sse[ts$diur[sse] == ifelse(windowhalf == "day", yes = 0, no = 1)]
-          cadence = ts$step_count[step_subsegment] / (60 / ws3new)
-          step_count = ts$step_count[step_subsegment]
-          for (cleveli in 1:(length(params_247[["clevels"]]) - 1)) {
-            cadence_condition_met = which(cadence >= params_247[["clevels"]][cleveli] &
-                                            cadence < params_247[["clevels"]][cleveli + 1])
-            dsummary[si, fi] = floor(sum(step_count[cadence_condition_met]))
-            tmp_ending_of_name = paste0("in_candence_", params_247[["clevels"]][cleveli],
-                                        "_", params_247[["clevels"]][cleveli + 1], "_spm")
-            ds_names[fi] = paste0("STEPS_", windowhalf, "_count_", tmp_ending_of_name)
-            fi = fi + 1
-            dsummary[si, fi] = length(step_count[cadence_condition_met]) * (ws3new / 60)
-            ds_names[fi] = paste0("STEPS_", windowhalf, "_min_", tmp_ending_of_name)
-            fi = fi + 1
-          }
-        }
-      }
-    }
+    # #======================================================
+    # # STEPS... (IF STEP_COUNT IS AVAILABLE)
+    # if ("step_count" %in% names(ts)) {
+    #   if (length(params_247[["clevels"]]) > 1) {
+    #     for (windowhalf in c("day", "spt")) {
+    #       step_subsegment = sse[ts$diur[sse] == ifelse(windowhalf == "day", yes = 0, no = 1)]
+    #       cadence = ts$step_count[step_subsegment] / (60 / ws3new)
+    #       step_count = ts$step_count[step_subsegment]
+    #       for (cleveli in 1:(length(params_247[["clevels"]]) - 1)) {
+    #         cadence_condition_met = which(cadence >= params_247[["clevels"]][cleveli] &
+    #                                         cadence < params_247[["clevels"]][cleveli + 1])
+    #         dsummary[si, fi] = floor(sum(step_count[cadence_condition_met]))
+    #         tmp_ending_of_name = paste0("in_candence_", params_247[["clevels"]][cleveli],
+    #                                     "_", params_247[["clevels"]][cleveli + 1], "_spm")
+    #         ds_names[fi] = paste0("STEPS_", windowhalf, "_count_", tmp_ending_of_name)
+    #         fi = fi + 1
+    #         dsummary[si, fi] = length(step_count[cadence_condition_met]) * (ws3new / 60)
+    #         ds_names[fi] = paste0("STEPS_", windowhalf, "_min_", tmp_ending_of_name)
+    #         fi = fi + 1
+    #       }
+    #     }
+    #   }
+    # }
     #===============================================
     # QUANTILES...
     WLH = ((qqq2 - qqq1) + 1)/((60/ws3new) * 60)
@@ -392,32 +428,16 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
         }
       }
       fi = fi + Nluxt
-      if (timewindowi %in% c("WW", "OO")) {
-        # LUX per segment of the day
-        luxperseg = g.part5.lux_persegment(ts, sse,
-                                           LUX_day_segments = params_247[["LUX_day_segments"]],
-                                           epochSize = ws3new,
-                                           desiredtz = params_general[["desiredtz"]])
-        dsummary[si, fi:(fi + (length(luxperseg$values) - 1))] = luxperseg$values
-        ds_names[fi:(fi + (length(luxperseg$values) - 1))] = luxperseg$names
-        fi = fi + length(luxperseg$values)
-      }
+      # LUX per segment of the day
+      luxperseg = g.part5.lux_persegment(ts, sse,
+                                         LUX_day_segments = params_247[["LUX_day_segments"]],
+                                         epochSize = ws3new,
+                                         desiredtz = params_general[["desiredtz"]])
+      dsummary[si, fi:(fi + (length(luxperseg$values) - 1))] = luxperseg$values
+      ds_names[fi:(fi + (length(luxperseg$values) - 1))] = luxperseg$names
+      fi = fi + length(luxperseg$values)
     }
-    #=======================================================
-    # nap/sib/nonwear overlap analysis
-    #=======================================================
-    if (params_output[["do.sibreport"]]  == TRUE & !is.null(sibreport))  {
-      restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
-                                         ds_names = ds_names, fi = fi, di = si,
-                                         ts = ts[sse[ts$diur[sse] == 0], ],
-                                         tz = params_general[["desiredtz"]],
-                                         params_sleep = params_sleep)
-      fi = restAnalyses$fi
-      si = restAnalyses$di
-      ts[sse[ts$diur[sse] == 0], ] = restAnalyses$ts
-      dsummary = restAnalyses$dsummary
-      ds_names = restAnalyses$ds_names
-    }
+
     #===============================================
     # FOLDER STRUCTURE
     if (params_output[["storefolderstructure"]] == TRUE) {
@@ -444,7 +464,9 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
                   segStartEnd = c(segStart, segEnd),
                   columnIndex = fi)
   timeList = list(ts = ts,
-                  epochSize = ws3new)
+                  epochSize = ws3new,
+                  LEVELS = LEVELS,
+                  Lnames = Lnames)
   invisible(list(
     indexlog = indexlog,
     ds_names = ds_names,

@@ -18,6 +18,7 @@ test_that("Overlap 1 nap and 1 sib", {
                                            time2 = sibreport$start, units = "mins", tz = tz))
   params_sleep = load_params()$params_sleep
   params_sleep[["possible_nap_dur"]] =  c(0, 240)
+  params_sleep[["possible_nap_window"]] =  c(9, 18)
   restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
                                      ds_names = ds_names, fi = fi, di = di,
                                      ts = ts, tz = tz,
@@ -49,6 +50,7 @@ test_that("Overlap 1 nonwear and 1 sib", {
   sibreport$duration = as.numeric(difftime(time1 = sibreport$end, time2 = sibreport$start, units = "mins", tz = tz))
   params_sleep = load_params()$params_sleep
   params_sleep[["possible_nap_dur"]] =  c(0, 240)
+  params_sleep[["possible_nap_window"]] =  c(9, 18)
   restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
                                      ds_names = ds_names, fi = fi, di = di,
                                      ts = ts, tz = tz,params_sleep = params_sleep)
@@ -80,7 +82,7 @@ test_that("No overlap 1 nonwear, 1 nap, and 1 sib", {
   sibreport$duration = as.numeric(difftime(time1 = sibreport$end, time2 = sibreport$start, units = "mins", tz = tz))
   params_sleep = load_params()$params_sleep
   params_sleep[["possible_nap_dur"]] =  c(0, 240)
-  
+  params_sleep[["possible_nap_window"]] =  c(9, 18)
   restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
                                      ds_names = ds_names, fi = fi, di = di,
                                      ts = ts, tz = tz, params_sleep = params_sleep)

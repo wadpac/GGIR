@@ -8,8 +8,8 @@
 <title>1. What is GGIR • GGIR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="1. What is GGIR">
 <script defer data-domain="pkgdown.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
 </head>
@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,13 +68,15 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news">
 <li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-1-0/">Version 3.1-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-0-0/">Version 3.0-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-9-0/">Version 2.9-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-8-0/">Version 2.8-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-7-1/">Version 2.7-1</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-6-0/">Version 2.6-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-5-0/">Version 2.5-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-0/">Version 3.2-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-5/">Version 3.1-5</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-0/">Version 3.1-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-0-0/">Version 3.0-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-9-0/">Version 2.9-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-8-0/">Version 2.8-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-7-1/">Version 2.7-1</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-6-0/">Version 2.6-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-5-0/">Version 2.5-0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
   </ul>
@@ -87,7 +89,6 @@
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/wadpac/GGIR/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://twitter.com/RpackageGGIR" aria-label="Twitter"><span class="fa fa-twitter"></span></a></li>
       </ul>
 </div>
 
@@ -163,14 +164,27 @@ period</strong>.</li>
 <li>
 <strong>Epoch-level time series</strong>, where an epoch length is
 set by the user at for example 5 seconds.</li>
-<li>
-<strong>(Optionally, not by default) Per sequence of recordings with
-matching participant IDs</strong>. For example, when a person is tracked
-first with one accelerometer and then the accelerometer is replaced by a
-different accelerometers. For details on how to use this, see
-documentation on GGIR parameter <code>maxRecordingInterval</code> and
-documentation on how to use GGIR parameters as explained further
-down.</li>
+</ul>
+<p><strong>Additionally, GGIR facilitates appending or splitting
+recordings:</strong></p>
+<ul>
+<li>Appending combines a sequence of recordings with matching
+participant IDs. For example, when a person is tracked for a couple of
+weeks with one accelerometer which is replaced after those weeks by a
+new accelerometer also worn for a couple of weeks. GGIR is able to
+append these recordings and treat them as a single recording. For
+details on how to use this, see documentation on GGIR parameter
+<code>maxRecordingInterval</code> and documentation on how to use GGIR
+parameters as explained further down.</li>
+<li>Splitting recording into multiple sequential recordings based on
+user-specified time points. For example, when a person is tracked for
+multiple weeks and you want to analyse the segment before and after an
+intervention separately. For details on how GGIR can split a recording
+into multiple new recordings, see documentation on GGIR parameters
+<code>recording_split_times</code>,
+<code>recording_split_overlap</code>, and
+<code>recording_split_timeformat</code> and documentation on how to use
+GGIR parameters as explained further down.</li>
 </ul>
 </div>
 <div class="section level2">
@@ -279,7 +293,7 @@ can be derived from it are unable to account for the activity type
 specific role of body weight on energy metabolism. This makes it
 impossible to make a standardised comparison of the energy cost of
 different activity types across individuals that differ in body weight.
-See also reflections in <a href="https://www.accelting.com/updates/why-does-ggir-facilitate-cut-points/" class="external-link">this
+See also reflections in <a href="https://www.accelting.com/why-does-ggir-facilitate-cut-points/" class="external-link">this
 blog post</a>.</li>
 <li>Polysomnography (PSG) is the standard in sleep research. PSG offers
 a physiological definition of sleep that is impossible to capture
@@ -312,11 +326,8 @@ potential for re-use and collaboration.</p>
 <h2 id="documentation-structure-and-origin">Documentation structure and origin<a class="anchor" aria-label="anchor" href="#documentation-structure-and-origin"></a>
 </h2>
 <p>We have structured the chapters in line with the GGIR training course
-we have been organising in recent years. The documentation that existed
-before was a collection of ad-hoc written paragraphs, that lacked a
-clear overarching structure and narrative. As a result, it was difficult
-to use the documentation in the training course. Further, we also wanted
-to provide a good level of documentation for those who do not follow the
+we have been organising in recent years. Further, we also wanted to
+provide a good level of documentation for those who do not follow the
 course or want to refresh their understanding of GGIR.</p>
 <p>The documentation is mainly written in a narrative style where we
 have tried to explain both the theory and practice of all GGIR
@@ -331,12 +342,13 @@ cite publications to clarify the origin of algorithms and we only
 discuss what is part of GGIR.</p>
 <p>Finally, the first version of this documentation was sponsored by
 Accelting with the commitment that this will remain available as free
-open-access documentation. However, open documentation is much easier to
-maintain as a community: We would be grateful for your help to improve
+open-access documentation. However, open documentation is best
+maintained as a community: We would be grateful for your help to improve
 the documentation either by giving feedback (e.g. via v.vanhees at
 accelting dot com), pull requests (for those who know how to do it), or
-financially. For example, it would be great if we had funding for
-creating high quality complementary info graphics and videos.</p>
+financially to sponsor time investments. For example, it would be great
+if we had funding for creating high quality complementary info graphics
+and videos.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

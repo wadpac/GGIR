@@ -13,11 +13,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
-```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"', fig.alt="GGIR logo"}
-knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
-```
-
-See also complementary vignettes on: [General introduction to GGIR](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html), [Day segment analyses](https://CRAN.R-project.org/package=GGIR/vignettes/TutorialDaySegmentAnalyses.html), [GGIR parameters](https://CRAN.R-project.org/package=GGIR/vignettes/GGIRParameters.html), [Embedding external functions (pdf)](https://CRAN.R-project.org/package=GGIR/vignettes/ExternalFunction.html), and [Reading ad-hoc csv file formats](https://CRAN.R-project.org/package=GGIR/vignettes/readmyacccsv.html).
+**NOTE: If you are viewing this page via CRAN note that the main GGIR documentation has been migrated to the [GGIR GitHub pages](https://wadpac.github.io/GGIR/).**
 
 GGIR generates the following types of output:
 
@@ -56,12 +52,46 @@ Part 2 generates the following output:
 | complete_24hcycle | Completeness score: Fraction of 15 minute windows per 24 hours for which no valid data is available at any day of the measurement. |
 | meas_dur_def_proto_day | measurement duration according to protocol (days): Measurement duration (days) minus the hours that are ignored at the beginning and end of the measurement motivated by protocol design |
 | wear_dur_def_proto_day | wear duration duration according to protocol (days): So, if the protocol was seven days of measurement, then wearing the accelerometer for 8 days and recording data for 8 days will still make that the wear duration is 7 days |
+| nonwear_hours_filtered | Total number of nonwear hours filtered, only stored when using parameter `nonwearFiltermaxHours` |
+| nonwear_events_filtered   | Total number of nonwear events filtered, only stored when using parameter `nonwearFiltermaxHours` |
 | calib_err | Calibration error (static estimate) Estimated based on all 'non-movement' periods in the measurement after applying the autocalibration. |
 | calib_status | Calibration status: Summary statement about the status of the calibration error minimisation |
+| n hours ignored at start of meas (if data_masking_strategy=1, 3 or 5) | number of hours ignored at the start of the measurement (if data_masking_strategy = 1) or at the start of the `ndayswindow` (if data_masking_strategy = 3 or 5) A log of decision made in part2.R |
+| n hours ignored at end of meas (if data_masking_strategy=1, 3 or 5) | number of hours ignored at the end of the measurement (if data_masking_strategy = 1) or at the end of the `ndayswindow` (if data_masking_strategy = 3 or 5). A log of decision made in part2.R |
+| n days of measurement after which all data is ignored (if data_masking_strategy=1) | number of days of measurement after which all data is ignored (if data_masking_strategy = 1, 3 or 5) A log of decision made in part2.R |
+| epoch size to which acceleration was averaged (seconds) | A log of decision made in part1.R |
+| pdffilenumb | Indicator of in which pdf-file the plot was stored |
+| pdfpagecount | Indicator of in which pdf-page the plot was stored |
+| data_masking_strategy | A log of the decision made when calling g.impute: value=1 mean ignore specific hours; value=2 mean ignore all data before the first midnight and after the last midnight |
+
+### Letter codes to indicate aggregation type
+
+| (Part of) variable name | Description |
+|--------------------------|----------------------------------------------|
+| `AD_` | All days (plain average of all available days, no weighting). The variable was calculated per day and then averaged over all the available days |
+| `WE_` | Weekend days (plain average of all available days, no weighting). The variable was calculated per day and then averaged over weekend days only |
+| `WD_` | Week days (plain average of all available days, no weighting). The variable was calculated per day and then averaged over week days only |
+| `WWE_` | Weekend days (weighted average) The variable was calculated per day and then averaged over weekend days. Double weekend days are averaged. This is only relevant for experiments that last for more than seven days. |
+| `WWD_` | Week days (weighted average) The variable was calculated per day and then averaged over week days. Double week days were averaged. This is only relevant for experiments that last for more than seven days) |
+
+### Distribution of acceleration
+
+| (Part of) variable name | Description |
+|--------------------------|----------------------------------------------|
 | ENMO_fullRecordingMean | ENMO is the main summary measure of acceleration. The value presented is the average ENMO over all the available data normalised per 24-hour cycles (diurnal balanced), with invalid data imputed by the average at similar time points on different days of the week. In addition to ENMO it is possible to extract other acceleration metrics (i.e. BFEN, HFEN, HFENplus). We emphasize that it is calculated over the full recording because the alternative is that a variable is only calculated overmeasurement days with sufficient valid hours of data. |
 | ENMO | (only available if set to true in part1.R) ENMO is the main summary measure of acceleration. The value presented is the average ENMO over all the available data normalised per 24 hour cycles, with invalid data imputed by the average at similar timepoints on different days of the week. In addition to ENMO it is possible to extract other acceleration metrics in part1.R (i.e. BFEN, HFEN, HFENplus) See also [van Hees PLoSONE April 2013](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691) for a detailed description and comparison of these techniques. |
 | pX_A_mg_0-24h_fullRecording | This variable represents the Xth percentile in the distribution of short epoch metric value A of the average day. The average day may not be ideal for describing the distribution. Therefore, the code also extracts the following variable. |
 | AD_pX_A_mg_0-24h | This variable represents the Xth percentile in the distribution of short epoch metric value A per day averaged across all days. |
+| WWD_MVPA_E5S_T100_ENMO | Time spent in moderate-to-vigorous based on 5 second epoch size and an ENMO metric threshold of 100 |
+| `WWE_MVPA_E5S_B1M80%_T100_ENMO` | Time spent in moderate-to-vigorous based on a bout criteria of at least 1 minute where 80% or more of the 5 second epochs are expected to meet the threshold criteria of of 100 mg based on acceleration metric ENMO (threshold is specified with parameter `mvpathreshold`) |
+| `WE_[100, 150)_mg_0-24h_ENMO` | Time spent between (and including) 100 mg and 150 (excluding 150 itself) between 0 and 24 hours (the full day) using metric ENMO data exclusion data_masking_strategy (value=1, ignore specific hours; value=2, ignore all data before the first midnight and after the last midnight) |
+| `_MVPA_E5S_B1M80_T100` | MVPA calculated based on 5 second epoch setting bout duration 1 Minute and inclusion criterion of more than 80 percent. |
+| `_ENMO_mg` | ENMO or other metric was first calculated per day and then average according to AD, WD, WWE, WWD |
+
+### Circadian rhythm: MXLX, IV, and IS
+
+| (Part of) variable name | Description |
+|--------------------------|----------------------------------------------|
 | L5_A_mg_0-24 | Average of metric A during the least active five\* hours in the day that is the lowest rolling average value of metric A. (\* window size is modifiable by argument `winhr`) |
 | M5_A_mg_0-24 | Average of metric A during the most active five\* hours in the day that is the lowest rolling average value of metric A. (\* window size is modifiable by argument `winhr`) |
 | L5hr_A_mg_0-24 | Starting time in hours and fractions of hours of L5_A_mg_0-24, where hours below 12 are incremented with 24 to create a continuous scale throughout the night (e.g. 36 = 6am) in line with numeric timeing of sleep variables in GGIR part 4 output. |
@@ -70,52 +100,46 @@ Part 2 generates the following output:
 | 1to6am_ENMO_mg | Average metric value ENMO between 1am and 6am |
 | N valid WEdays | Number of valid weekend days |
 | N valid WKdays | Number of valid week days |
-| IS | inter daily stability. The movement count that is derived for this was an attempt to follow the original approach by Eus J. W. Van Someren (Chronobiology International. 1999. Volume 16, issue 4). |
-| IV | intra daily variability. In contrast to the original paper, we ignore the epoch transitions between the end of a day and the beginning of the next day for the numerator of the equation, this to make it a true measure of intradaily variability. Same note as for IS: The movement count that is derived for this was an attempt to follow the original approach. |
-| IVIS_windowsize_minutes | Sizes of the windows based on which IV and IS are calculated (note that this is modifiable) |
-| IVIS_epochsize_seconds | Argument has been deprecated |
-| `AD_` | All days (plain average of all available days, no weighting). The variable was calculated per day and then averaged over all the available days |
-| `WE_` | Weekend days (plain average of all available days, no weighting). The variable was calculated per day and then averaged over weekend days only |
-| `WD_` | Week days (plain average of all available days, no weighting). The variable was calculated per day and then averaged over week days only |
-| `WWE_` | Weekend days (weighted average) The variable was calculated per day and then averaged over weekend days. Double weekend days are averaged. This is only relevant for experiments that last for more than seven days. |
-| `WWD_` | Week days (weighted average) The variable was calculated per day and then averaged over week days. Double week days were averaged. This is only relevant for experiments that last for more than seven days) |
-| WWD_MVPA_E5S_T100_ENMO | Time spent in moderate-to-vigorous based on 5 second epoch size and an ENMO metric threshold of 100 |
-| `WWE_MVPA_E5S_B1M80%_T100_ENMO` | Time spent in moderate-to-vigorous based on a bout criteria of at least 1 minute where 80% or more of the 5 second epochs are expected to meet the threshold criteria of of 100 mg based on acceleration metric ENMO (threshold is specified with parameter `mvpathreshold`) |
-| `WE_[100, 150)_mg_0-24h_ENMO` | Time spent between (and including) 100 mg and 150 (excluding 150 itself) between 0 and 24 hours (the full day) using metric ENMO data exclusion data_masking_strategy (value=1, ignore specific hours; value=2, ignore all data before the first midnight and after the last midnight) |
-| `_MVPA_E5S_B1M80_T100` | MVPA calculated based on 5 second epoch setting bout duration 1 Minute and inclusion criterion of more than 80 percent. |
-| `_ENMO_mg` | ENMO or other metric was first calculated per day and then average according to AD, WD, WWE, WWD |
-| data exclusion data_masking_strategy | A log of the decision made when calling g.impute: value=1 mean ignore specific hours; value=2 mean ignore all data before the first midnight and after the last midnight |
-| n hours ignored at start of meas (if data_masking_strategy=1, 3 or 5) | number of hours ignored at the start of the measurement (if data_masking_strategy = 1) or at the start of the `ndayswindow` (if data_masking_strategy = 3 or 5) A log of decision made in part2.R |
-| n hours ignored at end of meas (if data_masking_strategy=1, 3 or 5) | number of hours ignored at the end of the measurement (if data_masking_strategy = 1) or at the end of the `ndayswindow` (if data_masking_strategy = 3 or 5). A log of decision made in part2.R |
-| n hours ignored at end of meas (if data_masking_strategy = 1, 3 or 5) | number of days of measurement after which all data is ignored (if data_masking_strategy = 1, 3 or 5) A log of decision made in part2.R |
-| epoch size to which acceleration was averaged (seconds) | A log of decision made in part1.R |
-| pdffilenumb | Indicator of in which pdf-file the plot was stored |
-| pdfpagecount | Indicator of in which pdf-page the plot was stored |
-| `cosinor_` | Cosinor analysis estimates such as mes, amp, acrophase, and acrotime, as documented in the [ActCR](https://CRAN.R-project.org/package=ActCR) package. |
-| `cosinorExt_` | Extended Cosinor analysis estimates such as minimum, amp, alpha, beta, acrotime, UpMesor, DownMesor, MESOR, and F_pseudo, as documented in the [ActCR](https://CRAN.R-project.org/package=ActCR) package. |
-| `cosinorIV` | Cosinor analysis compatible estimate of the Intradaily Variability (IV) |
-| `cosinorIS` | Cosinor analysis compatible estimate of Interdaily Stability (IS) |
-| cosinor_timeOffsetHours | Offset between start time series as used and midnight |
-| cosinor_mes | The mean value of the cosinor function fitted to the log transformed acceleration signal. Higher values indicate more activity. |
-| cosinor_amp | The amplitude of the cosinor function fitted to the log transformed acceleration signal, corresponding to the peak of the function minus the mesor. Higher values indicate larger amplitude in the rhythm |
-| cosinor_acrotime | Time at which the cosinor function fitted to the log transformed acceleration signal reaches its maximum |
-| cosinor_acrophase | Acrotime expressed in radians |
-| cosinor_ndays | Number of days used for the cosinor analysis. |
-| cosinor_R2 | Measure of goodness of fit of the cosinor function to the log transformed acceleration signal. Higher values indicate better goodness of fit. |
-| cosinorExt_minimum | (copied from ActCR documentation) Minimum value of the function |
-| cosinorExt_amp | (copied from ActCR documentation) Amplitude, a measure of half the extend of predictable variation within a cycle. This represents the highest activity one can achieve. |
-| cosinorExt_alpha | (copied from ActCR documentation) It determines whether the peaks of the curve are wider than the troughs: when alpha is small, the troughs are narrow and the peaks are wide; when alpha is large, the troughs are wide and the peaks are narrow. |
-| cosinorExt_beta | (copied from ActCR documentation) It dertermines whether the transformed function rises and falls more steeply than the cosine curve: large values of beta produce curves that are nearly square waves. |
-| cosinorExt_acrotime | (copied from ActCR documentation) acrophase is the time of day of the peak in the unit of the time (hours) |
-| cosinorExt_UpMesor | (copied from ActCR documentation) Time of day of switch from low to high activity. Represents the timing of the rest- activity rhythm. Lower (earlier) values indicate increase in activity earlier in the day and suggest a more advanced circadian phase. |
-| cosinorExt_DownMesor | (copied from ActCR documentation) Time of day of switch from high to low activity. Represents the timing of the rest-activity rhythm. Lower (earlier) values indicate decline in activity earlier in the day, suggesting a more advanced circadian phase. |
-| cosinorExt_MESOR | (copied from ActCR documentation) A measure analogous to the MESOR of the cosine model (or half the deflection of the curve) can be obtained from mes=min+amp/2. However, it goes through the middle of the peak, and is therefore not equal to the MESOR of the cosine model, which is the mean of the data |
-| cosinorExt_ndays | (copied from ActCR documentation) Number of days modeled. |
-| cosinorExt_F_pseudo | (copied from ActCR documentation) Measure the improvement of the fit obtained by the non-linear estimation of the transformed cosine model |
-| cosinorExt_R2 | Measure of goodness of fit of the extended cosinor function to the log transformed acceleration signal. Higher values indicate better goodness of fit. |
+| IS | Interdaily stability as dicussed in [chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) |
+| IV | Intradaily variability as dicussed in [chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) |
 | phi | Indicator of auto-correlation in acceleration time series over multiple days, see [chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) for details. |
 | SSP | Method for describing time series, see [chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) for details. |
 | ABI | ABI measures how the activity over the observed period is balanced, see [chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) for details. |
+
+### Circadian rhythm: Cosinor
+
+The following variables in the GGIR output are derived by the ActCR package, the documentation has been copied from ActCR documentation.
+
+| Variable name | Description |
+|--------------------------|----------------------------------------------|
+| cosinor_mes |  MESOR which is short for midline statistics of rhythm, which is a rhythm adjusted mean. This represents mean activity level. |
+| cosinor_amp | amplitude, a measure of half the extend of predictable variation within a cycle.
+This represents the highest activity one can achieve |
+| cosinor_acrophase | acrophase, a measure of the time of the overall high values recurring in each
+cycle. Here it has a unit of radian. This represents time to reach the peak. |
+| cosinor_acrotime | acrotime represents time to reach the peak. |
+| cosinor_ndays | Number of days modeled |
+| cosinorExt_minimum | Minimum value of the of the function. |
+| cosinorExt_amp | amplitude, a measure of half the extend of predictable variation within a cycle. This represents the highest activity one can achieve. |
+| cosinorExt_alpha | It determines whether the peaks of the curve are wider than the troughs: when alpha is small, the troughs are narrow and the peaks are wide; when alpha is large, the troughs are wide and the peaks are narrow. |
+| cosinorExt_beta | It dertermines whether the transformed function rises and falls more steeply than the cosine curve: large values of beta produce curves that are nearly square waves. |
+| cosinorExt_acrotime | acrophase is the time of day of the peak in the unit of the time (hours) |
+| cosinorExt_UpMesor | Time of day of switch from low to high activity. Represents the timing of the rest- activity rhythm. Lower (earlier) values indicate increase in activity earlier in the day and suggest a more advanced circadian phase. |
+| cosinorExt_DownMesor | Time of day of switch from high to low activity. Represents the timing of the rest-activity rhythm. Lower (earlier) values indicate decline in activity earlier in the day, suggesting a more advanced circadian phase. |
+| cosinorExt_MESOR | A measure analogous to the MESOR of the cosine model (or half the deflection of the curve) can be obtained from mes=min+amp/2. However, it goes through the middle of the peak, and is therefore not equal to the MESOR of the cosine model, which is the mean of the data.
+| cosinorExt_ndays | Number of days modeled. |
+| cosinorExt_F_pseudo | Measure the improvement of the fit obtained by the non-linear estimation of the transformed cosine model |
+
+
+**Additionally, GGIR derives:**
+
+| Variable name | Description |
+|--------------------------|----------------------------------------------|
+| cosinor_timeOffsetHours | (Only used for code development purposes) Time offset in hours between midnight and the start of the time series used for cosinor analysis |
+| cosinor_R2 | Squared correlated coefficient between fitted and log-transformed original time series. |
+| cosinorExt_R2 | Squared correlated coefficient between fitted and log-transformed original time series. |
+| `cosinorIV` | Cosinor analysis compatible estimate of the Intradaily Variability (IV) |
+| `cosinorIS` | Cosinor analysis compatible estimate of Interdaily Stability (IS) |
 
 ## Day level summary (csv)
 
@@ -131,7 +155,7 @@ This is a non-exhaustive list, because most concepts have been explained in summ
 | N hours | Number of hours of measurement in a day, which typically is 24, unless it is a day on which the clock changes (DST) resulting in 23 or 25 hours. The value can be less than 23 if the measurement started or ended this day |
 | weekday | Name of weekday |
 | measurement | Day of measurement Day number relative to start of the measurement |
-| L5hr_ENMO_mg_0-24h | Hour on which L5 starts for these 24 hours (defined with metric ENMO) |
+| L5hr_ENMO_mg_0-24h | Hour on which L5 starts for these 24 hours (defined with metric ENMO), on a continuous scale relative to the preceding midnight such that 2am is 26 and 6am is 30 |
 | L5_ENMO_mg_0-24h | Average acceleration for L5 (defined with metric ENMO) |
 | `[A,B)_mg_0-24h_ENMO` | Time spent in minutes between (and including) acceleration value A in mg and (excluding) acceleration value B in mg based on metric ENMO |
 | ig_gradient_ENMO_0-24hr | Gradient from intensity gradient analysis proposed by [Rowlands et al. 2018](https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx) based on metric ENMO for the time segment 0 to 24 hours |
@@ -330,15 +354,16 @@ For example, the following files will be generated if the threshold configuratio
 | dur_spt_min | Duration of Sleep Period Time within this day window.       |
 | dur_day_spt_min         | Duration this day window, including both waking hours and SPT.          |
 | sleep_efficiency_after_onset        | sleep_efficiency_after_onset in part 5 is not the same as in part 4, but calculated as the percentage of sleep within the sleep period time window. The conventional approach is the approach used in part 4.    |
-| L5TIME      | Timing of least active 5hrs, expressed as timestamp in the day          |
-| M5TIME      | Timing of most active 5hrs         |
-| L5TIME_num, M5TIME_num  | Timing of least/most active 5hrs, expressed as hours in the day. Note that L5/M5 timing variables are difficult to average across days because 23:00 and 1:00 would average to noon and not to midnight. So, caution is needed when interpreting person averages.   |
-| L5VALUE     | Acceleration value for least active 5hrs       |
-| M5VALUE     | Acceleration value for most active 5hrs        |
 | `ig_`       | All variables related to intensity gradient analysis |
 | `_gradient`   | Gradient from intensity gradient analysis proposed by [Rowlands et al. 2018](https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx) for the waking hours window (`_day_`) and for the full window (`_day_spt_`)      |
 | `_intercept`  | Intercept from intensity gradient analysis proposed by [Rowlands et al. 2018](https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx) for the waking hours window (`_day_`) and for the full window (`_day_spt_`)      |
 | `_rsquared`   | r squared from intensity gradient analysis proposed by [Rowlands et al. 2018](https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx) for the waking hours window (`_day_`) and for the full window (`_day_spt_`)      |
+
+
+### Fragmentation
+
+| (Term in) variable name | Description |
+|--------------------------|----------------------------------------------|
 | `FRAG_`     | All variables related to behavioural fragmentation analysis |
 | `TP_`       | Transition probability|
 | PA2IN       | Physical activity fragments followed by inactivity fragments|
@@ -352,6 +377,14 @@ For example, the following files will be generated if the threshold configuratio
 | alpha       | Power law exponent    |
 | `x0.5`      | Derived from power law exponent alpha, see [Chastin et al. 201 0](https://doi.org/10.1016/j.gaitpost.2009.09.002)        |
 | `W0.5`      | Derived from power law exponent alpha, see [Chastin et al. 201 0](https://doi.org/10.1016/j.gaitpost.2009.09.002)        |
+
+
+### Old napping behaviour variables (to be deprecated)
+
+These variables will be deprecated as napping, if detection is turned on, is now a behavioural category just like all other behaviours.
+
+| (Term in) variable name | Description |
+|--------------------------|----------------------------------------------|
 | nap_count   | Total number of naps, only calculated when argument do.sibreport = TRUE, currently optimised for 3.5-year olds. See function documentation for function `g.part5.classifyNaps` in the [GGIR function documentation (pdf)](https:/CRAN.R-project.org/package=GGIR/GGIR.pdf). |
 | nap_totalduration       | Total nap duration, only calculated when argument do.sibreport = TRUE, currently optimised for 3.5-year old. See function documentation for function `g.part5.classifyNaps` in the [GGIR function documentation (pdf)](https:/CRAN.R-project.org/package=GGIR/GGIR.pdf).    |
 | sibreport_n_items	| Only created if `do.sibreport = TRUE`. Number of items in the sibreport |
@@ -386,3 +419,34 @@ Most variables in the person level summary are derived from the day level summar
 | Nvaliddays_AL10F_WE | Number of valid weekend days with at least 10 fragments (5 inactivity or 5 inactive) |
 | `_wei` | weighted average of weekend and week days, using a 2/5 ratio, see above. |
 | `_pla` | plain average of all days, see above |
+
+
+# GGIR Part 6
+
+Part 6 only stores a person level summary (csv). Most column names overlap with part 5, but are now derived based on the for the full time series only, whereas part 5 only presents these variables per day window which is then aggregated at person level.
+
+### MXLX output variables
+
+| Variable name | Description |
+|--------------------------|----------------------------------------------|
+| L5VALUE, M5VALUE     | Acceleration value for least (L5) and most (M5) active consecutive 5hrs per 24 hours     |
+| L5TIME_clock, M5TIME_clock | Clock time of L5 and M5, e.g. 15:00 |
+| L5TIME_num, M5TIME_num  | Timing of L5 and M5, expressed as hours relative to previous midnight, meaning that 2am would be 26. This is done to ease averaging acros days/persons. |
+| M5_mean_peakLUX | Mean peak lux during M5 |
+| M5_max_peakLUX | Max peak lux during M5 |
+
+### Cosinor output variables
+
+These variables names are consistent with the variable names [as discussed for GGIR part 2 output](https://wadpac.github.io/GGIR/articles/GGIRoutput.html#circadian-rhythm-cosinor).
+
+### Other output variables in part 6
+
+| Variable name | Description |
+|--------------------------|----------------------------------------------|
+| IS | Interdaily Stability |
+| IV | Intradaily Variability |
+| phi | See [section on phy in chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html#phi) |
+| `FRAG_` | Fragmentation variables, as also [discussed for part 5 output](https://wadpac.github.io/GGIR/articles/GGIRoutput.html#fragmentation). Only difference now is that fragmentation variables name ending with `_day` are specific to the waking hours of a day, while variable names ending iwht `_spt` are specific to the SPT window.  |
+| SSP | See [section on SSP in chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html#self-similarity-paramerter-ssp) |
+| ABI | See [section on ABI in chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html#activity-balance-index-abi) |
+

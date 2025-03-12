@@ -46,14 +46,14 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   metalong = M$metalong
   metashort = IMP$metashort
   rout = IMP$rout
+  nonwearHoursFiltered = IMP$nonwearHoursFiltered
+  nonwearEventsFiltered = IMP$nonwearEventsFiltered
   wdaycode = M$wday
   wdayname = M$wdayname
   if (length(params_phyact[["mvpadur"]]) > 0) params_phyact[["mvpadur"]] = sort(params_phyact[["mvpadur"]])
   LC2 = IMP$LC2
   LC = IMP$LC
   dcomplscore = IMP$dcomplscore
-  r1 = as.numeric(as.matrix(rout[,1]))
-  r2 = as.numeric(as.matrix(rout[,2]))
   r4 = as.numeric(as.matrix(rout[,4]))
   r5 = as.numeric(as.matrix(rout[,5]))
   ws3 = windowsizes[1]
@@ -220,7 +220,7 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                                      doiglevels = doiglevels, nfulldays = nfulldays,
                                      lastmidnight = lastmidnight,
                                      ws3 = ws3, ws2 = ws2, qcheck = qcheck, fname = fname,
-                                     idloc = idloc, sensor.location = sensor.location,
+                                     sensor.location = sensor.location,
                                      wdayname = wdayname,
                                      tooshort = tooshort, includedaycrit = includedaycrit,
                                      quantiletype = quantiletype, doilevels = doilevels, 
@@ -228,8 +228,9 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                                      mvpanames = mvpanames, wdaycode = wdaycode, ID = ID, 
                                      deviceSerialNumber = deviceSerialNumber,
                                      doquan = doquan,  ExtFunColsi = ExtFunColsi,
-                                     myfun = myfun, desiredtz = desiredtz,
-                                     params_247 = params_247, params_phyact = params_phyact)
+                                     myfun = myfun,
+                                     params_247 = params_247, params_phyact = params_phyact,
+                                     params_general = params_general)
   }
   #metashort is shortened from midgnight to midnight if requested (data_masking_strategy 2)
   if (data_masking_strategy == 2) {
@@ -282,7 +283,9 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
                                 meas_dur_dys =  LD/1440,
                                 dcomplscore = dcomplscore,
                                 meas_dur_def_proto_day = LMp / 1440,
-                                wear_dur_def_proto_day = LWp / 1440)
+                                wear_dur_def_proto_day = LWp / 1440,
+                                nonwearHoursFiltered = nonwearHoursFiltered,
+                                nonwearEventsFiltered = nonwearEventsFiltered)
   file_summary = data.frame(wdayname = wdayname,
                             deviceSerialNumber = deviceSerialNumber,
                             sensor.location = sensor.location,

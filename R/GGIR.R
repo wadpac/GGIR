@@ -203,6 +203,12 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     }
   }
   
+  # This check cannot be part of check_params because it needs to know mode:
+  if (6 %in% mode && params_247[["part6CR"]] == FALSE && params_247[["part6HCA"]]) {
+    warning(paste0("Both part6CR and part6HCA are set to FALSE by which there is ",
+                   "not analysis to be run in part 6."), call. = FALSE)
+  }
+  
   #-----------------------------------------------------------
   # Print GGIR header to console
   GGIRversion = "could not extract version"
@@ -263,6 +269,12 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                        params_general = params_general,
                        verbose = verbose)
     }
+    if (!is.null(params_general[["recording_split_times"]])) {
+      # Split recordings based on user specified time points
+      splitRecords(metadatadir = metadatadir,
+                   params_general = params_general)
+    }
+    
     if (!is.null(params_general[["maxRecordingInterval"]])) {
       # Append recordings when ID and brand match and gap between
       # recordings does not exceed maxRecordingInterval,
@@ -352,15 +364,13 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   # -----
   # check a few basic assumptions before continuing
   if (length(which(do.report == 2)) > 0) {
-    N.files.ms2.out = length(dir(paste0(metadatadir, "/meta/ms2.out")))
-    if (N.files.ms2.out > 0) {
+    N.files.basic = length(dir(paste0(metadatadir, "/meta/basic")))
+    if (N.files.basic > 0) {
       if (verbose == TRUE) print_console_header("Report part 2")
-      # if (N.files.ms2.out < f0) f0 = 1
-      # if (N.files.ms2.out < f1) f1 = N.files.ms2.out
       if (length(f0) == 0) f0 = 1
-      if (f1 == 0) f1 = N.files.ms2.out
+      if (f1 == 0) f1 = N.files.basic
       if (length(params_247[["qwindow"]]) > 2 |
-          is.character(params_247[["qwindow"]]) |
+          (is.character(params_247[["qwindow"]]) && length(grep(pattern = "onlyfilter|filteronly", x = params_247[["qwindow"]])) == 0) |
           (length(params_247[["qwindow"]]) == 2 & !all(c(0, 24) %in% params_247[["qwindow"]]))) {
         store.long = TRUE
       } else {
@@ -380,10 +390,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       if (N.files.ms4.out < f1) f1 = N.files.ms4.out
       if (f1 == 0) f1 = N.files.ms4.out
       g.report.part4(datadir = datadir, metadatadir = metadatadir, f0 = f0, f1 = f1,
-                     loglocation = params_sleep[["loglocation"]],
                      data_cleaning_file = params_cleaning[["data_cleaning_file"]],
-                     sleepwindowType = params_sleep[["sleepwindowType"]],
-                     params_output = params_output,
+                     params_sleep = params_sleep, params_output = params_output,
                      verbose = verbose)
     }
   }
@@ -424,6 +432,16 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     
     if (length(files.available) > 0) {
       if (verbose == TRUE) print_console_header("Generate visual reports")
+      # The new visual report
+      visualReport(metadatadir = metadatadir,
+                   f0 = f0, f1 = f1,
+                   overwrite = params_general[["overwrite"]],
+                   desiredtz = params_general[["desiredtz"]],
+                   verbose = TRUE,
+                   part6_threshold_combi = params_phyact[["part6_threshold_combi"]],
+                   GGIRversion = GGIRversion,
+                   params_sleep = params_sleep,
+                   params_output = params_output)
       if (params_output[["old_visualreport"]] == TRUE) {
         g.plot5(metadatadir = metadatadir,
                 dofirstpage = params_output[["dofirstpage"]],
@@ -440,16 +458,6 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                 includenightcrit = params_cleaning[["includenightcrit"]],
                 verbose = TRUE)
       }
-      # The new visual report
-      visualReport(metadatadir = metadatadir,
-                   f0 = f0, f1 = f1,
-                   overwrite = params_general[["overwrite"]],
-                   desiredtz = params_general[["desiredtz"]],
-                   verbose = TRUE,
-                   part6_threshold_combi = params_phyact[["part6_threshold_combi"]],
-                   GGIRversion = GGIRversion,
-                   params_sleep = params_sleep,
-                   params_output = params_output)
     }
   }
 }

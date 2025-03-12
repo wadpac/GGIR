@@ -37,10 +37,26 @@ g.analyse.perfile = function(I, C, metrics_nav,
   vi = vi + 2
   # starttime of measurement, body location, filename
   filesummary[vi] = file_summary$sensor.location
-  filesummary[(vi + 1)] = file_summary$fname
+  if (!is.null(params_general[["recording_split_times"]])) {
+    filename = file_summary$fname
+    splitnames = getSplitNames(filename)
+    segment_names = splitnames$segment_names
+    filename = splitnames$filename
+  } else {
+    segment_names = NULL
+    filename = file_summary$fname
+  }
+  filesummary[(vi + 1)] = filename
   filesummary[(vi + 2)] = file_summary$startt # starttime of measurement
   s_names[vi:(vi + 2)] = c("bodylocation","filename","start_time")
   vi = vi + 3
+  
+  if (!is.null(params_general[["recording_split_times"]]) && !is.null(segment_names)) {
+    filesummary[vi] = segment_names[2]
+    filesummary[vi + 1] = segment_names[3]
+    s_names[vi:(vi + 1)] = c("split1_name","split2_name")
+    vi = vi + 2
+  }
   # weekday on which measurement started, sample frequency and device
   filesummary[vi] = file_summary$wdayname
   filesummary[(vi + 1)] = I$sf
@@ -57,6 +73,12 @@ g.analyse.perfile = function(I, C, metrics_nav,
   s_names[vi:(vi + 4)] = c("clipping_score", "meas_dur_dys", "complete_24hcycle", 
                            "meas_dur_def_proto_day", "wear_dur_def_proto_day")
   vi = vi + 5
+  if (!is.null(params_cleaning[["nonwearFiltermaxHours"]])) {
+    filesummary[vi] = dataqual_summary$nonwearHoursFiltered
+    filesummary[vi + 1] = dataqual_summary$nonwearEventsFiltered
+    s_names[vi:(vi + 1)] = c("nonwear_hours_filtered", "nonwear_events_filtered")
+    vi = vi + 2
+  }
   # calibration error after auto-calibration
   if (length(C$cal.error.end) == 0)   C$cal.error.end = c(" ")
   filesummary[vi] = C$cal.error.end
@@ -67,6 +89,10 @@ g.analyse.perfile = function(I, C, metrics_nav,
   q0 = length(AveAccAve24hr) + 1
   filesummary[(vi + 2):(vi + q0)] = AveAccAve24hr
   colnames_to_lookat = paste0(colnames_to_lookat, "_fullRecordingMean")
+  step_count_var = grep("step_count", x = colnames_to_lookat)
+  if (length(step_count_var) > 0) {
+    colnames_to_lookat[step_count_var] = paste0("ExtFunEvent_", colnames_to_lookat[step_count_var])
+  }
   s_names[vi:(vi + q0)] = c("calib_err",
                             "calib_status", colnames_to_lookat)
   vi = vi + q0 + 2

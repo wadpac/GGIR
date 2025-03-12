@@ -8,8 +8,8 @@
 <title>12. Time-use Analysis • GGIR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="12. Time-use Analysis">
 <script defer data-domain="pkgdown.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
 </head>
@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,13 +68,15 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news">
 <li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-1-0/">Version 3.1-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-0-0/">Version 3.0-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-9-0/">Version 2.9-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-8-0/">Version 2.8-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-7-1/">Version 2.7-1</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-6-0/">Version 2.6-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-5-0/">Version 2.5-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-0/">Version 3.2-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-5/">Version 3.1-5</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-0/">Version 3.1-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-0-0/">Version 3.0-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-9-0/">Version 2.9-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-8-0/">Version 2.8-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-7-1/">Version 2.7-1</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-6-0/">Version 2.6-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-5-0/">Version 2.5-0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
   </ul>
@@ -87,7 +89,6 @@
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/wadpac/GGIR/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://twitter.com/RpackageGGIR" aria-label="Twitter"><span class="fa fa-twitter"></span></a></li>
       </ul>
 </div>
 
@@ -236,6 +237,13 @@ intensity levels, e.g. the fragmentation of physical activity reflects
 the fragmentation of LIPA and MVPA combined relative to Inactive
 time.</li>
 </ul>
+<p>On a side note - If you multiply Acceleration by Duration for a given
+class, and by that combine the information from both variables, you
+would arrive at a volume measure of behaviour. This is similar to the
+construct of calories over time. I think this would be a much richer way
+of describing the data as opposed to the conventional approach that only
+looks at either time spent per behavioural class or average acceleration
+in an entire day.</p>
 <div class="section level3">
 <h3 id="complementary-variables">Complementary variables<a class="anchor" aria-label="anchor" href="#complementary-variables"></a>
 </h3>
@@ -364,33 +372,9 @@ you will find a column with class_names which match the behavioural
 classes as reported in the part 5 report.</td>
 </tr>
 <tr class="even">
-<td>invalid_fullwindow</td>
-<td>Percentage of the window (see above) that represents invalid data,
-included to ease filtering the timeseries based on whether windows are
-valid or not.</td>
-</tr>
-<tr class="odd">
-<td>invalid_sleepperiod</td>
-<td>Percentage of SPT within the current window that represents invalid
-data.</td>
-</tr>
-<tr class="even">
-<td>invalid_wakinghours</td>
-<td>Percentage of waking hours within the current window that represents
-invalid data.</td>
-</tr>
-<tr class="odd">
-<td>timestamp</td>
-<td>Time stamp derived from converting the column timenum, only
-available if <code>save_ms5raw_format = TRUE</code>.</td>
-</tr>
-<tr class="even">
-<td>angle</td>
-<td>anglez by default. If <code>sensor.location = "hip"</code> or
-<code>HASPT.algo = "HorAngle"</code> then angle represents the angle for
-the longitudinal axis as provided by argument longitudinal_axis or
-estimated if no angle was provided. If more angles were extracted in
-part 1 then these will be add with their letter appended.</td>
+<td>sibdetection</td>
+<td>1 if sustained inactivity bout was detect, 2 if nap was
+detected</td>
 </tr>
 <tr class="odd">
 <td>lightpeak</td>
@@ -401,12 +385,55 @@ this value to the time series it is interpolated, so the original time
 resolution is not necessarily reflected in this column.</td>
 </tr>
 <tr class="even">
+<td>selfreported</td>
+<td>Factor to indicator what behaviour was reported via sleep diary, if
+no behaviour was reported value is NA</td>
+</tr>
+<tr class="odd">
+<td>angle</td>
+<td>anglez by default. If <code>sensor.location = "hip"</code> or
+<code>HASPT.algo = "HorAngle"</code> then angle represents the angle for
+the longitudinal axis as provided by argument longitudinal_axis or
+estimated if no angle was provided. If more angles were extracted in
+part 1 then these will be add with their letter appended.</td>
+</tr>
+<tr class="even">
+<td>step_count</td>
+<td>Only stored when external algortihm for step detection is used.</td>
+</tr>
+<tr class="odd">
+<td>diaryImputationCode</td>
+<td>Code stored in the advanced format sleeplog that will be shown in
+the visualisation.</td>
+</tr>
+<tr class="even">
 <td>temperature</td>
 <td>If temperature was available in the data file then it was summarised
 at an epoch length defined by the second value of parameter
 <code>windowsizes</code> (defaults to 900 seconds = 15 minutes), to add
 this value to the time series it is interpolated, so the original time
 resolution is not necessarily reflected in this column.</td>
+</tr>
+<tr class="odd">
+<td>invalid_fullwindow</td>
+<td>Percentage of the window (see above) that represents invalid data,
+included to ease filtering the timeseries based on whether windows are
+valid or not.</td>
+</tr>
+<tr class="even">
+<td>invalid_sleepperiod</td>
+<td>Percentage of SPT within the current window that represents invalid
+data.</td>
+</tr>
+<tr class="odd">
+<td>invalid_wakinghours</td>
+<td>Percentage of waking hours within the current window that represents
+invalid data.</td>
+</tr>
+<tr class="even">
+<td>timestamp</td>
+<td>Time stamp derived from converting the column timenum, only
+available if <code>save_ms5raw_format = TRUE</code>.</td>
 </tr>
 </tbody>
 </table>

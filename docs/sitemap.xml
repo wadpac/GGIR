@@ -36,8 +36,9 @@
 <url><loc>https://wadpac.github.io/GGIR/LICENSE-text.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/news/index.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/ABI.html</loc></url>
+<url><loc>https://wadpac.github.io/GGIR/reference/addSplitNames.html</loc></url>
+<url><loc>https://wadpac.github.io/GGIR/reference/aggregateEvent.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/appendRecords.html</loc></url>
-<url><loc>https://wadpac.github.io/GGIR/reference/applyCosinorAnalyses.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/applyExtFunction.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/apply_cosinor_IS_IV_Analyses.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/CalcSleepRegularityIndex.html</loc></url>
@@ -47,7 +48,6 @@
 <url><loc>https://wadpac.github.io/GGIR/reference/check_params.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/convertEpochData.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/correctOlderMilestoneData.html</loc></url>
-<url><loc>https://wadpac.github.io/GGIR/reference/cosinorAnalyses.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/cosinor_IS_IV_Analyses.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/createConfigFile.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/create_test_acc_csv.html</loc></url>
@@ -62,6 +62,7 @@
 <url><loc>https://wadpac.github.io/GGIR/reference/DFA.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/extractID.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/extract_params.html</loc></url>
+<url><loc>https://wadpac.github.io/GGIR/reference/filterNonwearNight.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/g.abr.day.names.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/g.analyse.avday.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/g.analyse.html</loc></url>
@@ -122,6 +123,8 @@
 <url><loc>https://wadpac.github.io/GGIR/reference/g.sibreport.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/g.weardec.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/getfolderstructure.html</loc></url>
+<url><loc>https://wadpac.github.io/GGIR/reference/getPart1BasicInfo.html</loc></url>
+<url><loc>https://wadpac.github.io/GGIR/reference/getSplitNames.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/get_nw_clip_block_params.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/get_starttime_weekday_truncdata.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/GGIR-package.html</loc></url>
@@ -136,15 +139,18 @@
 <url><loc>https://wadpac.github.io/GGIR/reference/iso8601chartime2POSIX.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/is_this_a_dst_night.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/load_params.html</loc></url>
+<url><loc>https://wadpac.github.io/GGIR/reference/MXLX.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/parametersVignette.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/part6AlignIndividuals.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/part6PairwiseAggregation.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/POSIXtime2iso8601.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/read.myacc.csv.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/ShellDoc2Vignette.html</loc></url>
+<url><loc>https://wadpac.github.io/GGIR/reference/splitRecords.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/SSP.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/tidyup_df.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/updateBlocksize.html</loc></url>
+<url><loc>https://wadpac.github.io/GGIR/reference/visualReport.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/RELEASE_CYCLE.html</loc></url>
 </urlset>
 

@@ -82,31 +82,35 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
                 if (grepl("c\\(", config[ci,2])) { # vector
                   tmp = c(gsub(pattern = "c|\\(|\\)", x = config[ci,2], replacement = ""))
                   tmp = unlist(strsplit(tmp, ","))
-                  suppressWarnings(try(expr = {isna = is.na(as.numeric(tmp[1]))}, silent = TRUE))
-                  if (length(isna) == 0) isna = FALSE
-                  if (isna == TRUE) {
-                    newValue = tmp # vector of characters
+                  suppressWarnings(try(expr = {conv2logical = all(as.logical(tmp))},silent = TRUE))
+                  suppressWarnings(try(expr = {conv2num = all(!is.na(as.numeric(tmp)))},silent = TRUE))
+                  if (is.na(conv2logical)) conv2logical = FALSE
+                  if (is.na(conv2num)) conv2num = FALSE
+                  if (conv2logical == TRUE) {
+                    newValue = as.logical(tmp)
+                  } else if (conv2num == TRUE) {
+                    newValue = as.numeric(tmp)
                   } else {
-                    newValue = as.numeric(tmp) # vector of numbers
+                    newValue = tmp
                   }
                 } else {
-                  newValue = config[ci,2] #paste0("'",config[ci,2],"'")
+                  newValue = config[ci,2]
                 }
               }
             }
           }
           
           # Ignore arguments that are irrelevant or related to deprecated code
-          # Note VvH 7 Dec 2022: I have added closedbout and boutmetric 
-          # because for the time being many groups may still have this in 
+          # Note VvH 7 Dec 2022: I have added closedbout and boutmetric
+          # because for the time being many groups may still have this in
           # their config.csv files. Eventuallythese can be removed here, which will
           # trigger an error for anyone who still uses config file with those arguments.
-          ArgNames2Ignore = c("f0", "f1", "studyname", "datadir", 
+          ArgNames2Ignore = c("f0", "f1", "studyname", "datadir",
                               "outputdir", "do.report", "R_version",
                               "GGIR_version", "GGIRversion", "config_file", "mode",
                               "config_file_in_outputdir", "imputeTimegaps",
-                              "argNames", "dupArgNames","do.sgAccEN", "do.sgAnglex", 
-                              "do.sgAngley", "do.sgAnglez", "frag.classes.spt", "i", 
+                              "argNames", "dupArgNames", "do.sgAccEN", "do.sgAnglex",
+                              "do.sgAngley", "do.sgAnglez", "frag.classes.spt", "i",
                               "isna", "tmp", "vecchar", "dupi", "GGIRread_version",
                               "closedbout", "bout.metric", "sleeplogidnum", "LC_TIME_backup",
                               "constrain2range", "is_readxl_installed")
@@ -211,7 +215,7 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
   if (!"output" %in% params2check) params_output = c()
   if (!"general" %in% params2check) params_general = c()
   
-  params = check_params(params_sleep = params_sleep, params_metrics = params_metrics, 
+  params = check_params(params_sleep = params_sleep, params_metrics = params_metrics,
                         params_rawdata = params_rawdata, params_247 = params_247,
                         params_phyact = params_phyact, params_cleaning = params_cleaning,
                         params_output = params_output, params_general = params_general)

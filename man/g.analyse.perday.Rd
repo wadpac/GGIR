@@ -11,11 +11,12 @@
 g.analyse.perday(ndays, firstmidnighti, time, nfeatures, 
                 midnightsi, metashort, averageday,
                 doiglevels, nfulldays,lastmidnight, ws3, ws2, qcheck,
-                fname, idloc, sensor.location, wdayname, tooshort, includedaycrit,
+                fname, sensor.location, wdayname, tooshort, includedaycrit,
                 doquan, quantiletype, doilevels, domvpa,
                 mvpanames, wdaycode, ID,
-                deviceSerialNumber, ExtFunColsi, myfun, desiredtz = "",
+                deviceSerialNumber, ExtFunColsi, myfun,
                 params_247 = c(), params_phyact = c(),
+                params_general = c(),
                 ...)
 }
 \arguments{
@@ -35,7 +36,6 @@ g.analyse.perday(ndays, firstmidnighti, time, nfeatures,
   \item{qcheck}{vector with zeros and ones for each epoch, respenting the
     quality check derived with g.impute}
   \item{fname}{RData filename produced by g.part1}
-  \item{idloc}{see \link{g.analyse}}
   \item{sensor.location}{as produced by \link{g.extractheadervars}} 
   \item{wdayname}{character with weekdayname}
   \item{tooshort}{0 (file not too short) or 1 (file too short)} 
@@ -51,12 +51,14 @@ g.analyse.perday(ndays, firstmidnighti, time, nfeatures,
   \item{deviceSerialNumber}{As produced by \link{g.extractheadervars}}
   \item{ExtFunColsi}{column index of metashort where metric is stored}
   \item{myfun}{External function object to be applied to raw data, see \link{g.getmeta}.}
-  \item{desiredtz}{see \link{g.part1}}
   \item{params_247}{
-    See \link{g.part2}
+    See \link{GGIR}
   }
   \item{params_phyact}{
-    See \link{g.part2}
+    See \link{GGIR}
+  }
+  \item{params_general}{
+    See \link{GGIR}
   }
   \item{...}{
    Any argument used in the previous version of g.analyse.perday, which will now

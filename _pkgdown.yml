@@ -8,11 +8,7 @@ template:
   includes:
     in_header:
       <script defer data-domain="pkgdown.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
-  opengraph:
-    twitter:
-      creator: "@RpackageGGIR"
-      card: summary_large_image
-      
+
 authors:
   sidebar:
     roles: [aut]
@@ -34,10 +30,6 @@ navbar:
     contributing:
       text: Contributing
       href: articles/chapter0_Contributing.html
-    twitter:
-      icon: fa-twitter
-      href: https://twitter.com/RpackageGGIR
-      aria-label: Twitter
     chapters:
       text: The book
       menu:
@@ -90,25 +82,29 @@ navbar:
           href: articles/Cookbook.html
   structure:
     left:  [chapters, annexes, installation, intro, news, contributing, help]
-    right: [search, github, twitter]
+    right: [search, github]
 
 news:
   cran_dates: TRUE
   releases:
+  - text: "Version 3.2-0"
+    href: https://www.accelting.com/ggir-release-3-2-0/
+  - text: "Version 3.1-5"
+    href: https://www.accelting.com/ggir-release-3-1-5/
   - text: "Version 3.1-0"
-    href: https://www.accelting.com/updates/ggir-release-3-1-0/
+    href: https://www.accelting.com/ggir-release-3-1-0/
   - text: "Version 3.0-0"
-    href: https://www.accelting.com/updates/ggir-release-3-0-0/
+    href: https://www.accelting.com/ggir-release-3-0-0/
   - text: "Version 2.9-0"
-    href: https://www.accelting.com/updates/ggir-release-2-9-0/
+    href: https://www.accelting.com/ggir-release-2-9-0/
   - text: "Version 2.8-0"
-    href: https://www.accelting.com/updates/ggir-release-2-8-0/
+    href: https://www.accelting.com/ggir-release-2-8-0/
   - text: "Version 2.7-1"
-    href: https://www.accelting.com/updates/ggir-release-2-7-1/
+    href: https://www.accelting.com/ggir-release-2-7-1/
   - text: "Version 2.6-0"
-    href: https://www.accelting.com/updates/ggir-release-2-6-0/
+    href: https://www.accelting.com/ggir-release-2-6-0/
   - text: "Version 2.5-0"
-    href: https://www.accelting.com/updates/ggir-release-2-5-0/
+    href: https://www.accelting.com/ggir-release-2-5-0/
     
 search:
   exclude: ['news/index.html',
@@ -151,7 +147,8 @@ search:
   'reference/load_params.html', 'reference/parametersVignette.html', 'reference/part6AlignIndividuals.html', 
   'reference/part6PairwiseAggregation.html', 'reference/POSIXtime2iso8601.html', 
   'reference/read.myacc.csv.html', 'reference/ShellDoc2Vignette.html', 
-  'reference/tidyup_df.html', 'reference/updateBlocksize.html']
+  'reference/tidyup_df.html', 'reference/updateBlocksize.html',
+  'reference/GGIR.html', 'articles/GGIR.html']
 
 
 

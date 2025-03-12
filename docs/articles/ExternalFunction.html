@@ -8,8 +8,8 @@
 <title>Embedding external functions in GGIR • GGIR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Embedding external functions in GGIR">
 <script defer data-domain="pkgdown.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
 </head>
@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,13 +68,15 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news">
 <li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-1-0/">Version 3.1-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-0-0/">Version 3.0-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-9-0/">Version 2.9-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-8-0/">Version 2.8-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-7-1/">Version 2.7-1</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-6-0/">Version 2.6-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-5-0/">Version 2.5-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-0/">Version 3.2-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-5/">Version 3.1-5</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-0/">Version 3.1-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-0-0/">Version 3.0-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-9-0/">Version 2.9-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-8-0/">Version 2.8-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-7-1/">Version 2.7-1</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-6-0/">Version 2.6-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-5-0/">Version 2.5-0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
   </ul>
@@ -87,7 +89,6 @@
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/wadpac/GGIR/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://twitter.com/RpackageGGIR" aria-label="Twitter"><span class="fa fa-twitter"></span></a></li>
       </ul>
 </div>
 
@@ -110,8 +111,8 @@
 
     
     
-<p><strong>NOTE: If you are viewing this page via CRAN note that
-additional documentation can be found in the <a href="https://wadpac.github.io/GGIR/">GGIR GitHub
+<p><strong>NOTE: If you are viewing this page via CRAN note that the
+main GGIR documentation has been migrated to the <a href="https://wadpac.github.io/GGIR/">GGIR GitHub
 pages</a>.</strong></p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
@@ -228,7 +229,15 @@ first columm of the data matrix..</li>
 <code>reporttype</code> Character to indicate the type of reporting
 by GGIR: “scalar” if it should be averaged per day, “event” if it should
 be summed per day, or “type” if it is categorical variable that can only
-be aggregated per day by tabulating it.</li>
+be aggregated per day by tabulating it. For <code>reporttype</code>
+“event” GGIR will as of release 3.2-0 not summarise the events in
+part2_summary.csv and part2_daysummary.csv but in part2_eventsummary.csv
+and part2_dayeventsummary.csv.</li>
+<li>
+<code>name</code> Character to indicate the name of the entity being
+detected in the cases of event detection, this name is used in the
+output filename, e.g. part2_stepsummary.csv when name is “step”. At the
+moment name is only use for event detection algorithms</li>
 </ul>
 <p>Next, add a call to GGIR function GGIR with <code>myfun</code>
 provided as one of its arguments:</p>
@@ -362,6 +371,10 @@ these to be directly stored in a csv file then set argument
 <ul>
 <li>Wrist-based step detection algorithm: <a href="https://github.com/ShimmerEngineering/Verisense-Toolbox/tree/master/Verisense_step_algorithm" class="external-link uri">https://github.com/ShimmerEngineering/Verisense-Toolbox/tree/master/Verisense_step_algorithm</a>
 </li>
+</ul>
+<p>which is not actively maintained, for the latest version of the
+function see: <a href="https://github.com/wadpac/GGIR/blob/master/user-scripts/verisense_count_steps.R" class="external-link uri">https://github.com/wadpac/GGIR/blob/master/user-scripts/verisense_count_steps.R</a></p>
+<ul>
 <li>Wrist-based sleep classification as described by Sundararajan et
 al. 2021 <a href="https://www.nature.com/articles/s41598-020-79217-x" class="external-link">link to
 paper</a>, and corresponding code is here: <a href="https://github.com/wadpac/Sundararajan-SleepClassification-2021/tree/master/ggir_ext" class="external-link uri">https://github.com/wadpac/Sundararajan-SleepClassification-2021/tree/master/ggir_ext</a>

@@ -8,8 +8,8 @@
 <title>Accelerometer data processing with GGIR • GGIR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Accelerometer data processing with GGIR">
 <script defer data-domain="pkgdown.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
 </head>
@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,13 +68,15 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news">
 <li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-1-0/">Version 3.1-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-0-0/">Version 3.0-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-9-0/">Version 2.9-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-8-0/">Version 2.8-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-7-1/">Version 2.7-1</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-6-0/">Version 2.6-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-5-0/">Version 2.5-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-0/">Version 3.2-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-5/">Version 3.1-5</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-0/">Version 3.1-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-0-0/">Version 3.0-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-9-0/">Version 2.9-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-8-0/">Version 2.8-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-7-1/">Version 2.7-1</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-6-0/">Version 2.6-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-5-0/">Version 2.5-0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
   </ul>
@@ -87,7 +89,6 @@
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/wadpac/GGIR/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://twitter.com/RpackageGGIR" aria-label="Twitter"><span class="fa fa-twitter"></span></a></li>
       </ul>
 </div>
 
@@ -122,36 +123,13 @@ location.</strong></p>
 <div class="section level3">
 <h3 id="what-is-ggir">What is GGIR?<a class="anchor" aria-label="anchor" href="#what-is-ggir"></a>
 </h3>
-<p><a href="https://CRAN.R-project.org/package=GGIR" class="external-link">GGIR</a> is an
-R-package to process multi-day raw accelerometer data for physical
-activity and sleep research. The term <strong><em>raw</em></strong>
-refers to data being expressed in m/s<sup>2</sup> or gravitational
-acceleration as opposed to the previous generation accelerometers which
-stored data in accelerometer brand specific units. The signal processing
-includes automatic calibration, detection of sustained abnormally high
-values, detection of non-wear and calculation of average magnitude of
-dynamic acceleration based on a variety of metrics. Next, GGIR uses this
-information to describe the data per recording, per day of measurement,
-and (optionally) per segment of a day of measurement, including
-estimates of physical activity, inactivity and sleep. We published an
-overview paper of GGIR in 2019 <a href="https://doi.org/10.1123/jmpb.2018-0063" class="external-link">link</a>.</p>
-<p>This vignette provides a general introduction on how to use GGIR and
-interpret the output, additionally you can find a <a href="https://youtu.be/RuFBCAqFJ2M" class="external-link">introduction video</a> and a <a href="https://youtu.be/S8YPTrYNWdU" class="external-link">mini-tutorial</a> on YouTube. If you
-want to use your own algorithms for raw data then GGIR facilitates this
-with it’s external function embedding feature, documented in a separate
-vignette: <a href="https://CRAN.R-project.org/package=GGIR" class="external-link">Embedding
-external functions in GGIR</a>. GGIR is increasingly being used by
-research groups across the world. A non-exhaustive overview of academic
-publications related to GGIR can be found <a href="https://github.com/wadpac/GGIR/wiki/Publication-list" class="external-link">here</a>. R
-package GGIR would not have been possible without the support of the
-contributors listed in the author list at <a href="https://CRAN.R-project.org/package=GGIR" class="external-link">GGIR</a>, with specific
-code contributions over time since April 2016 (when GGIR development
-moved to GitHub) shown <a href="https://github.com/wadpac/GGIR/graphs/contributors" class="external-link">here</a>.</p>
+<p>This section has been migrated to this <a href="https://wadpac.github.io/GGIR/articles/chapter1_WhatIsGGIR.html">section</a>
+in the GGIR github-pages, which is now the main documentation resource
+for GGIR.</p>
 <p><strong>Cite GGIR:</strong></p>
-<p>When you use GGIR in publications do not forget to cite it properly
-as that makes your research more reproducible and it gives credit to
-it’s developers. See paragraph on <a href="#CitingGGIR">Citing GGIR</a>
-for details.</p>
+<p>This section has been migrated to this <a href="https://wadpac.github.io/GGIR/authors.html#citation">section</a>
+in the GGIR github-pages, which is now the main documentation resource
+for GGIR.</p>
 </div>
 <div class="section level3">
 <h3 id="contributing-support-and-keeping-up-to-date">Contributing, Support, and Keeping up to date<a class="anchor" aria-label="anchor" href="#contributing-support-and-keeping-up-to-date"></a>
@@ -174,8 +152,8 @@ online GGIR training courses. Check our dedicated training <a href="https://www.
 details and the option to book your training. Do you have questions
 about the training or the booking process? Do not hesitate to contact us
 via: <a href="mailto:training@accelting.com" class="email">training@accelting.com</a>.</p>
-<p>Also of interest may be the brief <a href="https://www.accelting.com/updates/short-r-tutorial/" class="external-link">free R
-introduction tutorial</a>.</p>
+<p>Also of interest may be the brief <a href="https://www.accelting.com/short-r-tutorial/" class="external-link">free R introduction
+tutorial</a>.</p>
 <p><strong>Change log</strong></p>
 <p>Our log of main changes to GGIR over time can be found <a href="https://cran.r-project.org/package=GGIR/news/news.html" class="external-link">here</a>.</p>
 </div>
@@ -995,13 +973,9 @@ for GGIR.</p>
 <div class="section level3">
 <h3 id="actigraphs-idle-sleep-mode">ActiGraph’s idle sleep mode<a class="anchor" aria-label="anchor" href="#actigraphs-idle-sleep-mode"></a>
 </h3>
-<p>The idle sleep mode is <a href="https://actigraphcorp.my.site.com/support/s/article/Idle-Sleep-Mode-Explained" class="external-link">explained</a>
-on the manufacturer’s website. In short, idle sleep mode is a setting
-that can be turned on or off by the user. When it is turned on the
-device will fall asleep during periods of no movement, resulting in time
-gaps in the data. This functionality was probably introduced to safe
-battery life and minimize data size. However, it also means that we end
-up with time gaps that need to be accounted for.</p>
+<p>This section has been migrated to this <a href="https://wadpac.github.io/GGIR/articles/GGIR.html?q=idle%20slee#actigraphs-idle-sleep-mode">section</a>
+in the GGIR github-pages, which is now the main documentation resource
+for GGIR.</p>
 <div class="section level4">
 <h4 id="time-gap-imputation">Time gap imputation<a class="anchor" aria-label="anchor" href="#time-gap-imputation"></a>
 </h4>
@@ -1027,33 +1001,9 @@ for GGIR.</p>
 <div class="section level3">
 <h3 id="Minimum_recording_duration">Minimum recording duration<a class="anchor" aria-label="anchor" href="#Minimum_recording_duration"></a>
 </h3>
-<p>GGIR has been designed to process multi-day recordings. The minimum
-recording duration considered by GGIR depends on the type of
-analysis:</p>
-<p><strong>Running part 1 and 2</strong></p>
-<ul>
-<li><p>File size; At least 2MB, where 2MB can be adjusted with argument
-minimumFileSizeMB. This should not be changed unless you have good
-reason to believe that a smaller file size is also acceptable.</p></li>
-<li><p>Recording duration: At least two long epoch windows (default 60
-minutes) in g.readaccfile. The size of this epoch can be altered with
-the second and third value of vector argument <code>windowsizes</code>,
-where the third should not be smaller than the second. For example, in
-short lasting lab-experiments you may find it easier to set this to
-<code>windowsizes = c(5, 600, 600)</code> as non-wear detection is
-usually not necessary in lab studies.</p></li>
-</ul>
-<p><strong>Running part 3 and 4</strong></p>
-<ul>
-<li>At least one night of data is expected, where a night is expected to
-have at least the timestamp for midnight. If midnight is not found the
-sleep detection is skipped.</li>
-</ul>
-<p><strong>Running part 5</strong></p>
-<ul>
-<li>Ideally two valid consecutive nights and the waking hours in
-between.</li>
-</ul>
+<p>This section has been migrated to this <a href="https://wadpac.github.io/GGIR/articles/GGIR.html?q=minimum%20recording#Minimum_recording_duration">section</a>
+in the GGIR github-pages, which is now the main documentation resource
+for GGIR.</p>
 </div>
 <div class="section level3">
 <h3 id="lux-sensor-data-processing">LUX sensor data processing<a class="anchor" aria-label="anchor" href="#lux-sensor-data-processing"></a>

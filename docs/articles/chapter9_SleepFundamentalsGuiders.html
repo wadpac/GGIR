@@ -8,8 +8,8 @@
 <title>9. Sleep Fundamentals: Guiding sleep detection • GGIR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="9. Sleep Fundamentals: Guiding sleep detection">
 <script defer data-domain="pkgdown.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
 </head>
@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,13 +68,15 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news">
 <li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-1-0/">Version 3.1-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-0-0/">Version 3.0-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-9-0/">Version 2.9-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-8-0/">Version 2.8-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-7-1/">Version 2.7-1</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-6-0/">Version 2.6-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-5-0/">Version 2.5-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-0/">Version 3.2-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-5/">Version 3.1-5</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-0/">Version 3.1-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-0-0/">Version 3.0-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-9-0/">Version 2.9-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-8-0/">Version 2.8-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-7-1/">Version 2.7-1</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-6-0/">Version 2.6-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-5-0/">Version 2.5-0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
   </ul>
@@ -87,7 +89,6 @@
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/wadpac/GGIR/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://twitter.com/RpackageGGIR" aria-label="Twitter"><span class="fa fa-twitter"></span></a></li>
       </ul>
 </div>
 
@@ -322,6 +323,10 @@ asking the participant when they woke up and when the fell asleep on a
 certain date. However, if the sleep onset time is at 2am, you should
 still fill in the 02:00:00, even though it is the 02:00:00 of the next
 calendar date.</p></li>
+<li><p>If no timestamps are known for a certain date, you can skip this
+date from the sleep log. Note that this is different from the basic
+format sleep log where columns will have to be left empty for missing
+night(s).</p></li>
 <li><p>You can add columns relating to self-reported napping time and
 nonwear time. These are not used for the sleep analysis in g.part3 and
 g.part4, but used in g.part5 to facilitate napping analysis, see
@@ -333,16 +338,24 @@ columns are recognised by GGIR as any column name with the word “date”
 in it. The advanced sleep log format is recognised by GGIR by looking
 out for the occurrence of at least two column names with the word “date”
 in their name. Wakeup times are recognised with the words “wakeup” in
-the column name. Sleeponset, to bed or in bed times are recognised as
-the columns with any of the following character combinations in their
-name: “onset”, “inbed”, “tobed”, or “lightsout”. Napping times are
-recognised by columns with the word “nap” in their name. Nonwear times
-are recognised by columns with the word “nonwear” in their
-name.</p></li>
+the column name. Sleeponset times are recognised as columns with the
+word “onset” in the column name. Time of going to bed is recognised by
+column names “lightsout”, “inbed”, “tobed”, or “bedstart”. Time of
+getting up is recognised by column names “lightson”, “outbed”, or
+“bedend”. Napping times are recognised by columns with the word “nap” in
+their name. Nonwear times are recognised by columns with the word
+“nonwear” in their name.</p></li>
 <li><p>GGIR guesses the data format by looping over common date formats.
 If the date falls within 30 days of the start date of the accelerometer
 recording then the date format is assumed to be found. It starts with
 attempting “Y-m-d” (as in 2015-06-25).</p></li>
+<li><p>If a column name includes the word “impute” then this column is
+treated as a log of the diary imputation for outside GGIR for the
+preceding night. The value will be shown in the visualreport and is
+stored in the time series by GGIR part 5. The imputation codes we used
+for testing have the format C0000 to indicate no imputation for inbed,
+sleeponset, wakeup and outbed, respectively. If one of the numbers would
+be 1 then that would reflect imputation.</p></li>
 </ul>
 </div>
 </div>
@@ -487,7 +500,9 @@ worn during the waking hour of the day.</p></li>
 <li><p>If we want the guider to consider invalid segments as no movement
 period set parameter <code>HASPT.ignore.invalid = NA</code>. This
 approach may be helpful for studies where the accelerometer is often not
-worn during the night.</p></li>
+worn during the night. If this is used, the guider name in the output
+will be shown with “+invalid” at the end, e.g. “HDCZA+invalid”, to
+reflect that the guider was enhanced.</p></li>
 </ol>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
