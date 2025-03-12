@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,14 +48,15 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-1-5/">Version 3.1-5</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-1-0/">Version 3.1-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-0-0/">Version 3.0-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-9-0/">Version 2.9-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-8-0/">Version 2.8-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-7-1/">Version 2.7-1</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-6-0/">Version 2.6-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-5-0/">Version 2.5-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-0/">Version 3.2-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-5/">Version 3.1-5</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-0/">Version 3.1-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-0-0/">Version 3.0-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-9-0/">Version 2.9-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-8-0/">Version 2.8-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-7-1/">Version 2.7-1</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-6-0/">Version 2.6-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-5-0/">Version 2.5-0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
   </ul></li>
@@ -77,7 +78,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="3.2-0" id="changes-in-ggir-version-32-0">CHANGES IN GGIR VERSION 3.2-0<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-32-0"></a></h2>
+<h2 class="pkg-version" data-toc-text="3.2-1" id="changes-in-ggir-version-32-1">CHANGES IN GGIR VERSION 3.2-1<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-32-1"></a></h2>
+<ul><li><p>General: Fix bug in parameter check concerning the recognition of a Boolean vector <a href="https://github.com/wadpac/GGIR/issues/1276" class="external-link">#1276</a></p></li>
+<li><p>Part 5: Fix bug in handling diary for daysleepers in the visualreport. This does not affect any other GGIR output. <a href="https://github.com/wadpac/GGIR/issues/1272" class="external-link">#1272</a></p></li>
+<li><p>Part 5 and visualreport: When wake up time at start of recording is added in part 5 no log was kept of the guider and bedend column was not recognised, this is now fixed. <a href="https://github.com/wadpac/GGIR/issues/1273" class="external-link">#1273</a></p></li>
+<li><p>General: Add functionality to split recordings based on recording specific timestamps or dates, for example useful when studying effect of interventions. This new functionality comes with new parameters recording_split_times, recording_split_overlap, recording_split_timeformat <a href="https://github.com/wadpac/GGIR/issues/1278" class="external-link">#1278</a>.</p></li>
+<li><p>Part 5: Now also runs lux analysis for MM window <a href="https://github.com/wadpac/GGIR/issues/1271" class="external-link">#1271</a></p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.2-0" id="changes-in-ggir-version-32-0">CHANGES IN GGIR VERSION 3.2-0<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-32-0"></a></h2><p class="text-muted">CRAN release: 2025-02-20</p>
 <ul><li>
 <p>Part 2:</p>
 <ul><li><p>Bug fixed in handling part 1 output with the uncommon scenario of having only 1 metric (in object metashort) <a href="https://github.com/wadpac/GGIR/issues/1265" class="external-link">#1265</a></p></li>

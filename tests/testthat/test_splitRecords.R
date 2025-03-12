@@ -2,6 +2,7 @@ library(GGIR)
 context("splitRecords")
 
 test_that("Recording can be split", {
+  skip_on_cran()
   #==========================================
   # Create dummy file
   data(data.getmeta)

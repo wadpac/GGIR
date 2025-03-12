@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,14 +68,15 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news">
 <li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-1-5/">Version 3.1-5</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-1-0/">Version 3.1-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-0-0/">Version 3.0-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-9-0/">Version 2.9-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-8-0/">Version 2.8-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-7-1/">Version 2.7-1</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-6-0/">Version 2.6-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-5-0/">Version 2.5-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-0/">Version 3.2-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-5/">Version 3.1-5</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-0/">Version 3.1-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-0-0/">Version 3.0-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-9-0/">Version 2.9-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-8-0/">Version 2.8-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-7-1/">Version 2.7-1</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-6-0/">Version 2.6-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-5-0/">Version 2.5-0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
   </ul>
@@ -163,14 +164,27 @@ period</strong>.</li>
 <li>
 <strong>Epoch-level time series</strong>, where an epoch length is
 set by the user at for example 5 seconds.</li>
-<li>
-<strong>(Optionally, not by default) Per sequence of recordings with
-matching participant IDs</strong>. For example, when a person is tracked
-first with one accelerometer and then the accelerometer is replaced by a
-different accelerometers. For details on how to use this, see
-documentation on GGIR parameter <code>maxRecordingInterval</code> and
-documentation on how to use GGIR parameters as explained further
-down.</li>
+</ul>
+<p><strong>Additionally, GGIR facilitates appending or splitting
+recordings:</strong></p>
+<ul>
+<li>Appending combines a sequence of recordings with matching
+participant IDs. For example, when a person is tracked for a couple of
+weeks with one accelerometer which is replaced after those weeks by a
+new accelerometer also worn for a couple of weeks. GGIR is able to
+append these recordings and treat them as a single recording. For
+details on how to use this, see documentation on GGIR parameter
+<code>maxRecordingInterval</code> and documentation on how to use GGIR
+parameters as explained further down.</li>
+<li>Splitting recording into multiple sequential recordings based on
+user-specified time points. For example, when a person is tracked for
+multiple weeks and you want to analyse the segment before and after an
+intervention separately. For details on how GGIR can split a recording
+into multiple new recordings, see documentation on GGIR parameters
+<code>recording_split_times</code>,
+<code>recording_split_overlap</code>, and
+<code>recording_split_timeformat</code> and documentation on how to use
+GGIR parameters as explained further down.</li>
 </ul>
 </div>
 <div class="section level2">
