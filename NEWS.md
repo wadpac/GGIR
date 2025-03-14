@@ -1,3 +1,12 @@
+# CHANGES IN GGIR VERSION 3.2-2
+
+- Part 2: Improve handling 23 hour days in day summary #1281
+
+- Part 4: Detected duplicated ID in sleeplog and generate error to inform user #1281
+
+- Part 4: No longer show warning when GGIR part 4 fall back on 9am-7pm guider because it is
+unlikely to be used and if it is used the user will be able to see this in the output. #1281
+
 # CHANGES IN GGIR VERSION 3.2-1
 
 - General: Fix bug in parameter check concerning the recognition of a Boolean vector #1276
@@ -9,13 +18,6 @@
 - General: Add functionality to split recordings based on recording specific timestamps or dates, for example useful when studying effect of interventions. This new functionality comes with new parameters recording_split_times, recording_split_overlap, recording_split_timeformat #1278.
 
 - Part 5: Now also runs lux analysis for MM window #1271
-
-- Part 2: Improve handling 23 hour days in day summary #1281
-
-- Part 4: Detected duplicated ID in sleeplog and generate error to inform user #1281
-
-- Part 4: No longer show warning when GGIR part 4 fall back on 9am-7pm guider because it is
-unlikely to be used and if it is used the user will be able to see this in the output. #1281
 
 # CHANGES IN GGIR VERSION 3.2-0
 
