@@ -300,7 +300,6 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
               # This should never happen, but just as a final backup
               defaultGuiderOnset = 21
               defaultGuiderWake = 31
-              warning("Guider not identified in ID ", accid, ", falling back on 9pm-7am window", call. = FALSE)
             }
             defaultGuider = guider
           } else if ((length(params_sleep[["def.noc.sleep"]]) == 1 ||
