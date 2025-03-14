@@ -110,12 +110,14 @@ test_that("Part 6 with household co-analysis", {
   expect_true(file.exists(path_to_ms6))
   
   load(path_to_ms6)
-  expect_equal(ncol(output_part6), 48)
+  expect_equal(ncol(output_part6), 50)
   expect_equal(output_part6$starttime, "2022-06-02 03:16:00")
   expect_equal(output_part6$cosinor_mes, 2.471082, tolerance = 0.00001)
   expect_equal(output_part6$cosinorExt_minimum, 1.302779, tolerance = 0.00001)
   expect_equal(output_part6$cosinorExt_MESOR, 2.171, tolerance = 0.00001)
   expect_equal(sum(output_part6[5:27]), 620.6144, tolerance = 0.0001)
+  expect_equal(output_part6$SRI, 95.87223, tolerance = 0.0001)
+  expect_equal(output_part6$SRI_Ndaypairs, 4)
   
   # Run Circadian rhythm analysis with non-default window
   params_247[["part6Window"]] = c("W2", "W-1") # second wake till last wake
@@ -131,13 +133,14 @@ test_that("Part 6 with household co-analysis", {
   expect_true(file.exists(path_to_ms6))
   
   load(path_to_ms6)
-  expect_equal(ncol(output_part6), 48)
+  expect_equal(ncol(output_part6), 50)
   expect_equal(output_part6$starttime, "2022-06-03 01:57:00")
   expect_equal(output_part6$cosinor_mes, 2.431978, tolerance = 0.00001)
   expect_equal(output_part6$cosinorExt_minimum, 1.286542, tolerance = 0.00001)
   expect_equal(output_part6$cosinorExt_MESOR, 2.140128, tolerance = 0.00001)
   expect_equal(sum(output_part6[5:27]), 680.9232, tolerance = 0.0001)
-  
+  expect_equal(output_part6$SRI, 96.72433, tolerance = 0.0001)
+  expect_equal(output_part6$SRI_Ndaypairs, 3)
   output_part6_with_invalid = output_part6
   rm(output_part6)
   

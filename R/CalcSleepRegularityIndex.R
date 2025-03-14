@@ -1,7 +1,18 @@
 CalcSleepRegularityIndex = function(data = c(), epochsize = c(), desiredtz= c()) {
-  data$time = iso8601chartime2POSIX(data$time, tz = desiredtz)
-  sleepcol = which(colnames(data) %in% c("time", "invalid", "night") == FALSE)[1]
-  invalid_epochs = which(data$invalid == 1)
+  if (inherits(data$time[1], "character")) {
+    data$time = iso8601chartime2POSIX(data$time, tz = desiredtz)
+  }
+  # ignore columns that this function does not need
+  data = data[, grep("temperature|selfreported|angle|invalid_|guider|ACC|step_count", colnames(data), invert = TRUE)]
+  sleepcol = grep("sleepnap", colnames(data))
+  if (length(sleepcol) != 1) {
+    # part 3
+    sleepcol = which(colnames(data) %in% c("time", "invalid", "night") == FALSE)[1]
+    invalid_epochs = which(data$invalid == 1)
+  } else {
+    # part 6
+    invalid_epochs = which(data$invalidepoch == 1)
+  }
   # For Sleep Regularity Index we ignore invalid epochs and set them to NA
   if (length(invalid_epochs) > 0) { 
     is.na(data[invalid_epochs, sleepcol]) = TRUE

@@ -1540,6 +1540,10 @@ GGIR(mode = 1:5,
         Boolean (default = FALSE) to indicate whether to perform Detrended Fluctuation
         Analysis. Turned off by default because it can be time consuming.
       }
+      \item{SRI_WASOmin}{
+        Numeric (default = 30)
+        Minimum WASO duration in minutes as used for Sleep Regularity Calculation in \link{g.part6}.
+      }
     }
   }
 

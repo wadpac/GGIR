@@ -84,7 +84,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     numeric_params = c("qlevels", "ilevels", "IVIS_windowsize_minutes", "IVIS_epochsize_seconds",
                        "IVIS.activity.metric", "IVIS_acc_threshold",
                        "qM5L5", "MX.ig.min.dur", "M5L5res", "winhr", "LUXthresholds", "LUX_cal_constant",
-                       "LUX_cal_exponent", "LUX_day_segments", "L5M5window", "clevels")
+                       "LUX_cal_exponent", "LUX_day_segments", "L5M5window", "clevels", "SRI_WASOmin")
     boolean_params = c("cosinor", "part6CR", "part6HCA", "part6DFA")
     character_params = c("qwindow_dateformat", "part6Window")
     check_class("247", params = params_247, parnames = numeric_params, parclass = "numeric")
