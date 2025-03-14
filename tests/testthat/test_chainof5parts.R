@@ -205,7 +205,7 @@ test_that("chainof5parts", {
           data_masking_strategy = 1, maxdur = Ndays, hrs.del.start = 0, hrs.del.end = 0,
           loglocation = sleeplog_fn,
           overwrite = TRUE, excludefirstlast = FALSE, do.parallel = do.parallel,
-          frag.metrics = "all", save_ms5rawlevels = TRUE,
+          frag.metrics = "all", save_ms5rawlevels = TRUE, save_ms5raw_format = "csv",
           part5_agg2_60seconds = TRUE, do.sibreport = TRUE, nap_model = "hip3yr",
           iglevels = 1, timewindow = c("MM", "WW", "OO"),
           possible_nap_window = c(0, 24),
@@ -252,7 +252,7 @@ test_that("chainof5parts", {
   expect_true(file.exists("output_test/results/part2_summary.csv"))
   expect_true(file.exists("output_test/results/part4_nightsummary_sleep_cleaned.csv"))
   expect_true(file.exists("output_test/results/part4_summary_sleep_cleaned.csv"))
-  expect_true(file.exists("output_test/results/file summary reports/Report_123A_testaccfile.csv.pdf"))
+  expect_true(file.exists("output_test/results/file summary reports/old_report_123A_testaccfile.csv.pdf"))
   expect_true(file.exists("output_test/results/part5_daysummary_MM_L40M100V400_T5A5.csv"))
   expect_true(file.exists("output_test/results/part5_daysummary_WW_L40M100V400_T5A5.csv"))
   expect_true(file.exists("output_test/results/part5_daysummary_OO_L40M100V400_T5A5.csv"))

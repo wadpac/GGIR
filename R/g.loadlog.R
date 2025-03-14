@@ -213,7 +213,14 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
         ID = S[i,colid]
         if (ID %in% startdates$ID == TRUE) { # matching ID in acc data, if not ignore ID
           IDcouldNotBeMatched = FALSE
-          startdate_acc = as.Date(startdates$startdate[which(startdates$ID == ID)], tz = desiredtz)
+          matchingID = which(startdates$ID == ID)
+          if (length(matchingID) > 1) {
+            warning(paste0("There is more than 1 accelerometer recording for ID ",
+                           ID, ", assuming that the first corresponds to the ",
+                           "sleeplog entry for this ID"), call. = FALSE)
+            matchingID  = matchingID[1]
+          }
+          startdate_acc = as.Date(startdates$startdate[matchingID], tz = desiredtz)
           startdate_sleeplog = as.character(S[i, datecols[1:pmin(length(datecols), 5)]])
           Sdates_correct = c()
           if (dateformat_found == TRUE && dateformats_to_consider[1] != dateformat_correct) {
@@ -253,7 +260,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
                            "from the dates in the accelerometer recording, this may indicate a ",
                            "problem with date formats or their recognition, please check."), call. = FALSE)
           }
-          if (startdates$startAtMidnight[which(startdates$ID == ID)] == TRUE) {
+          if (startdates$startAtMidnight[matchingID] == TRUE) {
             # If the first day in the advanced sleeplog is 28/11 
             # and the recording starts at midnight 27/11 00:00:00
             # then that means that we miss the first 2 nights.
@@ -314,10 +321,14 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
                 }
                 curdatecol = datecols[ind]
                 nextdatecol =  datecols[which(datecols > curdatecol)[1]]
+                doublenextdatecol =  datecols[which(datecols > nextdatecol)[1]]
                 lastday = FALSE
                 if (is.na(nextdatecol)) {
                   nextdatecol = ncol(S) + 1
                   lastday = TRUE
+                }
+                if (is.na(doublenextdatecol)) {
+                  doublenextdatecol = ncol(S) + 1
                 }
                 # Handle mixed reporting of time in bed and SPT"
                 if (length(bedendcols) == 0 & length(bedstartcols) != 0 &
@@ -337,7 +348,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
                 # Sleeplog:
                 onseti = onsetcols[which(onsetcols > curdatecol & onsetcols < nextdatecol)]
                 if (lastday == FALSE) {
-                  wakeupi = wakecols[which(wakecols > nextdatecol)[1]]
+                  wakeupi = wakecols[which(wakecols > nextdatecol & wakecols < doublenextdatecol)[1]]
                   wakeuptime = S[i,wakeupi]
                 } else {
                   wakeuptime = ""
@@ -350,7 +361,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
                 # time in bed
                 bedstarti = bedstartcols[which(bedstartcols > curdatecol & bedstartcols < nextdatecol)]
                 if (lastday == FALSE) {
-                  bedendi = bedendcols[which(bedendcols > nextdatecol)[1]]
+                  bedendi = bedendcols[which(bedendcols > nextdatecol & bedendcols < doublenextdatecol)[1]]
                   bedendtime = S[i,bedendi]
                 } else {
                   bedendtime = ""
@@ -363,7 +374,8 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
                 # Also grap nap, non-wear, and imputation code info and put those in separate matrices:
                 naps = napcols[which(napcols  > curdatecol & napcols < nextdatecol)]
                 nonwears = nonwearcols[which(nonwearcols  > curdatecol & nonwearcols < nextdatecol)]
-                imputecodes = imputecols[which(imputecols  > curdatecol & imputecols < nextdatecol)]
+                imputecodes = imputecols[which(imputecols  > nextdatecol & imputecols < doublenextdatecol)[1]]
+                if (is.na(imputecodes)) imputecodes = NULL
                 if (length(naps) > 0) {
                   naplog[napcnt, 1] = ID
                   naplog[napcnt, 2] = S[i, curdatecol]
@@ -376,10 +388,10 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
                   nonwearlog[nwcnt, 3:(2 + length(nonwears))] = as.character(S[i, nonwears ])
                   nwcnt = nwcnt + 1
                 }
-                if (length(imputecodes) > 0) {
+                if (length(imputecodes) > 0 && imputecodes <= ncol(S)) {
                   imputecodelog[iccnt, 1] = ID
                   imputecodelog[iccnt, 2] = S[i, curdatecol]
-                  imputecodelog[iccnt, 3:(2 + length(imputecodes))] = gsub("[^0-9.-]", "", as.character(S[i, imputecodes ]))
+                  imputecodelog[iccnt, 3:(2 + length(imputecodes))] = gsub("[^0-9.-]", "", as.character(S[i, imputecodes]))
                   iccnt = iccnt + 1
                 }
               } else {

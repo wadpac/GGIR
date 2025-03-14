@@ -100,40 +100,46 @@ Part 2 generates the following output:
 | 1to6am_ENMO_mg | Average metric value ENMO between 1am and 6am |
 | N valid WEdays | Number of valid weekend days |
 | N valid WKdays | Number of valid week days |
-| IS | inter daily stability. The movement count that is derived for this was an attempt to follow the original approach by Eus J. W. Van Someren (Chronobiology International. 1999. Volume 16, issue 4). |
-| IV | intra daily variability. In contrast to the original paper, we ignore the epoch transitions between the end of a day and the beginning of the next day for the numerator of the equation, this to make it a true measure of intradaily variability. Same note as for IS: The movement count that is derived for this was an attempt to follow the original approach. |
-| IVIS_windowsize_minutes | Sizes of the windows based on which IV and IS are calculated (note that this is modifiable) |
-| IVIS_epochsize_seconds | Argument has been deprecated |
+| IS | Interdaily stability as dicussed in [chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) |
+| IV | Intradaily variability as dicussed in [chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) |
 | phi | Indicator of auto-correlation in acceleration time series over multiple days, see [chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) for details. |
 | SSP | Method for describing time series, see [chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) for details. |
 | ABI | ABI measures how the activity over the observed period is balanced, see [chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) for details. |
 
 ### Circadian rhythm: Cosinor
 
-| (Part of) variable name | Description |
+The following variables in the GGIR output are derived by the ActCR package, the documentation has been copied from ActCR documentation.
+
+| Variable name | Description |
 |--------------------------|----------------------------------------------|
-| `cosinor_` | Cosinor analysis estimates such as mes, amp, acrophase, and acrotime, as documented in the [ActCR](https://CRAN.R-project.org/package=ActCR) package. |
-| `cosinorExt_` | Extended Cosinor analysis estimates such as minimum, amp, alpha, beta, acrotime, UpMesor, DownMesor, MESOR, and F_pseudo, as documented in the [ActCR](https://CRAN.R-project.org/package=ActCR) package. |
+| cosinor_mes |  MESOR which is short for midline statistics of rhythm, which is a rhythm adjusted mean. This represents mean activity level. |
+| cosinor_amp | amplitude, a measure of half the extend of predictable variation within a cycle.
+This represents the highest activity one can achieve |
+| cosinor_acrophase | acrophase, a measure of the time of the overall high values recurring in each
+cycle. Here it has a unit of radian. This represents time to reach the peak. |
+| cosinor_acrotime | acrotime represents time to reach the peak. |
+| cosinor_ndays | Number of days modeled |
+| cosinorExt_minimum | Minimum value of the of the function. |
+| cosinorExt_amp | amplitude, a measure of half the extend of predictable variation within a cycle. This represents the highest activity one can achieve. |
+| cosinorExt_alpha | It determines whether the peaks of the curve are wider than the troughs: when alpha is small, the troughs are narrow and the peaks are wide; when alpha is large, the troughs are wide and the peaks are narrow. |
+| cosinorExt_beta | It dertermines whether the transformed function rises and falls more steeply than the cosine curve: large values of beta produce curves that are nearly square waves. |
+| cosinorExt_acrotime | acrophase is the time of day of the peak in the unit of the time (hours) |
+| cosinorExt_UpMesor | Time of day of switch from low to high activity. Represents the timing of the rest- activity rhythm. Lower (earlier) values indicate increase in activity earlier in the day and suggest a more advanced circadian phase. |
+| cosinorExt_DownMesor | Time of day of switch from high to low activity. Represents the timing of the rest-activity rhythm. Lower (earlier) values indicate decline in activity earlier in the day, suggesting a more advanced circadian phase. |
+| cosinorExt_MESOR | A measure analogous to the MESOR of the cosine model (or half the deflection of the curve) can be obtained from mes=min+amp/2. However, it goes through the middle of the peak, and is therefore not equal to the MESOR of the cosine model, which is the mean of the data.
+| cosinorExt_ndays | Number of days modeled. |
+| cosinorExt_F_pseudo | Measure the improvement of the fit obtained by the non-linear estimation of the transformed cosine model |
+
+
+**Additionally, GGIR derives:**
+
+| Variable name | Description |
+|--------------------------|----------------------------------------------|
+| cosinor_timeOffsetHours | (Only used for code development purposes) Time offset in hours between midnight and the start of the time series used for cosinor analysis |
+| cosinor_R2 | Squared correlated coefficient between fitted and log-transformed original time series. |
+| cosinorExt_R2 | Squared correlated coefficient between fitted and log-transformed original time series. |
 | `cosinorIV` | Cosinor analysis compatible estimate of the Intradaily Variability (IV) |
 | `cosinorIS` | Cosinor analysis compatible estimate of Interdaily Stability (IS) |
-| cosinor_timeOffsetHours | Offset between start time series as used and midnight |
-| cosinor_mes | The mean value of the cosinor function fitted to the log transformed acceleration signal. Higher values indicate more activity. |
-| cosinor_amp | The amplitude of the cosinor function fitted to the log transformed acceleration signal, corresponding to the peak of the function minus the mesor. Higher values indicate larger amplitude in the rhythm |
-| cosinor_acrotime | Time at which the cosinor function fitted to the log transformed acceleration signal reaches its maximum |
-| cosinor_acrophase | Acrotime expressed in radians |
-| cosinor_ndays | Number of days used for the cosinor analysis. |
-| cosinor_R2 | Measure of goodness of fit of the cosinor function to the log transformed acceleration signal. Higher values indicate better goodness of fit. |
-| cosinorExt_minimum | (copied from ActCR documentation) Minimum value of the function |
-| cosinorExt_amp | (copied from ActCR documentation) Amplitude, a measure of half the extend of predictable variation within a cycle. This represents the highest activity one can achieve. |
-| cosinorExt_alpha | (copied from ActCR documentation) It determines whether the peaks of the curve are wider than the troughs: when alpha is small, the troughs are narrow and the peaks are wide; when alpha is large, the troughs are wide and the peaks are narrow. |
-| cosinorExt_beta | (copied from ActCR documentation) It dertermines whether the transformed function rises and falls more steeply than the cosine curve: large values of beta produce curves that are nearly square waves. |
-| cosinorExt_acrotime | (copied from ActCR documentation) acrophase is the time of day of the peak in the unit of the time (hours) |
-| cosinorExt_UpMesor | (copied from ActCR documentation) Time of day of switch from low to high activity. Represents the timing of the rest- activity rhythm. Lower (earlier) values indicate increase in activity earlier in the day and suggest a more advanced circadian phase. |
-| cosinorExt_DownMesor | (copied from ActCR documentation) Time of day of switch from high to low activity. Represents the timing of the rest-activity rhythm. Lower (earlier) values indicate decline in activity earlier in the day, suggesting a more advanced circadian phase. |
-| cosinorExt_MESOR | (copied from ActCR documentation) A measure analogous to the MESOR of the cosine model (or half the deflection of the curve) can be obtained from mes=min+amp/2. However, it goes through the middle of the peak, and is therefore not equal to the MESOR of the cosine model, which is the mean of the data |
-| cosinorExt_ndays | (copied from ActCR documentation) Number of days modeled. |
-| cosinorExt_F_pseudo | (copied from ActCR documentation) Measure the improvement of the fit obtained by the non-linear estimation of the transformed cosine model |
-| cosinorExt_R2 | Measure of goodness of fit of the extended cosinor function to the log transformed acceleration signal. Higher values indicate better goodness of fit. |
 
 ## Day level summary (csv)
 
@@ -149,7 +155,7 @@ This is a non-exhaustive list, because most concepts have been explained in summ
 | N hours | Number of hours of measurement in a day, which typically is 24, unless it is a day on which the clock changes (DST) resulting in 23 or 25 hours. The value can be less than 23 if the measurement started or ended this day |
 | weekday | Name of weekday |
 | measurement | Day of measurement Day number relative to start of the measurement |
-| L5hr_ENMO_mg_0-24h | Hour on which L5 starts for these 24 hours (defined with metric ENMO) |
+| L5hr_ENMO_mg_0-24h | Hour on which L5 starts for these 24 hours (defined with metric ENMO), on a continuous scale relative to the preceding midnight such that 2am is 26 and 6am is 30 |
 | L5_ENMO_mg_0-24h | Average acceleration for L5 (defined with metric ENMO) |
 | `[A,B)_mg_0-24h_ENMO` | Time spent in minutes between (and including) acceleration value A in mg and (excluding) acceleration value B in mg based on metric ENMO |
 | ig_gradient_ENMO_0-24hr | Gradient from intensity gradient analysis proposed by [Rowlands et al. 2018](https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx) based on metric ENMO for the time segment 0 to 24 hours |
@@ -419,10 +425,28 @@ Most variables in the person level summary are derived from the day level summar
 
 Part 6 only stores a person level summary (csv). Most column names overlap with part 5, but are now derived based on the for the full time series only, whereas part 5 only presents these variables per day window which is then aggregated at person level.
 
+### MXLX output variables
+
 | Variable name | Description |
 |--------------------------|----------------------------------------------|
-| L5TIME      | Timing of least active 5hrs, expressed as timestamp in the day          |
-| M5TIME      | Timing of most active 5hrs         |
-| L5TIME_num, M5TIME_num  | Timing of least/most active 5hrs, expressed as hours in the day. Note that L5/M5 timing variables are difficult to average across days because 23:00 and 1:00 would average to noon and not to midnight. So, caution is needed when interpreting person averages.   |
-| L5VALUE     | Acceleration value for least active 5hrs       |
-| M5VALUE     | Acceleration value for most active 5hrs        |
+| L5VALUE, M5VALUE     | Acceleration value for least (L5) and most (M5) active consecutive 5hrs per 24 hours     |
+| L5TIME_clock, M5TIME_clock | Clock time of L5 and M5, e.g. 15:00 |
+| L5TIME_num, M5TIME_num  | Timing of L5 and M5, expressed as hours relative to previous midnight, meaning that 2am would be 26. This is done to ease averaging acros days/persons. |
+| M5_mean_peakLUX | Mean peak lux during M5 |
+| M5_max_peakLUX | Max peak lux during M5 |
+
+### Cosinor output variables
+
+These variables names are consistent with the variable names [as discussed for GGIR part 2 output](https://wadpac.github.io/GGIR/articles/GGIRoutput.html#circadian-rhythm-cosinor).
+
+### Other output variables in part 6
+
+| Variable name | Description |
+|--------------------------|----------------------------------------------|
+| IS | Interdaily Stability |
+| IV | Intradaily Variability |
+| phi | See [section on phy in chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html#phi) |
+| `FRAG_` | Fragmentation variables, as also [discussed for part 5 output](https://wadpac.github.io/GGIR/articles/GGIRoutput.html#fragmentation). Only difference now is that fragmentation variables name ending with `_day` are specific to the waking hours of a day, while variable names ending iwht `_spt` are specific to the SPT window.  |
+| SSP | See [section on SSP in chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html#self-similarity-paramerter-ssp) |
+| ABI | See [section on ABI in chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html#activity-balance-index-abi) |
+

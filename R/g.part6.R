@@ -169,7 +169,9 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           mdat$window[invalid] = 9999
           mdat$invalid_sleepperiod[invalid] = 100
           mdat$invalid_wakinghours[invalid] = 100
-          mdat$time = mdat$timestamp = as.POSIXct(mdat$timenum, tz =  params_general[["desiredtz"]])
+          mdat$time = mdat$timestamp = as.POSIXct(mdat$timenum,
+                                                  tz =  params_general[["desiredtz"]],
+                                                  origin = "1970-01-01")
           return(mdat)
         }
         mdat = imputeTimeGaps(mdat, epochSize)
@@ -238,7 +240,8 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       summary[fi] = unlist(strsplit(fnames.ms5raw[i], "_"))[1]
       s_names[fi] = "ID"
       fi = fi + 1
-      starttime = as.POSIXlt(ts$time[1], tz = params_general[["desiredtz"]])
+      starttime = as.POSIXlt(ts$time[1], tz = params_general[["desiredtz"]],
+                             origin = "1970-01-01")
       summary[fi] = format(starttime)
       s_names[fi] = "starttime"
       fi = fi + 1
@@ -291,7 +294,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         threshold = as.numeric(unlist(strsplit( params_phyact[["part6_threshold_combi"]], "_"))[1])
         
         # extract nightsi again
-        tempp = unclass(as.POSIXlt(acc4cos$time, tz = params_general[["desiredtz"]]))
+        tempp = unclass(as.POSIXlt(acc4cos$time, tz = params_general[["desiredtz"]], origin = "1970-01-01"))
         sec = tempp$sec
         min = tempp$min
         hour = tempp$hour

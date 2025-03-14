@@ -110,6 +110,8 @@ Relative to the basic sleeplog format the advanced sleep log format comes with t
 
 - GGIR guesses the data format by looping over common date formats. If the date falls within 30 days of the start date of the accelerometer recording then the date format is assumed to be found. It starts with attempting “Y-m-d” (as in 2015-06-25).
 
+- If a column name includes the word "impute" then this column is treated as a log of the diary imputation for outside GGIR for the preceding night. The value will be shown in the visualreport and is stored in the time series by GGIR part 5. The imputation codes we used for testing have the format C0000 to indicate no imputation for inbed, sleeponset, wakeup and outbed, respectively. If one of the numbers would be 1 then that would reflect imputation.
+
 ### Guider: HDCZA
 
 The HDCZA algorithm is designed for studies with wrist-worn accelerometer (raw) data where no sleep log is available. The algorithm was first described in a [2018 article](https://dx.doi.org/10.1038/s41598-018-31266-z), and has been modified slightly: Step 6 in Figure 1 has been replaced by a single threshold (0.2 by default).\
