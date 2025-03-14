@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.2-?
+
+- Part 1: Implemented functionality to read and process Parmay Matrix sensors data (BIN files) #1253
+
 # CHANGES IN GGIR VERSION 3.2-1
 
 - General: Fix bug in parameter check concerning the recognition of a Boolean vector #1276
