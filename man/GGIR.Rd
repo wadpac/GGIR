@@ -1386,6 +1386,22 @@ GGIR(mode = 1:5,
         Boolean (default = FALSE)
         Whether to impute marker buttons on other days of the recording.
       }
+      
+      \item{nap_markerbutton_method}{
+        Numeric (default = 0)
+        Integer to indicate how to handle marker button:
+        0 = do not use marker button (default);
+        1 = if marker button is available use it for nap detection,
+        if not rely on accelerometer.
+        2 = nearby marker button is condition for nap detection 
+        but rely on accelerometer to define exact timing, and;
+        3 = nearby marker button is condition for nap detection and
+        used instead of accelerometer classification.
+      }
+      
+      \item{nap_markerbutton_max_distance}{
+        Numeric (default = 30)
+      }
     }
   }
 

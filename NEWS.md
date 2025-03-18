@@ -12,7 +12,7 @@
 
   - Add sleep guider "HLRB", a new heuristic algorithm specific to aid detecting the sleep window based on sustained inactivity bouts. Although, intended for Actiwatch data it may also work for other data types.
 
-  - Add option to utilise marker button data from Actiwatch, with new parameter consider_marker_button.
+  - Add option to utilise marker button data from Actiwatch and Philips Health Band for sleep and nap detection, with new parameter consider_marker_button.
 
 - Part 5: Fix bug in handling diary for daysleepers in the visualreport. This does not affect any other GGIR output. #1272
 

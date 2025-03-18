@@ -421,6 +421,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                 #===========================================
                 # THIS IS THE OLD NAP DETECTION IMPLEMENTATION
                 # nap detection
+                # the new NAP detection happens inside g.part5.analyseRest
                 if (params_general[["acc.metric"]] != "ENMO" |
                     params_sleep[["HASIB.algo"]] != "vanHees2015") {
                   warning("\nNap classification currently assumes acc.metric = ENMO and HASIB.algo = vanHees2015, so output may not be meaningful")

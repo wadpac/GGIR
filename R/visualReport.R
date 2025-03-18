@@ -322,7 +322,10 @@ visualReport = function(metadatadir = c(),
     if ("marker" %in% colnames(mdat)) {
       marker_moments = which(mdat$marker == 1)
       if (length(marker_moments) > 0) {
-        text(x = mdat$timestamp[marker_moments],y = 10, labels = "M", font = 2, col = "purple", cex = 1.5)
+        arrows(x0 = mdat$timestamp[marker_moments],
+                x1 = mdat$timestamp[marker_moments],
+                y0 = 30, y1 = 0, col = "purple", lwd = 1, length = 0.06)
+        text(x = mdat$timestamp[marker_moments],y = 30, labels = "M", font = 2, col = "purple", cex = 1.2)
       }
     }
     
