@@ -99,7 +99,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
       if ("ExtAct" %in% colnames(IMP$metashort) == TRUE) {
         acc.metric = "ExtAct"
       } else {
-        warning("Argument acc.metric is set to ",acc.metric," but not found in GGIR part 1 output data")
+        stop("Argument acc.metric is set to ",acc.metric," but not found in GGIR part 1 output data")
       }
     }
     ACC = as.numeric(as.matrix(IMP$metashort[,which(colnames(IMP$metashort) == acc.metric)]))
@@ -114,17 +114,12 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         params_sleep[["HASIB.algo"]] == "Galland2012" |
         params_sleep[["HASIB.algo"]] == "ColeKripke1992" |
         params_sleep[["HASIB.algo"]] == "Oakley1997") { # extract zeroCrossingCount
+      # note that for external derived metrics we refer to it as ZCY here
+      # even though the exact calculation may have differed
+      if (params_sleep[["Sadeh_axis"]] %in% c("X", "Y", "Z") == FALSE) params_sleep[["Sadeh_axis"]] = "Z"
       zeroCrossingCount =  IMP$metashort[,which(colnames(IMP$metashort) == paste0("ZC", params_sleep[["Sadeh_axis"]]))]
       zeroCrossingCount = fix_NA_invector(zeroCrossingCount)
       zeroCrossingCount = zeroCrossingCount * zc.scale
-      # always do zeroCrossingCount but optionally also add BrondCounts to output for comparison
-      BrondCount_colname = paste0("BrondCount_", tolower(params_sleep[["Sadeh_axis"]]))
-      if (BrondCount_colname %in% colnames(IMP$metashort)) {
-        BrondCount =  IMP$metashort[, BrondCount_colname]
-        BrondCount = fix_NA_invector(BrondCount)
-      } else {
-        BrondCount = c()
-      }
       # optionally add NeishabouriCounts for comparison
       NeishabouriCount_colname = paste0("NeishabouriCount_", tolower(params_sleep[["Sadeh_axis"]]))
       if (NeishabouriCount_colname %in% colnames(IMP$metashort)) {
@@ -135,7 +130,6 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
       }
     } else {
       zeroCrossingCount = c()
-      BrondCount = c()
       NeishabouriCount = c()
     }
     #==================================================================
@@ -163,7 +157,6 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                     anglethreshold = params_sleep[["anglethreshold"]], 
                     time = time, anglez = anglez, ws3 = ws3,
                     zeroCrossingCount = zeroCrossingCount,
-                    BrondCount = BrondCount,
                     NeishabouriCount = NeishabouriCount, activity = ACC,
                     oakley_threshold = params_sleep[["oakley_threshold"]])
     } else { # getSleepFromExternalFunction == TRUE

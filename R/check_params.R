@@ -222,7 +222,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   
   if (length(params_metrics) > 0 & length(params_sleep) > 0) {
     
-    if (params_sleep[["HASIB.algo"]] %in% c("Sadeh1994", "Galland2012", "ColeKripke1992") == TRUE) {
+    if (params_sleep[["HASIB.algo"]] %in% c("Sadeh1994", "Galland2012", "ColeKripke1992", "Oakley1997") == TRUE) {
       if (params_sleep[["Sadeh_axis"]] %in% c("X","Y","Z") == FALSE) {
         warning("Parameter Sadeh_axis does not have meaningful value, it needs to be X, Y or Z (capital)", call. = FALSE)
       }
