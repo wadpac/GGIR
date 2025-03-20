@@ -69,9 +69,48 @@ The algorithm proposed by Sadeh et al. [link](https://doi.org/10.1093/sleep/17.3
 
 The algorithm proposed by Galland et al. [link](http://dx.doi.org/10.1016/j.sleep.2012.01.018). To use our implementation of the Galland2012 algorithm specify parameter `HASIB.algo = "Galland2012"`. Further, set `Sadeh_axis = "Y"` to specify that the algorithm should use the Y-axis.
 
-### ColeKripke1992 
+### ColeKripke1992
 
 The algorithm proposed by Cole et al. [link](https://doi.org/10.1093/sleep/15.5.461), more specifically GGIR uses the algortihm proposed in the paper for 10-second non-overlapping epochs with counts expressed average per minute. We skip the re-scoring steps as the paper showed marginal added value of this added complexity. To use the GGIR implementation of this algortihm, specify parameters `HASIB.algo = "ColeKripke1992"` and `Sadeh_axis = "Y"` to indicate that the algorithm should use the Y-axis of the sensor.
+
+### Oakley1997
+
+**Algorithm origin**
+
+This algorithm is often referred to as Oakley et al. 1997. The reference gives the impression
+that there is an academic publication by Oakley from 1997, but actually this refers to "Oakley et al. Validation with Polysomnography of the Sleepwatch Sleep/Wake Scoring Algorithm
+used by the Actiwatch Activity Monitoring System" which is a two page pdf document presenting an evaluation of the algorithm but not the actual algorithm. Further, it is unclear in what context it was written, it may have been a short conference proceeding but this is not clarified.
+
+The algorithm was originally created by Dr. Oakley and Mr Gary Ungless. Cambridge Neurotechnology was co-founded by Dr Nigel Oakley. Additional validation work was performed by the company MiniMitter who licensed the Actiwatch technology from Cambridge Neurotechnology until 2008 when MiniMitter was purchased by Respironics and subsequently Philips who also bought all rights to Actiwatch at that time. The same algorithms have hence been used by Cambridge Neurotechnology, Philips and by CamNtech.
+
+These manufacturers have produced actigraphy devices such as Philips Health Band, Actiwatch, MotionWatch8, and Actical.
+
+**Algorithm input**
+
+The algorithm takes as input epoch-by-epoch count values. Given that multiple manufacturers have used the sleep scoring algortihm by Oakley we have to assume that the count values are calculated identically between their products. 
+
+From what I have been able to retrieve from product documentation (source The MotionWatch User guide: Issue 1.4.20b, page 30) the count is calculated on-board the device in four stages:
+
+1. The channel perpendicular to the watch is separated and subjected to the bandwidth filtering
+specified above (3-11Hz).
+2. The peak acceleration (either positive or negative) during each second is recorded.
+3. This is compared to a minimum "not moving" threshold of approximately 0.1g. Although, in other places this is referred to as 0.05g. Values below this threshold are ignored to simplify the final activity graph.
+4. The result from each second is summed over the epoch and scaled to produce a standard
+result in controlled jig testing. This value is then recorded as the MotionWatch count for the
+epoch.
+
+Currently, GGIR does not attempt to imitate this count calculation. Instead Oakley1997
+can only be applied when the GGIR input data is from any of the devices as listed above.
+
+**Algorithm**
+
+The algorithm itself has been communicated by the manufacturers via product information documents. 
+For example, Cambridge Neurotechnologiesy shares the algorithm via a pdf titled "Information bulletin no.3 sleep algorithms" (please contact manufacturer for copy), and for Actiwatch by Respironics it was described in "Actiwatch Communication and Sleep Analysis Software: Instruction Manual Appendix A" [link to pdf](https://johnawinegarden.files.wordpress.com/2015/03/actiwatchsoftware.pdf).
+
+In short, the algorithm uses a weighted sum of the count value of the current and surrounding epochs, where weights and number of epochs to be used are dependent on the epoch length. The algorithm facilitates 15, 30, 60, and 120 second epoch lengths. In GGIR we only facilitate 15, 30 and 60.
+
+To use the GGIR implementation of this algortihm, specify parameter `HASIB.algo = "Oakley1997"`.
+
 
 ## Dealing with expected or detected nonwear time segments
 
