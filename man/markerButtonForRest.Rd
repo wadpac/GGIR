@@ -8,7 +8,7 @@
   Currently only functional for Actiwatch and Philips Healthband.
 }
 \usage{
-  markerButtonForRest(sibreport = NULL, ts = NULL, params_sleep = NULL)
+  markerButtonForRest(sibreport, ts, params_sleep)
 }
 \arguments{
   \item{sibreport}{
