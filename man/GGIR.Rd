@@ -1372,19 +1372,24 @@ GGIR(mode = 1:5,
       
       \item{oakley_threshold}{
         Numeric (default = 20)
-        Threshold as used by the Oakley algorithm, original suggestionw as 20, 40 or 80.
+        Threshold as used by the Oakley algorithm. Original documentation
+        suggestion to choose between 20, 40 or 80, while in GGIR this can be
+        any absolute number.
       }
       
       \item{consider_marker_button}{
         Boolean (default = FALSE)
-        Whether to consider the marker button as guider. Currently only functional for Actiwatch-type count-accelerometers such as 
-        Philips Health Band and MotionWatch 8. See https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html
+        Whether to consider the marker button as guider. Currently only functional 
+        for Actiwatch-type count-accelerometers such as 
+        Philips Health Band and MotionWatch 8. 
+        See https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html
         for details.
       }
       
       \item{impute_marker_button}{
         Boolean (default = FALSE)
-        Whether to impute marker buttons on other days of the recording.
+        Whether to impute marker buttons on other days of the recording in the context
+        of using it as guider with \code{consider_marker_button}.
       }
       
       \item{nap_markerbutton_method}{
@@ -1401,6 +1406,16 @@ GGIR(mode = 1:5,
       
       \item{nap_markerbutton_max_distance}{
         Numeric (default = 30)
+        When using \code{nap_markerbutton_method} in non-default setting this
+        sets the maximum distance in minutes between the nearest marker button
+        and the edge of a sustained inactivity bout. If the marker button lies 
+        inside the sustained inactivity bout but beyond the midpoint, no maximum distance
+        is applied. For example, if a sustained activity bout lasts
+        from 11:00:00 to 13:00:00 then its midpoint will be 12:00:00 and with the
+        default \code{nap_markerbutton_max_distance} any marker button between 10:30:00
+        and 12:00:00 will be considered valid for the start of the nap and 
+        any marker button between 12:00:00 and 13:30:00 will be considered valid 
+        for the end of the nap.
       }
     }
   }
