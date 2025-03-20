@@ -267,8 +267,9 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       # Skip g.part1, but instead convert epoch data to a format that
       # looks as if it came out of g.part1
       if (utils::packageVersion("GGIRread") <= "1.0.1") {
-        stop(paste0("Please update R package GGIRread. To work with external epoch ",
-                    "data, version 1.0.2 or above is now required."), call. = FALSE)
+        stop(paste0("To work with external epoch ",
+                    "data GGIRread version 1.0.2 or above is now required. ",
+                    "Please update R package GGIRread. "), call. = FALSE)
       }
       convertEpochData(datadir = datadir,
                        metadatadir = metadatadir,

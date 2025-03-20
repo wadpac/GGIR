@@ -39,12 +39,15 @@ HASPT(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
     Boolean to indicate whether invalid time segments should be ignored
   }
    \item{activity}{
-    Magnitude of acceleration, only used when HASPT.algo is set to NotWorn.
+    Numeric vector with magnitude of acceleration per epoch,
+    only used when HASPT.algo is set to NotWorn.
     Acceleration metric used is specified by argument \code{acc.metric} 
     elsewhere in GGIR.
   }
   \item{marker}{
-    Numeric vector of classified sibs with \code{HASIB}, used by MotionWare.
+    Optional, numeric vector with for each epoch an indication of whether the
+    marker button was pressed (1) or not (0). Only used for Actiwatch-like devices
+    such as MotionWare.
   }
   \item{sibs}{
     Numeric vector of classified sibs with \code{HASIB}, experimental not used at the moment.

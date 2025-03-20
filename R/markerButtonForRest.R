@@ -1,21 +1,22 @@
 markerButtonForRest = function(sibreport, params_sleep, ts) {
   #-----------------------------------------------------------
-  # Consider using marker button data to aid nap detection
+  # This function looks for marker buttons near the edges of sustained
+  # inactivity bouts (sib) to guide the nap detection.
+  # For the time being marker buttons are only extracted from Actiwatch-like
+  # devices (Philips Health Band, MotionWatch).
   
-  # nap_markerbutton_method:
-  # 0 do not use marker button (default)
-  # 1 do not require it and copy timing => use marker button to improve definition of nap
-  # 2 require it and do not copy timing => use marker button as a condition for nap detection
-  # 3 require it and copy timing => use marker button to improve definition and as a condition for nap detection
+  # nap_markerbutton_method is explained in the documentation (see GGIR.Rd)
   
   # Explanation objects as used below
-  # nap_copy_timing_mb: rely on marker for final timing of the nap?
+  # nap_copy_timing_mb:
+  # Boolean to decide whether to rely on marker for final timing of the nap
   # if TRUE, only consider marker buttons  before midtime of sib for start
   # and only consider marker buttons after midtime of sib for end
   # if FALSE, then consider any mark button, this uses the marker solely as 
   # a confirmation that nap nearby
   
-  # nap_require_mb: require availability of marker to consider 
+  # nap_require_mb:
+  # Boolean to decide whether to require availability of marker to consider 
   # detection of a nap
   # if TRUE, only keep sibs that had marker button nearby
   # if FALSE, also keep sibs that may not have marker button but meet 

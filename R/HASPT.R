@@ -5,11 +5,12 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
                  sibs = NULL,
                  try_marker_button = FALSE) {
   tib.threshold = SPTE_start = SPTE_end = part3_guider = c()
-  # Option use of marker button which overrules any guider:
+  
   
   #-------------------------------------
-  # Use marker button if possible
-  # Move this to the top where it can be run prior to any guider
+  # Use marker button:
+  # if available (only Actiwatch and Philips Health band at the moment)
+  # if required by user (see parameter consider_marker_button)
   
   if (length(marker) > 0 && try_marker_button == TRUE) {
     button_pressed = which(marker != 0)

@@ -7,11 +7,7 @@
 - Part 4: No longer show warning when GGIR part 4 fall back on 9am-7pm guider because it is
 unlikely to be used and if it is used the user will be able to see this in the output. #1281
 
-# CHANGES IN GGIR VERSION 3.2-1
-
 - Part 5: Add marker button data to saved time series and include in visualreport
-
-- General: Fix bug in parameter check concerning the recognition of a Boolean vector #1276
 
 - Part 3:
 
@@ -22,6 +18,10 @@ unlikely to be used and if it is used the user will be able to see this in the o
   - Add sleep guider "HLRB", a new heuristic algorithm specific to aid detecting the sleep window based on sustained inactivity bouts. Although, intended for Actiwatch data it may also work for other data types.
 
   - Add option to utilise marker button data from Actiwatch and Philips Health Band for sleep and nap detection, with new parameter consider_marker_button.
+
+# CHANGES IN GGIR VERSION 3.2-1
+
+- General: Fix bug in parameter check concerning the recognition of a Boolean vector #1276
 
 - Part 5: Fix bug in handling diary for daysleepers in the visualreport. This does not affect any other GGIR output. #1272
 

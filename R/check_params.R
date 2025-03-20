@@ -478,8 +478,11 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         params_metrics[["do.zcy"]] = TRUE
         params_general[["acc.metric"]] = "ZCY"
         # Note that for the calculation this does not have any effect
-        # we do this to make sure the count metric as provide by Actiwatch 
-        # has a name the rest of GGIR can deal with
+        # we do this to make sure the count metric as provided by Actiwatch 
+        # has a name that the rest of GGIR can deal with.
+        # If we add a new count name for all of the many historical actigraphy devices
+        # that generate their own count metrics we would have to deal with all 
+        # those names in the GGIR code.
       }
       if (params_metrics[["do.anglex"]] == TRUE |
           params_metrics[["do.angley"]] == TRUE |
