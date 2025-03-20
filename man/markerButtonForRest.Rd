@@ -8,17 +8,17 @@
   Currently only functional for Actiwatch and Philips Healthband.
 }
 \usage{
-  markerButtonForRest(sibreport, ts, params_sleep)
+  markerButtonForRest(sibreport, params_sleep, ts)
 }
 \arguments{
   \item{sibreport}{
     sibreport data.frame produced by \link{g.sibreport}
   }
-  \item{ts}{
-    Data.frame with time series object passed on from \link{g.part5_analyseSegment} and \link{g.part5}.
-  }
   \item{params_sleep}{
     See \link{GGIR}
+  }
+  \item{ts}{
+    Data.frame with time series object passed on from \link{g.part5_analyseSegment} and \link{g.part5}.
   }
 }
 \value{
