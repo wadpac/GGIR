@@ -1328,7 +1328,7 @@ GGIR(mode = 1:5,
         Numeric vector of length two with range in clock hours during which naps are
         assumed to take place, e.g., \code{possible_nap_window = c(9, 18)}. The nap 
         classification is only applied
-        if both \code{possible_nap_window} and \code{possible_nap_dur} are both specified.
+        if both \code{possible_nap_window} and \code{possible_nap_dur} are specified.
         More documentation to follow in 2025 when development work has completed.}
 
       \item{possible_nap_dur}{
