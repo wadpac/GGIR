@@ -1,3 +1,12 @@
+# CHANGES IN GGIR VERSION 3.2-2
+
+- Part 2: Improve handling 23 hour days in day summary #1281
+
+- Part 4: Detected duplicated ID in sleeplog and generate error to inform user #1281
+
+- Part 4: No longer show warning when GGIR part 4 fall back on 9am-7pm guider because it is
+unlikely to be used and if it is used the user will be able to see this in the output. #1281
+
 # CHANGES IN GGIR VERSION 3.2-1
 
 - Part 5: Add marker button data to saved time series and include in visualreport

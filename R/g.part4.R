@@ -42,6 +42,22 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                                colid = params_sleep[["colid"]],
                                meta.sleep.folder = meta.sleep.folder,
                                desiredtz = params_general[["desiredtz"]])
+      
+      if (params_sleep[["sleepwindowType"]] == "SPT" && length(logs_diaries$bedlog) > 0 &&
+          length(logs_diaries$sleeplog) == 0) {
+        stop(paste0("The sleep diary as provided only appears to have time indicators",
+                    " for time in bed and not for the Sleep Period Time window, while",
+                    " parameter sleepwindowType is set to SPT (default). Either change sleepwindowType to",
+                    " \"TimeInBed\" or change your sleep diary column names for sleep timing",
+                    " to \"wakeup\" and \"sleeponset\"."), call. = FALSE)
+      } else if (params_sleep[["sleepwindowType"]] == "TimeInBed" && length(logs_diaries$bedlog) == 0 &&
+                 length(logs_diaries$sleeplog) > 0) {
+        stop(paste0("The sleep diary as provided only appears to have time indicators",
+                    " for SPT and not for the Time in Bed, while",
+                    " parameter sleepwindowType is set to TimeInBed. Either change sleepwindowType to",
+                    " \"SPT\" or change your sleep diary column names for sleep timing",
+                    " to \"outbed\" and \"inbed\"."), call. = FALSE)
+      }
       save(logs_diaries, file = sleeplogRDataFile)
     } else {
       load(file = sleeplogRDataFile)
@@ -301,7 +317,6 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
               # This should never happen, but just as a final backup
               defaultGuiderOnset = 21
               defaultGuiderWake = 31
-              warning("Guider not identified in ID ", accid, ", falling back on 9pm-7am window", call. = FALSE)
             }
             defaultGuider = guider
           } else if ((length(params_sleep[["def.noc.sleep"]]) == 1 ||
