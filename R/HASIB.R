@@ -181,9 +181,6 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
     if (length(zeroCrossingCount) > 0) count_types = "zeroCrossingCount"
     if (length(NeishabouriCount) > 0) count_types = c(count_types, "NeishabouriCount")
     sib_classification = as.data.frame(matrix(0, Nvalues, length(count_types)))
-    if (epochsize > 60) {
-      stop("Oakley algorithm is not designed for epochs larger than 1 minute")
-    }
     cti = 1
     for (count_type in count_types) {
       # Aggregate per minute
@@ -210,6 +207,9 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
   } else if (HASIB.algo == "Oakley1997") {
     # Sleep Detection based on description in
     # Information bulletin no.3 sleep algorithms by Cambrige Neurotechnologies
+    if (epochsize > 60) {
+      stop("Oakley algorithm is not designed for epochs larger than 1 minute")
+    }
     count_types = c()
     if (length(zeroCrossingCount) > 0) count_types = "zeroCrossingCount"
     if (length(NeishabouriCount) > 0) count_types = c(count_types, "NeishabouriCount")
