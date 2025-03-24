@@ -7,17 +7,21 @@
 - Part 4: No longer show warning when GGIR part 4 fall back on 9am-7pm guider because it is
 unlikely to be used and if it is used the user will be able to see this in the output. #1281
 
-- Part 5: Add marker button data to saved time series and include in visualreport
+- Part 5: Save marker button data from Actiwatch and Philips Health band to GGIR milestone data and include it in the visualreport.
 
 - Part 3:
 
   - Add sustained inactivity bout detection algorithm that as described in the non-public document by Cambridge Neurotechnologies: Information bulletin no.3 sleep algorithms. To be used with HASIB.algo = "Oakley1997" and for which the threshold can be set with new parameter oakley_threshold. #1267
 
-  - Add new guider "MotionWare" which reflect the auto-detection of sleep as described in the non-public document by Cambridge Neurotechnologies: Information bulletin no.3 sleep algorithms. #1267
+  - Add new HASPT.algo option "MotionWare" which is an attempt to imitate the auto-detection of sleep as described in the non-public document by Cambridge Neurotechnologies: Information bulletin no.3 sleep algorithms. #1267
 
-  - Add sleep guider "HLRB", a new heuristic algorithm specific to aid detecting the sleep window based on sustained inactivity bouts. Although, intended for Actiwatch data it may also work for other data types.
+  - Add new HASPT.algo option "HLRB", a new heuristic algorithm specific to aid detecting the sleep window based on sustained inactivity bouts. Although intended for Actiwatch data it may also work for other data types.
 
-  - Add option to utilise marker button data from Actiwatch and Philips Health Band for sleep and nap detection, with new parameter consider_marker_button.
+  - Add option to utilise marker button data from Actiwatch and Philips Health Band for sleep and nap detection, with new parameter consider_marker_button. #1267
+
+- Part 1: Add option to load externally derived epoch data from Actical, Philips Health Band, and Fitbit. #1205
+
+- Vignettes: Add Annex on date and time formats in R.
 
 # CHANGES IN GGIR VERSION 3.2-1
 
