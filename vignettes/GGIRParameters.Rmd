@@ -94,7 +94,7 @@ find a description and default value for all the arguments.
 | rmc.unit.temp               | 1                 | params_rawdata           |
 | rmc.origin                  | 1                 | params_rawdata           |
 | rmc.header.length           | 1                 | params_rawdata           |
-| mc.format.time              | 1                 | params_rawdata           |
+| rmc.format.time              | 1                 | params_rawdata           |
 | rmc.bitrate                 | 1                 | params_rawdata           |
 | rmc.dynamic_range           | 1                 | params_rawdata           |
 | rmc.unsignedbit             | 1                 | params_rawdata           |
