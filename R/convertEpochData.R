@@ -371,11 +371,13 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         I$filename = filename_dir = fname = ID
         epochSizes = names(table(diff(data$dateTime)))
         if (length(epochSizes) > 1) {
-          stop(paste0("multiple epoch sizes encountered in Fitbit data ", basename(fnames[[i]])), call. = FALSE)
+          stop(paste0("multiple epoch sizes encountered in Fitbit data ",
+                      basename(fnames[[i]])), call. = FALSE)
         } else if (length(epochSizes) == 1) {
           epSizeShort = as.numeric(epochSizes)
         } else {
-          stop(paste0("No epoch size recognised in Fitbit data ", basename(fnames[[i]])), call. = FALSE)
+          stop(paste0("No epoch size recognised in Fitbit data ",
+                      basename(fnames[[i]])), call. = FALSE)
         }
         timestamp_POSIX = data$dateTime[1]
         D = list(data = data, epochSize = epSizeShort, startTime = timestamp_POSIX)
