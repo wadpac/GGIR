@@ -1389,25 +1389,29 @@ GGIR(mode = 1:5,
       \item{impute_marker_button}{
         Boolean (default = FALSE)
         Whether to impute marker buttons on other days of the recording in the context
-        of using it as guider with \code{consider_marker_button}.
+        of using it as guider with \code{consider_marker_button}. See
+        https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html
+        for details.
       }
       
       \item{nap_markerbutton_method}{
         Numeric (default = 0)
-        Integer to indicate how to handle marker button:
-        0 = do not use marker button (default);
+        Integer to indicate whether and how to use marker button for nap
+        detection:
+        0 = do not use marker button for nap detection (default);
         1 = if marker button is available use it for nap detection,
         if not rely on accelerometer.
         2 = nearby marker button is condition for nap detection 
-        but rely on accelerometer to define exact timing, and;
+        but rely on accelerometer to define exact nap timing, and;
         3 = nearby marker button is condition for nap detection and
         used instead of accelerometer classification.
       }
       
       \item{nap_markerbutton_max_distance}{
         Numeric (default = 30)
-        When using \code{nap_markerbutton_method} in non-default setting this
-        sets the maximum distance in minutes between the nearest marker button
+        When using \code{nap_markerbutton_method} with a value other than 0
+        \code{nap_markerbutton_max_distance}  sets the maximum distance in 
+        minutes between the nearest marker button
         and the edge of a sustained inactivity bout. If the marker button lies 
         inside the sustained inactivity bout but beyond the midpoint, no maximum distance
         is applied. For example, if a sustained activity bout lasts

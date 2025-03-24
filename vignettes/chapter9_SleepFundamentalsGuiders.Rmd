@@ -156,22 +156,23 @@ To use this guider set parameter `HASPT.algo = "HorAngle"`
 
 ### Guider: MotionWare (EXPERIMENTAL)
 
-The algorithm for auto-detection of sleep as described in the non-public document by Cambridge Neurotechnologies: Information bulletin no.3 sleep algorithms. The algorithm uses a combination of count and marker data to identify the sleep periods in the day, where GGIR for now only retains the longest identified sleep period.
+This is an attempt to implement the algorithm for auto-detection of sleep as described in the non-public document by Cambridge Neurotechnologies: "Information bulletin no.3 sleep algorithms". The algorithm uses a combination of count and marker data to identify the sleep periods in the day, where GGIR for now only retains the longest identified sleep period.
 
-I have implemented it as an attempt to explore its value.
+I have attempted to implement it to see whether it can provide value. For the moment, this work is experimental.
 
 
 ### Guider: HLRB (EXPERIMENTAL)
 
-HLRB is a heuristic algorithm to detect the Longest Rest Bout. It was designed to offer a guider option for accelerometer that only store count data and by that cannot work with the HDCZA or HorAngle guiders.
+HLRB is a heuristic algorithm to detect the Longest Rest Bout. It was designed to offer a guider option for accelerometer device that only store count data and by that cannot work with the HDCZA or HorAngle guiders.
+It has currently not been described in a publication.
 
 The algorithm is composed of the following steps:
 
-1. Filter detected sustained inactivity bouts with a rounded two hour rolling average.
-2. Replace all resulting non-rest periods by rest that are surrounded on both sides by rest if their (non-rest) length is shorter than 1 hour.
+1. Filter detected sustained inactivity bouts with a two hour rounded rolling average.
+2. Replace all resulting non-rest periods by rest that are surrounded on both sides by rest if their (non-rest) length is shorter than 1 hour. This 1 hour is currently hard-coded.
 3. Take the longest remaining window as guider.
 
-To use this guider set parameter `HASPT.algo = "HLRB"`
+To use this guider set parameter `HASPT.algo = "HLRB"`.
 
 ### Guider: NotWorn (EXPERIMENTAL)
 
