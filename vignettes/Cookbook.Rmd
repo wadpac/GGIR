@@ -18,6 +18,7 @@ In this cook book you will find recipes for using GGIR in specific non-default s
 # Handling externally derived data
 
 This refers to the situation where external software or hardware was used to derive epoch level aggregates from accelerometer data.
+
 In this section you will find key parameters needed for working with these data formats. Please refer to the other parts of the [GGIR documentation](https://wadpac.github.io/GGIR/) for guidance on how to tailor the actual analysis towards your study protocol and research interests.
 
 ## Actiwatch data
@@ -70,6 +71,8 @@ GGIR(datadir = "/media/ukbiobank",
    desiredtz = "Europe/London") # We know that data was collected in the UK
 ```
 
+Please note that currently no method exists to detect sleep from these files.
+
 ## ActiGraph count data in .CSV format
 
 Examples of how the first couple of hundred lines of these files may look like can be found [here](https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/ActiGraph13.csv), [here](https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/ActiGraph13_timestamps_headers.csv), and [here](https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/ActiGraph61.csv).
@@ -89,6 +92,10 @@ GGIR(datadir = "/examplefiles",
            
 ## Sensewear data in .xls format
 
+Sensewear comes in xls(x) files with many column from which GGIR only uses: "METs" as indicator for acceleration where the uses can use MET levels as acceleration threshold, "Step Counter" which is treated as externally generated step count, and "Sleep" which is used as classification for sleep.
+
+At a bare minimum the GGIR command to process these files looks as follows:
+
 ```
 GGIR(datadir = "C:/yoursenseweardatafolder",
     outputdir = "D:/youroutputfolder",
@@ -105,6 +112,8 @@ GGIR(datadir = "C:/yoursenseweardatafolder",
 
 An example of how the first couple of hundred lines of this file may look like can be found [here](https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/Actical.csv)
 
+At a bare minimum the GGIR command to process these files looks as follows:
+
 ```
 GGIR(datadir = "C:/youracticaldatafolder",
     outputdir = "D:/youroutputfolder",
@@ -113,10 +122,14 @@ GGIR(datadir = "C:/youracticaldatafolder",
     extEpochData_timeformat = "%d-%b-%Y %H:%M")
 ```
 
+To classify sleep from Actical parameter consider parameter HASIB.algo = "Oakley1997".
+
 ## Philips Health Band in .xlsx format
 
 The Philips Health Band data comes with .xlsx file pairs per recording. One starts with `DataList` the other one starts with `Sleep_Wake_`.
 Examples of how the first couple of hundred lines of such files may look like can be found [here](https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/DataList_AH1234567890_PhilipsHealthBand.xlsx) for `DataList` and [here](https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/Sleep_Wake_AH1234567890_PhilipsHealthBand.xlsx) for `Sleep_Wake`.
+
+At a bare minimum the GGIR command to process these files looks as follows:
 
 ```
 GGIR(datadir = "C:/yourphbdatafolder",
@@ -126,12 +139,17 @@ GGIR(datadir = "C:/yourphbdatafolder",
     extEpochData_timeformat = "%m-%d-%Y %H:%M:%S")
 ```
 
-## Fitbit as folders filled files that have .json format
+By default GGIR attempts to extract and uses the sleep classification that is stored inside the xlsx files with column name "sleepWake". If no sleep classification is stored inside the data, GGIR uses the activity indicator as stored as "activitycounts".
 
-Fitbit data comes with multiple .json file per recording stored in the same subfolder.
-GGIR currently uses the file name starting with sleep, calories, and steps for sleep, magnitude of movement, and steps, respectively.
+## Fitbit as folder with .json format files
+
+Fitbit data comes with multiple .json file per recording (individual) stored in the same folder, with one folder for each recording.
+
+GGIR uses the .json file names starting with sleep, calories, and steps for sleep, magnitude of movement, and steps, respectively.
 
 Examples of how these files may look like can be found [here for sleep](https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/sleep-1995-06-23_Fitbit.json), [here for steps](https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/steps-1995-06-23_Fitbit.json, and [here for calories](https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/calories-1995-06-23_Fitbit.json).
+
+At a bare minimum the GGIR command to process these files looks as follows:
 
 ```
 GGIR(datadir = "C:/yourfitbitdatafolder",
@@ -140,7 +158,8 @@ GGIR(datadir = "C:/yourfitbitdatafolder",
     dataFormat = "fitbit_json")
 ```
 Note that parameter `extEpochData_timeformat` is not expected for Fitbit as
-we assume that the timestamps are always stored with the same internal format.
+we assume that the timestamps are always stored with the same internal format inside the .json files.
+
 
 # Handling study protocol
 
@@ -161,46 +180,3 @@ GGIR(HASPT.algo = c("NotWorn", "HDCZA"),
 ```
 
 If "NotWorn" is specified then a second guider can be supplied to the same parameter as shown above. This second guider will be used if the accelerometer is worn for more than 75 percent of the night. The example above shows this for HDCZA.
-
-
-# Date and time format specification in R
-
-A number of GGIR parameter expects a date or time format as input. R uses codes
-to define date and time formats. The format is specified as combination of codes.
-
-
-The table below shows the indivual codes and their meaning:
-
-Code      | Value
-----------|----------------------
-`"%d"`    | Day of the month (decimal number)
-`"%m"`    | Month (decimal number)
-`"%b"`    |	Month (abbreviated)
-`"%B"`    |	Month (full name)
-`"%y"`    | Year (2 digit)
-`"%Y"`    |	Year (4 digit)
-`"%h"`    |	Hour
-`"%H"`    |	Decimal hours (24 hour)
-`"%I"`    |	Decimal hours (12 hour).0
-`"%M"`    |	Decimal minute
-`"%S"`    |	Decimal second
-`"%a"`    | Abbreviated weekday
-`"%A"`    |	Full weekday
-`"%p"`    |	Locale-specific AM/PM
-`"%z"`	  | Offset from GMT
-`"%Z"`    |	Time zone (character)
-
-The table below shows examples of how to define time or data format using the above codes.
-
-Example time or date format | R code to describe this format
-----------------------------|----------------------
-`"12-Mar-2025 15:05:02"`    | `"%d-%b-%Y %H:%M:%S"`
-`"12-Mar-25 15:05:02"`      | `"%d-%b-%y %H:%M:%S"`
-`"12-03-25 15:05:02"`       | `"%d-%m-%y %H:%M:%S"`
-`"2025/03/20 15:05:02"`     | `"%Y/%m/%d %H:%M:%S"`
-`"20/03/2025 15:05:02"`     | `"%d/%m/%Y %H:%M:%S"`
-`"20/03/2025 03:05:02 PM"`  | `"%d/%m/%Y %I:%M:%S %p"`
-`"Thu Mar 2025 03:11:06 PM"`| `"%a %b %Y %I:%M:%S %p"`
-`"12-Mar-2025"`             | `"%d-%b-%Y"`
-`"2025/03/20"`              | `"%Y/%m/%d"`
-

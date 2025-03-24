@@ -1,0 +1,53 @@
+---
+title: "Date and Time in R"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Date and Time in R}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Various GGIR parameters expect us to provide a date or time format.
+R uses codes to define elements of a date or time format.
+
+The table below shows the individual codes and their meaning:
+
+Code      | Value
+----------|----------------------
+`"%d"`    | Day of the month (decimal number)
+`"%m"`    | Month (decimal number)
+`"%b"`    |	Month (abbreviated)
+`"%B"`    |	Month (full name)
+`"%y"`    | Year (2 digit)
+`"%Y"`    |	Year (4 digit)
+`"%h"`    |	Hour
+`"%H"`    |	Decimal hours (24 hour)
+`"%I"`    |	Decimal hours (12 hour).0
+`"%M"`    |	Decimal minute
+`"%S"`    |	Decimal second
+`"%a"`    | Abbreviated weekday
+`"%A"`    |	Full weekday
+`"%p"`    |	Locale-specific AM/PM
+`"%z"`	  | Offset from GMT
+`"%Z"`    |	Time zone (character)
+
+The table below shows examples of how to define time or data format using the above codes.
+
+Example time or date format | R code to describe this format
+----------------------------|----------------------
+`"12-Mar-2025 15:05:02"`    | `"%d-%b-%Y %H:%M:%S"`
+`"12-Mar-25 15:05:02"`      | `"%d-%b-%y %H:%M:%S"`
+`"12-03-25 15:05:02"`       | `"%d-%m-%y %H:%M:%S"`
+`"2025/03/20 15:05:02"`     | `"%Y/%m/%d %H:%M:%S"`
+`"20/03/2025 15:05:02"`     | `"%d/%m/%Y %H:%M:%S"`
+`"20/03/2025 03:05:02 PM"`  | `"%d/%m/%Y %I:%M:%S %p"`
+`"Thu Mar 2025 03:11:06 PM"`| `"%a %b %Y %I:%M:%S %p"`
+`"12-Mar-2025"`             | `"%d-%b-%Y"`
+`"2025/03/20"`              | `"%Y/%m/%d"`
+
+For example we may set:
+
+- `rmc.format.time = "%d/%m/%Y %H:%M:%S"` when we see `"20/03/2025 15:05:02"` in a csv file with raw data.
+
+- `extEpochData_timeformat = "%d-%m-%Y %H:%M:%S"` when we see `"12-03-2025 15:05:02"` in an externally derived epoch data file such as the Philips health band .xlsx data files.
+
