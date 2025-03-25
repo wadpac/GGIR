@@ -20,14 +20,12 @@ As explained in chapter 1, GGIR offers a vast amount of functionality. If you ar
 
 As brief introduction for those unfamiliar with R or software, R packages are constructed of sub-components, named functions. A single function typically allows for doing a specific task. For example, we may have the `sum` function that sums the numbers we provide to it. A function can have one or multiple parameters to control the functions behaviour. In R these parameters are called function arguments. For example, `sum` has the argument `na.rm` to control what needs to be done with missing values. In GGIR we refer to these arguments as parameters.
 
-GGIR comes with a large number of functions and parameters that together form a processing pipeline. To ease interacting with GGIR, GGIR has one central function to act as interface to all functionality. This function is also named `GGIR`. The bare minimum input needed for `GGIR` is:
+GGIR comes with a large number of functions and parameters that together form a processing pipeline. To ease interacting with GGIR, GGIR has one central function to act as interface to all functionality. This function is also named `GGIR` and in its basic form it is used as shown below:
 
 ```{R,eval=FALSE}
 GGIR(datadir = "C:/mystudy/mydata",
      outputdir = "D:/myresults")
 ```
-
-which we will discuss in more detail later on.
 
 You only need to learn how to work with the function `GGIR`, but it is important to understand that in the background this function interacts with all other functions in GGIR and even functions outside GGIR.
 
