@@ -43,9 +43,7 @@ GGIR(datadir = "/media/actiwatch_awd", # folder with epoch level .AWD file
 ### in .CSV format
 
 
-An example of how the first couple of hundred lines of this file may look like can be found [here](https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/Actiwatch.csv).
-
-Note that the file is in Dutch but it should also work for English files.
+An example of how the first couple of hundred lines of this file may look like can be found [here](https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/Actiwatch.csv). Note that the example file is in Dutch but it should also work for files in English.
 
 ```
 GGIR(datadir = "/media/actiwatch_csv", # folder with epoch level .AWD file
@@ -57,13 +55,12 @@ GGIR(datadir = "/media/actiwatch_csv", # folder with epoch level .AWD file
   def.noc.sleep = c()) # <= because we cannot use HDCZA for ZCY
 ```
 
-Warning: The `extEpochData_timeformat ` can differ between datasets, maak sure to inspect your data for the exact timestamp format that was used. To do this, scroll down approximately 500 lines and check the date and time columns.
+Warning: How you set the `extEpochData_timeformat ` parameter can differ between datasets. Make sure to always inspect what timestamp format was used in your data. To do this, scroll down approximately 500 lines and inspect the date and time columns.
 
 ## UK Biobank data in .CSV format
 
 This is only applicable the UK Biobank 5 second epoch csv exports and NOT
-to the raw accelerometer data. Please see https://wadpac.github.io/GGIR/ for all
-documentation on processing raw accelerometer data (multiple values per second).
+to the raw accelerometer data (multiple values per second). Please see https://wadpac.github.io/GGIR/ for all documentation on processing raw accelerometer data.
 
 ```
 GGIR(datadir = "/media/ukbiobank",
@@ -74,7 +71,7 @@ GGIR(datadir = "/media/ukbiobank",
    desiredtz = "Europe/London") # We know that data was collected in the UK
 ```
 
-Please note that currently no method exists to detect sleep from these files.
+Please note that currently no method exists in GGIR to detect sleep from these 5 second aggregate files.
 
 ## ActiGraph count data in .CSV format
 
@@ -92,7 +89,7 @@ GGIR(datadir = "/examplefiles",
    do.neishabouricounts = TRUE,
    acc.metric = "NeishabouriCount_x")
 ```        
-           
+
 ## Sensewear data in .xls format
 
 Sensewear comes in xls(x) files with many column from which GGIR only uses: "METs" as indicator for acceleration where the uses can use MET levels as acceleration threshold, "Step Counter" which is treated as externally generated step count, and "Sleep" which is used as classification for sleep.
