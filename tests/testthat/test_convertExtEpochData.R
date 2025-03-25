@@ -60,7 +60,7 @@ test_that("External epoch data is correctly converted", {
                    params_general = params_general)
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
   load(paste0(QCbasis, "/meta_Actiwatch.csv.RData"))
-  expect_equal(sum(M$metalong$nonwearscore), 0)
+  expect_equal(sum(M$metalong$nonwearscore), 600)
   expect_equal(nrow(M$metashort), 860)
   # expect_equal(ncol(M$metashort), 4)
   # # Note: It says markering in next file because test file was Dutch

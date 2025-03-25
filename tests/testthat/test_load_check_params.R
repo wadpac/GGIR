@@ -167,17 +167,15 @@ test_that("load_params can load parameters", {
   
   # if dataFormat = "actiwatch_awd", then acc.metric = "ZCY"
   params_general$dataFormat = "actiwatch_awd"
-  check = expect_warning(check_params(params_general = params_general,
-                                      params_metrics = params_metrics),
-                         regexp = "When dataFormat is set to actiwatch_awd")
+  check = check_params(params_general = params_general,
+                       params_metrics = params_metrics)
   expect_true(check$params_metrics$do.zcy)
   expect_equal(check$params_general$acc.metric, "ZCY")
   # also, no other metrics should be extracted
   params_metrics$do.anglex = TRUE
   params_general$acc.metric = "ZCY"
-  check = expect_warning(check_params(params_general = params_general,
-                                      params_metrics = params_metrics),
-                         regexp = "When dataFormat is set to actiwatch_awd")
+  check = check_params(params_general = params_general,
+                       params_metrics = params_metrics)
   expect_true(check$params_metrics$do.zcy)
   expect_false(check$params_metrics$do.anglex)
   params_general = params$params_general
@@ -185,16 +183,14 @@ test_that("load_params can load parameters", {
   
   # if dataFormat = "ukbiobank", then acc.metric = "LFENMO"
   params_general$dataFormat = "ukbiobank"
-  check = expect_warning(check_params(params_general = params_general,
-                                      params_metrics = params_metrics),
-                         regexp = "When dataFormat is set to ukbiobank")
+  check = check_params(params_general = params_general,
+                       params_metrics = params_metrics)
   expect_equal(check$params_general$acc.metric, "LFENMO")
   # also, no other metrics should be extracted
   params_metrics$do.anglex = TRUE
   params_general$acc.metric = "LFENMO"
-  check = expect_warning(check_params(params_general = params_general,
-                                      params_metrics = params_metrics),
-                         regexp = "When dataFormat is set to ukbiobank")
+  check = check_params(params_general = params_general,
+                       params_metrics = params_metrics)
   expect_false(check$params_metrics$do.anglex)
   params_general = params$params_general
   params_metrics = params$params_metrics
@@ -210,13 +206,13 @@ test_that("load_params can load parameters", {
                  regexp = "segmentWEARcrit.part5 is expected to be")
   params_cleaning$segmentWEARcrit.part5 = 16
   expect_error(check_params(params_cleaning = params_cleaning),
-                 regexp = "Incorrect value of segmentWEARcrit.part5")
+               regexp = "Incorrect value of segmentWEARcrit.part5")
   params_cleaning$segmentWEARcrit.part5 = 0.5
   
   # segmentDAYSPTcrit.part5 should be two numbers between 0 and 1
   params_cleaning$segmentDAYSPTcrit.part5 = NULL
   expect_error(check_params(params_cleaning = params_cleaning),
-                 regexp = "Parameter segmentDAYSPTcrit.part5 is expected to be a numeric vector of length 2")
+               regexp = "Parameter segmentDAYSPTcrit.part5 is expected to be a numeric vector of length 2")
   params_cleaning$segmentDAYSPTcrit.part5 = c(-1, 0)
   expect_error(check_params(params_cleaning = params_cleaning),
                regexp = paste0("Incorrect values of segmentDAYSPTcrit.part5,",

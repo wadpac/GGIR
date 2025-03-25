@@ -484,33 +484,12 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         # that generate their own count metrics we would have to deal with all 
         # those names in the GGIR code.
       }
-      if (params_metrics[["do.anglex"]] == TRUE |
-          params_metrics[["do.angley"]] == TRUE |
-          params_metrics[["do.anglez"]] == TRUE |
-          params_metrics[["do.enmoa"]] == TRUE |
-          params_metrics[["do.enmo"]] == TRUE |
-          params_metrics[["do.lfenmo"]] == TRUE |
-          params_metrics[["do.bfen"]] == TRUE |
-          params_metrics[["do.mad"]] == TRUE) {
-        metricsNotFalse = NULL
-        for (metricName in c("do.anglex", "do.angley", "do.anglez", "do.enmoa",
-                             "do.enmo", "do.bfen", "do.mad", "do.lfenmo")) {
-          if (params_metrics[[metricName]] == TRUE) {
-            metricsNotFalse = c(metricsNotFalse, metricName)
-          }
-        }
-        warning(paste0("\nWhen dataFormat is set to ", params_general[["dataFormat"]],
-                       " we assume that only metric ZCY is extracted and",
-                       " GGIR ignores all other metric requests. So, you should set parameters ",
-                       paste0(metricsNotFalse, collapse = " & "), " to FALSE"), call. = FALSE)
-        # Turn all commonly used metrics to FALSE
-        params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = FALSE
-        params_metrics[["do.anglez"]] = params_metrics[["do.enmoa"]] = FALSE
-        params_metrics[["do.enmo"]] = params_metrics[["do.bfen"]] = FALSE
-        params_metrics[["do.mad"]] = params_metrics[["do.lfenmo"]] = FALSE
-        # Force acc.metric to be ZCY
-        params_general[["acc.metric"]] = "ZCY"
-      }
+      params_metrics[["do.enmo"]] = params_metrics[["do.anglez"]] = FALSE
+      params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = FALSE
+      params_metrics[["do.anglez"]] = params_metrics[["do.enmoa"]] = FALSE
+      params_metrics[["do.enmo"]] = params_metrics[["do.bfen"]] = FALSE
+      params_metrics[["do.mad"]] = params_metrics[["do.lfenmo"]] = FALSE
+      params_general[["acc.metric"]] = "ZCY"
       if (length(params_sleep) > 0) {
         if (params_sleep[["Sadeh_axis"]] != "Y") {
           params_sleep[["Sadeh_axis"]] = "Y"
@@ -525,33 +504,12 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         }
       }
     } else if (params_general[["dataFormat"]] == "ukbiobank") {
-      if (params_metrics[["do.anglex"]] == TRUE |
-          params_metrics[["do.angley"]] == TRUE |
-          params_metrics[["do.anglez"]] == TRUE |
-          params_metrics[["do.enmoa"]] == TRUE |
-          params_metrics[["do.enmo"]] == TRUE |
-          params_metrics[["do.bfen"]] == TRUE |
-          params_metrics[["do.mad"]] == TRUE |
-          params_general[["acc.metric"]] != "LFENMO") {
-        metricsNotFalse = NULL
-        for (metricName in c("do.anglex", "do.angley", "do.anglez", "do.enmoa",
-                             "do.enmo", "do.bfen", "do.mad")) {
-          if (params_metrics[[metricName]] == TRUE) {
-            metricsNotFalse = c(metricsNotFalse, metricName)
-          }
-        }
-        warning(paste0("\nWhen dataFormat is set to ukbiobank",
-                       " we assume that only metric LFENMO is extracted and",
-                       " GGIR ignores all other metric requests. So, you should set parameters ",
-                       paste0(metricsNotFalse, collapse = " & "), " to FALSE"), call. = FALSE)
-        # Turn all commonly used metrics to FALSE
-        params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = FALSE
-        params_metrics[["do.anglez"]] = params_metrics[["do.enmoa"]] = FALSE
-        params_metrics[["do.enmo"]] = params_metrics[["do.bfen"]] = FALSE
-        params_metrics[["do.mad"]] = FALSE
-        # Force acc.metric to be LFENMO
-        params_general[["acc.metric"]] = "LFENMO"
-      }
+      # Turn all commonly used metrics to FALSE
+      params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = FALSE
+      params_metrics[["do.anglez"]] = params_metrics[["do.enmoa"]] = FALSE
+      params_metrics[["do.enmo"]] = params_metrics[["do.bfen"]] = FALSE
+      params_metrics[["do.mad"]] = FALSE
+      params_general[["acc.metric"]] = "LFENMO"
     } else if (params_general[["dataFormat"]] == "sensewear_xls") {
       params_general[["acc.metric"]] = "ExtAct"
     }

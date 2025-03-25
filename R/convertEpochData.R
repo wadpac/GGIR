@@ -356,11 +356,6 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
           D$data = D$data[, -extraVars, drop = FALSE]
         }
         colnames(D$data)[which(colnames(D$data) == "counts")] = "ExtAct"
-        # PHB can have missing values, which represent detected nonwear
-        na_indices = which(is.na(D$data$ExtAct))
-        if (length(na_indices) > 0) {
-          D$data$ExtAct[na_indices] = -1 # set temporarily to -1
-        }
         D$data = D$data[, grep(pattern = "cardio|heart|sleepevent|battery|duration|missing|activem|vo2|energy|respiration|timestamp",
                                x = colnames(D$data), ignore.case = TRUE, invert = TRUE)]
       } else if (params_general[["dataFormat"]] == "fitbit_json") {
@@ -472,11 +467,6 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
           M$metashort[, ic] <- as.numeric(M$metashort[, ic])
         }
       }
-      if (length(which(is.na(M$metashort$ZCY) == TRUE)) > 0) {
-        # impute missing data by zero
-        # if it is a lot then this will be detected as non-wear
-        M$metashort$ZCY[is.na(M$metashort$ZCY)] = 0 
-      }
       LML = length(time_longEp_8601)
       if (params_general[["dataFormat"]] == "ukbiobank_csv") {
         acc_column = 2
@@ -490,10 +480,6 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         imp = unlist(D[, 1])
         nonwear_in_data = FALSE
       }
-
-      navalues = which(is.na(imp) == TRUE)
-      if (length(navalues) > 0) imp[navalues] = 1
-      
       # Nonwear in the day
       if (nonwear_in_data == TRUE) {
         # Take long epoch mean of UK Biobank based invalid data indicater per 5 seconds
@@ -510,7 +496,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
           iend = g + (epSizeNonWear / epSizeShort) - 1
           indices = g:iend
           if (iend <= length(imp)) {
-            if (any(imp[indices] < 0) || sum(imp[indices], na.rm = TRUE) <= 0) {
+            if (any(is.na(imp[indices])) || sum(imp[indices], na.rm = TRUE) <= 0) {
               nonwearscore[ni] = 3
             }
             # For Fitbit and Sensewear we do nonwear detection based on calories
@@ -556,6 +542,11 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                      aggfunction = NA,
                      timestamp = F, 
                      reporttype = c("type"))
+        # flip sleep scoring 1 <-> 0 to be consistent with GGIR,
+        # where 1 is sleep and 0 is wake:
+        M$metashort$ExtSleep[which(M$metashort$ExtSleep == 0)] = -1
+        M$metashort$ExtSleep[which(M$metashort$ExtSleep == 1)] = 0
+        M$metashort$ExtSleep[which(M$metashort$ExtSleep == -1)] = 1
       }
       if (params_general[["dataFormat"]] == "phb_xlsx") {
         neg_indices = which(D$data$ExtAct < 0)
@@ -574,6 +565,12 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
       # update weekday name and number based on actual data
       M$wdayname = weekdays(x = starttime, abbreviate = FALSE)
       M$wday = as.POSIXlt(starttime)$wday + 1
+      # replace missing values by zero
+      for (activityColumn in c("ExtAct", "ZCY")) {
+        if (activityColumn %in% colnames(M$metashort)) {
+          M$metashort[is.na(M$metashort[, activityColumn]),  activityColumn] = 0
+        }
+      }
       # Save these files as new meta-file
       filefoldername = NA
       save(M, C, I, myfun, filename_dir, filefoldername,
