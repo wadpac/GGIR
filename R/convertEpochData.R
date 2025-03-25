@@ -19,7 +19,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
     mat = apply(mat, 2, diff)
     # Correct non incremental variables
     for (niv in c("sleep", "ExtSleep", "light", "nonwear", "marker", "light")) {
-      if (niv %in% colnames(D)) D[, niv] = round(D[, niv] / step)
+      if (niv %in% colnames(D)) mat[, niv] = round(mat[, niv] / step)
     }
     # Incremental variables are counts, calories, ExtAct as so far
     # none of the data formats provide movement expressed as average acceleration
@@ -362,6 +362,18 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         data = GGIRread::mergeFitbitData(filenames = fnames[[i]],
                             desiredtz = params_general[["desiredtz"]],
                             configtz = params_general[["configtz"]])
+        timeRangeSleep = range(data$dateTime[!is.na(data$sleeplevel)])
+        timeRangeCalories = range(data$dateTime[!is.na(data$calories)])
+        if (timeRangeSleep[1] > timeRangeCalories[2] ||
+            timeRangeSleep[2] < timeRangeCalories[1]) {
+          warning(paste0("Fitbit sleep and calories data do not overlap ",
+                         "in time for files in: ", unique(basename(dirname(fnames[[i]]))),
+                         ". Sleep is available from ",
+                         timeRangeSleep[1], " to ", timeRangeSleep[2],
+                         ". Calories are available from ",
+                         timeRangeCalories[1], " to ", timeRangeCalories[2]),
+                  call. = FALSE)
+        }
         ID = IDs[i]
         I$filename = filename_dir = fname = ID
         epochSizes = names(table(diff(data$dateTime)))
@@ -499,10 +511,14 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
             if (any(is.na(imp[indices])) || sum(imp[indices], na.rm = TRUE) <= 0) {
               nonwearscore[ni] = 3
             }
-            # For Fitbit and Sensewear we do nonwear detection based on calories
-            if (params_general[["dataFormat"]] %in% c("fitbit_json", "sensewear_xls") &&
-                sd(imp[indices], na.rm = TRUE) < 0.0001 &&
-                mean(imp[indices], na.rm = TRUE) < 2) {
+            if (length(which(!is.na(imp[indices]))) > 0) {
+              # For Fitbit and Sensewear we do nonwear detection based on calories
+              if (params_general[["dataFormat"]] %in% c("fitbit_json", "sensewear_xls") &&
+                  sd(imp[indices], na.rm = TRUE) < 0.0001 &&
+                  mean(imp[indices], na.rm = TRUE) < 2) {
+                nonwearscore[ni] = 3
+              }
+            } else {
               nonwearscore[ni] = 3
             }
           }
