@@ -337,7 +337,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
     }, silent = TRUE)
     if (length(sf) == 0) sf = params_rawdata[["rmc.sf"]]
   } else if (mon == MONITOR$PARMAY_MTX && dformat == FORMAT$BIN) {
-    try(expr = {P = GGIRread::readParmayMatrix(bin_file = filename, output = "all",
+    try(expr = {P = GGIRread::readParmayMatrix(filename = filename, output = "all",
                                                start = startpage, end = endpage, 
                                                desiredtz = desiredtz, configtz = configtz,
                                                interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
