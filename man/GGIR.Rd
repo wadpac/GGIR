@@ -1277,7 +1277,8 @@ GGIR(mode = 1:5,
         Character (default = "vanHees2015").
         To indicate which algorithm should be used to define the
         sustained inactivity bouts (i.e., likely sleep).
-        Options: "vanHees2015", "Sadeh1994", "Galland2012", "NotWorn". See vignette
+        Options: "vanHees2015", "Sadeh1994", "Galland2012", "NotWorn",
+        "Oakley1997", "data". See vignette
         \href{https://wadpac.github.io/GGIR/articles/chapter8_SleepFundamentalsSibs.html}{chapter 8}
         for details.}
         

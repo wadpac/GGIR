@@ -146,9 +146,13 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         }
       }
       if ("ExtSleep" %in% myfun$colnames) {
-        getSleepFromExternalFunction = TRUE
-        sleepColName = "ExtSleep"
-        sleepColType = "numeric"
+        if (params_sleep[["HASIB.algo"]][1] == "data") {
+          getSleepFromExternalFunction = TRUE
+          sleepColName = "ExtSleep"
+          sleepColType = "numeric"
+        } else {
+          params_sleep[["HASIB.algo"]] = params_sleep[["HASIB.algo"]][2]
+        }
       }
     }
     if (getSleepFromExternalFunction == FALSE) {

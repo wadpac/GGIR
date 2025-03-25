@@ -53,13 +53,30 @@ If you are using an acceleration metrics the expresses acceleration in gravitati
 
 ## SIB: Count based algorithms (EXPERIMENTAL) 
 
-**Disclaimer: The status of this SIB algorithm is experimental because it has not been described and evaluated in a peer-reviewed publication yet. This means revisions to the algorithm can be expected as the algorithm matures.**
+Accelerometers have been used for sleep research since the 1990s. However, they did not store their data in gravitational units at sub-second level as we use nowadays. Instead they stored their data in 30 or 60 second epoch aggregates. Although these aggregates are referred to as counts by many manufacturers the calculation of counts differs by manufacturer.
 
-Accelerometers have been used for sleep research since the 1990s. However, the initial accelerometers did not store their data in gravitational units at sub-second level as we use nowadays but stored their data in 30 or 60 second epoch aggregates. Although these aggregates are referred to as counts by many manufacturers the calculation of counts differs by manufacturer.
+**Externally derived epoch data**
 
-We have attempted to facilitate several sleep detection algorithms from the literature in that period such as "Sadeh1994", "ColeKripke1992", and "Galland2012". A problem with all these algorithms is that the preprocessing done to generate the counts is insufficiently described in the literature. For the zero-crossing count as used by Sadeh1994 and ColeKripke1992 an attempt has been made to collect as much information as could be found and made an educated guess on the missing information. The zero-crossing counts are discussed in the chapter 4 about acceleration metrics.
+If you use GGIR with not raw but externally derived epoch data we can only assume that the count calculation is consistent with how counts were calculated when the sleep detection algortihm was proposed.
 
-When counts are calculated we can use the following SIB algorithms. For all of these it is uncertain whether the Y-axis direction on modern accelerometers matches the direction of the Y-axis in literature because for old studies the direction of Y-axis was to our knowledge never clarified.
+**Raw data**
+
+If you apply GGIR to raw data it is critical you select a suitable count metric. We have attempted to facilitate several sleep detection algorithms from the literature in that period such as "Sadeh1994", "ColeKripke1992", "Galland2012", and "Oakley1997". A problem with all these algorithms is that the preprocessing done to generate the counts is insufficiently described in the literature. For the zero-crossing count as used by Sadeh1994 and ColeKripke1992 an attempt has been made to collect as much information as could be found and made an educated guess on the missing information. The zero-crossing counts are discussed in the chapter 4 about acceleration metrics. Note that it is uncertain whether the Y-axis direction on modern accelerometers matches the direction of the Y-axis in literature because for old studies the direction of Y-axis was to our knowledge never clarified.
+
+The Galland2012 and Oakley1997 are based on the specific count calculated as used by Oakley and collagues and re-used in all Actiwatch and Actiwatch-derived products such as MotionWatch8, Philips Health Band. From what I have been able to retrieve from product documentation (source The MotionWatch User guide: Issue 1.4.20b, page 30) the count is calculated on-board the device in four stages:
+
+1. The channel perpendicular to the watch is separated and subjected to the bandwidth filtering
+specified above (3-11Hz).
+2. The peak acceleration (either positive or negative) during each second is recorded.
+3. This is compared to a minimum "not moving" threshold of approximately 0.1g. Although, in other places this is referred to as 0.05g. Values below this threshold are ignored to simplify the final activity graph.
+4. The result from each second is summed over the epoch and scaled to produce a standard
+result in controlled jig testing. This value is then recorded as the MotionWatch count for the
+epoch.
+
+Currently, GGIR does not attempt to imitate this count calculation. Instead Oakley1997
+can only be applied when the GGIR input data is from any of the devices as listed above.
+
+Once counts are read or calculated we can use the following SIB algorithms. 
 
 ### Sadeh1994 
 
@@ -85,32 +102,26 @@ The algorithm was originally created by Dr. Oakley and Mr Gary Ungless. Cambridg
 
 These manufacturers have produced actigraphy devices such as Philips Health Band, Actiwatch, MotionWatch8, and Actical.
 
-**Algorithm input**
-
-The algorithm takes as input epoch-by-epoch count values. Given that multiple manufacturers have used the sleep scoring algortihm by Oakley we have to assume that the count values are calculated identically between their products. 
-
-From what I have been able to retrieve from product documentation (source The MotionWatch User guide: Issue 1.4.20b, page 30) the count is calculated on-board the device in four stages:
-
-1. The channel perpendicular to the watch is separated and subjected to the bandwidth filtering
-specified above (3-11Hz).
-2. The peak acceleration (either positive or negative) during each second is recorded.
-3. This is compared to a minimum "not moving" threshold of approximately 0.1g. Although, in other places this is referred to as 0.05g. Values below this threshold are ignored to simplify the final activity graph.
-4. The result from each second is summed over the epoch and scaled to produce a standard
-result in controlled jig testing. This value is then recorded as the MotionWatch count for the
-epoch.
-
-Currently, GGIR does not attempt to imitate this count calculation. Instead Oakley1997
-can only be applied when the GGIR input data is from any of the devices as listed above.
-
 **Algorithm**
 
-The algorithm itself has been communicated by the manufacturers via product information documents. 
+The algorithm takes as input epoch-by-epoch count values. The algorithm itself has been communicated by the manufacturers via product information documents. 
 For example, Cambridge Neurotechnologiesy shares the algorithm via a pdf titled "Information bulletin no.3 sleep algorithms" (please contact manufacturer for copy), and for Actiwatch by Respironics it was described in "Actiwatch Communication and Sleep Analysis Software: Instruction Manual Appendix A" [link to pdf](https://johnawinegarden.files.wordpress.com/2015/03/actiwatchsoftware.pdf).
 
 In short, the algorithm uses a weighted sum of the count value of the current and surrounding epochs, where weights and number of epochs to be used are dependent on the epoch length. The algorithm facilitates 15, 30, 60, and 120 second epoch lengths. In GGIR we only facilitate 15, 30 and 60.
 
-To use the GGIR implementation of this algortihm, specify parameter `HASIB.algo = "Oakley1997"`.
+To use the GGIR implementation of this algorithm, specify parameter `HASIB.algo = "Oakley1997"`.
 
+### Data
+
+Some data formats come with a sleep classification, which can be used by setting parameter `HASIB.algo = "data"`. This applies to:
+
+- Fitbit
+- Philips Health Band
+- Actiwatch and Motionwatch
+
+If no sleep classification can be found in the data GGIR will fall back on the second value of `HASIB.algo` parameter. For example, `HASIB.algo = c("data", "Oakley1997")`.
+
+However, if `HASIB.algo` is specified to one of the before mentioned algorithms, GGIR will attempt to apply those algorithms to the data and will directly ignore the sleep classification in the data.
 
 ## Dealing with expected or detected nonwear time segments
 
