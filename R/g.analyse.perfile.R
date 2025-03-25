@@ -29,7 +29,7 @@ g.analyse.perfile = function(I, C, metrics_nav,
   # Person identification number
   filesummary[vi] = file_summary$ID
   # Identify which of the metrics are in g-units to aid deciding whether to multiply by 1000
-  g_variables_lookat = lookat[grep(x = colnames_to_lookat, pattern = "BrondCount|ZCX|ZCY|NeishabouriCount|ExtAct", invert = TRUE)]
+  g_variables_lookat = lookat[grep(x = colnames_to_lookat, pattern = "BrondCount|ZCX|ZCY|ZCZ|NeishabouriCount|ExtAct", invert = TRUE)]
   
   # Serial number
   filesummary[(vi + 1)] = file_summary$deviceSerialNumber
