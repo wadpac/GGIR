@@ -19,7 +19,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
     mat = apply(mat, 2, diff)
     # Correct non incremental variables
     for (niv in c("sleep", "ExtSleep", "light", "nonwear", "marker", "light")) {
-      if (niv %in% colnames(D)) mat[, niv] = round(mat[, niv] / step)
+      if (niv %in% colnames(mat)) mat[, niv] = round(mat[, niv] / step)
     }
     # Incremental variables are counts, calories, ExtAct as so far
     # none of the data formats provide movement expressed as average acceleration
