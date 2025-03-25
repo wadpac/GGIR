@@ -9,8 +9,8 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
   
   #-------------------------------------
   # Use marker button:
-  # if available (only Actiwatch and Philips Health band at the moment)
-  # if required by user (see parameter consider_marker_button)
+  # if available and required by user (only Actiwatch and Philips Health band at the moment)
+  # See documentation for parameter consider_marker_button.
   
   if (length(marker) > 0 && try_marker_button == TRUE) {
     button_pressed = which(marker != 0)
