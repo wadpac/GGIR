@@ -457,8 +457,10 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                                      "BrondCount_z", "NeishabouriCount_x", "NeishabouriCount_y", 
                                      "NeishabouriCount_z", "NeishabouriCount_vm", "ExtAct") == FALSE) {
                 unit = "_mg"
-              } else {
+              } else if (minames[mi] == "ExtAct") {
                 unit = ""
+              } else {
+                unit = "_cnt"
               }
               if (isAccMetric == TRUE) {
                 collectfi = c()
