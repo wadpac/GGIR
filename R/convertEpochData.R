@@ -355,7 +355,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
           D_extraVars = D$data[, extraVars, drop = FALSE]
           D$data = D$data[, -extraVars, drop = FALSE]
         }
-        colnames(D$data)[which(colnames(D$data) == "counts")] = "ExtAct"
+        colnames(D$data)[which(colnames(D$data) == "counts")] = "ZCY"
         D$data = D$data[, grep(pattern = "cardio|heart|sleepevent|battery|duration|missing|activem|vo2|energy|respiration|timestamp",
                                x = colnames(D$data), ignore.case = TRUE, invert = TRUE)]
       } else if (params_general[["dataFormat"]] == "fitbit_json") {
@@ -531,7 +531,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
       if (length(nonwearscore) < LML) {
         nonwearscore = c(nonwearscore, rep(0, LML - length(nonwearscore)))
       }
-      if (params_general[["dataFormat"]] %in% c("sensewear_xls", "phb_xlsx", "fitbit_json")) {
+      if (params_general[["dataFormat"]] %in% c("sensewear_xls", "fitbit_json")) {
         # Create myfun object, this to trigger outcome type specific analysis
         myfun = list(FUN = NA,
                      parameters = NA, 
@@ -545,6 +545,21 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                      timestamp = F, 
                      reporttype = c("scalar", "event", "type"))
       }
+      if (params_general[["dataFormat"]] %in% c("phb_xlsx")) {
+        # Create myfun object, this to trigger outcome type specific analysis
+        myfun = list(FUN = NA,
+                     parameters = NA, 
+                     expected_sample_rate = NA, 
+                     expected_unit = "g", 
+                     colnames = c("ExtStep", "ExtSleep"),
+                     outputres = epSizeShort,
+                     minlength = NA,
+                     outputtype = c("numeric", "numeric"),
+                     aggfunction = NA,
+                     timestamp = F, 
+                     reporttype = c("event", "type"))
+      }
+      
       if (params_general[["dataFormat"]] == "actiwatch_csv" && "ExtSleep" %in% colnames(D)) {
         # Create myfun object, this to trigger outcome type specific analysis
         myfun = list(FUN = NA,
@@ -565,8 +580,8 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         M$metashort$ExtSleep[which(M$metashort$ExtSleep == -1)] = 1
       }
       if (params_general[["dataFormat"]] == "phb_xlsx") {
-        neg_indices = which(D$data$ExtAct < 0)
-        D$data$ExtAct[neg_indices] = 0
+        neg_indices = which(D$data$ZCY < 0)
+        D$data$ZCY[neg_indices] = 0
       }
       # create data.frame for metalong, note that light and temperature are just set at zero by default
       M$metalong = data.frame(timestamp = time_longEp_8601, nonwearscore = nonwearscore, #rep(0,LML)

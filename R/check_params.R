@@ -473,7 +473,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   
   if (length(params_metrics) > 0 & length(params_general) > 0) {
-    if (params_general[["dataFormat"]] %in% c("actiwatch_awd", "actiwatch_csv")) {
+    if (params_general[["dataFormat"]] %in% c("actiwatch_awd", "actiwatch_csv", "phb_xlsx")) {
       if (params_metrics[["do.zcy"]] == FALSE | params_general[["acc.metric"]] != "ZCY") {
         params_metrics[["do.zcy"]] = TRUE
         params_general[["acc.metric"]] = "ZCY"
