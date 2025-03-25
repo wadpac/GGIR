@@ -222,7 +222,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   
   if (length(params_metrics) > 0 & length(params_sleep) > 0) {
     
-    if (params_sleep[["HASIB.algo"]] %in% c("Sadeh1994", "Galland2012", "ColeKripke1992", "Oakley1997") == TRUE) {
+    sib_90s_algo_names = c("Sadeh1994", "Galland2012", "ColeKripke1992", "Oakley1997")
+    if (any(params_sleep[["HASIB.algo"]] %in% sib_90s_algo_names == TRUE)) {
       if (params_sleep[["Sadeh_axis"]] %in% c("X","Y","Z") == FALSE) {
         warning("Parameter Sadeh_axis does not have meaningful value, it needs to be X, Y or Z (capital)", call. = FALSE)
       }
@@ -497,7 +498,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
           # we do this to make sure the count metric as provide by Actiwatch 
           # has a name the rest of GGIR can deal with
         }
-        if (params_sleep[["HASIB.algo"]] == "vanHees2015") {
+        if (any(params_sleep[["HASIB.algo"]] == "vanHees2015")) {
           stop(paste0("\nSleep algorithm ", params_sleep[["HASIB.algo"]], " is not a valid",
                       " setting in combination with dataFormat set to ",
                       params_general[["dataFormat"]], " Please fix"), call. = FALSE)

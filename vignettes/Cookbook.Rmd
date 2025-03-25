@@ -51,11 +51,14 @@ Note that the file is in Dutch but it should also work for English files.
 GGIR(datadir = "/media/actiwatch_csv", # folder with epoch level .AWD file
   outputdir = "/media/myoutput",
   dataFormat = "actiwatch_csv",
-  extEpochData_timeformat = "%m/%d/%Y %H:%M:%S",
+  extEpochData_timeformat = "%m/%d/%y %I:%M:%S %p",
   windowsizes = c(15, 900, 3600),
   HASIB.algo = "Sadeh1994",
   def.noc.sleep = c()) # <= because we cannot use HDCZA for ZCY
 ```
+
+Warning: The `extEpochData_timeformat ` can differ between datasets, maak sure to inspect your data for the exact timestamp format that was used. To do this, scroll down approximately 500 lines and check the date and time columns.
+
 ## UK Biobank data in .CSV format
 
 This is only applicable the UK Biobank 5 second epoch csv exports and NOT

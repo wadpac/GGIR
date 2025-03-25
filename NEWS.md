@@ -18,6 +18,8 @@ unlikely to be used and if it is used the user will be able to see this in the o
   - Add new HASPT.algo option "HLRB", a new heuristic algorithm specific to aid detecting the sleep window based on sustained inactivity bouts. Although intended for Actiwatch data it may also work for other data types.
 
   - Add option to utilise marker button data from Actiwatch and Philips Health Band for sleep and nap detection, with new parameter consider_marker_button. #1267
+  
+  - Add new HASPT.algo option "data", as a way to tell GGIR to use the sleep classification that is stored in the data. Only relevant for externally derived epoch data such as Actiwatch.
 
 - Part 1: Add option to load externally derived epoch data from Actical, Philips Health Band, and Fitbit. #1205
 

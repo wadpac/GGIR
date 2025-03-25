@@ -110,10 +110,8 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
     } else {
       MARKER = NULL
     }
-    if (params_sleep[["HASIB.algo"]] == "Sadeh1994" | 
-        params_sleep[["HASIB.algo"]] == "Galland2012" |
-        params_sleep[["HASIB.algo"]] == "ColeKripke1992" |
-        params_sleep[["HASIB.algo"]] == "Oakley1997") { # extract zeroCrossingCount
+    sib_90s_algo_names = c("Sadeh1994", "Galland2012", "ColeKripke1992", "Oakley1997")
+    if (any(params_sleep[["HASIB.algo"]] %in% sib_90s_algo_names)) { # extract zeroCrossingCount
       # note that for external derived metrics we refer to it as ZCY here
       # even though the exact calculation may have differed
       if (params_sleep[["Sadeh_axis"]] %in% c("X", "Y", "Z") == FALSE) params_sleep[["Sadeh_axis"]] = "Z"
@@ -151,7 +149,12 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
           sleepColName = "ExtSleep"
           sleepColType = "numeric"
         } else {
-          params_sleep[["HASIB.algo"]] = params_sleep[["HASIB.algo"]][2]
+          if (length(params_sleep[["HASIB.algo"]]) == 1 && params_sleep[["HASIB.algo"]] == "data") {
+            stop(paste0("No sleep classification found in input data. ",
+                        " please provide second sib algorithm to HASIB.algo"), call. = FALSE)
+          } else if (length(params_sleep[["HASIB.algo"]]) == 2) {
+            params_sleep[["HASIB.algo"]] = params_sleep[["HASIB.algo"]][2]
+          }
         }
       }
     }
