@@ -21,7 +21,7 @@ unlikely to be used and if it is used the user will be able to see this in the o
 
   - Add new HASPT.algo option "HLRB", a new heuristic algorithm specific to aid detecting the sleep window based on sustained inactivity bouts. Although intended for Actiwatch/MotionWatch/PHB data it may also work for other data types.
 
-  - Add option to utilise marker button data from Actiwatch, MotionWatch8 and Philips Health Band for sleep and nap detection, with new parameter consider_marker_button. #1267
+  - Add option to utilise marker button data from Actiwatch, MotionWatch8 and Philips Health Band for sleep and nap detection, with new parameter consider_marker_button, impute_marker_button, nap_markerbutton_method, nap_markerbutton_max_distance. #1267
 
 - Vignettes: Add Annex page on date and time formats in R.
 

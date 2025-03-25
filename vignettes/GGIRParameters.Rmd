@@ -175,12 +175,12 @@ find a description and default value for all the arguments.
 | Sadeh_axis                  | 3                 | params_sleep             |
 | longitudinal_axis           | 3                 | params_sleep             |
 | HASPT.ignore.invalid        | 3                 | params_sleep             |
+| oakley_threshold            | 3                 | params_sleep             |
+| consider_marker_button      | 3                 | params_sleep             |
+| impute_marker_button        | 3                 | params_sleep             |
 | loglocation                 | 4, 5              | params_sleep             |
 | colid                       | 4                 | params_sleep             |
 | coln1                       | 4                 | params_sleep             |
-| possible_nap_window         | 5                 | params_sleep             |
-| possible_nap_dur            | 5                 | params_sleep             |
-| possible_nap_gap            | 5                 | params_sleep             |
 | do.visual                   | 4                 | params_output            |
 | outliers.only               | 4                 | params_output            |
 | excludefirstlast            | 4                 | params_cleaning          |
@@ -218,6 +218,11 @@ find a description and default value for all the arguments.
 | save_ms5raw_format          | 5                 | params_output            |
 | save_ms5raw_without_invalid | 5                 | params_output            |
 | do.sibreport                | 5                 | params_output            |
+| possible_nap_window         | 5                 | params_sleep             |
+| possible_nap_dur            | 5                 | params_sleep             |
+| possible_nap_gap            | 5                 | params_sleep             |
+| nap_markerbutton_method     | 5                 | params_sleep             |
+| nap_markerbutton_max_distance | 5               | params_sleep             |
 | includecrit.part6           | 6                 | params_cleaning          |
 | part6_threshold_combi       | 6                 | params_phyact            |
 | part6CR                     | 6                 | params_247               |
