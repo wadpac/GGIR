@@ -166,5 +166,55 @@ test_that("External epoch data is correctly converted", {
   # Tidy up by deleting output folder
   if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
   
+  # Philips Health Band
+  cat("\nPhilips Health Band")
+  move2folder(system.file("testfiles/DataList_AH1234567890_PhilipsHealthBand.xlsx",
+                          package = "GGIRread")[1], dn)
+  move2folder(system.file("testfiles/Sleep_Wake_AH1234567890_PhilipsHealthBand.xlsx",
+                          package = "GGIRread")[1], dn)
+  params_general = load_params()$params_general
+  params_general[["windowsizes"]][1] = 60
+  params_general[["dataFormat"]] = "phb_xlsx"
+  params_general[["extEpochData_timeformat"]] = "%m-%d-%Y %H:%M:%S"
+  convertEpochData(datadir = dn, metadatadir = "./output_tmp_testdata",
+                   params_general = params_general)
+  if (dir.exists(dn))  unlink(dn, recursive = TRUE)
+  load(paste0(QCbasis, "/meta_DataList_AH1234567890_PhilipsHealthBand.xlsx.RData"))
+  expect_equal(sum(M$metalong$nonwearscore), 0)
+  expect_equal(nrow(M$metashort), 240)
+  expect_equal(ncol(M$metashort), 5)
+  expect_true(all(c("timestamp", "ZCY", "ExtStep", "marker",
+                    "ExtSleep") %in% colnames(M$metashort)))
+  
+  # Tidy up by deleting output folder
+  if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
+  
+  
+  # # Fitbit => commented out as current test files do not have overlapping
+  # # time series
+  # cat("\nFitbit")
+  # dir.create(paste0(dn, "/participant1"), recursive = TRUE) 
+  # move2folder(system.file("testfiles/calories-1995-06-23_Fitbit.json",
+  #                         package = "GGIRread")[1], paste0(dn, "/participant1"))
+  # move2folder(system.file("testfiles/sleep-1995-06-23_Fitbit.json",
+  #                         package = "GGIRread")[1], paste0(dn, "/participant1"))
+  # move2folder(system.file("testfiles/steps-1995-06-23_Fitbit.json",
+  #                         package = "GGIRread")[1], paste0(dn, "/participant1"))
+  # params_general = load_params()$params_general
+  # params_general[["windowsizes"]][1] = 60
+  # params_general[["dataFormat"]] = "fitbit_json"
+  # expect_error(convertEpochData(datadir = dn, metadatadir = "./output_tmp_testdata",
+  #                  params_general = params_general), "multiple epoch sizes encountered in Fitbit data calories-1995-06-23_Fitbit.jsonmultiple epoch sizes encountered in Fitbit data sleep-1995-06-23_Fitbit.jsonmultiple epoch sizes encountered in Fitbit data steps-1995-06-23_Fitbit.json")
+  # if (dir.exists(dn))  unlink(dn, recursive = TRUE)
+  # load(paste0(QCbasis, "/meta_.....RData"))
+  # expect_equal(sum(M$metalong$nonwearscore), 0)
+  # expect_equal(nrow(M$metashort), 240)
+  # expect_equal(ncol(M$metashort), 5)
+  # expect_true(all(c("timestamp", "ZCY", "ExtStep", "marker",
+  #                   "ExtSleep") %in% colnames(M$metashort)))
+  
+  # Tidy up by deleting output folder
+  if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
+  
   
 })
