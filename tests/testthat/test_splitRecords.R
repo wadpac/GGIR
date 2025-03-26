@@ -9,23 +9,25 @@ test_that("Recording can be split", {
   data(data.calibrate)
   data(data.inspectfile)
   M = data.getmeta
+  tz = "Europe/London"
   
   # duplicate data
   M$metashort =  rbind(M$metashort, M$metashort)
   M$metalong =  rbind(M$metalong, M$metalong)
-  starttime = as.POSIXct(M$metashort$timestamp[1], tz = "Europe/London")
+  starttime = as.POSIXct(M$metashort$timestamp[1], tz = tz)
   M$metashort$timestamp = seq(from = starttime, by = 5, length.out = nrow(M$metashort))
-  starttime = as.POSIXct(M$metalong$timestamp[1], tz = "Europe/London")
+  starttime = as.POSIXct(M$metalong$timestamp[1], tz = tz)
   M$metalong$timestamp = seq(from = starttime, by = 900, length.out = nrow(M$metalong))
   
   # change timestamp format to what it has been since 2017
-  M$metashort$timestamp = POSIXtime2iso8601(x = M$metashort$timestamp, tz = "Europe/London")
-  M$metalong$timestamp = POSIXtime2iso8601(x = M$metalong$timestamp, tz = "Europe/London")
+  M$metashort$timestamp = POSIXtime2iso8601(x = M$metashort$timestamp, tz = tz)
+  M$metalong$timestamp = POSIXtime2iso8601(x = M$metalong$timestamp, tz = tz)
   colnames(M$metashort)[which(colnames(M$metashort) == "angle")] = "anglez"
   I = data.inspectfile
   I$filename = "1_1-1-1900.bin"
   C = data.calibrate
   
+  if (dir.exists("./output_test"))  unlink("./output_test", recursive = TRUE)
   dn = "./output_test/meta/basic"
   if (!dir.exists(dn)) {
     dir.create(dn, recursive = TRUE)
@@ -49,7 +51,7 @@ test_that("Recording can be split", {
   
   # Prepare params object
   params_general = load_params()$params_general
-  params_general[["desiredtz"]] = "Europe/Amsterdam"
+  params_general[["desiredtz"]] = tz
   params_general[["idloc"]] = 2
   params_general[["recording_split_times"]] = "time_chunks_per_participant.csv"
   params_general[["recording_split_overlap"]] = 0
@@ -66,24 +68,26 @@ test_that("Recording can be split", {
 
   # File content correct?
   load("./output_test/meta/basic/meta_1_1-1-1900_split1_startrecTOtime1.bin.RData")
-  expect_equal(nrow(M$metashort), 8100)
-  expect_equal(nrow(M$metalong), 45)
+  expect_equal(nrow(M$metashort), 8820)
+  expect_equal(nrow(M$metalong), 49)
   expect_equal(M$metashort$timestamp[1], "2013-11-14T11:45:00+0000")
-  expect_equal(tail(M$metashort$timestamp, n = 1), "2013-11-14T22:59:55+0000")
+  expect_equal(tail(M$metashort$timestamp, n = 1), "2013-11-14T23:59:55+0000")
   expect_equal(M$metalong$timestamp[1],  "2013-11-14T11:45:00+0000")
-  expect_equal(tail(M$metalong$timestamp, n = 1), "2013-11-14T22:45:00+0000")
+  expect_equal(tail(M$metalong$timestamp, n = 1), "2013-11-14T23:45:00+0000")
   load("./output_test/meta/basic/meta_1_1-1-1900_split2_time1TOendrec.bin.RData")
-  expect_equal(nrow(M$metashort), 29339)
-  expect_equal(nrow(M$metalong), 162)
-  expect_equal(M$metashort$timestamp[1], "2013-11-14T23:00:00+0000")
+  expect_equal(nrow(M$metashort), 28619)
+  expect_equal(nrow(M$metalong), 158)
+  expect_equal(M$metashort$timestamp[1], "2013-11-15T00:00:00+0000")
   expect_equal(tail(M$metashort$timestamp, n = 1), "2013-11-16T15:44:50+0000")
-  expect_equal(M$metalong$timestamp[1], "2013-11-14T23:00:00+0000")
+  expect_equal(M$metalong$timestamp[1], "2013-11-15T00:00:00+0000")
   expect_equal(tail(M$metalong$timestamp, n = 1), "2013-11-16T15:15:00+0000")
   
   # Test in context of GGIR as a whole:
-  GGIR(datadir = "D:/test", outputdir = ".",
-       mode = 2:5, do.report = c(2, 4, 5), verbose = FALSE,
-       visualreport = FALSE)
+  GGIR(datadir = "D:/test", outputdir = ".", desiredtz = tz,
+       mode = 2:5, do.report = c(2, 4, 5), verbose = FALSE, idloc = 2,
+       recording_split_times = "time_chunks_per_participant.csv",
+       visualreport = FALSE, recording_split_overlap = 0,
+       recording_split_timeformat = "%Y-%m-%d %H:%M")
   
   # We expect split names to be logged in part 2 csv reports
   P2 = read.csv("./output_test/results/part2_summary.csv")
