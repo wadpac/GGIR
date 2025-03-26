@@ -80,8 +80,8 @@ navbar:
           href: articles/HouseHoldCoanalysis.html
         - text: Cookbook
           href: articles/Cookbook.html
-        - text: Date Time formats in R
-          href: articles/DateTimeInR.html
+        - text: Date and Time formats in R
+          href: articles/DateTimeFormatsInR.html
   structure:
     left:  [chapters, annexes, installation, intro, news, contributing, help]
     right: [search, github]

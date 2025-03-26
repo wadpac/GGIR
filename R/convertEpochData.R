@@ -124,7 +124,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
     }
   }
   #-------------
-  # Create output folder, normally with raw data g.part1 would do this:
+  # Create output folder, if we had raw data function g.part1 would normally do this:
   if (!file.exists(metadatadir)) {
     dir.create(metadatadir)
     dir.create(file.path(metadatadir, "meta"))
@@ -136,7 +136,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
   #============
   # Based on knowledge about data format
   # we can already assign monitor names and codes
-  # dataformat names and codes
+  # data format names and codes
   # and sample rate
   actiwatchData = length(grep(pattern = "actiwatch", x = params_general[["dataFormat"]], ignore.case = TRUE)) > 0
   if (params_general[["dataFormat"]] == "ukbiobank_csv") {
@@ -181,8 +181,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
   sf = NA
   dformn = params_general[["dataFormat"]]
   
-  # Before we look inside the epoch files we can already create templates
-  # with dummy data
+  # Create template output objects to be stored in the milestone data (RData)
   C = list(cal.error.end = 0, cal.error.start = 0)
   C$scale = c(1, 1, 1)
   C$offset = c(0, 0, 0)
@@ -228,7 +227,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
     deviceSerialNumber = "unknown")
 
   I_bu = I # backup version of I (for now only used in actigraph_csv)
-  for (i in 1:length(fnames)) { # loop over all epoch files
+  for (i in 1:length(fnames)) { # loop over all epoch files or folders
     # include verbose info
     if (verbose == TRUE) {
       if (i  == 1) {
@@ -452,7 +451,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         D = D[1:LMS, , drop = FALSE]
         LML = expected_LML
       }
-      #create timeseries for metashort
+      # Create timeseries for metashort
       time_shortEp_num = seq(quartlystart, quartlystart + ((nrow(D) - 1) * epSizeShort), by = epSizeShort)
       time_longEp_num = seq(quartlystart, quartlystart + ((nrow(D) - 1) * epSizeShort), by = epSizeLong)
       if (LML * 15 > LMS) {
@@ -465,7 +464,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                                             tz = tz)
       time_longEp_8601 = POSIXtime2iso8601(x = as.POSIXlt(time_longEp_num, tz = tz, origin = "1970-01-01"),
                                            tz = tz)
-      # formats with possibly more than 1 column
+      # File formats with possibly more than 1 column
       morethan1 = c("actigraph_csv", "sensewear_xls", "actiwatch_awd",
                     "actiwatch_csv", "phb_xlsx", "actical_csv", "fitbit_json") #, "
       if (params_general[["dataFormat"]] %in% morethan1 == FALSE) {
@@ -483,7 +482,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
       if (params_general[["dataFormat"]] == "ukbiobank_csv") {
         acc_column = 2
         names(M$metashort)[2] = "LFENMO"
-        #Collapse second column of input data to use as non-wear score
+        # Use UKBiobank's second column, which is a non-wear score
         imp = D[, 2]
         M$metashort$LFENMO = M$metashort$LFENMO/1000
         nonwear_in_data = TRUE
@@ -492,7 +491,6 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         imp = unlist(D[, 1])
         nonwear_in_data = FALSE
       }
-      # Nonwear in the day
       if (nonwear_in_data == TRUE) {
         # Take long epoch mean of UK Biobank based invalid data indicater per 5 seconds
         imp2 = cumsum(imp)
@@ -503,7 +501,6 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         # Using rolling long window sum to indicate whether it is nonwear
         nonwearscore = rep(0, LML)
         ni = 1
- 
         for (g in seq(from = 1, to = length(imp), by = epSizeLong / epSizeShort)) {
           iend = g + (epSizeNonWear / epSizeShort) - 1
           indices = g:iend
@@ -512,7 +509,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
               nonwearscore[ni] = 3
             }
             if (length(which(!is.na(imp[indices]))) > 0) {
-              # For Fitbit and Sensewear we do nonwear detection based on calories
+              # For Fitbit and Sensewear nonwear detection is based on calories/MET values
               if (params_general[["dataFormat"]] %in% c("fitbit_json", "sensewear_xls") &&
                   sd(imp[indices], na.rm = TRUE) < 0.0001 &&
                   mean(imp[indices], na.rm = TRUE) < 2) {
@@ -531,8 +528,10 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
       if (length(nonwearscore) < LML) {
         nonwearscore = c(nonwearscore, rep(0, LML - length(nonwearscore)))
       }
+      #--------------------------------------------
+      # Create myfun object to trigger outcome type specific analysis
       if (params_general[["dataFormat"]] %in% c("sensewear_xls", "fitbit_json")) {
-        # Create myfun object, this to trigger outcome type specific analysis
+        
         myfun = list(FUN = NA,
                      parameters = NA, 
                      expected_sample_rate = NA, 
@@ -544,9 +543,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                      aggfunction = NA,
                      timestamp = F, 
                      reporttype = c("scalar", "event", "type"))
-      }
-      if (params_general[["dataFormat"]] %in% c("phb_xlsx")) {
-        # Create myfun object, this to trigger outcome type specific analysis
+      } else if (params_general[["dataFormat"]] %in% c("phb_xlsx")) {
         myfun = list(FUN = NA,
                      parameters = NA, 
                      expected_sample_rate = NA, 
@@ -558,10 +555,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                      aggfunction = NA,
                      timestamp = F, 
                      reporttype = c("event", "type"))
-      }
-      
-      if (params_general[["dataFormat"]] == "actiwatch_csv" && "ExtSleep" %in% colnames(D)) {
-        # Create myfun object, this to trigger outcome type specific analysis
+      } else if (params_general[["dataFormat"]] == "actiwatch_csv" && "ExtSleep" %in% colnames(D)) {
         myfun = list(FUN = NA,
                      parameters = NA, 
                      expected_sample_rate = NA, 

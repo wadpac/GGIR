@@ -15,11 +15,14 @@ vignette: >
 
 In this cook book you will find recipes for using GGIR in specific non-default scenarios.
 
-# Handling externally derived data
+# Handling externally derived epoch data
 
 This refers to the situation where external software or hardware was used to derive epoch level aggregates from accelerometer data.
 
-In this section you will find key parameters needed for working with these data formats. Please refer to the other parts of the [GGIR documentation](https://wadpac.github.io/GGIR/) for guidance on how to tailor the actual analysis towards your study protocol and research interests.
+In this section you will find key parameters needed for working with these data formats. Please refer to the other parts of the [GGIR documentation](https://wadpac.github.io/GGIR/) for guidance on how to tailor the rest of your analysis towards your study protocol and research interests.
+
+Please be aware the date-time formats may be country specific. So, when working with externally derived epoch data always check that
+parameter `extEpochData_timeformat` setting is correct for the data you are processing. You can do this by opening one of the files in notepad or eclipse. See [our Annex page](https://wadpac.github.io/GGIR/articles/DateTimeFormatsInR.html) for guidance on how to specify date and time formats in R.
 
 ## Actiwatch data
 
@@ -40,6 +43,8 @@ GGIR(datadir = "/media/actiwatch_awd", # folder with epoch level .AWD file
   def.noc.sleep = c()) # <= because we cannot use HDCZA for ZCY
 ```
 
+To classify sleep from Actiwatch, consider parameter `HASIB.algo = "Oakley1997"`.
+
 ### in .CSV format
 
 
@@ -55,7 +60,6 @@ GGIR(datadir = "/media/actiwatch_csv", # folder with epoch level .AWD file
   def.noc.sleep = c()) # <= because we cannot use HDCZA for ZCY
 ```
 
-Warning: How you set the `extEpochData_timeformat ` parameter can differ between datasets. Make sure to always inspect what timestamp format was used in your data. To do this, scroll down approximately 500 lines and inspect the date and time columns.
 
 ## UK Biobank data in .CSV format
 
@@ -122,7 +126,7 @@ GGIR(datadir = "C:/youracticaldatafolder",
     extEpochData_timeformat = "%d-%b-%Y %H:%M")
 ```
 
-To classify sleep from Actical parameter consider parameter HASIB.algo = "Oakley1997".
+To classify sleep from Actical, consider parameter `HASIB.algo = "Oakley1997"`.
 
 ## Philips Health Band in .xlsx format
 
@@ -139,7 +143,8 @@ GGIR(datadir = "C:/yourphbdatafolder",
     extEpochData_timeformat = "%m-%d-%Y %H:%M:%S")
 ```
 
-By default GGIR attempts to extract and uses the sleep classification that is stored inside the xlsx files with column name "sleepWake". If no sleep classification is stored inside the data, GGIR uses the activity indicator as stored as "activitycounts".
+When `HASIB.algo = "data"` GGIR attempts to extract and uses the sleep classification that is stored inside the xlsx files with column name "sleepWake". If no sleep classification is stored inside the data, GGIR uses the activity indicator as stored as "activitycounts". You can specify
+`HASIB.algo = c("data", "Oakley1997")` to make GGIR fall back on Oakley1997 if this would be the case.
 
 ## Fitbit as folder with .json format files
 
@@ -159,7 +164,6 @@ GGIR(datadir = "C:/yourfitbitdatafolder",
 ```
 Note that parameter `extEpochData_timeformat` is not expected for Fitbit as
 we assume that the timestamps are always stored with the same internal format inside the .json files.
-
 
 # Handling study protocol
 

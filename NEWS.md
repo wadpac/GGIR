@@ -9,21 +9,23 @@
 - Part 4: No longer shows warning when GGIR part 4 falls back on 9am-7pm guider because it is
 unlikely to be used and if it is used the user will be able to see this in the output. #1281
 
-- Part 1 and 5: Save marker button data from Actiwatch, MotionWatch8, and Philips Health band to GGIR milestone data and include it in the visualreport.
+- Part 1 and 5: Now saves marker button data from Actiwatch, MotionWatch8, and Philips Health band to GGIR milestone data and includes it in the visualreport.
 
 - Part 3:
 
-  - Add new HASIB.algo option "Oakley1997" as described in the non-public document "Information bulletin no.3 sleep algorithms" as written by Cambridge Neurotechnologies. For which the threshold can be set with new parameter oakley_threshold. #1267
+  - Added new HASIB.algo option "Oakley1997" as described in the non-public document "Information bulletin no.3 sleep algorithms" as written by Cambridge Neurotechnologies. For which the threshold can be set with new parameter oakley_threshold. #1267
 
-  - Add new HASIB.algo option "data", as a way to tell GGIR to use the sleep classification that is stored in the data. Only relevant for externally derived epoch data such as Actiwatch.
+  - Added new HASIB.algo option "data", as a way to tell GGIR to use the sleep classification that is stored in the data. Only relevant for externally derived epoch data such as Actiwatch, Fitbit, Sensewear.
   
-  - Add new HASPT.algo option "MotionWare" which is an attempt to imitate the auto-detection of sleep as described in the non-public document by Cambridge Neurotechnologies: Information bulletin no.3 sleep algorithms. #1267
+  - Added new HASPT.algo option "MotionWare" which is an attempt to imitate the auto-detection of sleep as described in the non-public document by Cambridge Neurotechnologies: Information bulletin no.3 sleep algorithms. #1267
 
-  - Add new HASPT.algo option "HLRB", a new heuristic algorithm specific to aid detecting the sleep window based on sustained inactivity bouts. Although intended for Actiwatch/MotionWatch/PHB data it may also work for other data types.
+  - Added new HASPT.algo option "HLRB", a new heuristic algorithm specific to aid detecting the sleep window based on sustained inactivity bouts. Although intended for Actiwatch/MotionWatch/PHB data it may also work for other data types.
 
-  - Add option to utilise marker button data from Actiwatch, MotionWatch8 and Philips Health Band for sleep and nap detection, with new parameter consider_marker_button, impute_marker_button, nap_markerbutton_method, nap_markerbutton_max_distance. #1267
+  - Added option to utilise marker button data from Actiwatch, MotionWatch8 and Philips Health Band for sleep and nap detection, with new parameter consider_marker_button, impute_marker_button, nap_markerbutton_method, nap_markerbutton_max_distance. #1267
+  
+  - Remove code sections relating to the previously deprecated BrondCounts.
 
-- Vignettes: Add Annex page on date and time formats in R.
+- Vignettes: Added Annex page on date and time formats in R.
 
 # CHANGES IN GGIR VERSION 3.2-1
 

@@ -471,6 +471,16 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       # when using count data from the hip the user may prefer the HASPT.algo=NotWorn.
       params_general[["sensor.location"]] = "hip"
     }
+    
+    if (params_general[["dataFormat"]] %in% c("sensewear_xls", "fitbit_json")) {
+      if (params_sleep[["HASIB.algo"]][1] != "data") {
+        params_sleep[["HASIB.algo"]] = "data"
+        warning(paste0("HASIB.algo has been set to \"data\", because dataFormat is",
+                       " ", params_general[["dataFormat"]], " for which the sleep ",
+                       " classification inside the data is the only route."), call. = FALSE)
+      }
+    }
+    
   }
   
   if (length(params_metrics) > 0 & length(params_general) > 0) {

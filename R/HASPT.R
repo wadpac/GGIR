@@ -8,10 +8,9 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
   
   
   #-------------------------------------
-  # Use marker button:
+  # Use marker button as guider:
   # if available and required by user (only Actiwatch and Philips Health band at the moment)
   # See documentation for parameter consider_marker_button.
-  
   if (length(marker) > 0 && try_marker_button == TRUE) {
     button_pressed = which(marker != 0)
     N_markers = length(button_pressed)
@@ -20,16 +19,17 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
     if (N_markers > 1 &&
         diff(range(button_pressed)) * (60/ws3) > 60 &&
         fraction_invalid < 0.5) {
-      # Consider the 10 marker buttons closest to the day of interest
+      # Consider the 10 marker buttons closest to the day of interest,
+      # or all marker buttons for that day if more than 10
       ranking = sort(marker[button_pressed], decreasing = TRUE, index.return = TRUE)$ix
       button_pressed = button_pressed[ranking[1:pmax(length(which(marker == 1)), 10)]]
-      # find marker pair with lowest amount of activity and longest duration
+      # find marker pair with lowest amount of activity in between and longest duration
       pairs = expand.grid(button_pressed, button_pressed)
       pairs = pairs[which(pairs$Var1 < pairs$Var2),]
       # define duration
       pairs$duration_hours = (pairs$Var2 - pairs$Var1) / (3600/ws3)
       
-      # ignore pairs that reflect short distances and involve imputed marker
+      # ignore pairs that reflect both short distances and involve imputed marker buttons
       pairs$mark1 = marker[pairs$Var1]
       pairs$mark2 = marker[pairs$Var2]
       pairs_to_ignore = which(pairs$duration_hours < 3 & (pairs$mark1 < 1 | pairs$mark2 < 1))
@@ -43,12 +43,14 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       } else {
         activity_tmp = activity
       }
+      # ignore invalid timepoints
       invalid_index = which(invalid == 1)
       if (length(invalid_index) > 0) {
         activity_tmp[invalid_index] = NA
       }
       pairs$fraction_sibs_outside = NA
       pairs$fraction_sibs_inside = NA
+      # create table of each marker button pair and their statistics
       for (i in 1:nrow(pairs)) {
         i0 = pairs$Var1[i]
         i1 = pairs$Var2[i]
@@ -60,22 +62,19 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
           fraction_inside = sum(sibs[i0:i1]) / (i1 - i0 + 1)
           pairs$fraction_sibs_inside[i] = fraction_inside
           pairs$fraction_sibs_outside[i] = fraction_outside
-          # pairs$sum_sibs_outside[i] = sum_outside / (3600/ws3)
-          
         }
       }
       # Only consider when fraction sibs outside is less than inside and time spent outside is less than 6 hours
       pairs = pairs[which(pairs$fraction_sibs_outside < pairs$fraction_sibs_inside),]
       if (nrow(pairs) > 0) {
-        # Define score
+        # Define performance score
         pairs$dur_score = pmax(abs(pairs$duration_hours - 8), 1) - 1
         pairs$score = pairs$activity * pairs$dur_score
-        # find winner
+        # find winning marker button pair
         winner = which.min(pairs$score)[1]
         if (!is.na(winner)) {
           start = pairs$Var1[winner]
           end = pairs$Var2[winner]
-          # abline(v = c(start, end), col = "red", lwd = 2)
           HASPT.algo = "markerbutton"
           return(invisible(list(SPTE_start = start, SPTE_end = end,
                                 tib.threshold = 0,
@@ -160,12 +159,14 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       
       # Auto-Sleep Detection / Marking based on description in
       # Information bulletin no.3 sleep algorithms by Cambridge Neurotechnologies
-      # Section 1.6
+      # Section 1.6. The letters A, B, C, D, and E below refer to sections in 
+      # this description.
       
-      # parameters that user may want to change
+      # parameters that GGIR user may want to change
+      # keep hardcoded for now while this is still experimental
       MarkerButtonLimit = 3
       minimum_sleep_fraction = 0.6
-      Prescan_Sleep_Fraction = 0.8 #0.8
+      Prescan_Sleep_Fraction = 0.8
       # (A - classify sleep/wake)
       if (ws3 == 15) {
         score_threshold = 1.5

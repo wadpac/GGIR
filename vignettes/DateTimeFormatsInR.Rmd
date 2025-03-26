@@ -1,8 +1,8 @@
 ---
-title: "Date and Time in R"
+title: "Date and Time formats in R"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Date and Time in R}
+  %\VignetteIndexEntry{Date and Time formats in R}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

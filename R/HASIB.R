@@ -208,7 +208,7 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
     # Sleep Detection based on description in
     # Information bulletin no.3 sleep algorithms by Cambrige Neurotechnologies
     if (epochsize > 60) {
-      stop("Oakley algorithm is not designed for epochs larger than 1 minute")
+      stop("GGIR only facilitates the Oakley algorithm for epoch sizes up to 1 minute.", call. = FALSE)
     }
     count_types = c()
     if (length(zeroCrossingCount) > 0) count_types = "zeroCrossingCount"
@@ -217,8 +217,10 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
     cti = 1
     for (count_type in count_types) {
       if (epochsize %in% c(15, 30, 60) == FALSE) {
-        # aggregate to 30 or 60 seconds
-        if (epochsize < 30 && 30 %% epochsize == 0) {
+        # aggregate to 5, 30 or 60 seconds
+        if (epochsize < 15 && 15 %% epochsize == 0) {
+          aggwindow = 15
+        } else if (epochsize < 30 && 30 %% epochsize == 0) {
           aggwindow = 30
         } else {
           aggwindow = 60
