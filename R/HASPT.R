@@ -1,6 +1,6 @@
 HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
                  HASPT.algo="HDCZA", HDCZA_threshold = c(), invalid,
-                 HorAngle_threshold = 60,
+                 HorAngle_threshold = NULL,
                  HASPT.ignore.invalid=FALSE, activity = NULL) {
   tib.threshold = SPTE_start = SPTE_end = part3_guider = c()
   # internal functions ---------

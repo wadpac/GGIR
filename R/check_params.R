@@ -33,7 +33,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "possible_nap_window", "possible_nap_dur",
                        "colid", "coln1", "def.noc.sleep", "nnights", 
                        "sleepefficiency.metric", "possible_nap_edge_acc", "HDCZA_threshold",
-                       "possible_nap_gap")
+                       "possible_nap_gap", "spt_threshold", "sptblocksize",
+                       "spt_max_gap", "HorAngle_threshold")
     boolean_params = c("ignorenonwear", "HASPT.ignore.invalid",
                        "relyonguider", "sleeplogidnum", "sib_must_fully_overlap_with_TimeInBed")
     character_params = c("HASPT.algo", "HASIB.algo", "Sadeh_axis", "nap_model",

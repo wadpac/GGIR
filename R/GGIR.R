@@ -304,10 +304,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
             params_sleep = params_sleep, params_output = params_output,
             params_metrics = params_metrics,
             params_general = params_general,
-            verbose = verbose,
-            sptblocksize = input$sptblocksize,
-            spt_max_gap = input$spt_max_gap,
-            HorAngle_threshold = input$HorAngle_threshold)
+            verbose = verbose)
   }
   if (dopart4 == TRUE) {
     if (verbose == TRUE) print_console_header("Part 4")

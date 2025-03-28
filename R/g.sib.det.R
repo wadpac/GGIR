@@ -16,14 +16,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
   }
   #==============================================================
   # perc = 10; spt_threshold = 15; sptblocksize = 30; spt_max_gap = 60 # default configurations
-  if (!"spt_threshold" %in% names(input)) input$spt_threshold = 15
-  if (!"sptblocksize" %in% names(input)) input$sptblocksize = 30
-  if (!"spt_max_gap" %in% names(input)) input$spt_max_gap = 60
-  if (!"HorAngle_threshold" %in% names(input)) input$HorAngle_threshold = 60
-  sptblocksize = input$sptblocksize
-  spt_max_gap = input$spt_max_gap
-  HorAngle_threshold = input$HorAngle_threshold
-  
+
   # Abbreviaton SPTE = Sleep Period Time Estimate, although in case of HorAngle it is the Time in Bed estimate
   # but then we would have to come up with yet another term to represent the main sleep and/or time in bed window of the day
   # So, out of convenience I keep the object name SPTE. 
@@ -279,13 +272,14 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         }
         if (length(params_sleep[["def.noc.sleep"]]) == 1) {
           spt_estimate = HASPT(angle = tmpANGLE, ws3 = ws3,
-                               sptblocksize = sptblocksize, spt_max_gap = spt_max_gap,
+                               sptblocksize = params_sleep[["sptblocksize"]],
+                               spt_max_gap = params_sleep[["spt_max_gap"]],
                                HASPT.algo = params_sleep[["HASPT.algo"]][guider_to_use],
                                invalid = invalid[qqq1:qqq2],
                                HDCZA_threshold = params_sleep[["HDCZA_threshold"]],
                                HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
-                               HorAngle_threshold = HorAngle_threshold,
-                               activity = tmpACC)
+                               activity = tmpACC,
+                               HorAngle_threshold = params_sleep[["HorAngle_threshold"]])
         } else {
           spt_estimate = list(SPTE_end = NULL, SPTE_start = NULL, tib.threshold = NULL, part3_guider = NULL)
         }
@@ -319,13 +313,14 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                 }
               }
               spt_estimate_tmp = HASPT(angle = tmpANGLE, ws3 = ws3,
-                                       sptblocksize = sptblocksize, spt_max_gap = spt_max_gap,
+                                       sptblocksize = params_sleep[["sptblocksize"]],
+                                       spt_max_gap = params_sleep[["spt_max_gap"]],
                                        HASPT.algo = params_sleep[["HASPT.algo"]][guider_to_use],
                                        invalid = invalid[newqqq1:newqqq2],
                                        HDCZA_threshold = params_sleep[["HDCZA_threshold"]],
                                        HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
-                                       HorAngle_threshold = HorAngle_threshold,
-                                       activity = ACC[newqqq1:newqqq2])
+                                       activity = ACC[newqqq1:newqqq2],
+                                       HorAngle_threshold = params_sleep[["HorAngle_threshold"]])
               if (length(spt_estimate_tmp$SPTE_start) > 0) {
                 # If new SPTE_end is beyond noon (qqq2) then use the new SPTE_end
                 if (spt_estimate_tmp$SPTE_end + newqqq1 >= qqq2) {
