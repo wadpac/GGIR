@@ -20,7 +20,7 @@ Data quality assurance is an important part of GGIR. GGIR undertakes several key
 
 Accelerometer data stored in binary format (e.g. .bin or .cwa) is typically structured in data blocks. Each data block has a header at the top and a constant number of data points per block, usually the equivalent of a few seconds of data. For the Axivity accelerometer with data stored in '.cwa' file format those blocks can, on rare occasions, be corrupted and unreadable, therefore creating a gap in the information recorded.
 
-For the ActiGraph accelerometer, but also some other sensor brands that export data in ‘csv’ file format, it is possible that the recording stops at certain time and starts recording after some time, therefore creating a time gap.
+For the ActiGraph accelerometer, but also some other sensor brands that export data in ‘csv’ file format, it is possible that the recording stops at certain time when it is not moved for a while and starts recording after some time, therefore creating a time gap.
 
 GGIR has been developed to efficiently identify and manage these time gaps.
 
@@ -55,16 +55,16 @@ ActiGraph files might be exported in gt3x or csv formats. When idle sleep mode i
 
 ## Accelerometer sensor calibration
 
-Many measurement tools require calibration ranging from weighting scales to Oxygen sensor to accelerometers. Without good calibration we risk that the error causes by lack of calibration undermines accurate and reliable measurement.
+Many measurement tools require calibration ranging from weighting scales for body weight, to Oxygen sensor, to accelerometers. Without good calibration we risk that the error caused by lack of calibration undermines accurate and reliable measurement.
 
-Confusingly for accelerometers, the field has for a long time assumed that accelerometer need to be calibrated relative to energy expenditure. This is incorrect because energy expenditure is an entirely different construct. The true reference for accelerometer sensors is acceleration which we can calibrate with gravitational acceleration as a reference. 
+Confusingly for accelerometers, the field has for a long time assumed that accelerometers need to be calibrated relative to energy expenditure. This is incorrect because energy expenditure is a different physiological construct. The true reference for accelerometer sensors is acceleration which we can calibrate with gravitational acceleration as a reference. 
 
 An acceleration sensor works based on the principle that acceleration is captured mechanically and converted into an electrical signal. The relationship between the electrical signal and the acceleration is usually assumed to be linear, involving an offset and a gain factor. If you are not familiar with these terms, you could compare it with a simple regression equation where the offset is the Beta0 (Y-intercept) and the gain is the Beta1 (slope). Therefore, an offset is a number that we add to the signal to adjust for systematic error (bias) and a gain is a number with which we multiply the signal to scale it, in order to adjust it for relative error. We shall refer to the establishment of the offset and gain factor as the sensor calibration procedure.
 
 There are three types of calibration:
 
 - Factory calibration, done by industry (always done, but may need refinement afterward).
-- Manual calibration, done by researcher (not advisable and in some cases not even possible.
+- Manual calibration, done by researcher (not advisable and in some cases not even possible).
 - Auto-calibration, done by algorithms on real life study data (most common scenario to refine the factory calibration).
 
 1. Accelerometers are usually calibrated as part of the manufacturing process under non-movement conditions using the local gravitational acceleration as a reference, this is referred to as factory calibration.

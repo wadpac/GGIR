@@ -59,7 +59,7 @@ test_that("is able to identify missing night and retrieve sleeplog estimate", {
   detection[which(runif(n = N, min = 0, max = 1) < 0.1)] = 1
   ACC = rnorm(n = N, mean = 0, sd = 40)
   
-  ts = data.frame(time = time, ACC = ACC, diur = diur, sibdetection = detection)
+  ts = data.frame(time = time, ACC = ACC, diur = diur, sibdetection = detection, guider = "unknown")
   nightsi = grep("00:00:00", time)
 
   ts = g.part5.addfirstwake(ts, summarysleep = nightsummary, 

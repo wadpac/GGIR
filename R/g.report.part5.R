@@ -299,6 +299,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 #-------------------------------------------------------------
                 # store all summaries in csv files without cleaning criteria
                 OF3_clean = tidyup_df(OF3)
+                OF3_clean = addSplitNames(OF3_clean) # If recording was split
                 data.table::fwrite(
                   OF3_clean,
                   paste(
@@ -707,6 +708,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   #-------------------------------------------------------------
                   # store all summaries in csv files
                   OF4_clean = tidyup_df(OF4)
+                  OF4_clean = addSplitNames(OF4_clean)  # If recording was split
                   data.table::fwrite(OF4_clean,paste(metadatadir,"/results/part5_personsummary_",
                                                      uwi[j],"_L",uTRLi[h1],"M",
                                                      uTRMi[h2], "V", uTRVi[h3], "_",

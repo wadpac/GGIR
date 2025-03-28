@@ -280,6 +280,21 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       names(EVENTSUMMARY) = gsub(pattern = "ExtFunEvent_", replacement = "", x = names(EVENTSUMMARY))
       SUMMARY = SUMMARY[,NotEventVars]
       EVENTSUMMARY_clean = tidyup_df(EVENTSUMMARY)
+      
+      #-----------------------------------------------------------------------
+      # January 2024:
+      # TEMPORARILY REMOVE ALL NEW STEP VARIABLES TO FACILITATE
+      # MERGE OF MOST WORK RELATED TO EVENT DETECTION WITH MASTER BRANCH 
+      # WITHOUT RELEASING NEW VARIABLES YET
+      if (verbose == TRUE) cat(paste0("\n--- Message (this is NOT a warning or an error): Are you struggling ",
+                                      "to find the step variables in the output? Please note that as of 3.1-6 ",
+                                      "all variables relating to events (such as steps) detected ",
+                                      "with an external function, are no longer saved in the ",
+                                      "part2_summary.csv and part2_daysummary.csv report but inside ",
+                                      "part2_eventsummary.csv and part2_eventdaysummary.csv, respectively.---\n"))
+      EVENTSUMMARY_clean = EVENTSUMMARY_clean[, grep(pattern = "cad_|_cad|Bout_|accatleast|count_acc",
+                                                           x = colnames(EVENTSUMMARY_clean),
+                                                           invert = TRUE)]
       data.table::fwrite(x = EVENTSUMMARY_clean,
                          file =  paste0(metadatadir, "/results/part2_", eventName, "summary.csv"),
                          row.names = F, na = "", sep = params_output[["sep_reports"]],
@@ -294,7 +309,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       # reorder to have starttime next to calendar_date
       old_vars = which(colnames(daySUMMARY_clean) != "start_time")
       new_var = which(colnames(daySUMMARY_clean) == "start_time")
-      daySUMMARY_clean = daySUMMARY_clean[, c(old_vars[1:3], new_var, old_vars[4:length(old_vars)])]
+      daySUMMARY_clean = daySUMMARY_clean[, c(old_vars[1:2], new_var, old_vars[3:length(old_vars)])]
       # format calendar dates
       dd = iso8601chartime2POSIX(daySUMMARY_clean$calendar_date, tz = desiredtz) 
       daySUMMARY_clean$calendar_date = format(dd, format = "%Y-%m-%d")

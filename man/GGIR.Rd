@@ -271,18 +271,48 @@ GGIR(mode = 1:5,
         the latest recording. If recordings are separated then the timegap between
         the recordings is filled with data points that resemble monitor not worn.
         The maximum value of maxFile gap is 504 (21 days). Only recordings from the
-        same accelerometer brand are appended. The part 2 csv report
+        same accelerometer brand are appended. This functionality is applied
+        after all other aspect of GGIR part 1 are completed for all input files.
+        The part 2 csv report
         will show number of appended recordings, sampling rate for each, time overlap or gap 
         and the names of the filenames of the respective recording.}
-        
+      
+      \item{recording_split_times}{
+        Character (default = NULL).
+        To indicate path to a csv file with a column that has ID in the column name
+        that holds the participant IDs, followed by columns with either dates or
+        full timestamps on which the recording should be split. Here, timestamp
+        format is specified with parameter \code{recording_split_timeformat}.
+        The names of these columns are used to refer to each resulting segment.
+        To prevent extremely long file name GGIR ignores spaces and does not consider
+        more than 10 characters which are forced to lower case. If the recording
+        starts before or ends after the first and last split time then the start and/or
+        end of the recording is also used as split time and referred to as
+        startrec and endrec, respectively. Files are split after all other aspect of
+        GGIR part 1 are completed for all input files.
+      }
+      
+      \item{recording_split_timeformat}{
+        Character (default = "\%d/\%m/\%Y \%H:\%M")
+        To indicate timestamp format as used in file as specified with 
+        \code{recording_split_times}.
+      }
+      
+      \item{recording_split_overlap}{
+        Numeric (default = 0).
+        Number of hours to use as buffer when splitting recording. A possitive number
+        means that the split recordings overlap, a nevative number indicates a gap.
+      }
+      
       \item{extEpochData_timeformat}{
         Character (default = "\%d-\%m-\%Y \%H:\%M:\%S").
         To specify the time format used in the external epoch level data when
         argument \code{dataFormat} is set to "actiwatch_csv", "actiwatch_awd", 
         "actigraph_csv" or "sensewear_xls". For example "\%Y-\%m-\%d \%I:\%M:\%S \%p" for 
         "2023-07-11 01:24:01 PM" or "\%m/\%d/\%Y \%H:\%M:\%S" "2023-07-11 13:24:01"
-        }
       }
+
+    }
     }
 
     \subsection{params_rawdata}{
@@ -1527,7 +1557,7 @@ GGIR(mode = 1:5,
         In \link{g.part2}: Whether to generate a pdf for \link{g.part2}.}
 
       \item{do.part3.pdf}{
-        Boolean (default = TRUE).
+        Boolean (default = FALSE).
         In \link{g.part3}: Whether to generate a pdf for \link{g.part3}.}
 
       \item{timewindow}{
@@ -1544,7 +1574,7 @@ GGIR(mode = 1:5,
         seconds from 1970-01-01). To convert timenum to time stamp format, you 
         need to specify your desired time zone, e.g., 
         \code{as.POSIXct(mdat$timenum, tz = "Europe/London")}. If you are not using
-        GGIR part 6, not interested in the visualreport generation, and not interested
+        GGIR part 6, are not interested in the visualreport generation, and not interested
         in time series then you may want to consider setting this parameter to FALSE.}
 
       \item{save_ms5raw_format}{
@@ -1595,16 +1625,17 @@ GGIR(mode = 1:5,
       \item{visualreport}{
         Boolean (default = TRUE).
         If TRUE, store two visualreports in outputfolder 'results/file summary reports'
-        with names starting with "Report_..." and 
-        "Time_report...". The report "Report_..." has been in GGIR for years 
-        and is based on combined output GGIR part 2 and 4. It was initially only a
-        quick development attempt to have something to show to study participants.
+        with names starting with "old_report_..." and 
+        "report...". The report "old_report_..." has been in GGIR for years 
+        and is based on combined output from GGIR part 2 and 4. It was initially only a
+        quick development attempt to have something to show to study participants back
+        in 2015.
         This report is not designed for data quality checking purposes as it makes
-        not attempt to exactly visualise the classifications made in part 5.
-        Given the number of inaccuracies this report
+        no attempt to exactly visualise the classifications made in GGIR part 5.
+        Given the number of inaccuracies, this report
         will eventually be deprecated from GGIR. To turn
         off the old report use \code{old_visualreport = FALSE}.
-        "Time_report", is a new report as
+        "report_...", is a new report as
         of GGIR 3.1-8 and is specifically aimed at supporting data quality checks 
         as it shows the time series data as generated and used in GGIR part 5. }.
 
@@ -1623,7 +1654,7 @@ GGIR(mode = 1:5,
       \item{dofirstpage}{
         Boolean (default = TRUE).
         To indicate whether a first page with histograms summarizing the whole
-        measurement should be added in the file summary reports named "Report_" 
+        measurement should be added in the file summary reports named "old_report_" 
         generated with \code{visualreport = TRUE}.}
 
       \item{sep_reports}{
@@ -1644,7 +1675,7 @@ GGIR(mode = 1:5,
 
       \item{visualreport_without_invalid}{
           Boolean (default = TRUE).
-          If TRUE, then reports generated with \code{visualreport = TRUE} named "Report_"
+          If TRUE, then reports generated with \code{visualreport = TRUE} named "old_report_"
           only show the windows with sufficiently valid data according to \code{includedaycrit}
           when viewingwindow = 1 or \code{includenightcrit} when viewingwindow = 2}
 
@@ -1664,14 +1695,14 @@ GGIR(mode = 1:5,
       
       \item{visualreport_hrsPerRow}{
         Numeric (default = 36).
-        Width of the plots in the new visualreport (named "Time_report...") 
+        Width of the plots in the new visualreport (named "report_...") 
         expressed in hours.
         Expected to be in the range 24-48. If more than 24 then the extra time overlaps
         with the beginning of the next plot.}
       
       \item{visualreport_focus}{
          Character (default = "day")
-         Whether new visual report (names start with "Time_report...") focuss on day
+         Whether new visual report (names start with "report...") focuss on day
          or night. If set ot "night" the focus will be
          on the night.
       }
@@ -1680,7 +1711,7 @@ GGIR(mode = 1:5,
          Numeric (default = 0).
          Value between 0 and 1 representing the fraction of data in a plot 
          that is expected to be valid. If this criteria is not met the row is skipped.
-         Only used in new visual report (names start with "Time_report...").
+         Only used in new visual report (names start with "report...").
       }
       
       \item{method_research_vars}{
