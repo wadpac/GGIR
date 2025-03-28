@@ -161,12 +161,12 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
     monn = "sensewear"
     monc = 98
     dformc = 98
-  } else  if (params_general[["dataFormat"]] == "phb_xlsx") {
+  } else if (params_general[["dataFormat"]] == "phb_xlsx") {
     deviceName = "PhilipsHealthBand"
     monn = "philipshealthband"
     monc = 97
     dformc = 97
-  } else  if (params_general[["dataFormat"]] == "fitbit_json") {
+  } else if (params_general[["dataFormat"]] == "fitbit_json") {
     deviceName = "Fitbit"
     monn = "Fitbit"
     monc = 96
@@ -239,7 +239,12 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
     
     # filename
     if (!all(is.na(unlist(fnames[i])))) {
-      fname = basename(unlist(fnames[i])[1])
+      if (params_general[["dataFormat"]] == "fitbit_json") {
+        fname = basename(dirname(unlist(fnames[i])[1]))
+      } else {
+        fname = basename(unlist(fnames[i])[1])
+      }
+      
       outputFileName = paste0(metadatadir, "/meta/basic/meta_", fname, ".RData")
       skip = TRUE
       if (params_general[["overwrite"]] == TRUE) {
