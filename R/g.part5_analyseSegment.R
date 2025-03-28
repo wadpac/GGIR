@@ -428,16 +428,14 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
         }
       }
       fi = fi + Nluxt
-      if (timewindowi %in% c("WW", "OO")) {
-        # LUX per segment of the day
-        luxperseg = g.part5.lux_persegment(ts, sse,
-                                           LUX_day_segments = params_247[["LUX_day_segments"]],
-                                           epochSize = ws3new,
-                                           desiredtz = params_general[["desiredtz"]])
-        dsummary[si, fi:(fi + (length(luxperseg$values) - 1))] = luxperseg$values
-        ds_names[fi:(fi + (length(luxperseg$values) - 1))] = luxperseg$names
-        fi = fi + length(luxperseg$values)
-      }
+      # LUX per segment of the day
+      luxperseg = g.part5.lux_persegment(ts, sse,
+                                         LUX_day_segments = params_247[["LUX_day_segments"]],
+                                         epochSize = ws3new,
+                                         desiredtz = params_general[["desiredtz"]])
+      dsummary[si, fi:(fi + (length(luxperseg$values) - 1))] = luxperseg$values
+      ds_names[fi:(fi + (length(luxperseg$values) - 1))] = luxperseg$names
+      fi = fi + length(luxperseg$values)
     }
 
     #===============================================

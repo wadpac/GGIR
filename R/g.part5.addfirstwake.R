@@ -24,6 +24,7 @@ g.part5.addfirstwake = function(ts, summarysleep, nightsi, sleeplog, ID,
   if (length(nightsi) < 2) {
     return(ts)
   }
+  guider = "unknown" # initialise guider name as unknown
   if (!is.na(firstwake) && firstwake > nightsi[2] ||
       (summarysleep$sleeponset[1] < 18 &&
        summarysleep$wakeup[1] < 18 &&
@@ -31,8 +32,10 @@ g.part5.addfirstwake = function(ts, summarysleep, nightsi, sleeplog, ID,
     wake_night1_index = c()
     if (length(sleeplog) > 0) {
       # use sleeplog for waking up after first night
-      wake_night1 = sleeplog$sleepwake[which(sleeplog$ID == ID & sleeplog$night == 1)]
-      onset_night1 = sleeplog$sleeponset[which(sleeplog$ID == ID & sleeplog$night == 1)]
+      wake_night1 = sleeplog[which(sleeplog$ID == ID & sleeplog$night == 1),
+                                       grep(pattern = "bedend|wake", x = colnames(sleeplog))]
+      onset_night1 = sleeplog[which(sleeplog$ID == ID & sleeplog$night == 1),
+                                         grep(pattern = "bedstart|sleeponset", x = colnames(sleeplog))]
       if (length(wake_night1) != 0 & length(onset_night1) != 0) {
         if (wake_night1 != "" & onset_night1 != "") {
           # express hour relative to midnight within the noon-noon:
@@ -52,11 +55,14 @@ g.part5.addfirstwake = function(ts, summarysleep, nightsi, sleeplog, ID,
           wake_night1_index = nightsi[1] + round(wake_night1_hour * Nepochsinhour)
           if (wake_night1_index > Nts) wake_night1_index = Nts
           if (wake_night1_index < 1) wake_night1_index = 1
+          guider = "sleeplog"
         } else { # use SPTE algorithm as plan B
-          wake_night1_index = nightsi[1] + round((SPTE_end[1]-24) * Nepochsinhour)
+          wake_night1_index = nightsi[1] + round((SPTE_end[1] - 24) * Nepochsinhour)
+          guider = "part3_estimate"
         }
       } else { # use SPTE algorithm as plan B
-        wake_night1_index = nightsi[1] + round((SPTE_end[1]-24) * Nepochsinhour)
+        wake_night1_index = nightsi[1] + round((SPTE_end[1] - 24) * Nepochsinhour)
+        guider = "part3_estimate"
       }
     } else if (length(SPTE_end) > 0 & length(sleeplog) == 0) {
       # use SPTE algortihm for waking up after first night
@@ -64,6 +70,7 @@ g.part5.addfirstwake = function(ts, summarysleep, nightsi, sleeplog, ID,
       if (is.na(SPTE_end[1]) == FALSE) {
         if (SPTE_end[1] != 0) {
           wake_night1_index = nightsi[1] + round((SPTE_end[1] - 24) * Nepochsinhour) 
+          guider = "part3_estimate"
         }
       }
     }
@@ -82,6 +89,7 @@ g.part5.addfirstwake = function(ts, summarysleep, nightsi, sleeplog, ID,
         newWakeIndex = wake_night1_index - 1
       }
       ts$diur[1:newWakeIndex] = 1
+      ts$guider[1:newWakeIndex] = guider
     } else {
       # Person slept only during the afternoon on day 2
       # And there is no sleep data available for the first night
@@ -94,6 +102,7 @@ g.part5.addfirstwake = function(ts, summarysleep, nightsi, sleeplog, ID,
         dummywake = max(firstonset - round(Nepochsinhour/12), nightsi[1] + round(Nepochsinhour * 6))
         ts$diur[1:dummywake] = 1 
         ts$nonwear[1:firstonset] = 1
+        ts$guider[1:dummywake] = guider
       }
     }
   }

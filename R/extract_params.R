@@ -82,15 +82,19 @@ extract_params = function(params_sleep = c(), params_metrics = c(),
                 if (grepl("c\\(", config[ci,2])) { # vector
                   tmp = c(gsub(pattern = "c|\\(|\\)", x = config[ci,2], replacement = ""))
                   tmp = unlist(strsplit(tmp, ","))
-                  suppressWarnings(try(expr = {isna = is.na(as.numeric(tmp[1]))}, silent = TRUE))
-                  if (length(isna) == 0) isna = FALSE
-                  if (isna == TRUE) {
-                    newValue = tmp # vector of characters
+                  suppressWarnings(try(expr = {conv2logical = all(as.logical(tmp))},silent = TRUE))
+                  suppressWarnings(try(expr = {conv2num = all(!is.na(as.numeric(tmp)))},silent = TRUE))
+                  if (is.na(conv2logical)) conv2logical = FALSE
+                  if (is.na(conv2num)) conv2num = FALSE
+                  if (conv2logical == TRUE) {
+                    newValue = as.logical(tmp)
+                  } else if (conv2num == TRUE) {
+                    newValue = as.numeric(tmp)
                   } else {
-                    newValue = as.numeric(tmp) # vector of numbers
+                    newValue = tmp
                   }
                 } else {
-                  newValue = config[ci,2] #paste0("'",config[ci,2],"'")
+                  newValue = config[ci,2]
                 }
               }
             }

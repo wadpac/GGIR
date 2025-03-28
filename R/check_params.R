@@ -131,10 +131,12 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   if (length(params_general) > 0) {
     numeric_params = c("maxNcores", "windowsizes", "idloc", "dayborder",
-                       "expand_tail_max_hours", "maxRecordingInterval")
+                       "expand_tail_max_hours", "maxRecordingInterval",
+                       "recording_split_overlap")
     boolean_params = c("overwrite", "print.filename", "do.parallel", "part5_agg2_60seconds")
     character_params = c("acc.metric", "desiredtz", "configtz", "sensor.location", 
-                         "dataFormat", "extEpochData_timeformat")
+                         "dataFormat", "extEpochData_timeformat", "recording_split_times",
+                         "recording_split_timeformat")
     check_class("general", params = params_general, parnames = numeric_params, parclass = "numeric")
     check_class("general", params = params_general, parnames = boolean_params, parclass = "boolean")
     check_class("general", params = params_general, parnames = character_params, parclass = "character")
@@ -376,7 +378,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       if (length(formats2keep) > 0) {
         params_output[["save_ms5raw_format"]] = params_output[["save_ms5raw_format"]][formats2keep]
       } else {
-        params_output[["save_ms5raw_format"]] = "csv"# specify as csv if user does not clearly specify format
+        stop("Parameter save_ms5raw_format incorrectly specified, please fix.", call. = FALSE)
       }
     }
     if (params_output[["sep_reports"]] == params_output[["dec_reports"]]) {
@@ -415,14 +417,24 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       }
     }
     # params 247 & params output
-    if (params_247[["part6HCA"]] == TRUE || params_247[["part6CR"]] == TRUE) {
-      # Add RData because part 6 will need it
+    if (length(params_output[["save_ms5raw_format"]]) == 1 && 
+        params_output[["save_ms5raw_format"]] == "csv") {
+      # always add RData if only csv is specified, because otherwise visualreport cannot be generated
+      params_output[["save_ms5raw_format"]] = c(params_output[["save_ms5raw_format"]], "RData")
+    }
+
+    if (length(params_247[["clevels"]]) == 1) {
+      warning("\nParameter clevels expects a number vector of at least 2 values, current length is 1", call. = FALSE)
+    }
+  }
+  
+  if (length(params_output) > 0 && length(params_247) > 0) {
+    if (params_247[["part6HCA"]] == TRUE || params_247[["part6CR"]] == TRUE || 
+        params_output[["visualreport"]] == TRUE) {
+      # Add RData because part 6 / visualreport will need it
       params_output[["save_ms5raw_format"]] = unique(c(params_output[["save_ms5raw_format"]], "RData"))
       params_output[["save_ms5rawlevels"]] = TRUE
       params_output[["save_ms5raw_without_invalid"]] = FALSE
-    }
-    if (length(params_247[["clevels"]]) == 1) {
-      warning("\nParameter clevels expects a number vector of at least 2 values, current length is 1", call. = FALSE)
     }
   }
   if (!is.null(params_general[["expand_tail_max_hours"]])) {
@@ -493,7 +505,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       }
       if (length(params_sleep) > 0) {
         if (params_sleep[["Sadeh_axis"]] != "Y") {
-          params_sleep[["Sadeh_axis"]] = TRUE
+          params_sleep[["Sadeh_axis"]] = "Y"
           warning(paste0("\nWhen dataFormat is set to ", params_general[["dataFormat"]],
                          " we assume that Sadeh_axis Y, this is now overwritten"), call. = FALSE)
         }
@@ -547,10 +559,20 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     }
   }
   
-  if (!is.null(params_general[["maxRecordingInterval"]])) {
-    if (params_general[["maxRecordingInterval"]] > 24 * 21) {
-      stop(paste0("A maxRecordingInterval value higher than 21 days (504 hours) is permitted,",
-                  " please specify a lower value."), call. = FALSE)
+  if (length(params_general) > 0) {
+    if (!is.null(params_general[["maxRecordingInterval"]])) {
+      if (params_general[["maxRecordingInterval"]] > 24 * 21) {
+        stop(paste0("A maxRecordingInterval value higher than 21 days (504 hours) is not permitted,",
+                    " please specify a lower value."), call. = FALSE)
+      }
+    }
+    if (!is.null(params_general[["recording_split_times"]])) {
+      if (!file.exists(params_general[["recording_split_times"]])) {
+        stop(paste0("File .../", basename(params_general[["recording_split_times"]]),
+                    " as specified with parameter recording_split_times does not exist, ",
+                    " please fix."), call. = FALSE)
+        
+      }
     }
   }
   
