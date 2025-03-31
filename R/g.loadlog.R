@@ -131,6 +131,13 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
   # Load sleep log data...
   S = data.table::fread(file = loglocation, stringsAsFactors = FALSE, data.table = FALSE,
                         check.names = TRUE, colClasses = "character")
+  # Check for duplicated ID
+  if (any(duplicated(S[, colid]))) {
+    stop(paste0("Sleeplog has duplicated entries (rows) for ID(s) ",
+                paste0(S[duplicated(S[, colid]), colid], collapse = " "), 
+                ", please fix. GGIR expects one sleeplog row per unique ID. "), call. = FALSE)
+  }
+  
   if (colnames(S)[1] == "V1" && any(S[1, ] == "")) {
     stop(paste0("Sleeplog column found with empty header, please fix. This can also happen if ",
                 "there are empty columns at the end, delete those columns if applicable."), call. = FALSE)
