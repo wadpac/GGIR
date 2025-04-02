@@ -2,6 +2,8 @@
 
 - Part 1: Add option to load externally derived epoch data from Actical, Philips Health Band, and Fitbit. #1205
 
+- Part 1: Parameter do.parallel now also works for loading externally derived epoch data. #1205
+
 - Part 2: Improve handling 23 hour days in day summary #1281
 
 - Part 4: Now detects duplicated ID in sleeplog and generates error to inform user #1281

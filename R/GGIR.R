@@ -272,6 +272,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       convertEpochData(datadir = datadir,
                        metadatadir = metadatadir,
                        params_general = params_general,
+                       f0 = f0,
+                       f1 = f1,
                        verbose = verbose)
     }
     if (!is.null(params_general[["recording_split_times"]])) {

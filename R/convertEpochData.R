@@ -1,45 +1,8 @@
 convertEpochData = function(datadir = c(), metadatadir = c(),
-                            params_general = c(), verbose = TRUE) {
+                            params_general = c(), f0 = c(), f1 = c(), verbose = TRUE) {
   
   # Function to convert externally derived epoch data
   # to a format that allows GGIR to process them as if they were part 1 output.
-  
-  # Declare local funcions:
-  matAggregate = function(mat, step) {
-    # Aggregate matrix mat by taking over step number of rows
-    # as sum unless column names is sleep or nonwear in that case
-    # we take the rounded mean.
-    mat = rbind(rep(0, ncol(mat)), mat)
-    cumsum2 = function(x) {
-      x = cumsum(ifelse(is.na(x), 0, x)) + x*0
-      return(x)
-    }
-    mat = apply(mat, 2, cumsum2)
-    mat = mat[seq(1, nrow(mat), by = step), , drop = FALSE]
-    mat = apply(mat, 2, diff)
-    # Correct non incremental variables
-    for (niv in c("sleep", "ExtSleep", "light", "nonwear", "marker", "light")) {
-      if (niv %in% colnames(mat)) mat[, niv] = round(mat[, niv] / step)
-    }
-    # Incremental variables are counts, calories, ExtAct as so far
-    # none of the data formats provide movement expressed as average acceleration
-    # per epoch
-    return(mat)
-  }
-
-  checkEpochMatch = function(desiredEpochSize, epSizeShort) {
-    # Check whether desired and derived epoch size match
-    if (!is.null(desiredEpochSize) && epSizeShort != desiredEpochSize) {
-      stop(paste0("\nThe short epoch size as specified by the user (",
-                  desiredEpochSize, " seconds) does NOT match the short",
-                  " epoch size we see in the data (", epSizeShort,
-                  " seconds). Please correct."), call. = FALSE)
-    }
-    return()
-  }
-  #-----------------------------------------------------------
-  
-  
   tz = params_general[["desiredtz"]]
   epSizeShort = params_general[["windowsizes"]][1]
   epSizeLong = params_general[["windowsizes"]][2]
@@ -226,10 +189,15 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
     sf = sf,
     filename = "unknown",
     deviceSerialNumber = "unknown")
-
+  
+  if (length(f0) == 0) f0 = 1
+  if (length(f1) == 0) f1 = length(fnames)
+  
+  
   I_bu = I # backup version of I (for now only used in actigraph_csv)
-  for (i in 1:length(fnames)) { # loop over all epoch files or folders
-    # include verbose info
+  main_convert = function(i, fnames, metadatadir, params_general, I_bu,
+                          epSizeShort, epSizeLong, tz, verbose, M, C) {
+    
     if (verbose == TRUE) {
       if (i  == 1) {
         cat(paste0("\nP1 file: ", i))
@@ -237,6 +205,42 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         cat(paste0(" ", i))
       }
     }
+    
+    # Declare local funcions:
+    matAggregate = function(mat, step) {
+      # Aggregate matrix mat by taking over step number of rows
+      # as sum unless column names is sleep or nonwear in that case
+      # we take the rounded mean.
+      mat = rbind(rep(0, ncol(mat)), mat)
+      cumsum2 = function(x) {
+        x = cumsum(ifelse(is.na(x), 0, x)) + x*0
+        return(x)
+      }
+      mat = apply(mat, 2, cumsum2)
+      mat = mat[seq(1, nrow(mat), by = step), , drop = FALSE]
+      mat = apply(mat, 2, diff)
+      # Correct non incremental variables
+      for (niv in c("sleep", "ExtSleep", "light", "nonwear", "marker", "light")) {
+        if (niv %in% colnames(mat)) mat[, niv] = round(mat[, niv] / step)
+      }
+      # Incremental variables are counts, calories, ExtAct as so far
+      # none of the data formats provide movement expressed as average acceleration
+      # per epoch
+      return(mat)
+    }
+    
+    checkEpochMatch = function(desiredEpochSize, epSizeShort) {
+      # Check whether desired and derived epoch size match
+      if (!is.null(desiredEpochSize) && epSizeShort != desiredEpochSize) {
+        stop(paste0("\nThe short epoch size as specified by the user (",
+                    desiredEpochSize, " seconds) does NOT match the short",
+                    " epoch size we see in the data (", epSizeShort,
+                    " seconds). Please correct."), call. = FALSE)
+      }
+      return()
+    }
+    #-----------------------------------------------------------
+    # main code
     
     # filename
     if (!all(is.na(unlist(fnames[i])))) {
@@ -268,7 +272,8 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                               header = TRUE,
                               data.table = FALSE,
                               sep = ",")
-        header = as.character(data.table::fread(input = fnames[i], header = FALSE, nrows = 1, data.table = FALSE, sep = ",")[1, 1])
+        header = as.character(data.table::fread(input = fnames[i], header = FALSE,
+                                                nrows = 1, data.table = FALSE, sep = ",")[1, 1])
         # extract date/timestamp from fileheader
         timestamp = unlist(strsplit(header," - "))[2]
         timestamp_POSIX = as.POSIXlt(timestamp, tz = tz)
@@ -293,10 +298,10 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         D = list(data = D, epochSize = epSizeShort, startTime = timestamp_POSIX)
       } else if (params_general[["dataFormat"]] == "actigraph_csv") {
         D = GGIRread::readActiGraphCount(filename = fnames[i], 
-                           timeformat = params_general[["extEpochData_timeformat"]],
-                           desiredtz = params_general[["desiredtz"]],
-                           configtz = params_general[["configtz"]],
-                           timeformatName = "extEpochData_timeformat")
+                                         timeformat = params_general[["extEpochData_timeformat"]],
+                                         desiredtz = params_general[["desiredtz"]],
+                                         configtz = params_general[["configtz"]],
+                                         timeformatName = "extEpochData_timeformat")
         
         # Rename to align with GGIR metric naming
         cnd = colnames(D$data)
@@ -318,10 +323,10 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         # for analysis it does not matter
       } else if (length(grep(pattern = "actiwatch", x = params_general[["dataFormat"]], ignore.case = TRUE)) > 0) {
         D = GGIRread::readActiwatchCount(filename = fnames[i], 
-                               timeformat = params_general[["extEpochData_timeformat"]],
-                               desiredtz = params_general[["desiredtz"]],
-                               configtz = params_general[["configtz"]],
-                               timeformatName = "extEpochData_timeformat")
+                                         timeformat = params_general[["extEpochData_timeformat"]],
+                                         desiredtz = params_general[["desiredtz"]],
+                                         configtz = params_general[["configtz"]],
+                                         timeformatName = "extEpochData_timeformat")
         # Rename to align with GGIR metric naming
         colnames(D$data)[which(colnames(D$data) == "counts")] = "ZCY"
         extraVars  = grep(pattern = "light|nonwear", x = colnames(D$data))
@@ -345,7 +350,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                                    desiredtz = params_general[["desiredtz"]],
                                    configtz = params_general[["configtz"]],
                                    timeformatName = "extEpochData_timeformat")
-        if (nrow(D$data) < 2) next
+        if (nrow(D$data) < 2) return()
         epochSize = difftime(D$data$timestamp[2], D$data$timestamp[1], 
                              units = "secs")
         epSizeShort = as.numeric(epochSize)
@@ -365,19 +370,10 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                                x = colnames(D$data), ignore.case = TRUE, invert = TRUE)]
       } else if (params_general[["dataFormat"]] == "fitbit_json") {
         data = GGIRread::mergeFitbitData(filenames = fnames[[i]],
-                            desiredtz = params_general[["desiredtz"]],
-                            configtz = params_general[["configtz"]])
+                                         desiredtz = params_general[["desiredtz"]],
+                                         configtz = params_general[["configtz"]])
         ID = IDs[i]
         I$filename = filename_dir = fname = ID
-        # if (params_general[["idloc"]] == 2) {
-        #   ID = unlist(strsplit(ID, "_"))[1]
-        # } else if (params_general[["idloc"]] == 5) {
-        #   ID = unlist(strsplit(ID, " "))[1]
-        # } else if (params_general[["idloc"]] == 6) {
-        #   ID = unlist(strsplit(ID, "[.]"))[1]
-        # } else if (params_general[["idloc"]] == 7) {
-        #   ID = unlist(strsplit(ID, "-"))[1]
-        # }
         epochSizes = names(table(diff(data$dateTime)))
         if (length(epochSizes) > 1) {
           stop(paste0("multiple epoch sizes encountered in Fitbit data ",
@@ -427,7 +423,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
       if (!is.null(desiredEpochSize)) {
         if (desiredEpochSize > epSizeShort) {
           step = desiredEpochSize %/% epSizeShort
-
+          
           D = matAggregate(D, step)
           epSizeShort = epSizeShort * step
         }
@@ -520,18 +516,18 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                                    yes = perc_na(D, "ExtStep", Ntotal),
                                    no = NA)
         n_ExtHeartRate_missing = ifelse(test = "ExtHeartRate" %in% varnames,
-                                   yes = perc_na(D, "ExtHeartRate", Ntotal),
-                                   no = NA)
-        n_ExtAct_missing = ifelse(test = "ExtAct" %in% varnames,
-                                        yes = perc_na(D, "ExtAct", Ntotal),
+                                        yes = perc_na(D, "ExtHeartRate", Ntotal),
                                         no = NA)
-        n_ExtSleep_missing = ifelse(test = "ExtSleep" %in% varnames,
-                                  yes = perc_na(D, "ExtSleep", Ntotal),
+        n_ExtAct_missing = ifelse(test = "ExtAct" %in% varnames,
+                                  yes = perc_na(D, "ExtAct", Ntotal),
                                   no = NA)
+        n_ExtSleep_missing = ifelse(test = "ExtSleep" %in% varnames,
+                                    yes = perc_na(D, "ExtSleep", Ntotal),
+                                    no = NA)
         n_ExtSleep_and_ExtAct_missing = ifelse(test = all(c("ExtSleep", "ExtAct") %in% varnames),
-                                           yes = length(which(is.na(D[,"ExtSleep"]) == TRUE &
-                                                                is.na(D[,"ExtAct"]) == TRUE)) / Ntotal,
-                                           no = NA)
+                                               yes = length(which(is.na(D[,"ExtSleep"]) == TRUE &
+                                                                    is.na(D[,"ExtAct"]) == TRUE)) / Ntotal,
+                                               no = NA)
         QClog = data.frame(filehealth_0vars_missing = perc_value(missingValueRows, 0, Ntotal),
                            filehealth_1vars_missing = perc_value(missingValueRows, 1, Ntotal),
                            filehealth_2vars_missing = perc_value(missingValueRows, 2, Ntotal),
@@ -646,8 +642,9 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
       }
       # create data.frame for metalong, note that light and temperature are just set at zero by default
       M$metalong = data.frame(timestamp = time_longEp_8601, nonwearscore = nonwearscore, #rep(0,LML)
-                              clippingscore = rep(0,LML), lightmean = rep(0,LML),
-                              lightpeak = rep(0,LML), temperaturemean = rep(0,LML), EN = rep(0,LML))
+                              clippingscore = rep(0,LML), lightmean = rep(0, LML),
+                              lightpeak = rep(0,LML), temperaturemean = rep(0, LML),
+                              EN = rep(0,LML))
       # If light was loaded (Actiwatch/PHB) then store this in metalong
       if (!is.null(D_extraVars) && "light" %in% colnames(D_extraVars)) {
         if (nrow(D_extraVars) == nrow(M$metalong)) {
@@ -670,4 +667,72 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
            file = outputFileName)
     }
   }
+  
+  #--------------------------------------------------------------------------------
+  # Run the code either parallel or in serial (file index starting with f0 and ending with f1)
+  cores = parallel::detectCores()
+  Ncores = cores[1]
+  if (params_general[["do.parallel"]] == TRUE) {
+    if (Ncores > 3) {
+      if (length(params_general[["maxNcores"]]) == 0) params_general[["maxNcores"]] = Ncores
+      Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]], (f1 - f0) + 1))
+      if (Ncores2use > 1) {
+        cl <- parallel::makeCluster(Ncores2use) # not to overload your computer
+        parallel::clusterExport(cl = cl,
+                                varlist = c(unclass(lsf.str(envir = asNamespace("GGIR"), all = T)),
+                                            "MONITOR", "FORMAT"),
+                                envir = as.environment(asNamespace("GGIR")))
+        parallel::clusterEvalQ(cl, Sys.setlocale("LC_TIME", "C"))
+        doParallel::registerDoParallel(cl)
+      } else {
+        # Don't process in parallel if only one core
+        params_general[["do.parallel"]] = FALSE
+      }
+    } else {
+      if (verbose == TRUE) cat(paste0("\nparallel processing not possible because number of available cores (",Ncores,") < 4"))
+      params_general[["do.parallel"]] = FALSE
+    }
+  }
+  if (params_general[["do.parallel"]] == TRUE) {
+    if (verbose == TRUE) cat(paste0('\n Busy processing ... see ',
+                                    metadatadir, '/meta/basic',
+                                    ' for progress\n'))
+    # check whether we are indevelopment mode:
+    GGIRinstalled = is.element('GGIR', installed.packages()[,1])
+    packages2passon = functions2passon = NULL
+    GGIRloaded = "GGIR" %in% .packages()
+    if (GGIRloaded) { #pass on package
+      packages2passon = 'GGIR'
+      errhand = 'pass'
+    } else {
+      # pass on functions
+      functions2passon = c("POSIXtime2iso8601", "aggregateEvent")
+      errhand = 'stop'
+    }
+    i = 0 # declare i because foreach uses it, without declaring it
+    `%myinfix%` = foreach::`%dopar%`
+    output_list = foreach::foreach(i = f0:f1, .packages = packages2passon,
+                                   .export = functions2passon, .errorhandling = errhand, .verbose = F) %myinfix% {
+                                     tryCatchResult = tryCatch({
+                                       main_convert(i, fnames, metadatadir, params_general,
+                                                    I_bu, epSizeShort, epSizeLong, tz, 
+                                                    verbose, M, C)
+                                     })
+                                     return(tryCatchResult)
+                                   }
+    on.exit(parallel::stopCluster(cl))
+    for (oli in 1:length(output_list)) { # logged error and warning messages
+      if (is.null(unlist(output_list[oli])) == FALSE) {
+        if (verbose == TRUE) cat(paste0("\nErrors and warnings for ",fnames[oli]))
+        print(unlist(output_list[oli])) # print any error and warnings observed
+      }
+    }
+  } else {
+    for (i in f0:f1) {
+      if (verbose == TRUE) cat(paste0(i, " "))
+      main_convert(i, fnames, metadatadir, params_general, I_bu,
+                   epSizeShort, epSizeLong, tz, verbose, M, C)
+    }
+  }
+  
 }
