@@ -204,7 +204,7 @@ test_that("External epoch data is correctly converted", {
                    params_general = params_general)
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
   load(paste0(QCbasis, "/meta_participant1.RData"))
-  expect_equal(sum(M$metalong$nonwearscore), 4773)
+  expect_equal(sum(M$metalong$nonwearscore), 4782)
   expect_equal(nrow(M$metashort), 23925)
   expect_equal(ncol(M$metashort), 4)
   expect_equal(ncol(M$QClog), 10)

@@ -565,7 +565,8 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                 if (any(is.na(imp[indices])) || sum(imp[indices], na.rm = TRUE) <= 0) {
                   nonwearscore[ni] = 3
                 }
-                if (length(which(!is.na(imp[indices]))) > 0) {
+                if (length(which(!is.na(imp[indices]))) > 1) {
+                  if (is.na(sd(imp[indices], na.rm = TRUE))) browser()
                   if (sd(imp[indices], na.rm = TRUE) < 0.0001 &&
                       mean(imp[indices], na.rm = TRUE) < 2) {
                     nonwearscore[ni] = 3
