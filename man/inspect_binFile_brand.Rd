@@ -25,8 +25,8 @@ inspect_binFile_brand(filename)
 \value{
   A character string representing the detected device brand:
   \itemize{
-    \item \code{MONITOR$GENEACTIV}: Indicates the device is a GENEActiv device.
-    \item \code{MONITOR$MATRIX}: Indicates the device is a MATRIX device.
+    \item \code{2}: Indicates the device is a GENEActiv device.
+    \item \code{7}: Indicates the device is a MATRIX device.
     \item \code{"not_recognised"}: Indicates the file's brand is not recognized.
   }
 }
