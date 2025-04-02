@@ -110,6 +110,13 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         }
       } else if (mon == MONITOR$PARMAY_MTX) {
         header = NULL
+        if (!"readParmayMatrix" %in% getNamespaceExports("GGIRread")) {
+          stop(paste0("\nError processing ", filename, 
+                      ": it appears you're attempting to read Parmay Matrix files, ",
+                      "but you have an old version of GGIRread. ",
+                      "Please update GGIRread to version 0.1.4 or later ",
+                      "with install.packages('GGIRread') and try again."))
+        }
         sf = GGIRread::readParmayMatrix(datafile, output = "sf")
       } else {
         stop(paste0("\nError processing ", filename, ": unrecognised .bin file"))
