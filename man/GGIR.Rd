@@ -402,7 +402,7 @@ GGIR(mode = 1:5,
       \item{interpolationType}{
         Integer (default = 1).
         To indicate type of interpolation to be used
-        when resampling time series (mainly relevant for Axivity sensors),
+        when resampling time series (mainly relevant for Axivity and Parmay Matrix sensors),
         1=linear, 2=nearest neighbour.}
 
       \item{rmc.file}{
