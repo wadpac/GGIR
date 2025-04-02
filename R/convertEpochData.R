@@ -489,16 +489,8 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         nonwear_in_data = TRUE
       } else if (params_general[["dataFormat"]] == "fitbit_json") {
         nonwear_in_data = TRUE
+        imp = unlist(D[, "ExtAct"])
         missingValueRows = rowSums(is.na(D))
-        if (all(c("ExtAct", "ExtStep") %in% colnames(D))) {
-          # if only step is missing out of all columns and if calories is
-          # less than 2 then impute step by 0.
-          missingStep = which(missingValueRows == 1 & is.na(D[, "ExtStep"]) & D[,"ExtAct"] < 2)
-          if (length(missingStep) > 0) {
-            D[missingStep, "ExtStep"] = 0
-          }
-          missingValueRows = rowSums(is.na(D))
-        }
         
         # Create log of data missingnes
         varnames = colnames(D)
@@ -553,6 +545,8 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
           if (any(c("ExtAct", "ExtSleep") %in% colnames(D) == FALSE)) {
             nonwearscore = rep(3, nrow(D))
           } else {
+            
+            # Step 1: Use missing data as first indication of nonwear
             missingValueRows = rowSums(is.na(D[, c("ExtAct", "ExtSleep")]))
             nonZero = which(missingValueRows > 0)
             if (length(nonZero) > 0) {
@@ -562,6 +556,26 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
             imp3 = diff(imp2[seq(1, length(imp2),
                                  by = ((60/epSizeShort) * (epSizeLong/60)))]) / ((60/epSizeShort) * (epSizeLong/60)) # rolling mean
             nonwearscore = round(imp3) * 3 # create three level nonwear score from it, not really necessary for GGIR, but helps to retain some of the information
+            # Step 2: Use windows with no movement as seocnd indication of nonwear
+            ni = 1
+            for (g in seq(from = 1, to = length(imp), by = epSizeLong / epSizeShort)) {
+              iend = g + (epSizeNonWear / epSizeShort) - 1
+              indices = g:iend
+              if (iend <= length(imp)) {
+                if (any(is.na(imp[indices])) || sum(imp[indices], na.rm = TRUE) <= 0) {
+                  nonwearscore[ni] = 3
+                }
+                if (length(which(!is.na(imp[indices]))) > 0) {
+                  if (sd(imp[indices], na.rm = TRUE) < 0.0001 &&
+                      mean(imp[indices], na.rm = TRUE) < 2) {
+                    nonwearscore[ni] = 3
+                  }
+                } else {
+                  nonwearscore[ni] = 3
+                }
+              }
+              ni = ni + 1
+            }
           }
         }
       } else {
