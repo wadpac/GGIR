@@ -550,15 +550,19 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                                by = ((60/epSizeShort) * (epSizeLong/60)))]) / ((60/epSizeShort) * (epSizeLong/60)) # rolling mean
           nonwearscore = round(imp3 * 3) # create three level nonwear score from it, not really necessary for GGIR, but helps to retain some of the information
         } else if (params_general[["dataFormat"]] == "fitbit_json") {
-          missingValueRows = rowSums(is.na(D))
-          nonZero = which(missingValueRows > 0)
-          if (length(nonZero) > 0) {
-            missingValueRows[nonZero] = 1
+          if (any(c("ExtAct", "ExtSleep") %in% colnames(D) == FALSE)) {
+            nonwearscore = rep(3, nrow(D))
+          } else {
+            missingValueRows = rowSums(is.na(D[, c("ExtAct", "ExtSleep")]))
+            nonZero = which(missingValueRows > 0)
+            if (length(nonZero) > 0) {
+              missingValueRows[nonZero] = 1
+            }
+            imp2 = cumsum(missingValueRows)
+            imp3 = diff(imp2[seq(1, length(imp2),
+                                 by = ((60/epSizeShort) * (epSizeLong/60)))]) / ((60/epSizeShort) * (epSizeLong/60)) # rolling mean
+            nonwearscore = round(imp3) * 3 # create three level nonwear score from it, not really necessary for GGIR, but helps to retain some of the information
           }
-          imp2 = cumsum(missingValueRows)
-          imp3 = diff(imp2[seq(1, length(imp2),
-                               by = ((60/epSizeShort) * (epSizeLong/60)))]) / ((60/epSizeShort) * (epSizeLong/60)) # rolling mean
-          nonwearscore = round(imp3) * 3 # create three level nonwear score from it, not really necessary for GGIR, but helps to retain some of the information
         }
       } else {
         # Using rolling long window sum to indicate whether it is nonwear
