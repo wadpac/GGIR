@@ -11,7 +11,7 @@
 }
 \usage{
    convertEpochData(datadir = c(), metadatadir = c(),
-                    params_general = c(), verbose = TRUE)
+                    params_general = c(), f0 = c(), f1 = c(), verbose = TRUE)
 }
 \arguments{
   \item{datadir}{
@@ -23,7 +23,7 @@
   \item{params_general}{
     Parameters object see \link{GGIR}
   }
-   \item{f0}{
+  \item{f0}{
     File index to start with (default = 1). Index refers to the filenames sorted
     in alphabetical order
   }
