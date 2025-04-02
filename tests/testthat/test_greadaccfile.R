@@ -1,6 +1,6 @@
 library(GGIR)
 context("g.readaccfile")
-test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity csv, actigraph csv, and ad-hoc csv files correctly", {
+test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity csv, actigraph csv, ad-hoc csv, and Parmay Matrix files correctly", {
   skip_on_cran()
   
   desiredtz = "Pacific/Auckland"
@@ -22,6 +22,7 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   
   GAfile  = system.file("testfiles/GENEActiv_testfile.bin", package = "GGIRread")[1]
   gt3xfile  = system.file("testfiles/actigraph_testfile.gt3x", package = "GGIR")[1]
+  mtxfile  = system.file("testfiles/mtx_25Hz_acc_HR.BIN", package = "GGIRread")[1]
   
   cat("\nActigraph .csv")
   
@@ -437,6 +438,27 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
                       rmc.header.structure = csvData[[2]])
     expect_equal(I$sf, 40)
   }
+  cat("\nParmay Matrix .BIN")
+  
+  Imtx = g.inspectfile(mtxfile, params_rawdata = params_rawdata, params_general = params_general)
+  expect_equal(Imtx$monc, MONITOR$PARMAY_MTX)
+  expect_equal(Imtx$dformc, FORMAT$BIN)
+  expect_equal(Imtx$sf, 25)
+  EHV = g.extractheadervars(Imtx)
+  expect_equal(EHV$deviceSerialNumber,"not extracted") # not stored in file, but leave this here to facilitate implementation in case that in the future it is available
+  
+  mtx_read = g.readaccfile(mtxfile, blocksize = 10, blocknumber = 1, filequality = filequality,
+                           dayborder = dayborder, ws = 2, 
+                           PreviousEndPage = 1, inspectfileobject = Imtx,
+                           params_rawdata = params_rawdata, params_general = params_general)
+  expect_equal(nrow(mtx_read$P$QClog), 4) # 4 blocks of data in this file
+  expect_equal(sum(mtx_read$P$data[c("x","y","z")]), 6454.284, tolerance = .01, scale = 1)
+  
+  Mmtx = g.getmeta(mtxfile, desiredtz = desiredtz, windowsize = c(1,300,300),
+                   inspectfileobject = Imtx)
+  expect_true(Mmtx$filetooshort)
+  expect_false(Mmtx$filecorrupt)
+  
   # test decimal separator recognition extraction
   decn =  g.dotorcomma(Ax3CwaFile,dformat = FORMAT$CWA, mon = MONITOR$AXIVITY, desiredtz = desiredtz)
   expect_equal(decn,".")
