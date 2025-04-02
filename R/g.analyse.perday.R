@@ -426,7 +426,8 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               isAccMetric = minames[mi] %in% c("ENMO","LFENMO", "BFEN", "EN", "HFEN", "HFENplus", "MAD", "ENMOa",
                                  "ZCX", "ZCY", "ZCZ", "BrondCount_x", "BrondCount_y",
                                  "BrondCount_z", "NeishabouriCount_x", "NeishabouriCount_y",
-                                 "NeishabouriCount_z", "NeishabouriCount_vm", "ExtAct")
+                                 "NeishabouriCount_z", "NeishabouriCount_vm", "ExtAct",
+                                 "ExtHeartRate")
               
               if (isAccMetric == TRUE & length(ExtFunColsi) > 0) {
                 # Then also extract count metric

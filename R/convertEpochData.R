@@ -89,7 +89,8 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
       IDs[uid] = basename(participantFolders[uid]) # Use folder name as ID because ID is not inside the files
       # Identify files in each folder
       jsonFiles = dir(participantFolders[uid], pattern = "json", recursive = TRUE, full.names = TRUE)
-      jsonFiles = grep(pattern = "sleep|steps|calories", x = jsonFiles, value = TRUE)
+      jsonFiles = grep(pattern = "sleep|steps|calories|heart_rate", x = jsonFiles, value = TRUE)
+      jsonFiles = grep(pattern = "resting_heart_rate|time_in_heart", invert = TRUE, x = jsonFiles, value = TRUE)
       if (length(jsonFiles) > 0) {
         fnames[uid] = list(jsonFiles = jsonFiles)
       }
@@ -259,7 +260,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
     }
     if (skip == FALSE) {
       I = I_bu
-      D_extraVars = NULL
+      D_extraVars = QClog = NULL
       I$filename = filename_dir = fname
       if (params_general[["dataFormat"]] == "ukbiobank_csv") {
         # read data
@@ -368,6 +369,15 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                             configtz = params_general[["configtz"]])
         ID = IDs[i]
         I$filename = filename_dir = fname = ID
+        # if (params_general[["idloc"]] == 2) {
+        #   ID = unlist(strsplit(ID, "_"))[1]
+        # } else if (params_general[["idloc"]] == 5) {
+        #   ID = unlist(strsplit(ID, " "))[1]
+        # } else if (params_general[["idloc"]] == 6) {
+        #   ID = unlist(strsplit(ID, "[.]"))[1]
+        # } else if (params_general[["idloc"]] == 7) {
+        #   ID = unlist(strsplit(ID, "-"))[1]
+        # }
         epochSizes = names(table(diff(data$dateTime)))
         if (length(epochSizes) > 1) {
           stop(paste0("multiple epoch sizes encountered in Fitbit data ",
@@ -389,6 +399,9 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
         }
         if ("calories" %in% names(D$data)) {
           names(D$data)[which(names(D$data) == "calories")] = "ExtAct"
+        }
+        if ("heart_rate" %in% names(D$data)) {
+          names(D$data)[which(names(D$data) == "heart_rate")] = "ExtHeartRate"
         }
         D$data = D$data[, -which(names(D$data) %in% c("seconds", "dateTime"))]
       }
@@ -473,23 +486,84 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
       }
       LML = length(time_longEp_8601)
       if (params_general[["dataFormat"]] == "ukbiobank_csv") {
-        acc_column = 2
         names(M$metashort)[2] = "LFENMO"
         # Use UKBiobank's second column, which is a non-wear score
         imp = D[, 2]
         M$metashort$LFENMO = M$metashort$LFENMO/1000
         nonwear_in_data = TRUE
+      } else if (params_general[["dataFormat"]] == "fitbit_json") {
+        nonwear_in_data = TRUE
+        missingValueRows = rowSums(is.na(D))
+        if (all(c("ExtAct", "ExtStep") %in% colnames(D))) {
+          # if only step is missing out of all columns and if calories is
+          # less than 2 then impute step by 0.
+          missingStep = which(missingValueRows == 1 & is.na(D[, "ExtStep"]) & D[,"ExtAct"] < 2)
+          if (length(missingStep) > 0) {
+            D[missingStep, "ExtStep"] = 0
+          }
+          missingValueRows = rowSums(is.na(D))
+        }
+        
+        # Create log of data missingnes
+        varnames = colnames(D)
+        Ntotal = nrow(D)
+        
+        perc_na = function(x, colname, Ntotal) {
+          y = round((length(which(is.na(x[,colname]) == TRUE)) / Ntotal) * 100, digits = 2)
+          return(y)
+        }
+        perc_value = function(x, value, Ntotal) {
+          y = round((length(which(x == value)) / Ntotal) * 100, digits = 2)
+          return(y)
+        }
+        n_ExtStep_missing = ifelse(test = "ExtStep" %in% varnames,
+                                   yes = perc_na(D, "ExtStep", Ntotal),
+                                   no = NA)
+        n_ExtHeartRate_missing = ifelse(test = "ExtHeartRate" %in% varnames,
+                                   yes = perc_na(D, "ExtHeartRate", Ntotal),
+                                   no = NA)
+        n_ExtAct_missing = ifelse(test = "ExtAct" %in% varnames,
+                                        yes = perc_na(D, "ExtAct", Ntotal),
+                                        no = NA)
+        n_ExtSleep_missing = ifelse(test = "ExtSleep" %in% varnames,
+                                  yes = perc_na(D, "ExtSleep", Ntotal),
+                                  no = NA)
+        n_ExtSleep_and_ExtAct_missing = ifelse(test = all(c("ExtSleep", "ExtAct") %in% varnames),
+                                           yes = length(which(is.na(D[,"ExtSleep"]) == TRUE &
+                                                                is.na(D[,"ExtAct"]) == TRUE)) / Ntotal,
+                                           no = NA)
+        QClog = data.frame(filehealth_0vars_missing = perc_value(missingValueRows, 0, Ntotal),
+                           filehealth_1vars_missing = perc_value(missingValueRows, 1, Ntotal),
+                           filehealth_2vars_missing = perc_value(missingValueRows, 2, Ntotal),
+                           filehealth_3vars_missing = perc_value(missingValueRows, 3, Ntotal),
+                           filehealth_4vars_missing = perc_value(missingValueRows, 4, Ntotal),
+                           filehealth_ExtAct_missing = n_ExtAct_missing,
+                           filehealth_ExtStep_missing = n_ExtStep_missing,
+                           filehealth_ExtHeartRate_missing = n_ExtHeartRate_missing,
+                           filehealth_ExtSleep_missing = n_ExtSleep_missing,
+                           filehealth_ExtSleep_y_ExtAct_missing = n_ExtSleep_and_ExtAct_missing)
       } else {
-        acc_column = 1
         imp = unlist(D[, 1])
         nonwear_in_data = FALSE
       }
       if (nonwear_in_data == TRUE) {
-        # Take long epoch mean of UK Biobank based invalid data indicater per 5 seconds
-        imp2 = cumsum(imp)
-        imp3 = diff(imp2[seq(1, length(imp2),
-                             by = ((60/epSizeShort) * (epSizeLong/60)))]) / ((60/epSizeShort) * (epSizeLong/60)) # rolling mean
-        nonwearscore = round(imp3 * 3) # create three level nonwear score from it, not really necessary for GGIR, but helps to retain some of the information
+        if (params_general[["dataFormat"]] == "ukbiobank_csv") {
+          # Take long epoch mean of UK Biobank based invalid data indicater per 5 seconds
+          imp2 = cumsum(imp)
+          imp3 = diff(imp2[seq(1, length(imp2),
+                               by = ((60/epSizeShort) * (epSizeLong/60)))]) / ((60/epSizeShort) * (epSizeLong/60)) # rolling mean
+          nonwearscore = round(imp3 * 3) # create three level nonwear score from it, not really necessary for GGIR, but helps to retain some of the information
+        } else if (params_general[["dataFormat"]] == "fitbit_json") {
+          missingValueRows = rowSums(is.na(D))
+          nonZero = which(missingValueRows > 0)
+          if (length(nonZero) > 0) {
+            missingValueRows[nonZero] = 1
+          }
+          imp2 = cumsum(missingValueRows)
+          imp3 = diff(imp2[seq(1, length(imp2),
+                               by = ((60/epSizeShort) * (epSizeLong/60)))]) / ((60/epSizeShort) * (epSizeLong/60)) # rolling mean
+          nonwearscore = round(imp3) * 3 # create three level nonwear score from it, not really necessary for GGIR, but helps to retain some of the information
+        }
       } else {
         # Using rolling long window sum to indicate whether it is nonwear
         nonwearscore = rep(0, LML)
@@ -589,6 +663,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
           M$metashort[is.na(M$metashort[, activityColumn]),  activityColumn] = 0
         }
       }
+      M$QClog = QClog
       # Save these files as new meta-file
       filefoldername = NA
       save(M, C, I, myfun, filename_dir, filefoldername,

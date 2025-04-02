@@ -351,6 +351,10 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
       file_summary$Dur_freqissue_30 = QCsummarise(M$QClog, freqissue)
       file_summary$Nblock_freqissue_30 = length(freqissue)
     }
+    if ("filehealth_ExtSleep_y_ExtAct_missing" %in% colnames(M$QClog)) {
+      # Fitbit data
+      file_summary = cbind(file_summary, as.data.frame(M$QClog))
+    }
   }
   
   metrics_nav = list(lookat = lookat,
