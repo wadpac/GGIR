@@ -490,6 +490,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_metrics[["do.anglez"]] = params_metrics[["do.enmoa"]] = FALSE
       params_metrics[["do.enmo"]] = params_metrics[["do.bfen"]] = FALSE
       params_metrics[["do.mad"]] = params_metrics[["do.lfenmo"]] = FALSE
+      params_general[["acc.metric"]] = "ExtAct"
       if (length(params_sleep) > 0) {
         if (any(params_sleep[["HASIB.algo"]] == "vanHees2015")) {
           stop(paste0("\nSleep algorithm ", params_sleep[["HASIB.algo"]], " is not a valid",

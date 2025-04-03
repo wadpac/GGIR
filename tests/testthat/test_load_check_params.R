@@ -165,19 +165,20 @@ test_that("load_params can load parameters", {
   expect_equal(check$params_247$LUX_day_segments[length(check$params_247$LUX_day_segments)], 24)
   params_247 = params$params_247
   
-  # if dataFormat = "actiwatch_awd", then acc.metric = "ZCY"
+  # if dataFormat = "actiwatch_awd"
   params_general$dataFormat = "actiwatch_awd"
   check = check_params(params_general = params_general,
                        params_metrics = params_metrics)
-  expect_true(check$params_metrics$do.zcy)
-  expect_equal(check$params_general$acc.metric, "ZCY")
+  expect_false(check$params_metrics$do.zcy)
+  expect_equal(check$params_general$acc.metric, "ExtAct")
   # also, no other metrics should be extracted
   params_metrics$do.anglex = TRUE
-  params_general$acc.metric = "ZCY"
+  params_general$acc.metric = "ExtAct"
   check = check_params(params_general = params_general,
                        params_metrics = params_metrics)
-  expect_true(check$params_metrics$do.zcy)
+  expect_false(check$params_metrics$do.zcy)
   expect_false(check$params_metrics$do.anglex)
+  expect_equal(check$params_general$acc.metric, "ExtAct")
   params_general = params$params_general
   params_metrics = params$params_metrics
   
