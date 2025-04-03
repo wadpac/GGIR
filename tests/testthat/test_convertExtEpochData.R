@@ -179,7 +179,8 @@ test_that("External epoch data is correctly converted", {
   convertEpochData(datadir = dn, metadatadir = "./output_tmp_testdata",
                    params_general = params_general)
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
-  load(paste0(QCbasis, "/meta_DataList_AH1234567890_PhilipsHealthBand.xlsx.RData"))
+  
+  load(paste0(QCbasis, "/meta_tmp_testdata.RData"))
   expect_equal(sum(M$metalong$nonwearscore), 0)
   expect_equal(nrow(M$metashort), 240)
   expect_equal(ncol(M$metashort), 5)
