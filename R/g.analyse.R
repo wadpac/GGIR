@@ -247,8 +247,9 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   #====================================================================
   # Analysis per recording (entire file), and merge in average day analysis results
   #====================================================================
-  # Extract the average 24 hr but ignore angle metrics
-  lookattmp = which(colnames(metashort) %in% c("angle","anglex", "angley", "anglez") ==  FALSE)
+  # Extract the average 24 hr but ignore angle metrics and externally extracted sleep
+  lookattmp = which(colnames(metashort) %in% c("angle","anglex", "angley", "anglez",
+                                               "ExtSleep", "marker") ==  FALSE)
   lookat = lookattmp[which(lookattmp > 1)] #]c(2:ncol(metashort[,lookattmp]))
   colnames_to_lookat = colnames(metashort)[lookat]
   AveAccAve24hr = matrix(NA,length(lookat),1)
@@ -349,6 +350,10 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
       freqissue = which(frequency_bias >= 0.3)
       file_summary$Dur_freqissue_30 = QCsummarise(M$QClog, freqissue)
       file_summary$Nblock_freqissue_30 = length(freqissue)
+    }
+    if ("filehealth_ExtSleep_y_ExtAct_missing" %in% colnames(M$QClog)) {
+      # Fitbit data
+      file_summary = cbind(file_summary, as.data.frame(M$QClog))
     }
   }
   

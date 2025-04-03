@@ -43,6 +43,7 @@
 \value{
   List with updated objects dsummary, ds_names, fi, and di
 }
+\keyword{internal}
 \author{
   Vincent T van Hees <v.vanhees@accelting.com>
 }

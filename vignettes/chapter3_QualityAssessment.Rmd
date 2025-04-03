@@ -171,7 +171,16 @@ GGIR part 1 also screens the acceleration signal for "clipping", i.e., sustained
 | filehealth_fbias1020_N | (Only for Axivity .cwa format) Total number of raw data blocks with a sampling frequency bias between 10 and 20%| QC/data_quality_report.csv |
 | filehealth_fbias2030_N | (Only for Axivity .cwa format) Total number of raw data blocks with a sampling frequency bias between 20 and 30% | QC/data_quality_report.csv |
 | filehealth_fbias30_N | (Only for Axivity .cwa format) Total number of raw data blocks with a sampling frequency bias higher than 30% | QC/data_quality_report.csv |
-
+| filehealth_0vars_missing | (Only for Fitbit externally derived data) Percentage of data with 0 missing variables | QC/data_quality_report.csv |
+| filehealth_1vars_missing | (Only for Fitbit externally derived data) Percentage of data with 1 missing variables | QC/data_quality_report.csv |
+| filehealth_2vars_missing | (Only for Fitbit externally derived data) Percentage of data with 2 missing variables | QC/data_quality_report.csv |
+| filehealth_3vars_missing | (Only for Fitbit externally derived data) Percentage of data with 3 missing variables | QC/data_quality_report.csv |
+| filehealth_4vars_missing | (Only for Fitbit externally derived data) Percentage of data with 4 missing variables | QC/data_quality_report.csv |
+| filehealth_ExtAct_missing | (Only for Fitbit externally derived data) Percentage of data where ExtAct is missing. | QC/data_quality_report.csv |
+| filehealth_ExtStep_missing | (Only for Fitbit externally derived data) Percentage of data where ExtStep is missing. | QC/data_quality_report.csv |
+| filehealth_ExtHeartRate_missing | (Only for Fitbit externally derived data) Percentage of data where ExtHeartRate is missing. | QC/data_quality_report.csv |
+| filehealth_ExtSleep_missing | (Only for Fitbit externally derived data) Percentage of data where ExtSleep is missing. | QC/data_quality_report.csv |
+| filehealth_ExtSleep_y_ExtAct_missing | (Only for Fitbit externally derived data) Percentage of data where both ExtSleep and ExtAct are missing. | QC/data_quality_report.csv |
 
 ## References
 

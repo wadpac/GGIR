@@ -277,7 +277,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             nightsi2 = which(sec == 0 & min == 0 & hour == 0)
           }
           # include last window if has been expanded and not present in ts
-          if (length(tail_expansion_log) != 0 & nrow(ts) > max(nightsi)) nightsi[length(nightsi) + 1] = nrow(ts)
+          if (length(tail_expansion_log) != 0 && nrow(ts) > max(nightsi)) nightsi[length(nightsi) + 1] = nrow(ts)
           # create copy of only relevant part of sleep summary dataframe
           summarysleep_tmp2 = summarysleep_tmp[which(summarysleep_tmp$sleepparam == sibDef),]
           # Add sustained inactivity bouts (sib) to the time series
@@ -421,6 +421,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                 #===========================================
                 # THIS IS THE OLD NAP DETECTION IMPLEMENTATION
                 # nap detection
+                # the new NAP detection happens inside g.part5.analyseRest
                 if (params_general[["acc.metric"]] != "ENMO" |
                     params_sleep[["HASIB.algo"]] != "vanHees2015") {
                   warning("\nNap classification currently assumes acc.metric = ENMO and HASIB.algo = vanHees2015, so output may not be meaningful")
@@ -694,11 +695,16 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     if (length(diaryImputationCode_col) == 0) {
                       diaryImputationCode_col = NULL
                     }
+                    
+                    marker_col = grep(pattern = "marker", x = names(ts), value = TRUE)
+                    if (length(marker_col) == 0) {
+                      marker_col = NULL
+                    }
                     g.part5.savetimeseries(ts = ts[, c("time", "ACC", "diur", "nonwear",
                                                        "guider", "window", "sibdetection", napNonwear_col,
                                                        lightpeak_col, selfreported_col,
                                                        angle_col, temperature_col, step_count_col,
-                                                       diaryImputationCode_col)],
+                                                       diaryImputationCode_col, marker_col)],
                                            LEVELS = LEVELS,
                                            desiredtz = params_general[["desiredtz"]],
                                            rawlevels_fname = rawlevels_fname,

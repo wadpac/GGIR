@@ -231,7 +231,8 @@ The csv. files contain the variables as shown below.
 | error_wake | Difference between wakeup and guider_wake |
 | fraction_night_invalid | Fraction of the night (noon-noon or 6pm-6pm) for which the data was invalid, e.g. monitor not worn or no accelerometer measurement started/ended within the night. |
 | SleepDurationInSpt | Total sleep duration, which equals the accumulated nocturnal sustained inactivity bouts within the Sleep Period Time. |
-| duration_sib_wakinghours | Accumulated sustained inactivity bouts during the day. These are the periods we would label during the night as sleep, but during the day they form a subclass of inactivity, which may represent day time sleep or wakefulness while being motionless for a sustained period of time number_sib_sleepperiod} Number of nocturnal sleep periods, with nocturnal referring to the Sleep Period Time window. |
+| duration_sib_wakinghours | Accumulated sustained inactivity bouts during the day. These are the periods we would label during the night as sleep, but during the day they form a subclass of inactivity, which may represent day time sleep or wakefulness while being motionless for a sustained period of time |
+| number_sib_sleepperiod | Number of nocturnal sleep periods, with nocturnal referring to the Sleep Period Time window. |
 | duration_sib_wakinghours_atleast15min | Same as duration_sib_wakinghours, but limited to SIBs that last at least 15 minutes. |
 | num ber_sib_wakinghours | Number of sustained inactivity bouts during the day, with day referring to the time outside the Sleep Period Time window. |
 | sleeponset_ts | sleeponset formatted as a timestamp |

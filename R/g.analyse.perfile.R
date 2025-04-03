@@ -29,7 +29,7 @@ g.analyse.perfile = function(I, C, metrics_nav,
   # Person identification number
   filesummary[vi] = file_summary$ID
   # Identify which of the metrics are in g-units to aid deciding whether to multiply by 1000
-  g_variables_lookat = lookat[grep(x = colnames_to_lookat, pattern = "BrondCount|ZCX|ZCY|NeishabouriCount", invert = TRUE)]
+  g_variables_lookat = lookat[grep(x = colnames_to_lookat, pattern = "BrondCount|ZCX|ZCY|ZCZ|NeishabouriCount|ExtAct|ExtHeartRate", invert = TRUE)]
   
   # Serial number
   filesummary[(vi + 1)] = file_summary$deviceSerialNumber
@@ -144,7 +144,21 @@ g.analyse.perfile = function(I, C, metrics_nav,
                     "filehealth_totimp_N")
     vi = vi + 2
   }
-  
+  if ("filehealth_ExtSleep_y_ExtAct_missing" %in% names(file_summary)) {
+    Fitbit_filehealth_columns = c("filehealth_0vars_missing",
+                                  "filehealth_1vars_missing",
+                                  "filehealth_2vars_missing",
+                                  "filehealth_3vars_missing",
+                                  "filehealth_4vars_missing",
+                                  "filehealth_ExtAct_missing",
+                                  "filehealth_ExtStep_missing",
+                                  "filehealth_ExtHeartRate_missing",
+                                  "filehealth_ExtSleep_missing",
+                                  "filehealth_ExtSleep_y_ExtAct_missing")
+    filesummary[vi:(vi + 9)] = file_summary[, Fitbit_filehealth_columns]
+    s_names[vi:(vi + 9)] = Fitbit_filehealth_columns
+    vi = vi = 10
+  }
   #quantile, ML5, and intensity gradient variables
   if (doquan == TRUE) {
     q1 = length(output_avday$QUAN)
