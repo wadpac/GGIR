@@ -244,7 +244,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
     
     # filename
     if (!all(is.na(unlist(fnames[i])))) {
-      if (params_general[["dataFormat"]] == "fitbit_json") {
+      if (params_general[["dataFormat"]] %in% c("fitbit_json", "phb_xlsx")) {
         fname = basename(dirname(unlist(fnames[i])[1]))
       } else {
         fname = basename(unlist(fnames[i])[1])
@@ -562,7 +562,6 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                   nonwearscore[ni] = 3
                 }
                 if (length(which(!is.na(imp[indices]))) > 1) {
-                  if (is.na(sd(imp[indices], na.rm = TRUE))) browser()
                   if (sd(imp[indices], na.rm = TRUE) < 0.0001 &&
                       mean(imp[indices], na.rm = TRUE) < 2) {
                     nonwearscore[ni] = 3
@@ -645,25 +644,37 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                      parameters = NA, 
                      expected_sample_rate = NA, 
                      expected_unit = "g", 
-                     colnames = c("ExtStep", "ExtSleep"),
+                     colnames = c("ExtAct", "ExtStep", "ExtSleep"),
                      outputres = epSizeShort,
                      minlength = NA,
-                     outputtype = c("numeric", "numeric"),
+                     outputtype = c("numeric", "numeric", "numeric"),
                      aggfunction = NA,
                      timestamp = F, 
-                     reporttype = c("event", "type"))
+                     reporttype = c("scalar", "event", "type"))
+        var_missing = which(c("ExtAct", "ExtStep", "ExtSleep") %in% colnames(D) == FALSE)
+        if (length(var_missing) > 0) {
+          myfun[["colnames"]] = myfun[["colnames"]][-var_missing]
+          myfun[["outputtype"]] = myfun[["outputtype"]][-var_missing]
+          myfun[["reporttype"]] = myfun[["reporttype"]][-var_missing]
+        }
       } else if (params_general[["dataFormat"]] == "actiwatch_csv" && "ExtSleep" %in% colnames(D)) {
         myfun = list(FUN = NA,
                      parameters = NA, 
                      expected_sample_rate = NA, 
                      expected_unit = "g", 
-                     colnames = c("ExtSleep"),
+                     colnames = c("ExtAct", "ExtSleep"),
                      outputres = epSizeShort,
                      minlength = NA,
-                     outputtype = c("numeric"),
+                     outputtype = c("numeric", "numeric"),
                      aggfunction = NA,
                      timestamp = F, 
-                     reporttype = c("type"))
+                     reporttype = c("scalar", "type"))
+        var_missing = which(c("ExtAct", "ExtSleep") %in% colnames(D) == FALSE)
+        if (length(var_missing) > 0) {
+          myfun[["colnames"]] = myfun[["colnames"]][-var_missing]
+          myfun[["outputtype"]] = myfun[["outputtype"]][-var_missing]
+          myfun[["reporttype"]] = myfun[["reporttype"]][-var_missing]
+        }
         # flip sleep scoring 1 <-> 0 to be consistent with GGIR,
         # where 1 is sleep and 0 is wake:
         M$metashort$ExtSleep[which(M$metashort$ExtSleep == 0)] = -1
@@ -763,7 +774,6 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
     }
   } else {
     for (i in f0:f1) {
-      if (verbose == TRUE) cat(paste0(i, " "))
       main_convert(i, fnames, metadatadir, params_general, I_bu,
                    epSizeShort, epSizeLong, tz, verbose, M, C)
     }
