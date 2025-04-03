@@ -11,7 +11,6 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
 
   #get input variables
   input = list(...)
-  
   if (length(input) > 0 ||
       length(params_247) == 0 || length(params_phyact) == 0) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments,
@@ -54,7 +53,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                                                                            by = (3600/ws2) * 12),
                                                                        length(time))], tz = params_general[["desiredtz"]])))
   ExtFunColsi = ExtFunColsi - 1 # subtract 1 because code ignores timestamp
-  
+  ExtFunColsi_backup = ExtFunColsi
   for (di in 1:ndays) { #run through days
     params_247[["qwindow"]] = qwindowbackup
     if (is.data.frame(params_247[["qwindow"]]) == TRUE) {
@@ -392,7 +391,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               }
             }
             #===
-            ExtFunColsi_backup = ExtFunColsi
+
             for (mi in 1:ncol(vari)) { #run through metrics (for features based on single metrics)
               #=======================================
               # Motivation on the code below:
@@ -451,15 +450,17 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 }
               }
               #=====
-              gUnitMetric = length(grep(x = colnames(vari)[mi], pattern = "BrondCount|ZCX|ZCY|ZCZ|marker|NeishabouriCount|ExtAct", invert = TRUE)) > 0
+              gUnitMetric = length(grep(x = colnames(vari)[mi], pattern = "BrondCount|ZCX|ZCY|ZCZ|marker|NeishabouriCount|ExtAct|ExtHeartRate", invert = TRUE)) > 0
               UnitReScale = ifelse(test = gUnitMetric, yes = 1000, no = 1)
               # Starting filling output matrix daysummary with variables per day segment and full day.
               if (minames[mi] %in% c("ZCX", "ZCY", "ZCZ", "BrondCount_x", "BrondCount_y",
                                      "BrondCount_z", "NeishabouriCount_x", "NeishabouriCount_y", 
-                                     "NeishabouriCount_z", "NeishabouriCount_vm", "ExtAct") == FALSE) {
+                                     "NeishabouriCount_z", "NeishabouriCount_vm", "ExtAct", "ExtHeartRate") == FALSE) {
                 unit = "_mg"
               } else if (minames[mi] == "ExtAct") {
                 unit = ""
+              } else if (minames[mi] == "ExtHeartRate") {
+                unit = "_bpm"
               } else {
                 unit = "_cnt"
               }
@@ -529,7 +530,8 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 } else {
                   daysummary[di,collectfi] = ""
                 }
-                if (anwindices[1] == 1 & length(anwindices) > 6*60*(60/ws3)) { # only derive if 1-6am falls within window
+                if (anwindices[1] == 1 & length(anwindices) > 6 * 60 * (60/ws3)) {
+                  # only derive if 1-6am falls within window
                   fi = correct_fi(di, ds_names, fi, varname = paste0("mean_", colnames(vari)[mi], unit, "_1-6am"))
                   daysummary[di,fi] = mean(varnum[((1 * 60 * (60 / ws3)) + 1):(6 * 60 * (60 / ws3))]) * UnitReScale #from 1am to 6am
                   ds_names[fi] = paste0("mean_",colnames(vari)[mi], unit, "_1-6am"); fi = fi + 1
@@ -690,7 +692,6 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               }
               if (mi %in% ExtFunColsi == TRUE) { # INSERT HERE VARIABLES DERIVED WITH EXTERNAL FUNCTION
                 if (myfun$reporttype[rti] == "event") { # For the event report type we take the sum
-                  
                   segmentInfo = list(anwi_nameindices = anwi_nameindices,
                                      anwi_index = anwi_index,
                                      anwi_t0 = anwi_t0,
@@ -706,10 +707,9 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   ds_names = eventAgg$ds_names
                   fi = eventAgg$fi
                 } else if (myfun$reporttype[rti] == "scalar") { # For the scalar report type we take the mean
-                  varnamescalar = paste0(colnames(vari)[mi], "_mean", anwi_nameindices[anwi_index])
-                  fi = correct_fi(di, ds_names, fi, varname = varnamescalar)
-                  daysummary[di,fi] = mean(varnum)
-                  ds_names[fi] = varnamescalar; fi = fi + 1
+                  # Scalars are already summarised as mean
+                  # Specific summary statistics for non-acceleration scalar
+                  # such as heart rate have not been implemented yet
                 } else if (myfun$reporttype[rti] == "type") { # For type we calculate time spent in each class
                   # Not implemented yet
                 }

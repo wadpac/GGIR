@@ -17,6 +17,13 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
                                                  c("anglex", "angley", "anglez", 
                                                    "ExtSleep", "timestamp", "marker") == FALSE)[1]]
   }
+
+  getUnitRescale = function(varName) {
+    gUnitMetric = length(grep(x = varName,
+                              pattern = "BrondCount|ZCX|ZCY|ZCZ|marker|NeishabouriCount|ExtAct|ExtHeartRate", invert = TRUE)) > 0
+    UnitReScale = ifelse(test = gUnitMetric, yes = 1000, no = 1)
+    return(UnitReScale)
+  }
   
   if (doquan == TRUE) {
     QLN = rep(" ",length(params_247[["qlevels"]]))
@@ -34,6 +41,7 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
     for (quani in 1:ncol(averageday)) { # these columns of averageday correspond to the metrics from part 1
       if (colnames(M$metashort)[(quani + 1)] %in% c("anglex", "angley", "anglez",
                                                     "ExtSleep", "marker") == FALSE) {
+        UnitReScale = getUnitRescale(colnames(M$metashort)[(quani + 1)])
         #--------------------------------------
         # quantiles
         QUANtmp =  quantile(averageday[((t_TWDI[1] * (3600 / ws3)) + 1):(t_TWDI[length(t_TWDI)] * (3600 / ws3)), quani],
@@ -58,7 +66,9 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
           # Note that t_TWDI[length(t_TWDI)] in the next line makes that we only calculate ML5 over the full day
           ML5ADtmp = g.getM5L5(avday,ws3,t0_LFMF = t_TWDI[1], t1_LFMF = t_TWDI[length(t_TWDI)],
                                M5L5res = params_247[["M5L5res"]],
-                               winhr_value, qM5L5 = params_247[["qM5L5"]], MX.ig.min.dur = params_247[["MX.ig.min.dur"]])
+                               winhr_value, qM5L5 = params_247[["qM5L5"]],
+                               MX.ig.min.dur = params_247[["MX.ig.min.dur"]],
+                               UnitReScale = UnitReScale)
           ML5AD = as.data.frame(c(ML5AD, ML5ADtmp), stringsAsFactors = TRUE)
         }
         ML5N = names(ML5AD)
@@ -71,7 +81,7 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
         # Acceleration 1-6am
         one2sixname = paste0("1to6am_", colnames(M$metashort)[(quani + 1)], "_mg")
         ML5AD_names = c(ML5AD_names, one2sixname)
-        ML5AD$one2six = mean(avday[((1 * 60 * (60 / ws3)) + 1):(6 * 60 * (60 / ws3))]) * 1000
+        ML5AD$one2six = mean(avday[((1 * 60 * (60 / ws3)) + 1):(6 * 60 * (60 / ws3))]) * UnitReScale
         colnames(ML5AD)[which(colnames(ML5AD) == "one2six")] = one2sixname
       }	
     }	
@@ -83,11 +93,12 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
     igfullr = igfullr_names = c()
     for (igi in 1:ncol(averageday)) {
       if (colnames(M$metashort)[(igi + 1)] %in% c("anglex", "angley", "anglez", "marker") == FALSE) {
+        UnitReScale = getUnitRescale(colnames(M$metashort)[(igi + 1)])
         y_ig = c()
         avday = averageday[, igi] 
         avday = c(avday[(firstmidnighti * (ws2 / ws3)):length(avday)], avday[1:((firstmidnighti * (ws2 / ws3)) - 1)])
         # we are not taking the segment of the day now (too much output)
-        q60 = cut((avday * 1000), breaks = params_247[["iglevels"]], right = FALSE)
+        q60 = cut((avday * UnitReScale), breaks = params_247[["iglevels"]], right = FALSE)
         y_ig  = (as.numeric(table(q60)) * ws3) / 60 #converting to minutes
         x_ig = zoo::rollmean(params_247[["iglevels"]], k = 2)
         igout = g.intensitygradient(x_ig, y_ig)

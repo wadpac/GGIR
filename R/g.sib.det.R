@@ -115,7 +115,10 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
       # note that for external derived metrics we refer to it as ZCY here
       # even though the exact calculation may have differed
       if (params_sleep[["Sadeh_axis"]] %in% c("X", "Y", "Z") == FALSE) params_sleep[["Sadeh_axis"]] = "Z"
-      zeroCrossingCount =  IMP$metashort[,which(colnames(IMP$metashort) == paste0("ZC", params_sleep[["Sadeh_axis"]]))]
+      count_column_index = which(colnames(IMP$metashort) %in% c(paste0("ZC",
+                                                                       params_sleep[["Sadeh_axis"]]),
+                                                                "ExtAct"))[1]
+      zeroCrossingCount =  IMP$metashort[, count_column_index]
       zeroCrossingCount = fix_NA_invector(zeroCrossingCount)
       zeroCrossingCount = zeroCrossingCount * zc.scale
       # optionally add NeishabouriCounts for comparison
