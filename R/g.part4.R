@@ -650,7 +650,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                 # Classify as being part of the guider window or not
                 for (evi in 1:nrow(spo)) {
                   if (spo$start[evi] < GuiderWake && spo$end[evi] > GuiderOnset) {
-                    if (params_sleep[["sleepwindowType"]] == "TimeInBed" &&
+                    if ((params_sleep[["sleepwindowType"]] == "TimeInBed" || guider == "markerbutton") &&
                         sum(params_sleep[["sib_must_fully_overlap_with_TimeInBed"]]) != 0) {
                       if (all(params_sleep[["sib_must_fully_overlap_with_TimeInBed"]]) &&
                           spo$start[evi] > GuiderOnset && spo$end[evi] < GuiderWake) {
@@ -984,9 +984,10 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   #----------------------------------------------
                   nightsummary[sumi, 23] = tmp1  #guider_onset_ts
                   nightsummary[sumi, 24] = tmp4  #guider_wake_ts
-                  if (params_sleep[["sleepwindowType"]] == "TimeInBed") {
-                    # If guider is a sleeplog and if the sleeplog recorded time in bed then
-                    # calculate: sleep latency:
+                  if (params_sleep[["sleepwindowType"]] == "TimeInBed" || guider == "markerbutton") {
+                    # If guider is a sleeplog and if the sleeplog recorded time in bed or a marker button
+                    # then calculate:
+                    # sleep latency:
                     nightsummary[sumi, 25] = round(nightsummary[sumi, 3] - nightsummary[sumi, 7],
                                                    digits = 7)  #sleeponset - guider_onset
                     # sleep efficiency:
@@ -1149,7 +1150,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           }
           sumi = sumi + 1
         }
-        if (params_sleep[["sleepwindowType"]] != "TimeInBed") {
+        if (params_sleep[["sleepwindowType"]] != "TimeInBed" &&
+            params_sleep[["consider_marker_button"]] == FALSE) {
           nightsummary = nightsummary[, which(colnames(nightsummary) %in% c("sleeplatency", "sleepefficiency") ==
                                                 FALSE)]
         }
