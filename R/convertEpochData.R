@@ -7,7 +7,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
   epSizeShort = params_general[["windowsizes"]][1]
   epSizeLong = params_general[["windowsizes"]][2]
   epSizeNonWear = params_general[["windowsizes"]][3]
-  myfun = NULL
+  
   # Identify input data files
   if (dir.exists(datadir) == FALSE) {
     stop("\nWhen working with external data, argument datadir is expected to be a directory")
@@ -197,7 +197,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
   I_bu = I # backup version of I (for now only used in actigraph_csv)
   main_convert = function(i, fnames, metadatadir, params_general, I_bu,
                           epSizeShort, epSizeLong, tz, verbose, M, C) {
-    
+    myfun = NULL
     if (verbose == TRUE) {
       if (i  == 1) {
         cat(paste0("\nP1 file: ", i))

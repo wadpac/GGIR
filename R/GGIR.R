@@ -201,7 +201,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     # Do not modify f1 here when not attempting to process GGIR part 1
     # we only expect datadir to exist when running part 1
     if (filelist == FALSE && params_general[["dataFormat"]] %in% c("phb_xlsx", "fitbit_json") == FALSE) {
-      f1 <- length(dir(datadir, recursive = TRUE, ignore.case = TRUE, pattern = "[.](csv|bin|Rda|wa|cw|gt3)")) # modified by JH
+      f1 <- length(dir(datadir, recursive = TRUE, ignore.case = TRUE, pattern = "[.](csv|bin|Rda|wa|cw|gt3|AW)")) # modified by JH
     } else if (params_general[["dataFormat"]] %in% c("phb_xlsx", "fitbit_json")) {
       # use number of directories as indicator for number of recordings
       f1 = length(dir(datadir, recursive = FALSE))
