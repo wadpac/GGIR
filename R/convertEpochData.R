@@ -607,8 +607,18 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
       }
       #--------------------------------------------
       # Create myfun object to trigger outcome type specific analysis
+      remove_missing_vars_from_myfun = function(myfun, availableVars) {
+        # function to correct the myfun object for variables
+        # that are not in the data
+        var_missing = which(myfun$colnames %in% availableVars == FALSE)
+        if (length(var_missing) > 0) {
+          myfun[["colnames"]] = myfun[["colnames"]][-var_missing]
+          myfun[["outputtype"]] = myfun[["outputtype"]][-var_missing]
+          myfun[["reporttype"]] = myfun[["reporttype"]][-var_missing]
+        }
+        return(myfun)
+      }
       if (params_general[["dataFormat"]] == "sensewear_xls") {
-        
         myfun = list(FUN = NA,
                      parameters = NA, 
                      expected_sample_rate = NA, 
@@ -633,12 +643,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                      aggfunction = NA,
                      timestamp = F, 
                      reporttype = c("scalar", "event",  "scalar", "type"))
-        var_missing = which(c("ExtAct", "ExtStep","ExtHeartRate", "ExtSleep") %in% colnames(D) == FALSE)
-        if (length(var_missing) > 0) {
-          myfun[["colnames"]] = myfun[["colnames"]][-var_missing]
-          myfun[["outputtype"]] = myfun[["outputtype"]][-var_missing]
-          myfun[["reporttype"]] = myfun[["reporttype"]][-var_missing]
-        }
+        myfun = remove_missing_vars_from_myfun(myfun, availableVars = colnames(D))
       } else if (params_general[["dataFormat"]] %in% c("phb_xlsx")) {
         myfun = list(FUN = NA,
                      parameters = NA, 
@@ -651,12 +656,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                      aggfunction = NA,
                      timestamp = F, 
                      reporttype = c("scalar", "event", "type"))
-        var_missing = which(c("ExtAct", "ExtStep", "ExtSleep") %in% colnames(D) == FALSE)
-        if (length(var_missing) > 0) {
-          myfun[["colnames"]] = myfun[["colnames"]][-var_missing]
-          myfun[["outputtype"]] = myfun[["outputtype"]][-var_missing]
-          myfun[["reporttype"]] = myfun[["reporttype"]][-var_missing]
-        }
+        myfun = remove_missing_vars_from_myfun(myfun, availableVars = colnames(D))
       } else if (params_general[["dataFormat"]] == "actiwatch_csv" && "ExtSleep" %in% colnames(D)) {
         myfun = list(FUN = NA,
                      parameters = NA, 
@@ -669,12 +669,7 @@ convertEpochData = function(datadir = c(), metadatadir = c(),
                      aggfunction = NA,
                      timestamp = F, 
                      reporttype = c("scalar", "type"))
-        var_missing = which(c("ExtAct", "ExtSleep") %in% colnames(D) == FALSE)
-        if (length(var_missing) > 0) {
-          myfun[["colnames"]] = myfun[["colnames"]][-var_missing]
-          myfun[["outputtype"]] = myfun[["outputtype"]][-var_missing]
-          myfun[["reporttype"]] = myfun[["reporttype"]][-var_missing]
-        }
+        myfun = remove_missing_vars_from_myfun(myfun, availableVars = colnames(D))
         # flip sleep scoring 1 <-> 0 to be consistent with GGIR,
         # where 1 is sleep and 0 is wake:
         M$metashort$ExtSleep[which(M$metashort$ExtSleep == 0)] = -1
