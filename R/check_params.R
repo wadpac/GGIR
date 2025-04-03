@@ -485,29 +485,12 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   
   if (length(params_metrics) > 0 & length(params_general) > 0) {
     if (params_general[["dataFormat"]] %in% c("actiwatch_awd", "actiwatch_csv", "phb_xlsx")) {
-      if (params_metrics[["do.zcy"]] == FALSE | params_general[["acc.metric"]] != "ZCY") {
-        params_metrics[["do.zcy"]] = TRUE
-        params_general[["acc.metric"]] = "ZCY"
-        # Note that for the calculation this does not have any effect
-        # we do this to make sure the count metric as provided by Actiwatch 
-        # has a name that the rest of GGIR can deal with.
-        # If we add a new count name for all of the many historical actigraphy devices
-        # that generate their own count metrics we would have to deal with all 
-        # those names in the GGIR code.
-      }
       params_metrics[["do.enmo"]] = params_metrics[["do.anglez"]] = FALSE
       params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = FALSE
       params_metrics[["do.anglez"]] = params_metrics[["do.enmoa"]] = FALSE
       params_metrics[["do.enmo"]] = params_metrics[["do.bfen"]] = FALSE
       params_metrics[["do.mad"]] = params_metrics[["do.lfenmo"]] = FALSE
-      params_general[["acc.metric"]] = "ZCY"
       if (length(params_sleep) > 0) {
-        if (params_sleep[["Sadeh_axis"]] != "Y") {
-          params_sleep[["Sadeh_axis"]] = "Y"
-          # Note that for the calculation this does not have any effect
-          # we do this to make sure the count metric as provide by Actiwatch 
-          # has a name the rest of GGIR can deal with
-        }
         if (any(params_sleep[["HASIB.algo"]] == "vanHees2015")) {
           stop(paste0("\nSleep algorithm ", params_sleep[["HASIB.algo"]], " is not a valid",
                       " setting in combination with dataFormat set to ",
