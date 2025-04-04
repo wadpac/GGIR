@@ -72,6 +72,9 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       header = "no header"
     } else if (dformat == FORMAT$BIN) { # .bin and not movisens, could be GENEActiv or Parmay Matrix
       mon = inspect_binFile_brand(filename = datafile)
+      if (mon == MONITOR$PARMAY_MTX && utils::packageVersion("GGIRread") < "1.0.4") {
+        stop("Please update R package GGIRread to version 1.0.4 or higher", call. = FALSE)
+      }
       # try read the file as if it is a geneactiv and store output in variable 'isitageneactive'
       if (mon == MONITOR$GENEACTIV) {
         if (all(names(isitageneactive) %in% c("header", "data.out") == TRUE)) {
@@ -110,13 +113,6 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         }
       } else if (mon == MONITOR$PARMAY_MTX) {
         header = NULL
-        if (!"readParmayMatrix" %in% getNamespaceExports("GGIRread")) {
-          stop(paste0("\nError processing ", filename, 
-                      ": it appears you're attempting to read Parmay Matrix files, ",
-                      "but you have an old version of GGIRread. ",
-                      "Please update GGIRread to version 0.1.4 or later ",
-                      "with install.packages('GGIRread') and try again."))
-        }
         sf = GGIRread::readParmayMatrix(datafile, output = "sf")
       } else {
         stop(paste0("\nError processing ", filename, ": unrecognised .bin file"))
