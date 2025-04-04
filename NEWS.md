@@ -1,4 +1,4 @@
-# CHANGES IN GGIR VERSION 3.2-?
+# CHANGES IN GGIR VERSION 3.2-3
 
 - Part 1: Implemented functionality to read and process Parmay Matrix sensors data (bin or BIN files) #1253
 
