@@ -130,6 +130,7 @@ additional packages:
     -   [Movisens](https://www.movisens.com/en/) .bin files with data 
         stored in folders. GGIR expects that each participant's folder 
         contains at least a file named acc.bin.
+    -   [Parmay Matrix](https://www.parmaytech.com/) .bin and .BIN
     -   Any other accelerometer brand that generates csv output, see
         documentation for functions `read.myacc.csv` and argument
         `rmc.noise` in the [GGIR function documentation

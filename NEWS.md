@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.2-3
+
+- Part 1: Implemented functionality to read and process Parmay Matrix sensors data (bin or BIN files) #1253
+
 # CHANGES IN GGIR VERSION 3.2-2
 
 - Part 2: Improve handling 23 hour days in day summary #1281
