@@ -90,7 +90,7 @@ Below we present a summary of the available input arguments. Please see the [par
 
 ### Arguments to find time gaps and resampling
 
-- `rmc.check4timegaps` - Boolean to indicate whether gaps in time should be imputed with zeros.
+- `rmc.check4timegaps` - Boolean to indicate whether gaps in time should be imputed with most recent value normalised to 1 _g_.
 - `rmc.doresample` - Boolean to indicate whether to resample the data based on the available timestamps and extracted sample rate from the file header
 - `interpolationType` - Integer to indicate type of interpolation to be used when resampling time series (mainly relevant for Axivity sensors), 1=linear, 2=nearest neighbour.
 
