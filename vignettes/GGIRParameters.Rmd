@@ -119,6 +119,7 @@ find a description and default value for all the arguments.
 | maxRecordingInterval        | 1                 | params_general           |
 | recording_split_times       | 1                 | params_general           |
 | recording_split_overlap     | 1                 | params_general           |
+| recording_split_ignore_edges | 1                | params_general           |
 | recording_split_timeformat  | 1                 | params_general           |
 | nonwear_approach            | 1                 | params_general           |
 | dataFormat                  | 1                 | params_general           |
