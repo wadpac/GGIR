@@ -267,6 +267,14 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                                                       nightsummary.tmp$guider == "sleeplog")])  # number of nights with sleeplog
             personSummary[i, cntt + 6] = n_nights_sleeplog
             personSummarynames = c(personSummarynames, paste("n_nights_sleeplog", sep = ""))
+            cntt = cntt + 6
+            # total number of nights with marker button as guider
+            if (params_sleep[["consider_marker_button"]] == TRUE) {
+              personSummary[i, cntt + 1] = length(nightsummary.tmp$night[which(nightsummary.tmp$sleepparam == udef[1] &
+                                                    nightsummary.tmp$guider == "markerbutton")])
+              personSummarynames = c(personSummarynames, "n_nights_markerbutton")
+              cntt = cntt + 1
+            }
             # total number of complete weekend and week nights
             th3 = nightsummary.tmp$weekday[this_sleepparam]
             if (only.use.sleeplog == TRUE) {
@@ -275,23 +283,23 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
               validcleaningcode = 1
             }
             
-            personSummary[i, cntt + 7] = length(which(nightsummary.tmp$cleaningcode[this_sleepparam] <= validcleaningcode &
+            personSummary[i, cntt + 1] = length(which(nightsummary.tmp$cleaningcode[this_sleepparam] <= validcleaningcode &
                                                         (th3 == "Friday" | th3 == "Saturday")))
-            personSummary[i, cntt + 8] = length(which(nightsummary.tmp$cleaningcode[this_sleepparam] <= validcleaningcode &
+            personSummary[i, cntt + 2] = length(which(nightsummary.tmp$cleaningcode[this_sleepparam] <= validcleaningcode &
                                                         (th3 == "Monday" | th3 == "Tuesday" | th3 == "Wednesday" |
                                                            th3 == "Thursday" | th3 == "Sunday")))
             personSummarynames = c(personSummarynames, paste("n_WE_nights_complete", sep = ""), paste("n_WD_nights_complete",
                                                                                                       sep = ""))
             # number of days with sleep during the day
-            personSummary[i, cntt + 9] = length(which(nightsummary.tmp$daysleep[this_sleepparam] == 1 &
+            personSummary[i, cntt + 3] = length(which(nightsummary.tmp$daysleep[this_sleepparam] == 1 &
                                                         (th3 == "Friday" | th3 == "Saturday")))
-            personSummary[i, cntt + 10] = length(which(nightsummary.tmp$daysleep[this_sleepparam] == 1 & 
+            personSummary[i, cntt + 4] = length(which(nightsummary.tmp$daysleep[this_sleepparam] == 1 & 
                                                          (th3 == "Monday" | th3 == "Tuesday" | 
                                                             th3 == "Wednesday" | th3 == "Thursday" |
                                                             th3 == "Sunday")))
             personSummarynames = c(personSummarynames, paste("n_WEnights_daysleeper", sep = ""), paste("n_WDnights_daysleeper",
                                                                                                        sep = ""))
-            cnt = cntt + 10
+            cnt = cntt + 4
             #-------------------------------------------
             # sleep log summary
             turn_numeric = function(x, varnames) {
