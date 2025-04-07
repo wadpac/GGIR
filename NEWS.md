@@ -1,23 +1,12 @@
 # CHANGES IN GGIR VERSION 3.2-4
 
-- Part 1: Expand split recording functionality with parameter recording_split_ignore_edges. #1278
+- Part 1:
 
-# CHANGES IN GGIR VERSION 3.2-3
+  - Expand split recording functionality with parameter recording_split_ignore_edges. #1278
 
-- Part 1: Implemented functionality to read and process Parmay Matrix sensors data (bin or BIN files) #1253
+  - Add option to load externally derived epoch data from Actical, Philips Health Band, and Fitbit. #1205
 
-# CHANGES IN GGIR VERSION 3.2-2
-
-- Part 1: Add option to load externally derived epoch data from Actical, Philips Health Band, and Fitbit. #1205
-
-- Part 1: Parameter do.parallel now also works for loading externally derived epoch data. #1205
-
-- Part 2: Improve handling 23 hour days in day summary #1281
-
-- Part 4: Now detects duplicated ID in sleeplog and generates error to inform user #1281
-
-- Part 4: No longer shows warning when GGIR part 4 falls back on 9am-7pm guider because it is
-unlikely to be used and if it is used the user will be able to see this in the output. #1281
+  - Parameter do.parallel now also works for loading externally derived epoch data. #1205
 
 - Part 1 and 5: Now saves marker button data from Actiwatch, MotionWatch8, and Philips Health band to GGIR milestone data and includes it in the visualreport.
 
@@ -36,6 +25,21 @@ unlikely to be used and if it is used the user will be able to see this in the o
   - Remove code sections relating to the previously deprecated BrondCounts.
 
 - Vignettes: Added Annex page on date and time formats in R.
+
+- Part 4 and 5: csv reports now track how often marker button is used as guider #1267.
+
+# CHANGES IN GGIR VERSION 3.2-3
+
+- Part 1: Implemented functionality to read and process Parmay Matrix sensors data (bin or BIN files) #1253
+
+# CHANGES IN GGIR VERSION 3.2-2
+
+- Part 2: Improve handling 23 hour days in day summary #1281
+
+- Part 4: Now detects duplicated ID in sleeplog and generates error to inform user #1281
+
+- Part 4: No longer shows warning when GGIR part 4 falls back on 9am-7pm guider because it is
+unlikely to be used and if it is used the user will be able to see this in the output. #1281
 
 # CHANGES IN GGIR VERSION 3.2-1
 
