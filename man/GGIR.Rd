@@ -298,6 +298,12 @@ GGIR(mode = 1:5,
         \code{recording_split_times}.
       }
       
+      \item{recording_split_ignore_edges}{
+        Boolean (default = FALSE)
+        To indicate whether the recording time before and after the time range defined by
+        \code{recording_split_times} should be considered as segments.
+      }
+      
       \item{recording_split_overlap}{
         Numeric (default = 0).
         Number of hours to use as buffer when splitting recording. A possitive number
