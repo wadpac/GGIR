@@ -61,14 +61,12 @@ If you need dedicated support with the use of GGIR or need someone to
 adapt GGIR to your needs then Vincent van Hees is available as
 [independent consultant](https://www.accelting.com/).
 
-**Training in R essentials and GGIR** We offer frequent online GGIR training courses. Check our dedicated training
-[website](https://www.accelting.com/ggir-training/) with more details and
-the option to book your training. Do you have questions about the
-training or the booking process? Do not hesitate to contact us via:
-[training\@accelting.com](mailto:training@accelting.com){.email}.
+**Training in GGIR** The training we organised between 2022 and 2024 has been discontinued.
+The now much improved free online GGIR documentation has substantially reduced the need for dedicated training services for most new users. However, for those who still prefer to receive GGIR training, please contact [Jairo Hidalgo Migueles](mailto:jairo@jhmigueles.com){.email} who will facilitate a GGIR training via his own website moving forward.
+
+The training materials for the old course can be found [here](https://www.accelting.com/ggir-training-materials/).
 
 Also of interest may be the brief [free R introduction tutorial](https://www.accelting.com/short-r-tutorial/).
-
 
 **Change log**
 

@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,6 +60,7 @@
     <li><a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a></li>
     <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
     <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
+    <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
@@ -436,6 +437,37 @@ to the last four steps in the HDCZA algorithm.</p>
 <code>HASPT.algo = "HorAngle"</code></p>
 </div>
 <div class="section level3">
+<h3 id="guider-motionware-experimental">Guider: MotionWare (EXPERIMENTAL)<a class="anchor" aria-label="anchor" href="#guider-motionware-experimental"></a>
+</h3>
+<p>This is an attempt to implement the algorithm for auto-detection of
+sleep as described in the non-public document by Cambridge
+Neurotechnologies: “Information bulletin no.3 sleep algorithms”. The
+algorithm uses a combination of count and marker data to identify the
+sleep periods in the day, where GGIR for now only retains the longest
+identified sleep period.</p>
+<p>I have attempted to implement it to see whether it can provide value.
+For the moment, this work is experimental.</p>
+</div>
+<div class="section level3">
+<h3 id="guider-hlrb-experimental">Guider: HLRB (EXPERIMENTAL)<a class="anchor" aria-label="anchor" href="#guider-hlrb-experimental"></a>
+</h3>
+<p>HLRB is a heuristic algorithm to detect the Longest Rest Bout. It was
+designed to offer a guider option for accelerometer device that only
+store count data and by that cannot work with the HDCZA or HorAngle
+guiders. It has currently not been described in a publication.</p>
+<p>The algorithm is composed of the following steps:</p>
+<ol style="list-style-type: decimal">
+<li>Filter detected sustained inactivity bouts with a two hour rounded
+rolling average.</li>
+<li>Replace all resulting non-rest periods by rest that are surrounded
+on both sides by rest if their (non-rest) length is shorter than 1 hour.
+This 1 hour is currently hard-coded.</li>
+<li>Take the longest remaining window as guider.</li>
+</ol>
+<p>To use this guider set parameter
+<code>HASPT.algo = "HLRB"</code>.</p>
+</div>
+<div class="section level3">
 <h3 id="guider-notworn-experimental">Guider: NotWorn (EXPERIMENTAL)<a class="anchor" aria-label="anchor" href="#guider-notworn-experimental"></a>
 </h3>
 <p><strong>Disclaimer: The status of this guider is experimental because
@@ -483,16 +515,60 @@ it will use the second one. For example,
 <code>HASPT.algo = c("NotWorn", "HDCZA"</code>) or
 <code>HASPT.algo = c("NotWorn", "HorAngle"</code>).</p>
 </div>
+<div class="section level3">
+<h3 id="guider-markerbutton-experimental">Guider: markerbutton (EXPERIMENTAL)<a class="anchor" aria-label="anchor" href="#guider-markerbutton-experimental"></a>
+</h3>
+<p>The functionality described in this paragraph is currently only
+functional for Philips Health Band and MotionWatch 8 data.</p>
+<p>This guider is always used in combination with one of the other
+guiders such as “MotionWare” or “HLRB”. It is use by setting
+<code>consider_marker_button = TRUE</code>. If this fails GGIR will fall
+back on the guider as specified with parameter
+<code>HASPT.algo</code>.</p>
+<p>Relying on marker button presses (marker events) comes with the
+challenge that participants may press the marker button more than twice
+or not at all on some days. GGIR attempts to address this with the
+following algorithm.</p>
+<p><strong>At recording level:</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>Represent marker button presses in the time series as 1 when
+pressed and as 0 when not pressed.</p></li>
+<li><p>Optional step that is only applied when parameter
+<code>impute_marker_button = TRUE</code> and intended to impute marker
+events. It will copy every marker button press to every other day in the
+recording at the same time of the day but reduces its value as
+<code>0.9 / (ndays + 1)</code>, where <code>ndays</code> represent the
+relative distance in days to the original marker button press.</p></li>
+</ol>
+<p><strong>At night level (noon-noon or 6pm-6pm):</strong></p>
+<ol start="3" style="list-style-type: decimal">
+<li>Only continue if there are at least 2 marker events for the night,
+if at least 50% of the data in the night is valid, and if the time span
+between the first and last marker event is larger than 1 hour.</li>
+<li>Take all marker events with value 1 or the 10 marker events with the
+highest value, whichever of the two provides most marker events.</li>
+<li>From these marker events, ignore all marker event pairs that both
+span less than 3 hours and involve at least one imputed marker button
+press, unless these represent all marker button pairs available.</li>
+<li>Ignore all marker event pairs where the percentage of sustained
+inactivity bouts inside the window is larger than outside the
+window.</li>
+<li>Define a performance score as: 1 + time spend outside the window
+duration range 7-9 multiplied by the average activity inside the
+window.</li>
+<li>The window with the lowest score is selected as guider.</li>
+</ol>
+</div>
 </div>
 <div class="section level2">
-<h2 id="dealing-with-expected-or-detect-nonwear-time-segments">Dealing with expected or detect nonwear time segments<a class="anchor" aria-label="anchor" href="#dealing-with-expected-or-detect-nonwear-time-segments"></a>
+<h2 id="dealing-with-expected-or-detected-invalid-time-segments">Dealing with expected or detected invalid time segments<a class="anchor" aria-label="anchor" href="#dealing-with-expected-or-detected-invalid-time-segments"></a>
 </h2>
-<p>Depending on study protocol we may want to interpret invalid data
-(typically non-wear) differently:</p>
+<p>Detected non-wear or study protocol led to parts of the recording to
+be labelled as invalid and corresponding values <a href="https://wadpac.github.io/GGIR/articles/chapter6_DataImputation.html">were
+imputed</a>:</p>
 <ol style="list-style-type: decimal">
-<li><p>If we want to rely on the available time series where invalid
-time segments were imputed then leave parameter
-<code>HASPT.ignore.invalid = FALSE</code> as default.</p></li>
+<li><p>If we want the guider to use the imputed values then leave
+parameter <code>HASPT.ignore.invalid = FALSE</code> as default.</p></li>
 <li><p>If we want to guider to ignore all invalid segment despite our
 efforts to impute it, see <code>HASPT.ignore.invalid = TRUE</code>. This
 approach may be helpful for studies where the accelerometer is often not

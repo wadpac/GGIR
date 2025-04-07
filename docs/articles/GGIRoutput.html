@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,6 +60,7 @@
     <li><a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a></li>
     <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
     <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
+    <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
@@ -989,103 +990,107 @@ sustained inactivity bouts within the Sleep Period Time.</td>
 <td>Accumulated sustained inactivity bouts during the day. These are the
 periods we would label during the night as sleep, but during the day
 they form a subclass of inactivity, which may represent day time sleep
-or wakefulness while being motionless for a sustained period of time
-number_sib_sleepperiod} Number of nocturnal sleep periods, with
-nocturnal referring to the Sleep Period Time window.</td>
+or wakefulness while being motionless for a sustained period of
+time</td>
 </tr>
 <tr class="even">
+<td>number_sib_sleepperiod</td>
+<td>Number of nocturnal sleep periods, with nocturnal referring to the
+Sleep Period Time window.</td>
+</tr>
+<tr class="odd">
 <td>duration_sib_wakinghours_atleast15min</td>
 <td>Same as duration_sib_wakinghours, but limited to SIBs that last at
 least 15 minutes.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>num ber_sib_wakinghours</td>
 <td>Number of sustained inactivity bouts during the day, with day
 referring to the time outside the Sleep Period Time window.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>sleeponset_ts</td>
 <td>sleeponset formatted as a timestamp</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>wakeup_ts</td>
 <td>wakeup formatted as a timestamp</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>guider_onset_ts</td>
 <td>guider_onset formatted as a timestamp</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>guider_wake_ts</td>
 <td>guider_wake formatted as a timestamp</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>page</td>
 <td>pdf page on which the visualisation can be found</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>daysleeper</td>
 <td>If 0 then the person is a nightsleeper (sleep period did not overlap
 with noon) if value=1 then the person is a daysleeper (sleep period did
 overlap with noon)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>weekday</td>
 <td>Day of the week on which the night started</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>calendardate</td>
 <td>Calendar date on which the night started in day/month/year
 format.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>filename</td>
 <td>Name of the accelerometer file</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>cleaningcode</td>
 <td>see paragraph <a href="https://wadpac.github.io/GGIR/articles/chapter10_SleepAnalysis.html#cleaningcode">Cleaningcode</a>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>sleeplog_used</td>
 <td>Whether a sleep log was used (TRUE/FALSE)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>acc_available</td>
 <td>Whether accelerometer data was available (TRUE/FALSE).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>WASO</td>
 <td>Wake After Sleep Onset: SptDuration - SleepDurationInSpt</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>SptDuration</td>
 <td>Sleep Period Time window duration: wakeup - sleeponset</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>error_onset</td>
 <td>Difference between sleeponset and guider_onset (this variable is
 only available in the full report as stored in the QC folder)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>error_wake</td>
 <td>Difference between wakeup and guider_wake (this variable is only
 available in the full report as stored in the QC folder)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>SleepRegularityIndex</td>
 <td>The Sleep Regularity Index as proposed by <a href="https://www.nature.com/articles/s41598-017-03171-4" class="external-link">Phillips et
 al. 2017</a>, but calculated per day-pair to enable user to study
 patterns across days</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>SriFractionValid</td>
 <td>Fraction of the 24 hour period that was valid in both current as
 well as in matching timestamps for the next calendar day. See GGIR
 function manual for details</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>nonwear_perc_spt</td>
 <td>Non-wear percentage during the spt hours of this day. This is a copy
 of the nonwear_perc_spt calculated in <code>part 5</code>, only included
@@ -1198,35 +1203,41 @@ level the user can calculate this from existing variables.</td>
 <td>Number of nights of sleeplog data.</td>
 </tr>
 <tr class="even">
+<td>n_nights_markerbutton</td>
+<td>Only stored when parameter <code>consider_marker_button</code> is
+set to TRUE, reflecting the number of valid nights with marker button
+data.</td>
+</tr>
+<tr class="odd">
 <td>n_WE_nights_complete</td>
 <td>Number of weekend nights complete which means both accelerometer and
 estimate from guider.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>n_WD_nights_complete</td>
 <td>Number of weekday nights complete which means both accelerometer and
 estimate from guider.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>n_WEnights_daysleeper</td>
 <td>Number of weekend nights on which the person slept until after
 noon.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>n_WDnights_daysleeper</td>
 <td>Number of weekday nights on which the person slept until after
 noon.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>duration_sib_wakinghour</td>
 <td>Total duration of sustained inactivity bouts during the waking
 hours.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>number_sib_wakinghours</td>
 <td>Number of sustained inactivity bouts during the waking hours.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>average_dur_sib_wakinghours</td>
 <td>Average duration of the sustained inactivity bouts during the day
 (outside the sleep period duration). Calculated as
@@ -1698,6 +1709,16 @@ above.</td>
 <tr class="even">
 <td><code>_pla</code></td>
 <td>plain average of all days, see above</td>
+</tr>
+<tr class="odd">
+<td>Nsleeplog_used</td>
+<td>Number of valid windows with sleeplog used.</td>
+</tr>
+<tr class="even">
+<td>Nmarkerbutton_used</td>
+<td>Only stored when parameter <code>consider_marker_button</code> is
+set to TRUE, reflecting the number of valid windows with marker button
+data for SPT estimation.</td>
 </tr>
 </tbody>
 </table>

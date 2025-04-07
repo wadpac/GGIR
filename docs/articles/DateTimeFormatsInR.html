@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>6. How GGIR Deals with Invalid Data • GGIR</title>
+<title>Date and Time formats in R • GGIR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="6. How GGIR Deals with Invalid Data">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Date and Time formats in R">
 <script defer data-domain="pkgdown.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
 </head>
 <body>
@@ -30,7 +30,7 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="active nav-item dropdown">
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-the-book" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">The book</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-the-book">
 <li><a class="dropdown-item" href="../articles/chapter1_WhatIsGGIR.html">1. What is GGIR</a></li>
@@ -49,7 +49,7 @@
     <li><a class="dropdown-item" href="../articles/chapter14_BehaviouralFragmentation.html">14. Behavioural Fragmentation</a></li>
   </ul>
 </li>
-<li class="nav-item dropdown">
+<li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-annexes" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Annexes</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-annexes">
 <li><a class="dropdown-item" href="../articles/GGIRParameters.html">GGIR Parameters</a></li>
@@ -103,136 +103,144 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>6. How GGIR Deals with Invalid Data</h1>
+      <h1>Date and Time formats in R</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/wadpac/GGIR/blob/HEAD/vignettes/chapter6_DataImputation.Rmd" class="external-link"><code>vignettes/chapter6_DataImputation.Rmd</code></a></small>
-      <div class="d-none name"><code>chapter6_DataImputation.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/wadpac/GGIR/blob/HEAD/vignettes/DateTimeFormatsInR.Rmd" class="external-link"><code>vignettes/DateTimeFormatsInR.Rmd</code></a></small>
+      <div class="d-none name"><code>DateTimeFormatsInR.Rmd</code></div>
     </div>
 
     
     
-<div class="section level2">
-<h2 id="imputation-of-invalid-epoch-data">Imputation of invalid epoch data<a class="anchor" aria-label="anchor" href="#imputation-of-invalid-epoch-data"></a>
-</h2>
-<p>All time segments classified as non-wear or clipping (see Chapter 3)
-and those masked by the study protocol (see Chapter 5) are treated as
-invalid data. In GGIR part 2, the epoch level metric values are imputed,
-while a log is kept of which epochs were imputed. For most of the
-subsequent analysis done by GGIR, the imputed time series is used. The
-time series without invalid segments are used only for a few
-analyses:</p>
-<ul>
-<li><p>Weighted average of full recording</p></li>
-<li><p>Cosinor analysis (see Chapter 10)</p></li>
-<li><p>A very specific non-default configuration of sleep analysis (see
-Chapter 8)</p></li>
-</ul>
-<p>The imputation of epoch data is done based on the mean metric value
-corresponding to the valid values from the same time in the day on other
-days in the recording. However, if the same time interval is marked as
-invalid across all recorded days, the value is imputed by zero, except
-for metric EN which is imputed by 1.</p>
-<p>For example, imagine a 5-day recording with the following ENMO metric
-data for two specific epochs in the day across five days:</p>
+<p>Various GGIR parameters expect us to provide a date or time format. R
+uses codes to define elements of a date or time format.</p>
+<p>The table below shows the individual codes and their meaning:</p>
 <table class="table">
 <thead><tr class="header">
-<th>Time</th>
-<th>Mon</th>
-<th>Tue</th>
-<th>Wed</th>
-<th>Thu</th>
-<th>Fri</th>
+<th>Code</th>
+<th>Value</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td>8:59:55 – 9:00:00</td>
-<td>3</td>
-<td>4</td>
-<td>3</td>
-<td>invalid</td>
-<td>3</td>
+<td><code>"%d"</code></td>
+<td>Day of the month (decimal number)</td>
 </tr>
 <tr class="even">
-<td>9:00:00 – 9:00:05</td>
-<td>invalid</td>
-<td>invalid</td>
-<td>invalid</td>
-<td>invalid</td>
-<td>invalid</td>
+<td><code>"%m"</code></td>
+<td>Month (decimal number)</td>
+</tr>
+<tr class="odd">
+<td><code>"%b"</code></td>
+<td>Month (abbreviated)</td>
+</tr>
+<tr class="even">
+<td><code>"%B"</code></td>
+<td>Month (full name)</td>
+</tr>
+<tr class="odd">
+<td><code>"%y"</code></td>
+<td>Year (2 digit)</td>
+</tr>
+<tr class="even">
+<td><code>"%Y"</code></td>
+<td>Year (4 digit)</td>
+</tr>
+<tr class="odd">
+<td><code>"%h"</code></td>
+<td>Hour</td>
+</tr>
+<tr class="even">
+<td><code>"%H"</code></td>
+<td>Decimal hours (24 hour)</td>
+</tr>
+<tr class="odd">
+<td><code>"%I"</code></td>
+<td>Decimal hours (12 hour).0</td>
+</tr>
+<tr class="even">
+<td><code>"%M"</code></td>
+<td>Decimal minute</td>
+</tr>
+<tr class="odd">
+<td><code>"%S"</code></td>
+<td>Decimal second</td>
+</tr>
+<tr class="even">
+<td><code>"%a"</code></td>
+<td>Abbreviated weekday</td>
+</tr>
+<tr class="odd">
+<td><code>"%A"</code></td>
+<td>Full weekday</td>
+</tr>
+<tr class="even">
+<td><code>"%p"</code></td>
+<td>Locale-specific AM/PM</td>
+</tr>
+<tr class="odd">
+<td><code>"%z"</code></td>
+<td>Offset from GMT</td>
+</tr>
+<tr class="even">
+<td><code>"%Z"</code></td>
+<td>Time zone (character)</td>
 </tr>
 </tbody>
 </table>
-<p>The above would be imputed as shown below because the average of 3,
-4, 3 and 3 is 3.25:</p>
+<p>The table below shows examples of how to define time or data format
+using the above codes.</p>
 <table class="table">
 <thead><tr class="header">
-<th>Time</th>
-<th>Mon</th>
-<th>Tue</th>
-<th>Wed</th>
-<th>Thu</th>
-<th>Fri</th>
+<th>Example time or date format</th>
+<th>R code to describe this format</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td>8:59:55 – 9:00:00</td>
-<td>3</td>
-<td>4</td>
-<td>3</td>
-<td>3.25</td>
-<td>3</td>
+<td><code>"12-Mar-2025 15:05:02"</code></td>
+<td><code>"%d-%b-%Y %H:%M:%S"</code></td>
 </tr>
 <tr class="even">
-<td>9:00:00 – 9:00:05</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
+<td><code>"12-Mar-25 15:05:02"</code></td>
+<td><code>"%d-%b-%y %H:%M:%S"</code></td>
+</tr>
+<tr class="odd">
+<td><code>"12-03-25 15:05:02"</code></td>
+<td><code>"%d-%m-%y %H:%M:%S"</code></td>
+</tr>
+<tr class="even">
+<td><code>"2025/03/20 15:05:02"</code></td>
+<td><code>"%Y/%m/%d %H:%M:%S"</code></td>
+</tr>
+<tr class="odd">
+<td><code>"20/03/2025 15:05:02"</code></td>
+<td><code>"%d/%m/%Y %H:%M:%S"</code></td>
+</tr>
+<tr class="even">
+<td><code>"20/03/2025 03:05:02 PM"</code></td>
+<td><code>"%d/%m/%Y %I:%M:%S %p"</code></td>
+</tr>
+<tr class="odd">
+<td><code>"Thu Mar 2025 03:11:06 PM"</code></td>
+<td><code>"%a %b %Y %I:%M:%S %p"</code></td>
+</tr>
+<tr class="even">
+<td><code>"12-Mar-2025"</code></td>
+<td><code>"%d-%b-%Y"</code></td>
+</tr>
+<tr class="odd">
+<td><code>"2025/03/20"</code></td>
+<td><code>"%Y/%m/%d"</code></td>
 </tr>
 </tbody>
 </table>
-</div>
-<div class="section level2">
-<h2 id="controlling-the-imputation">Controlling the imputation<a class="anchor" aria-label="anchor" href="#controlling-the-imputation"></a>
-</h2>
-<p>It is worth noting that you have the option to disable the imputation
-by setting parameter <code>do.imp = FALSE</code>. This means that values
-are kept as they are and not imputed or omitted. Disabling the
-imputation is not recommended for most use-cases, but can be relevant
-for studies in a controlled sleep or exercise laboratories where the
-sensor is known to be worn throughout the experiment.</p>
-<p>An alternative way to control the imputation is to specify time
-segments in which the invalid epochs are to be imputed by zeros (or ones
-for the metric EN) instead of following the standard GGIR imputation
-method. To do this, you should use the parameter
-<code>TimeSegments2ZeroFile</code>.</p>
-</div>
-<div class="section level2">
-<h2 id="key-parameters">Key parameters<a class="anchor" aria-label="anchor" href="#key-parameters"></a>
-</h2>
+<p>For example we may set:</p>
 <ul>
-<li>
-<code>do.imp</code>,</li>
-<li><code>TimeSegments2ZeroFile</code></li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="related-output">Related output<a class="anchor" aria-label="anchor" href="#related-output"></a>
-</h2>
-<ul>
-<li>In GGIR part 2, plots to check the data quality highlight the
-segments of the file that were considered invalid and imputed. These
-plots can be found in the folder “results/QC/”.</li>
-<li>In GGIR part 5, time series are produced and optionally stored
-within the folder “meta/ms5out.raw/” in either csv or RData format.
-These time series contain an indicator of the epochs that were
-considered invalid and imputed.</li>
-</ul>
-</div>
-  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
-    </nav></aside>
+<li><p><code>rmc.format.time = "%d/%m/%Y %H:%M:%S"</code> when we see
+<code>"20/03/2025 15:05:02"</code> in a csv file with raw data.</p></li>
+<li><p><code>extEpochData_timeformat = "%d-%m-%Y %H:%M:%S"</code> when
+we see <code>"12-03-2025 15:05:02"</code> in an externally derived epoch
+data file such as the Philips health band .xlsx data files.</p></li>
+</ul></main>
 </div>
 
 

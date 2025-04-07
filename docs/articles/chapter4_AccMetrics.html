@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,6 +60,7 @@
     <li><a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a></li>
     <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
     <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
+    <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
@@ -580,6 +581,52 @@ external functions in GGIR</a>. In fact, this allows you to include
 entire algorithms such as the <a href="https://github.com/ShimmerEngineering/Verisense-Toolbox/tree/master/Verisense_step_algorithm" class="external-link">step
 detection</a> or a new sleep classification algorithm that you would
 like to test inside GGIR.</p>
+</div>
+<div class="section level2">
+<h2 id="metrics-from-externally-derived-epoch-level-data-">Metrics from externally derived epoch-level data.<a class="anchor" aria-label="anchor" href="#metrics-from-externally-derived-epoch-level-data-"></a>
+</h2>
+<p>In <a href="https://wadpac.github.io/GGIR/articles/chapter2_Pipeline.html#externally-derived-epoch-level-data">chapter
+2</a> we discussed the option to work with externally derived
+epoch-level data.</p>
+<p>By definition GGIR does not calculate the summary metrics in these
+data. Further, it is often unknown how exactly these metrics are
+calculated. To refer to these metrics GGIR uses the terminology as
+listed below:</p>
+<table class="table">
+<colgroup>
+<col width="48%">
+<col width="52%">
+</colgroup>
+<thead><tr class="header">
+<th>Metric name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>ExtAct</td>
+<td>Externally derived indicator of activity. Typically counts, but for
+Fitbit these are estimated calories and for SenseWear these are
+estimated MET values.</td>
+</tr>
+<tr class="even">
+<td>ExtSleep</td>
+<td>Externally derived classification of sleep, used as if it was
+derived from an external function for sleep detection.</td>
+</tr>
+<tr class="odd">
+<td>ExtStep</td>
+<td>Externally derived step count, used as if it was derived from an
+external function for event detection.</td>
+</tr>
+<tr class="even">
+<td>ExtHeartRate</td>
+<td>Externally derived measure of hear rate in beats per minute.
+Currently used as indicator of activity, which is not ideal. Please
+reach out if you want to help improve the embedding of heart rate
+analysis in GGIR.</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level2">
 <h2 id="related-output">Related output<a class="anchor" aria-label="anchor" href="#related-output"></a>

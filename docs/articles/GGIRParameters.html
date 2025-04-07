@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,6 +60,7 @@
     <li><a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a></li>
     <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
     <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
+    <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
@@ -460,7 +461,7 @@ arguments.</p>
 <td>params_rawdata</td>
 </tr>
 <tr class="odd">
-<td>mc.format.time</td>
+<td>rmc.format.time</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
@@ -585,282 +586,302 @@ arguments.</p>
 <td>params_general</td>
 </tr>
 <tr class="even">
+<td>recording_split_ignore_edges</td>
+<td>1</td>
+<td>params_general</td>
+</tr>
+<tr class="odd">
 <td>recording_split_timeformat</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>nonwear_approach</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>dataFormat</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>extEpochData_timeformat</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>metadatadir</td>
 <td>2, 3, 4, 5</td>
 <td>not in parameter objects</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>minimum_MM_length.part5</td>
 <td>5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>strategy</td>
 <td>2, 5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>hrs.del.start</td>
 <td>2, 5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>hrs.del.end</td>
 <td>2, 5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>maxdur</td>
 <td>2, 5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>max_calendar_days</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>includedaycrit</td>
 <td>2, 5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>nonWearEdgeCorrection</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>nonwearFiltermaxHours</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>nonwearFilterWindow</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>L5M5window</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>M5L5res</td>
 <td>2, 5</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>winhr</td>
 <td>2, 5</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>qwindow</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>qlevels</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>ilevels</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>mvpathreshold</td>
 <td>2</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>boutcriter</td>
 <td>2</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>ndayswindow</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>idloc</td>
 <td>2, 4</td>
 <td>params_general</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>do.imp</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>storefolderstructure</td>
 <td>2, 4, 5</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>epochvalues2csv</td>
 <td>2</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.part2.pdf</td>
 <td>2</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>sep_reports</td>
 <td>2, 4, 5</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>dec_reports</td>
 <td>2, 4, 5</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>sep_config</td>
 <td>1, 2, 3, 4, 5</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>dec_config</td>
 <td>1, 2, 3, 4, 5</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>mvpadur</td>
 <td>2</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>bout.metric</td>
 <td>2, 5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>closedbout</td>
 <td>2</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>IVIS_windowsize_minutes</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>IVIS_epochsize_seconds</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>IVIS.activity.metric</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>iglevels</td>
 <td>2, 5</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>TimeSegments2ZeroFile</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>qM5L5</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>MX.ig.min.dur</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>qwindow_dateformat</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>anglethreshold</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>timethreshold</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>ignorenonwear</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>HDCZA_threshold</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>acc.metric</td>
 <td>3, 5</td>
 <td>params_general</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>do.part3.pdf</td>
 <td>3</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>sensor.location</td>
 <td>3, 4</td>
 <td>params_general</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>HASPT.algo</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>HASIB.algo</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Sadeh_axis</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>longitudinal_axis</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>HASPT.ignore.invalid</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="odd">
+<td>oakley_threshold</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="even">
+<td>consider_marker_button</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="odd">
+<td>impute_marker_button</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
@@ -880,204 +901,214 @@ arguments.</p>
 <td>params_sleep</td>
 </tr>
 <tr class="odd">
-<td>possible_nap_window</td>
-<td>5</td>
-<td>params_sleep</td>
-</tr>
-<tr class="even">
-<td>possible_nap_dur</td>
-<td>5</td>
-<td>params_sleep</td>
-</tr>
-<tr class="odd">
-<td>possible_nap_gap</td>
-<td>5</td>
-<td>params_sleep</td>
-</tr>
-<tr class="even">
 <td>do.visual</td>
 <td>4</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>outliers.only</td>
 <td>4</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>excludefirstlast</td>
 <td>4</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>criterror</td>
 <td>4</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>includenightcrit</td>
 <td>4</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>relyonguider</td>
 <td>4</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>relyonsleeplog</td>
 <td>4</td>
 <td>deprecated</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>sleepefficiency.metric</td>
 <td>4</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>def.noc.sleep</td>
 <td>4</td>
 <td>params_sleep</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>sib_must_fully_overlap_with_TimeInBed</td>
 <td>4</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>data_cleaning_file</td>
 <td>4, 5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>excludefirst.part4</td>
 <td>4</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>excludelast.part4</td>
 <td>4</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>sleepwindowType</td>
 <td>4</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>excludefirstlast.part5</td>
 <td>5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>boutcriter.mvpa</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>boutcriter.in</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>boutcriter.lig</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>threshold.lig</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>threshold.mod</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>threshold.vig</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>boutdur.mvpa</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>boutdur.in</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>boutdur.lig</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>save_ms5rawlevels</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>part5_agg2_60seconds</td>
 <td>5</td>
 <td>params_general</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>includedaycrit.part5</td>
 <td>5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>includenight.part5</td>
 <td>5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>frag.metrics</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>LUXthresholds</td>
 <td>5</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>LUX_cal_constant</td>
 <td>5</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>LUX_cal_exponent</td>
 <td>5</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>LUX_day_segments</td>
 <td>5</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>timewindow</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>save_ms5raw_format</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>save_ms5raw_without_invalid</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.sibreport</td>
 <td>5</td>
 <td>params_output</td>
+</tr>
+<tr class="even">
+<td>possible_nap_window</td>
+<td>5</td>
+<td>params_sleep</td>
+</tr>
+<tr class="odd">
+<td>possible_nap_dur</td>
+<td>5</td>
+<td>params_sleep</td>
+</tr>
+<tr class="even">
+<td>possible_nap_gap</td>
+<td>5</td>
+<td>params_sleep</td>
+</tr>
+<tr class="odd">
+<td>nap_markerbutton_method</td>
+<td>5</td>
+<td>params_sleep</td>
+</tr>
+<tr class="even">
+<td>nap_markerbutton_max_distance</td>
+<td>5</td>
+<td>params_sleep</td>
 </tr>
 <tr class="odd">
 <td>includecrit.part6</td>
@@ -1373,14 +1404,15 @@ biased output.</p>
 </h4>
 <p>Character (default = “raw”). To indicate what the format is of the
 data in datadir. Alternatives: ukbiobank_csv, actiwatch_csv,
-actiwatch_awd, actigraph_csv, and sensewear_xls, which correspond to
-epoch level data files from, respecitively, UK Biobank in csv format,
-Actiwatch in csv format, Actiwatch in awd format, ActiGraph csv format,
-and Sensewear in xls format (also works with xlsx). Here, the assumed
-epoch size for UK Biobank csvdata is 5 seconds. The epoch size for the
-other non-raw data formats is flexible, but make sure that you set first
-value of argument windowsizes accordingly. Also when working with
-non-raw data formats specify argument extEpochData_timeformat as
+actiwatch_awd, actigraph_csv, sensewear_xls, phb_xlsx, and fitbit_json
+which correspond to epoch level data files from, respecitively, UK
+Biobank in csv format, Actiwatch in csv format, Actiwatch in awd format,
+ActiGraph csv format, Sensewear in xls format (also works with xlsx),
+Philips Health Band in xlsx format, and Fitbit in json format. Here, the
+assumed epoch size for UK Biobank csvdata is 5 seconds. The epoch size
+for the other non-raw data formats is flexible, but make sure that you
+set first value of argument windowsizes accordingly. Also when working
+with non-raw data formats specify argument extEpochData_timeformat as
 documented below. For ukbiobank_csv nonwear is a column in the data
 itself, for actiwatch_csv, actiwatch_awd, actigraph_csv, and
 sensewear_xls non-wear is detected as 60 minute rolling zeros. The
@@ -1441,6 +1473,13 @@ as used in file as specified with recording_split_times.</p>
 <p>Numeric (default = 0). Number of hours to use as buffer when
 splitting recording. A possitive number means that the split recordings
 overlap, a nevative number indicates a gap.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="recording_split_ignore_edges">recording_split_ignore_edges<a class="anchor" aria-label="anchor" href="#recording_split_ignore_edges"></a>
+</h4>
+<p>Boolean (default = FALSE) To indicate whether the recording time
+before and after the time range defined by recording_split_times should
+be considered as segments.</p>
 </div>
 </div>
 <div class="section level3">
@@ -2361,8 +2400,8 @@ guidance on how to use “NotWorn”.</p>
 </h4>
 <p>Character (default = “vanHees2015”). To indicate which algorithm
 should be used to define the sustained inactivity bouts (i.e., likely
-sleep). Options: “vanHees2015”, “Sadeh1994”, “Galland2012”, “NotWorn”.
-See vignette
+sleep). Options: “vanHees2015”, “Sadeh1994”, “Galland2012”, “NotWorn”,
+“Oakley1997”, “data”. See vignette
 ://wadpac.github.io/GGIR/articles/chapter8_SleepFundamentalsSibs.htmlchapter
 8 for details.</p>
 </div>
@@ -2463,9 +2502,8 @@ efficiency.</p>
 <p>Numeric (default = NULL). Numeric vector of length two with range in
 clock hours during which naps are assumed to take place, e.g.,
 possible_nap_window = c(9, 18). The nap classification is only applied
-if both possible_nap_window and possible_nap_dur are both specified.
-More documentation to follow in 2025 when development work has
-completed.</p>
+if both possible_nap_window and possible_nap_dur are specified. More
+documentation to follow in 2025 when development work has completed.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="possible_nap_dur">possible_nap_dur<a class="anchor" aria-label="anchor" href="#possible_nap_dur"></a>
@@ -2526,6 +2564,30 @@ e.g. c(10, 15), that will be used as percentile and multiplier for the
 above mentioned 6th step.</p>
 </div>
 <div class="section level4">
+<h4 class="unnumbered" id="oakley_threshold">oakley_threshold<a class="anchor" aria-label="anchor" href="#oakley_threshold"></a>
+</h4>
+<p>Numeric (default = 20) Threshold as used by the Oakley algorithm.
+Original documentation suggestion to choose between 20, 40 or 80, while
+in GGIR this can be any absolute number.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="consider_marker_button">consider_marker_button<a class="anchor" aria-label="anchor" href="#consider_marker_button"></a>
+</h4>
+<p>Boolean (default = FALSE) Whether to consider the marker button as
+guider. Currently only functional for Actiwatch-type
+count-accelerometers such as Philips Health Band and MotionWatch 8. See
+<a href="https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html" class="uri">https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html</a>
+for details.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="impute_marker_button">impute_marker_button<a class="anchor" aria-label="anchor" href="#impute_marker_button"></a>
+</h4>
+<p>Boolean (default = FALSE) Whether to impute marker buttons on other
+days of the recording in the context of using it as guider with
+consider_marker_button. See <a href="https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html" class="uri">https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html</a>
+for details.</p>
+</div>
+<div class="section level4">
 <h4 class="unnumbered" id="sib_must_fully_overlap_with_timeinbed">sib_must_fully_overlap_with_TimeInBed<a class="anchor" aria-label="anchor" href="#sib_must_fully_overlap_with_timeinbed"></a>
 </h4>
 <p>Boolean (default = c(TRUE, TRUE)). To indicate whether sib must fully
@@ -2536,6 +2598,32 @@ will be reported in the night summary report (part4_nightsummary_sleep
 csv files) but these negative sleep latency and corresponding sleep
 efficiency values when calculating the person summary aggregate as
 stored in the person level report (part4_summary_sleep csv files).</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="nap_markerbutton_method">nap_markerbutton_method<a class="anchor" aria-label="anchor" href="#nap_markerbutton_method"></a>
+</h4>
+<p>Numeric (default = 0) Integer to indicate whether and how to use
+marker button for nap detection: 0 = do not use marker button for nap
+detection (default); 1 = if marker button is available use it for nap
+detection, if not rely on accelerometer. 2 = nearby marker button is
+condition for nap detection but rely on accelerometer to define exact
+nap timing, and; 3 = nearby marker button is condition for nap detection
+and used instead of accelerometer classification.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="nap_markerbutton_max_distance">nap_markerbutton_max_distance<a class="anchor" aria-label="anchor" href="#nap_markerbutton_max_distance"></a>
+</h4>
+<p>Numeric (default = 30) When using nap_markerbutton_method with a
+value other than 0 nap_markerbutton_max_distance sets the maximum
+distance in minutes between the nearest marker button and the edge of a
+sustained inactivity bout. If the marker button lies inside the
+sustained inactivity bout but beyond the midpoint, no maximum distance
+is applied. For example, if a sustained activity bout lasts from
+11:00:00 to 13:00:00 then its midpoint will be 12:00:00 and with the
+default nap_markerbutton_max_distance any marker button between 10:30:00
+and 12:00:00 will be considered valid for the start of the nap and any
+marker button between 12:00:00 and 13:30:00 will be considered valid for
+the end of the nap.</p>
 </div>
 </div>
 <div class="section level3">

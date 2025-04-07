@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,6 +60,7 @@
     <li><a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a></li>
     <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
     <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
+    <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
@@ -659,6 +660,66 @@ a sampling frequency bias between 20 and 30%</td>
 <td>filehealth_fbias30_N</td>
 <td>(Only for Axivity .cwa format) Total number of raw data blocks with
 a sampling frequency bias higher than 30%</td>
+<td>QC/data_quality_report.csv</td>
+</tr>
+<tr class="odd">
+<td>filehealth_0vars_missing</td>
+<td>(Only for Fitbit externally derived data) Percentage of data with 0
+missing variables</td>
+<td>QC/data_quality_report.csv</td>
+</tr>
+<tr class="even">
+<td>filehealth_1vars_missing</td>
+<td>(Only for Fitbit externally derived data) Percentage of data with 1
+missing variables</td>
+<td>QC/data_quality_report.csv</td>
+</tr>
+<tr class="odd">
+<td>filehealth_2vars_missing</td>
+<td>(Only for Fitbit externally derived data) Percentage of data with 2
+missing variables</td>
+<td>QC/data_quality_report.csv</td>
+</tr>
+<tr class="even">
+<td>filehealth_3vars_missing</td>
+<td>(Only for Fitbit externally derived data) Percentage of data with 3
+missing variables</td>
+<td>QC/data_quality_report.csv</td>
+</tr>
+<tr class="odd">
+<td>filehealth_4vars_missing</td>
+<td>(Only for Fitbit externally derived data) Percentage of data with 4
+missing variables</td>
+<td>QC/data_quality_report.csv</td>
+</tr>
+<tr class="even">
+<td>filehealth_ExtAct_missing</td>
+<td>(Only for Fitbit externally derived data) Percentage of data where
+ExtAct is missing.</td>
+<td>QC/data_quality_report.csv</td>
+</tr>
+<tr class="odd">
+<td>filehealth_ExtStep_missing</td>
+<td>(Only for Fitbit externally derived data) Percentage of data where
+ExtStep is missing.</td>
+<td>QC/data_quality_report.csv</td>
+</tr>
+<tr class="even">
+<td>filehealth_ExtHeartRate_missing</td>
+<td>(Only for Fitbit externally derived data) Percentage of data where
+ExtHeartRate is missing.</td>
+<td>QC/data_quality_report.csv</td>
+</tr>
+<tr class="odd">
+<td>filehealth_ExtSleep_missing</td>
+<td>(Only for Fitbit externally derived data) Percentage of data where
+ExtSleep is missing.</td>
+<td>QC/data_quality_report.csv</td>
+</tr>
+<tr class="even">
+<td>filehealth_ExtSleep_y_ExtAct_missing</td>
+<td>(Only for Fitbit externally derived data) Percentage of data where
+both ExtSleep and ExtAct are missing.</td>
 <td>QC/data_quality_report.csv</td>
 </tr>
 </tbody>
