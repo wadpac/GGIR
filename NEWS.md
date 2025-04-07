@@ -2,7 +2,7 @@
 
 - Part 1:
 
-  - Expand split recording functionality with parameter recording_split_ignore_edges. #1278
+  - Expand split recording functionality that was added in 3.2-1 with parameter recording_split_ignore_edges. #1278
 
   - Add option to load externally derived epoch data from Actical, Philips Health Band, and Fitbit. #1205
 
