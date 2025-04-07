@@ -131,7 +131,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
         }
       } else if (mon == "actigraph" | mon == "axivity" | mon == "verisense") {
         deviceSerialNumber = "not extracted"
-      } else if (I$monc %in% c(5, 7, 98, 99)) { #movisense 5, parmay matrix 7, Actiwatch 98, Sensewear 99
+      } else if (I$monc %in% c(5, 7, 94, 96, 97, 98, 99)) { #movisense 5, parmay matrix 7, Actiwatch 98, Sensewear 99
         deviceSerialNumber = "not extracted"
       } else if (I$monc == 0) {
         if (header != "no header") {
@@ -214,6 +214,9 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
         if (pdfpagecount == 100 | pdfpagecount == 200 | pdfpagecount == 300) {
           SUMMARY_clean = tidyup_df(SUMMARY)
           daySUMMARY_clean = tidyup_df(daySUMMARY)
+          SUMMARY_clean = addSplitNames(SUMMARY_clean)  # If recording was split
+          daySUMMARY_clean = addSplitNames(daySUMMARY_clean)  # If recording was split
+          QCout = addSplitNames(QCout)  # If recording was split
           #store matrix temporarily to keep track of process
           data.table::fwrite(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"),
                              row.names = F, na = "",
@@ -264,6 +267,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
                                                            x = colnames(dayEVENTSUMMARY_clean),
                                                            invert = TRUE)]
       #-----------------------------------------------------------------------
+      dayEVENTSUMMARY_clean = addSplitNames(dayEVENTSUMMARY_clean)  # If recording was split
       data.table::fwrite(x = dayEVENTSUMMARY_clean,
                          file = paste0(metadatadir, "/results/part2_day", eventName, "summary.csv"),
                          row.names = F, na = "", sep = params_output[["sep_reports"]],
@@ -295,6 +299,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       EVENTSUMMARY_clean = EVENTSUMMARY_clean[, grep(pattern = "cad_|_cad|Bout_|accatleast|count_acc",
                                                            x = colnames(EVENTSUMMARY_clean),
                                                            invert = TRUE)]
+      EVENTSUMMARY_clean = addSplitNames(EVENTSUMMARY_clean)  # If recording was split
       data.table::fwrite(x = EVENTSUMMARY_clean,
                          file =  paste0(metadatadir, "/results/part2_", eventName, "summary.csv"),
                          row.names = F, na = "", sep = params_output[["sep_reports"]],
@@ -315,6 +320,8 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       daySUMMARY_clean$calendar_date = format(dd, format = "%Y-%m-%d")
       #===============================================================================
       # store final matrices again
+      SUMMARY_clean = addSplitNames(SUMMARY_clean)  # If recording was split
+      daySUMMARY_clean = addSplitNames(daySUMMARY_clean)  # If recording was split
       data.table::fwrite(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"),
                          row.names = F, na = "", sep = params_output[["sep_reports"]],
                          dec = params_output[["dec_reports"]])
@@ -324,10 +331,12 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       if (store.long == TRUE) { # Convert daySUMMARY to long format if there are multiple segments per day
         df = g.convert.part2.long(daySUMMARY)
         df_clean = tidyup_df(df)
+        df_clean = addSplitNames(df_clean)  # If recording was split
         data.table::fwrite(x = df_clean, file = paste0(metadatadir, "/results/part2_daysummary_longformat.csv"),
                            row.names = F, na = "", sep = params_output[["sep_reports"]],
                            dec = params_output[["dec_reports"]])
       }
+      QCout = addSplitNames(QCout)  # If recording was split
       data.table::fwrite(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"),
                          row.names = F, na = "",
                          sep = params_output[["sep_reports"]],

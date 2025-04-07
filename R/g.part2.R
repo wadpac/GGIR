@@ -70,8 +70,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   pdfpagecount = 1 # counter to keep track of files being processed (for pdf)
   pdffilenumb = 1 #counter to keep track of number of pdf-s being generated
   daySUMMARY = c()
-  if (length(f0) ==  0) f0 = 1
-  if (length(f1) ==  0) f1 = length(fnames)
+  if (length(f0) == 0) f0 = 1
+  if (length(f1) == 0) f1 = length(fnames)
   #--------------------------------
   # get full file path and folder name if requested by end-user and keep this for storage in output
   foldername = fullfilenames = folderstructure = referencefnames = c()

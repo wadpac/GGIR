@@ -246,10 +246,11 @@ GGIR(mode = 1:5,
         Character (default = "raw").
         To indicate what the format is of the data in datadir.
         Alternatives: ukbiobank_csv, actiwatch_csv, actiwatch_awd, 
-        actigraph_csv, and sensewear_xls, which correspond to epoch level data 
-        files from, respecitively, UK Biobank in csv format, Actiwatch in csv 
-        format, Actiwatch in awd format, ActiGraph csv format, and Sensewear in
-        xls format (also works with xlsx). Here, the assumed epoch size for
+        actigraph_csv, sensewear_xls, phb_xlsx, and fitbit_json which correspond 
+        to epoch level data files from, respecitively, UK Biobank in csv format, 
+        Actiwatch in csv format, Actiwatch in awd format, ActiGraph csv format, 
+        Sensewear in xls format (also works with xlsx), Philips Health Band in 
+        xlsx format, and Fitbit in json format. Here, the assumed epoch size for
         UK Biobank csvdata is 5 seconds. 
         The epoch size for the other non-raw data formats is 
         flexible, but make sure that you set first value of argument 
@@ -1282,7 +1283,8 @@ GGIR(mode = 1:5,
         Character (default = "vanHees2015").
         To indicate which algorithm should be used to define the
         sustained inactivity bouts (i.e., likely sleep).
-        Options: "vanHees2015", "Sadeh1994", "Galland2012", "NotWorn". See vignette
+        Options: "vanHees2015", "Sadeh1994", "Galland2012", "NotWorn",
+        "Oakley1997", "data". See vignette
         \href{https://wadpac.github.io/GGIR/articles/chapter8_SleepFundamentalsSibs.html}{chapter 8}
         for details.}
         
@@ -1333,7 +1335,7 @@ GGIR(mode = 1:5,
         Numeric vector of length two with range in clock hours during which naps are
         assumed to take place, e.g., \code{possible_nap_window = c(9, 18)}. The nap 
         classification is only applied
-        if both \code{possible_nap_window} and \code{possible_nap_dur} are both specified.
+        if both \code{possible_nap_window} and \code{possible_nap_dur} are specified.
         More documentation to follow in 2025 when development work has completed.}
 
       \item{possible_nap_dur}{
@@ -1374,7 +1376,58 @@ GGIR(mode = 1:5,
         and corresponding sleep efficiency values when calculating the person summary
         aggregate as stored in the person level report (part4_summary_sleep csv files).
       }
-
+      
+      \item{oakley_threshold}{
+        Numeric (default = 20)
+        Threshold as used by the Oakley algorithm. Original documentation
+        suggestion to choose between 20, 40 or 80, while in GGIR this can be
+        any absolute number.
+      }
+      
+      \item{consider_marker_button}{
+        Boolean (default = FALSE)
+        Whether to consider the marker button as guider. Currently only functional 
+        for Actiwatch-type count-accelerometers such as 
+        Philips Health Band and MotionWatch 8. 
+        See https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html
+        for details.
+      }
+      
+      \item{impute_marker_button}{
+        Boolean (default = FALSE)
+        Whether to impute marker buttons on other days of the recording in the context
+        of using it as guider with \code{consider_marker_button}. See
+        https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html
+        for details.
+      }
+      
+      \item{nap_markerbutton_method}{
+        Numeric (default = 0)
+        Integer to indicate whether and how to use marker button for nap
+        detection:
+        0 = do not use marker button for nap detection (default);
+        1 = if marker button is available use it for nap detection,
+        if not rely on accelerometer.
+        2 = nearby marker button is condition for nap detection 
+        but rely on accelerometer to define exact nap timing, and;
+        3 = nearby marker button is condition for nap detection and
+        used instead of accelerometer classification.
+      }
+      
+      \item{nap_markerbutton_max_distance}{
+        Numeric (default = 30)
+        When using \code{nap_markerbutton_method} with a value other than 0
+        \code{nap_markerbutton_max_distance}  sets the maximum distance in 
+        minutes between the nearest marker button
+        and the edge of a sustained inactivity bout. If the marker button lies 
+        inside the sustained inactivity bout but beyond the midpoint, no maximum distance
+        is applied. For example, if a sustained activity bout lasts
+        from 11:00:00 to 13:00:00 then its midpoint will be 12:00:00 and with the
+        default \code{nap_markerbutton_max_distance} any marker button between 10:30:00
+        and 12:00:00 will be considered valid for the start of the nap and 
+        any marker button between 12:00:00 and 13:30:00 will be considered valid 
+        for the end of the nap.
+      }
     }
   }
 

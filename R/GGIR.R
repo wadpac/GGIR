@@ -39,59 +39,13 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   outputdir = gsub(pattern = "\\\\", replacement = "/", x = outputdir)
   datadir = gsub(pattern = "\\\\", replacement = "/", x = datadir)
   
-  #===========================
-  # Establish default start / end file index to process
-  filelist = isfilelist(datadir)
   
-  if (filelist == FALSE) {
-    if (dir.exists(datadir) == FALSE && 1 %in% mode) {
-      # Note: The check whether datadir exists is only relevant when running part 1
-      # For other scenarios it can be convenient to keep specifying datadir
-      # even if the actual path is no longer available, because GGIR uses the most
-      # distal folder name to identify the output directory. For example,
-      # if part 2-5 are processed on a different system then part 1.
-      
-      stop("\nDirectory specified by argument datadir does not exist")
-    }
-    if (datadir == outputdir || grepl(paste(datadir, '/', sep = ''), outputdir)) {
-      stop(paste0('\nError: The file path specified by argument outputdir should ',
-                  'NOT equal or be a subdirectory of the path specified by argument datadir'))
-    }
-  }
-  if (dir.exists(outputdir) == FALSE) {
-    stop("\nDirectory specified by argument outputdir does not exist")
-  }
-  if (file.access(outputdir, mode = 2) == 0) {
-    if (verbose == TRUE) cat("\nChecking that user has write access permission for directory specified by argument outputdir: Yes\n")
-  } else {
-    stop("\nUser does not seem to have write access permissions for the directory specified by argument outputdir.\n")
-  }
-  if (filelist == TRUE) {
-    if (length(studyname) == 0) {
-      stop('\nError: studyname must be specified if datadir is a list of files')
-    }
-  }
-  if (is.null(f0) || f0 < 1) { # What file to start with?
-    f0 = 1
-  }
-  if ((is.null(f1) || f1 < 1) && 1 %in% mode) {  # What file to end with?
-    # Do not modify f1 here when not attempting to process GGIR part 1
-    # we only expect datadir to exist when running part 1
-    if (filelist == FALSE) {
-      f1 <- length(dir(datadir, recursive = TRUE, ignore.case = TRUE, pattern = "[.](csv|bin|Rda|wa|cw|gt3)")) # modified by JH
-    } else {
-      f1 = length(datadir) #modified
-    }
-  }
-  if (is.null(f1)) {
-    f1 = 0
-  }
+  
   # Establish which parts need to be processed:
   dopart1 = dopart2 = dopart3 = dopart4 = dopart5 = dopart6 = FALSE
   if (length(which(mode == 0)) > 0) {
     dopart1 = dopart2 = dopart3 = dopart4 = dopart5 = TRUE # intentionally not including dopart6
   } else {
-    # if (length(which(mode == 0)) > 0) dopart0 = TRUE
     if (length(which(mode == 1)) > 0) dopart1 = TRUE
     if (length(which(mode == 2)) > 0) dopart2 = TRUE
     if (length(which(mode == 3)) > 0) dopart3 = TRUE
@@ -99,7 +53,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     if (length(which(mode == 5)) > 0) dopart5 = TRUE
     if (length(which(mode == 6)) > 0) dopart6 = TRUE
   }
-  
+  # identify output folder names
+  filelist = isfilelist(datadir)
   if (filelist == TRUE) {
     metadatadir = paste0(outputdir, "/output_", studyname)
   } else {
@@ -162,10 +117,10 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     check_myfun(myfun, params_general[["windowsizes"]])
   }
   
-  if (params_output[["visualreport"]] == TRUE & params_general[["dataFormat"]] != "raw") {
+  if (params_output[["visualreport"]] == TRUE &
+      params_output[["old_visualreport"]] == TRUE &
+      params_general[["dataFormat"]] != "raw") {
     params_output[["visualreport"]] == FALSE
-    warning(paste0("Turning off visualreport generation because",
-                   " dataFormat is not raw."), call. = FALSE)
   }
   
   # check package dependencies
@@ -207,6 +162,55 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   if (6 %in% mode && params_247[["part6CR"]] == FALSE && params_247[["part6HCA"]]) {
     warning(paste0("Both part6CR and part6HCA are set to FALSE by which there is ",
                    "not analysis to be run in part 6."), call. = FALSE)
+  }
+  #===========================
+  # Establish default start / end file index to process
+  if (filelist == FALSE) {
+    if (dir.exists(datadir) == FALSE && 1 %in% mode) {
+      # Note: The check whether datadir exists is only relevant when running part 1
+      # For other scenarios it can be convenient to keep specifying datadir
+      # even if the actual path is no longer available, because GGIR uses the most
+      # distal folder name to identify the output directory. For example,
+      # if part 2-5 are processed on a different system then part 1.
+      
+      stop("\nDirectory specified by argument datadir does not exist")
+    }
+    if (datadir == outputdir || grepl(paste(datadir, '/', sep = ''), outputdir)) {
+      stop(paste0('\nError: The file path specified by argument outputdir should ',
+                  'NOT equal or be a subdirectory of the path specified by argument datadir'))
+    }
+  }
+  if (dir.exists(outputdir) == FALSE) {
+    stop("\nDirectory specified by argument outputdir does not exist")
+  }
+  if (file.access(outputdir, mode = 2) == 0) {
+    if (verbose == TRUE) cat("\nChecking that user has write access permission for directory specified by argument outputdir: Yes\n")
+  } else {
+    stop("\nUser does not seem to have write access permissions for the directory specified by argument outputdir.\n")
+  }
+  if (filelist == TRUE) {
+    if (length(studyname) == 0) {
+      stop('\nError: studyname must be specified if datadir is a list of files')
+    }
+  }
+  # Correct f1 
+  if (is.null(f0) || f0 < 1) { # What file to start with?
+    f0 = 1
+  }
+  if ((is.null(f1) || f1 < 1) && 1 %in% mode) {  # What file to end with?
+    # Do not modify f1 here when not attempting to process GGIR part 1
+    # we only expect datadir to exist when running part 1
+    if (filelist == FALSE && params_general[["dataFormat"]] %in% c("phb_xlsx", "fitbit_json") == FALSE) {
+      f1 <- length(dir(datadir, recursive = TRUE, ignore.case = TRUE, pattern = "[.](csv|bin|Rda|wa|cw|gt3|AW)")) # modified by JH
+    } else if (params_general[["dataFormat"]] %in% c("phb_xlsx", "fitbit_json")) {
+      # use number of directories as indicator for number of recordings
+      f1 = length(dir(datadir, recursive = FALSE))
+    } else {
+      f1 = length(datadir) #modified
+    }
+  }
+  if (is.null(f1)) {
+    f1 = 0
   }
   
   #-----------------------------------------------------------
@@ -264,9 +268,16 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     } else {
       # Skip g.part1, but instead convert epoch data to a format that
       # looks as if it came out of g.part1
+      if (utils::packageVersion("GGIRread") <= "1.0.1") {
+        stop(paste0("To work with external epoch ",
+                    "data GGIRread version 1.0.2 or above is now required. ",
+                    "Please update R package GGIRread. "), call. = FALSE)
+      }
       convertEpochData(datadir = datadir,
                        metadatadir = metadatadir,
                        params_general = params_general,
+                       f0 = f0,
+                       f1 = f1,
                        verbose = verbose)
     }
     if (!is.null(params_general[["recording_split_times"]])) {

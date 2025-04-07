@@ -269,7 +269,9 @@ visualReport = function(metadatadir = c(),
     }
     angleColor = ifelse(Nangles > 1, yes = "orange", no = signalcolor)
     # Add angle lines on top
-    lines(mdat$timestamp, ang1, type = "l", col = angleColor, lwd = 0.3)
+    if (Nangles > 0) {
+      lines(mdat$timestamp, ang1, type = "l", col = angleColor, lwd = 0.3)
+    }
     if (Nangles > 1) {
       lines(mdat$timestamp, ang2, type = "l", col = "red", lwd = 0.3)
     }
@@ -313,6 +315,17 @@ visualReport = function(metadatadir = c(),
         transparantWhite = grDevices::adjustcolor(col = "white", alpha.f = 0.8)
         rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1,
              col = transparantWhite, lwd = 0.8, border = "grey")
+      }
+    }
+    
+    # marker button
+    if ("marker" %in% colnames(mdat)) {
+      marker_moments = which(mdat$marker == 1)
+      if (length(marker_moments) > 0) {
+        arrows(x0 = mdat$timestamp[marker_moments],
+                x1 = mdat$timestamp[marker_moments],
+                y0 = 30, y1 = 0, col = "purple", lwd = 1, length = 0.06)
+        text(x = mdat$timestamp[marker_moments],y = 30, labels = "M", font = 2, col = "purple", cex = 1.2)
       }
     }
     

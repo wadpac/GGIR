@@ -674,6 +674,17 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                     cval = 1,
                     window = uwi[j]
                   )
+                  if ("markerbutton" %in% OF3$guider) {
+                    OF3tmp$markerbutton_guider = 0
+                    OF3tmp$markerbutton_guider[which(OF3tmp$guider[validdaysi] == "markerbutton")] = 1
+                    OF4 = foo34(
+                      df = OF3tmp[validdaysi, ],
+                      aggPerIndividual = OF4,
+                      nameold = "markerbutton_guider",
+                      namenew = "Nmarkerbutton_used",
+                      cval = 1,
+                      window = uwi[j])
+                  }
                   # Move valid day count variables to beginning of dataframe
                   OF4 = cbind(OF4[, 1:5],
                               OF4[, (ncol(OF4) - 10):ncol(OF4)],
