@@ -137,7 +137,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     numeric_params = c("maxNcores", "windowsizes", "idloc", "dayborder",
                        "expand_tail_max_hours", "maxRecordingInterval",
                        "recording_split_overlap")
-    boolean_params = c("overwrite", "print.filename", "do.parallel", "part5_agg2_60seconds")
+    boolean_params = c("overwrite", "print.filename", "do.parallel", "part5_agg2_60seconds",
+                       "recording_split_ignore_edges")
     character_params = c("acc.metric", "desiredtz", "configtz", "sensor.location", 
                          "dataFormat", "extEpochData_timeformat", "recording_split_times",
                          "recording_split_timeformat")

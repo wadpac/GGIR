@@ -1,3 +1,11 @@
+# CHANGES IN GGIR VERSION 3.2-4
+
+- Part 1: Expand split recording functionality with parameter recording_split_ignore_edges. #1278
+
+# CHANGES IN GGIR VERSION 3.2-3
+
+- Part 1: Implemented functionality to read and process Parmay Matrix sensors data (bin or BIN files) #1253
+
 # CHANGES IN GGIR VERSION 3.2-2
 
 - Part 1: Add option to load externally derived epoch data from Actical, Philips Health Band, and Fitbit. #1205

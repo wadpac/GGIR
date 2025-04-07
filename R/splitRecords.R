@@ -75,7 +75,8 @@ splitRecords = function(metadatadir, params_general = NULL) {
           Mbu = M
           segment_names = segment_starts = segment_ends = NULL
           # Define segments
-          if (splitTime_tmp[1] > timestamp_short[1]) {
+          if (splitTime_tmp[1] > timestamp_short[1] &&
+              params_general[["recording_split_ignore_edges"]] == FALSE) {
             segment_starts = timestamp_short[1]
             segment_ends = splitTime_tmp[1]
             segment_names = paste0("startrecTO", split_names[1])
@@ -87,10 +88,12 @@ splitRecords = function(metadatadir, params_general = NULL) {
               segment_names = c(segment_names, paste0(split_names[segment_index], "TO",
                                                       split_names[segment_index + 1]))
             } else {
-              segment_starts = c(segment_starts, splitTime_tmp[segment_index])
-              segment_ends = c(segment_ends, timestamp_short[length(timestamp_short)])
-              segment_names = c(segment_names, paste0(split_names[segment_index],
-                                                      "TOendrec"))
+              if (params_general[["recording_split_ignore_edges"]] == FALSE) {
+                segment_starts = c(segment_starts, splitTime_tmp[segment_index])
+                segment_ends = c(segment_ends, timestamp_short[length(timestamp_short)])
+                segment_names = c(segment_names, paste0(split_names[segment_index],
+                                                        "TOendrec"))
+              }
             }
           }
           # Store each part separately

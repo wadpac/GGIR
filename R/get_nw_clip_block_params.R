@@ -16,6 +16,7 @@ get_nw_clip_block_params = function(monc, dformat, deviceSerialNumber = "", sf,
   if (monc == MONITOR$AXIVITY && dformat == FORMAT$CSV) blocksize = round(blocksize)
   if (monc == MONITOR$MOVISENS) blocksize = sf * 60 * 1440
   if (monc == MONITOR$VERISENSE && dformat == FORMAT$CSV) blocksize = round(blocksize)
+  if (monc == MONITOR$PARMAY_MTX) blocksize = round(1440 / 2 * params_rawdata[["chunksize"]])
 
   dynrange = params_rawdata[["dynrange"]]
   if (monc == MONITOR$ACTIGRAPH) {
