@@ -213,7 +213,7 @@ Relying on marker button presses (marker events) comes with the challenge that p
 3. Only continue if there are at least 2 marker events for the night, if at least 50% of the data in the night is valid, and if the time span between the first and last marker event is larger than 1 hour.
 4. Take all marker events with value 1 or the 10 marker events with the highest value, whichever of the two provides most marker events.
 5. From these marker events, ignore all marker event pairs that both span less than 3 hours and involve at least one imputed marker button press, unless these represent all marker button pairs available.
-6. Ignore all marker event pairs where the percentage of sustained inactivity bouts inside the window is larger than outside the window.
+6. Ignore all marker event pairs where the percentage of sustained inactivity bouts inside the window is lower than outside the window.
 7. Define a performance score as: 1 + time spend outside the window duration range 7-9 multiplied by the average activity inside the window.
 8. The window with the lowest score is selected as guider.
 
