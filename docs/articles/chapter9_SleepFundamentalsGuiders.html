@@ -236,7 +236,7 @@ time. Specify which column is the column for the first night by argument
 <li><p>Timestamps are to be stored without date as in hh:mm:ss with hour
 values ranging between 0 and 23 (not 24). If onset corresponds to lights
 out or intention to fall asleep, then it specify
-<code>sleepwindowType = \"TimeInBed\"</code>.</p></li>
+<code>sleepwindowType = "TimeInBed"</code>.</p></li>
 <li><p>There can be multiple sleeplogs in the same spreadsheet. Each row
 representing a single recording.</p></li>
 <li><p>First row: The first row of the spreadsheet needs to be filled
@@ -381,7 +381,7 @@ chapter 10.</p>
 to noon. However, if it ends between 11am and noon then it will be
 applied again but to a 6pm-6pm time segment.</p>
 <p>To use this guider set parameter
-<code>HASPT.algo = \"HorAngle\"</code>.</p>
+<code>HASPT.algo = "HorAngle"</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="guider-l5-12-legacy-algorithm">Guider: L5+/-12 (LEGACY ALGORITHM)<a class="anchor" aria-label="anchor" href="#guider-l5-12-legacy-algorithm"></a>
@@ -421,7 +421,7 @@ algorithm matures.</strong></p>
 looking for the longest period with a horizontal trunk. To do this it
 needs GGIR part 1 and 2 to have derived the angle for the longitudinal
 axis.</p>
-<p>Setting parameter <code>sensor.location=\"hip\"</code> triggers the
+<p>Setting parameter <code>sensor.location="hip"</code> triggers the
 identification of the longitudinal axis by looking for the angle with
 the strongest 24-hour lagged correlation.</p>
 <p>You can also force GGIR to use a specific axis as longitudinal axis
@@ -434,7 +434,7 @@ longest horizontal period in the day where gaps of less than 60 minutes
 are ignored. Therefore, the last 4 steps in the algorithm are identical
 to the last four steps in the HDCZA algorithm.</p>
 <p>To use this guider set parameter
-<code>HASPT.algo = \"HorAngle\"</code></p>
+<code>HASPT.algo = "HorAngle"</code></p>
 </div>
 <div class="section level3">
 <h3 id="guider-motionware-experimental">Guider: MotionWare (EXPERIMENTAL)<a class="anchor" aria-label="anchor" href="#guider-motionware-experimental"></a>
@@ -465,7 +465,7 @@ This 1 hour is currently hard-coded.</li>
 <li>Take the longest remaining window as guider.</li>
 </ol>
 <p>To use this guider set parameter
-<code>HASPT.algo = \"HLRB\"</code>.</p>
+<code>HASPT.algo = "HLRB"</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="guider-notworn-experimental">Guider: NotWorn (EXPERIMENTAL)<a class="anchor" aria-label="anchor" href="#guider-notworn-experimental"></a>
@@ -494,12 +494,11 @@ ignored. Therefore, the last 4 steps in the algorithm are identical to
 the last four steps in the HDCZA and HorAngle algorithms.</p>
 <p>The algorithm is expected to work with any acceleration metric, so
 both count-type metrics and metrics in gravitational units.</p>
-<p>To use this guider set parameter
-<code>HASPT.algo = \"NotWorn\"</code>. Further, we recommend combining
-the using of “NotWorn” with: <code>do.imp = FALSE</code> and
-<code>ignorenonwear = FALSE</code>. Internally
-<code>HASPT.ignore.invalid</code> is always set to <code>NA</code> when
-“NotWorn” is used.</p>
+<p>To use this guider set parameter <code>HASPT.algo = "NotWorn"</code>.
+Further, we recommend combining the using of "NotWorn" with:
+<code>do.imp = FALSE</code> and <code>ignorenonwear = FALSE</code>.
+Internally <code>HASPT.ignore.invalid</code> is always set to
+<code>NA</code> when "NotWorn" is used.</p>
 <p>If this is used it will also define the resulting window as SIB
 period and ignore all other identified SIB window to ensure the entire
 window is treated as sleep. So, all SIB periods detected are
@@ -513,8 +512,8 @@ been worn for less than 25% of the time in the detection window
 (noon-noon or 6pm-6pm). If this happens then it will check whether
 parameter <code>HASPT.algo</code> has two guiders specified. If it does
 it will use the second one. For example,
-<code>HASPT.algo = c(\"NotWorn\", \"HDCZA\"</code>) or
-<code>HASPT.algo = c(\"NotWorn\", \"HorAngle\"</code>).</p>
+<code>HASPT.algo = c("NotWorn", "HDCZA"</code>) or
+<code>HASPT.algo = c("NotWorn", "HorAngle"</code>).</p>
 </div>
 <div class="section level3">
 <h3 id="guider-markerbutton-experimental">Guider: markerbutton (EXPERIMENTAL)<a class="anchor" aria-label="anchor" href="#guider-markerbutton-experimental"></a>
@@ -522,7 +521,7 @@ it will use the second one. For example,
 <p>The functionality described in this paragraph is currently only
 functional for Philips Health Band and MotionWatch 8 data.</p>
 <p>This guider is always used in combination with one of the other
-guiders such as “MotionWare” or “HLRB”. It is use by setting
+guiders such as "MotionWare" or "HLRB". It is use by setting
 <code>consider_marker_button = TRUE</code>. If this fails GGIR will fall
 back on the guider as specified with parameter
 <code>HASPT.algo</code>.</p>

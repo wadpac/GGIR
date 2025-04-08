@@ -196,7 +196,7 @@ estimates from part 4, but if they are missing, part 5 will attempt to
 retrieve the estimate from the guider method. Note that the parameter
 <code>timewindow</code> can consist of one of the options
 beforementioned or any combination of them, for example, the default
-value is <code>timewindow = c(\"MM\", \"WW\")</code>.</p>
+value is <code>timewindow = c("MM", "WW")</code>.</p>
 <p>When recordings end in the night or early morning the sleep estimates
 for the night are likely affected. For example, if a recording ends at
 10am we cannot be sure that the participant did not sleep until after
@@ -331,12 +331,12 @@ used if save_ms5rawlevels=TRUE.</li>
 <td>Time stamp in UTC time format (i.e., seconds since 1970-01-01). To
 convert timenum to time stamp format, you need to specify your desired
 time zone, e.g.,
-<code>as.POSIXct(mdat$timenum, tz = \"Europe/London\")</code>.</td>
+<code>as.POSIXct(mdat$timenum, tz = "Europe/London")</code>.</td>
 </tr>
 <tr class="even">
 <td>ACC</td>
 <td>Average acceleration metric selected by <code>acc.metric</code>,
-default = "ENMO".</td>
+default = <code>"ENMO"</code>.</td>
 </tr>
 <tr class="odd">
 <td>SleepPeriodTime</td>
@@ -357,11 +357,12 @@ periods).</td>
 <tr class="even">
 <td>window</td>
 <td>Numeric indicator of the analysis window in the recording. If
-timewindow = "MM" then these correspond to calendar days, if timewindow
-= "WW" then these correspond to which wakingup-wakingup window in the
-recording, if timewindow = "OO" then these correspond to which
-sleeponset-sleeponset window in the recording. So, in a recording of one
-week you may find window numbers 1, 2, 3, 4, 5 and 6.</td>
+timewindow = <code>"MM"</code> then these correspond to calendar days,
+if timewindow = <code>"WW"</code> then these correspond to which
+wakingup-wakingup window in the recording, if timewindow =
+<code>"OO"</code> then these correspond to which sleeponset-sleeponset
+window in the recording. So, in a recording of one week you may find
+window numbers 1, 2, 3, 4, 5 and 6.</td>
 </tr>
 <tr class="odd">
 <td>class_id</td>
@@ -393,9 +394,9 @@ no behaviour was reported value is NA</td>
 </tr>
 <tr class="odd">
 <td>angle</td>
-<td>anglez by default. If <code>sensor.location = \"hip\"</code> or
-<code>HASPT.algo = \"HorAngle\"</code> then angle represents the angle
-for the longitudinal axis as provided by argument longitudinal_axis or
+<td>anglez by default. If <code>sensor.location = "hip"</code> or
+<code>HASPT.algo = "HorAngle"</code> then angle represents the angle for
+the longitudinal axis as provided by argument longitudinal_axis or
 estimated if no angle was provided. If more angles were extracted in
 part 1 then these will be add with their letter appended.</td>
 </tr>

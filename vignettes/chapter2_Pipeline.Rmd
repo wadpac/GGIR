@@ -170,9 +170,9 @@ By default GGIR assumes that the data is raw as discussed in chapter 1. However,
 | Actiwatch | .awd      | `dataFormat = "actiwatch_awd"`  |
 | ActiGraph    | .csv (count files, not be confused with csv raw data files) | `dataFormat = "actigraph_csv"`, `do.neishabouricounts = TRUE`, `acc.metric = "NeishabouriCount_x"`  |
 | Axivity             | UKBiobank csv export of epoch level data      | `dataFormat = "ukbiobank_csv"`  (sleep detection not facilitated)   |
-| SenseWear    | .xls or .xlsx      | `dataFormat = \"sensewear_xls\"`   |
-| Fitbit      | folder with multiple .json files |  `dataFormat = \"fitbit_json\"` |
-| Philips Health Band | .xlsx file pairs | `dataFormat = \"phb_xlsx\"` |
+| SenseWear    | .xls or .xlsx      | `dataFormat = "sensewear_xls"`   |
+| Fitbit      | folder with multiple .json files |  `dataFormat = "fitbit_json"` |
+| Philips Health Band | .xlsx file pairs | `dataFormat = "phb_xlsx"` |
 
 See [GGIR CookBook](https://wadpac.github.io/GGIR/articles/Cookbook.html) for example recipes for working with these externally derived epoch-level data.
 
@@ -267,7 +267,7 @@ GGIR(mode = 1:6,
 
 ### From the R console on your own desktop/laptop
 
-Create an R-script and put in it `library(GGIR)` and on the next line the GGIR call as in `GGIR(datadir = \"yourdatapath\", outputdir = \"yourdatapath\")`. Next, you can source the R-script with the `source` button in RStudio: `source(\"pathtoscript/myshellscript.R\")`
+Create an R-script and put in it `library(GGIR)` and on the next line the GGIR call as in `GGIR(datadir = "yourdatapath", outputdir = "yourdatapath")`. Next, you can source the R-script with the `source` button in RStudio: `source("pathtoscript/myshellscript.R")`
 
 GGIR by default supports multi-thread processing which is used to process one input file per process, speeding up the processing of your data. This can be turned off by setting parameter `do.parallel = FALSE`.
 

@@ -38,17 +38,17 @@ This algorithm looks for the periods of time where the z-angle does not change b
 
 The algorithms named "NotWorn" for both sib and guider (next chapter) are designed for studies where the instruction is to not wear the accelerometer during the night. It should be obvious that this does not facilitate any meaningful sleep analysis. Nonetheless we need a crude estimate of night time versus day time in order for GGIR part 5 to characterise day time behaviours.
 
-If this is the case for your dataset then use guider setting `HASPT.algo = \"NotWorn\"` as discussed in the next chapter. Further, we recommend combining the using of "NotWorn" with: `do.imp = FALSE`, `HASPT.ignore.invalid = NA`, and `ignorenonwear = FALSE`.
+If this is the case for your dataset then use guider setting `HASPT.algo = "NotWorn"` as discussed in the next chapter. Further, we recommend combining the using of '"NotWorn"' with: `do.imp = FALSE`, `HASPT.ignore.invalid = NA`, and `ignorenonwear = FALSE`.
 
 The detection of sib periods is based on the acceleration metric as defined with parameter `acc.metric`. 
 
 ### Combined with count acceleration metrics
 
-If you are using a count accelereration metric then set `HASIB.algo = \"NotWorn\"`. In part 4 the sib will be set equal to the detected guider window. So, effectively guider and sib algorithm are identical in this case.
+If you are using a count accelereration metric then set `HASIB.algo = "NotWorn"`. In part 4 the sib will be set equal to the detected guider window. So, effectively guider and sib algorithm are identical in this case.
 
 ### Combined with gravitational unit acceleration metrics
 
-If you are using an acceleration metrics the expresses acceleration in gravitational units then set `HASIB.algo` as you would do if the accelerometer was expected to be worn and specify a second guider for parameter `HASPT.algo` as discussed int he next chapter, e.g. `HASPT.algo = c(\"NotWorn\", \"HDCZA)\"`. In this way GGIR will first search for long non-wear periods as indicator of sleep and use those to define the sleep window but if those are not found it will fall back on the sib-algortihm as specified with `HASIB.algo`, e.g. `\"vanHees2015\"`.
+If you are using an acceleration metrics the expresses acceleration in gravitational units then set `HASIB.algo` as you would do if the accelerometer was expected to be worn and specify a second guider for parameter `HASPT.algo` as discussed int he next chapter, e.g. `HASPT.algo = c("NotWorn", "HDCZA)"`. In this way GGIR will first search for long non-wear periods as indicator of sleep and use those to define the sleep window but if those are not found it will fall back on the sib-algortihm as specified with `HASIB.algo`, e.g. `"vanHees2015"`.
 
 
 ## SIB: Count based algorithms (EXPERIMENTAL) 
@@ -80,15 +80,15 @@ Once counts are read or calculated we can use the following SIB algorithms.
 
 ### Sadeh1994 
 
-The algorithm proposed by Sadeh et al. [link](https://doi.org/10.1093/sleep/17.3.201). To use this set parameter `HASIB.algo = \"Sadeh1994\"` and argument `Sadeh_axis = \"Y\"` to indicate that the algorithm should use the Y-axis of the sensor.
+The algorithm proposed by Sadeh et al. [link](https://doi.org/10.1093/sleep/17.3.201). To use this set parameter `HASIB.algo = "Sadeh1994"` and argument `Sadeh_axis = "Y"` to indicate that the algorithm should use the Y-axis of the sensor.
 
 ### Galland2012 
 
-The algorithm proposed by Galland et al. [link](http://dx.doi.org/10.1016/j.sleep.2012.01.018). To use our implementation of the Galland2012 algorithm specify parameter `HASIB.algo = \"Galland2012\"`. Further, set `Sadeh_axis = \"Y\"` to specify that the algorithm should use the Y-axis.
+The algorithm proposed by Galland et al. [link](http://dx.doi.org/10.1016/j.sleep.2012.01.018). To use our implementation of the Galland2012 algorithm specify parameter `HASIB.algo = "Galland2012"`. Further, set `Sadeh_axis = "Y"` to specify that the algorithm should use the Y-axis.
 
 ### ColeKripke1992
 
-The algorithm proposed by Cole et al. [link](https://doi.org/10.1093/sleep/15.5.461), more specifically GGIR uses the algortihm proposed in the paper for 10-second non-overlapping epochs with counts expressed average per minute. We skip the re-scoring steps as the paper showed marginal added value of this added complexity. To use the GGIR implementation of this algortihm, specify parameters `HASIB.algo = \"ColeKripke1992\"` and `Sadeh_axis = \"Y\"` to indicate that the algorithm should use the Y-axis of the sensor.
+The algorithm proposed by Cole et al. [link](https://doi.org/10.1093/sleep/15.5.461), more specifically GGIR uses the algortihm proposed in the paper for 10-second non-overlapping epochs with counts expressed average per minute. We skip the re-scoring steps as the paper showed marginal added value of this added complexity. To use the GGIR implementation of this algortihm, specify parameters `HASIB.algo = "ColeKripke1992"` and `Sadeh_axis = "Y"` to indicate that the algorithm should use the Y-axis of the sensor.
 
 ### Oakley1997
 
@@ -109,17 +109,19 @@ For example, Cambridge Neurotechnologiesy shares the algorithm via a pdf titled 
 
 In short, the algorithm uses a weighted sum of the count value of the current and surrounding epochs, where weights and number of epochs to be used are dependent on the epoch length. The algorithm facilitates 15, 30, 60, and 120 second epoch lengths. In GGIR we only facilitate 15, 30 and 60.
 
-To use the GGIR implementation of this algorithm, specify parameter `HASIB.algo = \"Oakley1997\"`.
+The Oakley algorithm uses a threshold of 20, 40 or 80, which is documented [here](https://wadpac.github.io/GGIR/articles/GGIRParameters.html#oakley_threshold).
+
+To use the GGIR implementation of this algorithm, specify parameter `HASIB.algo = "Oakley1997"`.
 
 ### Data
 
-Some data formats come with a sleep classification, which can be used by setting parameter `HASIB.algo = \"data\"`. This applies to:
+Some data formats come with a sleep classification, which can be used by setting parameter `HASIB.algo = "data"`. This applies to:
 
 - Fitbit
 - Philips Health Band
 - Actiwatch and Motionwatch
 
-If no sleep classification can be found in the data GGIR will fall back on the second value of `HASIB.algo` parameter. For example, `HASIB.algo = c(\"data\", \"Oakley1997\")`.
+If no sleep classification can be found in the data GGIR will fall back on the second value of `HASIB.algo` parameter. For example, `HASIB.algo = c("data", "Oakley1997")`.
 
 However, if `HASIB.algo` is specified to one of the before mentioned algorithms, GGIR will attempt to apply those algorithms to the data and will directly ignore the sleep classification in the data.
 

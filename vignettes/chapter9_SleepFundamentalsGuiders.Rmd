@@ -75,7 +75,7 @@ Example of a basic sleeplog:
 
 - Alternatingly one column for onset time and one column for waking time. Specify which column is the column for the first night by argument `coln1`, in the above example `coln1=2`.
 
-- Timestamps are to be stored without date as in hh:mm:ss with hour values ranging between 0 and 23 (not 24). If onset corresponds to lights out or intention to fall asleep, then it specify `sleepwindowType = \"TimeInBed\"`.
+- Timestamps are to be stored without date as in hh:mm:ss with hour values ranging between 0 and 23 (not 24). If onset corresponds to lights out or intention to fall asleep, then it specify `sleepwindowType = "TimeInBed"`.
 
 - There can be multiple sleeplogs in the same spreadsheet. Each row representing a single recording.
 
@@ -122,7 +122,7 @@ Note that step 10 of Figure 1 in the paper gives the false impression that the s
 
 The time segment over which HDCZA is derived is by default from noon to noon. However, if it ends between 11am and noon then it will be applied again but to a 6pm-6pm time segment.
 
-To use this guider set parameter `HASPT.algo = \"HorAngle\"`.
+To use this guider set parameter `HASPT.algo = "HorAngle"`.
 
 ### Guider: L5+/-12 (LEGACY ALGORITHM)
 
@@ -146,13 +146,13 @@ For example, to use this guider with a window from 10pm to 8am set parameter `de
 
 This guider is designed for hip-worn accelerometer (raw) data, by looking for the longest period with a horizontal trunk. To do this it needs GGIR part 1 and 2 to have derived the angle for the longitudinal axis. 
 
-Setting parameter `sensor.location=\"hip\"` triggers the identification of the longitudinal axis by looking for the angle with the strongest 24-hour lagged correlation.
+Setting parameter `sensor.location="hip"` triggers the identification of the longitudinal axis by looking for the angle with the strongest 24-hour lagged correlation.
 
 You can also force GGIR to use a specific axis as longitudinal axis with parameter `longitudinal_axis`.
 
 Next, the algorithm identifies when the horizontal axis is between -45 and 45 degrees and considers this a horizontal posture. Next, this is used to identify the largest time in bed period, by only considering horizontal time segments of at least 30 minutes, and then looking for longest horizontal period in the day where gaps of less than 60 minutes are ignored. Therefore, the last 4 steps in the algorithm are identical to the last four steps in the HDCZA algorithm.
 
-To use this guider set parameter `HASPT.algo = \"HorAngle\"`
+To use this guider set parameter `HASPT.algo = "HorAngle"`
 
 ### Guider: MotionWare (EXPERIMENTAL)
 
@@ -172,7 +172,7 @@ The algorithm is composed of the following steps:
 2. Replace all resulting non-rest periods by rest that are surrounded on both sides by rest if their (non-rest) length is shorter than 1 hour. This 1 hour is currently hard-coded.
 3. Take the longest remaining window as guider.
 
-To use this guider set parameter `HASPT.algo = \"HLRB\"`.
+To use this guider set parameter `HASPT.algo = "HLRB"`.
 
 ### Guider: NotWorn (EXPERIMENTAL)
 
@@ -186,18 +186,18 @@ Next, this is used to identify the largest non-movement period, by only consider
 
 The algorithm is expected to work with any acceleration metric, so both count-type metrics and metrics in gravitational units.
 
-To use this guider set parameter `HASPT.algo = \"NotWorn\"`. Further, we recommend combining the using of "NotWorn" with: `do.imp = FALSE` and `ignorenonwear = FALSE`. Internally `HASPT.ignore.invalid` is always set to `NA` when "NotWorn" is used.
+To use this guider set parameter `HASPT.algo = "NotWorn"`. Further, we recommend combining the using of \"NotWorn\" with: `do.imp = FALSE` and `ignorenonwear = FALSE`. Internally `HASPT.ignore.invalid` is always set to `NA` when \"NotWorn\" is used.
 
 If this is used it will also define the resulting window as SIB period and ignore all other identified SIB window to ensure the entire window is treated as sleep. So, all SIB periods detected are ignored.
 
-However, we know from experience that participants occasionally wear the accelerometer during the night even when they are told not to. GGIR offers a solution for this if you are not working with count data but with accelerometer metrics in gravitational units. In that case, it is possible to specify a second guider to use when the accelerometer has been worn for less than 25% of the time in the detection window (noon-noon or 6pm-6pm). If this happens then it will check whether parameter `HASPT.algo` has two guiders specified. If it does it will use the second one. For example, `HASPT.algo = c(\"NotWorn\", \"HDCZA\"`) or `HASPT.algo = c(\"NotWorn\", \"HorAngle\"`).
+However, we know from experience that participants occasionally wear the accelerometer during the night even when they are told not to. GGIR offers a solution for this if you are not working with count data but with accelerometer metrics in gravitational units. In that case, it is possible to specify a second guider to use when the accelerometer has been worn for less than 25% of the time in the detection window (noon-noon or 6pm-6pm). If this happens then it will check whether parameter `HASPT.algo` has two guiders specified. If it does it will use the second one. For example, `HASPT.algo = c("NotWorn", "HDCZA"`) or `HASPT.algo = c("NotWorn", "HorAngle"`).
 
 
 ### Guider: markerbutton (EXPERIMENTAL)
 
 The functionality described in this paragraph is currently only functional for Philips Health Band and MotionWatch 8 data.
 
-This guider is always used in combination with one of the other guiders such as "MotionWare" or "HLRB".
+This guider is always used in combination with one of the other guiders such as \"MotionWare\" or \"HLRB\".
 It is use by setting `consider_marker_button = TRUE`. If this fails GGIR will fall back on the guider as specified with parameter `HASPT.algo`.
 
 Relying on marker button presses (marker events) comes with the challenge that participants may press the marker button more than twice or not at all on some days. GGIR attempts to address this with the following algorithm.
