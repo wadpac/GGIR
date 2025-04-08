@@ -115,6 +115,15 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
                                                               no = ifelse(mdat$guider == 'HorAngle' | mdat$guider == 'HorAngle+invalid', yes = 5,
                                                                           no = ifelse(mdat$guider == 'NotWorn' | mdat$guider == 'NotWorn+invalid', yes = 6,
                                                                                       no = 0))))))
+    # more recently added guiders:
+    guidernames = c('markerbutton', 'HLRB', 'MotionWare')
+    guidernumbers = c(7, 8, 9)
+    for (guidername in 1:length(guidernames)) {
+      guidername_instance = which(mdat$guider == guidername)
+      if (length(guidername_instance) > 0) {
+        mdat$guider[guidername_instance] = guidernumbers[gi]
+      }
+    }
     
     mdat = mdat[,-which(names(mdat) %in% c("timestamp","time"))]
     # re-oder columns

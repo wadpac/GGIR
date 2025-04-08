@@ -144,11 +144,7 @@ first couple of hundred lines of an .AWD file may look like can be found
 <span>  dataFormat <span class="op">=</span> <span class="st">"actiwatch_awd"</span>,</span>
 <span>  extEpochData_timeformat <span class="op">=</span> <span class="st">"%d-%b-%Y %H:%M:%S"</span>,</span>
 <span>  windowsizes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">60</span>, <span class="fl">900</span>, <span class="fl">3600</span><span class="op">)</span>, <span class="co"># 60 is the expected epoch length</span></span>
-<span>  do.zcy <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  do.enmo <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  do.anglez <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  HASIB.algo <span class="op">=</span> <span class="st">"Sadeh1994"</span>,</span>
-<span>  def.noc.sleep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="co"># &lt;= because we cannot use HDCZA for ZCY</span></span></code></pre>
+<span>  acc.metric <span class="op">=</span> <span class="st">"ExtAct"</span><span class="op">)</span></span></code></pre>
 <p>To classify sleep from Actiwatch, consider parameter
 <code>HASIB.algo = "Oakley1997"</code>.</p>
 </div>
@@ -164,8 +160,9 @@ in English.</p>
 <span>  dataFormat <span class="op">=</span> <span class="st">"actiwatch_csv"</span>,</span>
 <span>  extEpochData_timeformat <span class="op">=</span> <span class="st">"%m/%d/%y %I:%M:%S %p"</span>,</span>
 <span>  windowsizes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">900</span>, <span class="fl">3600</span><span class="op">)</span>,</span>
-<span>  HASIB.algo <span class="op">=</span> <span class="st">"Sadeh1994"</span>,</span>
-<span>  def.noc.sleep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="co"># &lt;= because we cannot use HDCZA for ZCY</span></span></code></pre>
+<span>  acc.metric <span class="op">=</span> <span class="st">"ExtAct"</span><span class="op">)</span></span></code></pre>
+<p>To classify sleep from Actical, consider parameter
+<code>HASIB.algo = "Oakley1997"</code>.</p>
 </div>
 </div>
 <div class="section level3">
@@ -180,7 +177,8 @@ processing raw accelerometer data.</p>
 <span>   dataFormat <span class="op">=</span> <span class="st">"ukbiobank_csv"</span>,</span>
 <span>   extEpochData_timeformat <span class="op">=</span> <span class="st">"%m/%d/%Y %H:%M:%S"</span>,</span>
 <span>   windowsizes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">900</span>, <span class="fl">3600</span><span class="op">)</span>, <span class="co"># We know that data was stored in 5 second epoch</span></span>
-<span>   desiredtz <span class="op">=</span> <span class="st">"Europe/London"</span><span class="op">)</span> <span class="co"># We know that data was collected in the UK</span></span></code></pre>
+<span>   desiredtz <span class="op">=</span> <span class="st">"Europe/London"</span>, <span class="co"># We know that data was collected in the UK</span></span>
+<span>   acc.metric <span class="op">=</span> <span class="st">"LFENMO"</span><span class="op">)</span></span></code></pre>
 <p>Please note that currently no method exists in GGIR to detect sleep
 from these 5 second aggregate files.</p>
 </div>
@@ -194,13 +192,13 @@ and <a href="https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/ActiGra
 <pre><code><span><span class="fu"><a href="../reference/GGIR.html">GGIR</a></span><span class="op">(</span>datadir <span class="op">=</span> <span class="st">"/examplefiles"</span>,</span>
 <span>   outputdir <span class="op">=</span> <span class="st">""</span>,</span>
 <span>   dataFormat <span class="op">=</span> <span class="st">"actigraph_csv"</span>,</span>
+<span>   extEpochData_timeformat <span class="op">=</span> <span class="st">"%m/%d/%Y %H:%M:%S"</span>,</span>
 <span>   windowsizes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">900</span>, <span class="fl">3600</span><span class="op">)</span>,</span>
+<span>   do.neishabouricounts <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>   acc.metric <span class="op">=</span> <span class="st">"NeishabouriCount_x"</span>,</span>
 <span>   threshold.in <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="fl">5</span><span class="op">/</span><span class="fl">60</span><span class="op">)</span>, digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
 <span>   threshold.mod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">2500</span> <span class="op">*</span> <span class="op">(</span><span class="fl">5</span><span class="op">/</span><span class="fl">60</span><span class="op">)</span>, digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
-<span>   threshold.vig <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">10000</span> <span class="op">*</span> <span class="op">(</span><span class="fl">5</span><span class="op">/</span><span class="fl">60</span><span class="op">)</span>, digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
-<span>   extEpochData_timeformat <span class="op">=</span> <span class="st">"%m/%d/%Y %H:%M:%S"</span>,</span>
-<span>   do.neishabouricounts <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>   acc.metric <span class="op">=</span> <span class="st">"NeishabouriCount_x"</span><span class="op">)</span></span></code></pre>
+<span>   threshold.vig <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">10000</span> <span class="op">*</span> <span class="op">(</span><span class="fl">5</span><span class="op">/</span><span class="fl">60</span><span class="op">)</span>, digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="sensewear-data-in--xls-format">Sensewear data in .xls format<a class="anchor" aria-label="anchor" href="#sensewear-data-in--xls-format"></a>
@@ -214,13 +212,15 @@ classification for sleep.</p>
 follows:</p>
 <pre><code><span><span class="fu"><a href="../reference/GGIR.html">GGIR</a></span><span class="op">(</span>datadir <span class="op">=</span> <span class="st">"C:/yoursenseweardatafolder"</span>,</span>
 <span>    outputdir <span class="op">=</span> <span class="st">"D:/youroutputfolder"</span>,</span>
-<span>    windowsizes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">60</span>, <span class="fl">900</span>, <span class="fl">3600</span><span class="op">)</span>,</span>
-<span>    threshold.in <span class="op">=</span> <span class="fl">1.5</span>,</span>
-<span>    threshold.mod <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>    threshold.vig <span class="op">=</span> <span class="fl">6</span>,</span>
 <span>    dataFormat <span class="op">=</span> <span class="st">"sensewear_xls"</span>,</span>
 <span>    extEpochData_timeformat <span class="op">=</span> <span class="st">"%d-%b-%Y %H:%M:%S"</span>,</span>
-<span>    HASPT.algo <span class="op">=</span> <span class="st">"NotWorn"</span><span class="op">)</span></span></code></pre>
+<span>    windowsizes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">60</span>, <span class="fl">900</span>, <span class="fl">3600</span><span class="op">)</span>,</span>
+<span>    acc.metric <span class="op">=</span> <span class="st">"ExtAct"</span>,</span>
+<span>    threshold.in <span class="op">=</span> <span class="fl">1.5</span>,</span>
+<span>    threshold.mod <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>    threshold.vig <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></code></pre>
+<p>To use the sleep classification as stored inside the data use
+parameter <code>HASIB.algo = "data"</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="actical-in--csv-format">Actical in .csv format<a class="anchor" aria-label="anchor" href="#actical-in--csv-format"></a>
@@ -231,9 +231,10 @@ look like can be found <a href="https://github.com/wadpac/GGIRread/blob/main/ins
 follows:</p>
 <pre><code><span><span class="fu"><a href="../reference/GGIR.html">GGIR</a></span><span class="op">(</span>datadir <span class="op">=</span> <span class="st">"C:/youracticaldatafolder"</span>,</span>
 <span>    outputdir <span class="op">=</span> <span class="st">"D:/youroutputfolder"</span>,</span>
-<span>    windowsizes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">60</span>, <span class="fl">900</span>, <span class="fl">3600</span><span class="op">)</span>,</span>
 <span>    dataFormat <span class="op">=</span> <span class="st">"actical_csv"</span>,</span>
-<span>    extEpochData_timeformat <span class="op">=</span> <span class="st">"%d-%b-%Y %H:%M"</span><span class="op">)</span></span></code></pre>
+<span>    extEpochData_timeformat <span class="op">=</span> <span class="st">"%d-%b-%Y %H:%M"</span>,</span>
+<span>    windowsizes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">60</span>, <span class="fl">900</span>, <span class="fl">3600</span><span class="op">)</span>,</span>
+<span>    acc.metric <span class="op">=</span> <span class="st">"ExtAct"</span><span class="op">)</span></span></code></pre>
 <p>To classify sleep from Actical, consider parameter
 <code>HASIB.algo = "Oakley1997"</code>.</p>
 </div>
@@ -250,9 +251,10 @@ for <code>Sleep_Wake</code>.</p>
 follows:</p>
 <pre><code><span><span class="fu"><a href="../reference/GGIR.html">GGIR</a></span><span class="op">(</span>datadir <span class="op">=</span> <span class="st">"C:/yourphbdatafolder"</span>,</span>
 <span>    outputdir <span class="op">=</span> <span class="st">"D:/youroutputfolder"</span>,</span>
-<span>    windowsizes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">60</span>, <span class="fl">900</span>, <span class="fl">3600</span><span class="op">)</span>,</span>
 <span>    dataFormat <span class="op">=</span> <span class="st">"phb_xlsx"</span>,</span>
-<span>    extEpochData_timeformat <span class="op">=</span> <span class="st">"%m-%d-%Y %H:%M:%S"</span><span class="op">)</span></span></code></pre>
+<span>    extEpochData_timeformat <span class="op">=</span> <span class="st">"%m-%d-%Y %H:%M:%S"</span>,</span>
+<span>    windowsizes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">60</span>, <span class="fl">900</span>, <span class="fl">3600</span><span class="op">)</span>,</span>
+<span>    acc.metric <span class="op">=</span> <span class="st">"ExtAct"</span><span class="op">)</span></span></code></pre>
 <p>When <code>HASIB.algo = "data"</code> GGIR attempts to extract and
 uses the sleep classification that is stored inside the xlsx files with
 column name “sleepWake”. If no sleep classification is stored inside the
@@ -275,11 +277,14 @@ for calories</a>.</p>
 follows:</p>
 <pre><code><span><span class="fu"><a href="../reference/GGIR.html">GGIR</a></span><span class="op">(</span>datadir <span class="op">=</span> <span class="st">"C:/yourfitbitdatafolder"</span>,</span>
 <span>    outputdir <span class="op">=</span> <span class="st">"D:/youroutputfolder"</span>,</span>
+<span>    dataFormat <span class="op">=</span> <span class="st">"fitbit_json"</span>,</span>
 <span>    windowsizes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">60</span>, <span class="fl">900</span>, <span class="fl">3600</span><span class="op">)</span>,</span>
-<span>    dataFormat <span class="op">=</span> <span class="st">"fitbit_json"</span><span class="op">)</span></span></code></pre>
+<span>    acc.metric <span class="op">=</span> <span class="st">"ExtAct"</span><span class="op">)</span></span></code></pre>
 <p>Note that parameter <code>extEpochData_timeformat</code> is not
 expected for Fitbit as we assume that the timestamps are always stored
 with the same internal format inside the .json files.</p>
+<p>To use the sleep classification as stored inside the data use
+parameter <code>HASIB.algo = "data"</code>.</p>
 </div>
 </div>
 <div class="section level2">

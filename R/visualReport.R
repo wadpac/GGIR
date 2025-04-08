@@ -338,7 +338,8 @@ visualReport = function(metadatadir = c(),
         # the below guider names are the guider names as defined in 
         # function g.part5.savetimeseries
         guider_names = c('unknown', 'sleeplog', 'HDCZA', 'setwindow', 
-                         'L512', 'HorAngle', 'NotWorn')
+                         'L512', 'HorAngle', 'NotWorn', 'markerbutton',
+                         'HLRB', 'MotionWare')
         guider_name =  paste0("guided by: ", guider_names[mdat$guider[window_edges[wei]] + 1])        
         
         if (mdat$SleepPeriodTime[window_edges[wei]] == 1) {

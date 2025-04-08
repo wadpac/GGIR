@@ -172,7 +172,7 @@ facilitate any meaningful sleep analysis. Nonetheless we need a crude
 estimate of night time versus day time in order for GGIR part 5 to
 characterise day time behaviours.</p>
 <p>If this is the case for your dataset then use guider setting
-<code>HASPT.algo = "NotWorn"</code> as discussed in the next chapter.
+<code>HASPT.algo = \"NotWorn\"</code> as discussed in the next chapter.
 Further, we recommend combining the using of “NotWorn” with:
 <code>do.imp = FALSE</code>, <code>HASPT.ignore.invalid = NA</code>, and
 <code>ignorenonwear = FALSE</code>.</p>
@@ -182,9 +182,9 @@ defined with parameter <code>acc.metric</code>.</p>
 <h3 id="combined-with-count-acceleration-metrics">Combined with count acceleration metrics<a class="anchor" aria-label="anchor" href="#combined-with-count-acceleration-metrics"></a>
 </h3>
 <p>If you are using a count accelereration metric then set
-<code>HASIB.algo = "NotWorn"</code>. In part 4 the sib will be set equal
-to the detected guider window. So, effectively guider and sib algorithm
-are identical in this case.</p>
+<code>HASIB.algo = \"NotWorn\"</code>. In part 4 the sib will be set
+equal to the detected guider window. So, effectively guider and sib
+algorithm are identical in this case.</p>
 </div>
 <div class="section level3">
 <h3 id="combined-with-gravitational-unit-acceleration-metrics">Combined with gravitational unit acceleration metrics<a class="anchor" aria-label="anchor" href="#combined-with-gravitational-unit-acceleration-metrics"></a>
@@ -193,11 +193,11 @@ are identical in this case.</p>
 in gravitational units then set <code>HASIB.algo</code> as you would do
 if the accelerometer was expected to be worn and specify a second guider
 for parameter <code>HASPT.algo</code> as discussed int he next chapter,
-e.g. <code>HASPT.algo = c("NotWorn", "HDCZA)"</code>. In this way GGIR
-will first search for long non-wear periods as indicator of sleep and
-use those to define the sleep window but if those are not found it will
-fall back on the sib-algortihm as specified with
-<code>HASIB.algo</code>, e.g. <code>"vanHees2015"</code>.</p>
+e.g. <code>HASPT.algo = c(\"NotWorn\", \"HDCZA)\"</code>. In this way
+GGIR will first search for long non-wear periods as indicator of sleep
+and use those to define the sleep window but if those are not found it
+will fall back on the sib-algortihm as specified with
+<code>HASIB.algo</code>, e.g. <code>\"vanHees2015\"</code>.</p>
 </div>
 </div>
 <div class="section level2">
@@ -216,8 +216,8 @@ were calculated when the sleep detection algortihm was proposed.</p>
 <p><strong>Raw data</strong></p>
 <p>If you apply GGIR to raw data it is critical you select a suitable
 count metric. We have attempted to facilitate several sleep detection
-algorithms from the literature in that period such as “Sadeh1994”,
-“ColeKripke1992”, “Galland2012”, and “Oakley1997”. A problem with all
+algorithms from the literature in that period such as "Sadeh1994",
+"ColeKripke1992", "Galland2012", and "Oakley1997". A problem with all
 these algorithms is that the preprocessing done to generate the counts
 is insufficiently described in the literature. For the zero-crossing
 count as used by Sadeh1994 and ColeKripke1992 an attempt has been made
@@ -255,17 +255,17 @@ algorithms.</p>
 <h3 id="sadeh1994">Sadeh1994<a class="anchor" aria-label="anchor" href="#sadeh1994"></a>
 </h3>
 <p>The algorithm proposed by Sadeh et al. <a href="https://doi.org/10.1093/sleep/17.3.201" class="external-link">link</a>. To use this set
-parameter <code>HASIB.algo = "Sadeh1994"</code> and argument
-<code>Sadeh_axis = "Y"</code> to indicate that the algorithm should use
-the Y-axis of the sensor.</p>
+parameter <code>HASIB.algo = \"Sadeh1994\"</code> and argument
+<code>Sadeh_axis = \"Y\"</code> to indicate that the algorithm should
+use the Y-axis of the sensor.</p>
 </div>
 <div class="section level3">
 <h3 id="galland2012">Galland2012<a class="anchor" aria-label="anchor" href="#galland2012"></a>
 </h3>
 <p>The algorithm proposed by Galland et al. <a href="http://dx.doi.org/10.1016/j.sleep.2012.01.018" class="external-link">link</a>. To use
 our implementation of the Galland2012 algorithm specify parameter
-<code>HASIB.algo = "Galland2012"</code>. Further, set
-<code>Sadeh_axis = "Y"</code> to specify that the algorithm should use
+<code>HASIB.algo = \"Galland2012\"</code>. Further, set
+<code>Sadeh_axis = \"Y\"</code> to specify that the algorithm should use
 the Y-axis.</p>
 </div>
 <div class="section level3">
@@ -276,14 +276,16 @@ specifically GGIR uses the algortihm proposed in the paper for 10-second
 non-overlapping epochs with counts expressed average per minute. We skip
 the re-scoring steps as the paper showed marginal added value of this
 added complexity. To use the GGIR implementation of this algortihm,
-specify parameters <code>HASIB.algo = "ColeKripke1992"</code> and
-<code>Sadeh_axis = "Y"</code> to indicate that the algorithm should use
-the Y-axis of the sensor.</p>
+specify parameters <code>HASIB.algo = \"ColeKripke1992\"</code> and
+<code>Sadeh_axis = \"Y\"</code> to indicate that the algorithm should
+use the Y-axis of the sensor.</p>
 </div>
 <div class="section level3">
 <h3 id="oakley1997">Oakley1997<a class="anchor" aria-label="anchor" href="#oakley1997"></a>
 </h3>
-<p><strong>Algorithm origin</strong></p>
+<div class="section level4">
+<h4 id="algorithm-origin">Algorithm origin<a class="anchor" aria-label="anchor" href="#algorithm-origin"></a>
+</h4>
 <p>This algorithm is often referred to as Oakley et al. 1997. The
 reference gives the impression that there is an academic publication by
 Oakley from 1997, but actually this refers to “Oakley et al. Validation
@@ -302,7 +304,10 @@ algorithms have hence been used by Cambridge Neurotechnology, Philips
 and by CamNtech.</p>
 <p>These manufacturers have produced actigraphy devices such as Philips
 Health Band, Actiwatch, MotionWatch8, and Actical.</p>
-<p><strong>Algorithm</strong></p>
+</div>
+<div class="section level4">
+<h4 id="algorithm">Algorithm<a class="anchor" aria-label="anchor" href="#algorithm"></a>
+</h4>
 <p>The algorithm takes as input epoch-by-epoch count values. The
 algorithm itself has been communicated by the manufacturers via product
 information documents. For example, Cambridge Neurotechnologiesy shares
@@ -317,13 +322,14 @@ used are dependent on the epoch length. The algorithm facilitates 15,
 30, 60, and 120 second epoch lengths. In GGIR we only facilitate 15, 30
 and 60.</p>
 <p>To use the GGIR implementation of this algorithm, specify parameter
-<code>HASIB.algo = "Oakley1997"</code>.</p>
+<code>HASIB.algo = \"Oakley1997\"</code>.</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="data">Data<a class="anchor" aria-label="anchor" href="#data"></a>
 </h3>
 <p>Some data formats come with a sleep classification, which can be used
-by setting parameter <code>HASIB.algo = "data"</code>. This applies
+by setting parameter <code>HASIB.algo = \"data\"</code>. This applies
 to:</p>
 <ul>
 <li>Fitbit</li>
@@ -332,7 +338,7 @@ to:</p>
 </ul>
 <p>If no sleep classification can be found in the data GGIR will fall
 back on the second value of <code>HASIB.algo</code> parameter. For
-example, <code>HASIB.algo = c("data", "Oakley1997")</code>.</p>
+example, <code>HASIB.algo = c(\"data\", \"Oakley1997\")</code>.</p>
 <p>However, if <code>HASIB.algo</code> is specified to one of the before
 mentioned algorithms, GGIR will attempt to apply those algorithms to the
 data and will directly ignore the sleep classification in the data.</p>

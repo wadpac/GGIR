@@ -462,17 +462,17 @@ facilitated)</td>
 <tr class="even">
 <td>SenseWear</td>
 <td>.xls or .xlsx</td>
-<td><code>dataFormat = "sensewear_xls"</code></td>
+<td><code>dataFormat = \"sensewear_xls\"</code></td>
 </tr>
 <tr class="odd">
 <td>Fitbit</td>
 <td>folder with multiple .json files</td>
-<td><code>dataFormat = "fitbit_json"</code></td>
+<td><code>dataFormat = \"fitbit_json\"</code></td>
 </tr>
 <tr class="even">
 <td>Philips Health Band</td>
 <td>.xlsx file pairs</td>
-<td><code>dataFormat = "phb_xlsx"</code></td>
+<td><code>dataFormat = \"phb_xlsx\"</code></td>
 </tr>
 </tbody>
 </table>
@@ -497,8 +497,8 @@ value of parameter <code>windowsizes</code>.</p>
 <p>The bare minimum input needed for <code>GGIR</code> is:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wadpac/GGIR/" class="external-link">GGIR</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/GGIR.html">GGIR</a></span><span class="op">(</span>datadir <span class="op">=</span> <span class="st">"C:/mystudy/mydata"</span>,</span>
-<span>     outputdir <span class="op">=</span> <span class="st">"D:/myresults"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/GGIR.html">GGIR</a></span><span class="op">(</span>datadir <span class="op">=</span> <span class="st">"C:/mystudy/study_XYZ_data"</span>,</span>
+<span>     outputdir <span class="op">=</span> <span class="st">"C:/myresults"</span><span class="op">)</span></span></code></pre></div>
 <p>Parameter <code>datadir</code> allows you to specify where you have
 stored your accelerometer data and <code>outputdir</code> allows you to
 specify where you would like the output of the analyses to be stored.
@@ -525,14 +525,78 @@ separator and a dot as default decimal separator as is the standard in
 UK/US. However, if your computer is configured for a different region of
 the world then these can be modified with parameters
 <code>sep_reports</code> and <code>dec_reports</code>, respectively.</p>
+<p>If you consider the parameters we have discussed so far, you me may
+end up with a call to <code>GGIR</code> that could look as follows. This
+will only run GGIR part 1 to 4 and store csv files with default column
+and decimal separator.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wadpac/GGIR/" class="external-link">GGIR</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/GGIR.html">GGIR</a></span><span class="op">(</span>mode <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>,</span>
+<span>      datadir <span class="op">=</span> <span class="st">"C:/mystudy/study_XYZ_data"</span>,</span>
+<span>      outputdir <span class="op">=</span> <span class="st">"C:/myresults"</span>,</span>
+<span>      do.report <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span><span class="op">)</span>,</span>
+<span>      overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>      idloc <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<p>All other parameters we discuss later on can be added in a similar
+way. Please note that the order of the parameters does not matter.
+Further, when using many parameters it can be convenient to add comments
+in between like in the example below.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">library</span>(GGIR)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">GGIR</span>(<span class="at">mode =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>     <span class="at">datadir =</span> <span class="st">"C:/mystudy/study_XYZ_data"</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>     <span class="at">outputdir =</span> <span class="st">"C:/myresults"</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>     <span class="at">do.report =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>),</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>     <span class="co">#=====================</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>     <span class="co"># Part 1</span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>     <span class="co">#=====================</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>     <span class="at">do.LFENMO =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>     <span class="at">do.ENMO =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>     <span class="at">acc.metric =</span> <span class="st">"LFENMO"</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>     <span class="co">#=====================</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>     <span class="co"># Part 2</span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a>     <span class="co">#=====================</span></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a>     <span class="at">data_masking_strategy =</span> <span class="dv">1</span>,</span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>     <span class="at">hrs.del.start =</span> <span class="dv">4</span>,</span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>     <span class="at">hrs.del.end =</span> <span class="dv">4</span>,</span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a>     <span class="at">maxdur =</span> <span class="dv">9</span>,</span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a>     <span class="at">includedaycrit =</span> <span class="dv">16</span>,</span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a>     <span class="co">#=====================</span></span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a>     <span class="co"># Part 3 + 4</span></span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a>     <span class="co">#=====================</span></span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a>     <span class="at">includenightcrit =</span> <span class="dv">16</span>,</span>
+<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a>     <span class="at">outliers.only =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a>     <span class="co">#=====================</span></span>
+<span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a>     <span class="co"># Part 5</span></span>
+<span id="cb9-27"><a href="#cb9-27" tabindex="-1"></a>     <span class="co">#=====================</span></span>
+<span id="cb9-28"><a href="#cb9-28" tabindex="-1"></a>     <span class="at">threshold.lig =</span> <span class="dv">30</span>,</span>
+<span id="cb9-29"><a href="#cb9-29" tabindex="-1"></a>     <span class="at">threshold.mod =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">110</span>),</span>
+<span id="cb9-30"><a href="#cb9-30" tabindex="-1"></a>     <span class="at">threshold.vig =</span> <span class="dv">400</span>,</span>
+<span id="cb9-31"><a href="#cb9-31" tabindex="-1"></a>     <span class="at">boutcriter =</span> <span class="fl">0.8</span>,</span>
+<span id="cb9-32"><a href="#cb9-32" tabindex="-1"></a>     <span class="at">boutcriter.in =</span> <span class="fl">0.9</span>,</span>
+<span id="cb9-33"><a href="#cb9-33" tabindex="-1"></a>     <span class="at">boutcriter.lig =</span> <span class="fl">0.8</span>,</span>
+<span id="cb9-34"><a href="#cb9-34" tabindex="-1"></a>     <span class="at">boutcriter.mvpa =</span> <span class="fl">0.8</span>,</span>
+<span id="cb9-35"><a href="#cb9-35" tabindex="-1"></a>     <span class="at">boutdur.in =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">30</span>),</span>
+<span id="cb9-36"><a href="#cb9-36" tabindex="-1"></a>     <span class="at">boutdur.lig =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">10</span>),</span>
+<span id="cb9-37"><a href="#cb9-37" tabindex="-1"></a>     <span class="at">boutdur.mvpa =</span> <span class="dv">1</span>,</span>
+<span id="cb9-38"><a href="#cb9-38" tabindex="-1"></a>     <span class="at">includedaycrit.part5 =</span> <span class="dv">2</span><span class="sc">/</span><span class="dv">3</span>,</span>
+<span id="cb9-39"><a href="#cb9-39" tabindex="-1"></a>     <span class="co">#=====================</span></span>
+<span id="cb9-40"><a href="#cb9-40" tabindex="-1"></a>     <span class="co"># Part 6</span></span>
+<span id="cb9-41"><a href="#cb9-41" tabindex="-1"></a>     <span class="co">#=====================</span></span>
+<span id="cb9-42"><a href="#cb9-42" tabindex="-1"></a>     <span class="at">part6CR =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-43"><a href="#cb9-43" tabindex="-1"></a>     <span class="co">#=====================</span></span>
+<span id="cb9-44"><a href="#cb9-44" tabindex="-1"></a>     <span class="co"># Visual report</span></span>
+<span id="cb9-45"><a href="#cb9-45" tabindex="-1"></a>     <span class="co">#=====================</span></span>
+<span id="cb9-46"><a href="#cb9-46" tabindex="-1"></a>     <span class="at">timewindow =</span> <span class="fu">c</span>(<span class="st">"WW"</span>, <span class="st">"OO"</span>),</span>
+<span id="cb9-47"><a href="#cb9-47" tabindex="-1"></a>     <span class="at">visualreport =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-48"><a href="#cb9-48" tabindex="-1"></a>     <span class="at">old_visualreport =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <div class="section level3">
 <h3 id="from-the-r-console-on-your-own-desktoplaptop">From the R console on your own desktop/laptop<a class="anchor" aria-label="anchor" href="#from-the-r-console-on-your-own-desktoplaptop"></a>
 </h3>
 <p>Create an R-script and put in it <code><a href="https://github.com/wadpac/GGIR/" class="external-link">library(GGIR)</a></code> and on
 the next line the GGIR call as in
-<code>GGIR(datadir="yourdatapath", outputdir="yourdatapath")</code>.
+<code>GGIR(datadir = \"yourdatapath\", outputdir = \"yourdatapath\")</code>.
 Next, you can source the R-script with the <code>source</code> button in
-RStudio: <code>source("pathtoscript/myshellscript.R")</code></p>
+RStudio: <code>source(\"pathtoscript/myshellscript.R\")</code></p>
 <p>GGIR by default supports multi-thread processing which is used to
 process one input file per process, speeding up the processing of your
 data. This can be turned off by setting parameter
@@ -549,19 +613,19 @@ Please consult your local cluster specialist to explore how to run GGIR
 on your cluster. Here, we only share how we did it. We had three files
 for the SGE setting:</p>
 <p><strong>submit.sh</strong></p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">707</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>    <span class="va">n</span><span class="op">=</span>1</span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>    <span class="va">s</span><span class="op">=</span><span class="va">$(($(($n</span> <span class="op">*</span> $<span class="op">[</span><span class="va">$i</span>-1<span class="op">]</span><span class="va">))</span><span class="op">+</span><span class="dv">1</span><span class="va">))</span></span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>    <span class="va">e</span><span class="op">=</span><span class="va">$(($i</span> <span class="op">*</span> <span class="va">$n))</span></span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>    <span class="ex">qsub</span> /home/nvhv/WORKING_DATA/bashscripts/run-mainscript.sh <span class="va">$s</span> <span class="va">$e</span></span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">707</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>    <span class="va">n</span><span class="op">=</span>1</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>    <span class="va">s</span><span class="op">=</span><span class="va">$(($(($n</span> <span class="op">*</span> $<span class="op">[</span><span class="va">$i</span>-1<span class="op">]</span><span class="va">))</span><span class="op">+</span><span class="dv">1</span><span class="va">))</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>    <span class="va">e</span><span class="op">=</span><span class="va">$(($i</span> <span class="op">*</span> <span class="va">$n))</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>    <span class="ex">qsub</span> /home/nvhv/WORKING_DATA/bashscripts/run-mainscript.sh <span class="va">$s</span> <span class="va">$e</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div>
 <p><strong>run-mainscript.sh</strong></p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co">#! /bin/bash</span></span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co">#$ -cwd -V</span></span>
-<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co">#$ -l h_vmem=12G</span></span>
-<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="ex">/usr/bin/R</span> <span class="at">--vanilla</span> <span class="at">--args</span> f0=<span class="va">$1</span> f1=<span class="va">$2</span> <span class="op">&lt;</span> /home/nvhv/WORKING_DATA/test/myshellscript.R</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co">#! /bin/bash</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co">#$ -cwd -V</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co">#$ -l h_vmem=12G</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="ex">/usr/bin/R</span> <span class="at">--vanilla</span> <span class="at">--args</span> f0=<span class="va">$1</span> f1=<span class="va">$2</span> <span class="op">&lt;</span> /home/nvhv/WORKING_DATA/test/myshellscript.R</span></code></pre></div>
 <p><strong>myshellscript.R</strong></p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>echo<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">args</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/commandArgs.html" class="external-link">commandArgs</a></span><span class="op">(</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">args</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
