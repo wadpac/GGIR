@@ -126,10 +126,21 @@ Note that the time series exported in GGIR part 5 only includes the acceleration
 -   `save_ms5rawlevels`
 -   `save_ms5raw_format`
 -   `save_ms5raw_without_invalid`
+-   `excludefirstlast.part5`
+-   `includedaycrit.part5`
+-   `minimum_MM_length.part5`
 
 ## Related output
 
-In <https://cran.r-project.org/web/packages/GGIR/vignettes/GGIR.html#43_Output_part_5> you will find a detailed discussion of the part 5 output. In summary, part 5 produces the following files. - Day level summary - Person level summary - Day level summary of behaviour per segment of a day - analysis - Person level summary of behaviour per segment of a day - Variable dictionary (see below) - Time series - Pdf reports with vsiualisation
+In <https://wadpac.github.io/GGIR/articles/GGIRoutput.html#ggir-part-5> you will find a detailed discussion of the part 5 output. In summary, part 5 produces the following files.
+
+- Day level summary
+- Person level summary
+- Day level summary of behaviour per segment of a day analysis
+- Person level summary of behaviour per segment of a day
+- Variable dictionary (see below)
+- Time series
+- Pdf reports with vsiualisation
 
 ### Variables dictionary
 

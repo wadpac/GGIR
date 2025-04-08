@@ -39,115 +39,11 @@ This section has been migrated to this [section](https://wadpac.github.io/GGIR/a
 
 ## Contributing, Support, and Keeping up to date
 
-**How to contribute to the code?**
-
-The development version of GGIR can be found on
-[github](https://github.com/wadpac/GGIR), which is also where you will
-find
-[guidance](https://github.com/wadpac/GGIR/blob/master/CONTRIBUTING.md)
-on how to contribute.
-
-**How can I get service and support?**
-
-GGIR is open source software and does not come with service or support
-guarantees. However, as user-community you can help each other via the
-[GGIR google
-group](https://groups.google.com/forum/#!forum/RpackageGGIR) or the
-[GitHub issue tracker](https://github.com/wadpac/GGIR/issues). Please
-use these public platform rather than private e-mails such that other
-users can learn from the conversations.
-
-If you need dedicated support with the use of GGIR or need someone to
-adapt GGIR to your needs then Vincent van Hees is available as
-[independent consultant](https://www.accelting.com/).
-
-**Training in GGIR** The training we organised between 2022 and 2024 has been discontinued.
-The now much improved free online GGIR documentation has substantially reduced the need for dedicated training services for most new users. However, for those who still prefer to receive GGIR training, please contact [Jairo Hidalgo Migueles](mailto:jairo@jhmigueles.com){.email} who will facilitate a GGIR training via his own website moving forward.
-
-The training materials for the old course can be found [here](https://www.accelting.com/ggir-training-materials/).
-
-Also of interest may be the brief [free R introduction tutorial](https://www.accelting.com/short-r-tutorial/).
-
-**Change log**
-
-Our log of main changes to GGIR over time can be found
-[here](https://cran.r-project.org/package=GGIR/news/news.html).
-
 # Setting up your work environment
 
 ## Install R and RStudio
 
-[Download and install R](https://cran.r-project.org/)
-
-[Download and install
-RStudio](https://posit.co/products/open-source/rstudio/)
-
-Install GGIR with its dependencies from CRAN. You can do this with one
-command from the console command line:
-
-```{R,eval=FALSE}
-install.packages("GGIR", dependencies = TRUE)
-```
-
-Alternatively, to install the latest development version with the latest
-bug fixes use instead:
-
-```{R,eval=FALSE}
-install.packages("remotes")
-remotes::install_github("wadpac/GGIR")
-```
-
-Additionally, in some use-cases you will need to install one or multiple 
-additional packages:
-
--   If you are working with Axivity, GENEActiv, or GENEA files, install
-    the GGIRread package with `install.packages("GGIRread")`
--   If you are working with ActiGraph gt3x files, install
-    the read.gt3x package with `install.packages("read.gt3x")`
--   If you want to derive Neishabouricounts (with `do.neishabouricounts = TRUE`),
-    install the actilifecounts package with `install.packages("actilifecounts")`
--   If you want to derive circadian rhythm indicators using the [Cosinor analysis and Extended Cosinor analysis] 
-    (with `cosinor = TRUE` for part 2, in part 6 it is always performed), install the ActCR package with `install.packages("ActCR")`
-
 ## Prepare folder structure
-
-1.  GGIR works with the following accelerometer brands and formats:
-    -   [GENEActiv](https://activinsights.com/) .bin
-    -   [Axivity](https://axivity.com/) AX3 and AX6 .cwa
-    -   [ActiGraph](https://theactigraph.com) .csv and .gt3x (.gt3x
-        only the newer format generated with firmware versions above
-        2.5.0. Serial numbers that start with "NEO" or "MRA" and have
-        firmware version of 2.5.0 or earlier use an older format of the
-        .gt3x file). Note for Actigraph users: If you want to work with
-        .csv exports via the commercial ActiLife software then note that
-        you have the option to export data with timestamps. Please do
-        not do this as this causes memory issues for GGIR. To cope with
-        the absence of timestamps GGIR will calculate timestamps from
-        the sample frequency, the start time and start date as presented
-        in the file header.
-    -   [Movisens](https://www.movisens.com/en/) .bin files with data 
-        stored in folders. GGIR expects that each participant's folder 
-        contains at least a file named acc.bin.
-    -   [Parmay Matrix](https://www.parmaytech.com/) .bin and .BIN
-    -   Any other accelerometer brand that generates csv output, see
-        documentation for functions `read.myacc.csv` and argument
-        `rmc.noise` in the [GGIR function documentation
-        (pdf)](https://CRAN.R-project.org/package=GGIR/GGIR.pdf).
-    Note that functionality for the following file formats was part of GGIR but has
-    been deprecated as it required a significant maintenance effort without 
-    a clear use case or community support: (1) .bin for the Genea monitor by
-    Unilever Discover, an accelerometer that was used for some studies between
-    2007 and 2012) .bin, and (2) .wav files as can be exported by the 
-    Axivity Ltd OMGUI software. Please contact us if you think
-    these data formats should be facilitated by GGIR again and if you are interested
-    in supporting their ongoing maintenance.
-
-2.  All accelerometer data that needs to be analysed should be stored in
-    one folder, or subfolders of that folder.
-3.  Give the folder an appropriate name, preferable with a reference to
-    the study or project it is related to rather than just 'data',
-    because the name of this folder will be used later on as an
-    identifier of the dataset.
 
 ## GGIR shell function
 
@@ -281,40 +177,6 @@ This section has been migrated to this [section](https://wadpac.github.io/GGIR/a
 
 ### Key arguments related to time use analysis
 
-For an explanation on how time use analysis is performed see section
-[Waking-waking or 24 hour time-use analysis](#Waking-waking_or_24_hour).
-
--   `excludefirstlast.part5` - whether to ignore the last and first day.
--   `includedaycrit.part5` - tell GGIR what fraction of the waking hours
-    in a day (value below 1) is acceptable.
--   `minimum_MM_length.part5` - tell GGIR what the minimum length
-    (hours) should be of the MM window in part 5.
--   Configure thresholds for acceleration levels (some may want to
-    interpret this as intensity levels): `threshold.lig`,
-    `threshold.mod`, `threshold.vig`.
--   Configure what fraction of a bout needs to meet the threshold
-    (cut-point) crtieria `boutcriter.in`, `boutcriter.lig`,
-    `boutcriter.mvpa`. Note that boutcriter.mvpa = 0.8 means that an
-    MVPA bout can have interruptions
-    (i.e., the time out of MVPA intensity) that meet the following
-    criteria:
-    (1) A single interruption can last \< 1 min
-    (2) Repeated interruptions are allowed provided that their total
-        time does not exceed 20% of the bout duration
-    (3) The time spent in the interruptions is included in the duration
-        of the MVPA bout. For example: A 25-minute bout can have two 1
-        minute interruption, but not a single 2-minute interruption.
-        Here, the full 25 minutes would count towards the duration of
-        the MVPA bout.
--   `timewindow` to specify whether days should be defined from midnight
-    to midnight `"MM"`, from waking-up to waking-up `"WW"`, from sleep onset
-    to sleep onset `"OO"`, or any combination of them.
--   Configure durations of bouts: `boutdur.mvpa`, `boutdur.in`, and
-    `boutdur.lig`. Note that this can be a vector of multiple values
-    indicating the minimum and maximum duration of subsequent bout
-    types, e.g. 1-5 minutes MVPA, 5-10 minutes MVPA, and longer than 10
-    minutes MVPA.
-
 ### Published cut-points and how to use them
 
 This section has been rewritten and moved. Please, visit the vignette
@@ -324,49 +186,7 @@ additional reflections on the use of cut-points in GGIR.
 
 ### Example call
 
-If you consider all the arguments above you me may end up with a call to
-`GGIR` that could look as follows.
-
-```{R,eval=FALSE}
-library(GGIR)
-GGIR(mode=c(1,2,3,4,5),
-      datadir="C:/mystudy/mydata",
-      outputdir="D:/myresults",
-      do.report=c(2,4,5),
-      #=====================
-      # Part 2
-      #=====================
-      data_masking_strategy = 1,
-      hrs.del.start = 0,          hrs.del.end = 0,
-      maxdur = 9,                 includedaycrit = 16,
-      qwindow=c(0,24),
-      mvpathreshold =c(100),
-      excludefirstlast = FALSE,
-      includenightcrit = 16,
-      #=====================
-      # Part 3 + 4
-      #=====================
-      def.noc.sleep = 1,
-      outliers.only = TRUE,
-      criterror = 4,
-      do.visual = TRUE,
-      #=====================
-      # Part 5
-      #=====================
-      threshold.lig = c(30), threshold.mod = c(100),  threshold.vig = c(400),
-      boutcriter = 0.8,      boutcriter.in = 0.9,     boutcriter.lig = 0.8,
-      boutcriter.mvpa = 0.8, boutdur.in = c(1,10,30), boutdur.lig = c(1,10),
-      boutdur.mvpa = c(1),
-      includedaycrit.part5 = 2/3,
-      #=====================
-      # Visual report
-      #=====================
-      timewindow = c("WW"),
-      visualreport=TRUE)
-```
-
-Once you have used `GGIR` and the output directory (outputdir) will be
-filled with milestone data and results.
+This section has been migrated to this [section](https://wadpac.github.io/GGIR/articles/chapter2_Pipeline.html) in the GGIR github-pages, which is now the main documentation resource for GGIR.
 
 ### Configuration file
 
@@ -393,12 +213,13 @@ This section has been migrated to this [section](https://wadpac.github.io/GGIR/a
 
 # Inspecting the results
 
-GGIR generates the following types of output. - csv-spreadsheets with
-all the variables you need for physical activity, sleep and circadian
-rhythm research - Pdfs with on each page a low resolution plot of the
-data per file and quality indicators - R objects with milestone data -
-Pdfs with a visual summary of the physical activity and sleep patterns
-as identified (see example below)
+GGIR generates the following types of output. 
+
+- csv-spreadsheets with all the variables you need for physical activity, sleep and circadian
+rhythm research
+- Pdfs with on each page a low resolution plot of the data per file and quality indicators
+- R objects with milestone data
+- Pdfs with a visual summary of the physical activity and sleep patterns as identified (see example below)
 
 ```{r, out.width = "700px",echo=FALSE, fig.alt="Example visualreport"}
 knitr::include_graphics("reportexample.jpg")
@@ -451,24 +272,7 @@ This section has been migrated to this [section](https://wadpac.github.io/GGIR/a
 
 ## Output part 6 {.tabset}
 
-When `part6CR = TRUE` and the vector as specified for paramter `do.report` includes the number 6, a csv report will be stored with the following variables:
-
-
-| Variable name               | Description                                  |
-|-----------------------------|----------------------------------------------|
-| ID                          | Participant ID extracted from file           |
-| starttime                   | Start timestamp for the data as used for the analysis    |
-| filename	                  | File name                 |
-| N_days	                    | Number of days in the data as used for the analysis |
-| N_valid_days                | Number of valid days in the data as used for the analysis, defined as the cumulative number of epoch expressed in days |
-| `cosinor_`         | Cosinor analysis estimates such as mes, amp, acrophase, and acrotime, as documented in the [Ac tCR](https://CRAN.R-project.org/package=ActCR) package.   |
-| `cosinorExt_`      | Extended Cosinor analysis estimates such as minimum, amp, alpha, beta, acrotime, UpMesor, DownMesor, MESOR, and F_pseudo, as documented in the [Ac tCR](https://CRAN.R-project.org/package=ActCR) package.|
-| `IV`  | Intradaily Variability (IV) after Eus J. W. Van Someren (Chronobiology International. 1999. Volume 16, issue 4). Implementation described in Ian Meneghel Danilevicz et al. https://doi.org/10.21203/rs.3.rs-3543711/v1      |
-| `IS`  | Interdaily Stability (IS) after Eus J. W. Van Someren (Chronobiology International. 1999. Volume 16, issue 4). Implementation described in Ian Meneghel Danilevicz et al. https://doi.org/10.21203/rs.3.rs-3543711/v1 |
-| phi     | Ian Meneghel Danilevicz  et al. https://doi.org/10.21203/rs.3.rs-3543711/v1    |
-| SSP     | Only created when `part6DFA = TRUE`. Self-Similarity parameter as part of the Detrended Fluctuation Analysis. Implementation described in Ian Meneghel Danilevicz et al. https://doi.org/10.21203/rs.3.rs-3543711/v1.    |
-| ABI     | Only created when `part6DFA = TRUE`. Activity Balance Index. Implementation described in Ian Meneghel Danilevicz et al. https://doi.org/10.21203/rs.3.rs-3543711/v1.|
-
+This section has been migrated to this [section](https://wadpac.github.io/GGIR/articles/GGIRoutput.html#ggir-part-6) in the GGIR github-pages, which is now the main documentation resource for GGIR.
 
 # Motivation and clarification
 

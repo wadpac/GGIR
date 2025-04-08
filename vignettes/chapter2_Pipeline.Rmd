@@ -184,8 +184,8 @@ The bare minimum input needed for `GGIR` is:
 
 ```{R,eval=FALSE}
 library(GGIR)
-GGIR(datadir = "C:/mystudy/mydata",
-     outputdir = "D:/myresults")
+GGIR(datadir = "C:/mystudy/study_XYZ_data",
+     outputdir = "C:/myresults")
 ```
 
 Parameter `datadir` allows you to specify where you have stored your accelerometer data and `outputdir` allows you to specify where you would like the output of the analyses to be stored. This cannot be equal to `datadir`. If you copy and paste the above code to a new R script (file ending with .R) and Source it in R(Studio), then the dataset will be processed and the output will be stored in the specified output directory. GGIR refers to file directories and not to folders. For those unfamiliar with the term directory: It is the same as a folder.
@@ -195,6 +195,75 @@ Next, we can add parameter `mode` to tell GGIR which part(s) to run, e.g. `mode 
 Further, parameter `idloc` tells GGIR where to find the participant ID. The default setting most likely does not work for most data formats, by which it is important that you tailor the value of this parameter to your study setting. For example, if you files start with a participant ID followed by an underscore then set `idloc=2`. See documentation for parameter `idloc` for other examples.
 
 GGIR stores its output csv files with a comma as default column separator and a dot as default decimal separator as is the standard in UK/US. However, if your computer is configured for a different region of the world then these can be modified with parameters `sep_reports` and `dec_reports`, respectively.
+
+If you consider the parameters we have discussed so far, you me may end up with a call to
+`GGIR` that could look as follows. This will only run GGIR part 1 to 4 and store csv files with
+default column and decimal separator.
+
+```{R,eval=FALSE}
+library(GGIR)
+GGIR(mode = 1:4,
+      datadir = "C:/mystudy/study_XYZ_data",
+      outputdir = "C:/myresults",
+      do.report = c(2, 4),
+      overwrite = FALSE,
+      idloc = 2)
+```
+
+All other parameters we discuss later on can be added in a similar way. Please note that the
+order of the parameters does not matter. Further, when using many parameters it can be convenient to add comments in between like in the example below.
+
+```{R,eval=FALSE}
+library(GGIR)
+GGIR(mode = 1:6,
+     datadir = "C:/mystudy/study_XYZ_data",
+     outputdir = "C:/myresults",
+     do.report = c(2, 4, 5, 6),
+     #=====================
+     # Part 1
+     #=====================
+     do.LFENMO = TRUE,
+     do.ENMO = FALSE,
+     acc.metric = "LFENMO"
+     #=====================
+     # Part 2
+     #=====================
+     data_masking_strategy = 1,
+     hrs.del.start = 4,
+     hrs.del.end = 4,
+     maxdur = 9,
+     includedaycrit = 16,
+     #=====================
+     # Part 3 + 4
+     #=====================
+     includenightcrit = 16,
+     outliers.only = TRUE,
+     #=====================
+     # Part 5
+     #=====================
+     threshold.lig = 30,
+     threshold.mod = c(100, 110),
+     threshold.vig = 400,
+     boutcriter = 0.8,
+     boutcriter.in = 0.9,
+     boutcriter.lig = 0.8,
+     boutcriter.mvpa = 0.8,
+     boutdur.in = c(1, 10, 30),
+     boutdur.lig = c(1, 10),
+     boutdur.mvpa = 1,
+     includedaycrit.part5 = 2/3,
+     #=====================
+     # Part 6
+     #=====================
+     part6CR = TRUE,
+     #=====================
+     # Visual report
+     #=====================
+     timewindow = c("WW", "OO"),
+     visualreport = TRUE,
+     old_visualreport = FALSE)
+```
+
 
 ### From the R console on your own desktop/laptop
 

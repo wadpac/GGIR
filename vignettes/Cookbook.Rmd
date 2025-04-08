@@ -36,13 +36,8 @@ GGIR(datadir = "/media/actiwatch_awd", # folder with epoch level .AWD file
   dataFormat = "actiwatch_awd",
   extEpochData_timeformat = "%d-%b-%Y %H:%M:%S",
   windowsizes = c(60, 900, 3600), # 60 is the expected epoch length
-  do.zcy = TRUE,
-  do.enmo = FALSE,
-  do.anglez = FALSE,
-  HASIB.algo = "Sadeh1994",
-  def.noc.sleep = c()) # <= because we cannot use HDCZA for ZCY
+  acc.metric = "ExtAct")
 ```
-
 To classify sleep from Actiwatch, consider parameter `HASIB.algo = "Oakley1997"`.
 
 ### in .CSV format
@@ -56,10 +51,9 @@ GGIR(datadir = "/media/actiwatch_csv", # folder with epoch level .AWD file
   dataFormat = "actiwatch_csv",
   extEpochData_timeformat = "%m/%d/%y %I:%M:%S %p",
   windowsizes = c(15, 900, 3600),
-  HASIB.algo = "Sadeh1994",
-  def.noc.sleep = c()) # <= because we cannot use HDCZA for ZCY
+  acc.metric = "ExtAct")
 ```
-
+To classify sleep from Actical, consider parameter `HASIB.algo = "Oakley1997"`.
 
 ## UK Biobank data in .CSV format
 
@@ -72,7 +66,8 @@ GGIR(datadir = "/media/ukbiobank",
    dataFormat = "ukbiobank_csv",
    extEpochData_timeformat = "%m/%d/%Y %H:%M:%S",
    windowsizes = c(5, 900, 3600), # We know that data was stored in 5 second epoch
-   desiredtz = "Europe/London") # We know that data was collected in the UK
+   desiredtz = "Europe/London", # We know that data was collected in the UK
+   acc.metric = "LFENMO")
 ```
 
 Please note that currently no method exists in GGIR to detect sleep from these 5 second aggregate files.
@@ -85,13 +80,13 @@ Examples of how the first couple of hundred lines of these files may look like c
 GGIR(datadir = "/examplefiles",
    outputdir = "",
    dataFormat = "actigraph_csv",
+   extEpochData_timeformat = "%m/%d/%Y %H:%M:%S",
    windowsizes = c(5, 900, 3600),
+   do.neishabouricounts = TRUE,
+   acc.metric = "NeishabouriCount_x",
    threshold.in = round(100 * (5/60), digits = 2),
    threshold.mod = round(2500 * (5/60), digits = 2),
-   threshold.vig = round(10000 * (5/60), digits = 2),
-   extEpochData_timeformat = "%m/%d/%Y %H:%M:%S",
-   do.neishabouricounts = TRUE,
-   acc.metric = "NeishabouriCount_x")
+   threshold.vig = round(10000 * (5/60), digits = 2))
 ```        
 
 ## Sensewear data in .xls format
@@ -103,14 +98,16 @@ At a bare minimum the GGIR command to process these files looks as follows:
 ```
 GGIR(datadir = "C:/yoursenseweardatafolder",
     outputdir = "D:/youroutputfolder",
-    windowsizes = c(60, 900, 3600),
-    threshold.in = 1.5,
-    threshold.mod = 3,
-    threshold.vig = 6,
     dataFormat = "sensewear_xls",
     extEpochData_timeformat = "%d-%b-%Y %H:%M:%S",
-    HASPT.algo = "NotWorn")
+    windowsizes = c(60, 900, 3600),
+    acc.metric = "ExtAct",
+    threshold.in = 1.5,
+    threshold.mod = 3,
+    threshold.vig = 6)
 ```
+
+To use the sleep classification as stored inside the data use parameter `HASIB.algo = "data"`.
 
 ## Actical in .csv format
 
@@ -121,9 +118,10 @@ At a bare minimum the GGIR command to process these files looks as follows:
 ```
 GGIR(datadir = "C:/youracticaldatafolder",
     outputdir = "D:/youroutputfolder",
-    windowsizes = c(60, 900, 3600),
     dataFormat = "actical_csv",
-    extEpochData_timeformat = "%d-%b-%Y %H:%M")
+    extEpochData_timeformat = "%d-%b-%Y %H:%M",
+    windowsizes = c(60, 900, 3600),
+    acc.metric = "ExtAct")
 ```
 
 To classify sleep from Actical, consider parameter `HASIB.algo = "Oakley1997"`.
@@ -138,9 +136,10 @@ At a bare minimum the GGIR command to process these files looks as follows:
 ```
 GGIR(datadir = "C:/yourphbdatafolder",
     outputdir = "D:/youroutputfolder",
-    windowsizes = c(60, 900, 3600),
     dataFormat = "phb_xlsx",
-    extEpochData_timeformat = "%m-%d-%Y %H:%M:%S")
+    extEpochData_timeformat = "%m-%d-%Y %H:%M:%S",
+    windowsizes = c(60, 900, 3600),
+    acc.metric = "ExtAct")
 ```
 
 When `HASIB.algo = "data"` GGIR attempts to extract and uses the sleep classification that is stored inside the xlsx files with column name "sleepWake". If no sleep classification is stored inside the data, GGIR uses the activity indicator as stored as "activitycounts". You can specify
@@ -159,11 +158,14 @@ At a bare minimum the GGIR command to process these files looks as follows:
 ```
 GGIR(datadir = "C:/yourfitbitdatafolder",
     outputdir = "D:/youroutputfolder",
+    dataFormat = "fitbit_json",
     windowsizes = c(60, 900, 3600),
-    dataFormat = "fitbit_json")
+    acc.metric = "ExtAct")
 ```
 Note that parameter `extEpochData_timeformat` is not expected for Fitbit as
 we assume that the timestamps are always stored with the same internal format inside the .json files.
+
+To use the sleep classification as stored inside the data use parameter `HASIB.algo = "data"`.
 
 # Handling study protocol
 
