@@ -1,3 +1,11 @@
+# CHANGES IN GGIR VERSION 3.2-?
+
+- Part 1: Correct estimate of f1 when user specifies f1=0, which failed with the recently added split recordings functionality.
+
+- Part 5 and visualreport: Add new guider types such as marker button to time series.
+
+- Part 4: Add sleep efficiency and latency to recording summary when marker button is used. It was only added to night summary.
+
 # CHANGES IN GGIR VERSION 3.2-4
 
 - Part 1:

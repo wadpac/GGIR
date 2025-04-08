@@ -40,12 +40,7 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                "filename", "cleaningcode", "sleeplog_used", "sleeplog_ID", "acc_available", "guider", "SleepRegularityIndex", "SriFractionValid",
                                "longitudinal_axis")
     nightsummary2 = as.data.frame(matrix(0, 0, length(colnames_nightsummary2)))
-    if (params_sleep[["sleepwindowType"]] == "TimeInBed") {
-      colnames(nightsummary2) = gsub(replacement = "guider_inbedStart", pattern = "guider_onset", x = colnames(nightsummary2))
-      colnames(nightsummary2) = gsub(replacement = "guider_inbedEnd", pattern = "guider_wakeup", x = colnames(nightsummary2))
-      colnames(nightsummary2) = gsub(replacement = "guider_inbedDuration", pattern = "guider_SptDuration",
-                                     x = colnames(nightsummary2))
-    }
+
     sumi = 1
     sleeplog_used = rep(" ", ((f1 - f0) + 1))
     fnames.ms4 = list.files(paste0(metadatadir, ms4.out), full.names = TRUE)
@@ -78,6 +73,13 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
     nightsummary2$calendar_date = as.Date(nightsummary2$calendar_date, format = "%d/%m/%Y")
     nightsummary2$calendar_date = format(nightsummary2$calendar_date, format = "%Y-%m-%d")
     nightsummary2$filename = gsub(".RData$", "", nightsummary2$filename)
+    
+    if (params_sleep[["sleepwindowType"]] == "TimeInBed" || params_sleep[["consider_marker_button"]] == TRUE) {
+      colnames(nightsummary2) = gsub(replacement = "guider_inbedStart", pattern = "guider_onset", x = colnames(nightsummary2))
+      colnames(nightsummary2) = gsub(replacement = "guider_inbedEnd", pattern = "guider_wakeup", x = colnames(nightsummary2))
+      colnames(nightsummary2) = gsub(replacement = "guider_inbedDuration", pattern = "guider_SptDuration",
+                                     x = colnames(nightsummary2))
+    }
     # ====================================== Add non-wearing during SPT from part 5, if it is availabe:
     ms5.out = "/meta/ms5.out"
     if (file.exists(paste(metadatadir, ms5.out, sep = ""))) {
@@ -313,7 +315,8 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
             }
             if (params_sleep[["sleepwindowType"]] == "SPT") {
               gdn = c("guider_SptDuration", "guider_onset", "guider_wakeup")
-            } else if (params_sleep[["sleepwindowType"]] == "TimeInBed") {
+            } else if (params_sleep[["sleepwindowType"]] == "TimeInBed" || 
+                       params_sleep[["consider_marker_button"]] == TRUE) {
               gdn = c("guider_inbedDuration", "guider_inbedStart", "guider_inbedEnd")
             }
             if (dotwice == 1) {
@@ -487,7 +490,7 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                   personSummarynames = c(personSummarynames, paste("SriFractionValid_", TW, "_", udefn[j],
                                                                    "_mn", sep = ""), paste("SriFractionValid_", TW, "_", udefn[j], "_sd", sep = ""))
                   cnt = cnt + 27
-                  if (params_sleep[["sleepwindowType"]] == "TimeInBed") {
+                  if (params_sleep[["sleepwindowType"]] == "TimeInBed" || params_sleep[["consider_marker_button"]] == TRUE) {
                     sleepefficiency = nightsummary.tmp$sleepefficiency[indexUdef]
                     latency = nightsummary.tmp$sleeplatency[indexUdef]
                     if (params_sleep[["sib_must_fully_overlap_with_TimeInBed"]][1] == FALSE) {

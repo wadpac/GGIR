@@ -197,6 +197,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   if (is.null(f0) || f0 < 1) { # What file to start with?
     f0 = 1
   }
+  f1_orinally_null = ifelse(!is.null(f1) && f1 == 0, yes = TRUE, no = FALSE)
   if ((is.null(f1) || f1 < 1) && 1 %in% mode) {  # What file to end with?
     # Do not modify f1 here when not attempting to process GGIR part 1
     # we only expect datadir to exist when running part 1
@@ -289,11 +290,17 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                     desiredtz = params_general[["desiredtz"]],
                     idloc = params_general[["idloc"]],
                     maxRecordingInterval = params_general[["maxRecordingInterval"]])
+      if (f1_orinally_null == TRUE) {
+        f1 = length(dir(paste0(metadatadir, "/meta/basic/")))
+      }
     }
     if (!is.null(params_general[["recording_split_times"]])) {
       # Split recordings based on user specified time points
       splitRecords(metadatadir = metadatadir,
                    params_general = params_general)
+      if (f1_orinally_null == TRUE) {
+        f1 = length(dir(paste0(metadatadir, "/meta/basic/")))
+      }
     }
   }
   if (dopart2 == TRUE) {
@@ -357,7 +364,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                           "GGIRversion",  "dupArgValues", "verbose", "is_GGIRread_installed", 
                           "is_read.gt3x_installed", "is_ActCR_installed", 
                           "is_actilifecounts_installed", "rawaccfiles", "is_readxl_installed", 
-                          "checkFormat", "getExt", "rawaccfiles_formats") == FALSE)]
+                          "checkFormat", "getExt", "rawaccfiles_formats",
+                          "f1_orinally_null") == FALSE)]
   
   config.parameters = mget(LS)
   config.matrix = as.data.frame(createConfigFile(config.parameters, GGIRversion))
