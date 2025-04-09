@@ -2,7 +2,7 @@ Package: GGIR
 Type: Package
 Title: Raw Accelerometer Data Analysis
 Version: 3.2-5
-Date: 2025-04-9
+Date: 2025-04-09
 Authors@R: c(person("Vincent T","van Hees",role=c("aut","cre"),
                     email="v.vanhees@accelting.com"),
              person("Jairo H","Migueles",role="aut",
