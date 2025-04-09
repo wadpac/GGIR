@@ -46,11 +46,11 @@ The time resolutions of GGIR output are:
 3.  GGIR facilitates sleep, physical activity, and circadian rhythm research.
 4.  GGIR has extensive quantitative output designed for use in quantitative research.
 5.  GGIR is designed to be computationally efficient such as the option to store and re-use intermediate milestone data and the option to process multiple files in parallel on the same computer as discussed in Chapter 2.
-6.  GGIR is designed to be accessible for new users without experience in R or programming. GGIR requires only one function call and comes with elaborate open-access documentation. Additionally, paid training courses are offered to maximise the opportunity for users to learn about GGIR and for us to learn from users.
+6.  GGIR is designed to be accessible for new users without experience in R or programming. GGIR requires only one function call and comes with elaborate open-access documentation.
 7.  GGIR has had over a [dozen code contributors](https://github.com/wadpac/GGIR/graphs/contributors).
 8.  GGIR has been available on the CRAN archive, meaning that it meets CRAN standards and that each release has gone through a series of automated checks.
 9.  We have public email list ([google group](https://groups.google.com/g/rpackageggir/)) for users to reach out to each other and the maintainers.
-10. Over [hundreds of publications](https://github.com/wadpac/GGIR/wiki/Publication-list) have used GGIR, which has been a powerful way to identify problems and improve the code and it has provided us with a wide range of reference values.
+10. Over a hundred [publications](https://github.com/wadpac/GGIR/wiki/Publication-list) have used GGIR, which has been a powerful way to identify problems and improve the code and it has provided us with a wide range of reference values.
 
 ## History
 

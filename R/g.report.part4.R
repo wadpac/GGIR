@@ -313,7 +313,7 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
               }
               return(x)
             }
-            if (params_sleep[["sleepwindowType"]] == "SPT") {
+            if (params_sleep[["sleepwindowType"]] == "SPT" && params_sleep[["consider_marker_button"]] == FALSE) {
               gdn = c("guider_SptDuration", "guider_onset", "guider_wakeup")
             } else if (params_sleep[["sleepwindowType"]] == "TimeInBed" || 
                        params_sleep[["consider_marker_button"]] == TRUE) {

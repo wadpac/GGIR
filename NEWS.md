@@ -1,10 +1,20 @@
-# CHANGES IN GGIR VERSION 3.2-?
+# CHANGES IN GGIR VERSION 3.2-5
+
+This release primarily includes fixes to minor bugs observed after more elaborate testing of the features add in previous releases 3.2-3 and 3.2-4.
 
 - Part 1: Correct estimate of f1 when user specifies f1=0, which failed with the recently added split recordings functionality.
+
+- Part 1: Recently introduced split records functionality only considered windows timestamps that overlap with recordings. Now changed to include any split time for which the resulting time segment overlaps for at least 12 hours wiht the accelerometer recording.
 
 - Part 5 and visualreport: Add new guider types such as marker button to time series.
 
 - Part 4: Add sleep efficiency and latency to recording summary when marker button is used. It was only added to night summary.
+
+- Part 4: csv report, fix bug introduced in previous release causing columns to be incorrectly named.
+
+- Part 6: Now uses largest milestone file as reference point for column names.
+
+- Part 3: HASPT.algo "HLRB" algorithm provided two windows when both are of equal length, now fixed by taking the last window.
 
 # CHANGES IN GGIR VERSION 3.2-4
 
