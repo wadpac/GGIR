@@ -10,7 +10,7 @@ This release primarily includes fixes to minor bugs observed after more elaborat
 
 - Part 4: Add sleep efficiency and latency to recording summary when marker button is used. It was only added to night summary.
 
-- Part 4: csv report, fix bug introduced in previous release causing columns to be incorrectly named.
+- Part 4: csv report, fix bug introduced in release 3.2-4 earlier this week causing a few columns to be incorrectly named.
 
 - Part 6: Now uses largest milestone file as reference point for column names.
 
