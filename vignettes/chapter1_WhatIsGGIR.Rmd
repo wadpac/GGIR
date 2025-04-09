@@ -93,8 +93,6 @@ GGIR is one of the very few research tools in this field that has a permissive l
 
 ## Documentation structure and origin
 
-We have structured the chapters in line with the GGIR training course we have been organising in recent years. Further, we also wanted to provide a good level of documentation for those who do not follow the course or want to refresh their understanding of GGIR.
-
 The documentation is mainly written in a narrative style where we have tried to explain both the theory and practice of all GGIR functionalities. As mentioned above, GGIR offers a vast amount of functionality. If you arrive here with the expectation to find a quick instruction to run and use GGIR in your research then we have to disappoint you. Learning to use GGIR requires some time investment.
 
 Everything you need to type in your R script is `highlighted like this`.
