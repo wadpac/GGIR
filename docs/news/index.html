@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,10 +79,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="3.2" id="changes-in-ggir-version-32-">CHANGES IN GGIR VERSION 3.2-?<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-32-"></a></h2>
+<h2 class="pkg-version" data-toc-text="3.2-5" id="changes-in-ggir-version-32-5">CHANGES IN GGIR VERSION 3.2-5<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-32-5"></a></h2>
+<p>This release primarily includes fixes to minor bugs observed after more elaborate testing of the features add in previous releases 3.2-3 and 3.2-4.</p>
 <ul><li><p>Part 1: Correct estimate of f1 when user specifies f1=0, which failed with the recently added split recordings functionality.</p></li>
+<li><p>Part 1: Recently introduced split records functionality only considered windows timestamps that overlap with recordings. Now changed to include any split time for which the resulting time segment overlaps for at least 12 hours wiht the accelerometer recording.</p></li>
 <li><p>Part 5 and visualreport: Add new guider types such as marker button to time series.</p></li>
 <li><p>Part 4: Add sleep efficiency and latency to recording summary when marker button is used. It was only added to night summary.</p></li>
+<li><p>Part 4: csv report, fix bug introduced in previous release causing columns to be incorrectly named.</p></li>
+<li><p>Part 6: Now uses largest milestone file as reference point for column names.</p></li>
+<li><p>Part 3: HASPT.algo “HLRB” algorithm provided two windows when both are of equal length, now fixed by taking the last window.</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.2-4" id="changes-in-ggir-version-32-4">CHANGES IN GGIR VERSION 3.2-4<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-32-4"></a></h2>

@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -485,10 +485,20 @@ that GGIR part 1 created them based on raw data input. As will be
 discussed in chapter 3, GGIR does non-wear detection in two steps: The
 first step is done in part 1 and the second step is done in part 2. In
 relation to externally derived epoch data non-wear is detected by
-looking for consecutive zeros of one hour (ActiGraph), derived from the
-file (UK Biobank csv), or a combination of both (Philips Health Band,
-Actiwatch). Where the one hour window can be modified with the last
-value of parameter <code>windowsizes</code>.</p>
+looking for consecutive zeros of one hour (default) expanded by all time
+point for which data is missing. However, the consecutive zero approach
+is not used for all brands:</p>
+<ul>
+<li>For UK Biobank csv data the non-wear detection is available in the
+data, which is what GGIR uses.</li>
+<li>For Fitbit and Sensewear we use missingness in data as an indicator
+of nonwear, and any one hour time window with a standard deviation in
+calorie or METS values less than 0.0001 and an average value below
+2.</li>
+</ul>
+<p>For all above approaches using a one hour window, the actual window
+length can be modified with the last value of parameter
+<code>windowsizes</code>.</p>
 </div>
 </div>
 <div class="section level2">
@@ -569,7 +579,7 @@ in between like in the example below.</p>
 <span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a>     <span class="co"># Part 5</span></span>
 <span id="cb9-27"><a href="#cb9-27" tabindex="-1"></a>     <span class="co">#=====================</span></span>
 <span id="cb9-28"><a href="#cb9-28" tabindex="-1"></a>     <span class="at">threshold.lig =</span> <span class="dv">30</span>,</span>
-<span id="cb9-29"><a href="#cb9-29" tabindex="-1"></a>     <span class="at">threshold.mod =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">110</span>),</span>
+<span id="cb9-29"><a href="#cb9-29" tabindex="-1"></a>     <span class="at">threshold.mod =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">110</span>), <span class="co"># also used in part 2</span></span>
 <span id="cb9-30"><a href="#cb9-30" tabindex="-1"></a>     <span class="at">threshold.vig =</span> <span class="dv">400</span>,</span>
 <span id="cb9-31"><a href="#cb9-31" tabindex="-1"></a>     <span class="at">boutcriter =</span> <span class="fl">0.8</span>,</span>
 <span id="cb9-32"><a href="#cb9-32" tabindex="-1"></a>     <span class="at">boutcriter.in =</span> <span class="fl">0.9</span>,</span>
@@ -579,14 +589,14 @@ in between like in the example below.</p>
 <span id="cb9-36"><a href="#cb9-36" tabindex="-1"></a>     <span class="at">boutdur.lig =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">10</span>),</span>
 <span id="cb9-37"><a href="#cb9-37" tabindex="-1"></a>     <span class="at">boutdur.mvpa =</span> <span class="dv">1</span>,</span>
 <span id="cb9-38"><a href="#cb9-38" tabindex="-1"></a>     <span class="at">includedaycrit.part5 =</span> <span class="dv">2</span><span class="sc">/</span><span class="dv">3</span>,</span>
-<span id="cb9-39"><a href="#cb9-39" tabindex="-1"></a>     <span class="co">#=====================</span></span>
-<span id="cb9-40"><a href="#cb9-40" tabindex="-1"></a>     <span class="co"># Part 6</span></span>
-<span id="cb9-41"><a href="#cb9-41" tabindex="-1"></a>     <span class="co">#=====================</span></span>
-<span id="cb9-42"><a href="#cb9-42" tabindex="-1"></a>     <span class="at">part6CR =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb9-43"><a href="#cb9-43" tabindex="-1"></a>     <span class="co">#=====================</span></span>
-<span id="cb9-44"><a href="#cb9-44" tabindex="-1"></a>     <span class="co"># Visual report</span></span>
-<span id="cb9-45"><a href="#cb9-45" tabindex="-1"></a>     <span class="co">#=====================</span></span>
-<span id="cb9-46"><a href="#cb9-46" tabindex="-1"></a>     <span class="at">timewindow =</span> <span class="fu">c</span>(<span class="st">"WW"</span>, <span class="st">"OO"</span>),</span>
+<span id="cb9-39"><a href="#cb9-39" tabindex="-1"></a>     <span class="at">timewindow =</span> <span class="fu">c</span>(<span class="st">"WW"</span>, <span class="st">"OO"</span>),</span>
+<span id="cb9-40"><a href="#cb9-40" tabindex="-1"></a>     <span class="co">#=====================</span></span>
+<span id="cb9-41"><a href="#cb9-41" tabindex="-1"></a>     <span class="co"># Part 6</span></span>
+<span id="cb9-42"><a href="#cb9-42" tabindex="-1"></a>     <span class="co">#=====================</span></span>
+<span id="cb9-43"><a href="#cb9-43" tabindex="-1"></a>     <span class="at">part6CR =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-44"><a href="#cb9-44" tabindex="-1"></a>     <span class="co">#=====================</span></span>
+<span id="cb9-45"><a href="#cb9-45" tabindex="-1"></a>     <span class="co"># Visual report</span></span>
+<span id="cb9-46"><a href="#cb9-46" tabindex="-1"></a>     <span class="co">#=====================</span></span>
 <span id="cb9-47"><a href="#cb9-47" tabindex="-1"></a>     <span class="at">visualreport =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb9-48"><a href="#cb9-48" tabindex="-1"></a>     <span class="at">old_visualreport =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <div class="section level3">

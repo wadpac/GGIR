@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -130,6 +130,14 @@
 <li>The package vignettes.</li>
 <li>The github.io website (built with the <code>pkgdown</code> package).</li>
 </ul><div class="section level4">
+<h4 id="documentation-syntax">Documentation syntax<a class="anchor" aria-label="anchor" href="#documentation-syntax"></a></h4>
+<p>To ease copy-pasting code from documentation to R, use the right type of quotes " " when providing examples of character parameter values.</p>
+<p>Practically this means:</p>
+<ul><li>When the quotes are surrounded by ` ` in .Rmd files, you can simply use " ".</li>
+<li>In all .Rd files and when quotes are not surrounded by ` ` in .Rmd files preceed each quote with a forward slash as in \" \".</li>
+<li>Only use " " in documentation syntax when the quotes do not relate to R code, in the final documentation build this will then appear as ” “.</li>
+</ul></div>
+<div class="section level4">
 <h4 id="reference-manual">Reference manual<a class="anchor" aria-label="anchor" href="#reference-manual"></a></h4>
 <p>The reference manual gets the information from the .Rd documents within the man folder in the package repository. Therefore, updating the information in those files will automatically update the reference manual. Note that most of the GGIR functions are not intended for direct interaction with the user, as such, the documentation of most arguments is centralized in the details section of man/GGIR.Rd. If you for example want to add an extra parameter to <code>params_247</code> then this should be documented there. Further, you should not forget to include the new argument in functions  and . The pull request template has a form that will help you check all these points.</p>
 </div>
