@@ -176,7 +176,12 @@ By default GGIR assumes that the data is raw as discussed in chapter 1. However,
 
 See [GGIR CookBook](https://wadpac.github.io/GGIR/articles/Cookbook.html) for example recipes for working with these externally derived epoch-level data.
 
-To process these files, GGIR loads their content and saves it as GGIR part 1 milestone data, essentially fooling the rest of GGIR to think that GGIR part 1 created them based on raw data input. As will be discussed in chapter 3, GGIR does non-wear detection in two steps: The first step is done in part 1 and the second step is done in part 2. In relation to externally derived epoch data non-wear is detected by looking for consecutive zeros of one hour (ActiGraph), derived from the file (UK Biobank csv), or a combination of both (Philips Health Band, Actiwatch). Where the one hour window can be modified with the last value of parameter `windowsizes`.
+To process these files, GGIR loads their content and saves it as GGIR part 1 milestone data, essentially fooling the rest of GGIR to think that GGIR part 1 created them based on raw data input. As will be discussed in chapter 3, GGIR does non-wear detection in two steps: The first step is done in part 1 and the second step is done in part 2. In relation to externally derived epoch data non-wear is detected by looking for consecutive zeros of one hour (default) expanded by all time point for which data is missing. However, the consecutive zero approach is not used for all brands:
+
+- For UK Biobank csv data the non-wear detection is available in the data, which is what GGIR uses.
+- For Fitbit and Sensewear we use missingness in data as an indicator of nonwear, and any one hour time window with a standard deviation in calorie or METS values less than 0.0001 and an average value below 2.
+
+For all above approaches using a one hour window, the actual window length can be modified with the last value of parameter `windowsizes`.
 
 ## How to run your analysis?
 
@@ -242,7 +247,7 @@ GGIR(mode = 1:6,
      # Part 5
      #=====================
      threshold.lig = 30,
-     threshold.mod = c(100, 110),
+     threshold.mod = c(100, 110), # also used in part 2
      threshold.vig = 400,
      boutcriter = 0.8,
      boutcriter.in = 0.9,
@@ -252,6 +257,7 @@ GGIR(mode = 1:6,
      boutdur.lig = c(1, 10),
      boutdur.mvpa = 1,
      includedaycrit.part5 = 2/3,
+     timewindow = c("WW", "OO"),
      #=====================
      # Part 6
      #=====================
@@ -259,7 +265,6 @@ GGIR(mode = 1:6,
      #=====================
      # Visual report
      #=====================
-     timewindow = c("WW", "OO"),
      visualreport = TRUE,
      old_visualreport = FALSE)
 ```

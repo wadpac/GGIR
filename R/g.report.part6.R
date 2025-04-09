@@ -48,20 +48,14 @@ g.report.part6 = function(metadatadir = c(), f0 = c(), f1 = c(),
       }
       return(out)
     }
-    out_try = myfun(fnames.ms6[f0])
-    # If first recording has cosinor estimates then we know that circadian 
-    # rhythm analysis was done. Column names can be used as reference point.
-    # If cosinor estimates are NOT present: Use largest output file for 
-    # initializing column names.
-    if (length(grep("cosinor", x = colnames(out_try))) == 0) {
-      all_files <- fnames.ms6[f0:f1]
-      file_info <- file.info(all_files)
-      file_sizes <- file_info$size
-      # Find the file with the largest size. Since the .RData files in ms6.out are processed, the largest file is likely to have the most column names.
-      largest_file <- all_files[which.max(file_sizes)]
-      # Extract column names from this file
-      out_try <- myfun(largest_file)
-    }
+    # Use large milestone file as reference point, assuming that this has the largest number of columns
+    all_files <- fnames.ms6[f0:f1]
+    file_info <- file.info(all_files)
+    file_sizes <- file_info$size
+    # Find the file with the largest size. Since the .RData files in ms6.out are processed, the largest file is likely to have the most column names.
+    largest_file <- all_files[which.max(file_sizes)]
+    # Extract column names from this file
+    out_try <- myfun(largest_file)
     expectedCols = colnames(out_try)
     outputfinal = as.data.frame(do.call(rbind,
                                         lapply(fnames.ms6[f0:f1], myfun, expectedCols)),

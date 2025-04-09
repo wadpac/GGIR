@@ -339,6 +339,11 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       sibs = c(0, rep(srle$values, srle$lengths), 0)
       start = which(diff(sibs) == 1)
       end = which(diff(sibs) == -1)
+      # If there are multiple windows with equal length take last one
+      if (length(start) > 1 & length(end) > 1) {
+        start = start[length(end)]
+        end = end[length(end)]
+      }
       sibs = sibs[-c(1, length(sibs))]
       # If start and end are not found try again
       # with shorter filter window

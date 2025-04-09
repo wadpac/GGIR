@@ -59,6 +59,17 @@ We currently have three sources for documenting the package:
 - The package vignettes.
 - The github.io website (built with the `pkgdown` package).
 
+#### Documentation syntax
+
+To ease copy-pasting code from documentation to R, use the right type of quotes \" \" when providing examples of
+character parameter values.
+
+Practically this means:
+
+- When the quotes are surrounded by \` \` in .Rmd files, you can simply use \"  \".
+- In all .Rd files and when quotes are not surrounded by \` \` in .Rmd files preceed each quote with a forward slash as in \\\" \\\".
+- Only use \" \" in documentation syntax when the quotes do not relate to R code, in the final documentation build this will then appear as " ".
+
 #### Reference manual
 
 The reference manual gets the information from the .Rd documents within the man
