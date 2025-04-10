@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>The GGIR package • GGIR</title>
+<title>Date and Time formats in R • GGIR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="The GGIR package">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Date and Time formats in R">
 <script defer data-domain="pkgdown.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
 </head>
 <body>
@@ -49,7 +49,7 @@
     <li><a class="dropdown-item" href="../articles/chapter14_BehaviouralFragmentation.html">14. Behavioural Fragmentation</a></li>
   </ul>
 </li>
-<li class="nav-item dropdown">
+<li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-annexes" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Annexes</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-annexes">
 <li><a class="dropdown-item" href="../articles/GGIRParameters.html">GGIR Parameters</a></li>
@@ -103,21 +103,144 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>The GGIR package</h1>
+      <h1>Date and Time formats in R</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/wadpac/GGIR/blob/HEAD/vignettes/chapterInProgress.Rmd" class="external-link"><code>vignettes/chapterInProgress.Rmd</code></a></small>
-      <div class="d-none name"><code>chapterInProgress.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/wadpac/GGIR/blob/HEAD/vignettes/DateTimeFormatsInR.Rmd" class="external-link"><code>vignettes/DateTimeFormatsInR.Rmd</code></a></small>
+      <div class="d-none name"><code>DateTimeFormatsInR.Rmd</code></div>
     </div>
 
     
     
-<div class="section level2">
-<h2 id="work-in-progress">Work in progress<a class="anchor" aria-label="anchor" href="#work-in-progress"></a>
-</h2>
-<p><img src="GGIR-MASTERLOGO-RGB.png" alt="GGIR logo" width="60%" style="border: 0; padding:20px"></p>
-</div>
-  </main>
+<p>Various GGIR parameters expect us to provide a date or time format. R
+uses codes to define elements of a date or time format.</p>
+<p>The table below shows the individual codes and their meaning:</p>
+<table class="table">
+<thead><tr class="header">
+<th>Code</th>
+<th>Value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>"%d"</code></td>
+<td>Day of the month (decimal number)</td>
+</tr>
+<tr class="even">
+<td><code>"%m"</code></td>
+<td>Month (decimal number)</td>
+</tr>
+<tr class="odd">
+<td><code>"%b"</code></td>
+<td>Month (abbreviated)</td>
+</tr>
+<tr class="even">
+<td><code>"%B"</code></td>
+<td>Month (full name)</td>
+</tr>
+<tr class="odd">
+<td><code>"%y"</code></td>
+<td>Year (2 digit)</td>
+</tr>
+<tr class="even">
+<td><code>"%Y"</code></td>
+<td>Year (4 digit)</td>
+</tr>
+<tr class="odd">
+<td><code>"%h"</code></td>
+<td>Hour</td>
+</tr>
+<tr class="even">
+<td><code>"%H"</code></td>
+<td>Decimal hours (24 hour)</td>
+</tr>
+<tr class="odd">
+<td><code>"%I"</code></td>
+<td>Decimal hours (12 hour).0</td>
+</tr>
+<tr class="even">
+<td><code>"%M"</code></td>
+<td>Decimal minute</td>
+</tr>
+<tr class="odd">
+<td><code>"%S"</code></td>
+<td>Decimal second</td>
+</tr>
+<tr class="even">
+<td><code>"%a"</code></td>
+<td>Abbreviated weekday</td>
+</tr>
+<tr class="odd">
+<td><code>"%A"</code></td>
+<td>Full weekday</td>
+</tr>
+<tr class="even">
+<td><code>"%p"</code></td>
+<td>Locale-specific AM/PM</td>
+</tr>
+<tr class="odd">
+<td><code>"%z"</code></td>
+<td>Offset from GMT</td>
+</tr>
+<tr class="even">
+<td><code>"%Z"</code></td>
+<td>Time zone (character)</td>
+</tr>
+</tbody>
+</table>
+<p>The table below shows examples of how to define time or data format
+using the above codes.</p>
+<table class="table">
+<thead><tr class="header">
+<th>Example time or date format</th>
+<th>R code to describe this format</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>"12-Mar-2025 15:05:02"</code></td>
+<td><code>"%d-%b-%Y %H:%M:%S"</code></td>
+</tr>
+<tr class="even">
+<td><code>"12-Mar-25 15:05:02"</code></td>
+<td><code>"%d-%b-%y %H:%M:%S"</code></td>
+</tr>
+<tr class="odd">
+<td><code>"12-03-25 15:05:02"</code></td>
+<td><code>"%d-%m-%y %H:%M:%S"</code></td>
+</tr>
+<tr class="even">
+<td><code>"2025/03/20 15:05:02"</code></td>
+<td><code>"%Y/%m/%d %H:%M:%S"</code></td>
+</tr>
+<tr class="odd">
+<td><code>"20/03/2025 15:05:02"</code></td>
+<td><code>"%d/%m/%Y %H:%M:%S"</code></td>
+</tr>
+<tr class="even">
+<td><code>"20/03/2025 03:05:02 PM"</code></td>
+<td><code>"%d/%m/%Y %I:%M:%S %p"</code></td>
+</tr>
+<tr class="odd">
+<td><code>"Thu Mar 2025 03:11:06 PM"</code></td>
+<td><code>"%a %b %Y %I:%M:%S %p"</code></td>
+</tr>
+<tr class="even">
+<td><code>"12-Mar-2025"</code></td>
+<td><code>"%d-%b-%Y"</code></td>
+</tr>
+<tr class="odd">
+<td><code>"2025/03/20"</code></td>
+<td><code>"%Y/%m/%d"</code></td>
+</tr>
+</tbody>
+</table>
+<p>For example we may set:</p>
+<ul>
+<li><p><code>rmc.format.time = "%d/%m/%Y %H:%M:%S"</code> when we see
+<code>"20/03/2025 15:05:02"</code> in a csv file with raw data.</p></li>
+<li><p><code>extEpochData_timeformat = "%d-%m-%Y %H:%M:%S"</code> when
+we see <code>"12-03-2025 15:05:02"</code> in an externally derived epoch
+data file such as the Philips health band .xlsx data files.</p></li>
+</ul></main>
 </div>
 
 

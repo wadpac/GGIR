@@ -46,11 +46,11 @@ The time resolutions of GGIR output are:
 3.  GGIR facilitates sleep, physical activity, and circadian rhythm research.
 4.  GGIR has extensive quantitative output designed for use in quantitative research.
 5.  GGIR is designed to be computationally efficient such as the option to store and re-use intermediate milestone data and the option to process multiple files in parallel on the same computer as discussed in Chapter 2.
-6.  GGIR is designed to be accessible for new users without experience in R or programming. GGIR requires only one function call and comes with elaborate open-access documentation. Additionally, paid training courses are offered to maximise the opportunity for users to learn about GGIR and for us to learn from users.
+6.  GGIR is designed to be accessible for new users without experience in R or programming. GGIR requires only one function call and comes with elaborate open-access documentation.
 7.  GGIR has had over a [dozen code contributors](https://github.com/wadpac/GGIR/graphs/contributors).
 8.  GGIR has been available on the CRAN archive, meaning that it meets CRAN standards and that each release has gone through a series of automated checks.
 9.  We have public email list ([google group](https://groups.google.com/g/rpackageggir/)) for users to reach out to each other and the maintainers.
-10. Over [hundreds of publications](https://github.com/wadpac/GGIR/wiki/Publication-list) have used GGIR, which has been a powerful way to identify problems and improve the code and it has provided us with a wide range of reference values.
+10. Over a hundred [publications](https://github.com/wadpac/GGIR/wiki/Publication-list) have used GGIR, which has been a powerful way to identify problems and improve the code and it has provided us with a wide range of reference values.
 
 ## History
 
@@ -92,8 +92,6 @@ It may sound obvious to some that research software is open-source, but in the f
 GGIR is one of the very few research tools in this field that has a permissive license aimed to maximise its potential for re-use and collaboration.
 
 ## Documentation structure and origin
-
-We have structured the chapters in line with the GGIR training course we have been organising in recent years. Further, we also wanted to provide a good level of documentation for those who do not follow the course or want to refresh their understanding of GGIR.
 
 The documentation is mainly written in a narrative style where we have tried to explain both the theory and practice of all GGIR functionalities. As mentioned above, GGIR offers a vast amount of functionality. If you arrive here with the expectation to find a quick instruction to run and use GGIR in your research then we have to disappoint you. Learning to use GGIR requires some time investment.
 

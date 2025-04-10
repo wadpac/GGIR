@@ -82,7 +82,8 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
           break()
         }
       }
-      sibreport$duration = as.numeric(difftime(sibreport$end, sibreport$start, units = "mins"))
+      epochSize = as.numeric(difftime(ts$time[2], ts$time[1], units = "mins"))
+      sibreport$duration = as.numeric(difftime(sibreport$end, sibreport$start, units = "mins")) + epochSize
     }
     
     # Only consider sib episodes with minimum duration
@@ -91,6 +92,10 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
     } else {
       sibreport$acc_edge = 0
     }
+    #-----------------------------------------------------------
+    # Consider using marker button data to aid nap detection
+    sibreport = markerButtonForRest(sibreport, params_sleep, ts)
+    
     sibreport$startHour = as.numeric(format(sibreport$start, "%H"))
     sibreport$endHour = as.numeric(format(sibreport$end, "%H"))
     
@@ -104,7 +109,8 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
                           sibreport$duration < params_sleep[["possible_nap_dur"]][2] &
                           sibreport$acc_edge <= params_sleep[["possible_nap_edge_acc"]] &
                           sibreport$startHour >= params_sleep[["possible_nap_window"]][1] &
-                          sibreport$endHour < params_sleep[["possible_nap_window"]][2]) |
+                          sibreport$endHour < params_sleep[["possible_nap_window"]][2] &
+                          sibreport$ignore == FALSE) |
                          (sibreport$type != "sib" & sibreport$duration >= 1))
     
     Nlongbouts  = length(longboutsi)

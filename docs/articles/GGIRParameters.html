@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,6 +60,7 @@
     <li><a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a></li>
     <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
     <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
+    <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
@@ -460,7 +461,7 @@ arguments.</p>
 <td>params_rawdata</td>
 </tr>
 <tr class="odd">
-<td>mc.format.time</td>
+<td>rmc.format.time</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
@@ -585,282 +586,302 @@ arguments.</p>
 <td>params_general</td>
 </tr>
 <tr class="even">
+<td>recording_split_ignore_edges</td>
+<td>1</td>
+<td>params_general</td>
+</tr>
+<tr class="odd">
 <td>recording_split_timeformat</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>nonwear_approach</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>dataFormat</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>extEpochData_timeformat</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>metadatadir</td>
 <td>2, 3, 4, 5</td>
 <td>not in parameter objects</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>minimum_MM_length.part5</td>
 <td>5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>strategy</td>
 <td>2, 5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>hrs.del.start</td>
 <td>2, 5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>hrs.del.end</td>
 <td>2, 5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>maxdur</td>
 <td>2, 5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>max_calendar_days</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>includedaycrit</td>
 <td>2, 5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>nonWearEdgeCorrection</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>nonwearFiltermaxHours</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>nonwearFilterWindow</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>L5M5window</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>M5L5res</td>
 <td>2, 5</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>winhr</td>
 <td>2, 5</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>qwindow</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>qlevels</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>ilevels</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>mvpathreshold</td>
 <td>2</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>boutcriter</td>
 <td>2</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>ndayswindow</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>idloc</td>
 <td>2, 4</td>
 <td>params_general</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>do.imp</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>storefolderstructure</td>
 <td>2, 4, 5</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>epochvalues2csv</td>
 <td>2</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.part2.pdf</td>
 <td>2</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>sep_reports</td>
 <td>2, 4, 5</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>dec_reports</td>
 <td>2, 4, 5</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>sep_config</td>
 <td>1, 2, 3, 4, 5</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>dec_config</td>
 <td>1, 2, 3, 4, 5</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>mvpadur</td>
 <td>2</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>bout.metric</td>
 <td>2, 5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>closedbout</td>
 <td>2</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>IVIS_windowsize_minutes</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>IVIS_epochsize_seconds</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>IVIS.activity.metric</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>iglevels</td>
 <td>2, 5</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>TimeSegments2ZeroFile</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>qM5L5</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>MX.ig.min.dur</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>qwindow_dateformat</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>anglethreshold</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>timethreshold</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>ignorenonwear</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>HDCZA_threshold</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>acc.metric</td>
 <td>3, 5</td>
 <td>params_general</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>do.part3.pdf</td>
 <td>3</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>sensor.location</td>
 <td>3, 4</td>
 <td>params_general</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>HASPT.algo</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>HASIB.algo</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Sadeh_axis</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>longitudinal_axis</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>HASPT.ignore.invalid</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="odd">
+<td>oakley_threshold</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="even">
+<td>consider_marker_button</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="odd">
+<td>impute_marker_button</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
@@ -880,204 +901,214 @@ arguments.</p>
 <td>params_sleep</td>
 </tr>
 <tr class="odd">
-<td>possible_nap_window</td>
-<td>5</td>
-<td>params_sleep</td>
-</tr>
-<tr class="even">
-<td>possible_nap_dur</td>
-<td>5</td>
-<td>params_sleep</td>
-</tr>
-<tr class="odd">
-<td>possible_nap_gap</td>
-<td>5</td>
-<td>params_sleep</td>
-</tr>
-<tr class="even">
 <td>do.visual</td>
 <td>4</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>outliers.only</td>
 <td>4</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>excludefirstlast</td>
 <td>4</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>criterror</td>
 <td>4</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>includenightcrit</td>
 <td>4</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>relyonguider</td>
 <td>4</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>relyonsleeplog</td>
 <td>4</td>
 <td>deprecated</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>sleepefficiency.metric</td>
 <td>4</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>def.noc.sleep</td>
 <td>4</td>
 <td>params_sleep</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>sib_must_fully_overlap_with_TimeInBed</td>
 <td>4</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>data_cleaning_file</td>
 <td>4, 5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>excludefirst.part4</td>
 <td>4</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>excludelast.part4</td>
 <td>4</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>sleepwindowType</td>
 <td>4</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>excludefirstlast.part5</td>
 <td>5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>boutcriter.mvpa</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>boutcriter.in</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>boutcriter.lig</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>threshold.lig</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>threshold.mod</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>threshold.vig</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>boutdur.mvpa</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>boutdur.in</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>boutdur.lig</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>save_ms5rawlevels</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>part5_agg2_60seconds</td>
 <td>5</td>
 <td>params_general</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>includedaycrit.part5</td>
 <td>5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>includenight.part5</td>
 <td>5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>frag.metrics</td>
 <td>5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>LUXthresholds</td>
 <td>5</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>LUX_cal_constant</td>
 <td>5</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>LUX_cal_exponent</td>
 <td>5</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>LUX_day_segments</td>
 <td>5</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>timewindow</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>save_ms5raw_format</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>save_ms5raw_without_invalid</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.sibreport</td>
 <td>5</td>
 <td>params_output</td>
+</tr>
+<tr class="even">
+<td>possible_nap_window</td>
+<td>5</td>
+<td>params_sleep</td>
+</tr>
+<tr class="odd">
+<td>possible_nap_dur</td>
+<td>5</td>
+<td>params_sleep</td>
+</tr>
+<tr class="even">
+<td>possible_nap_gap</td>
+<td>5</td>
+<td>params_sleep</td>
+</tr>
+<tr class="odd">
+<td>nap_markerbutton_method</td>
+<td>5</td>
+<td>params_sleep</td>
+</tr>
+<tr class="even">
+<td>nap_markerbutton_max_distance</td>
+<td>5</td>
+<td>params_sleep</td>
 </tr>
 <tr class="odd">
 <td>includecrit.part6</td>
@@ -1159,9 +1190,9 @@ currently under development.</p>
 <h4 class="unnumbered" id="datadir">datadir<a class="anchor" aria-label="anchor" href="#datadir"></a>
 </h4>
 <p>Character (default = c()). Directory where the accelerometer files
-are stored, e.g., “C:/mydata”, or list of accelerometer filenames and
-directories, e.g. c(“C:/mydata/myfile1.bin”,
-“C:/mydata/myfile2.bin”).</p>
+are stored, e.g., "C:/mydata", or list of accelerometer filenames and
+directories, e.g. c("C:/mydata/myfile1.bin",
+"C:/mydata/myfile2.bin").</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="outputdir">outputdir<a class="anchor" aria-label="anchor" href="#outputdir"></a>
@@ -1212,7 +1243,7 @@ function GGIR. See details.</p>
 </h4>
 <p>List (default = c()). External function object to be applied to raw
 data. See package vignette for detailed tutorial with examples on how to
-use the function embedding: <a href="https://cran.r-project.org/package=GGIR/vignettes/ExternalFunction.html" class="external-link uri">https://cran.r-project.org/package=GGIR/vignettes/ExternalFunction.html</a></p>
+use the function embedding: <a href="https://wadpac.github.io/GGIR/articles/ExternalFunction.html" class="uri">https://wadpac.github.io/GGIR/articles/ExternalFunction.html</a></p>
 </div>
 </div>
 <div class="section level3">
@@ -1229,10 +1260,10 @@ will not be created again.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="acc-metric">acc.metric<a class="anchor" aria-label="anchor" href="#acc-metric"></a>
 </h4>
-<p>Character (default = “ENMO”). Which one of the acceleration metrics
+<p>Character (default = "ENMO"). Which one of the acceleration metrics
 do you want to use for all acceleration magnitude analyses in GGIR part
-5 and the visual report? For example: “ENMO”, “LFENMO”, “MAD”,
-“NeishabouriCount_y”, or “NeishabouriCount_vm”. Only one acceleration
+5 and the visual report? For example: "ENMO", "LFENMO", "MAD",
+"NeishabouriCount_y", or "NeishabouriCount_vm". Only one acceleration
 metric can be specified and the selected metric needs to have been
 calculated in part 1 (see g.part1) via arguments such as do.enmo = TRUE
 or do.mad = TRUE.</p>
@@ -1277,25 +1308,24 @@ non-wear periods are assessed by non-overlapping windows.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="desiredtz">desiredtz<a class="anchor" aria-label="anchor" href="#desiredtz"></a>
 </h4>
-<p>Character (default = ““, i.e., system timezone). Timezone in which
+<p>Character (default = "", i.e., system timezone). Timezone in which
 device was configured and experiments took place. If experiments took
 place in a different timezone, then use this argument for the timezone
 in which the experiments took place and argument configtz to specify
-where the device was configured. Use the”TZ identifier” as specified at
-://en.wikipedia.org/wiki/Zone.tabhttps://en.wikipedia.org/wiki/Zone.tab
-to set desiredtz, e.g., “Europe/London”.</p>
+where the device was configured. Use the "TZ identifier" as specified at
+<a href="https://en.wikipedia.org/wiki/Zone.tab" class="external-link uri">https://en.wikipedia.org/wiki/Zone.tab</a> to set desiredtz,
+e.g., "Europe/London".</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="configtz">configtz<a class="anchor" aria-label="anchor" href="#configtz"></a>
 </h4>
-<p>Character (default = ““, i.e., system timezone). At the moment only
+<p>Character (default = "", i.e., system timezone). At the moment only
 functional for GENEActiv .bin, AX3 cwa, ActiGraph .gt3x, and ad-hoc csv
 file format. Timezone in which the accelerometer was configured. Only
 use this argument if the timezone of configuration and timezone in which
-recording took place are different. Use the”TZ identifier” as specified
-at
-://en.wikipedia.org/wiki/Zone.tabhttps://en.wikipedia.org/wiki/Zone.tab
-to set configtz, e.g., “Europe/London”.</p>
+recording took place are different. Use the "TZ identifier" as specified
+at <a href="https://en.wikipedia.org/wiki/Zone.tab" class="external-link uri">https://en.wikipedia.org/wiki/Zone.tab</a> to set configtz,
+e.g., "Europe/London".</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="idloc">idloc<a class="anchor" aria-label="anchor" href="#idloc"></a>
@@ -1304,8 +1334,8 @@ to set configtz, e.g., “Europe/London”.</p>
 is stored in the obvious header field. Note that for ActiGraph data the
 ID is never stored in the file header. For value set to 2, 5, 6, and 7,
 GGIR looks at the filename and extracts the character string preceding
-the first occurance of a “_” (idloc = 2), ” ” (space, idloc = 5), “.”
-(dot, idloc = 6), and “-” (idloc = 7), respectively. You may have
+the first occurance of a "_" (idloc = 2), " " (space, idloc = 5), "."
+(dot, idloc = 6), and "-" (idloc = 7), respectively. You may have
 noticed that idloc 3 and 4 are skipped, they were used for one study in
 2012, and not actively maintained anymore, but because it is legacy code
 not omitted.</p>
@@ -1332,7 +1362,7 @@ set part5_agg2_60seconds to TRUE or FALSE.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="sensor-location">sensor.location<a class="anchor" aria-label="anchor" href="#sensor-location"></a>
 </h4>
-<p>Character (default = “wrist”). To indicate sensor location, default
+<p>Character (default = "wrist"). To indicate sensor location, default
 is wrist. If it is hip, the HDCZA algorithm for sleep detection also
 requires longitudinal axis of sensor to be between -45 and +45
 degrees.</p>
@@ -1371,16 +1401,17 @@ biased output.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="dataformat">dataFormat<a class="anchor" aria-label="anchor" href="#dataformat"></a>
 </h4>
-<p>Character (default = “raw”). To indicate what the format is of the
+<p>Character (default = "raw"). To indicate what the format is of the
 data in datadir. Alternatives: ukbiobank_csv, actiwatch_csv,
-actiwatch_awd, actigraph_csv, and sensewear_xls, which correspond to
-epoch level data files from, respecitively, UK Biobank in csv format,
-Actiwatch in csv format, Actiwatch in awd format, ActiGraph csv format,
-and Sensewear in xls format (also works with xlsx). Here, the assumed
-epoch size for UK Biobank csvdata is 5 seconds. The epoch size for the
-other non-raw data formats is flexible, but make sure that you set first
-value of argument windowsizes accordingly. Also when working with
-non-raw data formats specify argument extEpochData_timeformat as
+actiwatch_awd, actigraph_csv, sensewear_xls, phb_xlsx, and fitbit_json
+which correspond to epoch level data files from, respecitively, UK
+Biobank in csv format, Actiwatch in csv format, Actiwatch in awd format,
+ActiGraph csv format, Sensewear in xls format (also works with xlsx),
+Philips Health Band in xlsx format, and Fitbit in json format. Here, the
+assumed epoch size for UK Biobank csvdata is 5 seconds. The epoch size
+for the other non-raw data formats is flexible, but make sure that you
+set first value of argument windowsizes accordingly. Also when working
+with non-raw data formats specify argument extEpochData_timeformat as
 documented below. For ukbiobank_csv nonwear is a column in the data
 itself, for actiwatch_csv, actiwatch_awd, actigraph_csv, and
 sensewear_xls non-wear is detected as 60 minute rolling zeros. The
@@ -1407,11 +1438,12 @@ or gap and the names of the filenames of the respective recording.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="extepochdata_timeformat">extEpochData_timeformat<a class="anchor" aria-label="anchor" href="#extepochdata_timeformat"></a>
 </h4>
-<p>Character (default = “%d-%m-%Y %H:%M:%S”). To specify the time format
+<p>Character (default = "%d-%m-%Y %H:%M:%S"). To specify the time format
 used in the external epoch level data when argument dataFormat is set to
-“actiwatch_csv”, “actiwatch_awd”, “actigraph_csv” or “sensewear_xls”.
-For example “%Y-%m-%d %I:%M:%S %p” for “2023-07-11 01:24:01 PM” or
-“%m/%d/%Y %H:%M:%S” “2023-07-11 13:24:01”</p>
+"actiwatch_csv", "actiwatch_awd", "actigraph_csv" or "sensewear_xls".
+For example "%Y-%m-%d %I:%M:%S %p" for "2023-07-11 01:24:01 PM" or
+"%m/%d/%Y %H:%M:%S" "2023-07-11 13:24:01". For guidance on how to
+specify time formats in R see: <a href="https://wadpac.github.io/GGIR/articles/DateTimeFormatsInR.html" class="uri">https://wadpac.github.io/GGIR/articles/DateTimeFormatsInR.html</a>.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="recording_split_times">recording_split_times<a class="anchor" aria-label="anchor" href="#recording_split_times"></a>
@@ -1432,8 +1464,9 @@ part 1 are completed for all input files.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="recording_split_timeformat">recording_split_timeformat<a class="anchor" aria-label="anchor" href="#recording_split_timeformat"></a>
 </h4>
-<p>Character (default = “%d/%m/%Y %H:%M”) To indicate timestamp format
-as used in file as specified with recording_split_times.</p>
+<p>Character (default = "%d/%m/%Y %H:%M") To indicate timestamp format
+as used in file as specified with recording_split_times. For guidance on
+how to specify time formats in R see: <a href="https://wadpac.github.io/GGIR/articles/DateTimeFormatsInR.html" class="uri">https://wadpac.github.io/GGIR/articles/DateTimeFormatsInR.html</a>.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="recording_split_overlap">recording_split_overlap<a class="anchor" aria-label="anchor" href="#recording_split_overlap"></a>
@@ -1441,6 +1474,13 @@ as used in file as specified with recording_split_times.</p>
 <p>Numeric (default = 0). Number of hours to use as buffer when
 splitting recording. A possitive number means that the split recordings
 overlap, a nevative number indicates a gap.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="recording_split_ignore_edges">recording_split_ignore_edges<a class="anchor" aria-label="anchor" href="#recording_split_ignore_edges"></a>
+</h4>
+<p>Boolean (default = FALSE) To indicate whether the recording time
+before and after the time range defined by recording_split_times should
+be considered as segments.</p>
 </div>
 </div>
 <div class="section level3">
@@ -1490,18 +1530,18 @@ g.calibrate. Recommended setting is TRUE.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="backup-cal-coef">backup.cal.coef<a class="anchor" aria-label="anchor" href="#backup-cal-coef"></a>
 </h4>
-<p>Character (default = “retrieve”). Option to use backed-up calibration
+<p>Character (default = "retrieve"). Option to use backed-up calibration
 coefficient instead of deriving the calibration coefficients when
 analysing the same file twice. Argument backup.cal.coef has two usecase.
 Use case 1: If the auto-calibration fails then the user has the option
 to provide back-up calibration coefficients via this argument. The value
 of the argument needs to be the name and directory of a csv-spreadsheet
-with the following column names and subsequent values: “filename” with
+with the following column names and subsequent values: "filename" with
 the names of accelerometer files on which the calibration coefficients
-need to be applied in case auto-calibration fails; “scale.x”, “scale.y”,
-and “scale.z” with the scaling coefficients; “offset.x”, “offset.y”, and
-“offset.z” with the offset coefficients, and; “temperature.offset.x”,
-“temperature.offset.y”, and “temperature.offset.z” with the temperature
+need to be applied in case auto-calibration fails; "scale.x", "scale.y",
+and "scale.z" with the scaling coefficients; "offset.x", "offset.y", and
+"offset.z" with the offset coefficients, and; "temperature.offset.x",
+"temperature.offset.y", and "temperature.offset.z" with the temperature
 offset coefficients. This can be useful for analysing short lasting
 laboratory experiments with insufficient sphere data to perform the
 auto-calibration, but for which calibration coefficients can be derived
@@ -1509,11 +1549,11 @@ in an alternative way. It is the users responsibility to compile the
 csv-spreadsheet. Instead of building this file the user can also Use
 case 2: The user wants to avoid performing the auto-calibration
 repeatedly on the same file. If backup.cal.coef value is set to
-“retrieve” (default) then GGIR will look out for the
-“data_quality_report.csv” file in the outputfolder QC, which holds the
+"retrieve" (default) then GGIR will look out for the
+"data_quality_report.csv" file in the outputfolder QC, which holds the
 previously generated calibration coefficients. If you do not want this
 happen, then deleted the data_quality_report.csv from the QC folder or
-set it to value “redo”.</p>
+set it to value "redo".</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="dynrange">dynrange<a class="anchor" aria-label="anchor" href="#dynrange"></a>
@@ -1532,7 +1572,7 @@ files.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="rmc-dec">rmc.dec<a class="anchor" aria-label="anchor" href="#rmc-dec"></a>
 </h4>
-<p>Character (default = “.”). Decimal used for numbers, same as dec
+<p>Character (default = "."). Decimal used for numbers, same as dec
 argument in [utils]read.csv and in [data.table]fread.</p>
 </div>
 <div class="section level4">
@@ -1576,30 +1616,31 @@ stored.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="rmc-unit-acc">rmc.unit.acc<a class="anchor" aria-label="anchor" href="#rmc-unit-acc"></a>
 </h4>
-<p>Character (default = “g”). Character with unit of acceleration
-values: “g”, “mg”, or “bit”.</p>
+<p>Character (default = "g"). Character with unit of acceleration
+values: "g", "mg", or "bit".</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="rmc-unit-temp">rmc.unit.temp<a class="anchor" aria-label="anchor" href="#rmc-unit-temp"></a>
 </h4>
-<p>Character (default = “C”). Character with unit of temperature values:
+<p>Character (default = "C"). Character with unit of temperature values:
 (K)elvin, (C)elsius, or (F)ahrenheit.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="rmc-unit-time">rmc.unit.time<a class="anchor" aria-label="anchor" href="#rmc-unit-time"></a>
 </h4>
-<p>Character (default = “POSIX”). Character with unit of timestamps:
-“POSIX”, “UNIXsec” (seconds since origin, see argument rmc.origin),
-“UNIXmsec” (same as UNIXsec but in milliseconds), “character”, or
-“ActivPAL” (exotic timestamp format only used in the ActivPAL activity
+<p>Character (default = "POSIX"). Character with unit of timestamps:
+"POSIX", "UNIXsec" (seconds since origin, see argument rmc.origin),
+"UNIXmsec" (same as UNIXsec but in milliseconds), "character", or
+"ActivPAL" (exotic timestamp format only used in the ActivPAL activity
 monitor).</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="rmc-format-time">rmc.format.time<a class="anchor" aria-label="anchor" href="#rmc-format-time"></a>
 </h4>
-<p>Character (default = “%Y-%m-%d %H:%M:%OS”). Character giving a
+<p>Character (default = "%Y-%m-%d %H:%M:%OS"). Character giving a
 date-time format as used by [base]strptime. Only used for rmc.unit.time:
-character and POSIX.</p>
+character and POSIX.. For guidance on how to specify time formats in R
+see: <a href="https://wadpac.github.io/GGIR/articles/DateTimeFormatsInR.html" class="uri">https://wadpac.github.io/GGIR/articles/DateTimeFormatsInR.html</a></p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="rmc-bitrate">rmc.bitrate<a class="anchor" aria-label="anchor" href="#rmc-bitrate"></a>
@@ -1627,7 +1668,7 @@ positive and negative.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="rmc-origin">rmc.origin<a class="anchor" aria-label="anchor" href="#rmc-origin"></a>
 </h4>
-<p>Character (default = “1970-01-01”). Origin of time when unit of time
+<p>Character (default = "1970-01-01"). Origin of time when unit of time
 is UNIXsec, e.g., 1970-1-1.</p>
 </div>
 <div class="section level4">
@@ -1673,7 +1714,7 @@ which the recording ID can be found.</p>
 <h4 class="unnumbered" id="rmc-header-structure">rmc.header.structure<a class="anchor" aria-label="anchor" href="#rmc-header-structure"></a>
 </h4>
 <p>Character (default = NULL). Used to split the header name from the
-header value, e.g., “:” or ” “.</p>
+header value, e.g., ":" or " ".</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="rmc-check4timegaps">rmc.check4timegaps<a class="anchor" aria-label="anchor" href="#rmc-check4timegaps"></a>
@@ -1964,8 +2005,8 @@ under the uncertainty that ActiLife will implement this same algorithm
 over time. To use the Neishabouri counts for the physical activity
 intensity classification in part 5 (i.e., metric over the threshold.lig,
 threshold.mod, and threshold.vig would be applied), the acc.metric
-argument needs to be set as one of the following: “NeishabouriCount_x”,
-“NeishabouriCount_y”, “NeishabouriCount_z”, “NeishabouriCount_vm” to use
+argument needs to be set as one of the following: "NeishabouriCount_x",
+"NeishabouriCount_y", "NeishabouriCount_z", "NeishabouriCount_vm" to use
 the counts in the x-, y-, z-axis or vector magnitude, respectively.</p>
 </div>
 <div class="section level4">
@@ -2114,9 +2155,9 @@ g.part5.</p>
 <h4 class="unnumbered" id="timesegments2zerofile">TimeSegments2ZeroFile<a class="anchor" aria-label="anchor" href="#timesegments2zerofile"></a>
 </h4>
 <p>Character (default = NULL). Takes path to a csv file that has columns
-“windowstart” and “windowend” to refer to the start and end time of a
-time windows in format “2024-10-12 20:00:00”, and “filename” of the GGIR
-milestone data file without the “meta_” segment of the name. GGIR part 2
+"windowstart" and "windowend" to refer to the start and end time of a
+time windows in format "2024-10-12 20:00:00", and "filename" of the GGIR
+milestone data file without the "meta_" segment of the name. GGIR part 2
 uses this to set all acceleration values to zero and the non-wear
 classification to zero (meaning sensor worn). Motivation: When the
 accelerometer is not worn during the night GGIR automatically labels
@@ -2196,9 +2237,9 @@ exercise lab data typically lasting less than a day.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="nonwear_approach">nonwear_approach<a class="anchor" aria-label="anchor" href="#nonwear_approach"></a>
 </h4>
-<p>Character (default = “2023”). Whether to use the traditional version
-of the non-wear detection algorithm (nonwear_approach = “2013”) or the
-new version (nonwear_approach = “2023”). The 2013 version would use the
+<p>Character (default = "2023"). Whether to use the traditional version
+of the non-wear detection algorithm (nonwear_approach = "2013") or the
+new version (nonwear_approach = "2023"). The 2013 version would use the
 longsize window (windowsizes[3], one hour as default) to check the
 conditions for nonwear identification and would flag as nonwear the
 mediumsize window (windowsizes[2], 15 min as default) in the middle. The
@@ -2247,7 +2288,7 @@ should be three columns: first column is recording ID, which needs to
 match with the ID GGIR extracts from the accelerometer file; second
 column should contain the first date of the study; and third column the
 last date of the study. Date columns should be by default in format
-“23-04-2017”, or in the date format specified by argument
+"23-04-2017", or in the date format specified by argument
 study_dates_dateformat (below). If not specified (default), then GGIR
 would use the first and last day of the recording as beginning and end
 of the study. Note that these dates are used on top of the
@@ -2256,8 +2297,9 @@ data_masking_strategy selected.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="study_dates_dateformat">study_dates_dateformat<a class="anchor" aria-label="anchor" href="#study_dates_dateformat"></a>
 </h4>
-<p>Character (default = “%d-%m-%Y”). To specify the date format used in
-the study_dates_file as used by [base]strptime.</p>
+<p>Character (default = "%d-%m-%Y"). To specify the date format used in
+the study_dates_file as used by [base]strptime. For guidance on how to
+specify time formats in R see: <a href="https://wadpac.github.io/GGIR/articles/DateTimeFormatsInR.html" class="uri">https://wadpac.github.io/GGIR/articles/DateTimeFormatsInR.html</a></p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="includecrit-part6">includecrit.part6<a class="anchor" aria-label="anchor" href="#includecrit-part6"></a>
@@ -2297,7 +2339,7 @@ format sleeplog for part 4 then you can provide this as value for the
 qwindow parameter. If you want to use qwindow to guide the nonwear
 filtering as described in here but do not want GGIR to use it for day
 segment analysis in part 2 or 5 then make sure the diary filename
-includes the word “onlyfilter” or “filteronly” to tell GGIR to only use
+includes the word "onlyfilter" or "filteronly" to tell GGIR to only use
 qwindow for nonwear filtering. The main purpose of this functionality is
 to offer the option to ignore short lasting nonwear episodes during the
 night when there is suspicion that these are falsely detect, e.g. in
@@ -2343,33 +2385,31 @@ sustained inactivity.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="haspt-algo">HASPT.algo<a class="anchor" aria-label="anchor" href="#haspt-algo"></a>
 </h4>
-<p>Character (default = “HDCZA”). To indicate what algorithm should be
-used for the sleep period time detection. Default “HDCZA” is Heuristic
+<p>Character (default = "HDCZA"). To indicate what algorithm should be
+used for the sleep period time detection. Default "HDCZA" is Heuristic
 algorithm looking at Distribution of Change in Z-Angle as described in
-van Hees et al. 2018. Other options included: “HorAngle”, which is based
+van Hees et al. 2018. Other options included: "HorAngle", which is based
 on HDCZA but replaces non-movement detection of the HDCZA algorithm by
 looking for time segments where the angle of the longitudinal sensor
 axis has an angle relative to the horizontal plane between -45 and +45
-degrees. And “NotWorn” which is also the same as HDCZA but looks for
+degrees. And "NotWorn" which is also the same as HDCZA but looks for
 time segments when a rolling average of acceleration magnitude is below
 5 per cent of its standard deviation, see Cookbook vignette in the
 Annexes of <a href="https://wadpac.github.io/GGIR/" class="uri">https://wadpac.github.io/GGIR/</a> for more detailed
-guidance on how to use “NotWorn”.</p>
+guidance on how to use "NotWorn".</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="hasib-algo">HASIB.algo<a class="anchor" aria-label="anchor" href="#hasib-algo"></a>
 </h4>
-<p>Character (default = “vanHees2015”). To indicate which algorithm
+<p>Character (default = "vanHees2015"). To indicate which algorithm
 should be used to define the sustained inactivity bouts (i.e., likely
-sleep). Options: “vanHees2015”, “Sadeh1994”, “Galland2012”, “NotWorn”.
-See vignette
-://wadpac.github.io/GGIR/articles/chapter8_SleepFundamentalsSibs.htmlchapter
-8 for details.</p>
+sleep). Options: "vanHees2015", "Sadeh1994", "Galland2012", "NotWorn",
+"Oakley1997", "data". For details see vignette: <a href="https://wadpac.github.io/GGIR/articles/chapter8_SleepFundamentalsSibs.html" class="uri">https://wadpac.github.io/GGIR/articles/chapter8_SleepFundamentalsSibs.html</a></p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="sadeh_axis">Sadeh_axis<a class="anchor" aria-label="anchor" href="#sadeh_axis"></a>
 </h4>
-<p>Character (default = “Y”). To indicate which axis to use for the
+<p>Character (default = "Y"). To indicate which axis to use for the
 Sadeh1994 algorithm, and other algortihms that relied on count-based
 Actigraphy such as Galland2012.</p>
 </div>
@@ -2379,7 +2419,7 @@ Actigraphy such as Galland2012.</p>
 <p>Integer (default = NULL). To indicate which axis is the longitudinal
 axis. If not provided, the function will estimate longitudinal axis as
 the axis with the highest 24 hour lagged autocorrelation. Only used when
-sensor.location = “hip” or HASPT.algo = “HorAngle”.</p>
+sensor.location = "hip" or HASPT.algo = "HorAngle".</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="haspt-ignore-invalid">HASPT.ignore.invalid<a class="anchor" aria-label="anchor" href="#haspt-ignore-invalid"></a>
@@ -2390,9 +2430,9 @@ imputed angle or activity metric during the invalid time segments are
 used. If TRUE, invalid time segments are ignored (i.e., they cannot
 contribute to the guider). If NA, then invalid time segments are
 considered to be no movement segments and can contribute to the guider.
-Further, the guider name in the output will be shown with “+invalid” its
-end, e.g. “HDCZA+invalid”, to reflect the NA setting. When HASPT.algo is
-“NotWorn”, HASPT.ignore.invalid is automatically set to NA.</p>
+Further, the guider name in the output will be shown with "+invalid" its
+end, e.g. "HDCZA+invalid", to reflect the NA setting. When HASPT.algo is
+"NotWorn", HASPT.ignore.invalid is automatically set to NA.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="loglocation">loglocation<a class="anchor" aria-label="anchor" href="#loglocation"></a>
@@ -2452,8 +2492,8 @@ of the algorithms to use.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="sleepwindowtype">sleepwindowType<a class="anchor" aria-label="anchor" href="#sleepwindowtype"></a>
 </h4>
-<p>Character (default = “SPT”). To indicate type of information in the
-sleeplog, “SPT” for sleep period time. Set to “TimeInBed” if sleep log
+<p>Character (default = "SPT"). To indicate type of information in the
+sleeplog, "SPT" for sleep period time. Set to "TimeInBed" if sleep log
 recorded time in bed to enable calculation of sleep latency and sleep
 efficiency.</p>
 </div>
@@ -2463,9 +2503,8 @@ efficiency.</p>
 <p>Numeric (default = NULL). Numeric vector of length two with range in
 clock hours during which naps are assumed to take place, e.g.,
 possible_nap_window = c(9, 18). The nap classification is only applied
-if both possible_nap_window and possible_nap_dur are both specified.
-More documentation to follow in 2025 when development work has
-completed.</p>
+if both possible_nap_window and possible_nap_dur are specified. More
+documentation to follow in 2025 when development work has completed.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="possible_nap_dur">possible_nap_dur<a class="anchor" aria-label="anchor" href="#possible_nap_dur"></a>
@@ -2493,7 +2532,7 @@ naps.</p>
 <h4 class="unnumbered" id="nap_model">nap_model<a class="anchor" aria-label="anchor" href="#nap_model"></a>
 </h4>
 <p>Character (default = NULL). To specify classification model.
-Currently the only option is “hip3yr”, which corresponds to a model
+Currently the only option is "hip3yr", which corresponds to a model
 trained with hip data in 3-3.5 olds trained with parent diary data. This
 functionality is currently superseded by nap detection which is
 triggered by possible_nap_window and possible_nap_dur. Leave nap_model
@@ -2509,12 +2548,12 @@ in bed. If 2, sleep efficiency is calculated as detected sleep time
 during the SPT window divided by detected duration in sleep period time
 plus sleep latency (where sleep latency refers to the difference between
 time in bed and sleep onset). sleepefficiency.metric is only considered
-when parameter sleepwindowType = “TimeInBed”</p>
+when parameter sleepwindowType = "TimeInBed"</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="hdcza_threshold">HDCZA_threshold<a class="anchor" aria-label="anchor" href="#hdcza_threshold"></a>
 </h4>
-<p>Numeric (default = c()) If HASPT.algo is set to “HDCZA” and
+<p>Numeric (default = c()) If HASPT.algo is set to "HDCZA" and
 HDCZA_threshold is NOT NULL, (e.g., HDCZA_threshold = 0.2), then that
 value will be used as threshold in the 6th step in the diagram of Figure
 1 in van Hees et al. 2018 Scientific Report (doi:
@@ -2526,16 +2565,64 @@ e.g. c(10, 15), that will be used as percentile and multiplier for the
 above mentioned 6th step.</p>
 </div>
 <div class="section level4">
+<h4 class="unnumbered" id="oakley_threshold">oakley_threshold<a class="anchor" aria-label="anchor" href="#oakley_threshold"></a>
+</h4>
+<p>Numeric (default = 20) Threshold as used by the Oakley algorithm.
+Original documentation suggestion to choose between 20, 40 or 80, while
+in GGIR this can be any absolute number.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="consider_marker_button">consider_marker_button<a class="anchor" aria-label="anchor" href="#consider_marker_button"></a>
+</h4>
+<p>Boolean (default = FALSE) Whether to consider the marker button as
+guider. Currently only functional for Actiwatch-type
+count-accelerometers such as Philips Health Band and MotionWatch 8. For
+details see: <a href="https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html" class="uri">https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html</a></p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="impute_marker_button">impute_marker_button<a class="anchor" aria-label="anchor" href="#impute_marker_button"></a>
+</h4>
+<p>Boolean (default = FALSE) Whether to impute marker buttons on other
+days of the recording in the context of using it as guider with
+consider_marker_button. For details see <a href="https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html" class="uri">https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html</a></p>
+</div>
+<div class="section level4">
 <h4 class="unnumbered" id="sib_must_fully_overlap_with_timeinbed">sib_must_fully_overlap_with_TimeInBed<a class="anchor" aria-label="anchor" href="#sib_must_fully_overlap_with_timeinbed"></a>
 </h4>
 <p>Boolean (default = c(TRUE, TRUE)). To indicate whether sib must fully
 overlap with TimeInBed to be considered sleep for the start and end of
 time in bed, respectively. Only considered when parameter
-sleepwindowType = “TimeInBed”. Note that negative sleep latency, if any,
+sleepwindowType = "TimeInBed". Note that negative sleep latency, if any,
 will be reported in the night summary report (part4_nightsummary_sleep
 csv files) but these negative sleep latency and corresponding sleep
 efficiency values when calculating the person summary aggregate as
 stored in the person level report (part4_summary_sleep csv files).</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="nap_markerbutton_method">nap_markerbutton_method<a class="anchor" aria-label="anchor" href="#nap_markerbutton_method"></a>
+</h4>
+<p>Numeric (default = 0) Integer to indicate whether and how to use
+marker button for nap detection: 0 = do not use marker button for nap
+detection (default); 1 = if marker button is available use it for nap
+detection, if not rely on accelerometer. 2 = nearby marker button is
+condition for nap detection but rely on accelerometer to define exact
+nap timing, and; 3 = nearby marker button is condition for nap detection
+and used instead of accelerometer classification.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="nap_markerbutton_max_distance">nap_markerbutton_max_distance<a class="anchor" aria-label="anchor" href="#nap_markerbutton_max_distance"></a>
+</h4>
+<p>Numeric (default = 30) When using nap_markerbutton_method with a
+value other than 0 nap_markerbutton_max_distance sets the maximum
+distance in minutes between the nearest marker button and the edge of a
+sustained inactivity bout. If the marker button lies inside the
+sustained inactivity bout but beyond the midpoint, no maximum distance
+is applied. For example, if a sustained activity bout lasts from
+11:00:00 to 13:00:00 then its midpoint will be 12:00:00 and with the
+default nap_markerbutton_max_distance any marker button between 10:30:00
+and 12:00:00 will be considered valid for the start of the nap and any
+marker button between 12:00:00 and 13:30:00 will be considered valid for
+the end of the nap.</p>
 </div>
 </div>
 <div class="section level3">
@@ -2658,15 +2745,15 @@ data.</p>
 <h4 class="unnumbered" id="frag-metrics">frag.metrics<a class="anchor" aria-label="anchor" href="#frag-metrics"></a>
 </h4>
 <p>Character (default = NULL). Fragmentation metric to extract. Can be
-“mean”, “TP”, “Gini”, “power”, or “CoV”, “NFragPM”, or all the above
-metrics with “all”. See package vignette for description of
+"mean", "TP", "Gini", "power", or "CoV", "NFragPM", or all the above
+metrics with "all". See package vignette for description of
 fragmentation metrics.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="part6_threshold_combi">part6_threshold_combi<a class="anchor" aria-label="anchor" href="#part6_threshold_combi"></a>
 </h4>
 <p>Character (default = NULL) to indicate the threshold combination
-derived in part 5 to be used for part 6. For example, “40_100_120”. If
+derived in part 5 to be used for part 6. For example, "40_100_120". If
 left in default value GGIR will use the first threshold value from
 parameters threshold.lig, threshold.mod, and threshold.vig.</p>
 </div>
@@ -2689,7 +2776,7 @@ qwindow to be the full path to activity diary file (character). Expected
 format of the activity diary is: First column headers followed by one
 row per recording, first column is recording ID, which needs to match
 with the ID GGIR extracts from the accelerometer file. Followed by date
-column in format “23-04-2017”, where date format is specified by
+column in format "23-04-2017", where date format is specified by
 parameter qwindow_dateformat (below). Use the character combination
 date, Date or DATE in the column name. This is followed by one or
 multiple columns with start times for the activity types in that day
@@ -2706,7 +2793,7 @@ will be redefined as 8:00:05 in the activity log). When using the
 qwindow functionality in combination with GGIR part 5 then make sure to
 check that parameters segmentWEARcrit.part5 and segmentDAYSPTcrit.part5
 are specified to your research needs. When using an activity diary be
-aware that any column name including the words “impute” or “uncertain”
+aware that any column name including the words "impute" or "uncertain"
 will be ignored. This means you can, for you own convenience, add
 columns to log which timestamps have been manually imputed or are
 considered uncertain.</p>
@@ -2719,15 +2806,14 @@ to be extracted. These need to be expressed as a fraction of 1, e.g.,
 c(0.1, 0.5, 0.75). There is no limit to the number of percentiles. If
 left empty then percentiles will not be extracted. Distribution will be
 derived from short epoch metric data. Parameter qlevels can for example
-be used for the MX-metrics (e.g. Rowlands et al) as discussed in the
-://cran.r-project.org/package=GGIR/vignettes/GGIR.htmlmain package
-vignette</p>
+be used for the MX-metrics (e.g. Rowlands et al) as discussed in <a href="https://wadpac.github.io/GGIR/articles/chapter7_DescribingDataWithoutKnowingSleep.html#sets-of-quantiles-mx-metrics-by-rowlands-et-al-" class="uri">https://wadpac.github.io/GGIR/articles/chapter7_DescribingDataWithoutKnowingSleep.html#sets-of-quantiles-mx-metrics-by-rowlands-et-al-</a></p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="qwindow_dateformat">qwindow_dateformat<a class="anchor" aria-label="anchor" href="#qwindow_dateformat"></a>
 </h4>
-<p>Character (default = “%d-%m-%Y”). To specify the date format used in
-the activity log as used by [base]strptime.</p>
+<p>Character (default = "%d-%m-%Y"). To specify the date format used in
+the activity log as used by [base]strptime. For guidance on how to
+specify time formats in R see: <a href="https://wadpac.github.io/GGIR/articles/DateTimeFormatsInR.html" class="uri">https://wadpac.github.io/GGIR/articles/DateTimeFormatsInR.html</a></p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="ilevels">ilevels<a class="anchor" aria-label="anchor" href="#ilevels"></a>
@@ -2791,8 +2877,9 @@ distribution in mused for intensity gradient calculation (according to
 the method by Rowlands 2018). By default this is parameter is empty and
 the intensity gradient calculation is not done. The user can either
 provide a single value (any) to make the intensity gradient use the bins
-iglevels = c(seq(0,4000,by=25), 8000) or the user could specify their
-own distribution. There is no constriction to the number of levels.</p>
+iglevels = c(seq(0, 4000, by = 25), 8000) or the user could specify
+their own distribution. There is no constriction to the number of
+levels.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="luxthresholds">LUXthresholds<a class="anchor" aria-label="anchor" href="#luxthresholds"></a>
@@ -2853,15 +2940,15 @@ should be run by part 6.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="part6window">part6Window<a class="anchor" aria-label="anchor" href="#part6window"></a>
 </h4>
-<p>Character vector with length two (default = c(“start”, “end”)) to
+<p>Character vector with length two (default = c("start", "end")) to
 indicate the start and the end of the time series to be used for
 circadian rhythm analysis in part 6. In other words, this parameters is
-not used for Household co-analysis. Alternative values are: “Wx”, “Ox”,
-“Hx”, where “x” is a number to indicat the xth wakeup, onset or hour of
-the recording. Negative values for “x” are also possible and will count
-relative to the end of the recording. For example, c(“W1”, “W-1”) goes
-from the first till the last wakeup, c(“H5”, “H-5”) ignores the first
-and last 5 hours, and c(“O2”, “W10”) goes from the second onset till the
+not used for Household co-analysis. Alternative values are: "Wx", "Ox",
+"Hx", where "x" is a number to indicat the xth wakeup, onset or hour of
+the recording. Negative values for "x" are also possible and will count
+relative to the end of the recording. For example, c("W1", "W-1") goes
+from the first till the last wakeup, c("H5", "H-5") ignores the first
+and last 5 hours, and c("O2", "W10") goes from the second onset till the
 10th wakeup time.</p>
 </div>
 <div class="section level4">
@@ -2898,7 +2985,7 @@ classification (levels) as csv or RData files (as defined by
 save_ms5raw_format). Note that time stamps will be stored in the column
 timenum in UTC format (i.e., seconds from 1970-01-01). To convert
 timenum to time stamp format, you need to specify your desired time
-zone, e.g., as.POSIXct(mdat$timenum, tz = “Europe/London”). If you are
+zone, e.g., as.POSIXct(mdat$timenum, tz = "Europe/London"). If you are
 not using GGIR part 6, are not interested in the visualreport
 generation, and not interested in time series then you may want to
 consider setting this parameter to FALSE.</p>
@@ -2906,8 +2993,8 @@ consider setting this parameter to FALSE.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="save_ms5raw_format">save_ms5raw_format<a class="anchor" aria-label="anchor" href="#save_ms5raw_format"></a>
 </h4>
-<p>Character (default = “RData”). In g.part5: To specify how data should
-be stored: “csv”, “RData”, or both via c(“csv”, “RData”). Only used if
+<p>Character (default = "RData"). In g.part5: To specify how data should
+be stored: "csv", "RData", or both via c("csv", "RData"). Only used if
 save_ms5rawlevels = TRUE.</p>
 </div>
 <div class="section level4">
@@ -2926,9 +3013,9 @@ accelerometer data.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="timewindow">timewindow<a class="anchor" aria-label="anchor" href="#timewindow"></a>
 </h4>
-<p>Character (default = c(“MM”, “WW”)). In g.part5: Timewindow over
-which summary statistics are derived. Value can be “MM” (midnight to
-midnight), “WW” (waking time to waking time), “OO” (sleep onset to sleep
+<p>Character (default = c("MM", "WW")). In g.part5: Timewindow over
+which summary statistics are derived. Value can be "MM" (midnight to
+midnight), "WW" (waking time to waking time), "OO" (sleep onset to sleep
 onset), or any combination of them.</p>
 </div>
 <div class="section level4">
@@ -2936,14 +3023,14 @@ onset), or any combination of them.</p>
 </h4>
 <p>Numeric (default = 1). Centre the day as displayed around noon
 (viewingwindow = 1) or around midnight (viewingwindow = 2) in the
-“Report_” visual report generated with visualreport = TRUE.</p>
+"Report_" visual report generated with visualreport = TRUE.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="dofirstpage">dofirstpage<a class="anchor" aria-label="anchor" href="#dofirstpage"></a>
 </h4>
 <p>Boolean (default = TRUE). To indicate whether a first page with
 histograms summarizing the whole measurement should be added in the file
-summary reports named “old_report_” generated with visualreport =
+summary reports named "old_report_" generated with visualreport =
 TRUE.</p>
 </div>
 <div class="section level4">
@@ -2951,14 +3038,14 @@ TRUE.</p>
 </h4>
 <p>Boolean (default = TRUE). If TRUE, store two visualreports in
 outputfolder ‘results/file summary reports’ with names starting with
-“old_report_…” and “report…”. The report “old_report_…” has been in GGIR
+"old_report_…" and "report…". The report "old_report_…" has been in GGIR
 for years and is based on combined output from GGIR part 2 and 4. It was
 initially only a quick development attempt to have something to show to
 study participants back in 2015. This report is not designed for data
 quality checking purposes as it makes no attempt to exactly visualise
 the classifications made in GGIR part 5. Given the number of
 inaccuracies, this report will eventually be deprecated from GGIR. To
-turn off the old report use old_visualreport = FALSE. “report_…”, is a
+turn off the old report use old_visualreport = FALSE. "report_…", is a
 new report as of GGIR 3.1-8 and is specifically aimed at supporting data
 quality checks as it shows the time series data as generated and used in
 GGIR part 5. .</p>
@@ -3022,32 +3109,32 @@ g.part2.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="sep_reports">sep_reports<a class="anchor" aria-label="anchor" href="#sep_reports"></a>
 </h4>
-<p>Character (default = “,”). Value used as sep parameter in
+<p>Character (default = ","). Value used as sep parameter in
 [data.table]fwrite for writing csv reports.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="sep_config">sep_config<a class="anchor" aria-label="anchor" href="#sep_config"></a>
 </h4>
-<p>Character (default = “,”). Value used as sep parameter in
+<p>Character (default = ","). Value used as sep parameter in
 [data.table]fwrite for writing csv config file.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="dec_reports">dec_reports<a class="anchor" aria-label="anchor" href="#dec_reports"></a>
 </h4>
-<p>Character (default = “.”). Value used as dec parameter in
+<p>Character (default = "."). Value used as dec parameter in
 [data.table]fwrite for writing csv reports.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="dec_config">dec_config<a class="anchor" aria-label="anchor" href="#dec_config"></a>
 </h4>
-<p>Character (default = “.”). Value used as dec parameter in
+<p>Character (default = "."). Value used as dec parameter in
 [data.table]fwrite for writing csv config file.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="visualreport_without_invalid">visualreport_without_invalid<a class="anchor" aria-label="anchor" href="#visualreport_without_invalid"></a>
 </h4>
 <p>Boolean (default = TRUE). If TRUE, then reports generated with
-visualreport = TRUE named “old_report_” only show the windows with
+visualreport = TRUE named "old_report_" only show the windows with
 sufficiently valid data according to includedaycrit when viewingwindow =
 1 or includenightcrit when viewingwindow = 2</p>
 </div>
@@ -3062,15 +3149,15 @@ deprecated</p>
 <h4 class="unnumbered" id="visualreport_hrsperrow">visualreport_hrsPerRow<a class="anchor" aria-label="anchor" href="#visualreport_hrsperrow"></a>
 </h4>
 <p>Numeric (default = 36). Width of the plots in the new visualreport
-(named “report_…”) expressed in hours. Expected to be in the range
+(named "report_…") expressed in hours. Expected to be in the range
 24-48. If more than 24 then the extra time overlaps with the beginning
 of the next plot.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="visualreport_focus">visualreport_focus<a class="anchor" aria-label="anchor" href="#visualreport_focus"></a>
 </h4>
-<p>Character (default = “day”) Whether new visual report (names start
-with “report…”) focuss on day or night. If set ot “night” the focus will
+<p>Character (default = "day") Whether new visual report (names start
+with "report…") focuss on day or night. If set ot "night" the focus will
 be on the night.</p>
 </div>
 <div class="section level4">
@@ -3079,7 +3166,7 @@ be on the night.</p>
 <p>Numeric (default = 0). Value between 0 and 1 representing the
 fraction of data in a plot that is expected to be valid. If this
 criteria is not met the row is skipped. Only used in new visual report
-(names start with “report…”).</p>
+(names start with "report…").</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="require_complete_lastnight_part5">require_complete_lastnight_part5<a class="anchor" aria-label="anchor" href="#require_complete_lastnight_part5"></a>
@@ -3096,7 +3183,7 @@ for the last night.</p>
 <h4 class="unnumbered" id="method_research_vars">method_research_vars<a class="anchor" aria-label="anchor" href="#method_research_vars"></a>
 </h4>
 <p>Character (default = NULL). Vector with names of methodological
-variable categories to store in the csv output files. Currently on “nap”
+variable categories to store in the csv output files. Currently on "nap"
 is available which affects the part5 output. The variables are intended
 for methodological research only and are by default turned off.</p>
 <p><img src="GGIR-MASTERLOGO-RGB.png" alt="GGIR logo" width="60%" style="border: 0; padding:20px"></p>

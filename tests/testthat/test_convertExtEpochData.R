@@ -40,9 +40,9 @@ test_that("External epoch data is correctly converted", {
   load(paste0(QCbasis, "/meta_Actiwatch.AWD.RData"))
   expect_equal(sum(M$metalong$nonwearscore), 63)
   expect_equal(nrow(M$metashort), 329)
-  expect_equal(ncol(M$metashort), 2)
-  expect_equal(colnames(M$metashort), c("timestamp", "ZCY"))
-  
+  expect_equal(ncol(M$metashort), 3)
+  expect_equal(colnames(M$metashort), c("timestamp", "ExtAct", "marker"))
+
   # Tidy up by deleting output folder
   if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
   
@@ -59,10 +59,12 @@ test_that("External epoch data is correctly converted", {
                    params_general = params_general)
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
   load(paste0(QCbasis, "/meta_Actiwatch.csv.RData"))
-  expect_equal(sum(M$metalong$nonwearscore), 0)
+  expect_equal(sum(M$metalong$nonwearscore), 600)
   expect_equal(nrow(M$metashort), 860)
-  expect_equal(ncol(M$metashort), 2)
-  expect_equal(colnames(M$metashort), c("timestamp", "ZCY"))
+  expect_equal(ncol(M$metashort), 4)
+  # Note: It says markering in next file because test file was Dutch
+  # this is an open issue https://github.com/wadpac/GGIRread/issues/75
+  expect_equal(colnames(M$metashort)[1:4], c("timestamp", "ExtAct", "markering", "ExtSleep"))
 
   # Tidy up by deleting output folder
   if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
@@ -96,9 +98,9 @@ test_that("External epoch data is correctly converted", {
   load(paste0(QCbasis, "/meta_ActiGraph61.csv.RData"))
   expect_equal(sum(M$metalong$nonwearscore), 165)
   expect_equal(nrow(M$metashort), 984)
-  expect_equal(ncol(M$metashort), 5)
+  expect_equal(ncol(M$metashort), 6)
   expect_true(all(c("timestamp", "NeishabouriCount_x", "NeishabouriCount_y", 
-                    "NeishabouriCount_z") %in% colnames(M$metashort)))
+                    "NeishabouriCount_z", "ExtStep") %in% colnames(M$metashort)))
   
   # Tidy up by deleting output folder
   if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
@@ -115,8 +117,8 @@ test_that("External epoch data is correctly converted", {
   load(paste0(QCbasis, "/meta_ActiGraph13.csv.RData"))
   expect_equal(sum(M$metalong$nonwearscore), 291)
   expect_equal(nrow(M$metashort), 988)
-  expect_equal(ncol(M$metashort), 5)
-  expect_true(all(c("timestamp", "NeishabouriCount_x", "NeishabouriCount_y", 
+  expect_equal(ncol(M$metashort), 6)
+  expect_true(all(c("timestamp", "NeishabouriCount_x", "NeishabouriCount_y",  "ExtStep",
                     "NeishabouriCount_z") %in% colnames(M$metashort)))
   
   # Tidy up by deleting output folder
@@ -134,9 +136,9 @@ test_that("External epoch data is correctly converted", {
   load(paste0(QCbasis, "/meta_ActiGraph13_timestamps_headers.csv.RData"))
   expect_equal(sum(M$metalong$nonwearscore), 0)
   expect_equal(nrow(M$metashort), 960)
-  expect_equal(ncol(M$metashort), 5)
+  expect_equal(ncol(M$metashort), 6)
   expect_true(all(c("timestamp", "NeishabouriCount_x", "NeishabouriCount_y", 
-                    "NeishabouriCount_z", "NeishabouriCount_vm") %in% colnames(M$metashort)))
+                    "NeishabouriCount_z", "ExtStep", "NeishabouriCount_vm") %in% colnames(M$metashort)))
   
   # Tidy up by deleting output folder
   if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
@@ -159,6 +161,55 @@ test_that("External epoch data is correctly converted", {
   expect_equal(ncol(M$metashort), 4)
   expect_true(all(c("timestamp", "ExtAct", "ExtStep",
                     "ExtSleep") %in% colnames(M$metashort)))
+  
+  # Tidy up by deleting output folder
+  if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
+  
+  # Philips Health Band
+  cat("\nPhilips Health Band")
+  move2folder(system.file("testfiles/DataList_AH1234567890_PhilipsHealthBand.xlsx",
+                          package = "GGIRread")[1], dn)
+  move2folder(system.file("testfiles/Sleep_Wake_AH1234567890_PhilipsHealthBand.xlsx",
+                          package = "GGIRread")[1], dn)
+  params_general = load_params()$params_general
+  params_general[["windowsizes"]][1] = 60
+  params_general[["dataFormat"]] = "phb_xlsx"
+  params_general[["extEpochData_timeformat"]] = "%m-%d-%Y %H:%M:%S"
+  convertEpochData(datadir = dn, metadatadir = "./output_tmp_testdata",
+                   params_general = params_general)
+  if (dir.exists(dn))  unlink(dn, recursive = TRUE)
+  
+  load(paste0(QCbasis, "/meta_tmp_testdata.RData"))
+  expect_equal(sum(M$metalong$nonwearscore), 0)
+  expect_equal(nrow(M$metashort), 240)
+  expect_equal(ncol(M$metashort), 5)
+  expect_true(all(c("timestamp", "ExtAct", "ExtStep", "marker",
+                    "ExtSleep") %in% colnames(M$metashort)))
+  
+  # Tidy up by deleting output folder
+  if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)
+  
+  cat("\nFitbit")
+  dir.create(paste0(dn, "/participant1"), recursive = TRUE)
+  move2folder(system.file("testfiles/calories-1995-06-23_Fitbit.json",
+                          package = "GGIRread")[1], paste0(dn, "/participant1"))
+  move2folder(system.file("testfiles/sleep-1995-06-23_Fitbit.json",
+                          package = "GGIRread")[1], paste0(dn, "/participant1"))
+  move2folder(system.file("testfiles/steps-1995-06-23_Fitbit.json",
+                          package = "GGIRread")[1], paste0(dn, "/participant1"))
+  params_general = load_params()$params_general
+  params_general[["windowsizes"]][1] = 60
+  params_general[["dataFormat"]] = "fitbit_json"
+  convertEpochData(datadir = dn, metadatadir = "./output_tmp_testdata",
+                   params_general = params_general)
+  if (dir.exists(dn))  unlink(dn, recursive = TRUE)
+  load(paste0(QCbasis, "/meta_participant1.RData"))
+  expect_equal(sum(M$metalong$nonwearscore), 4782)
+  expect_equal(nrow(M$metashort), 23925)
+  expect_equal(ncol(M$metashort), 4)
+  expect_equal(ncol(M$QClog), 10)
+  expect_equal(M$QClog$filehealth_2vars_missing, 99.81)
+  expect_true(all(c("timestamp", "ExtAct", "ExtStep", "ExtSleep") %in% colnames(M$metashort)))
   
   # Tidy up by deleting output folder
   if (file.exists(outputdir)) unlink(outputdir, recursive = TRUE)

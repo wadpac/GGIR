@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,6 +60,7 @@
     <li><a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a></li>
     <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
     <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
+    <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
@@ -188,48 +189,52 @@ extracted in part 1 with the arguments <em>do.metric</em> (e.g.,
 indicate the thresholds to separate inactivity from light, light from
 moderate, and moderate from vigorous, respectively.These thresholds are
 applied over the metric defined with <code>acc.metric</code> (default =
-“ENMO”). Here a summary table for the parameters definition to calculate
+"ENMO"). Here a summary table for the parameters definition to calculate
 some of the acceleration metrics that has been previously used for the
 calibration of cut-points and how to define them to be used in the
 physical activity intensity classification with cut-points.</p>
 <table style="width:99%;" class="table">
 <colgroup>
-<col width="17%">
-<col width="36%">
-<col width="45%">
+<col width="16%">
+<col width="35%">
+<col width="46%">
 </colgroup>
-<thead><tr class="header">
-<th>Metric</th>
-<th align="left">To derive metric</th>
-<th align="left">Define metric for cut-points</th>
-</tr></thead>
 <tbody>
 <tr class="odd">
-<td>ENMO</td>
-<td align="left"><code>do.enmo = TRUE</code></td>
-<td align="left"><code>acc.metric = "ENMO"</code></td>
+<td rowspan="2">
+<h2 id="metric">Metric</h2>
+<p>ENMO</p>
+</td>
+<td rowspan="2">To derive metric :==============================
+<code>do.enmo = TRUE</code>
+</td>
+<td rowspan="2">Define metric for cut-points |
+:======================================+
+<code>acc.metric = \"ENMO\"</code>
+</td>
 </tr>
-<tr class="even">
+<tr class="even"></tr>
+<tr class="odd">
 <td>ENMOa</td>
-<td align="left"><code>do.enmoa = TRUE</code></td>
-<td align="left"><code>acc.metric = "ENMOa"</code></td>
-</tr>
-<tr class="odd">
-<td>LFENMO</td>
-<td align="left"><code>do.lfenmo = TRUE</code></td>
-<td align="left"><code>acc.metric = "LFENMO"</code></td>
+<td><code>do.enmoa = TRUE</code></td>
+<td><code>acc.metric = \"ENMOa\"</code></td>
 </tr>
 <tr class="even">
-<td>MAD</td>
-<td align="left"><code>do.mad = TRUE</code></td>
-<td align="left"><code>acc.metric = "MAD"</code></td>
+<td>LFENMO</td>
+<td><code>do.lfenmo = TRUE</code></td>
+<td><code>acc.metric = \"LFENMO\"</code></td>
 </tr>
 <tr class="odd">
+<td>MAD</td>
+<td><code>do.mad = TRUE</code></td>
+<td><code>acc.metric = \"MAD\"</code></td>
+</tr>
+<tr class="even">
 <td>Neishabouri<br>
 counts</td>
-<td align="left"><code>do.neishabouricounts = TRUE</code></td>
-<td align="left">
-<code>acc.metric = "NeishabouriCount_x"</code><br><code>acc.metric = "NeishabouriCount_y"</code><br><code>acc.metric = "NeishabouriCount_z"</code><br><code>acc.metric = "NeishabouriCount_vm"</code>
+<td><code>do.neishabouricounts = TRUE</code></td>
+<td>
+<code>acc.metric = \"NeishabouriCount_x\"</code><br><code>acc.metric = \"NeishabouriCount_y\"</code><br><code>acc.metric = \"NeishabouriCount_z\"</code><br><code>acc.metric = \"NeishabouriCount_vm\"</code>
 </td>
 </tr>
 </tbody>
@@ -241,46 +246,42 @@ counts</td>
 <div class="section level3">
 <h3 id="cut-points-for-preschoolers">Cut-points for preschoolers<a class="anchor" aria-label="anchor" href="#cut-points-for-preschoolers"></a>
 </h3>
-<table style="width:97%;" class="table">
+<table style="width:98%;" class="table">
 <colgroup>
 <col width="16%">
 <col width="21%">
 <col width="14%">
-<col width="25%">
-<col width="19%">
+<col width="46%">
 </colgroup>
-<thead><tr class="header">
-<th>Cut-points</th>
-<th align="left">Device<br>
-Attachment site</th>
-<th align="left">Age</th>
-<th align="left">Relevant arguments</th>
-<th align="left">thresholds</th>
-</tr></thead>
 <tbody>
 <tr class="odd">
-<td>Roscoe 2017*</td>
-<td align="left">GENEActiv<br>
+<td rowspan="2">
+<p>Cut-points</p>
+<p>=============== Roscoe 2017*</p>
+</td>
+<td rowspan="2">Device<br>
+Attachment site :=================== GENEActiv<br>
 Non-dominant wrist</td>
-<td align="left">4-5 yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
+<td rowspan="2">
+<p>Age</p>
+<p>:============ 4-5 yr</p>
 </td>
-<td align="left">Light: 61.8<br>
-Moderate: 100.4<br>
-Vigorous: N/A</td>
+<td rowspan="2">Relevant arguments | thresholds | | |
+:=======================+:=================+
+<code>do.enmoa = TRUE</code>  | Light: 61.8  |
+<code>do.enmo = FALSE</code>  | Moderate: 100.4 |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: N/A</td>
 </tr>
-<tr class="even">
+<tr class="even"></tr>
+<tr class="odd">
 <td>Roscoe 2017*</td>
-<td align="left">GENEActiv<br>
+<td>GENEActiv<br>
 Dominant wrist</td>
-<td align="left">4-5 yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
-</td>
-<td align="left">Light: 94.5<br>
-Moderate: 108.5<br>
-Vigorous: N/A</td>
+<td>4-5 yr</td>
+<td>
+<code>do.enmoa = TRUE</code>  | Light: 94.5  |
+<code>do.enmo = FALSE</code>  | Moderate: 108.5 |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: N/A</td>
 </tr>
 </tbody>
 </table>
@@ -295,146 +296,129 @@ on correspondence with authors we replaced this by 85.7.</p>
 <div class="section level3">
 <h3 id="cut-points-for-childrenadolescents">Cut-points for children/adolescents<a class="anchor" aria-label="anchor" href="#cut-points-for-childrenadolescents"></a>
 </h3>
-<table style="width:97%;" class="table">
+<table style="width:98%;" class="table">
 <colgroup>
 <col width="17%">
 <col width="19%">
 <col width="10%">
-<col width="33%">
-<col width="17%">
+<col width="51%">
 </colgroup>
-<thead><tr class="header">
-<th align="left">Cut-points</th>
-<th align="left">Device<br>
-Attachment site</th>
-<th align="left">Age</th>
-<th align="left">Relevant arguments</th>
-<th align="left">thresholds</th>
-</tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">Phillips 2013*</td>
-<td align="left">GENEA<br>
+<td rowspan="2">
+<p>Cut-points</p>
+<p>:================= Phillips 2013*</p>
+</td>
+<td rowspan="2">Device<br>
+Attachment site :=================== GENEA<br>
 Left wrist</td>
-<td align="left">8-14 yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
+<td rowspan="2">
+<p>Age</p>
+<p>:========= 8-14 yr</p>
 </td>
-<td align="left">Light: 87.5<br>
-Moderate: 250<br>
-Vigorous: 750</td>
+<td rowspan="2">Relevant arguments | thresholds | | |
+:==================================+:=================+
+<code>do.enmoa = TRUE</code>  | Light: 87.5  |
+<code>do.enmo = FALSE</code>  | Moderate: 250  |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: 750</td>
 </tr>
-<tr class="even">
-<td align="left">Phillips 2013*</td>
-<td align="left">GENEA<br>
+<tr class="even"></tr>
+<tr class="odd">
+<td>Phillips 2013*</td>
+<td>GENEA<br>
 Right wrist</td>
-<td align="left">8-14 yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
-</td>
-<td align="left">Light: 75<br>
-Moderate: 275<br>
-Vigorous: 700</td>
-</tr>
-<tr class="odd">
-<td align="left">Phillips 2013*</td>
-<td align="left">GENEA<br>
-Hip</td>
-<td align="left">8-14 yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
-</td>
-<td align="left">Light: 37.5<br>
-Moderate: 212.5<br>
-Vigorous: 637.5</td>
+<td>8-14 yr</td>
+<td>
+<code>do.enmoa = TRUE</code>  | Light: 75  |
+<code>do.enmo = FALSE</code>  | Moderate: 275  |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: 700</td>
 </tr>
 <tr class="even">
-<td align="left">Schaefer 2014*</td>
-<td align="left">GENEActiv<br>
+<td>Phillips 2013*</td>
+<td>GENEA<br>
+Hip</td>
+<td>8-14 yr</td>
+<td>
+<code>do.enmoa = TRUE</code>  | Light: 37.5  |
+<code>do.enmo = FALSE</code>  | Moderate: 212.5 |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: 637.5</td>
+</tr>
+<tr class="odd">
+<td>Schaefer 2014*</td>
+<td>GENEActiv<br>
 Non-dominant wrist</td>
-<td align="left">6-11 yr</td>
-<td align="left">
-<code>do.bfen = TRUE</code><br><code>lb = 0.2</code><br><code>hb = 15</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "BFEN"</code>
-</td>
-<td align="left">Light: 190<br>
-Moderate: 314<br>
-Vigorous: 998</td>
+<td>6-11 yr</td>
+<td>
+<code>do.bfen = TRUE</code>  | Light: 190  | <code>lb = 0.2</code> 
+| Moderate: 314  | <code>hb = 15</code>  | Vigorous: 998 |
+<code>do.enmo = FALSE</code>  | | <code>acc.metric = \"BFEN\"</code>
+|</td>
 </tr>
-<tr class="odd">
-<td align="left">Hildebrand 2014<br>
+<tr class="even">
+<td>Hildebrand 2014<br>
 Hildebrand 2016</td>
-<td align="left">ActiGraph<br>
+<td>ActiGraph<br>
 Non-dominant wrist</td>
-<td align="left">7-11 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 35.6<br>
-Moderate: 201.4<br>
-Vigorous: 707.0</td>
+<td>7-11 yr</td>
+<td>
+<strong>Default values  | Light: 35.6  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 201.4 |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: 707.0</td>
 </tr>
-<tr class="even">
-<td align="left">Hildebrand 2014<br>
+<tr class="odd">
+<td>Hildebrand 2014<br>
 Hildebrand 2016</td>
-<td align="left">GENEActiv<br>
+<td>GENEActiv<br>
 Non-dominant wrist</td>
-<td align="left">7-11 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 56.3<br>
-Moderate: 191.6<br>
-Vigorous: 695.8</td>
-</tr>
-<tr class="odd">
-<td align="left">Hildebrand 2014<br>
-Hildebrand 2016</td>
-<td align="left">ActiGraph<br>
-Hip</td>
-<td align="left">7-11 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 63.3<br>
-Moderate: 142.6<br>
-Vigorous: 464.6</td>
+<td>7-11 yr</td>
+<td>
+<strong>Default values  | Light: 56.3  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 191.6 |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: 695.8</td>
 </tr>
 <tr class="even">
-<td align="left">Hildebrand 2014<br>
+<td>Hildebrand 2014<br>
 Hildebrand 2016</td>
-<td align="left">GENEActiv<br>
+<td>ActiGraph<br>
 Hip</td>
-<td align="left">7-11 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 64.1<br>
-Moderate: 152.8<br>
-Vigorous: 514.3</td>
+<td>7-11 yr</td>
+<td>
+<strong>Default values  | Light: 63.3  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 142.6 |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: 464.6</td>
 </tr>
 <tr class="odd">
-<td align="left">Aittasalo 2015</td>
-<td align="left">ActiGraph<br>
+<td>Hildebrand 2014<br>
+Hildebrand 2016</td>
+<td>GENEActiv<br>
 Hip</td>
-<td align="left">13-15 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.mad = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "MAD"</code>
-</td>
-<td align="left">Light: 26.9<br>
-Moderate: 332<br>
-Vigorous: 558.3</td>
+<td>7-11 yr</td>
+<td>
+<strong>Default values  | Light: 64.1  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 152.8 |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: 514.3</td>
 </tr>
 <tr class="even">
-<td align="left">Aittasalo 2015</td>
-<td align="left">Hookie AM20<br>
+<td>Aittasalo 2015</td>
+<td>ActiGraph<br>
 Hip</td>
-<td align="left">13-15 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.mad = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "MAD"</code>
-</td>
-<td align="left">Light: 28.7<br>
-Moderate: 338<br>
-Vigorous: 558.3</td>
+<td>13-15 yr</td>
+<td>
+<strong>Default values  | Light: 26.9  |
+</strong><code>do.mad = TRUE</code>  | Moderate: 332  |
+<code>do.enmo = FALSE</code>  | Vigorous: 558.3 |
+<code>acc.metric = \"MAD\"</code> |</td>
+</tr>
+<tr class="odd">
+<td>Aittasalo 2015</td>
+<td>Hookie AM20<br>
+Hip</td>
+<td>13-15 yr</td>
+<td>
+<strong>Default values  | Light: 28.7  |
+</strong><code>do.mad = TRUE</code>  | Moderate: 338  |
+<code>do.enmo = FALSE</code>  | Vigorous: 558.3 |
+<code>acc.metric = \"MAD\"</code> |</td>
 </tr>
 </tbody>
 </table>
@@ -450,170 +434,145 @@ provide a cut-point multiplied by 1000.</p>
 <div class="section level3">
 <h3 id="cut-points-for-adults">Cut-points for adults<a class="anchor" aria-label="anchor" href="#cut-points-for-adults"></a>
 </h3>
-<table style="width:97%;" class="table">
+<table style="width:98%;" class="table">
 <colgroup>
 <col width="17%">
 <col width="18%">
 <col width="13%">
-<col width="31%">
-<col width="16%">
+<col width="49%">
 </colgroup>
-<thead><tr class="header">
-<th align="left">Cut-points</th>
-<th align="left">Device<br>
-Attachment site</th>
-<th align="left">Age</th>
-<th align="left">Relevant arguments</th>
-<th align="left">thresholds</th>
-</tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">Esliger 2011*</td>
-<td align="left">Left wrist</td>
-<td align="left">40-65 yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
+<td rowspan="2">
+<p>Cut-points</p>
+<p>:================== Esliger 2011*</p>
 </td>
-<td align="left">Light: 45<br>
-Moderate: 134<br>
-Vigorous: 377</td>
+<td rowspan="2">Device<br>
+Attachment site :=================== Left wrist</td>
+<td rowspan="2">
+<p>Age</p>
+<p>:============== 40-65 yr</p>
+</td>
+<td rowspan="2">Relevant arguments | thresholds | | |
+:==================================+:=================+
+<code>do.enmoa = TRUE</code>  | Light: 45  |
+<code>do.enmo = FALSE</code>  | Moderate: 134  |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: 377</td>
+</tr>
+<tr class="even"></tr>
+<tr class="odd">
+<td>Esliger 2011*</td>
+<td>Right wrist</td>
+<td>40-65 yr</td>
+<td>
+<code>do.enmoa = TRUE</code>  | Light: 80  |
+<code>do.enmo = FALSE</code>  | Moderate: 92  |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: 437</td>
 </tr>
 <tr class="even">
-<td align="left">Esliger 2011*</td>
-<td align="left">Right wrist</td>
-<td align="left">40-65 yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
-</td>
-<td align="left">Light: 80<br>
-Moderate: 92<br>
-Vigorous: 437</td>
+<td>Esliger 2011*</td>
+<td>Waist</td>
+<td>40-65 yr</td>
+<td>
+<code>do.enmoa = TRUE</code>  | Light: 16  |
+<code>do.enmo = FALSE</code>  | Moderate: 46  |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: 428</td>
 </tr>
 <tr class="odd">
-<td align="left">Esliger 2011*</td>
-<td align="left">Waist</td>
-<td align="left">40-65 yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
-</td>
-<td align="left">Light: 16<br>
-Moderate: 46<br>
-Vigorous: 428</td>
-</tr>
-<tr class="even">
-<td align="left">Hildebrand 2014<br>
+<td>Hildebrand 2014<br>
 Hildebrand 2016</td>
-<td align="left">ActiGraph<br>
+<td>ActiGraph<br>
 Non-dominant wrist</td>
-<td align="left">21-61 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 44.8<br>
-Moderate: 100.6<br>
-Vigorous: 428.8</td>
+<td>21-61 yr</td>
+<td>
+<strong>Default values  | Light: 44.8  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 100.6 |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: 428.8</td>
 </tr>
-<tr class="odd">
-<td align="left">Hildebrand 2014<br>
+<tr class="even">
+<td>Hildebrand 2014<br>
 Hildebrand 2016</td>
-<td align="left">GENEActiv<br>
+<td>GENEActiv<br>
 Non-dominant wrist</td>
-<td align="left">21-61 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 45.8<br>
-Moderate: 93.2<br>
-Vigorous: 418.3</td>
-</tr>
-<tr class="even">
-<td align="left">Hildebrand 2014<br>
-Hildebrand 2016</td>
-<td align="left">ActiGraph<br>
-Hip</td>
-<td align="left">21-61 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 47.4<br>
-Moderate: 69.1<br>
-Vigorous: 258.7</td>
+<td>21-61 yr</td>
+<td>
+<strong>Default values  | Light: 45.8  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 93.2  |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: 418.3</td>
 </tr>
 <tr class="odd">
-<td align="left">Hildebrand 2014<br>
+<td>Hildebrand 2014<br>
 Hildebrand 2016</td>
-<td align="left">GENEActiv<br>
+<td>ActiGraph<br>
 Hip</td>
-<td align="left">21-61 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 46.9<br>
-Moderate: 68.7<br>
-Vigorous: 266.8</td>
+<td>21-61 yr</td>
+<td>
+<strong>Default values  | Light: 47.4  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 69.1  |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: 258.7</td>
 </tr>
 <tr class="even">
-<td align="left">Vähä-Ypyä 2015</td>
-<td align="left">Hookie AM20<br>
+<td>Hildebrand 2014<br>
+Hildebrand 2016</td>
+<td>GENEActiv<br>
 Hip</td>
-<td align="left">35 (SD=11) yr</td>
-<td align="left">
-<code>do.mad = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "MAD"</code>
-</td>
-<td align="left">Light: N/A<br>
-Moderate: 91<br>
-Vigorous: 414</td>
+<td>21-61 yr</td>
+<td>
+<strong>Default values  | Light: 46.9  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 68.7  |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: 266.8</td>
 </tr>
 <tr class="odd">
-<td align="left">Dillon 2016*<sup>,†</sup>
+<td>Vähä-Ypyä 2015</td>
+<td>Hookie AM20<br>
+Hip</td>
+<td>35 (SD=11) yr</td>
+<td>
+<code>do.mad = TRUE</code>  | Light: N/A  |
+<code>do.enmo = FALSE</code>  | Moderate: 91  |
+<code>acc.metric = \"MAD\"</code> | Vigorous: 414</td>
+</tr>
+<tr class="even">
+<td>Dillon 2016*<sup>,†</sup>
 </td>
-<td align="left">GENEActiv<br>
+<td>GENEActiv<br>
 Non-dominant wrist</td>
-<td align="left">50-69 yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
-</td>
-<td align="left">Light: 105.6<br>
-Moderate: 174.2<br>
-Vigorous: 330</td>
+<td>50-69 yr</td>
+<td>
+<code>do.enmoa = TRUE</code>  | Light: 105.6  |
+<code>do.enmo = FALSE</code>  | Moderate: 174.2 |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: 330</td>
 </tr>
-<tr class="even">
-<td align="left">Dillon 2016*<sup>,†</sup>
+<tr class="odd">
+<td>Dillon 2016*<sup>,†</sup>
 </td>
-<td align="left">GENEActiv<br>
+<td>GENEActiv<br>
 Dominant wrist</td>
-<td align="left">50-69 yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
-</td>
-<td align="left">Light: 127.8<br>
-Moderate: 187.6<br>
-Vigorous: 396.4</td>
-</tr>
-<tr class="odd">
-<td align="left">Buchan 2023*<sup>,†</sup>
-</td>
-<td align="left">activPAL<br>
-Right thigh</td>
-<td align="left">23 (SD=4) yr</td>
-<td align="left">**Default values<br><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 26.4<br>
-Moderate: N/A<br>
-Vigorous: N/A</td>
+<td>50-69 yr</td>
+<td>
+<code>do.enmoa = TRUE</code>  | Light: 127.8  |
+<code>do.enmo = FALSE</code>  | Moderate: 187.6 |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: 396.4</td>
 </tr>
 <tr class="even">
-<td align="left">Buchan 2023*<sup>,†</sup>
+<td>Buchan 2023*<sup>,†</sup>
 </td>
-<td align="left">activPAL<br>
+<td>activPAL<br>
 Right thigh</td>
-<td align="left">23 (SD=4) yr</td>
-<td align="left">
-<code>do.mad = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "MAD"</code>
+<td>23 (SD=4) yr</td>
+<td>**Default values  | Light: 26.4  | <code>do.enmo = TRUE</code>  |
+Moderate: N/A  | <code>acc.metric = \"ENMO\"</code> | Vigorous: N/A</td>
+</tr>
+<tr class="odd">
+<td>Buchan 2023*<sup>,†</sup>
 </td>
-<td align="left">Light: 30.1<br>
-Moderate: N/A<br>
-Vigorous: N/A</td>
+<td>activPAL<br>
+Right thigh</td>
+<td>23 (SD=4) yr</td>
+<td>
+<code>do.mad = TRUE</code>  | Light: 30.1  |
+<code>do.enmo = FALSE</code>  | Moderate: N/A  |
+<code>acc.metric = \"MAD\"</code> | Vigorous: N/A</td>
 </tr>
 </tbody>
 </table>
@@ -630,268 +589,234 @@ virtually the same (the ones presented in this table).</p>
 <div class="section level3">
 <h3 id="cut-points-for-older-adults">Cut-points for older adults<a class="anchor" aria-label="anchor" href="#cut-points-for-older-adults"></a>
 </h3>
-<table style="width:97%;" class="table">
+<table style="width:98%;" class="table">
 <colgroup>
 <col width="17%">
 <col width="19%">
 <col width="18%">
-<col width="23%">
-<col width="16%">
+<col width="42%">
 </colgroup>
-<thead><tr class="header">
-<th align="left">Cut-points</th>
-<th align="left">Device<br>
-Attachment site</th>
-<th align="left">Age</th>
-<th align="left">Relevant arguments</th>
-<th align="left">thresholds</th>
-</tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">Sanders 2019*</td>
-<td align="left">GENEActiv<br>
-Non-dominant wrist</td>
-<td align="left">60-86 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
+<td rowspan="2">
+<p>Cut-points</p>
+<p>:================= Sanders 2019*</p>
 </td>
-<td align="left">Light: 20<br>
-Moderate: 32<br>
-Vigorous: N/A</td>
+<td rowspan="2">Device<br>
+Attachment site :=================== GENEActiv<br>
+Non-dominant wrist</td>
+<td rowspan="2">
+<p>Age</p>
+<p>:================== 60-86 yr</p>
+</td>
+<td rowspan="2">Relevant arguments | thresholds | | |
+:=======================+:================+ <strong>Default values  |
+Light: 20  | </strong><code>do.enmo = TRUE</code>  | Moderate: 32  |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: N/A</td>
+</tr>
+<tr class="even"></tr>
+<tr class="odd">
+<td>Sanders 2019**</td>
+<td>GENEActiv<br>
+Non-dominant wrist</td>
+<td>60-86 yr</td>
+<td>
+<strong>Default values  | Light: 57  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 104  |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: N/A</td>
 </tr>
 <tr class="even">
-<td align="left">Sanders 2019**</td>
-<td align="left">GENEActiv<br>
-Non-dominant wrist</td>
-<td align="left">60-86 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 57<br>
-Moderate: 104<br>
-Vigorous: N/A</td>
+<td>Sanders 2019*</td>
+<td>ActiGraph<br>
+Hip</td>
+<td>60-86 yr</td>
+<td>
+<strong>Default values  | Light: 6  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 19  |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: N/A</td>
 </tr>
 <tr class="odd">
-<td align="left">Sanders 2019*</td>
-<td align="left">ActiGraph<br>
+<td>Sanders 2019**</td>
+<td>ActiGraph<br>
 Hip</td>
-<td align="left">60-86 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 6<br>
-Moderate: 19<br>
-Vigorous: N/A</td>
+<td>60-86 yr</td>
+<td>
+<strong>Default values  | Light: 15  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 69  |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: N/A</td>
 </tr>
 <tr class="even">
-<td align="left">Sanders 2019**</td>
-<td align="left">ActiGraph<br>
-Hip</td>
-<td align="left">60-86 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 15<br>
-Moderate: 69<br>
-Vigorous: N/A</td>
-</tr>
-<tr class="odd">
-<td align="left">Migueles 2021</td>
-<td align="left">ActiGraph<br>
+<td>Migueles 2021</td>
+<td>ActiGraph<br>
 Non-dominant wrist</td>
-<td align="left">≥70 yr<br>
+<td>≥70 yr<br>
 (mean: 78.7 yr)</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 18<br>
-Moderate: 60<br>
-Vigorous: N/A</td>
+<td>
+<strong>Default values  | Light: 18  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 60  |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: N/A</td>
 </tr>
-<tr class="even">
-<td align="left">Migueles 2021</td>
-<td align="left">ActiGraph<br>
+<tr class="odd">
+<td>Migueles 2021</td>
+<td>ActiGraph<br>
 Dominant wrist</td>
-<td align="left">≥70 yr<br>
+<td>≥70 yr<br>
 (mean: 78.7 yr)</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 22<br>
-Moderate: 64<br>
-Vigorous: N/A</td>
-</tr>
-<tr class="odd">
-<td align="left">Migueles 2021</td>
-<td align="left">ActiGraph<br>
-Hip</td>
-<td align="left">≥70 yr<br>
-(mean: 78.7 yr)</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 7<br>
-Moderate: 14<br>
-Vigorous: N/A</td>
+<td>
+<strong>Default values  | Light: 22  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 64  |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: N/A</td>
 </tr>
 <tr class="even">
-<td align="left">Bammann 2021</td>
-<td align="left">ActiGraph<br>
+<td>Migueles 2021</td>
+<td>ActiGraph<br>
 Hip</td>
-<td align="left">62.9 (SD=3.6) yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Moderate: 94<br>
-Vigorous: 230</td>
+<td>≥70 yr<br>
+(mean: 78.7 yr)</td>
+<td>
+<strong>Default values  | Light: 7  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 14  |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: N/A</td>
 </tr>
 <tr class="odd">
-<td align="left">Bammann 2021</td>
-<td align="left">ActiGraph<br>
+<td>Bammann 2021</td>
+<td>ActiGraph<br>
+Hip</td>
+<td>62.9 (SD=3.6) yr</td>
+<td>
+<strong>Default values  | Moderate: 94  |
+</strong><code>do.enmo = TRUE</code>  | Vigorous: 230 |
+<code>acc.metric = \"ENMO\"</code> |</td>
+</tr>
+<tr class="even">
+<td>Bammann 2021</td>
+<td>ActiGraph<br>
 Dominant Wrist</td>
-<td align="left">62.9 (SD=3.6) yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Moderate: 122<br>
-Vigorous: 234</td>
+<td>62.9 (SD=3.6) yr</td>
+<td>
+<strong>Default values  | Moderate: 122  |
+</strong><code>do.enmo = TRUE</code>  | Vigorous: 234 |
+<code>acc.metric = \"ENMO\"</code> |</td>
 </tr>
-<tr class="even">
-<td align="left">Bammann 2021</td>
-<td align="left">ActiGraph<br>
+<tr class="odd">
+<td>Bammann 2021</td>
+<td>ActiGraph<br>
 Non-dominant Wrist</td>
-<td align="left">62.9 (SD=3.6) yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Moderate: 100<br>
-Vigorous: 245</td>
+<td>62.9 (SD=3.6) yr</td>
+<td>
+<strong>Default values  | Moderate: 100  |
+</strong><code>do.enmo = TRUE</code>  | Vigorous: 245 |
+<code>acc.metric = \"ENMO\"</code> |</td>
 </tr>
-<tr class="odd">
-<td align="left">Bammann 2021</td>
-<td align="left">ActiGraph<br>
+<tr class="even">
+<td>Bammann 2021</td>
+<td>ActiGraph<br>
 Dominant Ankle</td>
-<td align="left">62.9 (SD=3.6) yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Moderate: 342</td>
+<td>62.9 (SD=3.6) yr</td>
+<td>
+<strong>Default values  | Moderate: 342 |
+</strong><code>do.enmo = TRUE</code>  | |
+<code>acc.metric = \"ENMO\"</code> |</td>
 </tr>
-<tr class="even">
-<td align="left">Bammann 2021</td>
-<td align="left">ActiGraph<br>
+<tr class="odd">
+<td>Bammann 2021</td>
+<td>ActiGraph<br>
 Non-dominant Ankle</td>
-<td align="left">62.9 (SD=3.6) yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Moderate: 331</td>
+<td>62.9 (SD=3.6) yr</td>
+<td>
+<strong>Default values  | Moderate: 331 |
+</strong><code>do.enmo = TRUE</code>  | |
+<code>acc.metric = \"ENMO\"</code> |</td>
 </tr>
-<tr class="odd">
-<td align="left">Fraysse 2020<sup>†</sup>
+<tr class="even">
+<td>Fraysse 2020<sup>†</sup>
 </td>
-<td align="left">GENEActiv<br>
+<td>GENEActiv<br>
 Non-dominant wrist</td>
-<td align="left">≥70 yr<br>
+<td>≥70 yr<br>
 (mean: 77 yr)</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
-</td>
-<td align="left">Light: 42.5<br>
-Moderate: 98<br>
-Vigorous: N/A</td>
+<td>
+<code>do.enmoa = TRUE</code>  | Light: 42.5  |
+<code>do.enmo = FALSE</code>  | Moderate: 98  |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: N/A</td>
 </tr>
-<tr class="even">
-<td align="left">Fraysse 2020<sup>†</sup>
+<tr class="odd">
+<td>Fraysse 2020<sup>†</sup>
 </td>
-<td align="left">GENEActiv<br>
+<td>GENEActiv<br>
 Dominant wrist</td>
-<td align="left">≥70 yr<br>
+<td>≥70 yr<br>
 (mean: 77 yr)</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
-</td>
-<td align="left">Light: 62.5<br>
-Moderate: 92.5<br>
-Vigorous: N/A</td>
+<td>
+<code>do.enmoa = TRUE</code>  | Light: 62.5  |
+<code>do.enmo = FALSE</code>  | Moderate: 92.5 |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: N/A</td>
 </tr>
-<tr class="odd">
-<td align="left">Dibben 2020<sup>‡</sup>
+<tr class="even">
+<td>Dibben 2020<sup>‡</sup>
 </td>
-<td align="left">GENEActiv<br>
+<td>GENEActiv<br>
 Right wrist</td>
-<td align="left">70.7 (SD=14.1) yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
-</td>
-<td align="left">Light: 18.6<br>
-Moderate: 45.5<br>
-Vigorous: N/A</td>
+<td>70.7 (SD=14.1) yr</td>
+<td>
+<code>do.enmoa = TRUE</code>  | Light: 18.6  |
+<code>do.enmo = FALSE</code>  | Moderate: 45.5 |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: N/A</td>
 </tr>
-<tr class="even">
-<td align="left">Dibben 2020<sup>‡</sup>
+<tr class="odd">
+<td>Dibben 2020<sup>‡</sup>
 </td>
-<td align="left">GENEActiv<br>
+<td>GENEActiv<br>
 Right wrist</td>
-<td align="left">70.7 (SD=14.1) yr</td>
-<td align="left">
-<code>do.mad = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "MAD"</code>
-</td>
-<td align="left">Light: 18.3<br>
-Moderate: 26.2<br>
-Vigorous: N/A</td>
-</tr>
-<tr class="odd">
-<td align="left">Dibben 2020<sup>‡</sup>
-</td>
-<td align="left">GENEActiv<br>
-Left wrist</td>
-<td align="left">70.7 (SD=14.1) yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
-</td>
-<td align="left">Light: 16.7<br>
-Moderate: 43.6<br>
-Vigorous: N/A</td>
+<td>70.7 (SD=14.1) yr</td>
+<td>
+<code>do.mad = TRUE</code>  | Light: 18.3  |
+<code>do.enmo = FALSE</code>  | Moderate: 26.2 |
+<code>acc.metric = \"MAD\"</code> | Vigorous: N/A</td>
 </tr>
 <tr class="even">
-<td align="left">Dibben 2020<sup>‡</sup>
+<td>Dibben 2020<sup>‡</sup>
 </td>
-<td align="left">GENEActiv<br>
+<td>GENEActiv<br>
 Left wrist</td>
-<td align="left">70.7 (SD=14.1) yr</td>
-<td align="left">
-<code>do.mad = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "MAD"</code>
-</td>
-<td align="left">Light: 18.7<br>
-Moderate: 22.8<br>
-Vigorous: N/A</td>
+<td>70.7 (SD=14.1) yr</td>
+<td>
+<code>do.enmoa = TRUE</code>  | Light: 16.7  |
+<code>do.enmo = FALSE</code>  | Moderate: 43.6 |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: N/A</td>
 </tr>
 <tr class="odd">
-<td align="left">Dibben 2020<sup>‡</sup>
+<td>Dibben 2020<sup>‡</sup>
 </td>
-<td align="left">GENEActiv<br>
-Hip</td>
-<td align="left">70.7 (SD=14.1) yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
-</td>
-<td align="left">Light: 7.6<br>
-Moderate: 40.6<br>
-Vigorous: N/A</td>
+<td>GENEActiv<br>
+Left wrist</td>
+<td>70.7 (SD=14.1) yr</td>
+<td>
+<code>do.mad = TRUE</code>  | Light: 18.7  |
+<code>do.enmo = FALSE</code>  | Moderate: 22.8 |
+<code>acc.metric = \"MAD\"</code> | Vigorous: N/A</td>
 </tr>
 <tr class="even">
-<td align="left">Dibben 2020<sup>‡</sup>
+<td>Dibben 2020<sup>‡</sup>
 </td>
-<td align="left">GENEActiv<br>
+<td>GENEActiv<br>
 Hip</td>
-<td align="left">70.7 (SD=14.1) yr</td>
-<td align="left">
-<code>do.mad = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "MAD"</code>
+<td>70.7 (SD=14.1) yr</td>
+<td>
+<code>do.enmoa = TRUE</code>  | Light: 7.6  |
+<code>do.enmo = FALSE</code>  | Moderate: 40.6 |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: N/A</td>
+</tr>
+<tr class="odd">
+<td>Dibben 2020<sup>‡</sup>
 </td>
-<td align="left">Light: 1<br>
-Moderate: 2.4<br>
-Vigorous: N/A</td>
+<td>GENEActiv<br>
+Hip</td>
+<td>70.7 (SD=14.1) yr</td>
+<td>
+<code>do.mad = TRUE</code>  | Light: 1  |
+<code>do.enmo = FALSE</code>  | Moderate: 2.4  |
+<code>acc.metric = \"MAD\"</code> | Vigorous: N/A</td>
 </tr>
 </tbody>
 </table>

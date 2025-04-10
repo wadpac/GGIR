@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,6 +60,7 @@
     <li><a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a></li>
     <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
     <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
+    <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
@@ -170,27 +171,27 @@ can be selected with parameter <code>timewindow</code>:</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td>“MM”</td>
+<td>"MM"</td>
 <td>midnight to midnight</td>
 <td>Each day is defined as the 24 hours starting and ending a calendar
 day (by default midnight, but modifiable with the parameter
 <code>dayborder</code>).</td>
 </tr>
 <tr class="even">
-<td>“WW”</td>
+<td>"WW"</td>
 <td>waking up to waking up</td>
 <td>Each day is defined as the time from the participant wakes up a
 given day to the time they wake up the next day.</td>
 </tr>
 <tr class="odd">
-<td>“OO”</td>
+<td>"OO"</td>
 <td>sleep onset to sleep onset</td>
 <td>Each day is defined as the time from the sleep onset a given day to
 the sleep onset of the next day.</td>
 </tr>
 </tbody>
 </table>
-<p>For “WW” and “OO”, the onset and waking times are guided by the
+<p>For "WW" and "OO", the onset and waking times are guided by the
 estimates from part 4, but if they are missing, part 5 will attempt to
 retrieve the estimate from the guider method. Note that the parameter
 <code>timewindow</code> can consist of one of the options
@@ -335,7 +336,7 @@ time zone, e.g.,
 <tr class="even">
 <td>ACC</td>
 <td>Average acceleration metric selected by <code>acc.metric</code>,
-default = “ENMO”.</td>
+default = <code>"ENMO"</code>.</td>
 </tr>
 <tr class="odd">
 <td>SleepPeriodTime</td>
@@ -350,16 +351,18 @@ periods).</td>
 <tr class="odd">
 <td>guider</td>
 <td>Number to indicate what guider type was used, where 1=sleeplog,
-2=HDCZA, 3=swetwindow, 4=L512, 5=HorAngle, 6=NotWorn</td>
+2=HDCZA, 3=swetwindow, 4=L512, 5=HorAngle, 6=NotWorn, 7=markerbutton,
+8=HLRB, 9=MotionWare</td>
 </tr>
 <tr class="even">
 <td>window</td>
 <td>Numeric indicator of the analysis window in the recording. If
-timewindow = “MM” then these correspond to calendar days, if timewindow
-= “WW” then these correspond to which wakingup-wakingup window in the
-recording, if timewindow = “OO” then these correspond to which
-sleeponset-sleeponset window in the recording. So, in a recording of one
-week you may find window numbers 1, 2, 3, 4, 5 and 6.</td>
+timewindow = <code>"MM"</code> then these correspond to calendar days,
+if timewindow = <code>"WW"</code> then these correspond to which
+wakingup-wakingup window in the recording, if timewindow =
+<code>"OO"</code> then these correspond to which sleeponset-sleeponset
+window in the recording. So, in a recording of one week you may find
+window numbers 1, 2, 3, 4, 5 and 6.</td>
 </tr>
 <tr class="odd">
 <td>class_id</td>
@@ -461,18 +464,26 @@ available if <code>save_ms5raw_format = TRUE</code>.</td>
 <li><code>save_ms5rawlevels</code></li>
 <li><code>save_ms5raw_format</code></li>
 <li><code>save_ms5raw_without_invalid</code></li>
+<li><code>excludefirstlast.part5</code></li>
+<li><code>includedaycrit.part5</code></li>
+<li><code>minimum_MM_length.part5</code></li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="related-output">Related output<a class="anchor" aria-label="anchor" href="#related-output"></a>
 </h2>
-<p>In <a href="https://cran.r-project.org/web/packages/GGIR/vignettes/GGIR.html#43_Output_part_5" class="external-link uri">https://cran.r-project.org/web/packages/GGIR/vignettes/GGIR.html#43_Output_part_5</a>
+<p>In <a href="https://wadpac.github.io/GGIR/articles/GGIRoutput.html#ggir-part-5" class="uri">https://wadpac.github.io/GGIR/articles/GGIRoutput.html#ggir-part-5</a>
 you will find a detailed discussion of the part 5 output. In summary,
-part 5 produces the following files. - Day level summary - Person level
-summary - Day level summary of behaviour per segment of a day - analysis
-- Person level summary of behaviour per segment of a day - Variable
-dictionary (see below) - Time series - Pdf reports with
-vsiualisation</p>
+part 5 produces the following files.</p>
+<ul>
+<li>Day level summary</li>
+<li>Person level summary</li>
+<li>Day level summary of behaviour per segment of a day analysis</li>
+<li>Person level summary of behaviour per segment of a day</li>
+<li>Variable dictionary (see below)</li>
+<li>Time series</li>
+<li>Pdf reports with vsiualisation</li>
+</ul>
 <div class="section level3">
 <h3 id="variables-dictionary">Variables dictionary<a class="anchor" aria-label="anchor" href="#variables-dictionary"></a>
 </h3>
