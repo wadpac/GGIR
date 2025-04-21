@@ -88,6 +88,7 @@ Among these we assume that most are intuitive:
 
 ### Sleep Regularity Index (SRI)
 
+The Sleep Regularity Index (SRI) was described by Phillips and colleagues (2017). The SRI can have a value between -100 and 100, where 100 reflects perfect regularity (identical days), 0 reflects random pattern, and -100 reflects perfect reversed regularity in sleep.
 
 #### Two different calculations (SRI1 and SRI2)
 
