@@ -111,11 +111,15 @@ SRI2 comes with parameter `SRI2_WASOmin` which allows us to define the minimum W
 
 The SRI is proposed to only be calculated based on seven, or a multitude of seven, consecutive days of data without missing values. This to avoid a possible role of imbalanced data to the final estimate. However, this renders many datasets unsuitable for analysis and leads to a painful loss in sample size and statistical power. 
 
-To address this, I implemented the SRI in GGIR per day-pair. Per day-pair GGIR now stores the SRI value and the fraction of the 30 second epoch-pairs between both days that are valid. This fraction can be found in the output under the variable name "SriFractionValid". By default, day-pairs are excluded if this fraction is below 0.66. For those familiar with GGIR this threshold is coupled with the 16-hour default value for parameter “includenightcrit”. For example, if you set parameter “includenightcrit = 12”, the fraction threshold will be: 12 / 24 = 0.5. Note that I have implemented the SRI calculation such that it accounts for the missing values in the denominator. As a result, the SRI value interpretation remains unchanged. 
+To address this, I implemented the SRI in GGIR per day-pair. Per day-pair GGIR now stores the SRI value and the fraction of the 30 second epoch-pairs between both days that are valid. This fraction can be found in the output under the variable name `SriFractionValid`. By default, day-pairs are excluded if this fraction is below 0.66. For those familiar with GGIR this threshold is coupled with the 16-hour default value for parameter `includenightcrit`. For example, if you set parameter `includenightcrit = 12`, the fraction threshold will be: `12 / 24 = 0.5`. Note that I have implemented the SRI calculation such that it accounts for the missing values in the denominator. As a result, the SRI value interpretation remains unchanged. 
 
 The 30 second epoch setting is automatically applied, even if the rest of the GGIR process works with a different epoch duration. 
 
-The day-pair level estimates are stored as variable `SleepRegularityIndex` in the GGIR part 4 .csv-report on sleep. Further, GGIR also stores the person-level aggregates such as: the plain average over all valid days, the average of all valid weekend days, and the average of all valid week days. No GGIR input arguments are needed to invoke the SRI calculation. The calculation is automatically performed after updating GGIR and processing your data. 
+The day-pair level estimates are stored as variable `SleepRegularityIndex1` in the GGIR part 4 .csv-report on sleep. Further, GGIR also stores the person-level aggregates such as: the plain average over all valid days, the average of all valid weekend days, and the average of all valid week days. No GGIR input arguments are needed to invoke the SRI calculation in part 3. The calculation is automatically performed after updating GGIR and processing your data. 
+
+In part 6, SRI is only derived when parameter `SRI2_WASOmin` is specified. If no nap parameters
+are set the resulting SRI estimate will only reflect the main SPT window in the day. SRI2 estimates are stored as variable `SleepRegularityIndex2`.
+
 
 **Benefits of the revised approach**
 
