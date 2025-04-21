@@ -269,7 +269,9 @@ visualReport = function(metadatadir = c(),
     }
     angleColor = ifelse(Nangles > 1, yes = "orange", no = signalcolor)
     # Add angle lines on top
-    lines(mdat$timestamp, ang1, type = "l", col = angleColor, lwd = 0.3)
+    if (Nangles > 0) {
+      lines(mdat$timestamp, ang1, type = "l", col = angleColor, lwd = 0.3)
+    }
     if (Nangles > 1) {
       lines(mdat$timestamp, ang2, type = "l", col = "red", lwd = 0.3)
     }
@@ -316,6 +318,17 @@ visualReport = function(metadatadir = c(),
       }
     }
     
+    # marker button
+    if ("marker" %in% colnames(mdat)) {
+      marker_moments = which(mdat$marker == 1)
+      if (length(marker_moments) > 0) {
+        arrows(x0 = mdat$timestamp[marker_moments],
+                x1 = mdat$timestamp[marker_moments],
+                y0 = 30, y1 = 0, col = "purple", lwd = 1, length = 0.06)
+        text(x = mdat$timestamp[marker_moments],y = 30, labels = "M", font = 2, col = "purple", cex = 1.2)
+      }
+    }
+    
     # onset/wake lines:
     window_edges = which(diff(mdat$SleepPeriodTime) != 0)
     if (length(window_edges) > 0) {
@@ -325,7 +338,8 @@ visualReport = function(metadatadir = c(),
         # the below guider names are the guider names as defined in 
         # function g.part5.savetimeseries
         guider_names = c('unknown', 'sleeplog', 'HDCZA', 'setwindow', 
-                         'L512', 'HorAngle', 'NotWorn')
+                         'L512', 'HorAngle', 'NotWorn', 'markerbutton',
+                         'HLRB', 'MotionWare')
         guider_name =  paste0("guided by: ", guider_names[mdat$guider[window_edges[wei]] + 1])        
         
         if (mdat$SleepPeriodTime[window_edges[wei]] == 1) {

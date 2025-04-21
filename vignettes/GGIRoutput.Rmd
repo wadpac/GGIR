@@ -231,7 +231,8 @@ The csv. files contain the variables as shown below.
 | error_wake | Difference between wakeup and guider_wake |
 | fraction_night_invalid | Fraction of the night (noon-noon or 6pm-6pm) for which the data was invalid, e.g. monitor not worn or no accelerometer measurement started/ended within the night. |
 | SleepDurationInSpt | Total sleep duration, which equals the accumulated nocturnal sustained inactivity bouts within the Sleep Period Time. |
-| duration_sib_wakinghours | Accumulated sustained inactivity bouts during the day. These are the periods we would label during the night as sleep, but during the day they form a subclass of inactivity, which may represent day time sleep or wakefulness while being motionless for a sustained period of time number_sib_sleepperiod} Number of nocturnal sleep periods, with nocturnal referring to the Sleep Period Time window. |
+| duration_sib_wakinghours | Accumulated sustained inactivity bouts during the day. These are the periods we would label during the night as sleep, but during the day they form a subclass of inactivity, which may represent day time sleep or wakefulness while being motionless for a sustained period of time |
+| number_sib_sleepperiod | Number of nocturnal sleep periods, with nocturnal referring to the Sleep Period Time window. |
 | duration_sib_wakinghours_atleast15min | Same as duration_sib_wakinghours, but limited to SIBs that last at least 15 minutes. |
 | num ber_sib_wakinghours | Number of sustained inactivity bouts during the day, with day referring to the time outside the Sleep Period Time window. |
 | sleeponset_ts | sleeponset formatted as a timestamp |
@@ -284,6 +285,7 @@ In the person level report the variables are derived from the variables in the n
 | sleep_efficiency_after_onset | Accelerometer derived sleep efficiency within the sleep period time calculated as the ratio between acc_SleepDurationInSpt and guider_SptDuration (denominator) or acc_SleepDurationInSpt and acc_SptDuration + latency (denominator), as defined with sleepefficiency.metric. Only available at person level, because at night level the user can calculate this from existing variables. |
 | n_nights_acc | Number of nights of accelerometer data |
 | n_nights_sleeplog | Number of nights of sleeplog data. |
+| n_nights_markerbutton | Only stored when parameter `consider_marker_button` is set to TRUE, reflecting the number of valid nights with marker button data. |
 | n_WE_nights_complete | Number of weekend nights complete which means both accelerometer and estimate from guider. |
 | n_WD_nights_complete | Number of weekday nights complete which means both accelerometer and estimate from guider. |
 | n_WEnights_daysleeper | Number of weekend nights on which the person slept until after noon. |
@@ -419,7 +421,8 @@ Most variables in the person level summary are derived from the day level summar
 | Nvaliddays_AL10F_WE | Number of valid weekend days with at least 10 fragments (5 inactivity or 5 inactive) |
 | `_wei` | weighted average of weekend and week days, using a 2/5 ratio, see above. |
 | `_pla` | plain average of all days, see above |
-
+| Nsleeplog_used | Number of valid windows with sleeplog used. |
+| Nmarkerbutton_used | Only stored when parameter `consider_marker_button` is set to TRUE, reflecting the number of valid windows with marker button data for SPT estimation. |
 
 # GGIR Part 6
 

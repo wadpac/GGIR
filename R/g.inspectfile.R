@@ -24,7 +24,8 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       extension = extension[length(extension)]
     }
     switch(extension,
-           "bin" = { dformat = FORMAT$BIN },
+           "bin" = ,
+           "BIN" = { dformat = FORMAT$BIN },
            "cwa" = ,
            "CWA" = { mon = MONITOR$AXIVITY
            dformat = FORMAT$CWA
@@ -45,7 +46,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
            },
            "csv" = { dformat = FORMAT$CSV
            testheader = read.csv(datafile, nrow = 1, skip = 0, header = FALSE)
-
+           
            if (grepl("ActiGraph", testheader[1], fixed=TRUE)) {
              mon = MONITOR$ACTIGRAPH
            } else {
@@ -69,12 +70,15 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       mon = MONITOR$MOVISENS
       sf = 64
       header = "no header"
-    } else if (dformat == FORMAT$BIN) { # .bin and not movisens
+    } else if (dformat == FORMAT$BIN) { # .bin and not movisens, could be GENEActiv or Parmay Matrix
+      mon = inspect_binFile_brand(filename = datafile)
+      if (mon == MONITOR$PARMAY_MTX && utils::packageVersion("GGIRread") < "1.0.4") {
+        stop("Please update R package GGIRread to version 1.0.4 or higher", call. = FALSE)
+      }
       # try read the file as if it is a geneactiv and store output in variable 'isitageneactive'
-      isitageneactive = GGIRread::readGENEActiv(filename = datafile, start = 0, end = 1)
-      if (length(isitageneactive) >= 1) {
+      if (mon == MONITOR$GENEACTIV) {
         if (all(names(isitageneactive) %in% c("header", "data.out") == TRUE)) {
-          mon = MONITOR$GENEACTIV
+          isitageneactive = GGIRread::readGENEActiv(filename = datafile, start = 0, end = 1)
           tmp = unlist(strsplit(unlist(as.character(isitageneactive$header$SampleRate))," "))[1]
           # occasionally we'll get a decimal seperated by comma; if so, replace the comma with a dot
           tmp = sub(",", ".", tmp, fixed = TRUE)
@@ -107,6 +111,9 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         } else {
           stop(paste0("\nError processing ", filename, ": possibibly a corrupt GENEActive file"))
         }
+      } else if (mon == MONITOR$PARMAY_MTX) {
+        header = NULL
+        sf = GGIRread::readParmayMatrix(datafile, output = "sf")
       } else {
         stop(paste0("\nError processing ", filename, ": unrecognised .bin file"))
       }
@@ -156,8 +163,8 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   # main script
   filename = unlist(strsplit(as.character(datafile),"/"))
   filename = filename[length(filename)]
-  monnames = c("genea", "geneactive", "actigraph", "axivity", "movisens", "verisense") #monitor names
-  fornames = c("bin", "csv", "wav", "cwa", "csv", "gt3x") #format names
+  monnames = c("genea", "geneactive", "actigraph", "axivity", "movisens", "verisense", "parmay_mtx") #monitor names
+  fornames = c("bin", "csv", "wav", "cwa", "csv", "gt3x", "BIN") #format names
   
   if (length(filename) == 0) {
     warning("no files to analyse", call. = FALSE)
@@ -243,6 +250,8 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         filename = unlist(strsplit(as.character(datafile),"/"))
         filename = filename[length(filename) - 1]
       }
+    } else if (mon == MONITOR$PARMAY_MTX) {
+      H = "file does not have header" # these files have no header
     }
   } else if (dformat == FORMAT$CSV) {
     if (mon == MONITOR$ACTIGRAPH) {

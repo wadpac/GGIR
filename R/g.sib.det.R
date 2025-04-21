@@ -99,25 +99,28 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
       if ("ExtAct" %in% colnames(IMP$metashort) == TRUE) {
         acc.metric = "ExtAct"
       } else {
-        warning("Argument acc.metric is set to ",acc.metric," but not found in GGIR part 1 output data")
+        stop("Argument acc.metric is set to ",acc.metric," but not found in GGIR part 1 output data")
       }
     }
     ACC = as.numeric(as.matrix(IMP$metashort[,which(colnames(IMP$metashort) == acc.metric)]))
     night = rep(0, length(ACC))
-    if (params_sleep[["HASIB.algo"]] == "Sadeh1994" | 
-        params_sleep[["HASIB.algo"]] == "Galland2012" |
-        params_sleep[["HASIB.algo"]] == "ColeKripke1992") { # extract zeroCrossingCount
-      zeroCrossingCount =  IMP$metashort[,which(colnames(IMP$metashort) == paste0("ZC", params_sleep[["Sadeh_axis"]]))]
+    
+    if ("marker" %in% colnames(IMP$metashort)) {
+      MARKER = as.numeric(as.matrix(IMP$metashort[,which(colnames(IMP$metashort) == "marker")]))
+    } else {
+      MARKER = NULL
+    }
+    sib_90s_algo_names = c("Sadeh1994", "Galland2012", "ColeKripke1992", "Oakley1997")
+    if (any(params_sleep[["HASIB.algo"]] %in% sib_90s_algo_names)) { # extract zeroCrossingCount
+      # note that for external derived metrics we refer to it as ZCY here
+      # even though the exact calculation may have differed
+      if (params_sleep[["Sadeh_axis"]] %in% c("X", "Y", "Z") == FALSE) params_sleep[["Sadeh_axis"]] = "Z"
+      count_column_index = which(colnames(IMP$metashort) %in% c(paste0("ZC",
+                                                                       params_sleep[["Sadeh_axis"]]),
+                                                                "ExtAct"))[1]
+      zeroCrossingCount =  IMP$metashort[, count_column_index]
       zeroCrossingCount = fix_NA_invector(zeroCrossingCount)
       zeroCrossingCount = zeroCrossingCount * zc.scale
-      # always do zeroCrossingCount but optionally also add BrondCounts to output for comparison
-      BrondCount_colname = paste0("BrondCount_", tolower(params_sleep[["Sadeh_axis"]]))
-      if (BrondCount_colname %in% colnames(IMP$metashort)) {
-        BrondCount =  IMP$metashort[, BrondCount_colname]
-        BrondCount = fix_NA_invector(BrondCount)
-      } else {
-        BrondCount = c()
-      }
       # optionally add NeishabouriCounts for comparison
       NeishabouriCount_colname = paste0("NeishabouriCount_", tolower(params_sleep[["Sadeh_axis"]]))
       if (NeishabouriCount_colname %in% colnames(IMP$metashort)) {
@@ -128,7 +131,6 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
       }
     } else {
       zeroCrossingCount = c()
-      BrondCount = c()
       NeishabouriCount = c()
     }
     #==================================================================
@@ -145,9 +147,18 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         }
       }
       if ("ExtSleep" %in% myfun$colnames) {
-        getSleepFromExternalFunction = TRUE
-        sleepColName = "ExtSleep"
-        sleepColType = "numeric"
+        if (params_sleep[["HASIB.algo"]][1] == "data") {
+          getSleepFromExternalFunction = TRUE
+          sleepColName = "ExtSleep"
+          sleepColType = "numeric"
+        } else {
+          if (length(params_sleep[["HASIB.algo"]]) == 1 && params_sleep[["HASIB.algo"]] == "data") {
+            stop(paste0("No sleep classification found in input data. ",
+                        " please provide second sib algorithm to HASIB.algo"), call. = FALSE)
+          } else if (length(params_sleep[["HASIB.algo"]]) == 2) {
+            params_sleep[["HASIB.algo"]] = params_sleep[["HASIB.algo"]][2]
+          }
+        }
       }
     }
     if (getSleepFromExternalFunction == FALSE) {
@@ -156,8 +167,8 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                     anglethreshold = params_sleep[["anglethreshold"]], 
                     time = time, anglez = anglez, ws3 = ws3,
                     zeroCrossingCount = zeroCrossingCount,
-                    BrondCount = BrondCount,
-                    NeishabouriCount = NeishabouriCount, activity = ACC)
+                    NeishabouriCount = NeishabouriCount, activity = ACC,
+                    oakley_threshold = params_sleep[["oakley_threshold"]])
     } else { # getSleepFromExternalFunction == TRUE
       # Code now uses the sleep estimates from the external function
       # So, the assumption is that the external function provides a 
@@ -209,6 +220,25 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         midn_start = countmidn
       }
       sptei = 0
+      if (length(MARKER) > 0) {
+        # derive typical marker button times
+        # to fall back on when marker button is missing
+        button_pressed = which(MARKER != 0)
+        if (length(button_pressed) > 0) {
+          if (params_sleep[["impute_marker_button"]] == TRUE) {
+            newmarkers = button_pressed
+            for (j in -countmidn:countmidn) {
+              newmarkers = button_pressed + (j * 24 * (3600/ws3))
+              newmarkers = newmarkers[which(newmarkers %in% button_pressed == FALSE &
+                                              newmarkers > 0 &
+                                              newmarkers <= length(MARKER))]
+              if (length(newmarkers) > 0) {
+                MARKER[newmarkers] = 0.9 / (abs(j) + 1)
+              }
+            }
+          }
+        }
+      }
       for (j in midn_start:(countmidn)) { #Looping over the midnight
         if (j == 0) {
           qqq1 = 1 # preceding noon (not available in recording)
@@ -243,12 +273,12 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         #------------------------------------------------------------------
         # calculate L5 because this is used as back-up approach
         tmpACC = ACC[qqq1:qqq2]
-        windowRL = round((3600/ws3)*5)
+        windowRL = round((3600/ws3) * 5)
         if ((windowRL / 2) == round(windowRL / 2)) windowRL = windowRL + 1
         if (length(tmpACC) < windowRL) {  0 # added 4/4/2-17
           L5 = 0
         } else {
-          ZRM = zoo::rollmean(x = c(tmpACC), k = windowRL, fill = "extend", align = "center") #
+          ZRM = zoo::rollmean(x = tmpACC, k = windowRL, fill = "extend", align = "center")
           L5 = which(ZRM == min(ZRM))[1]
           if (sd(ZRM) == 0) {
             L5 = 0
@@ -276,7 +306,10 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                                invalid = invalid[qqq1:qqq2], # load only invalid time in the night of interest (i.e., qqq1:qqq2)
                                HDCZA_threshold = params_sleep[["HDCZA_threshold"]],
                                HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
-                               activity = tmpACC)
+                               activity = tmpACC,
+                               marker = MARKER[qqq1:qqq2],
+                               sibs = sleep[qqq1:qqq2, 1],
+                               try_marker_button = params_sleep[["consider_marker_button"]])
         } else {
           spt_estimate = list(SPTE_end = NULL, SPTE_start = NULL, tib.threshold = NULL, part3_guider = NULL)
         }
@@ -293,7 +326,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
             }
             if (newqqq2 > length(anglez)) newqqq2 = length(anglez)
             # only try to extract SPT again if it is possible to extract a window of more than 23 hour
-            if (newqqq2 < length(anglez) & (newqqq2 - newqqq1) > (23*(3600/ws3)) ) {
+            if (newqqq2 < length(anglez) & (newqqq2 - newqqq1) > (23 * (3600/ws3)) ) {
               # Recalculate nonwear percentage for new window (6pm to 6pm)
               nonwear_percentage = (length(which(invalid[newqqq1:newqqq2] == 1)) /  (newqqq2 - newqqq1 + 1)) * 100
               guider_to_use = decide_guider(params_sleep[["HASPT.algo"]], nonwear_percentage)
@@ -315,7 +348,10 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                                        invalid = invalid[newqqq1:newqqq2],
                                        HDCZA_threshold = params_sleep[["HDCZA_threshold"]],
                                        HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
-                                       activity = ACC[newqqq1:newqqq2])
+                                       activity = ACC[newqqq1:newqqq2],
+                                       marker = MARKER[newqqq1:newqqq2],
+                                       sibs = sleep[newqqq1:newqqq2, 1],
+                                       try_marker_button = params_sleep[["consider_marker_button"]])
               if (length(spt_estimate_tmp$SPTE_start) > 0) {
                 # If new SPTE_end is beyond noon (qqq2) then use the new SPTE_end
                 if (spt_estimate_tmp$SPTE_end + newqqq1 >= qqq2) {

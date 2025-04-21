@@ -20,7 +20,14 @@ As explained in chapter 1, GGIR offers a vast amount of functionality. If you ar
 
 As brief introduction for those unfamiliar with R or software, R packages are constructed of sub-components, named functions. A single function typically allows for doing a specific task. For example, we may have the `sum` function that sums the numbers we provide to it. A function can have one or multiple parameters to control the functions behaviour. In R these parameters are called function arguments. For example, `sum` has the argument `na.rm` to control what needs to be done with missing values. In GGIR we refer to these arguments as parameters.
 
-GGIR comes with a large number of functions and parameters that together form a processing pipeline. To ease interacting with GGIR, GGIR has one central function to act as interface to all functionality. This function is also named `GGIR`. You only need to learn how to work with the function `GGIR`, but it is important to understand that in the background this function interacts with all other functions in GGIR and even functions outside GGIR.
+GGIR comes with a large number of functions and parameters that together form a processing pipeline. To ease interacting with GGIR, GGIR has one central function to act as interface to all functionality. This function is also named `GGIR` and in its basic form it is used as shown below:
+
+```{R,eval=FALSE}
+GGIR(datadir = "C:/mystudy/mydata",
+     outputdir = "D:/myresults")
+```
+
+You only need to learn how to work with the function `GGIR`, but it is important to understand that in the background this function interacts with all other functions in GGIR and even functions outside GGIR.
 
 Further, it is important to understand that the `GGIR package` is structured in two complementary ways:
 
@@ -137,36 +144,44 @@ To ensure this is clear here are some example:
 
 ## Input files
 
+All accelerometer data that need to be analysed should be stored in one folder or subfolders of that folder. Make sure that the folder does not contain any files that are not accelerometer data.
+
+Choose an appropriate name for the folder, preferable with a reference to the study or project it is related to rather than just 'data', because the name of this folder will be used as an identifier of the dataset and integrated in the name of the output folder GGIR creates.
+
 ### Raw data
 
-1.  GGIR currently works with the following accelerometer brands and formats:
+GGIR currently works with the following accelerometer brands and formats:
 
 -   [GENEActiv](https://activinsights.com/) .bin
 -   [Axivity](https://axivity.com/) AX3 and AX6 .cwa
 -   [ActiGraph](https://theactigraph.com) .csv and .gt3x (.gt3x only the newer format generated with firmware versions above 2.5.0. Serial numbers that start with “NEO” or “MRA” and have firmware version of 2.5.0 or earlier use an older format of the .gt3x file). If you want to work with .csv exports via the commercial ActiLife software, then note that you have the option to export data with timestamps, which should be turned off. To cope with the absence of timestamps GGIR will calculate timestamps from the sample frequency, the start time, and start date as presented in the file header.
 -   [Movisens](https://www.movisens.com/en/) with data stored in folders.
+-   [Parmay Matrix](https://www.parmaytech.com/) .bin and .BIN
 -   Any other accelerometer brand that generates csv output, see documentation for functions `read.myacc.csv` and parameter `rmc.noise` in the vignette [Reading csv files with raw data in GGIR](https://cran.r-project.org/package=GGIR/vignettes/readmyacccsv.html).
 
 ### Externally derived epoch-level data
 
-By default GGIR assumes that the data is raw as discussed in chapter 1. However, for some studies raw data is not available and all we have is an epoch level aggregate. For example, done by external software or done inside the accelerometer device. Although this can introduce some severe limitations to the transparency and flexibility of our analysis, GGIR makes an attempt to facilitate the analysis of these externally performed aggregations of the raw data. Please find below an overview of the file format currently facilitated:
+By default GGIR assumes that the data is raw as discussed in chapter 1. However, for some studies raw data is not available and all we have is an epoch level aggregate. For example, done by external software or done inside the accelerometer device. Although this can introduce some severe limitations to the transparency and flexibility of our analysis, GGIR makes an attempt to facilitate the analysis of these externally performed aggregations of the raw data. Please find below an overview of the file formats currently facilitated:
 
-| Sensor brand            | Data format         | Parameters                |
+| Sensor brand / Device name  | Data format           | Parameters              |
 |------------------------|-----------------------|-------------------------|
-| Actiwatch    | .csv            | `dataFormat = "actiwatch_csv"` `extEpochData_timeformat = "%m/%d/%Y %H:%M:%S"` |
-| Actiwatch    | .awd      | `dataFormat = "actiwatch_awd"` `extEpochData_timeformat = "%m/%d/%Y %H:%M:%S"` |
-| ActiGraph    | .csv (count files, not be confused with csv raw data files) | `dataFormat = "actigraph_csv"` `extEpochData_timeformat = "%m/%d/%Y %H:%M:%S"` |
-| Axivity      | UKBiobank csv export of epoch level data                    | `dataFormat = "ukbiobank_csv"`                                               |
-| SenseWear      | .xls or .xlsx      | `dataFormat = "sensewear_xls"` `extEpochData_timeformat = "%d-%m-%Y %H:%M:%S"`                                    |
+| Actiwatch            | .csv                  | `dataFormat = "actiwatch_csv"`  |
+| Actical             | .csv                  | `dataFormat = "actical_csv"`  |
+| Actiwatch | .awd      | `dataFormat = "actiwatch_awd"`  |
+| ActiGraph    | .csv (count files, not be confused with csv raw data files) | `dataFormat = "actigraph_csv"`, `do.neishabouricounts = TRUE`, `acc.metric = "NeishabouriCount_x"`  |
+| Axivity             | UKBiobank csv export of epoch level data      | `dataFormat = "ukbiobank_csv"`  (sleep detection not facilitated)   |
+| SenseWear    | .xls or .xlsx      | `dataFormat = "sensewear_xls"`   |
+| Fitbit      | folder with multiple .json files |  `dataFormat = "fitbit_json"` |
+| Philips Health Band | .xlsx file pairs | `dataFormat = "phb_xlsx"` |
 
-: Note: For Actiwatch and ActiGraph, physical activity description and sleep classification needs to be tailored to count-specific algorithms: `do.neishabouricounts = TRUE`, `acc.metric = "NeishabouriCount_x"`, `HASPT.algo = "NotWorn"` `HASIB.algo = "NotWorn"`; Note 2: For UK Biobank csv epoch data, GGIR does not facilitate sleep analysis as arm angle is not exported.
+See [GGIR CookBook](https://wadpac.github.io/GGIR/articles/Cookbook.html) for example recipes for working with these externally derived epoch-level data.
 
-See [GGIR CookBook](https://wadpac.github.io/GGIR/articles/Cookbook.html) for example recipes for working with external data.
+To process these files, GGIR loads their content and saves it as GGIR part 1 milestone data, essentially fooling the rest of GGIR to think that GGIR part 1 created them based on raw data input. As will be discussed in chapter 3, GGIR does non-wear detection in two steps: The first step is done in part 1 and the second step is done in part 2. In relation to externally derived epoch data non-wear is detected by looking for consecutive zeros of one hour (default) expanded by all time point for which data is missing. However, the consecutive zero approach is not used for all brands:
 
-To process these files, GGIR loads their content and saves it as GGIR part 1 milestone data, essentially fooling the rest of GGIR to think that GGIR part 1 created them based on raw data input. As will be discussed in chapter 3, GGIR does non-wear detection in two steps: The first step is done in part 1 and the second step is done in part 2. In relation to externally derived epoch data non-wear is detected by looking for consecutive zeros of one hour (Actiwatch, ActiGraph) or derived from the file (UK Biobank csv).
+- For UK Biobank csv data the non-wear detection is available in the data, which is what GGIR uses.
+- For Fitbit and Sensewear we use missingness in data as an indicator of nonwear, and any one hour time window with a standard deviation in calorie or METS values less than 0.0001 and an average value below 2.
 
-2.  All accelerometer data that need to be analysed should be stored in one folder or subfolders of that folder. Make sure that the folder does not contain any files that are not accelerometer data.
-3.  Choose an appropriate name for the folder, preferable with a reference to the study or project it is related to rather than just 'data', because the name of this folder will be used as an identifier of the dataset and integrated in the name of the output folder GGIR creates.
+For all above approaches using a one hour window, the actual window length can be modified with the last value of parameter `windowsizes`.
 
 ## How to run your analysis?
 
@@ -174,8 +189,8 @@ The bare minimum input needed for `GGIR` is:
 
 ```{R,eval=FALSE}
 library(GGIR)
-GGIR(datadir = "C:/mystudy/mydata",
-     outputdir = "D:/myresults")
+GGIR(datadir = "C:/mystudy/study_XYZ_data",
+     outputdir = "C:/myresults")
 ```
 
 Parameter `datadir` allows you to specify where you have stored your accelerometer data and `outputdir` allows you to specify where you would like the output of the analyses to be stored. This cannot be equal to `datadir`. If you copy and paste the above code to a new R script (file ending with .R) and Source it in R(Studio), then the dataset will be processed and the output will be stored in the specified output directory. GGIR refers to file directories and not to folders. For those unfamiliar with the term directory: It is the same as a folder.
@@ -186,9 +201,78 @@ Further, parameter `idloc` tells GGIR where to find the participant ID. The defa
 
 GGIR stores its output csv files with a comma as default column separator and a dot as default decimal separator as is the standard in UK/US. However, if your computer is configured for a different region of the world then these can be modified with parameters `sep_reports` and `dec_reports`, respectively.
 
+If you consider the parameters we have discussed so far, you me may end up with a call to
+`GGIR` that could look as follows. This will only run GGIR part 1 to 4 and store csv files with
+default column and decimal separator.
+
+```{R,eval=FALSE}
+library(GGIR)
+GGIR(mode = 1:4,
+      datadir = "C:/mystudy/study_XYZ_data",
+      outputdir = "C:/myresults",
+      do.report = c(2, 4),
+      overwrite = FALSE,
+      idloc = 2)
+```
+
+All other parameters we discuss later on can be added in a similar way. Please note that the
+order of the parameters does not matter. Further, when using many parameters it can be convenient to add comments in between like in the example below.
+
+```{R,eval=FALSE}
+library(GGIR)
+GGIR(mode = 1:6,
+     datadir = "C:/mystudy/study_XYZ_data",
+     outputdir = "C:/myresults",
+     do.report = c(2, 4, 5, 6),
+     #=====================
+     # Part 1
+     #=====================
+     do.LFENMO = TRUE,
+     do.ENMO = FALSE,
+     acc.metric = "LFENMO"
+     #=====================
+     # Part 2
+     #=====================
+     data_masking_strategy = 1,
+     hrs.del.start = 4,
+     hrs.del.end = 4,
+     maxdur = 9,
+     includedaycrit = 16,
+     #=====================
+     # Part 3 + 4
+     #=====================
+     includenightcrit = 16,
+     outliers.only = TRUE,
+     #=====================
+     # Part 5
+     #=====================
+     threshold.lig = 30,
+     threshold.mod = c(100, 110), # also used in part 2
+     threshold.vig = 400,
+     boutcriter = 0.8,
+     boutcriter.in = 0.9,
+     boutcriter.lig = 0.8,
+     boutcriter.mvpa = 0.8,
+     boutdur.in = c(1, 10, 30),
+     boutdur.lig = c(1, 10),
+     boutdur.mvpa = 1,
+     includedaycrit.part5 = 2/3,
+     timewindow = c("WW", "OO"),
+     #=====================
+     # Part 6
+     #=====================
+     part6CR = TRUE,
+     #=====================
+     # Visual report
+     #=====================
+     visualreport = TRUE,
+     old_visualreport = FALSE)
+```
+
+
 ### From the R console on your own desktop/laptop
 
-Create an R-script and put in it `library(GGIR)` and on the next line the GGIR call as in `GGIR(datadir="yourdatapath", outputdir="yourdatapath")`. Next, you can source the R-script with the `source` button in RStudio: `source("pathtoscript/myshellscript.R")`
+Create an R-script and put in it `library(GGIR)` and on the next line the GGIR call as in `GGIR(datadir = "yourdatapath", outputdir = "yourdatapath")`. Next, you can source the R-script with the `source` button in RStudio: `source("pathtoscript/myshellscript.R")`
 
 GGIR by default supports multi-thread processing which is used to process one input file per process, speeding up the processing of your data. This can be turned off by setting parameter `do.parallel = FALSE`.
 

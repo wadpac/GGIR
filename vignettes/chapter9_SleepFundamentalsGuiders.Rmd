@@ -154,6 +154,26 @@ Next, the algorithm identifies when the horizontal axis is between -45 and 45 de
 
 To use this guider set parameter `HASPT.algo = "HorAngle"`
 
+### Guider: MotionWare (EXPERIMENTAL)
+
+This is an attempt to implement the algorithm for auto-detection of sleep as described in the non-public document by Cambridge Neurotechnologies: "Information bulletin no.3 sleep algorithms". The algorithm uses a combination of count and marker data to identify the sleep periods in the day, where GGIR for now only retains the longest identified sleep period.
+
+I have attempted to implement it to see whether it can provide value. For the moment, this work is experimental.
+
+
+### Guider: HLRB (EXPERIMENTAL)
+
+HLRB is a heuristic algorithm to detect the Longest Rest Bout. It was designed to offer a guider option for accelerometer device that only store count data and by that cannot work with the HDCZA or HorAngle guiders.
+It has currently not been described in a publication.
+
+The algorithm is composed of the following steps:
+
+1. Filter detected sustained inactivity bouts with a two hour rounded rolling average.
+2. Replace all resulting non-rest periods by rest that are surrounded on both sides by rest if their (non-rest) length is shorter than 1 hour. This 1 hour is currently hard-coded.
+3. Take the longest remaining window as guider.
+
+To use this guider set parameter `HASPT.algo = "HLRB"`.
+
 ### Guider: NotWorn (EXPERIMENTAL)
 
 **Disclaimer: The status of this guider is experimental because it has not been described and evaluated in a peer-reviewed publication yet. This means revisions to the algorithm can be expected as the algorithm matures.** 
@@ -166,17 +186,42 @@ Next, this is used to identify the largest non-movement period, by only consider
 
 The algorithm is expected to work with any acceleration metric, so both count-type metrics and metrics in gravitational units.
 
-To use this guider set parameter `HASPT.algo = "NotWorn"`. Further, we recommend combining the using of "NotWorn" with: `do.imp = FALSE` and `ignorenonwear = FALSE`. Internally `HASPT.ignore.invalid` is always set to `NA` when "NotWorn" is used.
+To use this guider set parameter `HASPT.algo = "NotWorn"`. Further, we recommend combining the using of \"NotWorn\" with: `do.imp = FALSE` and `ignorenonwear = FALSE`. Internally `HASPT.ignore.invalid` is always set to `NA` when \"NotWorn\" is used.
 
 If this is used it will also define the resulting window as SIB period and ignore all other identified SIB window to ensure the entire window is treated as sleep. So, all SIB periods detected are ignored.
 
 However, we know from experience that participants occasionally wear the accelerometer during the night even when they are told not to. GGIR offers a solution for this if you are not working with count data but with accelerometer metrics in gravitational units. In that case, it is possible to specify a second guider to use when the accelerometer has been worn for less than 25% of the time in the detection window (noon-noon or 6pm-6pm). If this happens then it will check whether parameter `HASPT.algo` has two guiders specified. If it does it will use the second one. For example, `HASPT.algo = c("NotWorn", "HDCZA"`) or `HASPT.algo = c("NotWorn", "HorAngle"`).
 
-## Dealing with expected or detect nonwear time segments
 
-Depending on study protocol we may want to interpret invalid data (typically non-wear) differently: 
+### Guider: markerbutton (EXPERIMENTAL)
 
-1. If we want to rely on the available time series where invalid time segments were imputed then leave parameter `HASPT.ignore.invalid = FALSE` as default.
+The functionality described in this paragraph is currently only functional for Philips Health Band and MotionWatch 8 data.
+
+This guider is always used in combination with one of the other guiders such as \"MotionWare\" or \"HLRB\".
+It is use by setting `consider_marker_button = TRUE`. If this fails GGIR will fall back on the guider as specified with parameter `HASPT.algo`.
+
+Relying on marker button presses (marker events) comes with the challenge that participants may press the marker button more than twice or not at all on some days. GGIR attempts to address this with the following algorithm.
+
+**At recording level:**
+
+1. Represent marker button presses in the time series as 1 when pressed and as 0 when not pressed.
+
+2. Optional step that is only applied when parameter `impute_marker_button = TRUE` and intended to impute marker events. It will copy every marker button press to every other day in the recording at the same time of the day but reduces its value as `0.9 / (ndays + 1)`, where `ndays` represent the relative distance in days to the original marker button press. 
+
+**At night level (noon-noon or 6pm-6pm):**
+
+3. Only continue if there are at least 2 marker events for the night, if at least 50% of the data in the night is valid, and if the time span between the first and last marker event is larger than 1 hour.
+4. Take all marker events with value 1 or the 10 marker events with the highest value, whichever of the two provides most marker events.
+5. From these marker events, ignore all marker event pairs that both span less than 3 hours and involve at least one imputed marker button press, unless these represent all marker button pairs available.
+6. Ignore all marker event pairs where the percentage of sustained inactivity bouts inside the window is lower than outside the window.
+7. Define a performance score as: 1 + time spend outside the window duration range 7-9 multiplied by the average activity inside the window.
+8. The window with the lowest score is selected as guider.
+
+## Dealing with expected or detected invalid time segments
+
+Detected non-wear or study protocol led to parts of the recording to be labelled as invalid and corresponding values [were imputed](https://wadpac.github.io/GGIR/articles/chapter6_DataImputation.html): 
+
+1. If we want the guider to use the imputed values then leave parameter `HASPT.ignore.invalid = FALSE` as default.
 
 2. If we want to guider to ignore all invalid segment despite our efforts to impute it, see `HASPT.ignore.invalid = TRUE`. This approach may be helpful for studies where the accelerometer is often not worn during the waking hour of the day.
 

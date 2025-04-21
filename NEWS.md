@@ -1,10 +1,62 @@
+# CHANGES IN GGIR VERSION 3.2-5
+
+This release primarily includes fixes to minor bugs observed after more elaborate testing of the features add in previous releases 3.2-3 and 3.2-4.
+
+- Part 1: Correct estimate of f1 when user specifies f1=0, which failed with the recently added split recordings functionality.
+
+- Part 1: Recently introduced split records functionality only considered windows timestamps that overlap with recordings. Now changed to include any split time for which the resulting time segment overlaps for at least 12 hours wiht the accelerometer recording.
+
+- Part 5 and visualreport: Add new guider types such as marker button to time series.
+
+- Part 4: Add sleep efficiency and latency to recording summary when marker button is used. It was only added to night summary.
+
+- Part 4: csv report, fix bug introduced in release 3.2-4 earlier this week causing a few columns to be incorrectly named.
+
+- Part 6: Now uses largest milestone file as reference point for column names.
+
+- Part 3: HASPT.algo "HLRB" algorithm provided two windows when both are of equal length, now fixed by taking the last window.
+
+# CHANGES IN GGIR VERSION 3.2-4
+
+- Part 1:
+
+  - Expand split recording functionality that was added in 3.2-1 with parameter recording_split_ignore_edges. #1278
+
+  - Add option to load externally derived epoch data from Actical, Philips Health Band, and Fitbit. #1205
+
+  - Parameter do.parallel now also works for loading externally derived epoch data. #1205
+
+- Part 1 and 5: Now saves marker button data from Actiwatch, MotionWatch8, and Philips Health band to GGIR milestone data and includes it in the visualreport.
+
+- Part 3:
+
+  - Added new HASIB.algo option "Oakley1997" as described in the non-public document "Information bulletin no.3 sleep algorithms" as written by Cambridge Neurotechnologies. For which the threshold can be set with new parameter oakley_threshold. #1267
+
+  - Added new HASIB.algo option "data", as a way to tell GGIR to use the sleep classification that is stored in the data. Only relevant for externally derived epoch data such as Actiwatch, Fitbit, Sensewear.
+  
+  - Added new HASPT.algo option "MotionWare" which is an attempt to imitate the auto-detection of sleep as described in the non-public document by Cambridge Neurotechnologies: Information bulletin no.3 sleep algorithms. #1267
+
+  - Added new HASPT.algo option "HLRB", a new heuristic algorithm specific to aid detecting the sleep window based on sustained inactivity bouts. Although intended for Actiwatch/MotionWatch/PHB data it may also work for other data types.
+
+  - Added option to utilise marker button data from Actiwatch, MotionWatch8 and Philips Health Band for sleep and nap detection, with new parameter consider_marker_button, impute_marker_button, nap_markerbutton_method, nap_markerbutton_max_distance. #1267
+  
+  - Remove code sections relating to the previously deprecated BrondCounts.
+
+- Vignettes: Added Annex page on date and time formats in R.
+
+- Part 4 and 5: csv reports now track how often marker button is used as guider #1267.
+
+# CHANGES IN GGIR VERSION 3.2-3
+
+- Part 1: Implemented functionality to read and process Parmay Matrix sensors data (bin or BIN files) #1253
+
 # CHANGES IN GGIR VERSION 3.2-2
 
 - Part 2: Improve handling 23 hour days in day summary #1281
 
-- Part 4: Detected duplicated ID in sleeplog and generate error to inform user #1281
+- Part 4: Now detects duplicated ID in sleeplog and generates error to inform user #1281
 
-- Part 4: No longer show warning when GGIR part 4 fall back on 9am-7pm guider because it is
+- Part 4: No longer shows warning when GGIR part 4 falls back on 9am-7pm guider because it is
 unlikely to be used and if it is used the user will be able to see this in the output. #1281
 
 # CHANGES IN GGIR VERSION 3.2-1
