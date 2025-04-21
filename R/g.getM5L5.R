@@ -1,16 +1,17 @@
 g.getM5L5 = function(varnum, epochSize, t0_LFMF, t1_LFMF, M5L5res, winhr, 
-                     qM5L5  = c(), iglevels = c(), MX.ig.min.dur = 10) {
+                     qM5L5  = c(), iglevels = c(), MX.ig.min.dur = 10,
+                     UnitReScale = 1000) {
   #diurnal pattern features extracted only meaningful if more than 16 hours
   meanVarnum = mean(varnum)
   do.M5L5 = meanVarnum > 0 # & length(varnum) > 1440*(60/ws3)
-  nwindow_f = (t1_LFMF-winhr) - t0_LFMF #number of windows for L5M5 analyses
+  nwindow_f = (t1_LFMF - winhr) - t0_LFMF #number of windows for L5M5 analyses
   if (length(do.M5L5) == 0 | is.na(do.M5L5) == TRUE | nwindow_f < 1) do.M5L5 = FALSE
   
   if (do.M5L5 == TRUE) { # only do the analysis if varnum has values other than zero
     reso = M5L5res #resolution
     nwindow_f = nwindow_f * (60/reso)
     DAYrunav5 = matrix(NA,nwindow_f,1)
-    first_hri = (t0_LFMF*(60/reso))
+    first_hri = (t0_LFMF * (60/reso))
     last_hri = min(nrow(DAYrunav5), floor(((t1_LFMF - winhr) * (60/reso)) - 1))
     for (hri in first_hri:last_hri) { #e.g.9am-9pm
       e1 = (hri * reso * (60/epochSize)) + 1 #e.g. 9am
@@ -25,9 +26,10 @@ g.getM5L5 = function(varnum, epochSize, t0_LFMF, t1_LFMF, M5L5res, winhr,
     valid = which(is.na(DAYrunav5) == F)
     DAYL5HOUR = ((which(DAYrunav5 == min(DAYrunav5[valid], na.rm = T) &
                           is.na(DAYrunav5) == F) - 1)/(60/reso)) + t0_LFMF #- 1
-    DAYL5VALUE = min(DAYrunav5[valid]) * 1000
+    DAYL5VALUE = min(DAYrunav5[valid]) * UnitReScale
     DAYM5HOUR = ((which(DAYrunav5 == max(DAYrunav5[valid], na.rm = T) & is.na(DAYrunav5) == F) - 1)/(60/reso)) + t0_LFMF #- 1
-    DAYM5VALUE = max(DAYrunav5[valid]) * 1000
+    DAYM5VALUE = max(DAYrunav5[valid]) * UnitReScale
+
     #-------------------------------------
     if (length(DAYL5VALUE) > 1) { DAYL5VALUE = sort(DAYL5VALUE)[ceiling(length(DAYL5VALUE)/2)] }
     if (length(DAYL5HOUR) > 1) { DAYL5HOUR = sort(DAYL5HOUR)[ceiling(length(DAYL5HOUR)/2)] }
@@ -64,9 +66,9 @@ g.getM5L5 = function(varnum, epochSize, t0_LFMF, t1_LFMF, M5L5res, winhr,
       for (li in 1:2) { # do twice, once for LX and once for MX
         q49 = c()
         if (li == 1) {
-          q50 = cut(varnum[L5start:L5end] * 1000, breaks = iglevels, right = FALSE)
+          q50 = cut(varnum[L5start:L5end] * UnitReScale, breaks = iglevels, right = FALSE)
         } else {
-          q50 = cut(varnum[M5start:M5end] * 1000, breaks = iglevels, right = FALSE)
+          q50 = cut(varnum[M5start:M5end] * UnitReScale, breaks = iglevels, right = FALSE)
         }
         q50 = table(q50)
         q49  = (as.numeric(q50) * epochSize)/60 #converting to minutes
@@ -90,7 +92,7 @@ g.getM5L5 = function(varnum, epochSize, t0_LFMF, t1_LFMF, M5L5res, winhr,
       # calculate statistics on acceleration metrics
       L5q = quantile(varnum[L5start:L5end], probs = qM5L5 , na.rm = TRUE)
       M5q = quantile(varnum[M5start:M5end], probs = qM5L5 , na.rm = TRUE)
-      M5L5varsExtra = as.numeric(c(L5q, M5q)) * 1000
+      M5L5varsExtra = as.numeric(c(L5q, M5q)) * UnitReScale
     } else {
       M5L5varsExtra = rep(NA, length(qM5L5) * 2)
     }

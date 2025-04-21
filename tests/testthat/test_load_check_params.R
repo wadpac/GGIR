@@ -11,14 +11,14 @@ test_that("load_params can load parameters", {
   
   # Test length of objects
   expect_equal(length(params), 8)
-  expect_equal(length(params$params_sleep), 24)
+  expect_equal(length(params$params_sleep), 29)
   expect_equal(length(params$params_metrics), 41)
   expect_equal(length(params$params_rawdata), 40)
   expect_equal(length(params$params_247), 24)
   expect_equal(length(params$params_cleaning), 28)
   expect_equal(length(params$params_phyact), 14)
   expect_equal(length(params$params_output), 27)
-  expect_equal(length(params$params_general), 20)
+  expect_equal(length(params$params_general), 21)
 
   params_sleep = params$params_sleep
   params_metrics = params$params_metrics
@@ -165,47 +165,33 @@ test_that("load_params can load parameters", {
   expect_equal(check$params_247$LUX_day_segments[length(check$params_247$LUX_day_segments)], 24)
   params_247 = params$params_247
   
-  # if dataFormat = "actiwatch_awd", then acc.metric = "ZCY"
+  # if dataFormat = "actiwatch_awd"
   params_general$dataFormat = "actiwatch_awd"
-  check = expect_warning(check_params(params_general = params_general,
-                                      params_metrics = params_metrics),
-                         regexp = "When dataFormat is set to actiwatch_awd")
-  expect_true(check$params_metrics$do.zcy)
-  expect_equal(check$params_general$acc.metric, "ZCY")
+  check = check_params(params_general = params_general,
+                       params_metrics = params_metrics)
+  expect_false(check$params_metrics$do.zcy)
+  expect_equal(check$params_general$acc.metric, "ExtAct")
   # also, no other metrics should be extracted
   params_metrics$do.anglex = TRUE
-  params_general$acc.metric = "ZCY"
-  check = expect_warning(check_params(params_general = params_general,
-                                      params_metrics = params_metrics),
-                         regexp = "When dataFormat is set to actiwatch_awd")
-  expect_true(check$params_metrics$do.zcy)
+  params_general$acc.metric = "ExtAct"
+  check = check_params(params_general = params_general,
+                       params_metrics = params_metrics)
+  expect_false(check$params_metrics$do.zcy)
   expect_false(check$params_metrics$do.anglex)
+  expect_equal(check$params_general$acc.metric, "ExtAct")
   params_general = params$params_general
   params_metrics = params$params_metrics
   
-  # if dataFormat = "actiwatch_awd", then Sadeh_axis = "Y"
-  params_general$dataFormat = "actiwatch_awd"
-  params_sleep$Sadeh_axis = "X"
-  params_sleep$HASIB.algo = "Sadeh1994"
-  expect_warning(check_params(params_general = params_general,
-                              params_metrics = params_metrics,
-                              params_sleep = params_sleep),
-                 regexp = "we assume that Sadeh_axis Y")
-  params_general = params$params_general
-  params_sleep = params$params_sleep
-
   # if dataFormat = "ukbiobank", then acc.metric = "LFENMO"
   params_general$dataFormat = "ukbiobank"
-  check = expect_warning(check_params(params_general = params_general,
-                                      params_metrics = params_metrics),
-                         regexp = "When dataFormat is set to ukbiobank")
+  check = check_params(params_general = params_general,
+                       params_metrics = params_metrics)
   expect_equal(check$params_general$acc.metric, "LFENMO")
   # also, no other metrics should be extracted
   params_metrics$do.anglex = TRUE
   params_general$acc.metric = "LFENMO"
-  check = expect_warning(check_params(params_general = params_general,
-                                      params_metrics = params_metrics),
-                         regexp = "When dataFormat is set to ukbiobank")
+  check = check_params(params_general = params_general,
+                       params_metrics = params_metrics)
   expect_false(check$params_metrics$do.anglex)
   params_general = params$params_general
   params_metrics = params$params_metrics
@@ -221,13 +207,13 @@ test_that("load_params can load parameters", {
                  regexp = "segmentWEARcrit.part5 is expected to be")
   params_cleaning$segmentWEARcrit.part5 = 16
   expect_error(check_params(params_cleaning = params_cleaning),
-                 regexp = "Incorrect value of segmentWEARcrit.part5")
+               regexp = "Incorrect value of segmentWEARcrit.part5")
   params_cleaning$segmentWEARcrit.part5 = 0.5
   
   # segmentDAYSPTcrit.part5 should be two numbers between 0 and 1
   params_cleaning$segmentDAYSPTcrit.part5 = NULL
   expect_error(check_params(params_cleaning = params_cleaning),
-                 regexp = "Parameter segmentDAYSPTcrit.part5 is expected to be a numeric vector of length 2")
+               regexp = "Parameter segmentDAYSPTcrit.part5 is expected to be a numeric vector of length 2")
   params_cleaning$segmentDAYSPTcrit.part5 = c(-1, 0)
   expect_error(check_params(params_cleaning = params_cleaning),
                regexp = paste0("Incorrect values of segmentDAYSPTcrit.part5,",

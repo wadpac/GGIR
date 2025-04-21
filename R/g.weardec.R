@@ -1,6 +1,5 @@
-g.weardec = function(M, wearthreshold, ws2, params_cleaning = NULL,
+g.weardec = function(metalong, wearthreshold, ws2, params_cleaning = NULL,
                      desiredtz = "", qwindowImp = c()) {
-  metalong = M$metalong
   nonWearEdgeCorrection = params_cleaning[["nonWearEdgeCorrection"]]
   nsi = which(colnames(metalong) == "nonwearscore")
   csi = which(colnames(metalong) == "clippingscore")

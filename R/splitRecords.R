@@ -55,6 +55,18 @@ splitRecords = function(metadatadir, params_general = NULL) {
           # Only consider timestamps that overlap with recording
           within_time_range = which(splitTime_tmp >= S$start[j] &
                                       splitTime_tmp <= S$end[j])
+          # If first split time was skipped but overlaps for more than 12 hours
+          # with the accelerometer recording include it
+          if (within_time_range[1] != 1 &&
+              splitTime_tmp[within_time_range[1]] - S$start[j] > 12 * 3600) {
+            within_time_range = c(within_time_range[1] - 1, within_time_range)
+          }
+          # If last split time was skipped but overlaps for more than 12 hours
+          # with the accelerometer recording include it
+          if (within_time_range[length(within_time_range)] < splitTime_tmp[length(splitTime_tmp)] &
+              S$end[j] - splitTime_tmp[within_time_range[length(within_time_range)]] > 12 * 3600) {
+            within_time_range = c(within_time_range, within_time_range[length(within_time_range)] + 1)
+          }
           splitTime_tmp = splitTime_tmp[within_time_range]
           
           if (length(splitTime_tmp) == 0) next
@@ -75,7 +87,8 @@ splitRecords = function(metadatadir, params_general = NULL) {
           Mbu = M
           segment_names = segment_starts = segment_ends = NULL
           # Define segments
-          if (splitTime_tmp[1] > timestamp_short[1]) {
+          if (splitTime_tmp[1] > timestamp_short[1] &&
+              params_general[["recording_split_ignore_edges"]] == FALSE) {
             segment_starts = timestamp_short[1]
             segment_ends = splitTime_tmp[1]
             segment_names = paste0("startrecTO", split_names[1])
@@ -87,10 +100,12 @@ splitRecords = function(metadatadir, params_general = NULL) {
               segment_names = c(segment_names, paste0(split_names[segment_index], "TO",
                                                       split_names[segment_index + 1]))
             } else {
-              segment_starts = c(segment_starts, splitTime_tmp[segment_index])
-              segment_ends = c(segment_ends, timestamp_short[length(timestamp_short)])
-              segment_names = c(segment_names, paste0(split_names[segment_index],
-                                                      "TOendrec"))
+              if (params_general[["recording_split_ignore_edges"]] == FALSE) {
+                segment_starts = c(segment_starts, splitTime_tmp[segment_index])
+                segment_ends = c(segment_ends, timestamp_short[length(timestamp_short)])
+                segment_names = c(segment_names, paste0(split_names[segment_index],
+                                                        "TOendrec"))
+              }
             }
           }
           # Store each part separately
@@ -143,9 +158,10 @@ splitRecords = function(metadatadir, params_general = NULL) {
                 file_was_split = TRUE
                 
                 # update weekday code and name
-                M$wday = as.POSIXlt(x = timestamp_short[1], tz = desiredtz)$wday
+                wday = as.POSIXlt(x = timestamp_short[1], tz = desiredtz)$wday + 1
                 weekdays = c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
-                M$wdayname = weekdays[M$wday + 1]
+                M$wday = wday
+                M$wdayname = weekdays[wday]
                 # save
                 save(M, C, I,
                      filefoldername, filename_dir, tail_expansion_log,

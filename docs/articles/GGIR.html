@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,6 +60,7 @@
     <li><a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a></li>
     <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
     <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
+    <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
@@ -134,28 +135,6 @@ for GGIR.</p>
 <div class="section level3">
 <h3 id="contributing-support-and-keeping-up-to-date">Contributing, Support, and Keeping up to date<a class="anchor" aria-label="anchor" href="#contributing-support-and-keeping-up-to-date"></a>
 </h3>
-<p><strong>How to contribute to the code?</strong></p>
-<p>The development version of GGIR can be found on <a href="https://github.com/wadpac/GGIR" class="external-link">github</a>, which is also where
-you will find <a href="https://github.com/wadpac/GGIR/blob/master/CONTRIBUTING.md" class="external-link">guidance</a>
-on how to contribute.</p>
-<p><strong>How can I get service and support?</strong></p>
-<p>GGIR is open source software and does not come with service or
-support guarantees. However, as user-community you can help each other
-via the <a href="https://groups.google.com/forum/#!forum/RpackageGGIR" class="external-link">GGIR google
-group</a> or the <a href="https://github.com/wadpac/GGIR/issues" class="external-link">GitHub
-issue tracker</a>. Please use these public platform rather than private
-e-mails such that other users can learn from the conversations.</p>
-<p>If you need dedicated support with the use of GGIR or need someone to
-adapt GGIR to your needs then Vincent van Hees is available as <a href="https://www.accelting.com/" class="external-link">independent consultant</a>.</p>
-<p><strong>Training in R essentials and GGIR</strong> We offer frequent
-online GGIR training courses. Check our dedicated training <a href="https://www.accelting.com/ggir-training/" class="external-link">website</a> with more
-details and the option to book your training. Do you have questions
-about the training or the booking process? Do not hesitate to contact us
-via: <a href="mailto:training@accelting.com" class="email">training@accelting.com</a>.</p>
-<p>Also of interest may be the brief <a href="https://www.accelting.com/short-r-tutorial/" class="external-link">free R introduction
-tutorial</a>.</p>
-<p><strong>Change log</strong></p>
-<p>Our log of main changes to GGIR over time can be found <a href="https://cran.r-project.org/package=GGIR/news/news.html" class="external-link">here</a>.</p>
 </div>
 </div>
 <div class="section level2">
@@ -164,85 +143,10 @@ tutorial</a>.</p>
 <div class="section level3">
 <h3 id="install-r-and-rstudio">Install R and RStudio<a class="anchor" aria-label="anchor" href="#install-r-and-rstudio"></a>
 </h3>
-<p><a href="https://cran.r-project.org/" class="external-link">Download and install R</a></p>
-<p><a href="https://posit.co/products/open-source/rstudio/" class="external-link">Download and
-install RStudio</a></p>
-<p>Install GGIR with its dependencies from CRAN. You can do this with
-one command from the console command line:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"GGIR"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>Alternatively, to install the latest development version with the
-latest bug fixes use instead:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"wadpac/GGIR"</span><span class="op">)</span></span></code></pre></div>
-<p>Additionally, in some use-cases you will need to install one or
-multiple additional packages:</p>
-<ul>
-<li>If you are working with Axivity, GENEActiv, or GENEA files, install
-the GGIRread package with <code>install.packages("GGIRread")</code>
-</li>
-<li>If you are working with ActiGraph gt3x files, install the read.gt3x
-package with <code>install.packages("read.gt3x")</code>
-</li>
-<li>If you want to derive Neishabouricounts (with
-<code>do.neishabouricounts = TRUE</code>), install the actilifecounts
-package with <code>install.packages("actilifecounts")</code>
-</li>
-<li>If you want to derive circadian rhythm indicators using the [Cosinor
-analysis and Extended Cosinor analysis] (with
-<code>cosinor = TRUE</code> for part 2, in part 6 it is always
-performed), install the ActCR package with
-<code>install.packages("ActCR")</code>
-</li>
-</ul>
 </div>
 <div class="section level3">
 <h3 id="prepare-folder-structure">Prepare folder structure<a class="anchor" aria-label="anchor" href="#prepare-folder-structure"></a>
 </h3>
-<ol style="list-style-type: decimal">
-<li>GGIR works with the following accelerometer brands and formats:
-<ul>
-<li>
-<a href="https://activinsights.com/" class="external-link">GENEActiv</a> .bin</li>
-<li>
-<a href="https://axivity.com/" class="external-link">Axivity</a> AX3 and AX6 .cwa</li>
-<li>
-<a href="https://theactigraph.com" class="external-link">ActiGraph</a> .csv and .gt3x
-(.gt3x only the newer format generated with firmware versions above
-2.5.0. Serial numbers that start with “NEO” or “MRA” and have firmware
-version of 2.5.0 or earlier use an older format of the .gt3x file). Note
-for Actigraph users: If you want to work with .csv exports via the
-commercial ActiLife software then note that you have the option to
-export data with timestamps. Please do not do this as this causes memory
-issues for GGIR. To cope with the absence of timestamps GGIR will
-calculate timestamps from the sample frequency, the start time and start
-date as presented in the file header.</li>
-<li>
-<a href="https://www.movisens.com/en/" class="external-link">Movisens</a> .bin files with
-data stored in folders. GGIR expects that each participant’s folder
-contains at least a file named acc.bin.</li>
-<li>Any other accelerometer brand that generates csv output, see
-documentation for functions <code>read.myacc.csv</code> and argument
-<code>rmc.noise</code> in the <a href="https://CRAN.R-project.org/package=GGIR/GGIR.pdf" class="external-link">GGIR function
-documentation (pdf)</a>. Note that functionality for the following file
-formats was part of GGIR but has been deprecated as it required a
-significant maintenance effort without a clear use case or community
-support: (1) .bin for the Genea monitor by Unilever Discover, an
-accelerometer that was used for some studies between 2007 and 2012)
-.bin, and (2) .wav files as can be exported by the Axivity Ltd OMGUI
-software. Please contact us if you think these data formats should be
-facilitated by GGIR again and if you are interested in supporting their
-ongoing maintenance.</li>
-</ul>
-</li>
-<li>All accelerometer data that needs to be analysed should be stored in
-one folder, or subfolders of that folder.</li>
-<li>Give the folder an appropriate name, preferable with a reference to
-the study or project it is related to rather than just ‘data’, because
-the name of this folder will be used later on as an identifier of the
-dataset.</li>
-</ol>
 </div>
 <div class="section level3">
 <h3 id="ggir-shell-function">GGIR shell function<a class="anchor" aria-label="anchor" href="#ggir-shell-function"></a>
@@ -259,7 +163,7 @@ methodological studies where researchers want to have control over every
 little detail. See previous paragraph for links to the documentation and
 how to find the default value of each parameter.</p>
 <p>The bare minimum input needed for <code>GGIR</code> is:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wadpac/GGIR/" class="external-link">GGIR</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/GGIR.html">GGIR</a></span><span class="op">(</span>datadir<span class="op">=</span><span class="st">"C:/mystudy/mydata"</span>,</span>
 <span> outputdir<span class="op">=</span><span class="st">"D:/myresults"</span><span class="op">)</span></span></code></pre></div>
@@ -415,48 +319,6 @@ for GGIR.</p>
 <div class="section level4">
 <h4 id="key-arguments-related-to-time-use-analysis">Key arguments related to time use analysis<a class="anchor" aria-label="anchor" href="#key-arguments-related-to-time-use-analysis"></a>
 </h4>
-<p>For an explanation on how time use analysis is performed see section
-<a href="#Waking-waking_or_24_hour">Waking-waking or 24 hour time-use
-analysis</a>.</p>
-<ul>
-<li>
-<code>excludefirstlast.part5</code> - whether to ignore the last and
-first day.</li>
-<li>
-<code>includedaycrit.part5</code> - tell GGIR what fraction of the
-waking hours in a day (value below 1) is acceptable.</li>
-<li>
-<code>minimum_MM_length.part5</code> - tell GGIR what the minimum
-length (hours) should be of the MM window in part 5.</li>
-<li>Configure thresholds for acceleration levels (some may want to
-interpret this as intensity levels): <code>threshold.lig</code>,
-<code>threshold.mod</code>, <code>threshold.vig</code>.</li>
-<li>Configure what fraction of a bout needs to meet the threshold
-(cut-point) crtieria <code>boutcriter.in</code>,
-<code>boutcriter.lig</code>, <code>boutcriter.mvpa</code>. Note that
-boutcriter.mvpa = 0.8 means that an MVPA bout can have interruptions
-(i.e., the time out of MVPA intensity) that meet the following criteria:
-<ol style="list-style-type: decimal">
-<li>A single interruption can last &lt; 1 min</li>
-<li>Repeated interruptions are allowed provided that their total time
-does not exceed 20% of the bout duration</li>
-<li>The time spent in the interruptions is included in the duration of
-the MVPA bout. For example: A 25-minute bout can have two 1 minute
-interruption, but not a single 2-minute interruption. Here, the full 25
-minutes would count towards the duration of the MVPA bout.</li>
-</ol>
-</li>
-<li>
-<code>timewindow</code> to specify whether days should be defined
-from midnight to midnight <code>"MM"</code>, from waking-up to waking-up
-<code>"WW"</code>, from sleep onset to sleep onset <code>"OO"</code>, or
-any combination of them.</li>
-<li>Configure durations of bouts: <code>boutdur.mvpa</code>,
-<code>boutdur.in</code>, and <code>boutdur.lig</code>. Note that this
-can be a vector of multiple values indicating the minimum and maximum
-duration of subsequent bout types, e.g. 1-5 minutes MVPA, 5-10 minutes
-MVPA, and longer than 10 minutes MVPA.</li>
-</ul>
 </div>
 <div class="section level4">
 <h4 id="published-cut-points-and-how-to-use-them">Published cut-points and how to use them<a class="anchor" aria-label="anchor" href="#published-cut-points-and-how-to-use-them"></a>
@@ -470,46 +332,9 @@ of cut-points in GGIR.</p>
 <div class="section level4">
 <h4 id="example-call">Example call<a class="anchor" aria-label="anchor" href="#example-call"></a>
 </h4>
-<p>If you consider all the arguments above you me may end up with a call
-to <code>GGIR</code> that could look as follows.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wadpac/GGIR/" class="external-link">GGIR</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/GGIR.html">GGIR</a></span><span class="op">(</span>mode<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="fl">5</span><span class="op">)</span>,</span>
-<span>      datadir<span class="op">=</span><span class="st">"C:/mystudy/mydata"</span>,</span>
-<span>      outputdir<span class="op">=</span><span class="st">"D:/myresults"</span>,</span>
-<span>      do.report<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">4</span>,<span class="fl">5</span><span class="op">)</span>,</span>
-<span>      <span class="co">#=====================</span></span>
-<span>      <span class="co"># Part 2</span></span>
-<span>      <span class="co">#=====================</span></span>
-<span>      data_masking_strategy <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>      hrs.del.start <span class="op">=</span> <span class="fl">0</span>,          hrs.del.end <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>      maxdur <span class="op">=</span> <span class="fl">9</span>,                 includedaycrit <span class="op">=</span> <span class="fl">16</span>,</span>
-<span>      qwindow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">24</span><span class="op">)</span>,</span>
-<span>      mvpathreshold <span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>,</span>
-<span>      excludefirstlast <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>      includenightcrit <span class="op">=</span> <span class="fl">16</span>,</span>
-<span>      <span class="co">#=====================</span></span>
-<span>      <span class="co"># Part 3 + 4</span></span>
-<span>      <span class="co">#=====================</span></span>
-<span>      def.noc.sleep <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>      outliers.only <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>      criterror <span class="op">=</span> <span class="fl">4</span>,</span>
-<span>      do.visual <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>      <span class="co">#=====================</span></span>
-<span>      <span class="co"># Part 5</span></span>
-<span>      <span class="co">#=====================</span></span>
-<span>      threshold.lig <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span>, threshold.mod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>,  threshold.vig <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">400</span><span class="op">)</span>,</span>
-<span>      boutcriter <span class="op">=</span> <span class="fl">0.8</span>,      boutcriter.in <span class="op">=</span> <span class="fl">0.9</span>,     boutcriter.lig <span class="op">=</span> <span class="fl">0.8</span>,</span>
-<span>      boutcriter.mvpa <span class="op">=</span> <span class="fl">0.8</span>, boutdur.in <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">10</span>,<span class="fl">30</span><span class="op">)</span>, boutdur.lig <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">10</span><span class="op">)</span>,</span>
-<span>      boutdur.mvpa <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>,</span>
-<span>      includedaycrit.part5 <span class="op">=</span> <span class="fl">2</span><span class="op">/</span><span class="fl">3</span>,</span>
-<span>      <span class="co">#=====================</span></span>
-<span>      <span class="co"># Visual report</span></span>
-<span>      <span class="co">#=====================</span></span>
-<span>      timewindow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WW"</span><span class="op">)</span>,</span>
-<span>      visualreport<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>Once you have used <code>GGIR</code> and the output directory
-(outputdir) will be filled with milestone data and results.</p>
+<p>This section has been migrated to this <a href="https://wadpac.github.io/GGIR/articles/chapter2_Pipeline.html">section</a>
+in the GGIR github-pages, which is now the main documentation resource
+for GGIR.</p>
 </div>
 <div class="section level4">
 <h4 id="configuration-file">Configuration file<a class="anchor" aria-label="anchor" href="#configuration-file"></a>
@@ -549,12 +374,16 @@ for GGIR.</p>
 <div class="section level2">
 <h2 id="inspecting-the-results">Inspecting the results<a class="anchor" aria-label="anchor" href="#inspecting-the-results"></a>
 </h2>
-<p>GGIR generates the following types of output. - csv-spreadsheets with
-all the variables you need for physical activity, sleep and circadian
-rhythm research - Pdfs with on each page a low resolution plot of the
-data per file and quality indicators - R objects with milestone data -
-Pdfs with a visual summary of the physical activity and sleep patterns
-as identified (see example below)</p>
+<p>GGIR generates the following types of output.</p>
+<ul>
+<li>csv-spreadsheets with all the variables you need for physical
+activity, sleep and circadian rhythm research</li>
+<li>Pdfs with on each page a low resolution plot of the data per file
+and quality indicators</li>
+<li>R objects with milestone data</li>
+<li>Pdfs with a visual summary of the physical activity and sleep
+patterns as identified (see example below)</li>
+</ul>
 <p><img src="reportexample.jpg" alt="Example visualreport" width="700px"></p>
 <div class="section level3">
 <h3 class="tabset" id="output-part-2">Output part 2<a class="anchor" aria-label="anchor" href="#output-part-2"></a>
@@ -636,84 +465,9 @@ for GGIR.</p>
 <div class="section level3">
 <h3 class="tabset" id="output-part-6">Output part 6<a class="anchor" aria-label="anchor" href="#output-part-6"></a>
 </h3>
-<p>When <code>part6CR = TRUE</code> and the vector as specified for
-paramter <code>do.report</code> includes the number 6, a csv report will
-be stored with the following variables:</p>
-<table class="table">
-<colgroup>
-<col width="38%">
-<col width="61%">
-</colgroup>
-<thead><tr class="header">
-<th>Variable name</th>
-<th>Description</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td>ID</td>
-<td>Participant ID extracted from file</td>
-</tr>
-<tr class="even">
-<td>starttime</td>
-<td>Start timestamp for the data as used for the analysis</td>
-</tr>
-<tr class="odd">
-<td>filename</td>
-<td>File name</td>
-</tr>
-<tr class="even">
-<td>N_days</td>
-<td>Number of days in the data as used for the analysis</td>
-</tr>
-<tr class="odd">
-<td>N_valid_days</td>
-<td>Number of valid days in the data as used for the analysis, defined
-as the cumulative number of epoch expressed in days</td>
-</tr>
-<tr class="even">
-<td><code>cosinor_</code></td>
-<td>Cosinor analysis estimates such as mes, amp, acrophase, and
-acrotime, as documented in the <a href="https://CRAN.R-project.org/package=ActCR" class="external-link">Ac tCR</a> package.</td>
-</tr>
-<tr class="odd">
-<td><code>cosinorExt_</code></td>
-<td>Extended Cosinor analysis estimates such as minimum, amp, alpha,
-beta, acrotime, UpMesor, DownMesor, MESOR, and F_pseudo, as documented
-in the <a href="https://CRAN.R-project.org/package=ActCR" class="external-link">Ac tCR</a>
-package.</td>
-</tr>
-<tr class="even">
-<td><code>IV</code></td>
-<td>Intradaily Variability (IV) after Eus J. W. Van Someren
-(Chronobiology International. 1999. Volume 16, issue 4). Implementation
-described in Ian Meneghel Danilevicz et al. <a href="https://doi.org/10.21203/rs.3.rs-3543711/v1" class="external-link uri">https://doi.org/10.21203/rs.3.rs-3543711/v1</a>
-</td>
-</tr>
-<tr class="odd">
-<td><code>IS</code></td>
-<td>Interdaily Stability (IS) after Eus J. W. Van Someren (Chronobiology
-International. 1999. Volume 16, issue 4). Implementation described in
-Ian Meneghel Danilevicz et al. <a href="https://doi.org/10.21203/rs.3.rs-3543711/v1" class="external-link uri">https://doi.org/10.21203/rs.3.rs-3543711/v1</a>
-</td>
-</tr>
-<tr class="even">
-<td>phi</td>
-<td>Ian Meneghel Danilevicz et al. <a href="https://doi.org/10.21203/rs.3.rs-3543711/v1" class="external-link uri">https://doi.org/10.21203/rs.3.rs-3543711/v1</a>
-</td>
-</tr>
-<tr class="odd">
-<td>SSP</td>
-<td>Only created when <code>part6DFA = TRUE</code>. Self-Similarity
-parameter as part of the Detrended Fluctuation Analysis. Implementation
-described in Ian Meneghel Danilevicz et al. <a href="https://doi.org/10.21203/rs.3.rs-3543711/v1" class="external-link uri">https://doi.org/10.21203/rs.3.rs-3543711/v1</a>.</td>
-</tr>
-<tr class="even">
-<td>ABI</td>
-<td>Only created when <code>part6DFA = TRUE</code>. Activity Balance
-Index. Implementation described in Ian Meneghel Danilevicz et al. <a href="https://doi.org/10.21203/rs.3.rs-3543711/v1" class="external-link uri">https://doi.org/10.21203/rs.3.rs-3543711/v1</a>.</td>
-</tr>
-</tbody>
-</table>
+<p>This section has been migrated to this <a href="https://wadpac.github.io/GGIR/articles/GGIRoutput.html#ggir-part-6">section</a>
+in the GGIR github-pages, which is now the main documentation resource
+for GGIR.</p>
 </div>
 </div>
 <div class="section level2">

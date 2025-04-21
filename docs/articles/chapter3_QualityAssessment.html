@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,6 +60,7 @@
     <li><a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a></li>
     <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
     <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
+    <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
@@ -122,9 +123,10 @@ tasks are explained in this chapter.</p>
 typically structured in data blocks. Each data block has a header at the
 top and a constant number of data points per block, usually the
 equivalent of a few seconds of data. For the Axivity accelerometer with
-data stored in ‘.cwa’ file format those blocks can, on rare occasions,
-be corrupted and unreadable, therefore creating a gap in the information
-recorded.</p>
+data stored in ‘.cwa’ file format and for the Parmay Matrix sensor with
+data stored in ‘.bin’ or ‘.BIN’ format those blocks can, on rare
+occasions, be corrupted and unreadable, therefore creating a gap in the
+information recorded.</p>
 <p>For the ActiGraph accelerometer, but also some other sensor brands
 that export data in ‘csv’ file format, it is possible that the recording
 stops at certain time when it is not moved for a while and starts
@@ -132,33 +134,36 @@ recording after some time, therefore creating a time gap.</p>
 <p>GGIR has been developed to efficiently identify and manage these time
 gaps.</p>
 <div class="section level3">
-<h3 id="time-gaps-in-axivity-cwa-files">Time gaps in Axivity cwa files<a class="anchor" aria-label="anchor" href="#time-gaps-in-axivity-cwa-files"></a>
+<h3 id="time-gaps-in-axivity-cwa-and-parmay-matrix-binbin-files">Time gaps in Axivity cwa and Parmay Matrix bin/BIN files<a class="anchor" aria-label="anchor" href="#time-gaps-in-axivity-cwa-and-parmay-matrix-binbin-files"></a>
 </h3>
-<p>Although this is not expected to occur often, Axivity cwa data can
-come with faulty data blocks. By ‘faulty’ we mean that the data in the
-block is not interpretable. For example, faulty blocks may occur when
-the device in recording mode is connected to a computer with a USB
-cable. To address this, the R package <code>GGIRread</code>, as used by
-GGIR to read cwa files, identifies these faulty blocks and imputes them
-by the last recorded non-faulty acceleration value normalised to 1
-<em>g</em> (<em>g</em> is the unit for gravitational acceleration).</p>
+<p>Although this is not expected to occur often, Axivity cwa and Parmay
+Matrix bin/BIN data can come with faulty data blocks. By ‘faulty’ we
+mean that the data in the block is not interpretable. For example,
+faulty blocks may occur when the device in recording mode is connected
+to a computer with a USB cable. To address this, the R package
+<code>GGIRread</code>, as used by GGIR, identifies these faulty blocks
+and imputes them by the last recorded non-faulty acceleration value
+normalised to 1 <em>g</em> (<em>g</em> is the unit for gravitational
+acceleration). In the case that no previous non-faulty value is found,
+then acceleration is imputed by 0, 0, and 1 for x, y, and z axis,
+respectively.</p>
 <p>The sampling rate of an accelerometer refers to the number of data
-points recorded and stored per second. Axivity devices are expected by
-design to have a slightly variable sampling rate over time, which is
-accounted for by interpolating the data after it is loaded into R. For
-example, the data may have been collected at 99.7 Hertz for one block,
-and the interpolation technique will then interpolate the data such that
-it is 100 Hertz. The interpolation happens inside the R package
-<code>GGIRread</code>. The exact technique used for the interpolation is
-set by parameter <code>interpolationType</code> and uses linear
-interpolation by default (<code>interpolationType = 1</code>), but you
-can also set it to nearest neighbour interpolation
-(<code>interpolationType = 2</code>). As a quality assurance,
-<code>GGIRread</code> keeps track of the variation in sampling rate per
-data block and automatically imputes blocks (smallest segment of data in
-a cwa file, typically a few seconds long) where the sampling rate
-deviates by more than 10% from the expected sampling rate. The
-imputation technique is the same as for the time gaps as detailed
+points recorded and stored per second. Axivity and Parmay Matrix devices
+are expected by design to have a slightly variable sampling rate over
+time, which is accounted for by interpolating the data after it is
+loaded into R. For example, the data may have been collected at 99.7
+Hertz for one block, and the interpolation technique will then
+interpolate the data such that it is 100 Hertz. The interpolation
+happens inside the R package <code>GGIRread</code>. The exact technique
+used for the interpolation is set by parameter
+<code>interpolationType</code> and uses linear interpolation by default
+(<code>interpolationType = 1</code>), but you can also set it to nearest
+neighbour interpolation (<code>interpolationType = 2</code>). As a
+quality assurance, <code>GGIRread</code> keeps track of the variation in
+sampling rate per data block and automatically imputes blocks (smallest
+segment of data in a cwa file, typically a few seconds long) where the
+sampling rate deviates by more than 10% from the expected sampling rate.
+The imputation technique is the same as for the time gaps as detailed
 earlier in this section. If you are unhappy with the 10% threshold then
 you have the possibility of changing this percentage with the parameter
 <code>frequency_tol</code>. Biased sampling rates of this kind are
@@ -655,6 +660,66 @@ a sampling frequency bias between 20 and 30%</td>
 <td>filehealth_fbias30_N</td>
 <td>(Only for Axivity .cwa format) Total number of raw data blocks with
 a sampling frequency bias higher than 30%</td>
+<td>QC/data_quality_report.csv</td>
+</tr>
+<tr class="odd">
+<td>filehealth_0vars_missing</td>
+<td>(Only for Fitbit externally derived data) Percentage of data with 0
+missing variables</td>
+<td>QC/data_quality_report.csv</td>
+</tr>
+<tr class="even">
+<td>filehealth_1vars_missing</td>
+<td>(Only for Fitbit externally derived data) Percentage of data with 1
+missing variables</td>
+<td>QC/data_quality_report.csv</td>
+</tr>
+<tr class="odd">
+<td>filehealth_2vars_missing</td>
+<td>(Only for Fitbit externally derived data) Percentage of data with 2
+missing variables</td>
+<td>QC/data_quality_report.csv</td>
+</tr>
+<tr class="even">
+<td>filehealth_3vars_missing</td>
+<td>(Only for Fitbit externally derived data) Percentage of data with 3
+missing variables</td>
+<td>QC/data_quality_report.csv</td>
+</tr>
+<tr class="odd">
+<td>filehealth_4vars_missing</td>
+<td>(Only for Fitbit externally derived data) Percentage of data with 4
+missing variables</td>
+<td>QC/data_quality_report.csv</td>
+</tr>
+<tr class="even">
+<td>filehealth_ExtAct_missing</td>
+<td>(Only for Fitbit externally derived data) Percentage of data where
+ExtAct is missing.</td>
+<td>QC/data_quality_report.csv</td>
+</tr>
+<tr class="odd">
+<td>filehealth_ExtStep_missing</td>
+<td>(Only for Fitbit externally derived data) Percentage of data where
+ExtStep is missing.</td>
+<td>QC/data_quality_report.csv</td>
+</tr>
+<tr class="even">
+<td>filehealth_ExtHeartRate_missing</td>
+<td>(Only for Fitbit externally derived data) Percentage of data where
+ExtHeartRate is missing.</td>
+<td>QC/data_quality_report.csv</td>
+</tr>
+<tr class="odd">
+<td>filehealth_ExtSleep_missing</td>
+<td>(Only for Fitbit externally derived data) Percentage of data where
+ExtSleep is missing.</td>
+<td>QC/data_quality_report.csv</td>
+</tr>
+<tr class="even">
+<td>filehealth_ExtSleep_y_ExtAct_missing</td>
+<td>(Only for Fitbit externally derived data) Percentage of data where
+both ExtSleep and ExtAct are missing.</td>
 <td>QC/data_quality_report.csv</td>
 </tr>
 </tbody>

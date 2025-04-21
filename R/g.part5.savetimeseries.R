@@ -108,14 +108,21 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
                     mdat$window == 0)
       if (length(cut) > 0) mdat = mdat[-cut,] # remove days from which we already know that they are not going to be included (first and last day)
     }
-    mdat$guider = ifelse(mdat$guider == 'sleeplog', yes = 1, # digitize guider to save storage space
+    new_guider_number = ifelse(mdat$guider == 'sleeplog', yes = 1, # digitize guider to save storage space
                          no = ifelse(mdat$guider == 'HDCZA' | mdat$guider == 'HDCZA+invalid', yes = 2,
-                                     no =  ifelse(mdat$guider == 'setwindow', yes = 3,
-                                                  no = ifelse(mdat$guider == 'L512', yes = 4,
-                                                              no = ifelse(mdat$guider == 'HorAngle' | mdat$guider == 'HorAngle+invalid', yes = 5,
-                                                                          no = ifelse(mdat$guider == 'NotWorn' | mdat$guider == 'NotWorn+invalid', yes = 6,
-                                                                                      no = 0))))))
-    
+                                     no = ifelse(mdat$guider == 'HorAngle' | mdat$guider == 'HorAngle+invalid', yes = 5,
+                                                 no = ifelse(mdat$guider == 'NotWorn' | mdat$guider == 'NotWorn+invalid', yes = 6,
+                                                             no = 0))))
+    # use loop for other guiders:
+    guidernames = c('setwindow', 'L512', 'markerbutton', 'HLRB', 'MotionWare')
+    guidernumbers = c(3, 4, 7, 8, 9)
+    for (gi in 1:length(guidernames)) {
+      guidername_instance = which(mdat$guider == guidernames[gi])
+      if (length(guidername_instance) > 0) {
+        new_guider_number[guidername_instance] = guidernumbers[gi]
+      }
+    }
+    mdat$guider = new_guider_number
     mdat = mdat[,-which(names(mdat) %in% c("timestamp","time"))]
     # re-oder columns
     if ("csv" %in% params_output[["save_ms5raw_format"]]) {
