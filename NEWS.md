@@ -4,7 +4,7 @@
 
 - Part 6: Add sleep regularity index based on sleep and (currently experimental) naps. We will refer to this as SRI2.
 
-- Part 1: Split recordings now better handles partial overlap with reference time windows.
+- Part 1: Recently added functionality to split recordings now better handles partial overlap with reference time windows.
 
 # CHANGES IN GGIR VERSION 3.2-5
 
