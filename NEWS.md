@@ -1,8 +1,18 @@
 # CHANGES IN GGIR VERSION 3.2-6
 
-- Part 3 and 4: Sleep regularity index expanded with option to smooth data. Further, now renamed to be SRI1 and documentation updated to clarify difference with SRI2 in part 6.
+- Part 3 and 4:
 
-- Part 6: Add sleep regularity index based on sleep and (currently experimental) naps. We will refer to this as SRI2.
+  - Sleep regularity index expanded with option to smooth data.
+  
+  - SRI renamed to be SRI1 and documentation updated to clarify difference with SRI2 in part 6.
+  
+  - Added parameters SRI1_smoothing_wsize_hrs and SRI1_smoothing_frac to control SRI1.
+  
+- Part 6: 
+
+  - Added sleep regularity index based on sleep and (currently experimental) naps. We will refer to this as SRI2.
+  
+  - Added pParameters SRI2_WASOmin to control SRI2.
 
 - Part 1: Recently added functionality to split recordings now better handles partial overlap with reference time windows.
 
