@@ -57,14 +57,20 @@ splitRecords = function(metadatadir, params_general = NULL) {
                                       splitTime_tmp <= S$end[j])
           # If first split time was skipped but overlaps for more than 12 hours
           # with the accelerometer recording include it
+          
+          # minutes betweens start recording and first split that overlaps
+          mins_start_firstoverlap = as.numeric(difftime(splitTime_tmp[within_time_range[1]], S$start[j], units = "mins"))
           if (within_time_range[1] != 1 &&
-              splitTime_tmp[within_time_range[1]] - S$start[j] > 12 * 3600) {
+              mins_start_firstoverlap > 12 * 60) {
             within_time_range = c(within_time_range[1] - 1, within_time_range)
           }
           # If last split time was skipped but overlaps for more than 12 hours
           # with the accelerometer recording include it
+          
+          # minutes between last split that overlaps and end recording
+          mins_lastoverlap_end = as.numeric(difftime(S$end[j], splitTime_tmp[within_time_range[length(within_time_range)]], units = "mins"))
           if (within_time_range[length(within_time_range)] < splitTime_tmp[length(splitTime_tmp)] &
-              S$end[j] - splitTime_tmp[within_time_range[length(within_time_range)]] > 12 * 3600) {
+              mins_lastoverlap_end > 12 * 3600) {
             within_time_range = c(within_time_range, within_time_range[length(within_time_range)] + 1)
           }
           splitTime_tmp = splitTime_tmp[within_time_range]

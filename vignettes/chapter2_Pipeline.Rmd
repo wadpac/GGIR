@@ -18,7 +18,7 @@ As explained in chapter 1, GGIR offers a vast amount of functionality. If you ar
 
 ## The GGIR function
 
-As brief introduction for those unfamiliar with R or software, R packages are constructed of sub-components, named functions. A single function typically allows for doing a specific task. For example, we may have the `sum` function that sums the numbers we provide to it. A function can have one or multiple parameters to control the functions behaviour. In R these parameters are called function arguments. For example, `sum` has the argument `na.rm` to control what needs to be done with missing values. In GGIR we refer to these arguments as parameters.
+As a brief introduction for those unfamiliar with R or software, R packages are constructed of sub-components, named functions. A single function typically allows for doing a specific task. For example, we may have the `sum` function that sums the numbers we provide to it. A function can have one or multiple parameters to control the functions behaviour. In R these parameters are called function arguments. For example, `sum` has the argument `na.rm` to control what needs to be done with missing values. In GGIR we refer to these arguments as parameters.
 
 GGIR comes with a large number of functions and parameters that together form a processing pipeline. To ease interacting with GGIR, GGIR has one central function to act as interface to all functionality. This function is also named `GGIR` and in its basic form it is used as shown below:
 
@@ -26,6 +26,8 @@ GGIR comes with a large number of functions and parameters that together form a 
 GGIR(datadir = "C:/mystudy/mydata",
      outputdir = "D:/myresults")
 ```
+
+Here, parameter `datadir` specifies the location of the data and parameter `outputdir` specifies the location where the output should be saved.
 
 You only need to learn how to work with the function `GGIR`, but it is important to understand that in the background this function interacts with all other functions in GGIR and even functions outside GGIR.
 
@@ -39,10 +41,10 @@ Further, it is important to understand that the `GGIR package` is structured in 
 GGIR, has a computational structure of six parts which are applied sequentially to the data:
 
 -   **Part 1:** Loads the data, works on data quality, and stores derived summary measures per time interval, also known as signal features (referred to as metrics), as needed for the following parts. 
--   **Part 2:** Basic data quality assessment based on the extract metrics and description of the data per day, per file, and optionally per day segment.
--   **Part 3:** Estimation rest periods, needed for input to Part 4.
+-   **Part 2:** Basic data quality assessment based on the extracted metrics and description of the data per day, per file, and optionally per day segment.
+-   **Part 3:** Estimation of rest periods, needed for input to Part 4.
 -   **Part 4:** Labels the rest periods derived in Part 3 as sleep per night and per file.
--   **Part 5:** Compiles time series with classification of sleep and physical behaviour categories by re-using information derived in part 2, 3, and 4. This includes the detection of behavioural bouts, which are time segments where the same behaviour is sustained for duration as specified by the user. Next, Part 5 generates a descriptive summary such as time spent in and average acceleration per behavioural category, but also behavioural fragmentation.
+-   **Part 5:** Compiles time series with classification of sleep and physical behaviour categories by re-using information derived in part 2, 3, and 4. This includes the detection of behavioural bouts, which are time segments where the same behaviour is sustained for a duration range as specified by the user. Next, Part 5 generates a descriptive summary such as time spent in and average acceleration per behavioural category, but also behavioural fragmentation.
 -   **Part 6:** Facilitates analyses that span the full recording such as household co-analysis and circadian rhythm analysis.
 
 The specific order and content of the parts is a result of how GGIR evolved over time, with Part 1 and 2 created in 2011-2013, Part 3 and 4 created in 2013-2015, Part 5 created in 2017-2020, and Part 6 created in 2023-2024. As such, the parts also reflect the historical expansion of GGIR.
@@ -51,7 +53,7 @@ The specific order and content of the parts is a result of how GGIR evolved over
 
 Each part, when run, stores its output in an R-data file that has `.RData` as its extension, which we refer to as the milestone data. As user, you are unlikely to ever need to interact directly with the milestone data files because all relevant output for you is stored in csv and pdf files in the output folder `results`.
 
-The milestone files are read by the next GGIR part. The advantage of this design is that it offers internal modularity. For example, we can run part 1 now and continue with part 2 another time without having to repeat part 1 again. So, this design eases re-processing and is also helpful for us when developing and testing the GGIR code.
+The milestone files are read by the next GGIR part. The advantage of this design is that it offers internal modularity. For example, we can run part 1 now and continue with part 2 another time without having to repeat part 1 again. So, this design eases re-processing and is also helpful when developing and testing the GGIR code.
 
 The milestone data files are stored in sub-folders of the output folder as show below. Note that the output folder is named `output_mystudy` as example but exact name may differ for you.
 
@@ -79,7 +81,7 @@ The parameters of all GGIR package functions can be used as parameter to the GGI
 -   **params_output:** parameters relating to how and whether output is stored.
 -   **params_general:** general parameters not covered by any of the above categories
 
-As GGIR user you do not need to remember which theme a parameter belongs to. However, you may notice that the documentation is structure by parameter theme to ease navigating the parameters.
+As GGIR user you do not need to remember which theme a parameter belongs to. However, you may notice that the documentation is structured by parameter theme to ease navigating the parameters.
 
 There are a couple of ways to inspect the parameters in each parameter category and their default values:
 
@@ -107,7 +109,7 @@ library(GGIR)
 print(load_params()$params_sleep)
 ```
 
-If you are only interested in e.g. parameter `HASIB.algo` from the
+If you are only interested in one parameter, e.g. parameter `HASIB.algo`, from the
 
 `sleep_params` object:
 
@@ -116,7 +118,7 @@ library(GGIR)
 print(load_params()$params_sleep[["HASIB.algo"]])
 ```
 
-All of these parameters are accepted as parameter to function `GGIR`, because `GGIR` is like a shell around all GGIR functionality. However, the `params_` objects themselves cannot be provided as input to `GGIR`.
+All parameters are accepted as parameter to function `GGIR`, because `GGIR` is like a shell around all GGIR functionality. However, the `params_` objects themselves cannot be provided as input to `GGIR`. In other words: you can provide `HASIB.algo` as parameter to GGIR, but not `params_sleep`.
 
 #### Configuration file.
 
@@ -133,7 +135,7 @@ The practical value of this is that it eases the replication of the analysis, be
 
 #### Parameter extraction order
 
-If parameters are provided in the GGIR call, then GGIR always uses those. If parameters are not provided in GGIR call, GGIR checks whether there is a config.csv file either in the output folder or specified via parameter `configfile` and loads those values. If a parameter is neither specified in the GGIR function call nor available in the config.csv file, then GGIR will use its default value's which can be inspected as discussed in the section above. Here, it is important to realise that a consequence of this logic is that GGIR will not revert to its default parameter values in a repeated run of GGIR unless you remove the parameter from the function call and delete the config.csv file or you specify the original (default) value of the parameter explicitly in you GGIR call.
+If parameters are provided in the GGIR call, then GGIR always uses those. If parameters are not provided in the GGIR call, GGIR checks whether there is a config.csv file either in the output folder or specified via parameter `configfile` and loads those values. If a parameter is neither specified in the GGIR function call nor available in the config.csv file, then GGIR will use its default value's which can be inspected as discussed in the section above. Here, it is important to realise that a consequence of this logic is that GGIR will not revert to its default parameter values in a repeated run of GGIR unless you remove the parameter from the function call and delete the config.csv file or you specify the original (default) value of the parameter explicitly in you GGIR call.
 
 To ensure this is clear here are some example:
 
@@ -185,7 +187,7 @@ For all above approaches using a one hour window, the actual window length can b
 
 ## How to run your analysis?
 
-The bare minimum input needed for `GGIR` is:
+As mentioned above, the bare minimum input needed for `GGIR` is:
 
 ```{R,eval=FALSE}
 library(GGIR)
@@ -193,9 +195,9 @@ GGIR(datadir = "C:/mystudy/study_XYZ_data",
      outputdir = "C:/myresults")
 ```
 
-Parameter `datadir` allows you to specify where you have stored your accelerometer data and `outputdir` allows you to specify where you would like the output of the analyses to be stored. This cannot be equal to `datadir`. If you copy and paste the above code to a new R script (file ending with .R) and Source it in R(Studio), then the dataset will be processed and the output will be stored in the specified output directory. GGIR refers to file directories and not to folders. For those unfamiliar with the term directory: It is the same as a folder.
+Parameter `datadir` allows you to specify where you have stored your accelerometer data and `outputdir` allows you to specify where you would like the output of the analyses to be stored. This cannot be equal to `datadir`. If you copy and paste the above code to a new R script (file ending with .R) and Source it in R(Studio), then the dataset will be processed and the output will be stored in the specified output directory. For those unfamiliar with the term directory: It is the same as a folder, but in GGIR we refer to them as (file) directories. 
 
-Next, we can add parameter `mode` to tell GGIR which part(s) to run, e.g. `mode = 1:5` tells GGIR to run all five parts and is the default. With parameter `overwrite`, we can tell GGIR whether to overwrite previously produced milestone data or not.
+Next, we can add parameter `mode` to tell GGIR which part(s) to run, e.g. `mode = 1:5` tells GGIR to run the first five parts and is the default. With parameter `overwrite`, we can tell GGIR whether to overwrite previously produced milestone data or not.
 
 Further, parameter `idloc` tells GGIR where to find the participant ID. The default setting most likely does not work for most data formats, by which it is important that you tailor the value of this parameter to your study setting. For example, if you files start with a participant ID followed by an underscore then set `idloc=2`. See documentation for parameter `idloc` for other examples.
 
