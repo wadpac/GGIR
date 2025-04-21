@@ -8,7 +8,9 @@ CalcSleepRegularityIndex = function(data = c(), epochsize = c(), desiredtz= c(),
   data = data[, grep("temperature|selfreported|angle|invalid_|guider|ACC|step_count", colnames(data), invert = TRUE)]
   sleepcol = grep("sleepnap", colnames(data))
   if (length(sleepcol) != 1) {
-    # part 3
+    # Only run when used in GGIR part 3
+    # because there we use sustained inactivity bouts which optionally need
+    # to be smoothed
     sleepcol = which(colnames(data) %in% c("time", "invalid", "night") == FALSE)[1]
     # Optionally smooth sleep/wake classification
     if (!is.null(SRI1_smoothing_wsize_hrs) && !is.null(SRI1_smoothing_frac)) {
@@ -17,14 +19,14 @@ CalcSleepRegularityIndex = function(data = c(), epochsize = c(), desiredtz= c(),
     }
     invalid_epochs = which(data$invalid == 1)
   } else {
-    # part 6
+    # Only run when used in GGIR part 6
     invalid_epochs = which(data$invalidepoch == 1)
   }
-  # For Sleep Regularity Index we ignore invalid epochs and set them to NA
+  # Ignore invalid epochs and set them to NA
   if (length(invalid_epochs) > 0) { 
     is.na(data[invalid_epochs, sleepcol]) = TRUE
   }
-  # Agregate to 30-second epoch if epochsize is less than 30 seconds to be in line
+  # Aggregate to 30-second epoch if epochsize is less than 30 seconds to be in line
   # with original paper by Phillips et al. 2017
   if (epochsize < 30 & (30/epochsize) == round(30/epochsize)) {
     data$time_num = floor(as.numeric(data$time) / 30) * 30
