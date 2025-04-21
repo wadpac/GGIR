@@ -48,7 +48,7 @@ test_that("lux_per_segment is correctly calculated", {
                 sep = .Platform$file.sep)
   df = read.csv(p5_fn)
   
-  expect_equal(length(which(grepl("^LUX", colnames(df)))), 12) # max and mean day, mean spt, mean mvpa, and ranges ()
+  expect_equal(length(which(grepl("^LUX", colnames(df)))), 17) # max and mean day, mean spt, mean mvpa, and ranges ()
   expect_equal(df$LUX_max_day, 3.3)
   expect_equal(df$LUX_mean_day, 2)
   expect_equal(df$LUX_mean_day_mvpa, 2.7)
@@ -69,5 +69,5 @@ test_that("lux_per_segment is correctly calculated", {
   outfolder = paste(getwd(), "output_test", sep = .Platform$file.sep)
   if (file.exists(outfolder))  unlink(outfolder, recursive = TRUE)
   if (file.exists(dn)) unlink(dn, recursive = TRUE)
-  
+  if (file.exists(fn)) unlink(fn, recursive = TRUE)
 })

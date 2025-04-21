@@ -16,18 +16,7 @@ test_that("Part 6 with household co-analysis", {
   save(M, file = paste0(dn2, "/meta_800-900-002_left wrist.bin.RData"))
   save(M, file = paste0(dn2, "/meta_800-900-003_left wrist.bin.RData"))
   
-  # Use time shifts to simulate three household members
   
-  data(data.ts)
-  mdat = data.ts
-  mdat$timenum = mdat$timenum - (5 * 60) 
-  save(mdat, file = paste0(dn, "/800-900-001_left wrist.RData"))
-  mdat$timenum = mdat$timenum + (7 * 60)
-  save(mdat, file = paste0(dn, "/800-900-002_left wrist.RData"))
-  mdat$timenum = mdat$timenum + (14 * 60)
-  save(mdat, file = paste0(dn, "/800-900-003_left wrist.RData"))
-  
-  # Run household co-analysis  
   # Update parameters to align with datset
   params_general = load_params(topic = "general")$params_general
   params_general[["desiredtz"]] = "America/Curacao"
@@ -39,6 +28,31 @@ test_that("Part 6 with household co-analysis", {
   params_phyact[["threshold.vig"]] = thresholds[3]
   params_247 = load_params(topic = "247")$params_247
   params_247[["part6HCA"]] = TRUE
+  
+  # Use time shifts to simulate three household members
+  data(data.ts)
+  mdat = data.ts
+  
+  Lnames = c("spt_sleep", "spt_wake_IN", "spt_wake_LIG", "spt_wake_MOD",
+             "spt_wake_VIG", "day_IN_unbt", "day_LIG_unbt", "day_MOD_unbt",
+             "day_VIG_unbt", "day_MVPA_bts_10", "day_IN_bts_30",
+             "day_IN_bts_10_30", "day_LIG_bts_10")
+  
+  mdat$timenum = mdat$timenum - (5 * 60) 
+  mdat$timestamp = as.POSIXct(mdat$timenum, tz =  params_general[["desiredtz"]], origin = "1970-01-01")
+  filename = "800-900-001_left wrist.bin"
+  save(mdat, filename, Lnames, file = paste0(dn, "/800-900-001_left wrist.RData"))
+  mdat$timenum = mdat$timenum + (7 * 60)
+  mdat$timestamp = as.POSIXct(mdat$timenum, tz =  params_general[["desiredtz"]], origin = "1970-01-01")
+  filename = "800-900-002_left wrist.bin"
+  save(mdat, filename, Lnames, file = paste0(dn, "/800-900-002_left wrist.RData"))
+  mdat$timenum = mdat$timenum + (14 * 60)
+  mdat$timestamp = as.POSIXct(mdat$timenum, tz =  params_general[["desiredtz"]], origin = "1970-01-01")
+  filename = "800-900-003_left wrist.bin"
+  save(mdat, filename, Lnames, file = paste0(dn, "/800-900-003_left wrist.RData"))
+  mdat_file3 = mdat
+  
+  # Run household co-analysis  
   g.part6(metadatadir = metadatadir,
           params_general = params_general,
           params_phyact = params_phyact,
@@ -67,6 +81,15 @@ test_that("Part 6 with household co-analysis", {
   expect_equal(PC$wakeup_time1[c(1, 8, 16)], c("01:35:00", "02:58:00", "03:39:00"))
   expect_equal(sum(PC$day_Kappa_active), 5.091)
   
+  #===================================================================
+  # For circadian rhythm analysis we set one window to invalid
+  mdat_file3$invalid_wakinghours[which(mdat_file3$window == 4)] = 100 # set one window to invalid
+  mdat_file3$invalid_sleepperiod[which(mdat_file3$window == 4)] = 100 # set one window to invalid
+  mdat_file3$invalid_fullwindow[which(mdat_file3$window == 4)] = 100 # set one window to invalid
+  mdat_file3$ACC[which(mdat$window == 3)] = NA # set one window to invalid
+  mdat = mdat_file3
+  filename = "800-900-003_left wrist.bin"
+  save(mdat, filename, Lnames, file = paste0(dn, "/800-900-003_left wrist.RData"))
   
   # Run Circadian rhythm analysis with default window
   params_247[["part6HCA"]] = FALSE
@@ -75,23 +98,24 @@ test_that("Part 6 with household co-analysis", {
   params_247[["cosinor"]] = TRUE
   params_247[["part6CR"]] = TRUE
   params_247[["part6Window"]] = c("start", "end")
+  params_cleaning = load_params(topic = "cleaning")$params_cleaning
   g.part6(metadatadir = metadatadir,
           params_general = params_general,
           params_phyact = params_phyact,
           params_247 = params_247,
+          params_cleaning = params_cleaning,
+          f0 = 1, f1 = 3,
           verbose = FALSE)
-  path_to_ms6 = paste0(metadatadir, "/meta/ms6.out/800-900-001_left wrist.RData")
-  
+  path_to_ms6 = paste0(metadatadir, "/meta/ms6.out/800-900-003_left wrist.RData")
   expect_true(file.exists(path_to_ms6))
   
   load(path_to_ms6)
-  expect_equal(ncol(output_part6), 25)
-  expect_equal(output_part6$starttime, "2022-06-02 03:00:00")
-  expect_equal(output_part6$cosinor_mes, 2.451769, tolerance = 0.00001)
-  expect_equal(output_part6$cosinorExt_minimum, 1.288636, tolerance = 0.00001)
-  expect_equal(output_part6$cosinorExt_MESOR, 2.164644, tolerance = 0.00001)
-  expect_equal(sum(output_part6[5:25]), 327.5437, tolerance = 0.0001)
-  
+  expect_equal(ncol(output_part6), 48)
+  expect_equal(output_part6$starttime, "2022-06-02 03:16:00")
+  expect_equal(output_part6$cosinor_mes, 2.471082, tolerance = 0.00001)
+  expect_equal(output_part6$cosinorExt_minimum, 1.302779, tolerance = 0.00001)
+  expect_equal(output_part6$cosinorExt_MESOR, 2.171, tolerance = 0.00001)
+  expect_equal(sum(output_part6[5:27]), 620.6144, tolerance = 0.0001)
   
   # Run Circadian rhythm analysis with non-default window
   params_247[["part6Window"]] = c("W2", "W-1") # second wake till last wake
@@ -99,19 +123,51 @@ test_that("Part 6 with household co-analysis", {
           params_general = params_general,
           params_phyact = params_phyact,
           params_247 = params_247,
+          params_cleaning = params_cleaning,
+          f0 = 1, f1 = 3,
           verbose = FALSE)
-  path_to_ms6 = paste0(metadatadir, "/meta/ms6.out/800-900-001_left wrist.RData")
+  path_to_ms6 = paste0(metadatadir, "/meta/ms6.out/800-900-003_left wrist.RData")
   
   expect_true(file.exists(path_to_ms6))
   
   load(path_to_ms6)
-  expect_equal(ncol(output_part6), 25)
-  expect_equal(output_part6$starttime, "2022-06-03 01:41:00")
-  expect_equal(output_part6$cosinor_mes, 2.448485, tolerance = 0.00001)
-  expect_equal(output_part6$cosinorExt_minimum, 0, tolerance = 0.00001)
-  expect_equal(output_part6$cosinorExt_MESOR, 1.6977, tolerance = 0.00001)
-  expect_equal(sum(output_part6[5:25]), 154.1642, tolerance = 0.0001)
+  expect_equal(ncol(output_part6), 48)
+  expect_equal(output_part6$starttime, "2022-06-03 01:57:00")
+  expect_equal(output_part6$cosinor_mes, 2.431978, tolerance = 0.00001)
+  expect_equal(output_part6$cosinorExt_minimum, 1.286542, tolerance = 0.00001)
+  expect_equal(output_part6$cosinorExt_MESOR, 2.140128, tolerance = 0.00001)
+  expect_equal(sum(output_part6[5:27]), 680.9232, tolerance = 0.0001)
   
+  output_part6_with_invalid = output_part6
+  rm(output_part6)
+  
+  # Assess impact of storing part 5 output without invalid
+  mdat = mdat_file3[-which(mdat$window == 4),] # delete the invalid window
+  filename = "800-900-003_left wrist.bin"
+  save(mdat, filename, Lnames, file = paste0(dn, "/800-900-003_left wrist.RData"))
+  
+  g.part6(metadatadir = metadatadir,
+          params_general = params_general,
+          params_phyact = params_phyact,
+          params_247 = params_247,
+          params_cleaning = params_cleaning,
+          f0 = 1, f1 = 3,
+          verbose = FALSE)
+  path_to_ms6 = paste0(metadatadir, "/meta/ms6.out/800-900-003_left wrist.RData")
+  
+  expect_true(file.exists(path_to_ms6))
+  
+  load(path_to_ms6)
+  output_part6_without_invalid = output_part6
+  
+  # Compare output_part6_with_invalid and output_part6_without_invalid
+  expect_equal(ncol(output_part6_with_invalid), ncol(output_part6_without_invalid))
+  expect_equal(output_part6_with_invalid$starttime, output_part6_without_invalid$starttime)
+  expect_equal(output_part6_with_invalid$cosinor_mes, output_part6_without_invalid$cosinor_mes, tolerance = 0.00001)
+  expect_equal(output_part6_with_invalid$cosinorExt_minimum, output_part6_without_invalid$cosinorExt_minimum, tolerance = 0.00001)
+  expect_equal(output_part6_with_invalid$cosinorExt_MESOR, output_part6_without_invalid$cosinorExt_MESOR, tolerance = 0.00001)
+  expect_equal(sum(output_part6_with_invalid[5:27]), sum(output_part6_without_invalid[5:27]), tolerance = 0.0001)
+
   # Remove test files
   if (file.exists(metadatadir))  unlink(metadatadir, recursive = TRUE)
 }

@@ -1,19 +1,6 @@
 appendRecords = function(metadatadir, desiredtz = "", idloc = 1, maxRecordingInterval = NULL) {
   
   # Declare local functions:
-  getInfo = function(fn, idloc, tz) {
-    load(fn)
-    hvars = g.extractheadervars(I)
-    if (exists("Clist")) {
-      ID = NA # If Clist exists then ignore this file as it was previously appended
-    } else {
-      ID = extractID(hvars, idloc, fname = I$filename)
-    }
-    start = as.POSIXct(x = M$metashort$timestamp[1], format = "%Y-%m-%dT%H:%M:%S%z", tz = tz)
-    end = as.POSIXct(x = M$metashort$timestamp[nrow(M$metashort)], format = "%Y-%m-%dT%H:%M:%S%z", tz = tz)
-    info = data.frame(ID = ID, start = start, end = end, filename = fn, brand = I$monn)
-    return(info)
-  }
   mergePair = function(M1, M2, overlap, tz) {
     # overlap in epochs
     if (overlap < 0) { 
@@ -24,27 +11,28 @@ appendRecords = function(metadatadir, desiredtz = "", idloc = 1, maxRecordingInt
         } else {
           N = overlap - 1
         }
-        NEWSHORT = df[nrow(df), ]
-        NEWSHORT[1:N, ] = NEWSHORT
-        T0 = as.POSIXct(x = NEWSHORT$timestamp[1], format = "%Y-%m-%dT%H:%M:%S%z", tz = tz) + epochSize
-        NEWSHORT$timestamp = POSIXtime2iso8601(seq(T0, T0 + (N * epochSize) - 1, by =  epochSize), tz)
-        if (pattern != "long") {
-          NEWSHORT[, grep(pattern = pattern, x = colnames(NEWSHORT), invert = TRUE, ignore.case = TRUE)] = 0
-        } else {
-          enCol = grep("en", colnames(NEWSHORT), ignore.case = TRUE)
-          NEWSHORT[, enCol] = 1
-          NEWSHORT$clippingscore = 0
-          NEWSHORT$nonwearscore = 3
-          if (any(colnames(NEWSHORT) %in% c("lightmean", "lightpeak"))) {
-            NEWSHORT$lightmean = 0
-            NEWSHORT$lightpeak = 0
+        if (N > 0) {
+          NEWSHORT = df[nrow(df), ]
+          NEWSHORT[1:N, ] = NEWSHORT
+          T0 = as.POSIXct(x = NEWSHORT$timestamp[1], format = "%Y-%m-%dT%H:%M:%S%z", tz = tz) + epochSize
+          NEWSHORT$timestamp = POSIXtime2iso8601(seq(T0, T0 + (N * epochSize) - 1, by =  epochSize), tz)
+          if (pattern != "long") {
+            NEWSHORT[, grep(pattern = pattern, x = colnames(NEWSHORT), invert = TRUE, ignore.case = TRUE)] = 0
+          } else {
+            enCol = grep("en", colnames(NEWSHORT), ignore.case = TRUE)
+            NEWSHORT[, enCol] = 1
+            NEWSHORT$clippingscore = 0
+            NEWSHORT$nonwearscore = 3
+            if (any(colnames(NEWSHORT) %in% c("lightmean", "lightpeak"))) {
+              NEWSHORT$lightmean = 0
+              NEWSHORT$lightpeak = 0
+            }
+            if ("temperaturemean" %in% colnames(NEWSHORT)) {
+              NEWSHORT$temperaturemean = 0
+            }
           }
-          if ("temperaturemean" %in% colnames(NEWSHORT)) {
-            NEWSHORT$temperaturemean = 0
-          }
+          df = rbind(df, NEWSHORT)
         }
-      
-        df = rbind(df, NEWSHORT)
         return(df)
       }
       # insert missing values in metashort
@@ -75,7 +63,7 @@ appendRecords = function(metadatadir, desiredtz = "", idloc = 1, maxRecordingInt
   # Create overview of all recordings ID, start time, end time, and filename
   fns = dir(paste0(metadatadir, "/meta/basic"), full.names = TRUE)
   
-  S = do.call("rbind", lapply(X = fns, FUN = getInfo, idloc = idloc, tz = desiredtz)) 
+  S = do.call("rbind", lapply(X = fns, FUN = getPart1BasicInfo, idloc = idloc, tz = desiredtz)) 
   if (length(S) > 0 & !is.null(maxRecordingInterval)) {
     S = S[!is.na(S$ID),]
     S = S[order(S$ID, S$start), ]

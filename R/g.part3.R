@@ -16,15 +16,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
   params_general = params$params_general
   params_output = params$params_output
 
-  #----------------------------------------------------------
-  # create output directory if it does not exist
-  if (!file.exists(paste(metadatadir, sep = ""))) {
-    dir.create(file.path(metadatadir))
-  }
-  if (!file.exists(paste(metadatadir, "/meta/ms3.out", sep = ""))) {
-    dir.create(file.path(paste(metadatadir, "/meta", sep = ""), "ms3.out"))
-    dir.create(file.path(paste(metadatadir, "/meta", sep = ""), "sleep.qc"))
-  }
+  checkMilestoneFolders(metadatadir, partNumber = 3)
   #------------------------------------------------------
   fnames = dir(paste(metadatadir,"/meta/ms2.out", sep = ""))
   if (f1 > length(fnames) | f1 == 0) f1 = length(fnames)
@@ -128,8 +120,9 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                                   desiredtz = params_general[["desiredtz"]])
           rec_starttime = IMP$metashort[1,1] # this may be used in g.loadlog to align sleeplog with recording
           ms3out_filename = paste(metadatadir, "/meta/ms3.out/", fname, ".RData",sep = "")
+          GGIRversion = utils::packageVersion("GGIR")
           save(sib.cla.sum, L5list, SPTE_end, SPTE_start, tib.threshold, rec_starttime, ID,
-               longitudinal_axis, SleepRegularityIndex, tail_expansion_log,
+               longitudinal_axis, SleepRegularityIndex, tail_expansion_log, GGIRversion,
                file = ms3out_filename, part3_guider)
         }
       }

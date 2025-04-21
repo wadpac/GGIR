@@ -11,14 +11,14 @@ test_that("load_params can load parameters", {
   
   # Test length of objects
   expect_equal(length(params), 8)
-  expect_equal(length(params$params_sleep), 22)
+  expect_equal(length(params$params_sleep), 29)
   expect_equal(length(params$params_metrics), 41)
-  expect_equal(length(params$params_rawdata), 38)
-  expect_equal(length(params$params_247), 22)
-  expect_equal(length(params$params_cleaning), 24)
+  expect_equal(length(params$params_rawdata), 39)
+  expect_equal(length(params$params_247), 24)
+  expect_equal(length(params$params_cleaning), 28)
   expect_equal(length(params$params_phyact), 14)
-  expect_equal(length(params$params_output), 21)
-  expect_equal(length(params$params_general), 17)
+  expect_equal(length(params$params_output), 27)
+  expect_equal(length(params$params_general), 21)
 
   params_sleep = params$params_sleep
   params_metrics = params$params_metrics
@@ -35,15 +35,15 @@ test_that("load_params can load parameters", {
   expect_error(check_params(params_sleep), regexp = NA)
   # Test that parameter check produces error when numeric is given a character value
   params_sleep$timethreshold = "ABC"
-  expect_error(check_params(params_sleep), regexp = "Sleep argument timethreshold is not numeric")
+  expect_error(check_params(params_sleep), regexp = "Sleep parameter timethreshold is not numeric")
   params_sleep = params$params_sleep
   # Test that parameter check produces error when character is given a numeric value
   params_sleep$Sadeh_axis = 123
-  expect_error(check_params(params_sleep), regexp = "Sleep argument Sadeh_axis is not character")
+  expect_error(check_params(params_sleep), regexp = "Sleep parameter Sadeh_axis is not character")
   params_sleep = params$params_sleep
   # Test that parameter check produces error when boolean is given a numeric value
   params_general$overwrite = 123
-  expect_error(check_params(params_general = params_general), regexp = "general argument overwrite is not boolean")
+  expect_error(check_params(params_general = params_general), regexp = "general parameter overwrite is not boolean")
   params_general = params$params_general
   
   # Error if brondcounts calculated
@@ -79,7 +79,7 @@ test_that("load_params can load parameters", {
   params_sleep$Sadeh_axis = "y"
   expect_warning(check_params(params_metrics = params_metrics, 
                               params_sleep = params_sleep),
-                 regexp = "Argument Sadeh_axis does not have meaningful value")
+                 regexp = "Parameter Sadeh_axis does not have meaningful value")
   params_sleep$Sadeh_axis = "Y"
   check = check_params(params_metrics = params_metrics, 
                        params_sleep = params_sleep)
@@ -118,25 +118,25 @@ test_that("load_params can load parameters", {
   params_cleaning$data_masking_strategy = 2
   params_cleaning$hrs.del.start = 1
   expect_warning(check_params(params_cleaning = params_cleaning),
-                 regexp = "Setting argument hrs.del.start")
+                 regexp = "Setting parameter hrs.del.start")
   params_cleaning = params$params_cleaning
   params_cleaning$data_masking_strategy = 2
   params_cleaning$hrs.del.end = 1
   expect_warning(check_params(params_cleaning = params_cleaning),
-                 regexp = "Setting argument hrs.del.end")
+                 regexp = "Setting parameter hrs.del.end")
   params_cleaning = params$params_cleaning
   
   # if data_masking_strategy != c(3,5), ndayswindow != 7 does not make sense
   params_cleaning$ndayswindow = 14
   expect_warning(check_params(params_cleaning = params_cleaning),
-                 regexp = "Setting argument ndayswindow in combination")
+                 regexp = "Setting parameter ndayswindow in combination")
   params_cleaning = params$params_cleaning
   
   # if data_masking_strategy == 5, ndayswindow should be integer
   params_cleaning$data_masking_strategy = 5
   params_cleaning$ndayswindow = 7.5
   check = expect_warning(check_params(params_cleaning = params_cleaning),
-                         regexp = "Argument ndayswindow has been rounded")
+                         regexp = "Parameter ndayswindow has been rounded")
   expect_equal(check$params_cleaning$ndayswindow, 8)
   params_cleaning = params$params_cleaning
   
@@ -149,7 +149,7 @@ test_that("load_params can load parameters", {
   # bout.metric should not be used anymore
   params_phyact$bout.metric = 6
   expect_warning(check_params(params_phyact = params_phyact),
-                 regexp = "Arguments bout.metric and closedbout are no longer")
+                 regexp = "Parameters bout.metric and closedbout are no longer")
   params_phyact = params$params_phyact
   
   # length of mvpadur should be 3
@@ -165,47 +165,33 @@ test_that("load_params can load parameters", {
   expect_equal(check$params_247$LUX_day_segments[length(check$params_247$LUX_day_segments)], 24)
   params_247 = params$params_247
   
-  # if dataFormat = "actiwatch_awd", then acc.metric = "ZCY"
+  # if dataFormat = "actiwatch_awd"
   params_general$dataFormat = "actiwatch_awd"
-  check = expect_warning(check_params(params_general = params_general,
-                                      params_metrics = params_metrics),
-                         regexp = "When dataFormat is set to actiwatch_awd")
-  expect_true(check$params_metrics$do.zcy)
-  expect_equal(check$params_general$acc.metric, "ZCY")
+  check = check_params(params_general = params_general,
+                       params_metrics = params_metrics)
+  expect_false(check$params_metrics$do.zcy)
+  expect_equal(check$params_general$acc.metric, "ExtAct")
   # also, no other metrics should be extracted
   params_metrics$do.anglex = TRUE
-  params_general$acc.metric = "ZCY"
-  check = expect_warning(check_params(params_general = params_general,
-                                      params_metrics = params_metrics),
-                         regexp = "When dataFormat is set to actiwatch_awd")
-  expect_true(check$params_metrics$do.zcy)
+  params_general$acc.metric = "ExtAct"
+  check = check_params(params_general = params_general,
+                       params_metrics = params_metrics)
+  expect_false(check$params_metrics$do.zcy)
   expect_false(check$params_metrics$do.anglex)
+  expect_equal(check$params_general$acc.metric, "ExtAct")
   params_general = params$params_general
   params_metrics = params$params_metrics
   
-  # if dataFormat = "actiwatch_awd", then Sadeh_axis = "Y"
-  params_general$dataFormat = "actiwatch_awd"
-  params_sleep$Sadeh_axis = "X"
-  params_sleep$HASIB.algo = "Sadeh1994"
-  expect_warning(check_params(params_general = params_general,
-                              params_metrics = params_metrics,
-                              params_sleep = params_sleep),
-                 regexp = "we assume that Sadeh_axis Y")
-  params_general = params$params_general
-  params_sleep = params$params_sleep
-
   # if dataFormat = "ukbiobank", then acc.metric = "LFENMO"
   params_general$dataFormat = "ukbiobank"
-  check = expect_warning(check_params(params_general = params_general,
-                                      params_metrics = params_metrics),
-                         regexp = "When dataFormat is set to ukbiobank")
+  check = check_params(params_general = params_general,
+                       params_metrics = params_metrics)
   expect_equal(check$params_general$acc.metric, "LFENMO")
   # also, no other metrics should be extracted
   params_metrics$do.anglex = TRUE
   params_general$acc.metric = "LFENMO"
-  check = expect_warning(check_params(params_general = params_general,
-                                      params_metrics = params_metrics),
-                         regexp = "When dataFormat is set to ukbiobank")
+  check = check_params(params_general = params_general,
+                       params_metrics = params_metrics)
   expect_false(check$params_metrics$do.anglex)
   params_general = params$params_general
   params_metrics = params$params_metrics
@@ -221,13 +207,13 @@ test_that("load_params can load parameters", {
                  regexp = "segmentWEARcrit.part5 is expected to be")
   params_cleaning$segmentWEARcrit.part5 = 16
   expect_error(check_params(params_cleaning = params_cleaning),
-                 regexp = "Incorrect value of segmentWEARcrit.part5")
+               regexp = "Incorrect value of segmentWEARcrit.part5")
   params_cleaning$segmentWEARcrit.part5 = 0.5
   
   # segmentDAYSPTcrit.part5 should be two numbers between 0 and 1
   params_cleaning$segmentDAYSPTcrit.part5 = NULL
   expect_error(check_params(params_cleaning = params_cleaning),
-                 regexp = "Argument segmentDAYSPTcrit.part5 is expected to be a numeric vector of length 2")
+               regexp = "Parameter segmentDAYSPTcrit.part5 is expected to be a numeric vector of length 2")
   params_cleaning$segmentDAYSPTcrit.part5 = c(-1, 0)
   expect_error(check_params(params_cleaning = params_cleaning),
                regexp = paste0("Incorrect values of segmentDAYSPTcrit.part5,",

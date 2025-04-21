@@ -5,15 +5,26 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
   Nts = nrow(ts)
   lastDay = FALSE
   # define local functions ----
-  qwindow2timestamp = function(qwindow) {
-    H = floor(qwindow)
-    M = floor((qwindow - H) * 60)
-    S = floor((qwindow - H - M/60) * 60 * 60)
-    H = as.character(H); M = as.character(M); S = as.character(S)
-    H = ifelse(nchar(H) == 1, paste0("0", H), H)
-    M = ifelse(nchar(M) == 1, paste0("0", M), M)
-    S = ifelse(nchar(S) == 1, paste0("0", S), S)
-    HMS = paste(H, M, S, sep = ":")
+  qwindow2timestamp = function(qwindow, epochSize) {
+    hour = floor(qwindow)
+    minute = floor((qwindow - hour) * 60)
+    second = floor((qwindow - hour - minute/60) * 60 * 60)
+    expected_seconds = seq(0, 60, by = epochSize)
+    seconds_tobe_revised = which(!second %in% expected_seconds)
+    if (length(seconds_tobe_revised) > 0) {
+      for (si in seconds_tobe_revised) {
+        second[si] = expected_seconds[which.min(abs(expected_seconds - second[si]))]
+        if (second[si] == 60) { # shift minute if second == 60
+          minute[si] = minute[si] + 1
+          second[si] = 0
+        }
+      }
+    }
+    hour = as.character(hour); minute = as.character(minute); second = as.character(second)
+    hour = ifelse(nchar(hour) == 1, paste0("0", hour), hour)
+    minute = ifelse(nchar(minute) == 1, paste0("0", minute), minute)
+    second = ifelse(nchar(second) == 1, paste0("0", second), second)
+    HMS = paste(hour, minute, second, sep = ":")
     if (HMS[1] != "00:00:00") HMS = c("00:00:00", HMS)
     return(HMS)
   }
@@ -30,31 +41,21 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
   # Check that it is possible to find both windows (WW and MM)
   # in the data for this day.
   if (timewindowi == "MM") {
-    NepochPerDay = ((24*3600) / epochSize)
-    # offset from prev midnight
-    t0 = format(ts$time[1], "%H:%M:%S")
-    hms = as.numeric(unlist(strsplit(t0, ":")))
-    NepochFromPrevMidnight = (hms[1]*60*60 + hms[2]*60 + hms[3]) / epochSize
-    NepochFromDayborder2Midnight = (-dayborder*60*60) / epochSize
-    NepochFromPrevNight = NepochFromPrevMidnight + NepochFromDayborder2Midnight
-    if (NepochFromPrevNight < 0) {
-      NepochFromPrevNight = NepochPerDay + NepochFromPrevNight
-    }
-    if (wi == 1) {
-      qqq[1] = 1
-      qqq[2] = NepochPerDay - NepochFromPrevNight
-    } else {
-      qqq[1] = ((wi - 1) * NepochPerDay) - NepochFromPrevNight + 1
-      qqq[2] = (wi * NepochPerDay) - NepochFromPrevNight
-    }
+    # include first and last partial days in MM
+    if (nightsi[1] > 1) nightsi = c(1, nightsi)
+    if (nightsi[length(nightsi)] < nrow(ts)) nightsi = c(nightsi, nrow(ts))
+    # define window
+    qqq[1] = nightsi[wi]
+    qqq[2] = nightsi[wi + 1] - 1
     # is this the last day?
-    if (qqq[2] >= Nts) {
+    if (qqq[2] >= Nts - 1) {
       qqq[2] = Nts
       lastDay = TRUE
     }
     qqq_backup = qqq
     # in MM, also define segments of the day based on qwindow
     if (!is.na(qqq[1]) & !is.na(qqq[2])) {
+      segments_timing = NULL
       if (qqq[2] > Nts) qqq[2] = Nts
       fullQqq = qqq[1]:qqq[2]
       firstepoch = format(ts$time[qqq[1]],  "%H:%M:%S")
@@ -74,52 +75,34 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
         if (qwindow[1] != 0) qwindow = c(0, qwindow)
         if (qwindow[length(qwindow)] != 24) qwindow = c(qwindow, 24)
       }
-      breaks = qwindow2timestamp(qwindow)
-      if (24 %in% qwindow) {
-        # 24:00:00: probably does not exist, replace by last timestamp in a day
-        latest_time_in_day = max(format(ts$time[1:pmin(Nts, NepochPerDay)], format = "%H:%M:%S"))
-        breaks = gsub(pattern = "24:00:00", replacement = latest_time_in_day, x = breaks)
+      # define segments timing in H:M:S format
+      breaks = qwindow2timestamp(qwindow, epochSize)
+      startOfSegments = breaks[-length(breaks)]
+      endOfSegments = subtractEpochFromTimeName(breaks[-1], epochSize)
+      if (length(startOfSegments) > 1) { # when qwindow segments are defined, add fullwindow at the beginning
+        startOfSegments = c(firstepoch, startOfSegments)
+        endOfSegments = c(lastepoch, endOfSegments)
+      } 
+      segments_timing = paste(startOfSegments, endOfSegments, sep = "-")
+      # define segment names based on qnames or segmentX
+      if (is.null(qnames)) {
+        segments_names = paste0("segment", 0:(length(segments_timing) - 1))
+        segments_names = gsub("segment0", "MM", segments_names)
+      } else {
+        segments_names = c("MM", paste(qnames[-length(qnames)], qnames[-1], sep = "-"))
       }
-      breaks_i = c()
-      for (bi in 1:length(breaks)) {
-        if (any(grepl(breaks[bi], ts$time[fullQqq]))) {
-          breaks_i[bi] = fullQqq[grep(breaks[bi], ts$time[fullQqq])]
-        } else {
-          breaks_i[bi] = qqq[1]
-        }
-      }
-      # build up segments
-      segments = list(qqq)
-      segments_timing = paste(firstepoch, lastepoch, sep = "-")
-      segments_names = "MM"
-      si = 2
-      do.segments = TRUE
-      if (length(qwindow) == 2) {
-        if (all((qwindow) == c(0, 24))) {
-          do.segments = FALSE
-        }
-      }
-      if (do.segments == TRUE) {
-        for (bi in 1:(length(breaks) - 1)) {
-          minusOne = ifelse(breaks[bi + 1] == lastepoch, 0, 1)
-          if (minusOne == 1) {
-            segments[[si]] = c(breaks_i[bi], breaks_i[bi + 1] - 1)
-            endOfSegment = subtractEpochFromTimeName(breaks[bi + 1], epochSize)
-          } else {
-            segments[[si]] = c(breaks_i[bi], breaks_i[bi + 1])
-            endOfSegment = breaks[bi + 1]
-          }
-          if (segments[[si]][2] < segments[[si]][1]) segments[[si]][2] = segments[[si]][1]
-          segments_timing[si] = paste(breaks[bi], endOfSegment, sep = "-")
-          if (is.null(qnames)) {
-            segments_names[si] = paste0("segment", bi)
-          } else {
-            segments_names[si] = paste(qnames[si - 1], qnames[si], sep = "-")
-          }
-          si = si + 1 
-        }
-      }
+      # Get indices in ts for segments start and end limits
+      hms = format(ts$time[fullQqq], format = "%H:%M:%S")
+      segments = vector("list", length = length(segments_timing))
       names(segments) = segments_timing
+      for (si in 1:length(segments_timing)) {
+        s0s1 = unlist(strsplit(segments_timing[si], split = "[-]"))
+        s0s1 = format(s0s1, format = "%H:%M:%S")
+        # tryCatch is needed in the case that the segment is not available in ts,
+        # then a no non-missing values warning would be triggered by the which function
+        segments[[si]] = tryCatch(range(fullQqq[which(hms >= s0s1[1] & hms <= s0s1[2])]), #segStart and segEnd
+                                  warning = function(w) rep(NA, 2))
+      }
     }
   } else if (timewindowi == "WW" || timewindowi == "OO") {
     windowEdge = ifelse(timewindowi == "WW", yes = -1, no = 1)

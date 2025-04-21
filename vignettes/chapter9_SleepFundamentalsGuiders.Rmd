@@ -1,0 +1,228 @@
+---
+title: "9. Sleep Fundamentals: Guiding sleep detection"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEncoding{UTF-8}
+  %\VignetteIndexEntry{9. Sleep Fundamentals: Guiding sleep detection}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Sleep analysis in GGIR comes at three stages:
+
+1.  The discrimination of sleep and wakefulness periods, discussed in the previous chapter.
+
+2.  Identification of time windows that guide the eventual sleep detection, discussed in this chapter.
+
+3.  Assess overlap between the windows identified in step 1 and 2, which we use to define the Sleep Period Time window (SPT) or the time in bed window (TimeInBed) as discussed in chapter 10.
+
+A key challenge with sleep detection is to ignore day time rest periods and short periods of not wearing the accelerometer that were missed by the non-wear detection.
+
+To ease this process GGIR starts by identifying the main time window where sleep is likely.
+We will refer to the methods for defining the window as **guiders**.
+The following guiders are available:
+
+If a sleep log is provided, GGIR uses by default guider sleep log, if the sleep log is not available it falls back on the algorithm as specified by parameter `HASPT.algo`, which allows tps ecify any of the algorithms are discussed below (default HDCZA).
+If that algorithm is not successful GGIR will falls back on a 12 hour window centered around the least active consecutive 5 hours in the day.
+So, when we refer to guider we refer to any of these methods.
+
+### Time window used for sleep analyses
+
+By default the sleep analysis only considers the window noon-noon, which is not ideal for shift workers who may go to bed early in the day and wake up after noon.
+To address this, GGIR changes the window of analysis if this seems to be the case:
+
+If the sleep log indicates that the person woke up after noon, the sleep analysis in part 4 is done on the window from 6pm-6pm.
+Similarly, if any other guider indicates that the person woke up after 11 am, the sleep analysis in part 3 and 4 is done on the window 6pm-6pm.
+
+In this way our method is sensitive to individuals who have their main sleep period starting before noon and ending after noon, referred as **daysleepers** in the output.
+This is for example the case with shift workers.
+Note that guider L5+/-12 (discussed below) is not able to do this, it will only consider the noon-noon time window.
+
+## Guiders
+
+### Guider: Sleeplog
+
+A sleep log (diary) as already used in some studies.
+The way GGIR uses sleeplog was first described in a [2015 article](https://doi.org/10.1371/journal.pone.0142533).
+Two sleeplog file structures are supported: the so-called basic and advanced sleeplog.
+
+To use this guider set the location of your sleeplog as value to parameter `loglocation`.
+
+General notes on how GGIR uses sleeplogs as guider:
+
+- GGIR expects both the start and end of the sleep window to be specified. If one of them is missing then the sleeplog data is assumed to be missing for the entire night.
+- GGIR does not impute sleeplog data. If you feel that imputation is desirable then do this yourself before running GGIR.
+
+#### Basic sleep log
+
+Example of a basic sleeplog:
+
+| ID  | onset_N1 | wakeup_N1 | onset_N2 | wakeup_N2 | onset_N3 | wakeup_N3 | onset_N4 | ... |
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+| 123 | 22:00:00 | 09:00:00  | 21:00:00 | 08:00:00  | 23:45:00 | 06:30:00  | 00:00:00 | ... |
+| 345 | 21:55:00 | 08:47:00  |          |           | 23:45:00 | 06:30:00  | 00:00:00 | ... |
+
+- One column for participant id, this does not have to be the first column. Specify which column it is with argument `colid`.
+
+- Alternatingly one column for onset time and one column for waking time. Specify which column is the column for the first night by argument `coln1`, in the above example `coln1=2`.
+
+- Timestamps are to be stored without date as in hh:mm:ss with hour values ranging between 0 and 23 (not 24). If onset corresponds to lights out or intention to fall asleep, then it specify `sleepwindowType = "TimeInBed"`.
+
+- There can be multiple sleeplogs in the same spreadsheet. Each row representing a single recording.
+
+- First row: The first row of the spreadsheet needs to be filled with column names. For the basic sleep log format it does not matter what these column names are.
+
+- The first night in the basic sleeplog is assumed to correspond to the first recorded night in the accelerometer recording. If you know that sleep log start on a later day then make sure then add columns with labels but without timestamps. Note that by recorded night we mean that there is data regardless of whether the data is valid. So, if the participant does not wear the accelerometer the first night then that is still the first night in the recording.
+
+#### Advanced sleep log
+
+Example of an advanced sleeplog for two recordings:
+
+| ID  | D1_date    | D1_wakeup | D1_inbed | D1_nap_start | D1_nap_end | D1_nonwear1_off | D1_nonwear1_on | D2_date    | ... |
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+| 123 | 2015-03-30 | 09:00:00  | 22:00:00 | 11:15:00     | 11:45:00   | 13:35:00        | 14:10:00       | 31/03/2015 | ... |
+| 567 | 2015-04-20 | 08:30:00  | 23:15:00 |              |            |                 |                | 21/04/2015 | ... |
+
+Relative to the basic sleeplog format the advanced sleep log format comes with the following changes:
+
+- Recording are stored in rows, while all information per days are stored in columns.
+
+- Information per day is preceded by one columns that holds the calendar date. GGIR has been designed to recognise and handle any date format but assumes that you have used the same date format consistently through the sleeplog.
+
+- Per calendar date there is a column for wakeup time and followed by a column for onset or in-bed time. Note that this is different from the basic sleep log, where wakeup time follows the column for onset or in-bed time. So, the advanced sleep log is calendar date oriented: asking the participant when they woke up and when the fell asleep on a certain date. However, if the sleep onset time is at 2am, you should still fill in the 02:00:00, even though it is the 02:00:00 of the next calendar date.
+
+- If no timestamps are known for a certain date, you can skip this date from the sleep log. Note that this is different from the basic format sleep log where columns will have to be left empty for missing night(s).
+
+- You can add columns relating to self-reported napping time and nonwear time. These are not used for the sleep analysis in g.part3 and g.part4, but used in g.part5 to facilitate napping analysis, see argument `do.sibreport` and the paragraph on naps. Multiple naps and multiple nonwear periods can be entered per day.
+
+- Leave cells for missing values blank.
+
+- Column names are critical for the advanced sleeplog format: Date columns are recognised by GGIR as any column name with the word "date" in it. The advanced sleep log format is recognised by GGIR by looking out for the occurrence of at least two column names with the word "date" in their name. Wakeup times are recognised with the words "wakeup" in the column name. Sleeponset times are recognised as columns with the word "onset" in the column name. Time of going to bed is recognised by column names "lightsout", "inbed", "tobed", or "bedstart". Time of getting up is recognised by column names "lightson", "outbed", or "bedend". Napping times are recognised by columns with the word "nap" in their name. Nonwear times are recognised by columns with the word "nonwear" in their name.
+
+- GGIR guesses the data format by looping over common date formats. If the date falls within 30 days of the start date of the accelerometer recording then the date format is assumed to be found. It starts with attempting “Y-m-d” (as in 2015-06-25).
+
+- If a column name includes the word "impute" then this column is treated as a log of the diary imputation for outside GGIR for the preceding night. The value will be shown in the visualreport and is stored in the time series by GGIR part 5. The imputation codes we used for testing have the format C0000 to indicate no imputation for inbed, sleeponset, wakeup and outbed, respectively. If one of the numbers would be 1 then that would reflect imputation.
+
+### Guider: HDCZA
+
+The HDCZA algorithm is designed for studies with wrist-worn accelerometer (raw) data where no sleep log is available. The algorithm was first described in a [2018 article](https://dx.doi.org/10.1038/s41598-018-31266-z), and has been modified slightly: Step 6 in Figure 1 has been replaced by a single threshold (0.2 by default).\
+
+In short, step 1-6 attempt to classify time periods with limited change in posture. Next, step 7 extracts time blocks longer than 30 minutes, step 8 includes intermittent time periods that shorter than 60 minutes, step 9 looks for the longest resulting block in the day, which then in step 10 represents the guider window.
+
+Note that step 10 of Figure 1 in the paper gives the false impression that the step represents the final classification of the SPT window. The way the guider is used to identify the SPT window is described in chapter 10.
+
+The time segment over which HDCZA is derived is by default from noon to noon. However, if it ends between 11am and noon then it will be applied again but to a 6pm-6pm time segment.
+
+To use this guider set parameter `HASPT.algo = "HorAngle"`.
+
+### Guider: L5+/-12 (LEGACY ALGORITHM)
+
+**Disclaimer: This legacy algorithm was used in publications and therefore kept inside GGIR. As performance is expected to be less than other available algorithm, we do not recommend using it.** 
+
+This guider reflects the twelve hour window centred around the least active 5 hours of the day. It is a very crude approach and likely to be inferior to some of the other guiders, but easy to describe. It was first presented in a [2018 article](https://dx.doi.org/10.1038/s41598-018-31266-z).
+
+To use this guider set parameter `def.noc.sleep = c()`.
+
+### Guider: setwindow (LEGACY ALGORITHM)
+
+**Disclaimer: This legacy algorithm was used in publications and therefore kept inside GGIR. As performance is expected to be less than other available algorithm, we do not recommend using it.** 
+
+This guider uses a set window for each day in the recording.
+Start and end time are specified with argument `def.noc.sleep`.
+For example, to use this guider with a window from 10pm to 8am set parameter `def.noc.sleep = c(22, 8)`.
+
+### Guider: HorAngle (EXPERIMENTAL)
+
+**Disclaimer: The status of this guider is experimental because it has not been described and evaluated in a peer-reviewed publication yet. This means revisions to the algorithm can be expected as the algorithm matures.** 
+
+This guider is designed for hip-worn accelerometer (raw) data, by looking for the longest period with a horizontal trunk. To do this it needs GGIR part 1 and 2 to have derived the angle for the longitudinal axis. 
+
+Setting parameter `sensor.location="hip"` triggers the identification of the longitudinal axis by looking for the angle with the strongest 24-hour lagged correlation.
+
+You can also force GGIR to use a specific axis as longitudinal axis with parameter `longitudinal_axis`.
+
+Next, the algorithm identifies when the horizontal axis is between -45 and 45 degrees and considers this a horizontal posture. Next, this is used to identify the largest time in bed period, by only considering horizontal time segments of at least 30 minutes, and then looking for longest horizontal period in the day where gaps of less than 60 minutes are ignored. Therefore, the last 4 steps in the algorithm are identical to the last four steps in the HDCZA algorithm.
+
+To use this guider set parameter `HASPT.algo = "HorAngle"`
+
+### Guider: MotionWare (EXPERIMENTAL)
+
+This is an attempt to implement the algorithm for auto-detection of sleep as described in the non-public document by Cambridge Neurotechnologies: "Information bulletin no.3 sleep algorithms". The algorithm uses a combination of count and marker data to identify the sleep periods in the day, where GGIR for now only retains the longest identified sleep period.
+
+I have attempted to implement it to see whether it can provide value. For the moment, this work is experimental.
+
+
+### Guider: HLRB (EXPERIMENTAL)
+
+HLRB is a heuristic algorithm to detect the Longest Rest Bout. It was designed to offer a guider option for accelerometer device that only store count data and by that cannot work with the HDCZA or HorAngle guiders.
+It has currently not been described in a publication.
+
+The algorithm is composed of the following steps:
+
+1. Filter detected sustained inactivity bouts with a two hour rounded rolling average.
+2. Replace all resulting non-rest periods by rest that are surrounded on both sides by rest if their (non-rest) length is shorter than 1 hour. This 1 hour is currently hard-coded.
+3. Take the longest remaining window as guider.
+
+To use this guider set parameter `HASPT.algo = "HLRB"`.
+
+### Guider: NotWorn (EXPERIMENTAL)
+
+**Disclaimer: The status of this guider is experimental because it has not been described and evaluated in a peer-reviewed publication yet. This means revisions to the algorithm can be expected as the algorithm matures.** 
+
+As already referenced in the previous chapter the `NotWorn` guider is designed for studies where the instruction is to not wear the accelerometer during the night. It should be obvious that this does not facilitate any meaningful sleep analysis. Nonetheless we need a crude estimate of night time versus day time in order for GGIR part 5 to characterise day time behaviours.
+
+First the `NotWorn` algorithm calculates the 5 minute rolling average of the acceleration metric values (i.e., acceleration metric defined with parameter `acc.metric`) and applies a threshold that is 5% of the standard deviation in the resulting signal. However, if this threshold is less than the minimum value in the signal the threshold is set equal to the 10th percentile in the distribution.
+
+Next, this is used to identify the largest non-movement period, by only considering segments of at least 30 minutes, and then looking for longest segment in the day where gaps of less than 60 minutes are ignored. Therefore, the last 4 steps in the algorithm are identical to the last four steps in the HDCZA and HorAngle algorithms.
+
+The algorithm is expected to work with any acceleration metric, so both count-type metrics and metrics in gravitational units.
+
+To use this guider set parameter `HASPT.algo = "NotWorn"`. Further, we recommend combining the using of \"NotWorn\" with: `do.imp = FALSE` and `ignorenonwear = FALSE`. Internally `HASPT.ignore.invalid` is always set to `NA` when \"NotWorn\" is used.
+
+If this is used it will also define the resulting window as SIB period and ignore all other identified SIB window to ensure the entire window is treated as sleep. So, all SIB periods detected are ignored.
+
+However, we know from experience that participants occasionally wear the accelerometer during the night even when they are told not to. GGIR offers a solution for this if you are not working with count data but with accelerometer metrics in gravitational units. In that case, it is possible to specify a second guider to use when the accelerometer has been worn for less than 25% of the time in the detection window (noon-noon or 6pm-6pm). If this happens then it will check whether parameter `HASPT.algo` has two guiders specified. If it does it will use the second one. For example, `HASPT.algo = c("NotWorn", "HDCZA"`) or `HASPT.algo = c("NotWorn", "HorAngle"`).
+
+
+### Guider: markerbutton (EXPERIMENTAL)
+
+The functionality described in this paragraph is currently only functional for Philips Health Band and MotionWatch 8 data.
+
+This guider is always used in combination with one of the other guiders such as \"MotionWare\" or \"HLRB\".
+It is use by setting `consider_marker_button = TRUE`. If this fails GGIR will fall back on the guider as specified with parameter `HASPT.algo`.
+
+Relying on marker button presses (marker events) comes with the challenge that participants may press the marker button more than twice or not at all on some days. GGIR attempts to address this with the following algorithm.
+
+**At recording level:**
+
+1. Represent marker button presses in the time series as 1 when pressed and as 0 when not pressed.
+
+2. Optional step that is only applied when parameter `impute_marker_button = TRUE` and intended to impute marker events. It will copy every marker button press to every other day in the recording at the same time of the day but reduces its value as `0.9 / (ndays + 1)`, where `ndays` represent the relative distance in days to the original marker button press. 
+
+**At night level (noon-noon or 6pm-6pm):**
+
+3. Only continue if there are at least 2 marker events for the night, if at least 50% of the data in the night is valid, and if the time span between the first and last marker event is larger than 1 hour.
+4. Take all marker events with value 1 or the 10 marker events with the highest value, whichever of the two provides most marker events.
+5. From these marker events, ignore all marker event pairs that both span less than 3 hours and involve at least one imputed marker button press, unless these represent all marker button pairs available.
+6. Ignore all marker event pairs where the percentage of sustained inactivity bouts inside the window is lower than outside the window.
+7. Define a performance score as: 1 + time spend outside the window duration range 7-9 multiplied by the average activity inside the window.
+8. The window with the lowest score is selected as guider.
+
+## Dealing with expected or detected invalid time segments
+
+Detected non-wear or study protocol led to parts of the recording to be labelled as invalid and corresponding values [were imputed](https://wadpac.github.io/GGIR/articles/chapter6_DataImputation.html): 
+
+1. If we want the guider to use the imputed values then leave parameter `HASPT.ignore.invalid = FALSE` as default.
+
+2. If we want to guider to ignore all invalid segment despite our efforts to impute it, see `HASPT.ignore.invalid = TRUE`. This approach may be helpful for studies where the accelerometer is often not worn during the waking hour of the day.
+
+3. If we want the guider to consider invalid segments as no movement period set parameter `HASPT.ignore.invalid = NA`. This approach may be helpful for studies where the accelerometer is often not worn during the night. If this is used, the guider name in the output will be shown with "+invalid" at the end, e.g. "HDCZA+invalid", to reflect that the guider was enhanced.

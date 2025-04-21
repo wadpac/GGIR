@@ -1,0 +1,385 @@
+---
+title: "2. The GGIR pipeline"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{2. The GGIR pipeline}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+As explained in chapter 1, GGIR offers a vast amount of functionality. If you arrive here with the expectation to find a quick instruction to run and use GGIR then we have to disappoint you. Learning to use GGIR requires some time investment. In this chapter we start with explaining the GGIR pipeline, which you could see as the high level structure of GGIR. Understanding this structure will help you navigate the following chapters.
+
+## The GGIR function
+
+As brief introduction for those unfamiliar with R or software, R packages are constructed of sub-components, named functions. A single function typically allows for doing a specific task. For example, we may have the `sum` function that sums the numbers we provide to it. A function can have one or multiple parameters to control the functions behaviour. In R these parameters are called function arguments. For example, `sum` has the argument `na.rm` to control what needs to be done with missing values. In GGIR we refer to these arguments as parameters.
+
+GGIR comes with a large number of functions and parameters that together form a processing pipeline. To ease interacting with GGIR, GGIR has one central function to act as interface to all functionality. This function is also named `GGIR` and in its basic form it is used as shown below:
+
+```{R,eval=FALSE}
+GGIR(datadir = "C:/mystudy/mydata",
+     outputdir = "D:/myresults")
+```
+
+You only need to learn how to work with the function `GGIR`, but it is important to understand that in the background this function interacts with all other functions in GGIR and even functions outside GGIR.
+
+Further, it is important to understand that the `GGIR package` is structured in two complementary ways:
+
+-   **Parts:** Reflecting the computational components when running GGIR. GGIR has 6 parts numbered from 1 to 6 to reflect the order in which they are executed. The reason why GGIR is split up in parts is that it avoids having to re-run all preceding parts if you only want to make a small change in the more downstream parts. The parts together form the pipeline.
+-   **Parameter themes:** Reflecting the themes around which the user can control GGIR, e.g. controlling how sleep is detected or controlling what output is stored and how it is stored.
+
+### Parts of the pipeline
+
+GGIR, has a computational structure of six parts which are applied sequentially to the data:
+
+-   **Part 1:** Loads the data, works on data quality, and stores derived summary measures per time interval, also known as signal features (referred to as metrics), as needed for the following parts. 
+-   **Part 2:** Basic data quality assessment based on the extract metrics and description of the data per day, per file, and optionally per day segment.
+-   **Part 3:** Estimation rest periods, needed for input to Part 4.
+-   **Part 4:** Labels the rest periods derived in Part 3 as sleep per night and per file.
+-   **Part 5:** Compiles time series with classification of sleep and physical behaviour categories by re-using information derived in part 2, 3, and 4. This includes the detection of behavioural bouts, which are time segments where the same behaviour is sustained for duration as specified by the user. Next, Part 5 generates a descriptive summary such as time spent in and average acceleration per behavioural category, but also behavioural fragmentation.
+-   **Part 6:** Facilitates analyses that span the full recording such as household co-analysis and circadian rhythm analysis.
+
+The specific order and content of the parts is a result of how GGIR evolved over time, with Part 1 and 2 created in 2011-2013, Part 3 and 4 created in 2013-2015, Part 5 created in 2017-2020, and Part 6 created in 2023-2024. As such, the parts also reflect the historical expansion of GGIR.
+
+#### Milestone data
+
+Each part, when run, stores its output in an R-data file that has `.RData` as its extension, which we refer to as the milestone data. As user, you are unlikely to ever need to interact directly with the milestone data files because all relevant output for you is stored in csv and pdf files in the output folder `results`.
+
+The milestone files are read by the next GGIR part. The advantage of this design is that it offers internal modularity. For example, we can run part 1 now and continue with part 2 another time without having to repeat part 1 again. So, this design eases re-processing and is also helpful for us when developing and testing the GGIR code.
+
+The milestone data files are stored in sub-folders of the output folder as show below. Note that the output folder is named `output_mystudy` as example but exact name may differ for you.
+
+-   For part 1: `output_mystudy/meta/basic`.
+-   For part 2: `output_mystudy/meta/ms2.out`.
+-   For part 3: `output_mystudy/meta/ms3.out`.
+-   For part 4: `output_mystudy/meta/ms4.out`.
+-   For part 5: `output_mystudy/meta/ms5.out`.
+-   For part 6: `output_mystudy/meta/ms6.out`.
+
+The milestone files are potentially useful for you for the following reasons:
+
+-   By copying the milestone files to a new computer, you may continue your analyses without access to the original data files. This can for example be helpful if you process subsets of the same study on different computers, pooling the resulting milestone data allows you to finalise your analysis on a single computer. Remember to preserve the same folder structure.
+-   When you run into a problem, the milestone files may allow you to share the problem as a reproducible example of the problem without having to share the original large data file.
+
+### Parameter themes
+
+The parameters of all GGIR package functions can be used as parameter to the GGIR function. The parameters are internally grouped thematically, independently of the six parts they are used in:
+
+-   **params_rawdata:** parameters related to handling the raw data such as resampling or calibrating.
+-   **params_metrics:** parameters related to aggregating the raw data to epoch level summary measures (metrics).
+-   **params_sleep:** parameters related to sleep detection.
+-   **params_phyact:** parameters related to physical (in)activity.
+-   **params_247:** parameters related to 24/7 behaviours that do not fall into the typical sleep or physical (in)activity research category such as measures of circadian rhythm or more 24 hour data description techniques.
+-   **params_output:** parameters relating to how and whether output is stored.
+-   **params_general:** general parameters not covered by any of the above categories
+
+As GGIR user you do not need to remember which theme a parameter belongs to. However, you may notice that the documentation is structure by parameter theme to ease navigating the parameters.
+
+There are a couple of ways to inspect the parameters in each parameter category and their default values:
+
+#### GGIR function documentation:
+
+```{R,eval=FALSE}
+?GGIR
+```
+
+#### Parameters vignette:
+
+Documentation on the meaning of each parameter, its default value, and expected value(s) can be found in the vignette: [GGIR configuration parameters](https://wadpac.github.io/GGIR/articles/GGIRParameters.html).
+
+#### From R command line:
+
+```{R,eval=FALSE}
+library(GGIR)
+print(load_params())
+```
+
+If you are only interested in one specific category like sleep:
+
+```{R,eval=FALSE}
+library(GGIR)
+print(load_params()$params_sleep)
+```
+
+If you are only interested in e.g. parameter `HASIB.algo` from the
+
+`sleep_params` object:
+
+```{R,eval=FALSE}
+library(GGIR)
+print(load_params()$params_sleep[["HASIB.algo"]])
+```
+
+All of these parameters are accepted as parameter to function `GGIR`, because `GGIR` is like a shell around all GGIR functionality. However, the `params_` objects themselves cannot be provided as input to `GGIR`.
+
+#### Configuration file.
+
+GGIR stores all the parameter values in a csv-file named config.csv. The file is stored after each run of GGIR in the root of the output folder, overwriting any existing config.csv file. So, if you would like to add annotations in the file, e.g. in the fourth column, then you will need to store it somewhere outside the output folder and specify the path to that file with parameter `configfile`. Note that parameters `datadir` and `outputdir`discussed below always need to be specified directly and are not part of the configfile.
+
+```{R,eval=FALSE}
+library(GGIR)
+GGIR(datadir = "C:/mystudy/mydata",
+     outputdir = "D:/myresults", 
+     configfile = "D:/myconfigfiles/config.csv")
+```
+
+The practical value of this is that it eases the replication of the analysis, because instead of having to share you R script with colleagues, sharing your config.csv file will be sufficient. Please make sure you have the same GGIR and R version installed when using this for reproducibility. See [here](https://wadpac.github.io/GGIR/articles/chapter0_Installation.html) for guidance on how to install older package versions.
+
+#### Parameter extraction order
+
+If parameters are provided in the GGIR call, then GGIR always uses those. If parameters are not provided in GGIR call, GGIR checks whether there is a config.csv file either in the output folder or specified via parameter `configfile` and loads those values. If a parameter is neither specified in the GGIR function call nor available in the config.csv file, then GGIR will use its default value's which can be inspected as discussed in the section above. Here, it is important to realise that a consequence of this logic is that GGIR will not revert to its default parameter values in a repeated run of GGIR unless you remove the parameter from the function call and delete the config.csv file or you specify the original (default) value of the parameter explicitly in you GGIR call.
+
+To ensure this is clear here are some example:
+
+-   If GGIR is used for the first time without specifying parameter `mvpathreshold`, then it will use the default value, which is 100.
+-   If you specify `mvpathreshold = 120`, then GGIR will use this instead and store it in the config.csv file.
+-   If you run GGIR again but this time delete `mvpathreshold = 120` from your GGIR call, then GGIR will fall back on the value 120 as now stored in the config.csv file.
+-   If you delete the config.csv file and run GGIR again, then the value 100 will be used again.
+
+## Input files
+
+All accelerometer data that need to be analysed should be stored in one folder or subfolders of that folder. Make sure that the folder does not contain any files that are not accelerometer data.
+
+Choose an appropriate name for the folder, preferable with a reference to the study or project it is related to rather than just 'data', because the name of this folder will be used as an identifier of the dataset and integrated in the name of the output folder GGIR creates.
+
+### Raw data
+
+GGIR currently works with the following accelerometer brands and formats:
+
+-   [GENEActiv](https://activinsights.com/) .bin
+-   [Axivity](https://axivity.com/) AX3 and AX6 .cwa
+-   [ActiGraph](https://theactigraph.com) .csv and .gt3x (.gt3x only the newer format generated with firmware versions above 2.5.0. Serial numbers that start with “NEO” or “MRA” and have firmware version of 2.5.0 or earlier use an older format of the .gt3x file). If you want to work with .csv exports via the commercial ActiLife software, then note that you have the option to export data with timestamps, which should be turned off. To cope with the absence of timestamps GGIR will calculate timestamps from the sample frequency, the start time, and start date as presented in the file header.
+-   [Movisens](https://www.movisens.com/en/) with data stored in folders.
+-   [Parmay Matrix](https://www.parmaytech.com/) .bin and .BIN
+-   Any other accelerometer brand that generates csv output, see documentation for functions `read.myacc.csv` and parameter `rmc.noise` in the vignette [Reading csv files with raw data in GGIR](https://cran.r-project.org/package=GGIR/vignettes/readmyacccsv.html).
+
+### Externally derived epoch-level data
+
+By default GGIR assumes that the data is raw as discussed in chapter 1. However, for some studies raw data is not available and all we have is an epoch level aggregate. For example, done by external software or done inside the accelerometer device. Although this can introduce some severe limitations to the transparency and flexibility of our analysis, GGIR makes an attempt to facilitate the analysis of these externally performed aggregations of the raw data. Please find below an overview of the file formats currently facilitated:
+
+| Sensor brand / Device name  | Data format           | Parameters              |
+|------------------------|-----------------------|-------------------------|
+| Actiwatch            | .csv                  | `dataFormat = "actiwatch_csv"`  |
+| Actical             | .csv                  | `dataFormat = "actical_csv"`  |
+| Actiwatch | .awd      | `dataFormat = "actiwatch_awd"`  |
+| ActiGraph    | .csv (count files, not be confused with csv raw data files) | `dataFormat = "actigraph_csv"`, `do.neishabouricounts = TRUE`, `acc.metric = "NeishabouriCount_x"`  |
+| Axivity             | UKBiobank csv export of epoch level data      | `dataFormat = "ukbiobank_csv"`  (sleep detection not facilitated)   |
+| SenseWear    | .xls or .xlsx      | `dataFormat = "sensewear_xls"`   |
+| Fitbit      | folder with multiple .json files |  `dataFormat = "fitbit_json"` |
+| Philips Health Band | .xlsx file pairs | `dataFormat = "phb_xlsx"` |
+
+See [GGIR CookBook](https://wadpac.github.io/GGIR/articles/Cookbook.html) for example recipes for working with these externally derived epoch-level data.
+
+To process these files, GGIR loads their content and saves it as GGIR part 1 milestone data, essentially fooling the rest of GGIR to think that GGIR part 1 created them based on raw data input. As will be discussed in chapter 3, GGIR does non-wear detection in two steps: The first step is done in part 1 and the second step is done in part 2. In relation to externally derived epoch data non-wear is detected by looking for consecutive zeros of one hour (default) expanded by all time point for which data is missing. However, the consecutive zero approach is not used for all brands:
+
+- For UK Biobank csv data the non-wear detection is available in the data, which is what GGIR uses.
+- For Fitbit and Sensewear we use missingness in data as an indicator of nonwear, and any one hour time window with a standard deviation in calorie or METS values less than 0.0001 and an average value below 2.
+
+For all above approaches using a one hour window, the actual window length can be modified with the last value of parameter `windowsizes`.
+
+## How to run your analysis?
+
+The bare minimum input needed for `GGIR` is:
+
+```{R,eval=FALSE}
+library(GGIR)
+GGIR(datadir = "C:/mystudy/study_XYZ_data",
+     outputdir = "C:/myresults")
+```
+
+Parameter `datadir` allows you to specify where you have stored your accelerometer data and `outputdir` allows you to specify where you would like the output of the analyses to be stored. This cannot be equal to `datadir`. If you copy and paste the above code to a new R script (file ending with .R) and Source it in R(Studio), then the dataset will be processed and the output will be stored in the specified output directory. GGIR refers to file directories and not to folders. For those unfamiliar with the term directory: It is the same as a folder.
+
+Next, we can add parameter `mode` to tell GGIR which part(s) to run, e.g. `mode = 1:5` tells GGIR to run all five parts and is the default. With parameter `overwrite`, we can tell GGIR whether to overwrite previously produced milestone data or not.
+
+Further, parameter `idloc` tells GGIR where to find the participant ID. The default setting most likely does not work for most data formats, by which it is important that you tailor the value of this parameter to your study setting. For example, if you files start with a participant ID followed by an underscore then set `idloc=2`. See documentation for parameter `idloc` for other examples.
+
+GGIR stores its output csv files with a comma as default column separator and a dot as default decimal separator as is the standard in UK/US. However, if your computer is configured for a different region of the world then these can be modified with parameters `sep_reports` and `dec_reports`, respectively.
+
+If you consider the parameters we have discussed so far, you me may end up with a call to
+`GGIR` that could look as follows. This will only run GGIR part 1 to 4 and store csv files with
+default column and decimal separator.
+
+```{R,eval=FALSE}
+library(GGIR)
+GGIR(mode = 1:4,
+      datadir = "C:/mystudy/study_XYZ_data",
+      outputdir = "C:/myresults",
+      do.report = c(2, 4),
+      overwrite = FALSE,
+      idloc = 2)
+```
+
+All other parameters we discuss later on can be added in a similar way. Please note that the
+order of the parameters does not matter. Further, when using many parameters it can be convenient to add comments in between like in the example below.
+
+```{R,eval=FALSE}
+library(GGIR)
+GGIR(mode = 1:6,
+     datadir = "C:/mystudy/study_XYZ_data",
+     outputdir = "C:/myresults",
+     do.report = c(2, 4, 5, 6),
+     #=====================
+     # Part 1
+     #=====================
+     do.LFENMO = TRUE,
+     do.ENMO = FALSE,
+     acc.metric = "LFENMO"
+     #=====================
+     # Part 2
+     #=====================
+     data_masking_strategy = 1,
+     hrs.del.start = 4,
+     hrs.del.end = 4,
+     maxdur = 9,
+     includedaycrit = 16,
+     #=====================
+     # Part 3 + 4
+     #=====================
+     includenightcrit = 16,
+     outliers.only = TRUE,
+     #=====================
+     # Part 5
+     #=====================
+     threshold.lig = 30,
+     threshold.mod = c(100, 110), # also used in part 2
+     threshold.vig = 400,
+     boutcriter = 0.8,
+     boutcriter.in = 0.9,
+     boutcriter.lig = 0.8,
+     boutcriter.mvpa = 0.8,
+     boutdur.in = c(1, 10, 30),
+     boutdur.lig = c(1, 10),
+     boutdur.mvpa = 1,
+     includedaycrit.part5 = 2/3,
+     timewindow = c("WW", "OO"),
+     #=====================
+     # Part 6
+     #=====================
+     part6CR = TRUE,
+     #=====================
+     # Visual report
+     #=====================
+     visualreport = TRUE,
+     old_visualreport = FALSE)
+```
+
+
+### From the R console on your own desktop/laptop
+
+Create an R-script and put in it `library(GGIR)` and on the next line the GGIR call as in `GGIR(datadir = "yourdatapath", outputdir = "yourdatapath")`. Next, you can source the R-script with the `source` button in RStudio: `source("pathtoscript/myshellscript.R")`
+
+GGIR by default supports multi-thread processing which is used to process one input file per process, speeding up the processing of your data. This can be turned off by setting parameter `do.parallel = FALSE`.
+
+### In a cluster
+
+If processing data with GGIR on your desktop/laptop is not fast enough, we advise using GGIR on a computing cluster. The way we did it on a Sun Grid Engine cluster is shown below. Please note that some of these commands are specific to the computing cluster you are working on. Please consult your local cluster specialist to explore how to run GGIR on your cluster. Here, we only share how we did it. We had three files for the SGE setting:
+
+**submit.sh**
+
+```{bash,eval=FALSE}
+for i in {1..707}; do
+    n=1
+    s=$(($(($n * $[$i-1]))+1))
+    e=$(($i * $n))
+    qsub /home/nvhv/WORKING_DATA/bashscripts/run-mainscript.sh $s $e
+done
+```
+
+**run-mainscript.sh**
+
+```{bash,eval=FALSE}
+#! /bin/bash
+#$ -cwd -V
+#$ -l h_vmem=12G
+/usr/bin/R --vanilla --args f0=$1 f1=$2 < /home/nvhv/WORKING_DATA/test/myshellscript.R
+```
+
+**myshellscript.R**
+
+```{R,eval=FALSE}
+options(echo=TRUE)
+args = commandArgs(TRUE)
+if(length(args) > 0) {
+  for (i in 1:length(args)) {
+    eval(parse(text = args[[i]]))
+  }
+}
+GGIR(f0=f0,f1=f1,...)
+```
+
+You will need to update the `...` in the last line with the parameters you used for `GGIR`. Note that `f0=f0,f1=f1` is essential for this to work. The values of `f0` and `f1` are passed on from the bash script. Once this is all setup, you will need to call `bash submit.sh` from the command line. With the help of computing clusters, GGIR has successfully been run on some of the world’s largest accelerometer datasets such as UK Biobank and the German NAKO study.
+
+## Processing time
+
+The time to process a typical seven-day recording should be anywhere in between 3 and 10 minutes depending on the sample frequency of the recording, the sensor brand, data format, the exact configuration of GGIR, and the specifications of your computer. If you are observing processing times of 20 minutes or longer for a seven-day recording then probably you are slowed down by other factors.
+
+Some tips on how you may be able to address this:
+
+-   Make sure the data you process is on the same machine as where GGIR is run. Processing data located somewhere else on a computer network can substantially slow down software.
+-   Make sure your machine has 8GB or more RAM memory. Using GGIR on old machines with only 4GB is known to be slow. However, total memory is not the only bottle neck. Also consider the number of processes (threads) your CPU can run relative to the amount of memory. Ending up with 2GB per process seems a good target. It can be helpful to turn off parallel processing with `do.parallel = FALSE`.
+-   Avoid doing other computational activities on your machine while running GGIR. For example, if you use DropBox or OneDrive make sure they do not sync while you are running GGIR. It is probably best not to use the machine when using GGIR to process large datasets. Make sure the machine is configured not to automatically turn off after X hours as that would terminate GGIR. Further, you may want to configure the machine to not fall asleep as this pauses GGIR.
+-   Lower value of parameter `maxNcores` which by default uses the number of available cores derived with command `parallel::detectCores()` minus 1. This might in some cases be too demanding for your operating system.
+-   Reduce the amount of data GGIR loads in memory with parameter `chunksize`, which can be useful on machines with limited memory or when processing many files in parallel. A `chunksize` value of 0.2 will make GGIR load the data in chunks of only 20% of the size relative to the chunks it loads by default, which is approximately 12 hours of data for the auto-calibration routine and 24 hours of data for the calculation of signal metrics.
+
+## GGIR output
+
+GGIR always creates an output folder in the location as specified with parameter `outputdir`. The output folder name is constructed as `output_` followed by the name of the dataset which is derived from the most distal folder name of the data directory as specified with `datadir`. We recommend this approach because it ensures that the output folder and data directory have matching names. In that way there is less likely confusion about what data folder the output relates to. However, it is possible to use `datadir` to specify a vector with paths to individual files, which may helpful if you want to process a set of files but are not in a position to move them to a new folder. In that scenario, you will need to set parameter `studyname` to tell GGIR what the dataset name is.
+
+Inside the output folder GGIR will create two subfolders: `meta` and `results` as discussed earlier in this chapter. Inside `results` you will find folder named `QC` (Quality Checks). The name QC (Quality Checks) is possibly somewhat confusing. Data quality checks are best started with the files stored in the results folder, where the files in the QC subfolder offer complementary information to help with the quality check.
+
+GGIR generates reports in the parts 2, 4, 5, and 6 of the pipeline. With parameter  `do.report` you can specify for which of these parts you want the reports to be generated. For example, `do.report = c(2, 5)` will only generate the report for parts 2 and 5. For a full GGIR analysis we expect at least the following output files:
+
+***Output files in results subfolder:***
+
+| File path                                                | Resolution                                                       | GGIR part |
+|--------------------------------------|-----------------|-----------------|
+| part2_summary.csv                                | one row per recording                                            | 2         |
+| part2_daysummary.csv                             | one row per day                                                  | 2         |
+| part4_summary_sleep_cleaned.csv                  | one row per recording                                            | 4         |
+| part4_nightsummary_sleep_cleaned.csv             | one row per night                                                | 4         |
+| visualisation_sleep.pdf                          | 40 recordings per page                                           | 4         |
+| part5_daysummary_WW_L40M100V400_T5A5.csv         | one row per day                                                  | 5         |
+| part5_personsummary_WW_L40M100V400_T5A5.csv      | one row per recording                                            | 5         |
+
+: A detailed discussion of each output can be found in the other chapters.
+
+
+***Output files in results/QC subfolder:***
+
+| File path                                                | Resolution                                                       | GGIR part |
+|--------------------------------------|-----------------|-----------------|
+| data_quality_report.csv                       | one row per recording                                            | 5         |
+| part4_summary_sleep_full.csv                  | one row per recording                                            | 4         |
+| part4_nightsummary_sleep_full.csv             | one row per night                                                | 4         |
+| part5_daysummary_full_WW_L40M100V400_T5A5.csv | one row per day                                                  | 5         |
+| plots_to_check_data_quality_1.pdf             | one recording per page                                           | 2         |
+
+: A detailed discussion of each output can be found in the other chapters.
+
+
+***Output files in meta/ms5.outraw subfolder:***
+
+| File path                                                | Resolution                                                       | GGIR part |
+|--------------------------------------|-----------------|-----------------|
+| 40_100_400/                               | one file with time series per recording                          |           |
+| behavioralcodes2023-11-06.csv           | dictionary for behavioural codes as used in the time series file |           |
+
+: A detailed discussion of each output can be found in the other chapters.
+
+***Output files in results/file summary reports subfolder:***
+
+See parameter [visualreport](https://wadpac.github.io/GGIR/articles/GGIRParameters.html?q=visualreport#visualreport) for details on these pdf reports.
+
+| File name                                    | Resolution                        | GGIR part |
+|----------------------------------------------|-----------------------------------|-----------|
+| old_report... .pdf (this is a legacy report) | Time series of one recording      | 5         |
+| report... .pdf                               | Time series of one recording      | 5         |
+
+: A detailed discussion of each output can be found in the other chapters.
+

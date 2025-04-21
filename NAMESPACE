@@ -34,29 +34,31 @@ export(g.analyse, g.calibrate,
        CalcSleepRegularityIndex, load_params,
        check_params, extract_params,
        g.imputeTimegaps, g.part5.classifyNaps,
-       tidyup_df, cosinorAnalyses,
-       detect_nonwear_clipping, applyCosinorAnalyses,
+       tidyup_df, cosinor_IS_IV_Analyses,
+       detect_nonwear_clipping, apply_cosinor_IS_IV_Analyses,
        ShellDoc2Vignette, parametersVignette,
        correctOlderMilestoneData,
        convertEpochData, appendRecords, extractID,
        g.part5_analyseSegment, g.part5_initialise_ts,
        g.part5.analyseRest, part6AlignIndividuals,
-       part6PairwiseAggregation, g.part6, g.report.part6, check_log, g.report.part5_dictionary)
-
+       part6PairwiseAggregation, g.part6, g.report.part6, 
+       check_log, g.report.part5_dictionary, DFA, ABI, SSP, visualReport,
+       splitRecords, getSplitNames, addSplitNames, getPart1BasicInfo,
+       markerButtonForRest, aggregateEvent, inspect_binFile_brand)
 
 importFrom("grDevices", "colors", "dev.off", "pdf",
-           "rgb", "rainbow", "palette")
+           "rgb", "rainbow", "palette", "adjustcolor", "gray.colors")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
            "rect","axis.POSIXct", "barplot", "box", "legend",
-           "lines", "mtext", "text", "arrows", "segments")
+           "lines", "mtext", "text", "arrows", "segments", "layout")
 importFrom("utils", "read.csv", "sessionInfo", "write.csv",
            "installed.packages", "setTxtProgressBar",
            "txtProgressBar", "write.table", "head",
            "memory.limit", "memory.size", "tail", "unzip", "lsf.str")
 importFrom("stats", "aggregate.data.frame", "weighted.mean",
            "rnorm","median","aggregate","C", "lm.wfit",
-           "quantile", "sd","coef", "lm", "embed", "na.pass",
-            "residuals", "fitted", "reshape", "cor")
+           "quantile", "sd","coef", "lm", "embed", "na.pass", "na.omit",
+            "residuals", "fitted", "reshape", "cor", "arima", "lm.fit")
 import(data.table)
 importFrom("methods", "is")
 importFrom("utils", "available.packages", "packageVersion", "help", "read.table")

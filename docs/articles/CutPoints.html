@@ -5,92 +5,95 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="GGIR">
 <title>Published cut-points and how to use them in GGIR • GGIR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Published cut-points and how to use them in GGIR">
-<meta property="og:description" content="GGIR">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:creator" content="@RpackageGGIR">
-<meta name="twitter:site" content="@RpackageGGIR">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]--><script defer data-domain="pkgdown.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Published cut-points and how to use them in GGIR">
+<script defer data-domain="pkgdown.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-5</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../articles/chapterInProgress.html">Get Started</a>
-</li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">1. The GGIR pipeline</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">2. Inspecting the Data Quality in GGIR</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">3. From Raw Data to Acceleration Metrics</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">4. Accounting for Study Protocol</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">5. How GGIR Deals with Invalid Data</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">6. Characterizing Human Behaviour with GGIR</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">7. The 24-hour time use analysis</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">8. Cleaning the Data</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">9. Inspecting the results</a>
-    <a class="dropdown-item" href="../articles/chapterInProgress.html">10. Motivation and Clarification</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-the-book" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">The book</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-the-book">
+<li><a class="dropdown-item" href="../articles/chapter1_WhatIsGGIR.html">1. What is GGIR</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter2_Pipeline.html">2. The GGIR Pipeline</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter3_QualityAssessment.html">3. Data Quality Assurance</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter4_AccMetrics.html">4. From Raw Data to Acceleration Metrics</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter5_StudyProtocol.html">5. Accounting for Study Protocol</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter6_DataImputation.html">6. How GGIR Deals with Invalid Data</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter7_DescribingDataWithoutKnowingSleep.html">7. Describing the Data Without Knowing Sleep</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter8_SleepFundamentalsSibs.html">8. Sleep Fundamentals - Sustained Inactivity Bout Detection (SIB)</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter9_SleepFundamentalsGuiders.html">9. Sleep Fundamentals - Guiding Sleep Detection</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter10_SleepAnalysis.html">10. Sleep Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter11_DescribingDataCutPoints.html">11. Physical Activity Fundamentals - Describing the data with cut-points</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter12_TimeUseAnalysis.html">12. Time-Use Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter13_CircadianRhythm.html">13. Circadian Rhythm Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/chapter14_BehaviouralFragmentation.html">14. Behavioural Fragmentation</a></li>
+  </ul>
 </li>
+<li class="active nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-annexes" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Annexes</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-annexes">
+<li><a class="dropdown-item" href="../articles/GGIRParameters.html">GGIR Parameters</a></li>
+    <li><a class="dropdown-item" href="../articles/GGIRoutput.html">GGIR Output</a></li>
+    <li><a class="dropdown-item" href="../articles/readmyacccsv.html">Reading csv files with raw data</a></li>
+    <li><a class="dropdown-item" href="../articles/ExternalFunction.html">Embedding external functions in GGIR</a></li>
+    <li><a class="dropdown-item" href="../articles/CutPoints.html">Published cut-points and how to use them</a></li>
+    <li><a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a></li>
+    <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
+    <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
+  </ul>
+</li>
+<li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/chapter0_GetStarted.html">Get started</a></li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-news">
-    <h6 class="dropdown-header" data-toc-skip>Releases</h6>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-9-0/">Version 2.9-0</a>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-8-0/">Version 2.8-0</a>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-7-1/">Version 2.7-1</a>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-6-0/">Version 2.6-0</a>
-    <a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-5-0/">Version 2.5-0</a>
-    <div class="dropdown-divider"></div>
-    <a class="dropdown-item" href="../news/index.html">Changelog</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-news">
+<li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-0/">Version 3.2-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-5/">Version 3.1-5</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-0/">Version 3.1-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-0-0/">Version 3.0-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-9-0/">Version 2.9-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-8-0/">Version 2.8-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-7-1/">Version 2.7-1</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-6-0/">Version 2.6-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-5-0/">Version 2.5-0</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
+  </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="../articles/chapter0_Contributing.html">Contributing</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/chapter0_Support.html">Need help?</a></li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/wadpac/GGIR/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://twitter.com/RpackageGGIR" aria-label="Twitter">
-    <span class="fa fa-twitter"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/wadpac/GGIR/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -99,7 +102,8 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="" class="logo" alt=""><h1>Published cut-points and how to use them in GGIR</h1>
+
+      <h1>Published cut-points and how to use them in GGIR</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/wadpac/GGIR/blob/HEAD/vignettes/CutPoints.Rmd" class="external-link"><code>vignettes/CutPoints.Rmd</code></a></small>
@@ -108,23 +112,21 @@
 
     
     
-<p><img src="GGIR-MASTERLOGO-RGB.png" width="60%" style="border: 0; padding:20px"></p>
-<p>See also complementary vignettes on: <a href="https://cran.r-project.org/package=GGIR/vignettes/GGIR.html" class="external-link">General
-introduction to GGIR</a>, <a href="https://CRAN.R-project.org/package=GGIR/vignettes/TutorialDaySegmentAnalyses.html" class="external-link">Day
-segment analyses</a>, <a href="https://CRAN.R-project.org/package=GGIR/vignettes/GGIRParameters.html" class="external-link">GGIR
-parameters</a>, <a href="https://CRAN.R-project.org/package=GGIR/vignettes/ExternalFunction.pdf" class="external-link">Embedding
-external functions (pdf)</a>, and <a href="https://CRAN.R-project.org/package=GGIR/vignettes/readmyacccsv.html" class="external-link">Reading
-ad-hoc csv file formats</a>.</p>
+<p><strong>NOTE: If you are viewing this page via CRAN note that the
+main GGIR documentation has been migrated to the <a href="https://wadpac.github.io/GGIR/">GGIR GitHub
+pages</a>.</strong></p>
 <div class="section level2">
 <h2 id="considerations">Considerations<a class="anchor" aria-label="anchor" href="#considerations"></a>
 </h2>
 <p>The physical activity research field has used so called cut-points to
 segment accelerometer time series based on level of intensity. In this
 vignette we have compiled a list of published cut-points with
-instructions on how to use them with GGIR. As newer cut-points are
-frequently published the list below may not be up to date.
-<strong>Please let us know if you are aware of any published cut-points
-that we missed!</strong></p>
+instructions on how to use them with GGIR. Please note that GGIR refers
+to cut-points as thresholds, but we are referring to the same thing: A
+value or a set of values to help split levels of movement intensity. As
+newer cut-points are frequently published the list below may not be up
+to date. <strong>Please let us know if you are aware of any published
+cut-points that we missed!</strong></p>
 <div class="section level3">
 <h3 id="cut-points-expressed-in-gravitational-units-this-vignette">Cut-points expressed in gravitational units (this vignette)<a class="anchor" aria-label="anchor" href="#cut-points-expressed-in-gravitational-units-this-vignette"></a>
 </h3>
@@ -145,13 +147,13 @@ example, the metric as described by Neishabouri (see GGIR argument
 accumulated body movement over time, referred to as counts, calculated
 by the ActiLife software from the ActiGraph accelerometer brand.
 Cut-points for counts corresponding to the ActiGraph brand have been
-recurrently proposed in the literature, for example, see this <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6231536/" class="external-link">systematic
-review</a> with a stratification by age group. Note that cut-points for
-ActiGraph counts proposed before the introduction of multiday raw data
-collection are most likely hardware-based calculations which may not
-perfectly align with ActiGraph software-based (Actilife) calculations of
-counts that Neishabouri described. As a result, older cut-points may
-need to be used with caution.</p>
+recurrently proposed in the literature, for example, see this <a href="https://doi.org/10.1007%2Fs40279-017-0716-0" class="external-link">systematic review</a>
+with a stratification by age group. Note that cut-points for ActiGraph
+counts proposed before the introduction of multiday raw data collection
+are most likely hardware-based calculations which may not perfectly
+align with ActiGraph software-based (Actilife) calculations of counts
+that Neishabouri described. As a result, older cut-points may need to be
+used with caution.</p>
 <p>The cut-points you find in the literature for ActiGraph counts cannot
 be applied to Neishabouri counts directly because both are epoch length
 specific. The cut-points from the literature need to be corrected by a
@@ -187,48 +189,52 @@ extracted in part 1 with the arguments <em>do.metric</em> (e.g.,
 indicate the thresholds to separate inactivity from light, light from
 moderate, and moderate from vigorous, respectively.These thresholds are
 applied over the metric defined with <code>acc.metric</code> (default =
-“ENMO”). Here a summary table for the parameters definition to calculate
+"ENMO"). Here a summary table for the parameters definition to calculate
 some of the acceleration metrics that has been previously used for the
 calibration of cut-points and how to define them to be used in the
 physical activity intensity classification with cut-points.</p>
 <table style="width:99%;" class="table">
 <colgroup>
-<col width="17%">
-<col width="36%">
-<col width="45%">
+<col width="16%">
+<col width="35%">
+<col width="46%">
 </colgroup>
-<thead><tr class="header">
-<th>Metric</th>
-<th align="left">To derive metric</th>
-<th align="left">Define metric for cut-points</th>
-</tr></thead>
 <tbody>
 <tr class="odd">
-<td>ENMO</td>
-<td align="left"><code>do.enmo = TRUE</code></td>
-<td align="left"><code>acc.metric = "ENMO"</code></td>
+<td rowspan="2">
+<h2 id="metric">Metric</h2>
+<p>ENMO</p>
+</td>
+<td rowspan="2">To derive metric :==============================
+<code>do.enmo = TRUE</code>
+</td>
+<td rowspan="2">Define metric for cut-points |
+:======================================+
+<code>acc.metric = \"ENMO\"</code>
+</td>
 </tr>
-<tr class="even">
+<tr class="even"></tr>
+<tr class="odd">
 <td>ENMOa</td>
-<td align="left"><code>do.enmoa = TRUE</code></td>
-<td align="left"><code>acc.metric = "ENMOa"</code></td>
-</tr>
-<tr class="odd">
-<td>LFENMO</td>
-<td align="left"><code>do.lfenmo = TRUE</code></td>
-<td align="left"><code>acc.metric = "LFENMO"</code></td>
+<td><code>do.enmoa = TRUE</code></td>
+<td><code>acc.metric = \"ENMOa\"</code></td>
 </tr>
 <tr class="even">
-<td>MAD</td>
-<td align="left"><code>do.mad = TRUE</code></td>
-<td align="left"><code>acc.metric = "MAD"</code></td>
+<td>LFENMO</td>
+<td><code>do.lfenmo = TRUE</code></td>
+<td><code>acc.metric = \"LFENMO\"</code></td>
 </tr>
 <tr class="odd">
+<td>MAD</td>
+<td><code>do.mad = TRUE</code></td>
+<td><code>acc.metric = \"MAD\"</code></td>
+</tr>
+<tr class="even">
 <td>Neishabouri<br>
 counts</td>
-<td align="left"><code>do.neishabouricounts = TRUE</code></td>
-<td align="left">
-<code>acc.metric = "NeishabouriCount_x"</code><br><code>acc.metric = "NeishabouriCount_y"</code><br><code>acc.metric = "NeishabouriCount_z"</code><br><code>acc.metric = "NeishabouriCount_vm"</code>
+<td><code>do.neishabouricounts = TRUE</code></td>
+<td>
+<code>acc.metric = \"NeishabouriCount_x\"</code><br><code>acc.metric = \"NeishabouriCount_y\"</code><br><code>acc.metric = \"NeishabouriCount_z\"</code><br><code>acc.metric = \"NeishabouriCount_vm\"</code>
 </td>
 </tr>
 </tbody>
@@ -240,46 +246,42 @@ counts</td>
 <div class="section level3">
 <h3 id="cut-points-for-preschoolers">Cut-points for preschoolers<a class="anchor" aria-label="anchor" href="#cut-points-for-preschoolers"></a>
 </h3>
-<table style="width:97%;" class="table">
+<table style="width:98%;" class="table">
 <colgroup>
 <col width="16%">
 <col width="21%">
 <col width="14%">
-<col width="25%">
-<col width="19%">
+<col width="46%">
 </colgroup>
-<thead><tr class="header">
-<th>Cut-points</th>
-<th align="left">Device<br>
-Attachment site</th>
-<th align="left">Age</th>
-<th align="left">Relevant arguments</th>
-<th align="left">thresholds</th>
-</tr></thead>
 <tbody>
 <tr class="odd">
-<td>Roscoe 2017*</td>
-<td align="left">GENEActiv<br>
+<td rowspan="2">
+<p>Cut-points</p>
+<p>=============== Roscoe 2017*</p>
+</td>
+<td rowspan="2">Device<br>
+Attachment site :=================== GENEActiv<br>
 Non-dominant wrist</td>
-<td align="left">4-5 yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
+<td rowspan="2">
+<p>Age</p>
+<p>:============ 4-5 yr</p>
 </td>
-<td align="left">Light: 61.8<br>
-Moderate: 100.4<br>
-Vigorous: N/A</td>
+<td rowspan="2">Relevant arguments | thresholds | | |
+:=======================+:=================+
+<code>do.enmoa = TRUE</code>  | Light: 61.8  |
+<code>do.enmo = FALSE</code>  | Moderate: 100.4 |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: N/A</td>
 </tr>
-<tr class="even">
+<tr class="even"></tr>
+<tr class="odd">
 <td>Roscoe 2017*</td>
-<td align="left">GENEActiv<br>
+<td>GENEActiv<br>
 Dominant wrist</td>
-<td align="left">4-5 yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
-</td>
-<td align="left">Light: 94.5<br>
-Moderate: 108.5<br>
-Vigorous: N/A</td>
+<td>4-5 yr</td>
+<td>
+<code>do.enmoa = TRUE</code>  | Light: 94.5  |
+<code>do.enmo = FALSE</code>  | Moderate: 108.5 |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: N/A</td>
 </tr>
 </tbody>
 </table>
@@ -294,146 +296,129 @@ on correspondence with authors we replaced this by 85.7.</p>
 <div class="section level3">
 <h3 id="cut-points-for-childrenadolescents">Cut-points for children/adolescents<a class="anchor" aria-label="anchor" href="#cut-points-for-childrenadolescents"></a>
 </h3>
-<table style="width:97%;" class="table">
+<table style="width:98%;" class="table">
 <colgroup>
 <col width="17%">
 <col width="19%">
 <col width="10%">
-<col width="33%">
-<col width="17%">
+<col width="51%">
 </colgroup>
-<thead><tr class="header">
-<th align="left">Cut-points</th>
-<th align="left">Device<br>
-Attachment site</th>
-<th align="left">Age</th>
-<th align="left">Relevant arguments</th>
-<th align="left">thresholds</th>
-</tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">Phillips 2013*</td>
-<td align="left">GENEA<br>
+<td rowspan="2">
+<p>Cut-points</p>
+<p>:================= Phillips 2013*</p>
+</td>
+<td rowspan="2">Device<br>
+Attachment site :=================== GENEA<br>
 Left wrist</td>
-<td align="left">8-14 yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
+<td rowspan="2">
+<p>Age</p>
+<p>:========= 8-14 yr</p>
 </td>
-<td align="left">Light: 87.5<br>
-Moderate: 250<br>
-Vigorous: 750</td>
+<td rowspan="2">Relevant arguments | thresholds | | |
+:==================================+:=================+
+<code>do.enmoa = TRUE</code>  | Light: 87.5  |
+<code>do.enmo = FALSE</code>  | Moderate: 250  |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: 750</td>
 </tr>
-<tr class="even">
-<td align="left">Phillips 2013*</td>
-<td align="left">GENEA<br>
+<tr class="even"></tr>
+<tr class="odd">
+<td>Phillips 2013*</td>
+<td>GENEA<br>
 Right wrist</td>
-<td align="left">8-14 yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
-</td>
-<td align="left">Light: 75<br>
-Moderate: 275<br>
-Vigorous: 700</td>
-</tr>
-<tr class="odd">
-<td align="left">Phillips 2013*</td>
-<td align="left">GENEA<br>
-Hip</td>
-<td align="left">8-14 yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
-</td>
-<td align="left">Light: 37.5<br>
-Moderate: 212.5<br>
-Vigorous: 637.5</td>
+<td>8-14 yr</td>
+<td>
+<code>do.enmoa = TRUE</code>  | Light: 75  |
+<code>do.enmo = FALSE</code>  | Moderate: 275  |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: 700</td>
 </tr>
 <tr class="even">
-<td align="left">Schaefer 2014*</td>
-<td align="left">GENEActiv<br>
+<td>Phillips 2013*</td>
+<td>GENEA<br>
+Hip</td>
+<td>8-14 yr</td>
+<td>
+<code>do.enmoa = TRUE</code>  | Light: 37.5  |
+<code>do.enmo = FALSE</code>  | Moderate: 212.5 |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: 637.5</td>
+</tr>
+<tr class="odd">
+<td>Schaefer 2014*</td>
+<td>GENEActiv<br>
 Non-dominant wrist</td>
-<td align="left">6-11 yr</td>
-<td align="left">
-<code>do.bfen = TRUE</code><br><code>lb = 0.2</code><br><code>hb = 15</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "BFEN"</code>
-</td>
-<td align="left">Light: 190<br>
-Moderate: 314<br>
-Vigorous: 998</td>
+<td>6-11 yr</td>
+<td>
+<code>do.bfen = TRUE</code>  | Light: 190  | <code>lb = 0.2</code> 
+| Moderate: 314  | <code>hb = 15</code>  | Vigorous: 998 |
+<code>do.enmo = FALSE</code>  | | <code>acc.metric = \"BFEN\"</code>
+|</td>
 </tr>
-<tr class="odd">
-<td align="left">Hildebrand 2014<br>
+<tr class="even">
+<td>Hildebrand 2014<br>
 Hildebrand 2016</td>
-<td align="left">ActiGraph<br>
+<td>ActiGraph<br>
 Non-dominant wrist</td>
-<td align="left">7-11 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 35.6<br>
-Moderate: 201.4<br>
-Vigorous: 707.0</td>
+<td>7-11 yr</td>
+<td>
+<strong>Default values  | Light: 35.6  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 201.4 |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: 707.0</td>
 </tr>
-<tr class="even">
-<td align="left">Hildebrand 2014<br>
+<tr class="odd">
+<td>Hildebrand 2014<br>
 Hildebrand 2016</td>
-<td align="left">GENEActiv<br>
+<td>GENEActiv<br>
 Non-dominant wrist</td>
-<td align="left">7-11 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 56.3<br>
-Moderate: 191.6<br>
-Vigorous: 695.8</td>
-</tr>
-<tr class="odd">
-<td align="left">Hildebrand 2014<br>
-Hildebrand 2016</td>
-<td align="left">ActiGraph<br>
-Hip</td>
-<td align="left">7-11 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 63.3<br>
-Moderate: 142.6<br>
-Vigorous: 464.6</td>
+<td>7-11 yr</td>
+<td>
+<strong>Default values  | Light: 56.3  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 191.6 |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: 695.8</td>
 </tr>
 <tr class="even">
-<td align="left">Hildebrand 2014<br>
+<td>Hildebrand 2014<br>
 Hildebrand 2016</td>
-<td align="left">GENEActiv<br>
+<td>ActiGraph<br>
 Hip</td>
-<td align="left">7-11 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 64.1<br>
-Moderate: 152.8<br>
-Vigorous: 514.3</td>
+<td>7-11 yr</td>
+<td>
+<strong>Default values  | Light: 63.3  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 142.6 |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: 464.6</td>
 </tr>
 <tr class="odd">
-<td align="left">Aittasalo 2015</td>
-<td align="left">ActiGraph<br>
+<td>Hildebrand 2014<br>
+Hildebrand 2016</td>
+<td>GENEActiv<br>
 Hip</td>
-<td align="left">13-15 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.mad = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "MAD"</code>
-</td>
-<td align="left">Light: 26.9<br>
-Moderate: 332<br>
-Vigorous: 558.3</td>
+<td>7-11 yr</td>
+<td>
+<strong>Default values  | Light: 64.1  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 152.8 |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: 514.3</td>
 </tr>
 <tr class="even">
-<td align="left">Aittasalo 2015</td>
-<td align="left">Hookie AM20<br>
+<td>Aittasalo 2015</td>
+<td>ActiGraph<br>
 Hip</td>
-<td align="left">13-15 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.mad = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "MAD"</code>
-</td>
-<td align="left">Light: 28.7<br>
-Moderate: 338<br>
-Vigorous: 558.3</td>
+<td>13-15 yr</td>
+<td>
+<strong>Default values  | Light: 26.9  |
+</strong><code>do.mad = TRUE</code>  | Moderate: 332  |
+<code>do.enmo = FALSE</code>  | Vigorous: 558.3 |
+<code>acc.metric = \"MAD\"</code> |</td>
+</tr>
+<tr class="odd">
+<td>Aittasalo 2015</td>
+<td>Hookie AM20<br>
+Hip</td>
+<td>13-15 yr</td>
+<td>
+<strong>Default values  | Light: 28.7  |
+</strong><code>do.mad = TRUE</code>  | Moderate: 338  |
+<code>do.enmo = FALSE</code>  | Vigorous: 558.3 |
+<code>acc.metric = \"MAD\"</code> |</td>
 </tr>
 </tbody>
 </table>
@@ -449,170 +434,145 @@ provide a cut-point multiplied by 1000.</p>
 <div class="section level3">
 <h3 id="cut-points-for-adults">Cut-points for adults<a class="anchor" aria-label="anchor" href="#cut-points-for-adults"></a>
 </h3>
-<table style="width:97%;" class="table">
+<table style="width:98%;" class="table">
 <colgroup>
 <col width="17%">
 <col width="18%">
 <col width="13%">
-<col width="31%">
-<col width="16%">
+<col width="49%">
 </colgroup>
-<thead><tr class="header">
-<th align="left">Cut-points</th>
-<th align="left">Device<br>
-Attachment site</th>
-<th align="left">Age</th>
-<th align="left">Relevant arguments</th>
-<th align="left">thresholds</th>
-</tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">Esliger 2011*</td>
-<td align="left">Left wrist</td>
-<td align="left">40-65 yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
+<td rowspan="2">
+<p>Cut-points</p>
+<p>:================== Esliger 2011*</p>
 </td>
-<td align="left">Light: 45<br>
-Moderate: 134<br>
-Vigorous: 377</td>
+<td rowspan="2">Device<br>
+Attachment site :=================== Left wrist</td>
+<td rowspan="2">
+<p>Age</p>
+<p>:============== 40-65 yr</p>
+</td>
+<td rowspan="2">Relevant arguments | thresholds | | |
+:==================================+:=================+
+<code>do.enmoa = TRUE</code>  | Light: 45  |
+<code>do.enmo = FALSE</code>  | Moderate: 134  |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: 377</td>
+</tr>
+<tr class="even"></tr>
+<tr class="odd">
+<td>Esliger 2011*</td>
+<td>Right wrist</td>
+<td>40-65 yr</td>
+<td>
+<code>do.enmoa = TRUE</code>  | Light: 80  |
+<code>do.enmo = FALSE</code>  | Moderate: 92  |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: 437</td>
 </tr>
 <tr class="even">
-<td align="left">Esliger 2011*</td>
-<td align="left">Right wrist</td>
-<td align="left">40-65 yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
-</td>
-<td align="left">Light: 80<br>
-Moderate: 92<br>
-Vigorous: 437</td>
+<td>Esliger 2011*</td>
+<td>Waist</td>
+<td>40-65 yr</td>
+<td>
+<code>do.enmoa = TRUE</code>  | Light: 16  |
+<code>do.enmo = FALSE</code>  | Moderate: 46  |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: 428</td>
 </tr>
 <tr class="odd">
-<td align="left">Esliger 2011*</td>
-<td align="left">Waist</td>
-<td align="left">40-65 yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
-</td>
-<td align="left">Light: 16<br>
-Moderate: 46<br>
-Vigorous: 428</td>
-</tr>
-<tr class="even">
-<td align="left">Hildebrand 2014<br>
+<td>Hildebrand 2014<br>
 Hildebrand 2016</td>
-<td align="left">ActiGraph<br>
+<td>ActiGraph<br>
 Non-dominant wrist</td>
-<td align="left">21-61 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 44.8<br>
-Moderate: 100.6<br>
-Vigorous: 428.8</td>
+<td>21-61 yr</td>
+<td>
+<strong>Default values  | Light: 44.8  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 100.6 |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: 428.8</td>
 </tr>
-<tr class="odd">
-<td align="left">Hildebrand 2014<br>
+<tr class="even">
+<td>Hildebrand 2014<br>
 Hildebrand 2016</td>
-<td align="left">GENEActiv<br>
+<td>GENEActiv<br>
 Non-dominant wrist</td>
-<td align="left">21-61 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 45.8<br>
-Moderate: 93.2<br>
-Vigorous: 418.3</td>
-</tr>
-<tr class="even">
-<td align="left">Hildebrand 2014<br>
-Hildebrand 2016</td>
-<td align="left">ActiGraph<br>
-Hip</td>
-<td align="left">21-61 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 47.4<br>
-Moderate: 69.1<br>
-Vigorous: 258.7</td>
+<td>21-61 yr</td>
+<td>
+<strong>Default values  | Light: 45.8  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 93.2  |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: 418.3</td>
 </tr>
 <tr class="odd">
-<td align="left">Hildebrand 2014<br>
+<td>Hildebrand 2014<br>
 Hildebrand 2016</td>
-<td align="left">GENEActiv<br>
+<td>ActiGraph<br>
 Hip</td>
-<td align="left">21-61 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 46.9<br>
-Moderate: 68.7<br>
-Vigorous: 266.8</td>
+<td>21-61 yr</td>
+<td>
+<strong>Default values  | Light: 47.4  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 69.1  |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: 258.7</td>
 </tr>
 <tr class="even">
-<td align="left">Vähä-Ypyä 2015</td>
-<td align="left">Hookie AM20<br>
+<td>Hildebrand 2014<br>
+Hildebrand 2016</td>
+<td>GENEActiv<br>
 Hip</td>
-<td align="left">35 (SD=11) yr</td>
-<td align="left">
-<code>do.mad = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "MAD"</code>
-</td>
-<td align="left">Light: N/A<br>
-Moderate: 91<br>
-Vigorous: 414</td>
+<td>21-61 yr</td>
+<td>
+<strong>Default values  | Light: 46.9  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 68.7  |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: 266.8</td>
 </tr>
 <tr class="odd">
-<td align="left">Dillon 2016*<sup>,†</sup>
+<td>Vähä-Ypyä 2015</td>
+<td>Hookie AM20<br>
+Hip</td>
+<td>35 (SD=11) yr</td>
+<td>
+<code>do.mad = TRUE</code>  | Light: N/A  |
+<code>do.enmo = FALSE</code>  | Moderate: 91  |
+<code>acc.metric = \"MAD\"</code> | Vigorous: 414</td>
+</tr>
+<tr class="even">
+<td>Dillon 2016*<sup>,†</sup>
 </td>
-<td align="left">GENEActiv<br>
+<td>GENEActiv<br>
 Non-dominant wrist</td>
-<td align="left">50-69 yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
-</td>
-<td align="left">Light: 105.6<br>
-Moderate: 174.2<br>
-Vigorous: 330</td>
+<td>50-69 yr</td>
+<td>
+<code>do.enmoa = TRUE</code>  | Light: 105.6  |
+<code>do.enmo = FALSE</code>  | Moderate: 174.2 |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: 330</td>
 </tr>
-<tr class="even">
-<td align="left">Dillon 2016*<sup>,†</sup>
+<tr class="odd">
+<td>Dillon 2016*<sup>,†</sup>
 </td>
-<td align="left">GENEActiv<br>
+<td>GENEActiv<br>
 Dominant wrist</td>
-<td align="left">50-69 yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
-</td>
-<td align="left">Light: 127.8<br>
-Moderate: 187.6<br>
-Vigorous: 396.4</td>
-</tr>
-<tr class="odd">
-<td align="left">Buchan 2023*<sup>,†</sup>
-</td>
-<td align="left">activPAL<br>
-Right thigh</td>
-<td align="left">23 (SD=4) yr</td>
-<td align="left">**Default values<br><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 26.4<br>
-Moderate: N/A<br>
-Vigorous: N/A</td>
+<td>50-69 yr</td>
+<td>
+<code>do.enmoa = TRUE</code>  | Light: 127.8  |
+<code>do.enmo = FALSE</code>  | Moderate: 187.6 |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: 396.4</td>
 </tr>
 <tr class="even">
-<td align="left">Buchan 2023*<sup>,†</sup>
+<td>Buchan 2023*<sup>,†</sup>
 </td>
-<td align="left">activPAL<br>
+<td>activPAL<br>
 Right thigh</td>
-<td align="left">23 (SD=4) yr</td>
-<td align="left">
-<code>do.mad = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "MAD"</code>
+<td>23 (SD=4) yr</td>
+<td>**Default values  | Light: 26.4  | <code>do.enmo = TRUE</code>  |
+Moderate: N/A  | <code>acc.metric = \"ENMO\"</code> | Vigorous: N/A</td>
+</tr>
+<tr class="odd">
+<td>Buchan 2023*<sup>,†</sup>
 </td>
-<td align="left">Light: 30.1<br>
-Moderate: N/A<br>
-Vigorous: N/A</td>
+<td>activPAL<br>
+Right thigh</td>
+<td>23 (SD=4) yr</td>
+<td>
+<code>do.mad = TRUE</code>  | Light: 30.1  |
+<code>do.enmo = FALSE</code>  | Moderate: N/A  |
+<code>acc.metric = \"MAD\"</code> | Vigorous: N/A</td>
 </tr>
 </tbody>
 </table>
@@ -621,7 +581,7 @@ per epoch rather than average them per epoch like GGIR does. So, to use
 their cut-point in GGIR, we provide a scaled version of the cut-points
 presented in the paper as:
 <code>(CutPointFromPaper_in_gmins/(sampleRateFromPaper * EpochLengthInSecondsPaper)) * 1000</code>
-<sup>†</sup> In this <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4858250/" class="external-link">publication</a>,
+<sup>†</sup> In this <a href="https://doi.org/10.1371%2Fjournal.pone.0109913" class="external-link">publication</a>,
 there are cut-point based on data sampled at 30 Hz and 100 Hz. When
 scaling the cut-points as specified in (*), the resulting thresholds are
 virtually the same (the ones presented in this table).</p>
@@ -629,209 +589,234 @@ virtually the same (the ones presented in this table).</p>
 <div class="section level3">
 <h3 id="cut-points-for-older-adults">Cut-points for older adults<a class="anchor" aria-label="anchor" href="#cut-points-for-older-adults"></a>
 </h3>
-<table style="width:97%;" class="table">
+<table style="width:98%;" class="table">
 <colgroup>
 <col width="17%">
 <col width="19%">
 <col width="18%">
-<col width="23%">
-<col width="16%">
+<col width="42%">
 </colgroup>
-<thead><tr class="header">
-<th align="left">Cut-points</th>
-<th align="left">Device<br>
-Attachment site</th>
-<th align="left">Age</th>
-<th align="left">Relevant arguments</th>
-<th align="left">thresholds</th>
-</tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">Sanders 2019*</td>
-<td align="left">GENEActiv<br>
-Non-dominant wrist</td>
-<td align="left">60-86 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
+<td rowspan="2">
+<p>Cut-points</p>
+<p>:================= Sanders 2019*</p>
 </td>
-<td align="left">Light: 20<br>
-Moderate: 32<br>
-Vigorous: N/A</td>
+<td rowspan="2">Device<br>
+Attachment site :=================== GENEActiv<br>
+Non-dominant wrist</td>
+<td rowspan="2">
+<p>Age</p>
+<p>:================== 60-86 yr</p>
+</td>
+<td rowspan="2">Relevant arguments | thresholds | | |
+:=======================+:================+ <strong>Default values  |
+Light: 20  | </strong><code>do.enmo = TRUE</code>  | Moderate: 32  |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: N/A</td>
+</tr>
+<tr class="even"></tr>
+<tr class="odd">
+<td>Sanders 2019**</td>
+<td>GENEActiv<br>
+Non-dominant wrist</td>
+<td>60-86 yr</td>
+<td>
+<strong>Default values  | Light: 57  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 104  |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: N/A</td>
 </tr>
 <tr class="even">
-<td align="left">Sanders 2019**</td>
-<td align="left">GENEActiv<br>
-Non-dominant wrist</td>
-<td align="left">60-86 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 57<br>
-Moderate: 104<br>
-Vigorous: N/A</td>
+<td>Sanders 2019*</td>
+<td>ActiGraph<br>
+Hip</td>
+<td>60-86 yr</td>
+<td>
+<strong>Default values  | Light: 6  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 19  |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: N/A</td>
 </tr>
 <tr class="odd">
-<td align="left">Sanders 2019*</td>
-<td align="left">ActiGraph<br>
+<td>Sanders 2019**</td>
+<td>ActiGraph<br>
 Hip</td>
-<td align="left">60-86 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 6<br>
-Moderate: 19<br>
-Vigorous: N/A</td>
+<td>60-86 yr</td>
+<td>
+<strong>Default values  | Light: 15  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 69  |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: N/A</td>
 </tr>
 <tr class="even">
-<td align="left">Sanders 2019**</td>
-<td align="left">ActiGraph<br>
-Hip</td>
-<td align="left">60-86 yr</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 15<br>
-Moderate: 69<br>
-Vigorous: N/A</td>
-</tr>
-<tr class="odd">
-<td align="left">Migueles 2021</td>
-<td align="left">ActiGraph<br>
+<td>Migueles 2021</td>
+<td>ActiGraph<br>
 Non-dominant wrist</td>
-<td align="left">≥70 yr<br>
+<td>≥70 yr<br>
 (mean: 78.7 yr)</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 18<br>
-Moderate: 60<br>
-Vigorous: N/A</td>
+<td>
+<strong>Default values  | Light: 18  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 60  |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: N/A</td>
 </tr>
-<tr class="even">
-<td align="left">Migueles 2021</td>
-<td align="left">ActiGraph<br>
+<tr class="odd">
+<td>Migueles 2021</td>
+<td>ActiGraph<br>
 Dominant wrist</td>
-<td align="left">≥70 yr<br>
+<td>≥70 yr<br>
 (mean: 78.7 yr)</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 22<br>
-Moderate: 64<br>
-Vigorous: N/A</td>
-</tr>
-<tr class="odd">
-<td align="left">Migueles 2021</td>
-<td align="left">ActiGraph<br>
-Hip</td>
-<td align="left">≥70 yr<br>
-(mean: 78.7 yr)</td>
-<td align="left">
-<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
-</td>
-<td align="left">Light: 7<br>
-Moderate: 14<br>
-Vigorous: N/A</td>
+<td>
+<strong>Default values  | Light: 22  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 64  |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: N/A</td>
 </tr>
 <tr class="even">
-<td align="left">Fraysse 2020<sup>†</sup>
-</td>
-<td colspan="4" align="left">GENEActiv  | ≥70 yr   |
-<code>do.enmoa = TRUE</code>  | Light: 42.5  | Non-dominant wrist |
-(mean: 77 yr) | <code>do.enmo = FALSE</code>  | Moderate: 98<br>
-| | <code>acc.metric = "ENMOa"</code> | Vigorous: N/A</td>
+<td>Migueles 2021</td>
+<td>ActiGraph<br>
+Hip</td>
+<td>≥70 yr<br>
+(mean: 78.7 yr)</td>
+<td>
+<strong>Default values  | Light: 7  |
+</strong><code>do.enmo = TRUE</code>  | Moderate: 14  |
+<code>acc.metric = \"ENMO\"</code> | Vigorous: N/A</td>
 </tr>
 <tr class="odd">
-<td align="left">Fraysse 2020<sup>†</sup>
+<td>Bammann 2021</td>
+<td>ActiGraph<br>
+Hip</td>
+<td>62.9 (SD=3.6) yr</td>
+<td>
+<strong>Default values  | Moderate: 94  |
+</strong><code>do.enmo = TRUE</code>  | Vigorous: 230 |
+<code>acc.metric = \"ENMO\"</code> |</td>
+</tr>
+<tr class="even">
+<td>Bammann 2021</td>
+<td>ActiGraph<br>
+Dominant Wrist</td>
+<td>62.9 (SD=3.6) yr</td>
+<td>
+<strong>Default values  | Moderate: 122  |
+</strong><code>do.enmo = TRUE</code>  | Vigorous: 234 |
+<code>acc.metric = \"ENMO\"</code> |</td>
+</tr>
+<tr class="odd">
+<td>Bammann 2021</td>
+<td>ActiGraph<br>
+Non-dominant Wrist</td>
+<td>62.9 (SD=3.6) yr</td>
+<td>
+<strong>Default values  | Moderate: 100  |
+</strong><code>do.enmo = TRUE</code>  | Vigorous: 245 |
+<code>acc.metric = \"ENMO\"</code> |</td>
+</tr>
+<tr class="even">
+<td>Bammann 2021</td>
+<td>ActiGraph<br>
+Dominant Ankle</td>
+<td>62.9 (SD=3.6) yr</td>
+<td>
+<strong>Default values  | Moderate: 342 |
+</strong><code>do.enmo = TRUE</code>  | |
+<code>acc.metric = \"ENMO\"</code> |</td>
+</tr>
+<tr class="odd">
+<td>Bammann 2021</td>
+<td>ActiGraph<br>
+Non-dominant Ankle</td>
+<td>62.9 (SD=3.6) yr</td>
+<td>
+<strong>Default values  | Moderate: 331 |
+</strong><code>do.enmo = TRUE</code>  | |
+<code>acc.metric = \"ENMO\"</code> |</td>
+</tr>
+<tr class="even">
+<td>Fraysse 2020<sup>†</sup>
 </td>
-<td align="left">GENEActiv<br>
-Dominant wrist</td>
-<td align="left">≥70 yr<br>
+<td>GENEActiv<br>
+Non-dominant wrist</td>
+<td>≥70 yr<br>
 (mean: 77 yr)</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
+<td>
+<code>do.enmoa = TRUE</code>  | Light: 42.5  |
+<code>do.enmo = FALSE</code>  | Moderate: 98  |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: N/A</td>
+</tr>
+<tr class="odd">
+<td>Fraysse 2020<sup>†</sup>
 </td>
-<td align="left">Light: 62.5<br>
-Moderate: 92.5<br>
-Vigorous: N/A</td>
+<td>GENEActiv<br>
+Dominant wrist</td>
+<td>≥70 yr<br>
+(mean: 77 yr)</td>
+<td>
+<code>do.enmoa = TRUE</code>  | Light: 62.5  |
+<code>do.enmo = FALSE</code>  | Moderate: 92.5 |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: N/A</td>
 </tr>
 <tr class="even">
-<td align="left">Dibben 2020<sup>‡</sup>
+<td>Dibben 2020<sup>‡</sup>
 </td>
-<td align="left">GENEActiv<br>
+<td>GENEActiv<br>
 Right wrist</td>
-<td align="left">70.7 (SD=14.1) yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
-</td>
-<td align="left">Light: 18.6<br>
-Moderate: 45.5<br>
-Vigorous: N/A</td>
+<td>70.7 (SD=14.1) yr</td>
+<td>
+<code>do.enmoa = TRUE</code>  | Light: 18.6  |
+<code>do.enmo = FALSE</code>  | Moderate: 45.5 |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: N/A</td>
 </tr>
 <tr class="odd">
-<td align="left">Dibben 2020<sup>‡</sup>
+<td>Dibben 2020<sup>‡</sup>
 </td>
-<td align="left">GENEActiv<br>
+<td>GENEActiv<br>
 Right wrist</td>
-<td align="left">70.7 (SD=14.1) yr</td>
-<td align="left">
-<code>do.mad = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "MAD"</code>
-</td>
-<td align="left">Light: 18.3<br>
-Moderate: 26.2<br>
-Vigorous: N/A</td>
+<td>70.7 (SD=14.1) yr</td>
+<td>
+<code>do.mad = TRUE</code>  | Light: 18.3  |
+<code>do.enmo = FALSE</code>  | Moderate: 26.2 |
+<code>acc.metric = \"MAD\"</code> | Vigorous: N/A</td>
 </tr>
 <tr class="even">
-<td align="left">Dibben 2020<sup>‡</sup>
+<td>Dibben 2020<sup>‡</sup>
 </td>
-<td align="left">GENEActiv<br>
+<td>GENEActiv<br>
 Left wrist</td>
-<td align="left">70.7 (SD=14.1) yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
-</td>
-<td align="left">Light: 16.7<br>
-Moderate: 43.6<br>
-Vigorous: N/A</td>
+<td>70.7 (SD=14.1) yr</td>
+<td>
+<code>do.enmoa = TRUE</code>  | Light: 16.7  |
+<code>do.enmo = FALSE</code>  | Moderate: 43.6 |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: N/A</td>
 </tr>
 <tr class="odd">
-<td align="left">Dibben 2020<sup>‡</sup>
+<td>Dibben 2020<sup>‡</sup>
 </td>
-<td align="left">GENEActiv<br>
+<td>GENEActiv<br>
 Left wrist</td>
-<td align="left">70.7 (SD=14.1) yr</td>
-<td align="left">
-<code>do.mad = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "MAD"</code>
-</td>
-<td align="left">Light: 18.7<br>
-Moderate: 22.8<br>
-Vigorous: N/A</td>
+<td>70.7 (SD=14.1) yr</td>
+<td>
+<code>do.mad = TRUE</code>  | Light: 18.7  |
+<code>do.enmo = FALSE</code>  | Moderate: 22.8 |
+<code>acc.metric = \"MAD\"</code> | Vigorous: N/A</td>
 </tr>
 <tr class="even">
-<td align="left">Dibben 2020<sup>‡</sup>
+<td>Dibben 2020<sup>‡</sup>
 </td>
-<td align="left">GENEActiv<br>
+<td>GENEActiv<br>
 Hip</td>
-<td align="left">70.7 (SD=14.1) yr</td>
-<td align="left">
-<code>do.enmoa = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "ENMOa"</code>
-</td>
-<td align="left">Light: 7.6<br>
-Moderate: 40.6<br>
-Vigorous: N/A</td>
+<td>70.7 (SD=14.1) yr</td>
+<td>
+<code>do.enmoa = TRUE</code>  | Light: 7.6  |
+<code>do.enmo = FALSE</code>  | Moderate: 40.6 |
+<code>acc.metric = \"ENMOa\"</code> | Vigorous: N/A</td>
 </tr>
 <tr class="odd">
-<td align="left">Dibben 2020<sup>‡</sup>
+<td>Dibben 2020<sup>‡</sup>
 </td>
-<td align="left">GENEActiv<br>
+<td>GENEActiv<br>
 Hip</td>
-<td align="left">70.7 (SD=14.1) yr</td>
-<td align="left">
-<code>do.mad = TRUE</code><br><code>do.enmo = FALSE</code><br><code>acc.metric = "MAD"</code>
-</td>
-<td align="left">Light: 1<br>
-Moderate: 2.4<br>
-Vigorous: N/A</td>
+<td>70.7 (SD=14.1) yr</td>
+<td>
+<code>do.mad = TRUE</code>  | Light: 1  |
+<code>do.enmo = FALSE</code>  | Moderate: 2.4  |
+<code>acc.metric = \"MAD\"</code> | Vigorous: N/A</td>
 </tr>
 </tbody>
 </table>
@@ -869,62 +854,62 @@ for in the data processing.</p>
 <p><strong>How about all the criticism towards cut-point
 methods?</strong></p>
 <p>For a more elaborate reflection on the limitations of cut-points and
-a motivation why cut-points still have value in GGIR see: <a href="https://www.accelting.com/updates/why-does-ggir-facilitate-cut-points/" class="external-link uri">https://www.accelting.com/updates/why-does-ggir-facilitate-cut-points/</a></p>
+a motivation why cut-points still have value in GGIR see: <a href="https://www.accelting.com/why-does-ggir-facilitate-cut-points/" class="external-link uri">https://www.accelting.com/why-does-ggir-facilitate-cut-points/</a></p>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <ul>
-<li>Esliger 2011: <a href="https://journals.lww.com/acsm-msse/Fulltext/2011/06000/Validation_of_the_GENEA_Accelerometer.22.aspx" class="external-link uri">https://journals.lww.com/acsm-msse/Fulltext/2011/06000/Validation_of_the_GENEA_Accelerometer.22.aspx</a>
+<li>Aittasalo 2015: <a href="https://doi.org/10.1186/s13102-015-0010-0" class="external-link uri">https://doi.org/10.1186/s13102-015-0010-0</a>
 </li>
-<li>Phillips 2013: <a href="https://doi.org/10.1016/j.jsams.2012.05.013" class="external-link uri">https://doi.org/10.1016/j.jsams.2012.05.013</a>
+<li>Bammann 2021: <a href="https://doi.org/10.1371/journal.pone.0252615" class="external-link uri">https://doi.org/10.1371/journal.pone.0252615</a>
 </li>
-<li>Schaefer 2014: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3960318/" class="external-link uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3960318/</a>
+<li>Dibben 2020: <a href="https://doi.org/10.1186/s13102-020-00196-7" class="external-link uri">https://doi.org/10.1186/s13102-020-00196-7</a>
 </li>
-<li>Hildebrand 2014: <a href="https://journals.lww.com/acsm-msse/Fulltext/2014/09000/Age_Group_Comparability_of_Raw_Accelerometer.17.aspx" class="external-link uri">https://journals.lww.com/acsm-msse/Fulltext/2014/09000/Age_Group_Comparability_of_Raw_Accelerometer.17.aspx</a>
+<li>Dillon 2016: <a href="https://doi.org/10.1371%2Fjournal.pone.0109913" class="external-link uri">https://doi.org/10.1371%2Fjournal.pone.0109913</a>
+</li>
+<li>Esliger 2011: <a href="https://doi.org/10.1249/mss.0b013e31820513be" class="external-link uri">https://doi.org/10.1249/mss.0b013e31820513be</a>
+</li>
+<li>Fraysse 2020: <a href="https://doi.org/10.3389%2Ffspor.2020.579278" class="external-link uri">https://doi.org/10.3389%2Ffspor.2020.579278</a>
+</li>
+<li>Hildebrand 2014: <a href="https://doi.org/10.1249/mss.0000000000000289" class="external-link uri">https://doi.org/10.1249/mss.0000000000000289</a>
 </li>
 <li>Hildebrand 2016: <a href="https://doi.org/10.1111/sms.12795" class="external-link uri">https://doi.org/10.1111/sms.12795</a>
 </li>
-<li>Vähä-Ypyä 2015: <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0134813" class="external-link uri">https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0134813</a>
+<li>Migueles 2021: <a href="https://doi.org/10.3390%2Fs21103326" class="external-link uri">https://doi.org/10.3390%2Fs21103326</a>
 </li>
-<li>Aittasalo 2015: <a href="https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-015-0010-0" class="external-link uri">https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-015-0010-0</a>
-</li>
-<li>Roscoe 2017: <a href="https://link.springer.com/article/10.1007/s00431-017-2948-2" class="external-link uri">https://link.springer.com/article/10.1007/s00431-017-2948-2</a>
+<li>Phillips 2013: <a href="https://doi.org/10.1016/j.jsams.2012.05.013" class="external-link uri">https://doi.org/10.1016/j.jsams.2012.05.013</a>
 </li>
 <li>Sanders 2018: <a href="https://doi.org/10.1080/02640414.2018.1555904" class="external-link uri">https://doi.org/10.1080/02640414.2018.1555904</a>
 </li>
-<li>Migueles 2021: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8150960/" class="external-link uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8150960/</a>
+<li>Schaefer 2014: <a href="https://doi.org/10.1249%2FMSS.0000000000000150" class="external-link uri">https://doi.org/10.1249%2FMSS.0000000000000150</a>
 </li>
-<li>Fraysse 2020: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7843957/" class="external-link uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7843957/</a>
+<li>Roscoe 2017: <a href="https://doi.org/10.1007/s00431-017-2948-2" class="external-link uri">https://doi.org/10.1007/s00431-017-2948-2</a>
 </li>
-<li>Dibben 2020: <a href="https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7" class="external-link uri">https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7</a>
-</li>
-<li>Dillon 2016: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4858250/" class="external-link uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4858250/</a>
+<li>Vähä-Ypyä 2015: <a href="https://doi.org/10.1371/journal.pone.0134813" class="external-link uri">https://doi.org/10.1371/journal.pone.0134813</a>
 </li>
 </ul>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by <a href="https://www.accelting.com/" class="external-link">Vincent T van Hees</a>, <a href="https://www.jhmigueles.com/" class="external-link">Jairo H Migueles</a>.</p>
+  <p>Developed by Vincent T van Hees, Jairo H Migueles, Medical Research Council UK, Accelting, French National Research Agency.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>

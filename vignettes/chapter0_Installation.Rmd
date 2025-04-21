@@ -1,0 +1,83 @@
+---
+title: "Installation of the GGIR R Package"
+output:
+   html_document:
+    toc : true
+    number_sections: true
+    toc_depth: 3
+    toc_float: true #by turning this on, the table of contents moves to the left of the page.
+urlcolor: blue
+vignette: >
+  %\VignetteIndexEntry{Installation of the GGIR R Package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Install R and RStudio
+
+-   [Download and install R](https://cran.r-project.org/)
+
+-   [Download and install
+    RStudio](https://posit.co/products/open-source/rstudio/)
+
+## Install GGIR
+
+Install the latest released version of GGIR with its dependencies from
+CRAN. You can do this with one command from the R command line:
+
+```{R,eval=FALSE}
+install.packages("GGIR", dependencies = TRUE)
+library(GGIR)
+```
+
+Alternatively, you can install the latest development version, which
+might include additional bug fixes and functionalities. To get the
+development version, please use:
+
+```{R,eval=FALSE}
+install.packages("remotes", dependencies = TRUE)
+remotes::install_github("wadpac/GGIR", dependencies = TRUE)
+library(GGIR)
+```
+
+## Other packages you may need
+
+Additionally, in some use-cases you will need to install one or multiple
+additional packages. Note that these packages are not installed by default,
+so please follow the instructions if:
+
+-   You want to derive Neishabouricounts (with
+    `do.neishabouricounts = TRUE`), install the actilifecounts package
+    with `install.packages("actilifecounts")`
+-   You want to process Sensewear xlsx files (with
+    `dataFormat = "sensewear"`), install the readxl package
+    with `install.packages("readxl")`
+
+## Installing older versions of a package
+
+When aiming to reproduce historical analysis it is critical to install the correct package version.
+Below we will explain how to do this for GGIR release 2.4-0 but this should work for any release. Note that GGIR is archived on both CRAN (major releases only) and GitHub (all releases).
+
+**From CRAN archive:**
+
+```
+require(remotes)
+install_version("GGIR", version = "2.4-0", repos = "http://cran.us.r-project.org")
+```
+
+To see which releases are available on CRAN check out: https://cran.r-project.org/src/contrib/Archive/GGIR/.
+
+**From GitHub:**
+
+```
+require(remotes)
+install_github("wadpac/GGIR", ref = "2.4-0")
+```
+To see which releases are available on CRAN check out: https://github.com/wadpac/GGIR/releases.

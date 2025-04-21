@@ -1,0 +1,188 @@
+---
+title: "Cookbook"
+output:
+   html_document:
+    toc: true
+    number_sections: true
+    toc_depth: 3
+    toc_float: true
+urlcolor: blue
+vignette: >
+  %\VignetteIndexEntry{GGIR output}
+  \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+In this cook book you will find recipes for using GGIR in specific non-default scenarios.
+
+# Handling externally derived epoch data
+
+This refers to the situation where external software or hardware was used to derive epoch level aggregates from accelerometer data.
+
+In this section you will find key parameters needed for working with these data formats. Please refer to the other parts of the [GGIR documentation](https://wadpac.github.io/GGIR/) for guidance on how to tailor the rest of your analysis towards your study protocol and research interests.
+
+Please be aware the date-time formats may be country specific. So, when working with externally derived epoch data always check that
+parameter `extEpochData_timeformat` setting is correct for the data you are processing. You can do this by opening one of the files in notepad or eclipse. See [our Annex page](https://wadpac.github.io/GGIR/articles/DateTimeFormatsInR.html) for guidance on how to specify date and time formats in R.
+
+## Actiwatch data
+
+### in .AWD format
+
+This is a text file saved with .AWD extension. An example of how the first couple of hundred lines of an .AWD file may look like can be found [here](https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/Actiwatch.AWD).
+
+```
+GGIR(datadir = "/media/actiwatch_awd", # folder with epoch level .AWD file
+  outputdir = "/media/myoutput",
+  dataFormat = "actiwatch_awd",
+  extEpochData_timeformat = "%d-%b-%Y %H:%M:%S",
+  windowsizes = c(60, 900, 3600), # 60 is the expected epoch length
+  acc.metric = "ExtAct")
+```
+To classify sleep from Actiwatch, consider parameter `HASIB.algo = "Oakley1997"`.
+
+### in .CSV format
+
+
+An example of how the first couple of hundred lines of this file may look like can be found [here](https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/Actiwatch.csv). Note that the example file is in Dutch but it should also work for files in English.
+
+```
+GGIR(datadir = "/media/actiwatch_csv", # folder with epoch level .AWD file
+  outputdir = "/media/myoutput",
+  dataFormat = "actiwatch_csv",
+  extEpochData_timeformat = "%m/%d/%y %I:%M:%S %p",
+  windowsizes = c(15, 900, 3600),
+  acc.metric = "ExtAct")
+```
+To classify sleep from Actical, consider parameter `HASIB.algo = "Oakley1997"`.
+
+## UK Biobank data in .CSV format
+
+This is only applicable the UK Biobank 5 second epoch csv exports and NOT
+to the raw accelerometer data (multiple values per second). Please see https://wadpac.github.io/GGIR/ for all documentation on processing raw accelerometer data.
+
+```
+GGIR(datadir = "/media/ukbiobank",
+   outputdir = "/media/myoutput",
+   dataFormat = "ukbiobank_csv",
+   extEpochData_timeformat = "%m/%d/%Y %H:%M:%S",
+   windowsizes = c(5, 900, 3600), # We know that data was stored in 5 second epoch
+   desiredtz = "Europe/London", # We know that data was collected in the UK
+   acc.metric = "LFENMO")
+```
+
+Please note that currently no method exists in GGIR to detect sleep from these 5 second aggregate files.
+
+## ActiGraph count data in .CSV format
+
+Examples of how the first couple of hundred lines of these files may look like can be found [here](https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/ActiGraph13.csv), [here](https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/ActiGraph13_timestamps_headers.csv), and [here](https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/ActiGraph61.csv).
+
+```
+GGIR(datadir = "/examplefiles",
+   outputdir = "",
+   dataFormat = "actigraph_csv",
+   extEpochData_timeformat = "%m/%d/%Y %H:%M:%S",
+   windowsizes = c(5, 900, 3600),
+   do.neishabouricounts = TRUE,
+   acc.metric = "NeishabouriCount_x",
+   threshold.in = round(100 * (5/60), digits = 2),
+   threshold.mod = round(2500 * (5/60), digits = 2),
+   threshold.vig = round(10000 * (5/60), digits = 2))
+```        
+
+## Sensewear data in .xls format
+
+Sensewear comes in xls(x) files with many column from which GGIR only uses: "METs" as indicator for acceleration where the uses can use MET levels as acceleration threshold, "Step Counter" which is treated as externally generated step count, and "Sleep" which is used as classification for sleep.
+
+At a bare minimum the GGIR command to process these files looks as follows:
+
+```
+GGIR(datadir = "C:/yoursenseweardatafolder",
+    outputdir = "D:/youroutputfolder",
+    dataFormat = "sensewear_xls",
+    extEpochData_timeformat = "%d-%b-%Y %H:%M:%S",
+    windowsizes = c(60, 900, 3600),
+    acc.metric = "ExtAct",
+    threshold.in = 1.5,
+    threshold.mod = 3,
+    threshold.vig = 6)
+```
+
+To use the sleep classification as stored inside the data use parameter `HASIB.algo = "data"`.
+
+## Actical in .csv format
+
+An example of how the first couple of hundred lines of this file may look like can be found [here](https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/Actical.csv)
+
+At a bare minimum the GGIR command to process these files looks as follows:
+
+```
+GGIR(datadir = "C:/youracticaldatafolder",
+    outputdir = "D:/youroutputfolder",
+    dataFormat = "actical_csv",
+    extEpochData_timeformat = "%d-%b-%Y %H:%M",
+    windowsizes = c(60, 900, 3600),
+    acc.metric = "ExtAct")
+```
+
+To classify sleep from Actical, consider parameter `HASIB.algo = "Oakley1997"`.
+
+## Philips Health Band in .xlsx format
+
+The Philips Health Band data comes with .xlsx file pairs per recording. One starts with `DataList` the other one starts with `Sleep_Wake_`.
+Examples of how the first couple of hundred lines of such files may look like can be found [here](https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/DataList_AH1234567890_PhilipsHealthBand.xlsx) for `DataList` and [here](https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/Sleep_Wake_AH1234567890_PhilipsHealthBand.xlsx) for `Sleep_Wake`.
+
+At a bare minimum the GGIR command to process these files looks as follows:
+
+```
+GGIR(datadir = "C:/yourphbdatafolder",
+    outputdir = "D:/youroutputfolder",
+    dataFormat = "phb_xlsx",
+    extEpochData_timeformat = "%m-%d-%Y %H:%M:%S",
+    windowsizes = c(60, 900, 3600),
+    acc.metric = "ExtAct")
+```
+
+When `HASIB.algo = "data"` GGIR attempts to extract and uses the sleep classification that is stored inside the xlsx files with column name "sleepWake". If no sleep classification is stored inside the data, GGIR uses the activity indicator as stored as "activitycounts". You can specify
+`HASIB.algo = c("data", "Oakley1997")` to make GGIR fall back on Oakley1997 if this would be the case.
+
+## Fitbit as folder with .json format files
+
+Fitbit data comes with multiple .json file per recording (individual) stored in the same folder, with one folder for each recording.
+
+GGIR uses the .json file names starting with sleep, calories, and steps for sleep, magnitude of movement, and steps, respectively.
+
+Examples of how these files may look like can be found [here for sleep](https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/sleep-1995-06-23_Fitbit.json), [here for steps](https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/steps-1995-06-23_Fitbit.json, and [here for calories](https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/calories-1995-06-23_Fitbit.json).
+
+At a bare minimum the GGIR command to process these files looks as follows:
+
+```
+GGIR(datadir = "C:/yourfitbitdatafolder",
+    outputdir = "D:/youroutputfolder",
+    dataFormat = "fitbit_json",
+    windowsizes = c(60, 900, 3600),
+    acc.metric = "ExtAct")
+```
+Note that parameter `extEpochData_timeformat` is not expected for Fitbit as
+we assume that the timestamps are always stored with the same internal format inside the .json files.
+
+To use the sleep classification as stored inside the data use parameter `HASIB.algo = "data"`.
+
+# Handling study protocol
+
+## Not worn during night
+
+Data type: Any
+Study protocol: Worn during the day, taken off during the night
+Wear location: Any
+
+```
+GGIR(HASPT.algo = c("NotWorn", "HDCZA"),
+    HASIB.algo = "vanHees2015",
+    do.imp = FALSE, # Do not impute nonwear because sensor was never worn 24/7
+    HASPT.ignore.invalid = NA, # Treat nonwear as potential part of guider window
+    ignorenonwear = FALSE, # Consider nonwear as potential sleep
+    includenightcrit = 8,
+    includedaycrit = 8)
+```
+
+If "NotWorn" is specified then a second guider can be supplied to the same parameter as shown above. This second guider will be used if the accelerometer is worn for more than 75 percent of the night. The example above shows this for HDCZA.

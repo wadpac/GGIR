@@ -79,6 +79,10 @@ g.imputeTimegaps = function(x, sf, k=0.25, impute = TRUE,
     }
     # refill if first value is not consecutive from last value in previous chunk
     if (!is.null(PreviousLastTime)) {
+      if (!inherits(x = PreviousLastTime, what = "numeric") &&
+          inherits(x = x$time[1], what = "numeric")) {
+        PreviousLastTime = as.numeric(PreviousLastTime)
+      }
       first_deltatime = diff(c(PreviousLastTime, x$time[1]))
       if (!is.numeric(first_deltatime)) {  # in csv axivity, the time is directly read as numeric (seconds)
         units(first_deltatime) = "secs"
@@ -120,14 +124,28 @@ g.imputeTimegaps = function(x, sf, k=0.25, impute = TRUE,
           x$next_epoch_delay = 0
           longEpochDayCut = seq(0, 24 * 60^2, by = longEpochSize)
           x$imputation = 0; imp = 0 # keep track of the imputation to organize data later on
+          Rversion_lt_420 = as.numeric(R.Version()$major) >= 4 && as.numeric(R.Version()$minor) > 2
           for (i in gap90i) { 
             imp = imp + 1
+            if (Rversion_lt_420) {
+              time_i = x$time[i]
+              time_ip1 = x$time[i + 1]
+            } else {
+              # Further down data.table is used to extract hour and minute from time stamps
+              # In R 4.2.0 and earlier numeric time cannot be provided to data.table
+              # For those older version of R convert timestamp format
+              # Tz is set to GMT because at this point we do not care about the specific time
+              # as time is removed at the end of the function, we only use it
+              # to identify time gaps and their size.
+              time_i = as.POSIXct(x$time[i], origin = "1970-01-01", tz = "GMT")
+              time_ip1 = as.POSIXct(x$time[i + 1], origin = "1970-01-01", tz = "GMT")
+            }
             # short epochs to add to fill up to next long epoch cut
-            seconds = data.table::hour(x$time[i]) * 60^2 + data.table::minute(x$time[i]) * 60 + data.table::second(x$time[i]) + 1 
+            seconds = data.table::hour(time_i) * 60^2 + data.table::minute(time_i) * 60 + data.table::second(time_i) + 1 
             seconds_from_prevCut = seconds - max(longEpochDayCut[which(longEpochDayCut <= seconds)])
             shortEpochs2add_1 = (longEpochSize - seconds_from_prevCut) / shortEpochSize
             # short epochs to add after time gap
-            seconds = data.table::hour(x$time[i + 1]) * 60^2 + data.table::minute(x$time[i + 1]) * 60 + data.table::second(x$time[i + 1]) + 1 
+            seconds = data.table::hour(time_ip1) * 60^2 + data.table::minute(time_ip1) * 60 + data.table::second(time_ip1) + 1 
             seconds_from_prevCut = seconds - max(longEpochDayCut[which(longEpochDayCut <= seconds)])
             shortEpochs2add_2 = (seconds_from_prevCut - 1) / shortEpochSize
             # short epochs to add - total

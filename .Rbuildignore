@@ -9,9 +9,16 @@ RELEASE_CYCLE.md
 ^CRAN-SUBMISSION$
 ^_pkgdown\.yml$
 ^docs$
+^docs
 ^pkgdown$
-^vignettes/chapter*.Rmd
+^vignettes/chapter*
 ^dev-functions$
+^user-scripts$
 .zenodo.json
+^doc$
 .chapterInProgress.Rmd
 codecov.yml
+index.md
+^inst/doc/*.html
+^vignettes/HouseHoldCoanalysis.Rmd
+^vignettes/Cookbook.Rmd

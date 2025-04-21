@@ -1,5 +1,6 @@
-g.getM5L5 = function(varnum, ws3, t0_LFMF, t1_LFMF, M5L5res, winhr, 
-                     qM5L5  = c(), iglevels = c(), MX.ig.min.dur = 10) {
+g.getM5L5 = function(varnum, epochSize, t0_LFMF, t1_LFMF, M5L5res, winhr, 
+                     qM5L5  = c(), iglevels = c(), MX.ig.min.dur = 10,
+                     UnitReScale = 1000) {
   #diurnal pattern features extracted only meaningful if more than 16 hours
   meanVarnum = mean(varnum)
   do.M5L5 = meanVarnum > 0
@@ -39,14 +40,16 @@ g.getM5L5 = function(varnum, ws3, t0_LFMF, t1_LFMF, M5L5res, winhr,
     M5L5vars = data.frame(DAYL5HOUR = NA, DAYL5VALUE = NA, 
                           DAYM5HOUR = NA, DAYM5VALUE = NA, stringsAsFactors = TRUE)
   }
-  ML5N = c(paste0("L",winhr,"hr"), paste0("L",winhr), paste0("M",winhr,"hr"), paste0("M",winhr))
+  ML5N = c(paste0("L", winhr,"hr"), paste0("L", winhr),
+           paste0("M", winhr, "hr"), paste0("M", winhr))
   names(M5L5vars) = ML5N
+
   if ((length(iglevels) > 0 || length(qM5L5 ) > 0) && do.M5L5 == TRUE) {
     # get indices of window
-    L5start = (DAYL5HOUR * (3600 / ws3)) + 1 # (hour * (number of ws3 epochs in an hour)) + 1 because first epoch is one and not zero
-    L5end = L5start + (winhr * (3600 / ws3))
-    M5start = (DAYM5HOUR * (3600 / ws3)) + 1 # (hour * (number of ws3 epochs in an hour)) + 1 because first epoch is one and not zero
-    M5end = M5start + (winhr * (3600 / ws3))
+    L5start = (DAYL5HOUR * (3600 / epochSize)) + 1 # (hour * (number of epochSize epochs in an hour)) + 1 because first epoch is one and not zero
+    L5end = L5start + (winhr * (3600 / epochSize))
+    M5start = (DAYM5HOUR * (3600 / epochSize)) + 1 # (hour * (number of epochSize epochs in an hour)) + 1 because first epoch is one and not zero
+    M5end = M5start + (winhr * (3600 / epochSize))
   }
   # added 24 hours to create continuous scale to achieve more meaningful aggregation at person level
   if (do.M5L5 == TRUE) {
@@ -57,7 +60,7 @@ g.getM5L5 = function(varnum, ws3, t0_LFMF, t1_LFMF, M5L5res, winhr,
     }
   }
   #-----------------------
-  if (length(iglevels) > 0 & length(MX.ig.min.dur) == 1) { # intensity gradient (as described by Alex Rowlands 2018)
+  if (length(iglevels) > 0 && length(MX.ig.min.dur) == 1 && do.M5L5 == TRUE) { # intensity gradient (as described by Alex Rowlands 2018)
     if (winhr >= MX.ig.min.dur) {
       for (li in 1:2) { # do twice, once for LX and once for MX
         q49 = c()
@@ -83,12 +86,12 @@ g.getM5L5 = function(varnum, ws3, t0_LFMF, t1_LFMF, M5L5res, winhr,
     }
   }
   #-----------------------
-  if (length(qM5L5 ) > 0) {  # add statistical features:
+  if (length(qM5L5 ) > 0) {
     if (do.M5L5 == TRUE) {
-      # calculate statistics
+      # calculate statistics on acceleration metrics
       L5q = quantile(varnum[L5start:L5end], probs = qM5L5 , na.rm = TRUE)
       M5q = quantile(varnum[M5start:M5end], probs = qM5L5 , na.rm = TRUE)
-      M5L5varsExtra = as.numeric(c(L5q, M5q)) * 1000
+      M5L5varsExtra = as.numeric(c(L5q, M5q)) * UnitReScale
     } else {
       M5L5varsExtra = rep(NA, length(qM5L5) * 2)
     }

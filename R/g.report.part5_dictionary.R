@@ -30,6 +30,13 @@ g.report.part5_dictionary = function(metadatadir, params_output) {
   ds = grep("^part5_daysummary", basename(reports))[1]
   ps = grep("^part5_personsummary", basename(reports))[1]
   reports = reports[c(ds, ps)]
+  if (length(reports) == 0 || all(is.na( reports))) {
+    # No cleaned part 5 report probably because no valid windows, so try full report instead
+    reports = dir(file.path(metadatadir, "results", "QC"), full.names = TRUE, 
+                    pattern = "^part5.*\\.csv$")
+    if (length(reports) == 0 || all(is.na( reports))) return()
+  }
+  reports = reports[!is.na(reports)]
   if (!exists("baseDictionary")) return()
   # read col names of each report and derive definitions
   for (ri in 1:length(reports)) {
@@ -151,7 +158,7 @@ g.report.part5_dictionary = function(metadatadir, params_output) {
         class = getclass(x)
         # sleep efficiency (overwrite prev classification as sleep)
         if ("sleep" %in% elements & "efficiency" %in% elements) {
-          class = "Sleep efficiency"
+          class = "Sleep efficiency after onset"
           unit = "(%)"
         }
         # wakefulness after sleep onset (overwrite prev classification of intensity)
@@ -185,7 +192,7 @@ g.report.part5_dictionary = function(metadatadir, params_output) {
         }
         # connector (in)
         if (!is.null(class)) {
-          if (class != "Sleep efficiency" 
+          if (class != "Sleep efficiency after onset" 
               & substr(class, 1, 8) != "the most"
               & !("ig" %in% elements)) class = paste("in", class)
         }

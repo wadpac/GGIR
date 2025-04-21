@@ -1,17 +1,16 @@
 ---
 title: "Embedding external functions in GGIR"
-author: "Vincent van Hees"
-date: "March 7 2023"
 output:
-  pdf_document:
-    toc: true
-    toc_depth: 3
+   html_document:
+    toc : true
     number_sections: true
+    toc_depth: 3
+    toc_float: true #by turning this on, the table of contents moves to the left of the page.
 urlcolor: blue
 vignette: >
   %\VignetteIndexEntry{Embedding external functions in GGIR}
-  %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
 header-includes:
   - \usepackage{titling}
   - \pretitle{\begin{center}
@@ -27,8 +26,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-See also complementary vignettes on:
-[General introduction to GGIR](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html), [Cut-points](https://CRAN.R-project.org/package=GGIR/vignettes/CutPoints.html), [Day segment analyses](https://CRAN.R-project.org/package=GGIR/vignettes/TutorialDaySegmentAnalyses.html), [GGIR parameters](https://CRAN.R-project.org/package=GGIR/vignettes/GGIRParameters.html), and [Reading ad-hoc csv file formats](https://CRAN.R-project.org/package=GGIR/vignettes/readmyacccsv.html).
+**NOTE: If you are viewing this page via CRAN note that the main GGIR documentation has been migrated to the [GGIR GitHub pages](https://wadpac.github.io/GGIR/).**
 
 # Introduction
 
@@ -94,7 +92,8 @@ The above code creates object `myfun` of type `list` which is expected to come w
 function should be used for the aggregation, e.g. mean, sum, median.
 - `timestamp` Boolean to indicated whether timestamps  (seconds since 1-1-1970) should be passed on to the external 
     function as first columm of the data matrix..
-- `reporttype` Character to indicate the type of reporting by GGIR: "scalar" if it should be averaged per day, "event" if it should be summed per day, or "type" if it is categorical variable that can only be aggregated per day by tabulating it.
+- `reporttype` Character to indicate the type of reporting by GGIR: "scalar" if it should be averaged per day, "event" if it should be summed per day, or "type" if it is categorical variable that can only be aggregated per day by tabulating it. For `reporttype` "event" GGIR will as of release 3.2-0 not summarise the events in part2_summary.csv and part2_daysummary.csv but in part2_eventsummary.csv and part2_dayeventsummary.csv.
+- `name` Character to indicate the name of the entity being detected in the cases of event detection, this name is used in the output filename, e.g. part2_stepsummary.csv when name is "step". At the moment name is only use for event detection algorithms
 
 Next, add a call to GGIR function GGIR with `myfun` provided as one of its arguments:
 
@@ -212,4 +211,8 @@ Next, in part2 GGIR aims to detect non-wear periods and imputes those. The imput
 # External functions released by GGIR collaborators:
 
 - Wrist-based step detection algorithm: https://github.com/ShimmerEngineering/Verisense-Toolbox/tree/master/Verisense_step_algorithm
-- Wrist-based sleep classification as described by Sundararajan et al. 2021 [link to paper](https://www.nature.com/articles/s41598-020-79217-x), and corresponding code is here: https://github.com/wadpac/SleepStageClassification/tree/master/ggir_ext
+
+which is not actively maintained, for the latest version of the function see:
+https://github.com/wadpac/GGIR/blob/master/user-scripts/verisense_count_steps.R
+
+- Wrist-based sleep classification as described by Sundararajan et al. 2021 [link to paper](https://www.nature.com/articles/s41598-020-79217-x), and corresponding code is here: https://github.com/wadpac/Sundararajan-SleepClassification-2021/tree/master/ggir_ext

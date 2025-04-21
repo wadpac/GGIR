@@ -1,0 +1,36 @@
+---
+title: "Contributing"
+output:
+   html_document:
+    toc : true
+    number_sections: true
+    toc_depth: 3
+    toc_float: true #by turning this on, the table of contents moves to the left of the page.
+urlcolor: blue
+vignette: >
+  %\VignetteIndexEntry{Contributing}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## If you have coding skills…
+
+We welcome contributions in the development, maintenance, and documentation of GGIR. Please find the GGIR’s contributing guidelines [here](https://github.com/wadpac/GGIR/blob/master/CONTRIBUTING.md).
+
+## If you do not have coding skills….
+
+You might not have the coding skills to contribute to the code base of GGIR, and still your contribution could be very important for us. For example: 
+
+- **Apply for funding** to support the development and maintenance of GGIR. GGIR is free software by which we entirely depend on users applying for funding to sponsor our efforts. Funding could be used to support the development of new functionalities, to support improvement of the existing GGIR software code, or to support development of better open-access training materials such as instruction videos.
+-	**Report your issues and questions** in the [GGIR google group](https://groups.google.com/g/RpackageGGIR).
+-	**Proofread the GGIR documentation** and inform us if you miss something or if you found it difficult to follow.
+- **Take independent initiatives to complement our efforts**. For example, Prof. Stuart Fairclough created a [series of GGIR video tutorials](https://www.youtube.com/watch?v=AbHgJYTyuiA), Wei Guo and colleagues created the R package [mMARCH.AC](https://doi.org/10.32614/CRAN.package.mMARCH.AC) to post-process GGIR output as described in the supporting [journal article](https://doi.org/10.1123/jmpb.2022-0018), and maybe there are other initiatives we are not aware of. Please communicate about your initiatives via the [GGIR google group](https://groups.google.com/g/rpackageggir/) and/or with GGIR maintainer [Vincent van Hees](https://www.accelting.com/) to avoid duplicated work and to support each other where needed.
+

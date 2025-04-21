@@ -13,14 +13,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
-
-```{r, echo=FALSE, out.width = "60%", out.extra='style="border: 0; padding:20px"'}
-knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
-```
-
-See also complementary vignettes on:
-[General introduction to GGIR](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html), [Day segment analyses](https://CRAN.R-project.org/package=GGIR/vignettes/TutorialDaySegmentAnalyses.html), [GGIR parameters](https://CRAN.R-project.org/package=GGIR/vignettes/GGIRParameters.html), [Embedding external functions (pdf)](https://CRAN.R-project.org/package=GGIR/vignettes/ExternalFunction.pdf), and [Reading ad-hoc csv file formats](https://CRAN.R-project.org/package=GGIR/vignettes/readmyacccsv.html).
-
+**NOTE: If you are viewing this page via CRAN note that the main GGIR documentation has been migrated to the [GGIR GitHub pages](https://wadpac.github.io/GGIR/).**
 
 Household co-analysis facilitates the analysis of how sleep and physical activity relate
 between members of the same household.

@@ -48,7 +48,9 @@ g.part5.addsib = function(ts, epochSize, part3_output, desiredtz, sibDefinition,
     }
   }
   ts$sibdetection[s0s1] = 1
-  if (length(grep(pattern = "A", sibDefinition)) > 0 & length(grep(pattern = "T", sibDefinition)) > 0) {
+  if (length(grep(pattern = "A", sibDefinition)) > 0 &&
+      length(grep(pattern = "T", sibDefinition)) > 0 &&
+      length(nightsi) > 0) {
     #=========
     # If excludefirstlast was set to TRUE in part 4 then 
     # SUSTAINED INACTIVITY BOUTS are not assessed for the time between

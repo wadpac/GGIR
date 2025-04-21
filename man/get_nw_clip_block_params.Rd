@@ -9,16 +9,10 @@
   Not designed for direct use by user.
 }
 \usage{
-  get_nw_clip_block_params(chunksize, dynrange, monc, dformat, deviceSerialNumber,
-    rmc.noise=c(), sf, rmc.dynamic_range)
+  get_nw_clip_block_params(monc, dformat, deviceSerialNumber = "", sf,
+                            params_rawdata)
 }
 \arguments{
-  \item{chunksize}{
-    See \link{g.calibrate}
-  }
-  \item{dynrange}{
-    See \link{g.getmeta}
-  }
   \item{monc}{
     See \link{g.inspectfile}
   }
@@ -28,17 +22,11 @@
   \item{deviceSerialNumber}{
     As produced by \link{g.extractheadervars}
   }
-  \item{rmc.noise}{
-    Noise level of acceleration signal in _g_-units, used when working ad-hoc .csv data formats
-    using \link{read.myacc.csv}. The \link{read.myacc.csv} does not take rmc.noise as argument,
-    but when interacting with \link{GGIR} or \link{g.part1} rmc.noise is used.
-    There, rmc.noise is taken from the params_rawdata object if not explicitly specified by user.
-  }
-   \item{sf}{
+  \item{sf}{
     Numeric, sample frequency in Hertz
   }
-  \item{rmc.dynamic_range}{
-    Optional, please see \link{read.myacc.csv}
+  \item{params_rawdata}{
+    See \link{GGIR}
   }
 }
 \keyword{internal}

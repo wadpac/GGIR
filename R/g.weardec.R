@@ -1,6 +1,6 @@
-g.weardec = function(M,wearthreshold,ws2, nonWearEdgeCorrection = TRUE) {
-  metalong = M$metalong
-  # eni = which(colnames(metalong) == "en") # Commented out March 9 2023, because it was not used
+g.weardec = function(metalong, wearthreshold, ws2, params_cleaning = NULL,
+                     desiredtz = "", qwindowImp = c()) {
+  nonWearEdgeCorrection = params_cleaning[["nonWearEdgeCorrection"]]
   nsi = which(colnames(metalong) == "nonwearscore")
   csi = which(colnames(metalong) == "clippingscore")
   NLongEpochs = nrow(metalong)
@@ -8,15 +8,24 @@ g.weardec = function(M,wearthreshold,ws2, nonWearEdgeCorrection = TRUE) {
   # clipsig is a value between 0 and 1 for each long window (default 15 minutes) 
   # and indicates the ratio of datapoints in the window where signal clips
   LC = length(which(clipsig > 0.05))
-  LC2 = length(which(clipsig > 0.8))
-  turnoffclip = which(clipsig > 0.8)
+  turnoffclip = which(clipsig > 0.3)
+  LC2 = length(turnoffclip)
   turnoffnonw = which(as.numeric(as.matrix(metalong[,nsi])) >= wearthreshold)
-  # # some files have zero g when battery drains # Commented out March 9 2023, because it was not used
-  # turnoffzerog = which(as.numeric(as.matrix(metalong[,eni])) < 0.9)
   # step 1: identify islands of invalid data
   r1 = r2 = r3 = matrix(0, nrow(metalong), 1)
   r1[turnoffnonw] = 1 # non-weartime
   r2[turnoffclip] = 1 # clipping
+  
+  #----------------------------------------------------------------
+  # Optionally ignore short lasting nonwear during the night
+  if (!is.null(params_cleaning[["nonwearFiltermaxHours"]])) {
+    fnn = filterNonwearNight(r1, metalong, qwindowImp, desiredtz, params_cleaning, ws2)
+    r1[, 1] = fnn$r1
+    nonwearHoursFiltered = fnn$nonwearHoursFiltered
+    nonwearEventsFiltered = fnn$nonwearEventsFiltered
+  } else {
+    nonwearEventsFiltered = nonwearHoursFiltered = 0
+  }
   r1 = c(0, r1, 0)
   r2 = c(0, r2, 0)
   r3 = c(0, r3, 0)
@@ -97,6 +106,8 @@ g.weardec = function(M,wearthreshold,ws2, nonWearEdgeCorrection = TRUE) {
     r2 = r2,
     r3 = r3,
     LC = LC,
-    LC2 = LC2
+    LC2 = LC2,
+    nonwearHoursFiltered = nonwearHoursFiltered,
+    nonwearEventsFiltered = nonwearEventsFiltered
   ))
 }

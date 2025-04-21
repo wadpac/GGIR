@@ -26,8 +26,9 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                           configtz = NULL,
                           header = NULL) {
 
-  if (length(rmc.col.time) > 0 && !(rmc.unit.time %in% c("POSIX", "character", "UNIXsec", "ActivPAL"))) {
-    stop("\nUnrecognized rmc.col.time value. The only accepted values are \"POSIX\", \"character\", \"UNIXsec\", and \"ActivPAL\".", call. = FALSE)
+  if (length(rmc.col.time) > 0 && !(rmc.unit.time %in% c("POSIX", "character", "UNIXsec", "UNIXmsec", "ActivPAL"))) {
+    stop(paste0("\nUnrecognized rmc.col.time value. The only accepted values are \"POSIX\", ",
+                "\"character\", \"UNIXsec\", \"UNIXmsec\", and \"ActivPAL\"."), call. = FALSE)
   }
 
   if (!is.null(rmc.desiredtz) || !is.null(rmc.configtz)) {
@@ -257,8 +258,13 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
       }
     } else if (rmc.unit.time == "character") {
       P$time = as.POSIXct(P$time, format = rmc.format.time, origin = rmc.origin, tz = configtz)
-    } else if (rmc.unit.time == "UNIXsec" && rmc.origin != "1970-01-01") {
-      P$time = as.POSIXct(P$time, origin = rmc.origin, tz = desiredtz)
+    } else if (rmc.unit.time == "UNIXsec" || rmc.unit.time == "UNIXmsec") {
+      if (rmc.unit.time == "UNIXmsec") {
+        P$time = P$time / 1000
+      }
+      if (rmc.origin != "1970-01-01") {
+        P$time = as.POSIXct(P$time, origin = rmc.origin, tz = desiredtz)
+      }
     } else if (rmc.unit.time == "ActivPAL") {
       # origin should be specified as: "1899-12-30"
       rmc.origin = "1899-12-30"
@@ -278,9 +284,9 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   
   # If acceleration is stored in mg units then convert to gravitational units
   if (rmc.unit.acc == "mg") {
-    P$x = P$x * 1000
-    P$y = P$y * 1000
-    P$z = P$z * 1000
+    P$x = P$x / 1000
+    P$y = P$y / 1000
+    P$z = P$z / 1000
   }
   if (rmc.scalefactor.acc != 1) {
     P$x = P$x * rmc.scalefactor.acc

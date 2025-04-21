@@ -5,7 +5,10 @@
 [![](https://cranlogs.r-pkg.org/badges/last-month/GGIR)](https://cran.r-project.org/package=GGIR)
 
 ## Getting started:
-The package [vignette](https://CRAN.R-project.org/package=GGIR/vignettes/GGIR.html) and [this](https://youtu.be/S8YPTrYNWdU) short tutorial video provide an introduction to GGIR, including: How it can be installed, Key software features, and where to get help.
+The package [documentation](https://wadpac.github.io/GGIR/) provides extensive documentation on GGIR and its functionalities.
+
+## Getting help:
+For guidance on how to seek help see [this page](https://wadpac.github.io/GGIR/articles/chapter0_Support.html).
 
 ## Contribution guidelines:
 We always welcome contributions to the package.

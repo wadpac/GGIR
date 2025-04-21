@@ -3,7 +3,7 @@ context("recordingEndSleepHour")
 test_that("recordingEndSleepHour works as expected", {
   skip_on_cran()
   #=======================
-  create_test_acc_csv(Nmin = 2.5 * 1440) # ends at 20:45
+  create_test_acc_csv(Nmin = 3.5 * 1440) # ends at 20:45
   fn = "123A_testaccfile.csv"
   tz = "Europe/Amsterdam"
   # this should NOT trigger data expansion
@@ -13,7 +13,7 @@ test_that("recordingEndSleepHour works as expected", {
        visualreport = FALSE, do.report = c(), verbose = FALSE)
   rn = dir("output_test/meta/basic/", full.names = TRUE)
   load(rn[1])
-  expect_true(nrow(M$metashort) == 43020)
+  expect_true(nrow(M$metashort) == 60300)
   # expect_true(M$metashort$timestamp[nrow(M$metashort)] == "2016-06-25T20:44:55+0200")
   
   # errors and warnings work properly
@@ -46,7 +46,7 @@ test_that("recordingEndSleepHour works as expected", {
        minimum_MM_length.part5 = 6, verbose = FALSE)
   rn = dir("output_test/meta/basic/", full.names = TRUE)
   load(rn[1])
-  expect_true(nrow(M$metashort) > 43020) # metashort is expanded
+  expect_true(nrow(M$metashort) > 60300) # metashort is expanded
   
   # expanded time is not reports
   p2 = read.csv("output_test/results/part2_daysummary.csv")
@@ -54,17 +54,17 @@ test_that("recordingEndSleepHour works as expected", {
   
   p4 = read.csv("output_test/results/part4_nightsummary_sleep_cleaned.csv")
   p4full = read.csv("output_test/results/QC/part4_nightsummary_sleep_full.csv")
-  expect_equal(nrow(p4), 2) # Night 3 is not in the part 4 reports
-  expect_equal(nrow(p4full), 2) # Night 3 is not in the part 4 reports
-  expect_equal(sum(p4$sleeponset), 41.848)
-  expect_equal(sum(p4$wakeup), 62.336)
-  expect_equal(sum(p4$guider_onset), 41.771)
-  expect_equal(sum(p4$guider_wakeup), 62.26)
-  expect_equal(sum(p4$number_sib_sleepperiod), 73)
+  expect_equal(nrow(p4), 3) # Night 3 is not in the part 4 reports
+  expect_equal(nrow(p4full), 3) # Night 3 is not in the part 4 reports
+  expect_equal(sum(p4$sleeponset), 62.77)
+  expect_equal(sum(p4$wakeup), 93.505)
+  expect_equal(sum(p4$guider_onset), 62.775)
+  expect_equal(sum(p4$guider_wakeup), 93.506)
+  expect_equal(sum(p4$number_sib_sleepperiod), 114)
   expect_true(all(is.na(p4$longitudinal_axis)))
   
   p5 = read.csv("output_test/results/part5_daysummary_MM_L40M100V400_T5A5.csv")
-  expect_equal(nrow(p5), 3) # expanded day appears in MM report
+  expect_equal(nrow(p5), 4) # expanded day appears in MM report
   expect_true(p5$dur_day_spt_min[nrow(p5)] < 23*60) # but expanded time is not accounted for in estimates
   
   #================================================================
@@ -83,7 +83,7 @@ test_that("recordingEndSleepHour works as expected", {
        minimum_MM_length.part5 = 6, verbose = FALSE)
   rn = dir("output_test/meta/basic/", full.names = TRUE)
   load(rn[1])
-  expect_true(nrow(M$metashort) > 43020) # metashort is expanded
+  expect_true(nrow(M$metashort) > 60300) # metashort is expanded
   
   # expanded time is not reports
   p2 = read.csv("output_test/results/part2_daysummary.csv")
@@ -91,18 +91,18 @@ test_that("recordingEndSleepHour works as expected", {
   
   p4 = read.csv("output_test/results/part4_nightsummary_sleep_cleaned.csv")
   p4full = read.csv("output_test/results/QC/part4_nightsummary_sleep_full.csv")
-  expect_equal(nrow(p4), 2) # Night 3 is not in the part 4 reports
-  expect_equal(nrow(p4full), 2) # Night 3 is not in the part 4 reports
-  expect_equal(sum(p4$sleeponset), 41.831)
-  expect_equal(sum(p4$wakeup), 57.917)
-  expect_equal(sum(p4$guider_inbedStart), 41.42)
-  expect_equal(sum(p4$guider_inbedEnd), 57.961)
-  expect_equal(sum(p4$number_sib_sleepperiod), 13)
-  expect_equal(sum(p4$sleepefficiency), 0.422)
-  expect_equal(sum(p4$longitudinal_axis), 6)
+  expect_equal(nrow(p4), 3) # Night 3 is not in the part 4 reports
+  expect_equal(nrow(p4full), 3) # Night 3 is not in the part 4 reports
+  expect_equal(sum(p4$sleeponset), 62.1)
+  expect_equal(sum(p4$wakeup), 81.096)
+  expect_equal(sum(p4$guider_inbedStart), 53.17, tolerance = 0.005)
+  expect_equal(sum(p4$guider_inbedEnd), 86.85, tolerance = 0.005)
+  expect_equal(sum(p4$number_sib_sleepperiod), 24)
+  expect_equal(sum(p4$sleepefficiency), 0.501)
+  expect_equal(sum(p4$longitudinal_axis), 9)
   
   p5 = read.csv("output_test/results/part5_daysummary_MM_L40M100V400_T5A5.csv")
-  expect_equal(nrow(p5), 2) # expanded day appears in MM report
+  expect_equal(nrow(p5), 3) # expanded day appears in MM report
   expect_true(p5$dur_day_spt_min[nrow(p5)] < 23*60) # but expanded time is not accounted for in estimates
   
   # test that time series output has all expected columns including the multiple angle columns
@@ -116,10 +116,19 @@ test_that("recordingEndSleepHour works as expected", {
                     "class_id", "invalid_fullwindow", "invalid_sleepperiod",
                     "invalid_wakinghours", "timestamp") %in% names(mdat)))
   
+  #========================================================
+  # Test require_complete_lastnight_part5 = TRUE
+  create_test_acc_csv(Nmin = 3 * 1440) # ends at 8:45
+  # delete config.csv such that GGIR uses its own default parameter values
+  if (file.exists("output_test/config.csv"))  unlink("output_test/config.csv", recursive = TRUE)
+  GGIR(datadir = fn, outputdir = getwd(), mode = 1:5,
+       studyname = "test", overwrite = TRUE, desiredtz = tz, 
+       verbose = FALSE, require_complete_lastnight_part5 = TRUE,
+       do.report = 5)
+  p5 = read.csv("output_test/results/part5_daysummary_MM_L40M100V400_T5A5.csv")
+  expect_equal(nrow(p5), 2) # last window is ignored from because the night ends at 8:45
   
   
   if (file.exists("output_test"))  unlink("output_test", recursive = TRUE)
   if (file.exists(fn)) file.remove(fn)
 })
-
-

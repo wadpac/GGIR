@@ -18,17 +18,38 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   params_output = params$params_output
   params_general = params$params_general
   #-----------------------------
+  use_qwindow_as_diary = TRUE # If there is a diary specified via qwindow use it as qwindow
   if (is.numeric(params_247[["qwindow"]])) {
     params_247[["qwindow"]] = params_247[["qwindow"]][order(params_247[["qwindow"]])]
   } else if (is.character(params_247[["qwindow"]])) {
-    params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]],
-                                            params_247[["qwindow_dateformat"]],
-                                            epochSize = params_general[["windowsizes"]][1])
-    # This will be an object with numeric qwindow values for all individuals and days
+    if (length(grep(pattern = "onlyfilter|filteronly", x = params_247[["qwindow"]])) > 0) {
+      # Do not use diary specified for qwindow if it has the word
+      # "onlyfilter" or "filteronly", but use it for filterning nighttime nonwear
+      # note that this filtering is only use if parameter nonwearFiltermaxHours is specified.
+      use_qwindow_as_diary = FALSE 
+    }
+    tmp_activityDiary_file = paste0(metadatadir, "/meta/activityDiary_", basename(params_247[["qwindow"]]), ".RData")
+    
+    if (!file.exists(tmp_activityDiary_file) || (file.exists(tmp_activityDiary_file) && 
+        file.info(params_247[["qwindow"]])$mtime >= file.info(tmp_activityDiary_file)$mtime)) {
+      if (verbose == TRUE) cat("\nConverting activity diary...")
+      # This will be an object with numeric qwindow values for all individuals and days
+      params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]],
+                                              params_247[["qwindow_dateformat"]],
+                                              epochSize = params_general[["windowsizes"]][1])
+      qwindow = params_247[["qwindow"]]
+      save(qwindow, file = tmp_activityDiary_file)
+    } else {
+      load(tmp_activityDiary_file)
+      params_247[["qwindow"]] = qwindow
+    }
+    rm(qwindow)
+
   }
   #---------------------------------
   # Specifying directories with meta-data and extracting filenames
   path = paste0(metadatadir,"/meta/basic/")  #values stored per long epoch, e.g. 15 minutes
+  checkMilestoneFolders(metadatadir, partNumber = 2)
   fnames = dir(path)
   if (f1 > length(fnames)) f1 = length(fnames)
   # create output folders
@@ -49,8 +70,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   pdfpagecount = 1 # counter to keep track of files being processed (for pdf)
   pdffilenumb = 1 #counter to keep track of number of pdf-s being generated
   daySUMMARY = c()
-  if (length(f0) ==  0) f0 = 1
-  if (length(f1) ==  0) f1 = length(fnames)
+  if (length(f0) == 0) f0 = 1
+  if (length(f1) == 0) f1 = length(fnames)
   #--------------------------------
   # get full file path and folder name if requested by end-user and keep this for storage in output
   foldername = fullfilenames = folderstructure = referencefnames = c()
@@ -82,7 +103,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                         myfun=c(), params_cleaning = c(), params_247 = c(),
                         params_phyact = c(), params_output = c(), params_general = c(),
                         path, ms2.out, foldername, fullfilenames, folderstructure, referencefnames,
-                        daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78, verbose) {
+                        daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78, verbose, use_qwindow_as_diary) {
     Nappended = I_list = tail_expansion_log =  NULL
     if (length(ffdone) > 0) {
       if (length(which(ffdone == as.character(unlist(strsplit(fnames[i], "eta_"))[2]))) > 0) {
@@ -149,13 +170,27 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
             }
           }
         }
+        qwindowImp = params_247[["qwindow"]]
+        if (use_qwindow_as_diary == FALSE) {
+          # reset qwindow to default, because it is only used
+          # for filtering short nighttime nonwear 
+          params_247[["qwindow"]] = c(0, 24)
+        }
+        if (inherits(qwindowImp, "data.frame")) {
+          qwindowImp = qwindowImp[which(qwindowImp$ID == ID),]
+          if (nrow(qwindowImp) == 0) {
+            qwindowImp = c(0, 6) # If participant not present in diary
+          }
+        } else {
+          qwindowImp = NULL
+        }
         IMP = g.impute(M, I,
                        params_cleaning = params_cleaning,
                        dayborder = params_general[["dayborder"]],
                        desiredtz = params_general[["desiredtz"]],
                        TimeSegments2Zero = TimeSegments2Zero,
                        acc.metric = params_general[["acc.metric"]],
-                       ID = ID)
+                       ID = ID, qwindowImp = qwindowImp)
         
         if (!is.na(params_cleaning[["do.imp"]]) && params_cleaning[["do.imp"]] == FALSE) { #for those interested in sensisitivity analysis
           IMP$metashort = M$metashort
@@ -252,8 +287,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         SUM$summary[noID] = char2num_df(SUM$summary[noID])
         noIDday = which(colnames(SUM$daysummary) != "ID")
         SUM$daysummary[noIDday] = char2num_df(SUM$daysummary[noIDday])
-        # save milestone data
-        save(SUM, IMP, tail_expansion_log, file = paste0(metadatadir, ms2.out, "/", RDname)) #IMP is needed for g.plot in g.report.part2
+        GGIRversion = utils::packageVersion("GGIR")
+        save(SUM, IMP, tail_expansion_log, GGIRversion, file = paste0(metadatadir, ms2.out, "/", RDname)) #IMP is needed for g.plot in g.report.part2
       }
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) rm(IMP)
       rm(M); rm(I)
@@ -300,7 +335,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                            "g.extractheadervars", "g.analyse.avday", "g.getM5L5", "g.IVIS",
                            "g.analyse.perday", "g.getbout", "g.analyse.perfile", "g.intensitygradient",
                            "iso8601chartime2POSIX", "extract_params", "load_params", "check_params",
-                           "correctOlderMilestoneData", "cosinorAnalyses", "extractID")
+                           "correctOlderMilestoneData", "cosinor_IS_IV_Analyses", "extractID")
       errhand = 'stop'
     }
     i = 0 # declare i because foreach uses it, without declaring it
@@ -313,7 +348,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                                   params_phyact, params_output, params_general,
                                                   path, ms2.out, foldername, fullfilenames,
                                                   folderstructure, referencefnames,
-                                                  daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78, verbose)
+                                                  daySUMMARY, pdffilenumb, pdfpagecount, 
+                                                  csvfolder, cnt78, verbose, use_qwindow_as_diary)
                                        
                                      })
                                      return(tryCatchResult)
@@ -333,7 +369,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                  params_phyact, params_output, params_general,
                  path, ms2.out, foldername, fullfilenames,
                  folderstructure, referencefnames,
-                 daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78, verbose)
+                 daySUMMARY, pdffilenumb, pdfpagecount,
+                 csvfolder, cnt78, verbose, use_qwindow_as_diary)
     }
   }
 }

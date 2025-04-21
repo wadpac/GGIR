@@ -9,8 +9,9 @@
 }
 \usage{
 HASPT(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5, 
-      HASPT.algo="HDCZA", HDCZA_threshold = 0.2, invalid, 
-      HASPT.ignore.invalid = FALSE, activity)
+      HASPT.algo="HDCZA", HDCZA_threshold = c(), invalid, 
+      HASPT.ignore.invalid = FALSE, activity = NULL,
+      marker = NULL, sibs = NULL, try_marker_button = FALSE)
 }
 \arguments{
   \item{angle}{
@@ -38,9 +39,21 @@ HASPT(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
     Boolean to indicate whether invalid time segments should be ignored
   }
    \item{activity}{
-    Magnitude of acceleration, only used when HASPT.algo is set to NotWorn.
+    Numeric vector with magnitude of acceleration per epoch,
+    only used when HASPT.algo is set to NotWorn.
     Acceleration metric used is specified by argument \code{acc.metric} 
     elsewhere in GGIR.
+  }
+  \item{marker}{
+    Optional, numeric vector with for each epoch an indication of whether the
+    marker button was pressed (1) or not (0). Only used for Actiwatch-like devices
+    such as MotionWare.
+  }
+  \item{sibs}{
+    Numeric vector of classified sibs with \code{HASIB}, experimental not used at the moment.
+  }
+  \item{try_marker_button}{
+    See \link{GGIR}
   }
 }
 \value{

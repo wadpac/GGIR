@@ -18,47 +18,51 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   getbrand = function(filename = c(), datafile = c()) {
     sf = c(); isitageneactive = c(); mon = c(); dformat = c() #generating empty variables
     extension = unlist(strsplit(filename,"[.]"))
-    extension = extension[length(extension)]
+    if (tolower(extension[length(extension)]) == "gz") {
+      extension = extension[length(extension) - 1]
+    } else {
+      extension = extension[length(extension)]
+    }
     switch(extension,
-            "bin" = { dformat = FORMAT$BIN },
-            "cwa" = ,
-            "CWA" = { mon = MONITOR$AXIVITY
-            dformat = FORMAT$CWA
-            },
-            "gt3x" = { mon = MONITOR$ACTIGRAPH
-            dformat = FORMAT$GT3X
-            },
-            "GT3X" = { mon = MONITOR$ACTIGRAPH
-            dformat = FORMAT$GT3X
-            if (file.access(datafile, 2) == 0) { # test for write access to file
-              # rename file to be lower case gt3x extension
-              file.rename(from = datafile, to = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile))
-              datafile = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile)
-              warning("\nWe have renamed the GT3X file to gt3x because GGIR dependency read.gt3x cannot handle uper case extension")
-            } else {
-              stop("\nGGIR needs to change the file extension from GT3X to gt3x, but it does not seem to have write permission to the file.")
-            }
-            },
-            "csv" = { dformat = FORMAT$CSV
-            testheader = read.csv(datafile, nrow = 1, skip = 0, header = FALSE)
-            
-            if (grepl("ActiGraph", testheader[1], fixed=TRUE)) {
-              mon = MONITOR$ACTIGRAPH
-            } else {
-              testcsv = read.csv(datafile, nrow = 10, skip = 10)
-              testcsvtopline = read.csv(datafile, nrow = 2,skip = 1)
-              
-              if (ncol(testcsv) == 2 && ncol(testcsvtopline) < 4) {
-                mon = MONITOR$GENEACTIV
-              } else if (ncol(testcsv) >= 4 && ncol(testcsvtopline) >= 4) {
-                mon = MONITOR$AXIVITY
-              } else {
-                stop(paste0("\nError processing ", filename, ": unrecognised csv file format.\n"))
-              }
-            }
-            },
-            "wav" = { stop(paste0("\nError processing ", filename, ": Axivity .wav file format is no longer supported.\n")) },
-            { stop(paste0("\nError processing ", filename, ": unrecognised file format.\n")) }
+           "bin" = ,
+           "BIN" = { dformat = FORMAT$BIN },
+           "cwa" = ,
+           "CWA" = { mon = MONITOR$AXIVITY
+           dformat = FORMAT$CWA
+           },
+           "gt3x" = { mon = MONITOR$ACTIGRAPH
+           dformat = FORMAT$GT3X
+           },
+           "GT3X" = { mon = MONITOR$ACTIGRAPH
+           dformat = FORMAT$GT3X
+           if (file.access(datafile, 2) == 0) { # test for write access to file
+             # rename file to be lower case gt3x extension
+             file.rename(from = datafile, to = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile))
+             datafile = gsub(pattern = ".GT3X", replacement = ".gt3x", x = datafile)
+             warning("\nWe have renamed the GT3X file to gt3x because GGIR dependency read.gt3x cannot handle uper case extension")
+           } else {
+             stop("\nGGIR needs to change the file extension from GT3X to gt3x, but it does not seem to have write permission to the file.")
+           }
+           },
+           "csv" = { dformat = FORMAT$CSV
+           testheader = read.csv(datafile, nrow = 1, skip = 0, header = FALSE)
+           
+           if (grepl("ActiGraph", testheader[1], fixed=TRUE)) {
+             mon = MONITOR$ACTIGRAPH
+           } else {
+             testcsv = read.csv(datafile, nrow = 10, skip = 10)
+             testcsvtopline = read.csv(datafile, nrow = 2,skip = 1)
+             if (ncol(testcsv) == 2 && ncol(testcsvtopline) < 4) {
+               mon = MONITOR$GENEACTIV
+             } else if (ncol(testcsv) >= 4 && ncol(testcsvtopline) >= 4) {
+               mon = MONITOR$AXIVITY
+             } else {
+               stop(paste0("\nError processing ", filename, ": unrecognised csv file format.\n"))
+             }
+           }
+           },
+           "wav" = { stop(paste0("\nError processing ", filename, ": Axivity .wav file format is no longer supported.\n")) },
+           { stop(paste0("\nError processing ", filename, ": unrecognised file format.\n")) }
     )
     
     if (ismovisens(datafile)) {
@@ -66,12 +70,15 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       mon = MONITOR$MOVISENS
       sf = 64
       header = "no header"
-    } else if (dformat == FORMAT$BIN) { # .bin and not movisens
+    } else if (dformat == FORMAT$BIN) { # .bin and not movisens, could be GENEActiv or Parmay Matrix
+      mon = inspect_binFile_brand(filename = datafile)
+      if (mon == MONITOR$PARMAY_MTX && utils::packageVersion("GGIRread") < "1.0.4") {
+        stop("Please update R package GGIRread to version 1.0.4 or higher", call. = FALSE)
+      }
       # try read the file as if it is a geneactiv and store output in variable 'isitageneactive'
-      isitageneactive = GGIRread::readGENEActiv(filename = datafile, start = 0, end = 1)
-      if (length(isitageneactive) >= 1) {
+      if (mon == MONITOR$GENEACTIV) {
         if (all(names(isitageneactive) %in% c("header", "data.out") == TRUE)) {
-          mon = MONITOR$GENEACTIV
+          isitageneactive = GGIRread::readGENEActiv(filename = datafile, start = 0, end = 1)
           tmp = unlist(strsplit(unlist(as.character(isitageneactive$header$SampleRate))," "))[1]
           # occasionally we'll get a decimal seperated by comma; if so, replace the comma with a dot
           tmp = sub(",", ".", tmp, fixed = TRUE)
@@ -104,6 +111,9 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         } else {
           stop(paste0("\nError processing ", filename, ": possibibly a corrupt GENEActive file"))
         }
+      } else if (mon == MONITOR$PARMAY_MTX) {
+        header = NULL
+        sf = GGIRread::readParmayMatrix(datafile, output = "sf")
       } else {
         stop(paste0("\nError processing ", filename, ": unrecognised .bin file"))
       }
@@ -153,8 +163,8 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
   # main script
   filename = unlist(strsplit(as.character(datafile),"/"))
   filename = filename[length(filename)]
-  monnames = c("genea", "geneactive", "actigraph", "axivity", "movisens", "verisense") #monitor names
-  fornames = c("bin", "csv", "wav", "cwa", "csv", "gt3x") #format names
+  monnames = c("genea", "geneactive", "actigraph", "axivity", "movisens", "verisense", "parmay_mtx") #monitor names
+  fornames = c("bin", "csv", "wav", "cwa", "csv", "gt3x", "BIN") #format names
   
   if (length(filename) == 0) {
     warning("no files to analyse", call. = FALSE)
@@ -197,7 +207,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
                                     rmc.scalefactor.acc = params_rawdata[["rmc.scalefactor.acc"]],
                                     desiredtz = desiredtz,
                                     configtz = configtz)
-    if (inherits(Pusercsvformat$header, "character") && Pusercsvformat$header == "no header") {      
+    if (inherits(Pusercsvformat$header, "character") && Pusercsvformat$header == "no header") {
       sf = params_rawdata[["rmc.sf"]]
     } else {
       sf = as.numeric(Pusercsvformat$header["sample_rate",1])
@@ -208,14 +218,14 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       stop("\nFile header doesn't specify sample rate. Please provide a non-zero rmc.sf value to process ", datafile)
     }
   }
-
+  
   if (mon == MONITOR$GENEACTIV && dformat == FORMAT$CSV) {
     stop(paste0("The GENEActiv csv reading functionality is deprecated in",
                 " GGIR from version 2.6-4 onwards. Please, use either",
                 " the GENEActiv bin files or try to read the csv files with",
                 " GGIR::read.myacc.csv"), call. = FALSE)
   }
-
+  
   if (dformat == FORMAT$BIN) {
     if (mon == MONITOR$GENEACTIV) {
       H = GGIRread::readGENEActiv(filename = datafile, start = 0, end = 1)$header
@@ -240,6 +250,8 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         filename = unlist(strsplit(as.character(datafile),"/"))
         filename = filename[length(filename) - 1]
       }
+    } else if (mon == MONITOR$PARMAY_MTX) {
+      H = "file does not have header" # these files have no header
     }
   } else if (dformat == FORMAT$CSV) {
     if (mon == MONITOR$ACTIGRAPH) {
@@ -275,11 +287,10 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
       sf = as.numeric(H[which(H[,1] == "Sample Rate"), 2])
     }
   }
-
-  if (sf == 0) {
-    stop(paste0("\nSample frequency not recognised in ", datafile), call. = FALSE)
+  if (is.null(sf) || sf == 0) {
+    warning(paste0("\nSample frequency not recognised in ", basename(datafile)), call. = FALSE)
   }
-
+  
   if (dformat != FORMAT$AD_HOC_CSV && is.null(sf) == FALSE) {
     H = as.matrix(H)
     if (ncol(H) == 3 && dformat == FORMAT$CSV && mon == MONITOR$ACTIGRAPH) {
@@ -330,15 +341,17 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
         mon = MONITOR$VERISENSE
       }
     }
-  } 
-
-  # detect dot or comma separator in the data file
-  op <- options(warn = -1) # turn off warnings
-  on.exit(options(op))
-  suppressWarnings(expr = {decn = g.dotorcomma(datafile, dformat, mon,
-                                               rmc.dec = params_rawdata[["rmc.dec"]])})
-  options(warn = 0) # turn on warnings
-
+  }
+  if (!is.null(sf)) {
+    # detect dot or comma separator in the data file
+    op <- options(warn = -1) # turn off warnings
+    on.exit(options(op))
+    suppressWarnings(expr = {decn = g.dotorcomma(datafile, dformat, mon,
+                                                 rmc.dec = params_rawdata[["rmc.dec"]])})
+    options(warn = 0) # turn on warnings
+  } else {
+    decn = "."
+  }
   monc = mon
   monn = ifelse(mon > 0, monnames[mon], "unknown")
   dformc = dformat

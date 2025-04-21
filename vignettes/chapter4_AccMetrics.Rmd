@@ -1,0 +1,191 @@
+---
+title: "4. From Raw Data to Acceleration Metrics"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{4. From Raw Data to Acceleration Metrics}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Why do we need to extract metrics
+
+Wearable accelerometers are widely used in health research to study physical activity, sleep, and other behaviours. Most modern accelerometers can collect and store at least 30 values per second expressed in units of gravitational acceleration (*g*). Once the data is collected, it is important to extract kinematically meaningful information from it. In data processing, summary measures to describe a signal are referred to as metrics or signal features. 
+
+If you have no knowledge about how an accelerometer works the typical approach in metric calculation is to calculate all possible statistical properties of the acceleration signal like the mean, standard deviation, entropy, and skewness. 
+However, as discussed in [chapter 1](https://wadpac.github.io/GGIR/articles/chapter1_WhatIsGGIR.html), we favour the approach were we try to use our knowledge of the sensor. Our knowledge of the sensor tells us the an acceleration signal comes with three components that need to be separated:
+
+1.	The acceleration related to the gravitational acceleration. In the absence of movement the three acceleration signals inform us about the orientation of the accelerometer relative to gravity as a proxy for posture.  
+2.	Accelerations and decelerations related to movement, which we can interpret as a proxy of muscle contractions and the energy expenditure needed for those contractions .
+3.	Measurement error and bias. For example, signal noise caused by electronical components introducing a minor variation in the acceleration signal even when the real acceleration is constant. The variation due to noise is typically small compared with the variation due to movement. Another example are the calibration errors discussed in [chapter 3](https://wadpac.github.io/GGIR/articles/chapter3_QualityAssessment.html).
+
+Finding a metric able to separate these three components will provide informative value in relation to orientation and magnitude of acceleration as proxies for the before mentioned posture and muscle contractions, respectively.
+
+## Metric aggregation per epoch
+
+Most metrics are at first calculated at the same resolution as the raw data, which reflects a tiny fraction of a second. The exact number of data points per second also known as the sampling rate can vary between studies. With a different sampling rate values are not directly comparable. However, by aggregating metric values per larger time window, known as an epoch, we can make the values more comparable. So, GGIR aggregates these values per epoch (e.g. 5 seconds). Aside from harmonising the data across studies, aggregation per epoch also has other advantages:
+
+- Evidence on the value of accelerometer data is based on epoch-level aggregates, because reference values like Oxygen consumption or sleep cannot reliably be derived at sub-second resolution.
+-	Aggregating leads to less data points which makes it a lot more practical to work with.
+
+In GGIR, the epoch length is kept constant across the GGIR parts to allow for consistent interpretation. The epoch length is set with the first value of parameter `windowsizes` (default 5 seconds) and used throughout all steps of GGIR, with the following exceptions:
+
+-	In GGIR part 2, the time spent in MVPA variables (as discussed in a [chapter 11](https://wadpac.github.io/GGIR/articles/chapter11_DescribingDataCutPoints.html)) is done with multiple epoch lengths, one for each output variable. However, per output variable the epoch length is held constant throughout the recording, GGIR never mixes epoch lengths because epoch the length affects the interpretation of its value. It is like reading an overview article about car speeds that alternates the unit of speed in every sentence (i.e., miles per hour, meters per second, km per hour, etc).
+-	In GGIR part 5, the user has the option to aggregate all epochs to 1 minute length with parameter `part5_agg2_60seconds`. For example, when using 5 second epochs in parts 1, 2, 3 and 4, it can be informative to run part 5 with 1 minute epoch length.
+
+
+## Acceleration metrics available in GGIR
+
+Below you will find a list of all metrics that GGIR can apply. Multiple metrics can be derived in the same GGIR run. All acceleration metrics are derived in GGIR function [`g.applymetrics`](https://github.com/wadpac/GGIR/blob/master/R/g.applymetrics.R). Only for Neishabouri counts GGIR relies on the R package `actifelifecounts`. Please see the code in the respective package documentation for information on the exact calculations.
+To use the metrics, add the parameters to your GGIR call, e.g.:
+
+```         
+GGIR(do.enmo = TRUE, do.mad = TRUE, do.bfen = TRUE, …)
+```
+
+| Metric name        | Description (see internal code for exact calculation)                                                                                                          | Collapse to epoch | Parameter to tell GGIR to derive this metric by setting it to TRUE or FALSE | Separation of gravity   |
+|---------------|---------------|---------------|---------------|---------------|
+| enmo               | Euclidean norm minus one with resulting negative values rounded to zero                                                                                        | Average           | do.enmo                                                                     | Magnitude               |
+| lfenmo             | Same as enmo but with low-passed filtered signals as input                                                                                                     | Average           | do.lfenmo                                                                   | Magnitude               |
+| enmoa              | Same as enmo but with rectified negative values instead of rounded to zero                                                                                     | Average           | do.enmoa                                                                    | Magnitude               |
+| en                 | Euclidean norm (vector magnitude)                                                                                                                              | Average           | do.en                                                                       | Not attempted           |
+| mad                | Absolute difference between Euclidean norm and epoch level average of the Euclidean norm                                                                       | Average           | do.mad                                                                      | Frequency               |
+| anglex             | 5-second rolling median of a 10 Hertz version of the signals followed by atan(x / (sqrt(y^2^ + z^2^))) / (pi/180)                                              | Average           | do.anglex                                                                   | Frequency               |
+| angley             | 5-second rolling median of a 10 Hertz version of the signals followed by atan(y / (sqrt(x^2^ + z^2^))) / (pi/180)                                              | Average           | do.angley                                                                   | Frequency               |
+| anglez             | 5-second rolling median of a 10 Hertz version of the signals followed by atan(z/ (sqrt(x^2^ + y^2^))) / (pi/180)                                               | Average           | do.anglez                                                                   | Frequency               |
+| roll_med_acc_x     | 5-second rolling median of a 10 Hertz version of x-axis                                                                                                        | Average           | do.roll_med_acc_x                                                           | Frequency               |
+| roll_med_acc_y     | 5-second rolling median of a 10 Hertz version of y-axis                                                                                                        | Average           | do.roll_med_acc_y                                                           | Frequency               |
+| roll_med_acc_z     | 5-second rolling median of a 10 Hertz version of z-axis                                                                                                        | Average           | do.roll_med_acc_z                                                           | Frequency               |
+| dev_roll_med_acc_x | Absolute difference between x-axis and 5-second rolling median of a 10 Hertz version of x-axis                                                                 | Average           | do.dev_roll_med_acc_x                                                       | Frequency               |
+| dev_roll_med_acc_y | Absolute difference between y-axis and 5-second rolling median of a 10 Hertz version of y-axis                                                                 | Average           | do.dev_roll_med_acc_y                                                       | Frequency               |
+| dev_roll_med_acc_z | Absolute difference between z-axis and 5-second rolling median of a 10 Hertz version of z-axis                                                                 | Average           | do.dev_roll_med_acc_z                                                       | Frequency               |
+| lfen               | Euclidean norm of low-pass filtered x, y and z axis                                                                                                            | Average           | do.lfen                                                                     | Not attempted           |
+| hfx                | High-pass filtered x-axis                                                                                                                                      | Average           | do.hfx                                                                      | Frequency               |
+| hfy                | High-pass filtered y-axis                                                                                                                                      | Average           | do.hfy                                                                      | Frequency               |
+| hfz                | High-pass filtered z-axis                                                                                                                                      | Average           | do.hfz                                                                      | Frequency               |
+| hfen               | Euclidean norm of high-pass filtered signals                                                                                                                   | Average           | do.hfen                                                                     | Frequency               |
+| hfenplus           | Euclidean norm of low-pass filtered signals minus gravity plus Euclidean norm of the high-pass filtered signals with resulting negative values rounded to zero | Average           | do.hfenplus                                                                 | Frequency and magnitude |
+| lfx                | Low-pass filtered x-axis                                                                                                                                       | Average           | do.lfx                                                                      | Not attempted           |
+| lfy                | Low-pass filtered y-axis                                                                                                                                       | Average           | do.lfy                                                                      | Not attempted           |
+| lfz                | Low-pass filtered z-axis                                                                                                                                       | Average           | do.lfz                                                                      | Not attempted           |
+| bfx                | Band-pass filtered x-axis                                                                                                                                      | Average           | do.bfx                                                                      | Frequency               |
+| bfy                | Band-pass filtered y-axis                                                                                                                                      | Average           | do.bfy                                                                      | Frequency               |
+| bfen               | Euclidean norm of the band-pass filtered signals                                                                                                               | Average           | do.bfz                                                                      | Frequency               |
+| zcx                | Zero crossing count x-axis (see notes below)                                                                                                                                    | Sum               | do.zcx                                                                      | Frequency               |
+| zcy                | Zero crossing count y-axis (see notes below)                                                                                                                                    | Sum               | do.zcy                                                                      | Frequency               |
+| zcz                | Zero crossing count z-axis (see notes below)                                                                                                                                    | Sum               | do.zcz                                                                      | Frequency               |
+| neishabouricounts  | Counts as described by [Neishabouri et al. 2022](https://doi.org/10.1038/s41598-022-16003-x) as used in the ActiLife software for raw ActiGraph data           | Sum               | do.neishabouricounts                                                        | Frequency               |
+
+### Approach to removing the gravitational signal component
+
+The table with the metrics overview above indicates the approach used to separate the gravitation component from the acceleration signal. There are two approaches to design the metrics:
+
+-   Magnitude, where the metric makes an assumption about the magnitude of the gravitational acceleration component.
+-   Frequency, where the metric makes an assumption about the frequency content of the gravitational acceleration component.
+
+Both assumptions are known for not being always true under all conditions, which is why no acceleration metric is perfect.
+
+### Handling high frequency components in the signal
+
+Some argue that high frequency components in the signal should be treated as noise and be removed. However, they are more likely to represent the harmonics of low frequency movements and are thus part of the description of movement. For a more elaborate reflection on this, please see [this blog post](https://www.accelting.com/updates/high-frequencies-in-an-acceleration-signal/).
+
+All metrics, listed above, that have the letters LF or BF in their name attempt to suppress the high frequency content of the signal. So, as a GGIR user you can decide whether you prefer to filter the higher frequencies or not.
+
+### Why GGIR uses ENMO as a default.
+
+Only one metric can be the default. Acceleration metric ENMO (Euclidean Norm Minus One with negative values rounded to zero) has been the default metric since GGIR was created. In 2013, we investigated different ways of summarising the raw acceleration data ([van Hees et al. PLoS ONE 2013](https://doi.org/10.1371/journal.pone.0061691)).
+In short, different metrics exist and there is very little literature to support the superiority of any metric at the time. As long as different studies use different metrics, their findings will not be comparable. Therefore, the choice for metric ENMO has been merely pragmatic. GGIR uses ENMO as default because:
+
+1\.
+ENMO has demonstrated value in describing variance in daily energy expenditure, is correlated with questionnaire data, and able to describe patterns in physical activity.
+
+2\.
+ENMO is easy to describe mathematically and, therefore, improves reproducibility across studies and software tools.
+
+3\.
+ENMO attempts to quantify the acceleration in universal units and does not collapse the signal to an abstract scale.
+
+4\.
+The 2013 paper showed that when ENMO is used in combination with auto-calibration, it has similar validity to filter-based metrics like HFEN and BFEN, which are conceptually similar to metrics proposed later such as [MIMSunit](https://doi.org/10.1123/jmpb.2018-0068), [MAD](https://doi.org/10.1186/s13102-015-0010-0), [AI0](https://doi.org/10.1371/journal.pone.0160644).
+
+5\.
+Studies who have criticised ENMO consistently failed to apply auto-calibration, or attempted to apply auto-calibration in a lab setting, ignoring the fact that auto-calibration is not designed for short lab settings. It needs free-living data to work properly. Further, studies are often not clear about how the problematic zero imputation during the idle sleep mode in ActiGraph devices is dealt with.
+
+
+### Notes on implementation of zero crossing counts
+
+The implementation of the zero-crossing count in GGIR is an attempt to imitate the zero-crossed counts previously described by Sadeh, Cole, Kripke and colleagues in the late 1980s and 1990s. However, it cannot be guaranteed to be an exact copy of the original approach, which used the AMA-32 Motionlogger Actigraph by Ambulatory-monitoring Inc. ("AMI"). 
+
+No complete publicly accessible description of that approach exists.
+
+#### Missing information
+
+The missing information about the calculation are:
+
+1. Sadeh specified that calculations were done based on data from the Y-axis but the direction of the Y-axis was not clarified. Therefore, it is unclear whether the Y-axis at that time corresponded to the Y-axis of modern sensors.
+2. A frequency filter was used, but properties of the filter are missing.
+3. Sensitivity of the sensor: We are now guessing that the Motionlogger had a sensitivity of 0.01 *g* but without direct proof.
+4. Relationship between piezo-electric acceleration signal used at that time and modern piezo-capacitive acceleration signals.
+
+From personal correspondence with AMI, we learnt that the technique has been kept proprietary and has never been shared with or sold to other actigraphy manufacturers (time of correspondence October 2021). Based on the correspondence with AMI, we can conclude that even Actiwatch, ActiGraph, and other manufacturers, who have facilitated the use of 1990s sleep classification algorithms, cannot guarantee exact replication of the original studies.
+
+#### Our guess on the missing information
+
+Following the above challenges, the implementation of the zero-crossing count in GGIR is based on an educated guess where we used all information we could find in the literature and product documentation. In relation to the missing information listed above:
+
+1. We allow you to specify which axis you want to use with parameter `Sadeh_axis` but choose as default the second axis.
+2. We use a 0.25 - 3 Hertz band-pass filter with order 2, which you can modify with parameters `zc.lb`, `zc.hb`, and `zc.order`.
+3. We use a 0.01 *g* stop band, which you can change with parameter `zc.sb`.
+4. We assume that the band-passed signal is comparable in the absence of evidence on the contrary.
+
+In our own evaluation, the zero-crossing count value range looks plausible when compared to the value range in the original publications.
+
+As a note to ActiGraph users: If you decide to compare GGIR Cole-Kripke estimates with ActiLife's Cole Kripke estimates, be aware that ActiLife may have adopted a different Cole-Kripke algorithm as the original publication presented four algorithms. This is a potential source of variation. Further, ActiLife may have used different educated guesses about how Motionlogger counts are calculated.
+
+
+## Embedding your own metrics
+
+Some GGIR users may like to use metrics not covered by GGIR. To facilitate this, we allow for external function embedding as discussed in the vignette [Embedding external functions in GGIR](https://cran.r-project.org/package=GGIR/vignettes/ExternalFunction.html). In fact, this allows you to include entire algorithms such as the [step detection](https://github.com/ShimmerEngineering/Verisense-Toolbox/tree/master/Verisense_step_algorithm) or a new sleep classification algorithm that you would like to test inside GGIR.
+
+## Metrics from externally derived epoch-level data.
+
+In [chapter 2](https://wadpac.github.io/GGIR/articles/chapter2_Pipeline.html#externally-derived-epoch-level-data) we discussed the option to work with externally derived epoch-level data.
+
+By definition GGIR does not calculate the summary metrics in these data. Further, it is often unknown how exactly these metrics are calculated. To refer to these metrics GGIR uses the terminology as listed below:
+
+Metric name | Description
+------------| -------------
+ExtAct      | Externally derived indicator of activity. Typically counts, but for Fitbit these are estimated calories and for SenseWear these are estimated MET values.
+ExtSleep    | Externally derived classification of sleep, used as if it was derived from an external function for sleep detection.
+ExtStep    | Externally derived step count, used as if it was derived from an external function for event detection.
+ExtHeartRate    | Externally derived measure of hear rate in beats per minute. Currently used as indicator of activity, which is not ideal. Please reach out if you want to help improve the embedding of heart rate analysis in GGIR.
+
+## Related output
+
+-   In **GGIR part 2**, output is derived for each acceleration metric derived in GGIR part 1 except for metrics anglex, angley, and anglez.
+-   In **GGIR part 4**, output is derived from only the metrics used for the sleep detection, typically angle or count (Neishabouri counts or zero-crossing count).
+-   In **GGIR part 5**, output is derived for only the single metric specified with parameter `acc.metric`. The reason for this constraint is that part 5 produces many variables and creating all of them for multiple metrics would be computationally expensive and would substantially increase the complexity of the underlying code.
+
+## References
+
+We have compiled a list of related articles you may find useful:
+
+-   [Van Hees et al. 2011](https://doi.org/10.1371/journal.pone.0022922) Estimation of Daily Energy Expenditure in Pregnant and Non-Pregnant Women Using a Wrist-Worn Tri-Axial Accelerometer.
+
+-   [van Hees et al. 2013](https://doi.org/10.1371/journal.pone.0061691) Separating Movement and Gravity Components in an Acceleration Signal and Implications for the Assessment of Human Daily Physical Activity.
+
+-   [Migueles et al. 2019](https://doi.org/10.1038/s41598-019-54267-y) Comparability of accelerometer signal aggregation metrics across placements and dominant wrist cut points for the assessment of physical activity in adults.
+
+-   [Aittasalo et al. 2015](https://doi.org/10.1186/s13102-015-0010-0) Mean amplitude deviation calculated from raw acceleration data: a novel method for classifying the intensity of adolescents’ physical activity irrespective of accelerometer brand.
+
+-   [Neishabouri et al. 2022](https://doi.org/10.1038/s41598-022-16003-x) Quantification of acceleration as activity counts in ActiGraph.
+
+-   [Karas et al. 2022](https://mhealth.jmir.org/2022/7/e38077/) Comparison of accelerometry-based measures of physical activity: retrospective observational data analysis study.
+
+-   [van Hees 2019](https://medium.com/@vincentvanhees/ten-misunderstandings-surrounding-information-extraction-from-wearable-accelerometer-data-a4f767a865b6) Ten Misunderstandings surrounding Information Extraction from Wearable Accelerometer data.
