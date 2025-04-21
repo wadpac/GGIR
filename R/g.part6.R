@@ -507,7 +507,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         }
         #------------------------------------------------------------
         # Sleep Regularity Index
-        if (!is.null(params_247[["SRI_WASOmin"]])) {
+        if (!is.null(params_247[["SRI2_WASOmin"]])) {
           sleepnap_classid = grep(pattern = "spt_sleep|_nap", x = Lnames) - 1
           ts$sleepnap = 0
           ts$sleepnap[which(ts$class_id %in% sleepnap_classid)] = 1
@@ -516,7 +516,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           waso = rep(0, nrow(ts))
           waso[which(ts$class_id %in% waso_classid)] = 1
           rlew = rle(waso)
-          shortwaso = which(rlew$values == 1 & (rlew$lengths / (60/epochSize)) <= params_247[["SRI_WASOmin"]])
+          shortwaso = which(rlew$values == 1 & (rlew$lengths / (60/epochSize)) <= params_247[["SRI2_WASOmin"]])
           if (length(shortwaso) > 0) {
             rlew$values[shortwaso] = 2
             waso = rep(rlew$values, rlew$lengths)
@@ -535,7 +535,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           } else {
             summary[fi:(fi + 1)] = NA
           }
-          s_names[fi:(fi + 1)] = c("SRI", "SRI_Ndaypairs")
+          s_names[fi:(fi + 1)] = c("SleepRegularityIndex2", "SleepRegularityIndex2_Ndaypairs")
           fi = fi + 2
           rm(rlew, shortwaso, waso)
         }

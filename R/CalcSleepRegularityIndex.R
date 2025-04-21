@@ -1,5 +1,7 @@
-CalcSleepRegularityIndex = function(data = c(), epochsize = c(), desiredtz= c()) {
-  if (inherits(data$time[1], "character")) {
+CalcSleepRegularityIndex = function(data = c(), epochsize = c(), desiredtz= c(),
+                                    SRI1_smoothing_wsize_hrs = NULL,
+                                    SRI1_smoothing_frac = NULL) {
+  if (inherits(data$time[1], "character") || inherits(data$time[1], "factor")) {
     data$time = iso8601chartime2POSIX(data$time, tz = desiredtz)
   }
   # ignore columns that this function does not need
@@ -8,6 +10,11 @@ CalcSleepRegularityIndex = function(data = c(), epochsize = c(), desiredtz= c())
   if (length(sleepcol) != 1) {
     # part 3
     sleepcol = which(colnames(data) %in% c("time", "invalid", "night") == FALSE)[1]
+    # Optionally smooth sleep/wake classification
+    if (!is.null(SRI1_smoothing_wsize_hrs) && !is.null(SRI1_smoothing_frac)) {
+      data[,sleepcol] = zoo::rollmean(x = data[,sleepcol], k = (SRI1_smoothing_wsize_hrs * 3600) / epochsize, fill = 0)
+      data[, sleepcol] = ifelse(data[,sleepcol] >= SRI1_smoothing_frac, yes = 1, no = 0)
+    }
     invalid_epochs = which(data$invalid == 1)
   } else {
     # part 6

@@ -99,5 +99,7 @@ Everything you need to type in your R script is `highlighted like this`.
 
 This documentation is not intended as an academic review: We only cite publications to clarify the origin of algorithms and we only discuss what is part of GGIR.
 
-Finally, the first version of this documentation was sponsored by Accelting with the commitment that this will remain available as free open-access documentation.
+All documentation text has been written in the 'we'-form for even though some parts  have been written by just one person (Vincent). Switching between 'I' and 'we' for each section depending on who has been involved in the writing would seem unpractical.
+
+Finally, the first version of this documentation was sponsored by [Accelting](https://www.accelting.com/) with the commitment that this will remain available as free open-access documentation.
 However, open documentation is best maintained as a community: We would be grateful for your help to improve the documentation either by giving feedback (e.g. via v.vanhees at accelting dot com), pull requests (for those who know how to do it), or financially to sponsor time investments. For example, it would be great if we had funding for creating high quality complementary info graphics and videos.
