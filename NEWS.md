@@ -1,6 +1,6 @@
 # CHANGES IN GGIR VERSION 3.2-6
 
-- Part 1: Split recordings now better handles partial overlap with reference time windows.
+- Part 1: Recently added functionality to split recordings now better handles partial overlap with reference time windows.
 
 # CHANGES IN GGIR VERSION 3.2-5
 
