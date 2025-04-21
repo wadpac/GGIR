@@ -252,7 +252,6 @@ The csv. files contain the variables as shown below.
 | error_onset | Difference between sleeponset and guider_onset (this variable is only available in the full report as stored in the QC folder) |
 | error_wake | Difference between wakeup and guider_wake (this variable is only available in the full report as stored in the QC folder) |
 | SleepRegularityIndex1 | The Sleep Regularity Index inspired by [Phillips et al. 2017](https://www.nature.com/articles/s41598-017-03171-4), but calculated per day-pair to enable user to study patterns across days, and calculated based on sustained inactivity bouts. See [Chapter 10](https://wadpac.github.io/GGIR/articles/chapter10_SleepAnalysis.html#sleep-regularity-index-sri) for details. |
-| SleepRegularityIndex2 | The Sleep Regularity Index inspired by [Phillips et al. 2017](https://www.nature.com/articles/s41598-017-03171-4), but calculated per day-pair to enable user to study patterns across days, and calculated based on classified naps and sleep. See [Chapter 10](https://wadpac.github.io/GGIR/articles/chapter10_SleepAnalysis.html#sleep-regularity-index-sri) for details. |
 | SriFractionValid | Fraction of the 24 hour period that was valid in both current as well as in matching timestamps for the next calendar day. See GGIR function manual for details |
 | nonwear_perc_spt | Non-wear percentage during the spt hours of this day. This is a copy of the nonwear_perc_spt calculated in `part 5`, only included in part 4 reports if part 5 has been run with timewindow = WW |
 
@@ -453,4 +452,6 @@ These variables names are consistent with the variable names [as discussed for G
 | `FRAG_` | Fragmentation variables, as also [discussed for part 5 output](https://wadpac.github.io/GGIR/articles/GGIRoutput.html#fragmentation). Only difference now is that fragmentation variables name ending with `_day` are specific to the waking hours of a day, while variable names ending iwht `_spt` are specific to the SPT window.  |
 | SSP | See [section on SSP in chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html#self-similarity-paramerter-ssp) |
 | ABI | See [section on ABI in chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html#activity-balance-index-abi) |
+| SleepRegularityIndex2 | The Sleep Regularity Index inspired by [Phillips et al. 2017](https://www.nature.com/articles/s41598-017-03171-4), but calculated per day-pair to enable user to study patterns across days, and calculated based on classified naps and sleep. See [Chapter 10](https://wadpac.github.io/GGIR/articles/chapter10_SleepAnalysis.html#sleep-regularity-index-sri) for details. |
+| SleepRegularityIndex2_Ndaypairs | Number of day pairs used for calculating SleepRegularityIndex2. |
 
