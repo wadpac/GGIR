@@ -88,22 +88,20 @@ Among these we assume that most are intuitive:
 
 ### Sleep Regularity Index (SRI)
 
-This is a measure of sleep regularity between successive days, as first described by Phillips and colleagues (2017). The SRI can have a value between -100 and 100, where 100 reflects perfect regularity (identical days), 0 reflects random pattern, and -100 reflects perfect reversed regularity.
-
 
 #### Two different calculations (SRI1 and SRI2)
 
-In GGIR, we SRI calculated in two different ways:
+In GGIR, we offer two different calculations of SRI:
 
 **SRI1 - Calculated in GGIR part 3 as stored in the part 4 csv output:**
 
-This SRI is calculated based on sustained inactivity bouts, optionally smoothed with a rolling average window, where window size is specified with parameter `SRI1_smoothing_wsize_hrs`, and the fraction of time for that needs to be sustained inactivity bout with parameter `SRI1_smoothing_frac`. For example, if set to 1 and 0.8, we apply a 1 hour rolling window where each window with 80% or more sustained inactivity bout is classified as rest, while all other windows are classified as non-rest.
+SRI1 is calculated based on sustained inactivity bouts, optionally smoothed with a rolling average window, where window size is specified with parameter `SRI1_smoothing_wsize_hrs`, and the fraction of time for that needs to be sustained inactivity bout with parameter `SRI1_smoothing_frac`. For example, if set to 1 and 0.8, we apply a 1 hour rolling window where each window with 80% or more sustained inactivity bout is classified as rest, while all other windows are classified as non-rest.
 
-The advantage of this calculation is that it does not rely on assumptions about accurate detection of sleep and naps. As such, SRI1 with default settings may need to be interpreted as a rest regularity index. However, by using the smoothing parameters, the user may achieve an approximation of sleep regularity.
+The advantage of this calculation is that it does not rely on assumptions about accurate detection of sleep and naps. As such, SRI1 with default settings may need to be interpreted as a rest regularity index. However, by using the smoothing parameters as discussed above, the user may achieve an approximation of sleep regularity.
 
 **SRI2 - Calculated in GGIR part 6 as stored in the part 6 csv output:**
 
-This SRI is calculated based on sleep as classified with GGIR parts 3 and 4, and daytime naps as classified in GGIR part 5. The nap detection functionality is still subject to ongoing investigation and little is known about its accuracy. Once this functionality has matured we will document it more elaborately. However, if you are confident that GGIR classifies both sleep and naps accurately then SRI2 would be a better indicator of sleep regularity compared with SRI1.
+SRI2 is calculated based on the sleep as classified with GGIR parts 4, and daytime naps as (experimentally) classified in GGIR part 5. The nap detection functionality is still subject to ongoing investigation and little is known about its accuracy. Once the nap detection functionality has matured we will document it more elaborately. However, if you are confident that GGIR classifies both sleep and naps accurately after visual inspection then SRI2 would be superior over SRI1.
 
 SRI2 comes with parameter `SRI2_WASOmin` which allows us to define the minimum WASO length to be considered, any WASO shorter than this will be ignored and treated as sleep.
 
