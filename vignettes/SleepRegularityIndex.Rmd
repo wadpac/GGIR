@@ -1,0 +1,80 @@
+---
+title: "Sleep Regularity Index"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sleep Regularity Index}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+## What is SRI?
+
+The Sleep Regularity Index (SRI) has been proposed by Phillips and colleagues ([2017](https://doi.org/10.1038/s41598-017-03171-4)) and further developed by Windred and collegues ([2021](https://doi.org/10.1093/sleep/zsab254)). The SRI can have a value between -100 and 100, where 100 reflects perfect regularity (identical days), 0 reflects random pattern, and -100 reflects perfect reversed regularity in sleep.
+
+## Multiple implementations
+
+GGIR offers two modified implementations of SRI, which we refer to as SRI1 and SRI2. In this Annex we discuss each aspect of their calculation and why they differ from the original.
+
+Windred et al. 2021 shared an [R package](https://github.com/dpwindred/sleepreg) to reproduce their SRI calculation. Unfortunately, this R package does (did?) not work with more recent GGIR versions. I (vincent) have made an effort to address those via https://github.com/dpwindred/sleepreg/pull/10. 
+It is a pull request, which means that the sleepreg maintainers can accept it as an upgrade to the sleepreg code. In the mean time you can use this upgrade by installing sleepreg via: `remotes::install_github("vincentvanhees/sleepreg", ref = "upgradeGGIRversion")`.
+
+## Regularity of what?
+
+### SRI as derived with github.com/dpwindred/sleepreg
+
+'Sleep' is defined as a combination of:
+
+- GGIR detected sleep period time window minus WASO episodes that lasts at least 30 minutes.
+- Any 30 minute interval outside the GGIR_detect sleep period time window with 95% or more sustained inactivity bout. This intervals are assumed to equal naps.
+
+### SRI1 as stored in GGIR part 4**
+
+'Sleep' is defined as all [sustained inactivity bouts](https://wadpac.github.io/GGIR/articles/chapter8_SleepFundamentalsSibs.html), which can optionally be smoothed with a rolling average window. The rolling window size in hours is specified with parameter `SRI1_smoothing_wsize_hrs`, and the fraction of time that is needed to be sustained inactivity bout is set with parameter `SRI1_smoothing_frac`.
+
+The advantage of this calculation is that it does not rely on assumptions about accurate detection of sleep and naps by GGIR. As such, SRI1 with default settings may need to be interpreted as a rest regularity index. However, by using the smoothing parameters as discussed above, the user may like to interpret results as an approximation of sleep regularity. As such the method is a descriptive method without hard claims about accurate detection of either sleep or naps.
+
+SRI1 is calculated in GGIR part 3 and stored in the csv-output of GGIR part 4.
+
+### SRI2 as optionally stored in GGIR part 6:**
+
+'Sleep' is defined as sleep classified with GGIR part 4, and daytime naps as (experimentally) classified in GGIR part 5. The nap detection functionality is still subject to ongoing investigation and little is known about its accuracy. Once the nap detection functionality has matured we will document it more elaborately. If you are confident that GGIR classifies both sleep and naps accurately, e.g. after inspecting the visual reports, then SRI2 would be superior over SRI1 as measure of sleep regularity.
+
+SRI2 comes with parameter `SRI2_WASOmin` which allows us to define the minimum WASO length to be considered, any WASO shorter than this will be ignored and treated as sleep. In part 6, SRI is only derived when parameter `SRI2_WASOmin` is specified. If no nap parameters
+are set the resulting SRI estimate will only reflect the main SPT window in the day.
+
+
+## Time window for SRI calculation
+
+### SRI as derived with github.com/dpwindred/sleepreg
+
+In the initial publication by Phillips 2017 it was proposed to only calculate SRI based on seven, or a multitude of seven, consecutive days of data without missing values. This to avoid a possible role of imbalanced data to the final estimate. However, this renders many datasets unsuitable for analysis and leads to a painful loss in sample size and statistical power. Luckily this was improved on by Windred 2021, which allows for gaps in data. Nonetheless, SRI is still calculated across all valid days in the recording.
+
+### SRI1 and SRI2 in GGIR
+
+GGIR stores per day-pair the SRI value and the fraction of the 30 second epoch-pairs between both days that are valid. This fraction can be found in the GGIR part 4 output under the variable name `SriFractionValid`. By default, day-pairs are excluded if this fraction is below 0.66. For those familiar with GGIR this threshold is coupled with the 16-hour default value for parameter `includenightcrit`. For example, if you set parameter `includenightcrit = 12`, the fraction threshold will be: `12 / 24 = 0.5`. Note that the SRI calculation accounts for the missing values in the denominator. As a result, the SRI value interpretation remains unchanged. 
+
+The 30 second epoch setting is automatically applied, even if the rest of the GGIR process works with a different epoch duration. 
+
+A (minor) benefits of the approach taken in GGIR is that it enables the user to study the day-pair to day-pair variation in SRI, and the role of day-pair inclusion criteria. Further, the access to SRI at day-pair level makes it possible to account for an imbalanced datasets via multilevel regression analysis applied to the output of GGIR, with day-pair as one of the model levels.
+
+## Handling nonwear
+
+### SRI as derived with github.com/dpwindred/sleepreg
+
+Time points with nonwear are ignored. Entire days are ignored when there are more than 6 hours of nonwear.
+
+### SRI1 and SRI2 in GGIR
+
+Timepoints with nonwear are ignored. Entire days are ignored when there are more than 8 hours of nonwear and day pairs are ignored if they have less than 66.6 % matching valid data points.
+Both controlled via parameter `includenightcrit` which by default is 16: 24 - 16 is 8 and 16 is 66.6% of 24.
+
+## Where to find SRI in the GGIR output?
+
+### SRI1
+
+The day-pair level estimates are stored as variable `SleepRegularityIndex1` in the GGIR part 4 .csv-report on sleep. Further, GGIR also stores the person-level aggregates such as: the plain average over all valid days, the average of all valid weekend days, and the average of all valid week days. No GGIR input arguments are needed to invoke the SRI calculation in part 3. The calculation is automatically performed after updating GGIR and processing your data. 
+
+### SRI2
+
+SRI2 estimates are stored as variable `SleepRegularityIndex2` in the GGIR part 6 output.
