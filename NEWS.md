@@ -2,6 +2,8 @@
 
 - Part 1: Recently added functionality to split recordings now better handles partial overlap with reference time windows.
 
+- Part 5: Fix bug in defining MM windows when parameter excludefirstlast is set to non-default TRUE position. #1292
+
 # CHANGES IN GGIR VERSION 3.2-5
 
 This release primarily includes fixes to minor bugs observed after more elaborate testing of the features add in previous releases 3.2-3 and 3.2-4.
