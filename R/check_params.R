@@ -35,7 +35,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "sleepefficiency.metric", "possible_nap_edge_acc", "HDCZA_threshold",
                        "possible_nap_gap", "oakley_threshold",
                        "nap_markerbutton_method",
-                       "nap_markerbutton_max_distance")
+                       "nap_markerbutton_max_distance",
+                       "SRI1_smoothing_wsize_hrs",
+                       "SRI1_smoothing_frac")
     boolean_params = c("ignorenonwear", "HASPT.ignore.invalid",
                        "relyonguider", "sleeplogidnum",
                        "impute_marker_button", "consider_marker_button",
@@ -88,7 +90,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     numeric_params = c("qlevels", "ilevels", "IVIS_windowsize_minutes", "IVIS_epochsize_seconds",
                        "IVIS.activity.metric", "IVIS_acc_threshold",
                        "qM5L5", "MX.ig.min.dur", "M5L5res", "winhr", "LUXthresholds", "LUX_cal_constant",
-                       "LUX_cal_exponent", "LUX_day_segments", "L5M5window", "clevels")
+                       "LUX_cal_exponent", "LUX_day_segments", "L5M5window", "clevels", "SRI2_WASOmin")
     boolean_params = c("cosinor", "part6CR", "part6HCA", "part6DFA")
     character_params = c("qwindow_dateformat", "part6Window")
     check_class("247", params = params_247, parnames = numeric_params, parclass = "numeric")

@@ -91,7 +91,9 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
           if (nrow(SLE$output) > 2*24*(3600/M$windowsizes[1])) { # only calculate SRI if there are at least two days of data
             SleepRegularityIndex = CalcSleepRegularityIndex(data = SLE$output,
                                                             epochsize = M$windowsizes[1],
-                                                            desiredtz = params_general[["desiredtz"]])
+                                                            desiredtz = params_general[["desiredtz"]],
+                                                            SRI1_smoothing_wsize_hrs = params_sleep[["SRI1_smoothing_wsize_hrs"]],
+                                                            SRI1_smoothing_frac = params_sleep[["SRI1_smoothing_frac"]])
           } else {
             SleepRegularityIndex = NA
           }

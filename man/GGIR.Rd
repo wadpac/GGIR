@@ -1436,6 +1436,24 @@ GGIR(mode = 1:5,
         any marker button between 12:00:00 and 13:30:00 will be considered valid 
         for the end of the nap.
       }
+      
+      \item{SRI1_smoothing_wsize_hrs}{
+        Numeric (default = NULL)
+        As used for Sleep Regularity Calculation in \link{g.part3}.
+        If \code{SRI1_smoothing_wsize_hrs} and \code{SRI1_smoothing_frac} are both
+        specified, this is the windowsize for smoothing of detected sustained inactivity bouts
+        before calculating SRI1. For example, if set to 1 and 0.8, we apply a rolling 
+        1 hour window where each window with 80\% or more sleep is classificed as sleep.
+      }
+       
+      \item{SRI1_smoothing_frac}{
+        Numeric (default = NULL)
+        As used for Sleep Regularity Calculation in \link{g.part3}.
+        If \code{SRI1_smoothing_wsize_hrs} and \code{SRI1_smoothing_frac} are both
+        specified, this is the fraction used to smooth detected sustained inactivity bouts
+        before calculating SRI1. For example, if set to 1 and 0.8, we apply a rolling 
+        1 hour window where each window with 80\% or more sleep is classificed as sleep.
+      }
     }
   }
 
@@ -1610,6 +1628,10 @@ GGIR(mode = 1:5,
       \item{part6DFA}{
         Boolean (default = FALSE) to indicate whether to perform Detrended Fluctuation
         Analysis. Turned off by default because it can be time consuming.
+      }
+      \item{SRI2_WASOmin}{
+        Numeric (default = 30)
+        Minimum WASO duration in minutes as used for Sleep Regularity Calculation in \link{g.part6}.
       }
     }
   }

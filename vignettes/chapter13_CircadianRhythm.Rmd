@@ -84,6 +84,11 @@ The self-similarity paramter (SSP) is also known as scaling exponent or alpha. S
 
 The Activity Balance Index (ABI) was introduced by [Danilevicz et al. 2024](https://doi.org/10.1186/s12874-024-02255-w) and is a transformation of SSP. ABI measures how the activity over the observed period is balanced, higher values reflect a more balanced pattern of activity. ABI is a real number between zero and one and calculated from the acceleration metric time series directly without the need for cut-points.
 
+### Sleep Regularity Index (SRI)
+
+A discussion of the Sleep Regularity Index can be found in
+<https://wadpac.github.io/GGIR/articles/SleepRegularityIndex.html>
+
 ## Related output
 
 -   MXLX are derived per 24 hours (part 2) and available per day in part2_daysummary.csv, and summarised per recording in part2_summary.csv.
