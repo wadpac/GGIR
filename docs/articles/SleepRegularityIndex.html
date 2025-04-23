@@ -127,20 +127,19 @@ reflects perfect reversed regularity in sleep.</p>
 <div class="section level2">
 <h2 id="multiple-implementations">Multiple implementations<a class="anchor" aria-label="anchor" href="#multiple-implementations"></a>
 </h2>
-<p>R package ‘sleepreg’ was tailored to GGIR 2.0-0 available at the time
-and does not work with more recent GGIR versions. GGIR 2.0-0 is known to
-come with various bugs and is best not used. Therefore, an effort has
-been made to address this via a so called software pull request, which
-you can find <a href="https://github.com/dpwindred/sleepreg/pull/10" class="external-link">here</a>. Once the
-‘sleepreg’ maintainers accept this pull request, it will upgrade the
-sleepreg package code to work with both historical and new version of
-GGIR. In the mean time you can use the upgrade by installing the
-sleepreg package via R command:
+<p>R package ‘sleepreg’ was tailored to GGIR 2.0-0 as available at the
+time and does not work with more recent GGIR versions. We now know that
+GGIR 2.0-0 came with various bugs and is best not used. Therefore, an
+effort has been made to address this. Once the ‘sleepreg’ maintainers
+accept the <a href="https://github.com/dpwindred/sleepreg/pull/10" class="external-link">proposed
+changes</a>, it will upgrade the sleepreg package code to work with both
+historical and later GGIR versions. In the mean time you can use the
+proposed upgrade to package ‘sleepreg’ by installing it via R command:
 <code>remotes::install_github("vincentvanhees/sleepreg", ref = "upgradeGGIRversion")</code>.</p>
-<p>Complementary to this effort GGIR offers two modified implementations
-of SRI, which we refer to as SRI1 and SRI2. In this Annex we discuss
-each aspect of their calculation and how they differ from the original
-SRI calculation in ‘sleepreg’.</p>
+<p>Complementary to this effort, GGIR offers two modified
+implementations of SRI, which we refer to as SRI1 and SRI2. In this
+Annex we discuss each aspect of their calculation and how they differ
+from the original SRI calculation in ‘sleepreg’.</p>
 <p>However, first we would like to list all aspects that all these
 implementations have in common:</p>
 <ul>
