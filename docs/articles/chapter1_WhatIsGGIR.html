@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,6 +61,7 @@
     <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
     <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
     <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
+    <li><a class="dropdown-item" href="../articles/SleepRegularityIndex.html">Sleep Regularity Index</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
@@ -245,9 +246,9 @@ or skills to write their own custom data processing software. GGIR aims
 to be flexible to handle all these different scenarios and at the same
 time remain accessible to those who lack time or skills to write
 software. Further, we hope GGIR is of use to those without the financial
-resources for commercial software, although we would like stress that we
-are not a charity and depend on paid and unpaid contributions from the
-community.</p>
+resources for commercial software, although we would like to stress that
+we are not a charity and depend on paid and unpaid contributions from
+the community.</p>
 </div>
 <div class="section level3">
 <h3 id="algorithm-design">Algorithm design<a class="anchor" aria-label="anchor" href="#algorithm-design"></a>
@@ -255,10 +256,10 @@ community.</p>
 <p>The philosophy behind the algorithms as implemented in GGIR is that
 biomechanical explainable (heuristic or knowledge driven) approaches to
 measurement in science are preferable over purely data-driven
-approaches. Please note the specification to the scientific context
-rather than measurement in general, e.g. consumer wearables. Only when a
-knowledge driven approach is unrealistic we can consider a data-driven
-approach.</p>
+approaches. Please note the phrasing of the previous sentence specific
+to the scientific context rather than measurement in general,
+e.g. consumer wearables. Only when a knowledge driven approach is
+unrealistic we consider a data-driven approach.</p>
 <p>The idea of a knowledge driven approach is that in order to advance
 insight, it is essential to have an understanding of the causal relation
 between the phenomena being observed (e.g. acceleration of one body
@@ -280,7 +281,7 @@ not mean that we actually measure those activity types or energy
 expenditure levels. Ignoring this distinction can easily lead to
 overestimating the value of an accelerometer for measuring those
 constructs (activity type, etc) and to underestimate the value of an
-accelerometer of capturing acceleration as a useful measure of
+accelerometer for capturing acceleration as a useful measure of
 behaviour, if appropriately used and interpreted.</p>
 <p>A second problem with data-driven methods is that they heavily depend
 on the availability of reliable criterion methods.</p>
@@ -335,15 +336,18 @@ disappoint you. Learning to use GGIR requires some time investment.</p>
 <p>This documentation is not intended as an academic review: We only
 cite publications to clarify the origin of algorithms and we only
 discuss what is part of GGIR.</p>
-<p>Finally, the first version of this documentation was sponsored by
-Accelting with the commitment that this will remain available as free
-open-access documentation. However, open documentation is best
-maintained as a community: We would be grateful for your help to improve
-the documentation either by giving feedback (e.g. via v.vanhees at
-accelting dot com), pull requests (for those who know how to do it), or
-financially to sponsor time investments. For example, it would be great
-if we had funding for creating high quality complementary info graphics
-and videos.</p>
+<p>All documentation text has been written in the ‘we’-form even though
+many parts have been written by just one person (Vincent). However,
+switching between ‘I’ and ‘we’ for each section depending on whether
+others have helped seems unpractical.</p>
+<p>Finally, the first version of this documentation was sponsored by <a href="https://www.accelting.com/" class="external-link">Accelting</a> with the commitment that
+this will remain available as free open-access documentation. However,
+open documentation is best maintained as a community: We would be
+grateful for your help to improve the documentation either by giving
+feedback (e.g. via v.vanhees at accelting dot com), pull requests (for
+those who know how to do it), or financially to sponsor time
+investments. For example, it would be great if we had funding for
+creating high quality complementary info graphics and videos.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

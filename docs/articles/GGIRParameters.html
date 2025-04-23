@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,6 +61,7 @@
     <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
     <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
     <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
+    <li><a class="dropdown-item" href="../articles/SleepRegularityIndex.html">Sleep Regularity Index</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
@@ -886,6 +887,16 @@ arguments.</p>
 <td>params_sleep</td>
 </tr>
 <tr class="even">
+<td>SRI1_smoothing_wsize_hrs</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="odd">
+<td>SRI1_smoothing_frac</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="even">
 <td>loglocation</td>
 <td>4, 5</td>
 <td>params_sleep</td>
@@ -1066,101 +1077,106 @@ arguments.</p>
 <td>params_247</td>
 </tr>
 <tr class="even">
+<td>SRI2_WASOmin</td>
+<td>5</td>
+<td>params_247</td>
+</tr>
+<tr class="odd">
 <td>timewindow</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>save_ms5raw_format</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>save_ms5raw_without_invalid</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>do.sibreport</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>possible_nap_window</td>
 <td>5</td>
 <td>params_sleep</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>possible_nap_dur</td>
 <td>5</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>possible_nap_gap</td>
 <td>5</td>
 <td>params_sleep</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>nap_markerbutton_method</td>
 <td>5</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>nap_markerbutton_max_distance</td>
 <td>5</td>
 <td>params_sleep</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>includecrit.part6</td>
 <td>6</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>part6_threshold_combi</td>
 <td>6</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>part6CR</td>
 <td>6</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>part6HCA</td>
 <td>6</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>part6Window</td>
 <td>6</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>part6DFA</td>
 <td>6</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>require_complete_lastnight_part5</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>visualreport_without_invalid</td>
 <td>visualreport</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>dofirstpage</td>
 <td>visualreport</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>visualreport</td>
 <td>visualreport</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>viewingwindow</td>
 <td>visualreport</td>
 <td>params_output</td>
@@ -2624,6 +2640,26 @@ and 12:00:00 will be considered valid for the start of the nap and any
 marker button between 12:00:00 and 13:30:00 will be considered valid for
 the end of the nap.</p>
 </div>
+<div class="section level4">
+<h4 class="unnumbered" id="sri1_smoothing_wsize_hrs">SRI1_smoothing_wsize_hrs<a class="anchor" aria-label="anchor" href="#sri1_smoothing_wsize_hrs"></a>
+</h4>
+<p>Numeric (default = NULL) As used for Sleep Regularity Calculation in
+g.part3. If SRI1_smoothing_wsize_hrs and SRI1_smoothing_frac are both
+specified, this is the windowsize for smoothing of detected sustained
+inactivity bouts before calculating SRI1. For example, if set to 1 and
+0.8, we apply a rolling 1 hour window where each window with 80% or more
+sleep is classificed as sleep.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="sri1_smoothing_frac">SRI1_smoothing_frac<a class="anchor" aria-label="anchor" href="#sri1_smoothing_frac"></a>
+</h4>
+<p>Numeric (default = NULL) As used for Sleep Regularity Calculation in
+g.part3. If SRI1_smoothing_wsize_hrs and SRI1_smoothing_frac are both
+specified, this is the fraction used to smooth detected sustained
+inactivity bouts before calculating SRI1. For example, if set to 1 and
+0.8, we apply a rolling 1 hour window where each window with 80% or more
+sleep is classificed as sleep.</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="physical-activity-parameters">Physical activity Parameters<a class="anchor" aria-label="anchor" href="#physical-activity-parameters"></a>
@@ -2965,6 +3001,12 @@ consuming.</p>
 (default = c(30, 150)) with length 2 to indicate cadence ranges used
 when summarising step counts, if available. When set to NULL, step
 counts will not be summarised in part 5 output.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="sri2_wasomin">SRI2_WASOmin<a class="anchor" aria-label="anchor" href="#sri2_wasomin"></a>
+</h4>
+<p>Numeric (default = 30) Minimum WASO duration in minutes as used for
+Sleep Regularity Calculation in g.part6.</p>
 </div>
 </div>
 <div class="section level3">

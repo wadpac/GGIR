@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,6 +61,7 @@
     <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
     <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
     <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
+    <li><a class="dropdown-item" href="../articles/SleepRegularityIndex.html">Sleep Regularity Index</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
@@ -122,7 +123,7 @@ the following chapters.</p>
 <div class="section level2">
 <h2 id="the-ggir-function">The GGIR function<a class="anchor" aria-label="anchor" href="#the-ggir-function"></a>
 </h2>
-<p>As brief introduction for those unfamiliar with R or software, R
+<p>As a brief introduction for those unfamiliar with R or software, R
 packages are constructed of sub-components, named functions. A single
 function typically allows for doing a specific task. For example, we may
 have the <code>sum</code> function that sums the numbers we provide to
@@ -139,6 +140,9 @@ used as shown below:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/GGIR.html">GGIR</a></span><span class="op">(</span>datadir <span class="op">=</span> <span class="st">"C:/mystudy/mydata"</span>,</span>
 <span>     outputdir <span class="op">=</span> <span class="st">"D:/myresults"</span><span class="op">)</span></span></code></pre></div>
+<p>Here, parameter <code>datadir</code> specifies the location of the
+data and parameter <code>outputdir</code> specifies the location where
+the output should be saved.</p>
 <p>You only need to learn how to work with the function
 <code>GGIR</code>, but it is important to understand that in the
 background this function interacts with all other functions in GGIR and
@@ -171,11 +175,11 @@ features (referred to as metrics), as needed for the following
 parts.</li>
 <li>
 <strong>Part 2:</strong> Basic data quality assessment based on the
-extract metrics and description of the data per day, per file, and
+extracted metrics and description of the data per day, per file, and
 optionally per day segment.</li>
 <li>
-<strong>Part 3:</strong> Estimation rest periods, needed for input
-to Part 4.</li>
+<strong>Part 3:</strong> Estimation of rest periods, needed for
+input to Part 4.</li>
 <li>
 <strong>Part 4:</strong> Labels the rest periods derived in Part 3
 as sleep per night and per file.</li>
@@ -183,10 +187,10 @@ as sleep per night and per file.</li>
 <strong>Part 5:</strong> Compiles time series with classification of
 sleep and physical behaviour categories by re-using information derived
 in part 2, 3, and 4. This includes the detection of behavioural bouts,
-which are time segments where the same behaviour is sustained for
-duration as specified by the user. Next, Part 5 generates a descriptive
-summary such as time spent in and average acceleration per behavioural
-category, but also behavioural fragmentation.</li>
+which are time segments where the same behaviour is sustained for a
+duration range as specified by the user. Next, Part 5 generates a
+descriptive summary such as time spent in and average acceleration per
+behavioural category, but also behavioural fragmentation.</li>
 <li>
 <strong>Part 6:</strong> Facilitates analyses that span the full
 recording such as household co-analysis and circadian rhythm
@@ -209,7 +213,7 @@ in csv and pdf files in the output folder <code>results</code>.</p>
 this design is that it offers internal modularity. For example, we can
 run part 1 now and continue with part 2 another time without having to
 repeat part 1 again. So, this design eases re-processing and is also
-helpful for us when developing and testing the GGIR code.</p>
+helpful when developing and testing the GGIR code.</p>
 <p>The milestone data files are stored in sub-folders of the output
 folder as show below. Note that the output folder is named
 <code>output_mystudy</code> as example but exact name may differ for
@@ -269,7 +273,7 @@ whether output is stored.</li>
 any of the above categories</li>
 </ul>
 <p>As GGIR user you do not need to remember which theme a parameter
-belongs to. However, you may notice that the documentation is structure
+belongs to. However, you may notice that the documentation is structured
 by parameter theme to ease navigating the parameters.</p>
 <p>There are a couple of ways to inspect the parameters in each
 parameter category and their default values:</p>
@@ -296,16 +300,18 @@ configuration parameters</a>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wadpac/GGIR/" class="external-link">GGIR</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="../reference/load_params.html">load_params</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">params_sleep</span><span class="op">)</span></span></code></pre></div>
-<p>If you are only interested in e.g. parameter <code>HASIB.algo</code>
-from the</p>
+<p>If you are only interested in one parameter, e.g. parameter
+<code>HASIB.algo</code>, from the</p>
 <p><code>sleep_params</code> object:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wadpac/GGIR/" class="external-link">GGIR</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="../reference/load_params.html">load_params</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">params_sleep</span><span class="op">[[</span><span class="st">"HASIB.algo"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<p>All of these parameters are accepted as parameter to function
+<p>All parameters are accepted as parameter to function
 <code>GGIR</code>, because <code>GGIR</code> is like a shell around all
 GGIR functionality. However, the <code>params_</code> objects themselves
-cannot be provided as input to <code>GGIR</code>.</p>
+cannot be provided as input to <code>GGIR</code>. In other words: you
+can provide <code>HASIB.algo</code> as parameter to GGIR, but not
+<code>params_sleep</code>.</p>
 </div>
 <div class="section level4">
 <h4 id="configuration-file-">Configuration file.<a class="anchor" aria-label="anchor" href="#configuration-file-"></a>
@@ -335,17 +341,17 @@ for guidance on how to install older package versions.</p>
 <h4 id="parameter-extraction-order">Parameter extraction order<a class="anchor" aria-label="anchor" href="#parameter-extraction-order"></a>
 </h4>
 <p>If parameters are provided in the GGIR call, then GGIR always uses
-those. If parameters are not provided in GGIR call, GGIR checks whether
-there is a config.csv file either in the output folder or specified via
-parameter <code>configfile</code> and loads those values. If a parameter
-is neither specified in the GGIR function call nor available in the
-config.csv file, then GGIR will use its default value’s which can be
-inspected as discussed in the section above. Here, it is important to
-realise that a consequence of this logic is that GGIR will not revert to
-its default parameter values in a repeated run of GGIR unless you remove
-the parameter from the function call and delete the config.csv file or
-you specify the original (default) value of the parameter explicitly in
-you GGIR call.</p>
+those. If parameters are not provided in the GGIR call, GGIR checks
+whether there is a config.csv file either in the output folder or
+specified via parameter <code>configfile</code> and loads those values.
+If a parameter is neither specified in the GGIR function call nor
+available in the config.csv file, then GGIR will use its default value’s
+which can be inspected as discussed in the section above. Here, it is
+important to realise that a consequence of this logic is that GGIR will
+not revert to its default parameter values in a repeated run of GGIR
+unless you remove the parameter from the function call and delete the
+config.csv file or you specify the original (default) value of the
+parameter explicitly in you GGIR call.</p>
 <p>To ensure this is clear here are some example:</p>
 <ul>
 <li>If GGIR is used for the first time without specifying parameter
@@ -504,7 +510,8 @@ length can be modified with the last value of parameter
 <div class="section level2">
 <h2 id="how-to-run-your-analysis">How to run your analysis?<a class="anchor" aria-label="anchor" href="#how-to-run-your-analysis"></a>
 </h2>
-<p>The bare minimum input needed for <code>GGIR</code> is:</p>
+<p>As mentioned above, the bare minimum input needed for
+<code>GGIR</code> is:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wadpac/GGIR/" class="external-link">GGIR</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/GGIR.html">GGIR</a></span><span class="op">(</span>datadir <span class="op">=</span> <span class="st">"C:/mystudy/study_XYZ_data"</span>,</span>
@@ -515,13 +522,13 @@ specify where you would like the output of the analyses to be stored.
 This cannot be equal to <code>datadir</code>. If you copy and paste the
 above code to a new R script (file ending with .R) and Source it in
 R(Studio), then the dataset will be processed and the output will be
-stored in the specified output directory. GGIR refers to file
-directories and not to folders. For those unfamiliar with the term
-directory: It is the same as a folder.</p>
+stored in the specified output directory. For those unfamiliar with the
+term directory: It is the same as a folder, but in GGIR we refer to them
+as (file) directories.</p>
 <p>Next, we can add parameter <code>mode</code> to tell GGIR which
-part(s) to run, e.g. <code>mode = 1:5</code> tells GGIR to run all five
-parts and is the default. With parameter <code>overwrite</code>, we can
-tell GGIR whether to overwrite previously produced milestone data or
+part(s) to run, e.g. <code>mode = 1:5</code> tells GGIR to run the first
+five parts and is the default. With parameter <code>overwrite</code>, we
+can tell GGIR whether to overwrite previously produced milestone data or
 not.</p>
 <p>Further, parameter <code>idloc</code> tells GGIR where to find the
 participant ID. The default setting most likely does not work for most
