@@ -29,10 +29,12 @@ However, first we would like to list all aspects that all these implementations 
 
 ### SRI as derived with github.com/dpwindred/sleepreg
 
-In 'sleepreg', 'Sleep' is defined as the combination of:
+In 'sleepreg', 'Sleep' is by default defined as the combination of:
 
-- GGIR detected sleep period time window minus WASO episodes that lasts at least 30 minutes.
+- GGIR detected sleep period time window minus WASO episodes that last at least 30 minutes.
 - Any 30 minute interval outside the GGIR_detect sleep period time window with 95% or more sustained inactivity bout. This intervals are assumed to equal naps.
+
+The 'sleepreg' package comes various options to modify the configuration of the calculation as discussed in the package documentation and in the supplementary materials to [Windred et al. 2021](https://doi.org/10.1093/sleep/zsab254).
 
 ### SRI1 as stored in GGIR part 4
 

@@ -160,14 +160,19 @@ from noon to noon.</li>
 <div class="section level3">
 <h3 id="sri-as-derived-with-github-comdpwindredsleepreg">SRI as derived with github.com/dpwindred/sleepreg<a class="anchor" aria-label="anchor" href="#sri-as-derived-with-github-comdpwindredsleepreg"></a>
 </h3>
-<p>In ‘sleepreg’, ‘Sleep’ is defined as the combination of:</p>
+<p>In ‘sleepreg’, ‘Sleep’ is by default defined as the combination
+of:</p>
 <ul>
-<li>GGIR detected sleep period time window minus WASO episodes that
-lasts at least 30 minutes.</li>
+<li>GGIR detected sleep period time window minus WASO episodes that last
+at least 30 minutes.</li>
 <li>Any 30 minute interval outside the GGIR_detect sleep period time
 window with 95% or more sustained inactivity bout. This intervals are
 assumed to equal naps.</li>
 </ul>
+<p>The ‘sleepreg’ package comes various options to modify the
+configuration of the calculation as discussed in the package
+documentation and in the supplementary materials to <a href="https://doi.org/10.1093/sleep/zsab254" class="external-link">Windred et
+al. 2021</a>.</p>
 </div>
 <div class="section level3">
 <h3 id="sri1-as-stored-in-ggir-part-4">SRI1 as stored in GGIR part 4<a class="anchor" aria-label="anchor" href="#sri1-as-stored-in-ggir-part-4"></a>
