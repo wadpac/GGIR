@@ -1,3 +1,23 @@
+# CHANGES IN GGIR VERSION 3.2-6
+
+- Part 3 and 4:
+
+  - Sleep regularity index (SRI) expanded with option to smooth data. #1269
+  
+  - SRI renamed to be SRI1 and documentation updated to clarify difference with new SRI2 in part 6. #1269
+  
+  - Added parameters SRI1_smoothing_wsize_hrs and SRI1_smoothing_frac to control optional smoothing for SRI1. #1269
+  
+- Part 6: 
+
+  - Added SRI2 based on sleep and (currently experimental) naps. #1269
+  
+  - Added parameters SRI2_WASOmin to control minimum duration of WASO in SRI2.#1269
+
+- Part 1: Improve recently added functionality to split recordings to handle partial overlap with reference time windows.
+
+- Part 5: Fix bug in defining MM windows when parameter excludefirstlast is set to non-default TRUE value. #1292
+
 # CHANGES IN GGIR VERSION 3.2-5
 
 This release primarily includes fixes to minor bugs observed after more elaborate testing of the features add in previous releases 3.2-3 and 3.2-4.

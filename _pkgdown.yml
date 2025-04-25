@@ -82,6 +82,8 @@ navbar:
           href: articles/Cookbook.html
         - text: Date and Time formats in R
           href: articles/DateTimeFormatsInR.html
+        - text: Sleep Regularity Index
+          href: articles/SleepRegularityIndex.html
   structure:
     left:  [chapters, annexes, installation, intro, news, contributing, help]
     right: [search, github]

@@ -96,7 +96,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                            "number_sib_wakinghours", "duration_sib_wakinghours_atleast15min",
                            "sleeponset_ts", "wakeup_ts", "guider_onset_ts",  "guider_wakeup_ts",
                            "sleeplatency", "sleepefficiency", "page", "daysleeper", "weekday", "calendar_date",
-                           "filename", "cleaningcode", "sleeplog_used", "sleeplog_ID", "acc_available", "guider", "SleepRegularityIndex", "SriFractionValid",
+                           "filename", "cleaningcode", "sleeplog_used", "sleeplog_ID", "acc_available", "guider", "SleepRegularityIndex1", "SriFractionValid",
                            "longitudinal_axis") #
   
   

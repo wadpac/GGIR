@@ -33,7 +33,9 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                         impute_marker_button = FALSE,
                         sib_must_fully_overlap_with_TimeInBed = c(TRUE, TRUE),
                         nap_markerbutton_method = 0,
-                        nap_markerbutton_max_distance = 30)
+                        nap_markerbutton_max_distance = 30,
+                        SRI1_smoothing_wsize_hrs = NULL,
+                        SRI1_smoothing_frac = NULL)
   }
   if ("metrics" %in% topic) {
     params_metrics = list(do.anglex = FALSE, do.angley = FALSE, do.anglez = TRUE,
@@ -84,7 +86,8 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                       L5M5window = c(0, 24), cosinor = FALSE,
                       part6CR = FALSE, part6HCA = FALSE,
                       part6Window = c("start", "end"),
-                      part6DFA = FALSE, clevels = c(30, 150))
+                      part6DFA = FALSE, clevels = c(30, 150),
+                      SRI2_WASOmin = 30)
 
   }
   if ("phyact" %in% topic) {

@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,6 +61,7 @@
     <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
     <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
     <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
+    <li><a class="dropdown-item" href="../articles/SleepRegularityIndex.html">Sleep Regularity Index</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
@@ -1079,10 +1080,12 @@ only available in the full report as stored in the QC folder)</td>
 available in the full report as stored in the QC folder)</td>
 </tr>
 <tr class="odd">
-<td>SleepRegularityIndex</td>
-<td>The Sleep Regularity Index as proposed by <a href="https://www.nature.com/articles/s41598-017-03171-4" class="external-link">Phillips et
+<td>SleepRegularityIndex1</td>
+<td>The Sleep Regularity Index inspired by <a href="https://www.nature.com/articles/s41598-017-03171-4" class="external-link">Phillips et
 al. 2017</a>, but calculated per day-pair to enable user to study
-patterns across days</td>
+patterns across days, and calculated based on sustained inactivity
+bouts. See <a href="https://wadpac.github.io/GGIR/articles/chapter10_SleepAnalysis.html#sleep-regularity-index-sri">Chapter
+10</a> for details.</td>
 </tr>
 <tr class="even">
 <td>SriFractionValid</td>
@@ -1822,6 +1825,18 @@ on SSP in chapter 13</a>
 <td>See <a href="https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html#activity-balance-index-abi">section
 on ABI in chapter 13</a>
 </td>
+</tr>
+<tr class="odd">
+<td>SleepRegularityIndex2</td>
+<td>The Sleep Regularity Index inspired by <a href="https://www.nature.com/articles/s41598-017-03171-4" class="external-link">Phillips et
+al. 2017</a>, but calculated per day-pair to enable user to study
+patterns across days, and calculated based on classified naps and sleep.
+See <a href="https://wadpac.github.io/GGIR/articles/chapter10_SleepAnalysis.html#sleep-regularity-index-sri">Chapter
+10</a> for details.</td>
+</tr>
+<tr class="even">
+<td>SleepRegularityIndex2_Ndaypairs</td>
+<td>Number of day pairs used for calculating SleepRegularityIndex2.</td>
 </tr>
 </tbody>
 </table>

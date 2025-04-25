@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,6 +61,7 @@
     <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
     <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
     <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
+    <li><a class="dropdown-item" href="../articles/SleepRegularityIndex.html">Sleep Regularity Index</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
@@ -112,9 +113,6 @@
 
     
     
-<div class="section level2">
-<h2 id="sleep-analysis">Sleep analysis<a class="anchor" aria-label="anchor" href="#sleep-analysis"></a>
-</h2>
 <p>Sleep analysis in GGIR comes at three stages:</p>
 <ol style="list-style-type: decimal">
 <li><p>The discrimination of sustained inactivity and wakefulness
@@ -127,9 +125,9 @@ bed window (TimeInBed) as discussed in this chapter.</p></li>
 </ol>
 <p>In the previous two chapters you learnt about the first two steps in
 this chapter we will discuss the last step.</p>
-<div class="section level3">
-<h3 id="sleep-period-time-spt-window-or-time-in-bed">Sleep Period Time (SPT) window or Time in Bed<a class="anchor" aria-label="anchor" href="#sleep-period-time-spt-window-or-time-in-bed"></a>
-</h3>
+<div class="section level2">
+<h2 id="sleep-period-time-spt-window-or-time-in-bed">Sleep Period Time (SPT) window or Time in Bed<a class="anchor" aria-label="anchor" href="#sleep-period-time-spt-window-or-time-in-bed"></a>
+</h2>
 <p>Here we have two scenarios:</p>
 <ol style="list-style-type: decimal">
 <li><p>If the guider reflects an approximation of the Sleep Period Time
@@ -159,12 +157,12 @@ on SIB to define the end of the night regardless of overlap with
 TimeInBed set
 <code>sib_must_fully_overlap_with_TimeInBed = c(TRUE, FALSE)</code>.</p>
 </div>
+<div class="section level2">
+<h2 id="quality-assurance">Quality assurance<a class="anchor" aria-label="anchor" href="#quality-assurance"></a>
+</h2>
 <div class="section level3">
-<h3 id="quality-assurance">Quality assurance<a class="anchor" aria-label="anchor" href="#quality-assurance"></a>
+<h3 id="cleaningcode">Cleaningcode<a class="anchor" aria-label="anchor" href="#cleaningcode"></a>
 </h3>
-<div class="section level4">
-<h4 id="cleaningcode">Cleaningcode<a class="anchor" aria-label="anchor" href="#cleaningcode"></a>
-</h4>
 <p>To monitor possible problems with the sleep detection, the output
 variable <strong>cleaningcode</strong> is stored per night. Cleaningcode
 per night (noon-noon or 6pm-6pm as described above) can have one of the
@@ -191,9 +189,9 @@ If HDCZA/HorAngle estimates are also not available during the entire
 recording then use L5+/-12 estimate for this night.</p></li>
 </ul>
 </div>
-<div class="section level4">
-<h4 id="visual-inspection-of-classifications">Visual inspection of classifications<a class="anchor" aria-label="anchor" href="#visual-inspection-of-classifications"></a>
-</h4>
+<div class="section level3">
+<h3 id="visual-inspection-of-classifications">Visual inspection of classifications<a class="anchor" aria-label="anchor" href="#visual-inspection-of-classifications"></a>
+</h3>
 <p>As overlap between sib and guiders is difficult to review in a
 quantitative way, GGIR offers the option to export a visualisation, with
 parameter <code>do.visual = TRUE</code>. To manage the number of
@@ -207,9 +205,9 @@ outlier will be displayed.</p>
 data sets that use sleep logs. Visual inspection of outliers in this way
 can for example help to identify data entry errors for sleep logs.</p>
 </div>
-<div class="section level4">
-<h4 id="data-cleaning-file">Data cleaning file<a class="anchor" aria-label="anchor" href="#data-cleaning-file"></a>
-</h4>
+<div class="section level3">
+<h3 id="data-cleaning-file">Data cleaning file<a class="anchor" aria-label="anchor" href="#data-cleaning-file"></a>
+</h3>
 <p>After data quality check you may observe that some adjustments are
 needed. Parameter <code>data_cleaning_file</code> (path to a csv file
 you create) allows you to specify individuals and nights for whom part4
@@ -220,9 +218,9 @@ should have column name <code>ID</code> and there should be a column
 be omitted in part 4.</p>
 </div>
 </div>
-<div class="section level3">
-<h3 id="sleep-metrics-available-in-ggir">Sleep metrics available in GGIR<a class="anchor" aria-label="anchor" href="#sleep-metrics-available-in-ggir"></a>
-</h3>
+<div class="section level2">
+<h2 id="sleep-metrics-available-in-ggir">Sleep metrics available in GGIR<a class="anchor" aria-label="anchor" href="#sleep-metrics-available-in-ggir"></a>
+</h2>
 <p>For a full overview of all sleep variables in part 4 see: <a href="https://cran.r-project.org/web/packages/GGIR/vignettes/GGIR.html#42_Output_part_4" class="external-link uri">https://cran.r-project.org/web/packages/GGIR/vignettes/GGIR.html#42_Output_part_4</a></p>
 <p>Among these we assume that most are intuitive:</p>
 <ul>
@@ -232,65 +230,15 @@ be omitted in part 4.</p>
 <li><p>WASO, the time spent in wakefulness after sleep onset. However,
 there are possible a few concepts that need clarifications:</p></li>
 </ul>
-<div class="section level4">
-<h4 id="sleep-regularity-index-sri">Sleep Regularity Index (SRI)<a class="anchor" aria-label="anchor" href="#sleep-regularity-index-sri"></a>
-</h4>
-<p>This is a measure of sleep regularity between successive days, as
-first described by Phillips and colleagues. The SRI can have a value
-between -100 and 100, where 100 reflects perfect regularity (identical
-days), 0 reflects random pattern, and -100 reflects perfect reversed
-regularity. The SRI is proposed to only be calculated based on seven, or
-a multitude of seven, consecutive days of data without missing values.
-This to avoid a possible role of imbalanced data to the final estimate.
-However, this renders many datasets unsuitable for analysis and leads to
-a painful loss in sample size and statistical power.</p>
-<div class="section level5">
-<h5 id="sleep-regularity-index-dealing-with-unbalanced-data">Sleep Regularity Index – Dealing with unbalanced data<a class="anchor" aria-label="anchor" href="#sleep-regularity-index-dealing-with-unbalanced-data"></a>
-</h5>
-<p>To address this, I implemented the SRI in GGIR per day-pair. Per
-day-pair GGIR now stores the SRI value and the fraction of the 30 second
-epoch-pairs between both days that are valid. This fraction can be found
-in the output under the variable name SriFractionValid. By default,
-day-pairs are excluded if this fraction is below 0.66. For those
-familiar with GGIR this threshold is coupled with the 16-hour default
-value for parameter “includenightcrit”. For example, if you set
-parameter “includenightcrit = 12”, the fraction threshold will be: 12 /
-24 = 0.5. Note that I have implemented the SRI calculation such that it
-accounts for the missing values in the denominator. As a result, the SRI
-value interpretation remains unchanged.</p>
-<p>The 30 second epoch setting is automatically applied, even if the
-rest of the GGIR process works with a different epoch duration.</p>
-<p>The day-pair level estimates are stored as variable
-<code>SleepRegularityIndex</code> in the GGIR part 4 .csv-report on
-sleep. Further, GGIR also stores the person-level aggregates such as:
-the plain average over all valid days, the average of all valid weekend
-days, and the average of all valid week days. No GGIR input arguments
-are needed to invoke the SRI calculation. The calculation is
-automatically performed after updating GGIR and processing your
-data.</p>
-</div>
-<div class="section level5">
-<h5 id="sleep-regularity-index-benefits-of-the-revised-approach">Sleep Regularity Index – Benefits of the revised approach<a class="anchor" aria-label="anchor" href="#sleep-regularity-index-benefits-of-the-revised-approach"></a>
-</h5>
-<p>It enables the user to study the day-pair to day-pair variation in
-SRI, and the role of day-pair inclusion criteria.</p>
-<p>The access to SRI at day-pair level makes it possible to account for
-an imbalanced datasets via multilevel regression analysis applied to the
-output of GGIR, with day-pair as one of the model levels.</p>
-</div>
-<div class="section level5">
-<h5 id="nap-detection">Nap detection<a class="anchor" aria-label="anchor" href="#nap-detection"></a>
-</h5>
-<p>Any references to daytime nap detection in GGIR is based on
-experimental functionality that requires ongoing investigation. Once
-this functionality has matured we will expand the documentation
-accordingly.</p>
-</div>
-</div>
-</div>
 <div class="section level3">
-<h3 id="key-parameters">Key parameters<a class="anchor" aria-label="anchor" href="#key-parameters"></a>
+<h3 id="sleep-regularity-index-sri">Sleep Regularity Index (SRI)<a class="anchor" aria-label="anchor" href="#sleep-regularity-index-sri"></a>
 </h3>
+<p>A discussion of the Sleep Regularity Index has been moved to <a href="https://wadpac.github.io/GGIR/articles/SleepRegularityIndex.html" class="uri">https://wadpac.github.io/GGIR/articles/SleepRegularityIndex.html</a></p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="key-parameters">Key parameters<a class="anchor" aria-label="anchor" href="#key-parameters"></a>
+</h2>
 <p>All parameters that are part of the params_sleep category as
 discussed in section “Sleep parameters” in <a href="https://cran.r-project.org/web/packages/GGIR/vignettes/GGIRParameters.html" class="external-link uri">https://cran.r-project.org/web/packages/GGIR/vignettes/GGIRParameters.html</a></p>
 <p>and</p>
@@ -305,9 +253,9 @@ discussed in section “Sleep parameters” in <a href="https://cran.r-project.o
 <li><code>data_cleaning_file</code></li>
 </ul>
 </div>
-<div class="section level3">
-<h3 id="related-output">Related output<a class="anchor" aria-label="anchor" href="#related-output"></a>
-</h3>
+<div class="section level2">
+<h2 id="related-output">Related output<a class="anchor" aria-label="anchor" href="#related-output"></a>
+</h2>
 <p>GGIR stores two type of output: The cleaned and the full output. In
 the cleaned output invalid nights have been removed, while in the full
 output these nights are included.</p>
@@ -360,7 +308,6 @@ may be considered less important, by which any estimate of the time in
 bed is considered useful. So, you may see that a night that is excluded
 from the cleaned results in part 4 still appears in the cleaned results
 for part 5.</p>
-</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
