@@ -109,7 +109,7 @@ g.fragmentation = function(frag.metrics = c("mean", "TP", "Gini", "power",
     do.frag = FALSE
   }
   # define expected output to standardize length and output names
-  if ("TP" %in% frag.metrics) {
+  if ("TP" %in% frag.metrics && mode == "day") {
     output[["TP_IN2PA"]] = output[["TP_PA2IN"]] = output[["Nfrag_IN2PA"]] = output[["Nfrag_PA2IN"]] = NA
     output[["TP_IN2LIPA"]] = output[["Nfrag_IN2LIPA"]] = NA
     output[["TP_IN2MVPA"]] = output[["Nfrag_IN2MVPA"]] = NA
