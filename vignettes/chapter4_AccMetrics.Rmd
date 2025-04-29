@@ -153,6 +153,19 @@ As a note to ActiGraph users: If you decide to compare GGIR Cole-Kripke estimate
 
 Some GGIR users may like to use metrics not covered by GGIR. To facilitate this, we allow for external function embedding as discussed in the vignette [Embedding external functions in GGIR](https://cran.r-project.org/package=GGIR/vignettes/ExternalFunction.html). In fact, this allows you to include entire algorithms such as the [step detection](https://github.com/ShimmerEngineering/Verisense-Toolbox/tree/master/Verisense_step_algorithm) or a new sleep classification algorithm that you would like to test inside GGIR.
 
+## Metrics from externally derived epoch-level data.
+
+In [chapter 2](https://wadpac.github.io/GGIR/articles/chapter2_Pipeline.html#externally-derived-epoch-level-data) we discussed the option to work with externally derived epoch-level data.
+
+By definition GGIR does not calculate the summary metrics in these data. Further, it is often unknown how exactly these metrics are calculated. To refer to these metrics GGIR uses the terminology as listed below:
+
+Metric name | Description
+------------| -------------
+ExtAct      | Externally derived indicator of activity. Typically counts, but for Fitbit these are estimated calories and for SenseWear these are estimated MET values.
+ExtSleep    | Externally derived classification of sleep, used as if it was derived from an external function for sleep detection.
+ExtStep    | Externally derived step count, used as if it was derived from an external function for event detection.
+ExtHeartRate    | Externally derived measure of hear rate in beats per minute. Currently used as indicator of activity, which is not ideal. Please reach out if you want to help improve the embedding of heart rate analysis in GGIR.
+
 ## Related output
 
 -   In **GGIR part 2**, output is derived for each acceleration metric derived in GGIR part 1 except for metrics anglex, angley, and anglez.

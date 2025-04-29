@@ -7,6 +7,9 @@
 ## Getting started:
 The package [documentation](https://wadpac.github.io/GGIR/) provides extensive documentation on GGIR and its functionalities.
 
+## Getting help:
+For guidance on how to seek help see [this page](https://wadpac.github.io/GGIR/articles/chapter0_Support.html).
+
 ## Contribution guidelines:
 We always welcome contributions to the package.
 If you want to contribute to the development of GGIR, have a look at the [contribution guidelines](https://github.com/wadpac/GGIR/blob/master/CONTRIBUTING.md).

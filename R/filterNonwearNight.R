@@ -60,7 +60,7 @@ filterNonwearNight = function(r1, metalong, qwindowImp, desiredtz,
           # convert to continuous scale to ease finding start and end
           below18 = which(qwindow_temp < 18)
           if (length(below18) > 0) {
-            qwindow_temp = qwindow_temp[below18] + 24
+            qwindow_temp[below18] = qwindow_temp[below18] + 24
           }
           start = min(qwindow_temp)
           end = max(qwindow_temp)

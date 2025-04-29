@@ -39,15 +39,15 @@ test_that("Part 6 with household co-analysis", {
              "day_IN_bts_10_30", "day_LIG_bts_10")
   
   mdat$timenum = mdat$timenum - (5 * 60) 
-  mdat$timestamp = as.POSIXct(mdat$timenum, tz =  params_general[["desiredtz"]])
+  mdat$timestamp = as.POSIXct(mdat$timenum, tz =  params_general[["desiredtz"]], origin = "1970-01-01")
   filename = "800-900-001_left wrist.bin"
   save(mdat, filename, Lnames, file = paste0(dn, "/800-900-001_left wrist.RData"))
   mdat$timenum = mdat$timenum + (7 * 60)
-  mdat$timestamp = as.POSIXct(mdat$timenum, tz =  params_general[["desiredtz"]])
+  mdat$timestamp = as.POSIXct(mdat$timenum, tz =  params_general[["desiredtz"]], origin = "1970-01-01")
   filename = "800-900-002_left wrist.bin"
   save(mdat, filename, Lnames, file = paste0(dn, "/800-900-002_left wrist.RData"))
   mdat$timenum = mdat$timenum + (14 * 60)
-  mdat$timestamp = as.POSIXct(mdat$timenum, tz =  params_general[["desiredtz"]])
+  mdat$timestamp = as.POSIXct(mdat$timenum, tz =  params_general[["desiredtz"]], origin = "1970-01-01")
   filename = "800-900-003_left wrist.bin"
   save(mdat, filename, Lnames, file = paste0(dn, "/800-900-003_left wrist.RData"))
   mdat_file3 = mdat
@@ -110,12 +110,14 @@ test_that("Part 6 with household co-analysis", {
   expect_true(file.exists(path_to_ms6))
   
   load(path_to_ms6)
-  expect_equal(ncol(output_part6), 48)
+  expect_equal(ncol(output_part6), 50)
   expect_equal(output_part6$starttime, "2022-06-02 03:16:00")
   expect_equal(output_part6$cosinor_mes, 2.471082, tolerance = 0.00001)
   expect_equal(output_part6$cosinorExt_minimum, 1.302779, tolerance = 0.00001)
   expect_equal(output_part6$cosinorExt_MESOR, 2.171, tolerance = 0.00001)
   expect_equal(sum(output_part6[5:27]), 620.6144, tolerance = 0.0001)
+  expect_equal(output_part6$SleepRegularityIndex2, 95.87223, tolerance = 0.0001)
+  expect_equal(output_part6$SleepRegularityIndex2_Ndaypairs, 4)
   
   # Run Circadian rhythm analysis with non-default window
   params_247[["part6Window"]] = c("W2", "W-1") # second wake till last wake
@@ -131,13 +133,14 @@ test_that("Part 6 with household co-analysis", {
   expect_true(file.exists(path_to_ms6))
   
   load(path_to_ms6)
-  expect_equal(ncol(output_part6), 48)
+  expect_equal(ncol(output_part6), 50)
   expect_equal(output_part6$starttime, "2022-06-03 01:57:00")
   expect_equal(output_part6$cosinor_mes, 2.431978, tolerance = 0.00001)
   expect_equal(output_part6$cosinorExt_minimum, 1.286542, tolerance = 0.00001)
   expect_equal(output_part6$cosinorExt_MESOR, 2.140128, tolerance = 0.00001)
   expect_equal(sum(output_part6[5:27]), 680.9232, tolerance = 0.0001)
-  
+  expect_equal(output_part6$SleepRegularityIndex2, 96.72433, tolerance = 0.0001)
+  expect_equal(output_part6$SleepRegularityIndex2_Ndaypairs, 3)
   output_part6_with_invalid = output_part6
   rm(output_part6)
   

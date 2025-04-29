@@ -169,7 +169,9 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           mdat$window[invalid] = 9999
           mdat$invalid_sleepperiod[invalid] = 100
           mdat$invalid_wakinghours[invalid] = 100
-          mdat$time = mdat$timestamp = as.POSIXct(mdat$timenum, tz =  params_general[["desiredtz"]])
+          mdat$time = mdat$timestamp = as.POSIXct(mdat$timenum,
+                                                  tz =  params_general[["desiredtz"]],
+                                                  origin = "1970-01-01")
           return(mdat)
         }
         mdat = imputeTimeGaps(mdat, epochSize)
@@ -238,7 +240,8 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       summary[fi] = unlist(strsplit(fnames.ms5raw[i], "_"))[1]
       s_names[fi] = "ID"
       fi = fi + 1
-      starttime = as.POSIXlt(ts$time[1], tz = params_general[["desiredtz"]])
+      starttime = as.POSIXlt(ts$time[1], tz = params_general[["desiredtz"]],
+                             origin = "1970-01-01")
       summary[fi] = format(starttime)
       s_names[fi] = "starttime"
       fi = fi + 1
@@ -291,7 +294,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         threshold = as.numeric(unlist(strsplit( params_phyact[["part6_threshold_combi"]], "_"))[1])
         
         # extract nightsi again
-        tempp = unclass(as.POSIXlt(acc4cos$time, tz = params_general[["desiredtz"]]))
+        tempp = unclass(as.POSIXlt(acc4cos$time, tz = params_general[["desiredtz"]], origin = "1970-01-01"))
         sec = tempp$sec
         min = tempp$min
         hour = tempp$hour
@@ -501,6 +504,40 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           summary[fi:(fi + 1)] = c(ssp, abi)
           s_names[fi:(fi + 1)] = c("SSP", "ABI")
           fi = fi + 2
+        }
+        #------------------------------------------------------------
+        # Sleep Regularity Index
+        if (!is.null(params_247[["SRI2_WASOmin"]])) {
+          sleepnap_classid = grep(pattern = "spt_sleep|_nap", x = Lnames) - 1
+          ts$sleepnap = 0
+          ts$sleepnap[which(ts$class_id %in% sleepnap_classid)] = 1
+          # remove short lasting 'WASO' based on WASOmin parameters
+          waso_classid = grep(pattern = "spt_wake", x = Lnames) - 1
+          waso = rep(0, nrow(ts))
+          waso[which(ts$class_id %in% waso_classid)] = 1
+          rlew = rle(waso)
+          shortwaso = which(rlew$values == 1 & (rlew$lengths / (60/epochSize)) <= params_247[["SRI2_WASOmin"]])
+          if (length(shortwaso) > 0) {
+            rlew$values[shortwaso] = 2
+            waso = rep(rlew$values, rlew$lengths)
+            if (2 %in% rlew$values) {
+              ts$sleepnap[which(waso == 2)] = 1
+            }
+          }
+          SRI = CalcSleepRegularityIndex(data = ts,
+                                         epochsize = epochSize,
+                                         desiredtz = params_general[["desiredtz"]])
+          
+          SRI = SRI[which(SRI$frac_valid > params_cleaning[["includecrit.part6"]][1]), ]
+          if (nrow(SRI) > 0) {
+            summary[fi] = weighted.mean(x = SRI$SleepRegularityIndex, w = SRI$frac_valid)
+            summary[fi + 1] = nrow(SRI)
+          } else {
+            summary[fi:(fi + 1)] = NA
+          }
+          s_names[fi:(fi + 1)] = c("SleepRegularityIndex2", "SleepRegularityIndex2_Ndaypairs")
+          fi = fi + 2
+          rm(rlew, shortwaso, waso)
         }
       }
       #=============================================

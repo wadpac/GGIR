@@ -48,7 +48,14 @@ g.report.part6 = function(metadatadir = c(), f0 = c(), f1 = c(),
       }
       return(out)
     }
-    out_try = myfun(fnames.ms6[f0])
+    # Use large milestone file as reference point, assuming that this has the largest number of columns
+    all_files <- fnames.ms6[f0:f1]
+    file_info <- file.info(all_files)
+    file_sizes <- file_info$size
+    # Find the file with the largest size. Since the .RData files in ms6.out are processed, the largest file is likely to have the most column names.
+    largest_file <- all_files[which.max(file_sizes)]
+    # Extract column names from this file
+    out_try <- myfun(largest_file)
     expectedCols = colnames(out_try)
     outputfinal = as.data.frame(do.call(rbind,
                                         lapply(fnames.ms6[f0:f1], myfun, expectedCols)),
@@ -64,6 +71,7 @@ g.report.part6 = function(metadatadir = c(), f0 = c(), f1 = c(),
     #-------------------------------------------------------------
     # store all summaries in csv files
     outputfinal_clean = tidyup_df(outputfinal)
+    outputfinal_clean = addSplitNames(outputfinal_clean) # If recording was split
     data.table::fwrite(outputfinal_clean, paste0(metadatadir, "/results/part6_summary.csv"),
                        row.names = FALSE, na = "", sep = params_output[["sep_reports"]],
                        dec = params_output[["dec_reports"]])

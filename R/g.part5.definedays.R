@@ -42,12 +42,20 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
   # in the data for this day.
   if (timewindowi == "MM") {
     # include first and last partial days in MM
-    if (nightsi[1] > 1) nightsi = c(1, nightsi)
-    if (nightsi[length(nightsi)] < nrow(ts)) nightsi = c(nightsi, nrow(ts))
+    if (nightsi[1] > 1 && nightsi[1] < 25 * 3600 / epochSize) {
+      nightsi = c(1, nightsi)
+    }
+    if (nightsi[length(nightsi)] < nrow(ts) && 
+        nrow(ts) - nightsi[length(nightsi)] < 25 * 3600 / epochSize) {
+      nightsi = c(nightsi, nrow(ts))
+    }
     # define window
     qqq[1] = nightsi[wi]
     qqq[2] = nightsi[wi + 1] - 1
     # is this the last day?
+    if (wi == length(nightsi) - 1) {
+      lastDay = TRUE
+    }
     if (qqq[2] >= Nts - 1) {
       qqq[2] = Nts
       lastDay = TRUE

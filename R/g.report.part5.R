@@ -299,6 +299,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 #-------------------------------------------------------------
                 # store all summaries in csv files without cleaning criteria
                 OF3_clean = tidyup_df(OF3)
+                OF3_clean = addSplitNames(OF3_clean) # If recording was split
                 data.table::fwrite(
                   OF3_clean,
                   paste(
@@ -673,6 +674,17 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                     cval = 1,
                     window = uwi[j]
                   )
+                  if ("markerbutton" %in% OF3$guider) {
+                    OF3tmp$markerbutton_guider = 0
+                    OF3tmp$markerbutton_guider[which(OF3tmp$guider[validdaysi] == "markerbutton")] = 1
+                    OF4 = foo34(
+                      df = OF3tmp[validdaysi, ],
+                      aggPerIndividual = OF4,
+                      nameold = "markerbutton_guider",
+                      namenew = "Nmarkerbutton_used",
+                      cval = 1,
+                      window = uwi[j])
+                  }
                   # Move valid day count variables to beginning of dataframe
                   OF4 = cbind(OF4[, 1:5],
                               OF4[, (ncol(OF4) - 10):ncol(OF4)],
@@ -707,6 +719,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   #-------------------------------------------------------------
                   # store all summaries in csv files
                   OF4_clean = tidyup_df(OF4)
+                  OF4_clean = addSplitNames(OF4_clean)  # If recording was split
                   data.table::fwrite(OF4_clean,paste(metadatadir,"/results/part5_personsummary_",
                                                      uwi[j],"_L",uTRLi[h1],"M",
                                                      uTRMi[h2], "V", uTRVi[h3], "_",

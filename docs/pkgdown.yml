@@ -23,14 +23,16 @@ articles:
   chapterInProgress: chapterInProgress.html
   Cookbook: Cookbook.html
   CutPoints: CutPoints.html
+  DateTimeFormatsInR: DateTimeFormatsInR.html
   ExternalFunction: ExternalFunction.html
   GGIR: GGIR.html
   GGIRoutput: GGIRoutput.html
   GGIRParameters: GGIRParameters.html
   HouseHoldCoanalysis: HouseHoldCoanalysis.html
   readmyacccsv: readmyacccsv.html
+  SleepRegularityIndex: SleepRegularityIndex.html
   TutorialDaySegmentAnalyses: TutorialDaySegmentAnalyses.html
-last_built: 2024-11-25T17:13Z
+last_built: 2025-04-23T13:43Z
 urls:
   reference: https://wadpac.github.io/GGIR/reference
   article: https://wadpac.github.io/GGIR/articles

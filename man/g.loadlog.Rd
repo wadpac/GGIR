@@ -8,9 +8,9 @@
   before storing the output in a dataframe
 }
 \usage{
-  g.loadlog(loglocation=c(),coln1=c(),colid=c(),
-    sleeplogsep=",", meta.sleep.folder = c(),
-  desiredtz="")
+  g.loadlog(loglocation = c(), coln1 = c(), colid = c(),
+            sleeplogsep = ",", meta.sleep.folder = c(),
+            desiredtz = "")
 }
 \arguments{
   \item{loglocation}{

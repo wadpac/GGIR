@@ -126,6 +126,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   deviceSerialNumber = hvars$deviceSerialNumber
 
   # get now-wear, clip, and blocksize parameters (thresholds)
+  if (mon == MONITOR$PARMAY_MTX) params_rawdata[["dynrange"]] = GGIRread::readParmayMatrix(datafile, output = "dynrange")
   ncb_params = get_nw_clip_block_params(monc = mon, dformat = dformat,
                                         deviceSerialNumber = deviceSerialNumber,
                                         sf = sf,

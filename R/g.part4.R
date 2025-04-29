@@ -32,11 +32,47 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
     dolog = FALSE
   }
   if (dolog == TRUE) {
-    logs_diaries = g.loadlog(params_sleep[["loglocation"]], coln1 = params_sleep[["coln1"]], colid = params_sleep[["colid"]],
-                             meta.sleep.folder = meta.sleep.folder,
-                             desiredtz = params_general[["desiredtz"]])
-    sleeplog = logs_diaries$sleeplog
-    save(logs_diaries, file = paste0(metadatadir,"/meta/sleeplog.RData"))
+    sleeplogRDataFile = paste0(metadatadir,"/meta/sleeplog_", basename(params_sleep[["loglocation"]]), ".RData")
+    # only re-process sleeplog if sleeplog.RData does not exist or if sleeplog
+    # is from a date equal to or after sleeplog.RData
+    if (!file.exists(sleeplogRDataFile) || 
+        file.info(params_sleep[["loglocation"]])$mtime >= file.info(sleeplogRDataFile)$mtime) {
+      logs_diaries = g.loadlog(params_sleep[["loglocation"]], 
+                               coln1 = params_sleep[["coln1"]],
+                               colid = params_sleep[["colid"]],
+                               meta.sleep.folder = meta.sleep.folder,
+                               desiredtz = params_general[["desiredtz"]])
+      
+      if (params_sleep[["sleepwindowType"]] == "SPT" && length(logs_diaries$bedlog) > 0 &&
+          length(logs_diaries$sleeplog) == 0) {
+        stop(paste0("The sleep diary as provided only appears to have time indicators",
+                    " for time in bed and not for the Sleep Period Time window, while",
+                    " parameter sleepwindowType is set to SPT (default). Either change sleepwindowType to",
+                    " \"TimeInBed\" or change your sleep diary column names for sleep timing",
+                    " to \"wakeup\" and \"sleeponset\"."), call. = FALSE)
+      } else if (params_sleep[["sleepwindowType"]] == "TimeInBed" && length(logs_diaries$bedlog) == 0 &&
+                 length(logs_diaries$sleeplog) > 0) {
+        stop(paste0("The sleep diary as provided only appears to have time indicators",
+                    " for SPT and not for the Time in Bed, while",
+                    " parameter sleepwindowType is set to TimeInBed. Either change sleepwindowType to",
+                    " \"SPT\" or change your sleep diary column names for sleep timing",
+                    " to \"outbed\" and \"inbed\"."), call. = FALSE)
+      }
+      save(logs_diaries, file = sleeplogRDataFile)
+    } else {
+      load(file = sleeplogRDataFile)
+    }
+    if (params_sleep[["sleepwindowType"]] == "TimeInBed" && length(logs_diaries$bedlog) > 0) {
+      sleeplog = logs_diaries$bedlog
+    } else {
+      sleeplog = logs_diaries$sleeplog
+    }
+    sleeplog$night = as.numeric(sleeplog$night)
+    sleeplog$duration = as.numeric(sleeplog$duration)
+    if (is.null(logs_diaries$sleeplog) && is.null(logs_diaries$bedlog)) {
+      dolog = FALSE
+      rm(sleeplog)
+    }
   }
   #------------------------------------------------
   # get list of accelerometer milestone data files from sleep (produced by g.part3)
@@ -60,7 +96,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                            "number_sib_wakinghours", "duration_sib_wakinghours_atleast15min",
                            "sleeponset_ts", "wakeup_ts", "guider_onset_ts",  "guider_wakeup_ts",
                            "sleeplatency", "sleepefficiency", "page", "daysleeper", "weekday", "calendar_date",
-                           "filename", "cleaningcode", "sleeplog_used", "sleeplog_ID", "acc_available", "guider", "SleepRegularityIndex", "SriFractionValid",
+                           "filename", "cleaningcode", "sleeplog_used", "sleeplog_ID", "acc_available", "guider", "SleepRegularityIndex1", "SriFractionValid",
                            "longitudinal_axis") #
   
   
@@ -266,9 +302,10 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           # go through the nights get default onset and wake (based on sleeplog or on heuristic
           # algorithms) def.noc.sleep is an input argument the GGIR user can use to specify what
           # detection strategy is used in the absense of a sleep diary
-          if (length(params_sleep[["def.noc.sleep"]]) == 0 ||
-              length(SPTE_start) == 0 ||
-              length(SPTE_start[which(is.na(SPTE_start) == FALSE)]) == 0) {
+          if ((length(params_sleep[["def.noc.sleep"]]) == 0 ||
+               length(SPTE_start) == 0 ||
+               length(SPTE_start[which(is.na(SPTE_start) == FALSE)]) == 0) &&
+              length(params_sleep[["def.noc.sleep"]]) != 2) {
             # use L5+/-6hr algorithm if SPTE fails OR if the user explicitely asks for it (length
             # zero argument)
             guider = "notavailable"
@@ -280,7 +317,6 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
               # This should never happen, but just as a final backup
               defaultGuiderOnset = 21
               defaultGuiderWake = 31
-              warning("Guider not identified in ID ", accid, ", falling back on 9pm-7am window", call. = FALSE)
             }
             defaultGuider = guider
           } else if ((length(params_sleep[["def.noc.sleep"]]) == 1 ||
@@ -613,25 +649,33 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                 # spo is now a data.frame of start and end for each sib (sustained inactivity bout)
                 # Classify as being part of the guider window or not
                 for (evi in 1:nrow(spo)) {
-                  if (spo$start[evi] < GuiderWake & spo$end[evi] > GuiderOnset) {
-                    if (params_sleep[["sleepwindowType"]] == "TimeInBed") {
-                      if (spo$end[evi] < GuiderWake & spo$start[evi] > GuiderOnset) {
-                        # if using a time in bed reference, then sleep can never 
-                        # start before time in bed
-                        spo$overlapGuider[evi] = 1  #All sib that start after guider onset and end before guider wake
+                  if (spo$start[evi] < GuiderWake && spo$end[evi] > GuiderOnset) {
+                    if ((params_sleep[["sleepwindowType"]] == "TimeInBed" || guider == "markerbutton") &&
+                        sum(params_sleep[["sib_must_fully_overlap_with_TimeInBed"]]) != 0) {
+                      if (all(params_sleep[["sib_must_fully_overlap_with_TimeInBed"]]) &&
+                          spo$start[evi] > GuiderOnset && spo$end[evi] < GuiderWake) {
+                        spo$overlapGuider[evi] = 1  # Consider only full overlap
+                      }
+                      if (all(params_sleep[["sib_must_fully_overlap_with_TimeInBed"]] == c(FALSE, TRUE)) &&
+                          spo$end[evi] < GuiderWake) {
+                        spo$overlapGuider[evi] = 1 # Consider only full overlap
+                      }
+                      if (all(params_sleep[["sib_must_fully_overlap_with_TimeInBed"]] == c(TRUE, FALSE)) &&
+                          spo$start[evi] > GuiderOnset) {
+                        spo$overlapGuider[evi] = 1  # Consider only full overlap
                       }
                     } else {
-                      spo$overlapGuider[evi] = 1  # All sib that end after guider onset and start before guider wake
+                      spo$overlapGuider[evi] = 1  # Consider partial overlap
                     }
                     if (params_sleep[["relyonguider"]] == TRUE | relyonguider_thisnight == TRUE) {
                       # Redefine sib start and end if it overlaps with guider
                       # to match guider 
-                      if ((spo$start[evi] < GuiderWake & spo$end[evi] > GuiderWake) |
-                          (spo$start[evi] < GuiderWake & spo$end[evi] < spo$start[evi])) {
+                      if ((spo$start[evi] < GuiderWake && spo$end[evi] > GuiderWake) |
+                          (spo$start[evi] < GuiderWake && spo$end[evi] < spo$start[evi])) {
                         spo$end[evi] = GuiderWake
                       }
-                      if ((spo$start[evi] < GuiderOnset & spo$end[evi] > GuiderOnset) |
-                          (spo$end[evi] > GuiderOnset & spo$end[evi] < spo$start[evi])) {
+                      if ((spo$start[evi] < GuiderOnset && spo$end[evi] > GuiderOnset) |
+                          (spo$end[evi] > GuiderOnset && spo$end[evi] < spo$start[evi])) {
                         spo$start[evi] = GuiderOnset
                       }
                     }
@@ -730,7 +774,6 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   }
                   delta_t1 = diff(as.numeric(spocum.t$end))
                   spocum.t$overlapGuider = correct01010pattern(spocum.t$overlapGuider)
-                  
                   #----------------------------
                   nightsummary[sumi, 1] = accid
                   nightsummary[sumi, 2] = j  #night
@@ -941,9 +984,10 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   #----------------------------------------------
                   nightsummary[sumi, 23] = tmp1  #guider_onset_ts
                   nightsummary[sumi, 24] = tmp4  #guider_wake_ts
-                  if (params_sleep[["sleepwindowType"]] == "TimeInBed") {
-                    # If guider is a sleeplog and if the sleeplog recorded time in bed then
-                    # calculate: sleep latency:
+                  if (params_sleep[["sleepwindowType"]] == "TimeInBed" || guider == "markerbutton") {
+                    # If guider is a sleeplog and if the sleeplog recorded time in bed or a marker button
+                    # then calculate:
+                    # sleep latency:
                     nightsummary[sumi, 25] = round(nightsummary[sumi, 3] - nightsummary[sumi, 7],
                                                    digits = 7)  #sleeponset - guider_onset
                     # sleep efficiency:
@@ -1106,7 +1150,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           }
           sumi = sumi + 1
         }
-        if (params_sleep[["sleepwindowType"]] != "TimeInBed") {
+        if (params_sleep[["sleepwindowType"]] != "TimeInBed" &&
+            params_sleep[["consider_marker_button"]] == FALSE) {
           nightsummary = nightsummary[, which(colnames(nightsummary) %in% c("sleeplatency", "sleepefficiency") ==
                                                 FALSE)]
         }

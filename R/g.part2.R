@@ -28,10 +28,23 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       # note that this filtering is only use if parameter nonwearFiltermaxHours is specified.
       use_qwindow_as_diary = FALSE 
     }
-    params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]],
-                                            params_247[["qwindow_dateformat"]],
-                                            epochSize = params_general[["windowsizes"]][1])
-    # This will be an object with numeric qwindow values for all individuals and days
+    tmp_activityDiary_file = paste0(metadatadir, "/meta/activityDiary_", basename(params_247[["qwindow"]]), ".RData")
+    
+    if (!file.exists(tmp_activityDiary_file) || (file.exists(tmp_activityDiary_file) && 
+        file.info(params_247[["qwindow"]])$mtime >= file.info(tmp_activityDiary_file)$mtime)) {
+      if (verbose == TRUE) cat("\nConverting activity diary...")
+      # This will be an object with numeric qwindow values for all individuals and days
+      params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]],
+                                              params_247[["qwindow_dateformat"]],
+                                              epochSize = params_general[["windowsizes"]][1])
+      qwindow = params_247[["qwindow"]]
+      save(qwindow, file = tmp_activityDiary_file)
+    } else {
+      load(tmp_activityDiary_file)
+      params_247[["qwindow"]] = qwindow
+    }
+    rm(qwindow)
+
   }
   #---------------------------------
   # Specifying directories with meta-data and extracting filenames
@@ -57,8 +70,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   pdfpagecount = 1 # counter to keep track of files being processed (for pdf)
   pdffilenumb = 1 #counter to keep track of number of pdf-s being generated
   daySUMMARY = c()
-  if (length(f0) ==  0) f0 = 1
-  if (length(f1) ==  0) f1 = length(fnames)
+  if (length(f0) == 0) f0 = 1
+  if (length(f1) == 0) f1 = length(fnames)
   #--------------------------------
   # get full file path and folder name if requested by end-user and keep this for storage in output
   foldername = fullfilenames = folderstructure = referencefnames = c()
