@@ -367,60 +367,50 @@ HASPT = function(angle, spt_min_block = 30, spt_max_gap = 60, ws3 = 5,
     } else if (HASPT.ignore.invalid == TRUE) {  # all invalid = movement
       nomov[which(x < threshold & invalid == 0)] = 1
     }
-    # apply steps (assumptions on sleep)
-    inspttime = rep(NA,length(x))
-    nomov = c(0,nomov,0)
-    s1 = which(diff(nomov) == 1) #start of blocks in spt
-    e1 = which(diff(nomov) == -1) #end of blocks in spt
-    sptblock = which((e1 - s1) > ((60/ws3)*spt_min_block*1)) #which are the blocks longer than spt_min_block in minutes?
+    
+    # initialise output
+    SPTE_end = c()
+    SPTE_start = c()
+    tib.threshold = c()
+    part3_guider = "none"
+    #------------------------------------------------------
+    # apply final 3 steps to estimate the main SPT window
+    spt_estimate = rep(NA, length(x))
+    nomov = c(0, nomov, 0)
+    rle_nomov = rle(nomov)
+    # only keep the blocks that are long enough
     fraction_night_invalid = sum(invalid) / length(invalid)
-    if (length(sptblock) > 0 & fraction_night_invalid < 1) { #
-      s2 = s1[sptblock] # only keep the sptblocks that are long enough
-      e2 = e1[sptblock] # only keep the sptblocks that are long enough
-      for (j in 1:length(s2)) {
-        inspttime[s2[j]:e2[j]] = 1 #record these blocks in the inspttime vector
+    if (fraction_night_invalid < 1) {
+      # Step -3: ignore blocks that are too short
+      blocks_to_remove = which(rle_nomov$values == 1 & rle_nomov$lengths <= (60 / ws3) * spt_min_block)    
+      blocks_to_remove = blocks_to_remove[which(blocks_to_remove %in% c(1, length(rle_nomov$values)) == FALSE)]
+      if (length(blocks_to_remove) > 0) {
+        rle_nomov$values[blocks_to_remove] = 0
+        nomov2 = rep(rle_nomov$values, rle_nomov$length)
+        nomov2 = nomov2[1:length(x)]
+        rle_nomov = rle(nomov2)
       }
-      # fill up gaps in time between spt blocks
-      outofspt = rep(0,length(inspttime))
-      outofspt[which(is.na(inspttime) == TRUE)] = 1
-      outofspt = c(0,outofspt,0)
-      s3 = which(diff(outofspt) == 1) #start of blocks out of spt?
-      e3 = which(diff(outofspt) == -1) #end blocks out of spt?
-      # starting block not to be filled
-      if (length(s3) > 0) {
-        if (s3[1] == 1) {
-          s3 = s3[-1]
-          e3 = e3[-1]
-        }
+      # Step -2: ignore gaps that are too long
+      gaps_to_fill = which(rle_nomov$values == 0 & rle_nomov$lengths < (60 / ws3) * spt_max_gap)    
+      gaps_to_fill = gaps_to_fill[which(gaps_to_fill %in% c(1, length(rle_nomov$values)) == FALSE)]
+      if (length(gaps_to_fill) > 0) {
+        rle_nomov$values[gaps_to_fill] = 1
+        nomov3 = rep(rle_nomov$values, rle_nomov$length)
+        nomov3 = nomov3[1:length(x)]
+        rle_nomov = rle(nomov3)
       }
-      if (length(e3) > 0) {
-        if (e3[length(e3)] > length(x)) {
-          # ending block not to be filled
-          s3 = s3[-length(s3)]
-          e3 = e3[-length(e3)]
-        }
-      }
-      outofsptblock = which((e3 - s3) < ((60/ws3)*spt_max_gap*1))
-      if (length(outofsptblock) > 0) { # only fill up gap if there are gaps
-        s4 = s3[outofsptblock]
-        e4 = e3[outofsptblock]
-        if (length(s4) > 0) {
-          for (j in 1:length(s4)) {
-            inspttime[ s4[j]:e4[j]] = 1
-          }
-        }
-      }
-      if (length(inspttime) == (length(x) + 1)) inspttime = inspttime[1:(length(inspttime) - 1)]
-      # keep indices for longest in spt block:
-      inspttime2 = rep(1,length(inspttime))
-      inspttime2[which(is.na(inspttime) == TRUE)] = 0
-      s5 = which(diff(c(0,inspttime2,0)) == 1) #start of blocks out of spt
-      e5 = which(diff(c(0,inspttime2,0)) == -1) #end of blocks out of spt
-      insptdurations = e5 - s5
-      longestinspt = which(insptdurations == max(insptdurations))
-      if (length(longestinspt) > 1) longestinspt = longestinspt[ceiling(length(longestinspt)/2)]
-      SPTE_start = s5[longestinspt] - 1
-      SPTE_end = e5[longestinspt] - 1
+      # Step -1: keep indices for longest spt block
+      max_length =  max(rle_nomov$length[which(rle_nomov$values == 1)])
+      rle_nomov$values[which(rle_nomov$values == 1 & rle_nomov$length == max_length)[1]] = 2
+      rle_nomov$values[which(rle_nomov$values != 2)] = 0
+      rle_nomov$values[which(rle_nomov$values == 2)] = 1
+      spt_estimate = rep(rle_nomov$values, rle_nomov$length)
+      spt_estimate = spt_estimate[1:length(x)]
+      spt_estimate2 = rep(1, length(spt_estimate))
+      # identify start and end of longest block
+      SPTE_start = which(diff(c(0, spt_estimate, 0)) == 1) - 1
+      SPTE_end = which(diff(c(0, spt_estimate, 0)) == -1) - 1
+      # browser()
       if (SPTE_start == 0) SPTE_start = 1
       part3_guider = HASPT.algo
       if (is.na(HASPT.ignore.invalid)) {
@@ -435,34 +425,6 @@ HASPT = function(angle, spt_min_block = 30, spt_max_gap = 60, ws3 = 5,
           part3_guider = paste0(HASPT.algo, "+invalid")
         }
       }
-      
-      # # Code to help investigate classifications:
-      # plot(x, col = "black", type = "l")
-      # abline(v = SPTE_start, col = "green", lwd = 2)
-      # abline(v = SPTE_end, col = "red", lwd = 2)
-      # rect(xleft = s1, ybottom = rep(0, length(s1)),
-      #      xright = e1, ytop = rep(0.1, length(s1)),
-      #      col = rgb(0, 0, 255, max = 255, alpha = 50), border = NA)
-      # 
-      # rect(xleft = s5, ybottom = rep(0.1, length(s1)),
-      #      xright = e5, ytop = rep(1, length(s1)),
-      #      col = rgb(255, 0, 0, max = 255, alpha = 20), border = NA)
-      # lines(x, col = "black", type = "l")
-      # abline(h = threshold, col = "purple", lwd = 2)
-      # inva = which(invalid == 1)
-      # if (length(inva) > 0) {
-      #   lines(inva, rep(0.1, length(inva)),
-      #         type = "p", pch = 20, lwd = 4, col = "black")
-      # }
-      # lines(invalid* 0.05, type = "l", col = "red")
-      # # graphics.off()
-      # browser()
-      
-    } else {
-      SPTE_end = c()
-      SPTE_start = c()
-      tib.threshold = c()
-      part3_guider = "none"
     }
     tib.threshold = threshold
   }

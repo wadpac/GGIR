@@ -38,7 +38,7 @@ test_that("HASPT generate correct output", {
                marker = marker,
                sibs = sibs,
                try_marker_button = FALSE)
-  expect_equal(test$SPTE_start, 4999)
+  expect_equal(test$SPTE_start, 5000)
   expect_equal(test$SPTE_end, 8000)
   
   
@@ -50,7 +50,7 @@ test_that("HASPT generate correct output", {
                marker = marker,
                sibs = sibs,
                try_marker_button = FALSE)
-  expect_equal(test$SPTE_start, 4999)
+  expect_equal(test$SPTE_start, 5000)
   expect_equal(test$SPTE_end, 5400)
   
   # nutused
@@ -72,7 +72,7 @@ test_that("HASPT generate correct output", {
                marker = marker,
                sibs = sibs,
                try_marker_button = FALSE, HorAngle_threshold = 60)
-  expect_equal(test$SPTE_start, 2414)
+  expect_equal(test$SPTE_start, 2415)
   expect_equal(test$SPTE_end, 17097)
   
 
@@ -84,7 +84,7 @@ test_that("HASPT generate correct output", {
                marker = marker,
                sibs = sibs,
                try_marker_button = FALSE)
-  expect_equal(test$SPTE_start, 5027)
+  expect_equal(test$SPTE_start, 5028)
   expect_equal(test$SPTE_end, 7971)
   expect_equal(test$tib.threshold, 0.2835165, tolerance = 0.001)
   
