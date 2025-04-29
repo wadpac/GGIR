@@ -8,16 +8,17 @@
   by GGIR user.
 }
 \usage{
-HASPT(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5, 
+HASPT(angle, spt_min_block = 30, spt_max_gap = 60, ws3 = 5, 
       HASPT.algo="HDCZA", HDCZA_threshold = c(), invalid, 
       HASPT.ignore.invalid = FALSE, activity = NULL,
-      marker = NULL, sibs = NULL, try_marker_button = FALSE)
+      marker = NULL, sibs = NULL, try_marker_button = FALSE,
+      HorAngle_threshold = NULL)
 }
 \arguments{
   \item{angle}{
     Vector of epoch level estimates of angle
   }
-  \item{sptblocksize}{
+  \item{spt_min_block}{
     Number to indicate minimum SPT block size (minutes)
   }
   \item{spt_max_gap}{
@@ -53,6 +54,9 @@ HASPT(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
     Numeric vector of classified sibs with \code{HASIB}, experimental not used at the moment.
   }
   \item{try_marker_button}{
+    See \link{GGIR}
+  }
+  \item{HorAngle_threshold}{
     See \link{GGIR}
   }
 }

@@ -1,9 +1,10 @@
-HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
+HASPT = function(angle, spt_min_block = 30, spt_max_gap = 60, ws3 = 5,
                  HASPT.algo = "HDCZA", HDCZA_threshold = c(), invalid,
                  HASPT.ignore.invalid = FALSE, activity = NULL,
                  marker = NULL,
                  sibs = NULL,
-                 try_marker_button = FALSE) {
+                 try_marker_button = FALSE,
+                 HorAngle_threshold = NULL) {
   tib.threshold = SPTE_start = SPTE_end = part3_guider = c()
   
   
@@ -123,7 +124,7 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       # x = absolute angle
       # threshold = 45 degrees
       x = abs(angle)
-      threshold = 60
+      threshold = HorAngle_threshold
     } else if (HASPT.algo == "NotWorn") {
       # When protocol is to not wear sensor during the night,
       # and data is collected in count units we do not know angle
@@ -371,7 +372,7 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
     nomov = c(0,nomov,0)
     s1 = which(diff(nomov) == 1) #start of blocks in spt
     e1 = which(diff(nomov) == -1) #end of blocks in spt
-    sptblock = which((e1 - s1) > ((60/ws3)*sptblocksize*1)) #which are the blocks longer than sptblocksize in minutes?
+    sptblock = which((e1 - s1) > ((60/ws3)*spt_min_block*1)) #which are the blocks longer than spt_min_block in minutes?
     fraction_night_invalid = sum(invalid) / length(invalid)
     if (length(sptblock) > 0 & fraction_night_invalid < 1) { #
       s2 = s1[sptblock] # only keep the sptblocks that are long enough

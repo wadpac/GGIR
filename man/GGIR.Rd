@@ -1445,7 +1445,7 @@ GGIR(mode = 1:5,
         before calculating SRI1. For example, if set to 1 and 0.8, we apply a rolling 
         1 hour window where each window with 80\% or more sleep is classificed as sleep.
       }
-       
+      
       \item{SRI1_smoothing_frac}{
         Numeric (default = NULL)
         As used for Sleep Regularity Calculation in \link{g.part3}.
@@ -1453,6 +1453,23 @@ GGIR(mode = 1:5,
         specified, this is the fraction used to smooth detected sustained inactivity bouts
         before calculating SRI1. For example, if set to 1 and 0.8, we apply a rolling 
         1 hour window where each window with 80\% or more sleep is classificed as sleep.
+      }
+      
+      \item{spt_min_block}{
+        Numeric (default = 30).
+        Minimum size in minutes of a resting block to be considered part of SPT
+        in the estimation of the guider window (algorithms HDCZA and HorAngle).
+      }
+      
+      \item{spt_max_gap}{
+        Numeric (default = 60).
+        Maximum size in minutes of a gap between resting blocks to be considered part of SPT
+        in the estimation of the guider window (algorithms HDCZA and HorAngle).
+      }
+      
+      \item{HorAngle_threshold}{
+        Numeric (default = 60).
+        Angle threshold used for the HorAngle algorithm.
       }
     }
   }

@@ -1,3 +1,9 @@
+# CHANGES IN GGIR VERSION 3.2-7
+
+- Part 3:
+
+  - Add parameters "spt_min_block", "spt_max_gap", and "HorAngle_threshold" to improve control over algorithms used in part 3 #1295
+
 # CHANGES IN GGIR VERSION 3.2-6
 
 - Part 3 and 4:
