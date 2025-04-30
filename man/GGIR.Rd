@@ -1455,16 +1455,23 @@ GGIR(mode = 1:5,
         1 hour window where each window with 80\% or more sleep is classificed as sleep.
       }
       
-      \item{spt_min_block}{
+      \item{spt_min_block_dur}{
         Numeric (default = 30).
         Minimum size in minutes of a resting block to be considered part of SPT
-        in the estimation of the guider window (algorithms HDCZA and HorAngle).
+        in the estimation of the guider window (algorithms HDCZA, HorAngle and NotWorn).
       }
       
-      \item{spt_max_gap}{
+      \item{spt_max_gap_dur}{
         Numeric (default = 60).
         Maximum size in minutes of a gap between resting blocks to be considered part of SPT
-        in the estimation of the guider window (algorithms HDCZA and HorAngle).
+        in the estimation of the guider window (algorithms HDCZA, HorAngle and NotWorn).
+      }
+      
+      \item{spt_max_gap_ratio}{
+        Numeric (default = NULL).
+        Maximum ratio between gap duration and the sum of the neighbouring rest blocks
+        to be considered part of SPT in the estimation of the guider window 
+        (algorithms HDCZA, HorAngle and NotWorn).
       }
       
       \item{HorAngle_threshold}{

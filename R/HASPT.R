@@ -1,4 +1,5 @@
-HASPT = function(angle, spt_min_block = 30, spt_max_gap = 60, ws3 = 5,
+HASPT = function(angle, spt_min_block_dur = 30, spt_max_gap_dur = 60, 
+                 spt_max_gap_ratio = NULL, ws3 = 5,
                  HASPT.algo = "HDCZA", HDCZA_threshold = c(), invalid,
                  HASPT.ignore.invalid = FALSE, activity = NULL,
                  marker = NULL,
@@ -390,14 +391,25 @@ HASPT = function(angle, spt_min_block = 30, spt_max_gap = 60, ws3 = 5,
     fraction_night_invalid = sum(invalid) / length(invalid)
     if (fraction_night_invalid < 1) {
       # Step -3: ignore blocks that are too short
-      blocks_to_remove = which(rle_nomov$values == 1 & rle_nomov$lengths <= (60 / ws3) * spt_min_block)    
+      blocks_to_remove = which(rle_nomov$values == 1 & rle_nomov$lengths <= (60 / ws3) * spt_min_block_dur)    
       blocks_to_remove = blocks_to_remove[which(blocks_to_remove %in% c(1, length(rle_nomov$values)) == FALSE)]
       if (length(blocks_to_remove) > 0) {
         rle_nomov$values[blocks_to_remove] = 0
         rle_nomov = rebuild_rle(rle_nomov, N)
       }
       # Step -2: ignore gaps that are too long
-      gaps_to_fill = which(rle_nomov$values == 0 & rle_nomov$lengths < (60 / ws3) * spt_max_gap)    
+      gaps_to_fill = which(rle_nomov$values == 0 & rle_nomov$lengths < (60 / ws3) * spt_max_gap_dur)    
+      Nsegments = length(rle_nomov$lengths)
+      if (!is.null(spt_max_gap_ratio) & Nsegments > 3) {
+        # Note: spt_max_gap_ratio is NULL by default
+        gap_ratios = data.frame(values = rle_nomov$values, lengths = rle_nomov$lengths)
+        gap_ratios$ratio = gap_ratios$length_after = gap_ratios$length_before = 0
+        gap_ratios$length_after[1:(Nsegments - 1)] = gap_ratios$lengths[2:Nsegments]
+        gap_ratios$length_before[2:Nsegments] = gap_ratios$lengths[1:(Nsegments - 1)]
+        gap_ratios$ratio = gap_ratios$lengths / (gap_ratios$length_after + gap_ratios$length_before)
+        new_gaps_to_fill = which(gap_ratios$values == 0 & gap_ratios$ratio < spt_max_gap_ratio)
+        gaps_to_fill = sort(unique(c(gaps_to_fill, new_gaps_to_fill)))
+      }
       gaps_to_fill = gaps_to_fill[which(gaps_to_fill %in% c(1, length(rle_nomov$values)) == FALSE)]
       if (length(gaps_to_fill) > 0) {
         rle_nomov$values[gaps_to_fill] = 1

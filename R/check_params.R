@@ -38,8 +38,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "nap_markerbutton_max_distance",
                        "SRI1_smoothing_wsize_hrs",
                        "SRI1_smoothing_frac",
-                       "spt_min_block",
-                       "spt_max_gap", "HorAngle_threshold")
+                       "spt_min_block_dur",
+                       "spt_max_gap_dur", "spt_max_gap_ratio", "HorAngle_threshold")
     boolean_params = c("ignorenonwear", "HASPT.ignore.invalid",
                        "relyonguider", "sleeplogidnum",
                        "impute_marker_button", "consider_marker_button",

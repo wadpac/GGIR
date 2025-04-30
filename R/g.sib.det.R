@@ -300,8 +300,9 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         }
         if (length(params_sleep[["def.noc.sleep"]]) == 1) {
           spt_estimate = HASPT(angle = tmpANGLE, ws3 = ws3,
-                               spt_min_block = params_sleep[["spt_min_block"]],
-                               spt_max_gap = params_sleep[["spt_max_gap"]],
+                               spt_min_block_dur = params_sleep[["spt_min_block_dur"]],
+                               spt_max_gap_dur = params_sleep[["spt_max_gap_dur"]],
+                               spt_max_gap_ratio = params_sleep[["spt_max_gap_ratio"]],
                                HASPT.algo = params_sleep[["HASPT.algo"]][guider_to_use],
                                invalid = invalid[qqq1:qqq2],
                                HDCZA_threshold = params_sleep[["HDCZA_threshold"]],
@@ -344,8 +345,9 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                 }
               }
               spt_estimate_tmp = HASPT(angle = tmpANGLE, ws3 = ws3,
-                                       spt_min_block = params_sleep[["spt_min_block"]],
-                                       spt_max_gap = params_sleep[["spt_max_gap"]],
+                                       spt_min_block_dur = params_sleep[["spt_min_block_dur"]],
+                                       spt_max_gap_dur = params_sleep[["spt_max_gap_dur"]],
+                                       spt_max_gap_ratio = params_sleep[["spt_max_gap_ratio"]],
                                        HASPT.algo = params_sleep[["HASPT.algo"]][guider_to_use],
                                        invalid = invalid[newqqq1:newqqq2],
                                        HDCZA_threshold = params_sleep[["HDCZA_threshold"]],

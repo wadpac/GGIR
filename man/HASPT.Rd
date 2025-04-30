@@ -8,7 +8,8 @@
   by GGIR user.
 }
 \usage{
-HASPT(angle, spt_min_block = 30, spt_max_gap = 60, ws3 = 5, 
+HASPT(angle, spt_min_block_dur = 30, spt_max_gap_dur = 60, 
+      spt_max_gap_ratio = NULL, ws3 = 5, 
       HASPT.algo="HDCZA", HDCZA_threshold = c(), invalid, 
       HASPT.ignore.invalid = FALSE, activity = NULL,
       marker = NULL, sibs = NULL, try_marker_button = FALSE,
@@ -18,11 +19,15 @@ HASPT(angle, spt_min_block = 30, spt_max_gap = 60, ws3 = 5,
   \item{angle}{
     Vector of epoch level estimates of angle
   }
-  \item{spt_min_block}{
+  \item{spt_min_block_dur}{
     Number to indicate minimum SPT block size (minutes)
   }
-  \item{spt_max_gap}{
+  \item{spt_max_gap_dur}{
     Number to indicate maximum gap (minutes) in SPT window blocks.
+  }
+  \item{spt_max_gap_ratio}{
+    Fraction of 1 to indicate the maximum ratio between the duration of a gap
+    reltative to the summed duration of the neighbouring SPT window blocks.
   }
   \item{ws3}{
     Number representing epoch length in seconds

@@ -31,7 +31,7 @@ test_that("HASPT generate correct output", {
   # Test all HASPT.algo setting
   
   # HDCZA with HASPT.ignore.invalid = FALSE
-  test = HASPT(angle = angle, spt_min_block = 30, spt_max_gap = 60,
+  test = HASPT(angle = angle, spt_min_block_dur = 30, spt_max_gap_dur = 60,
                ws3 = epochSize,
                HASPT.algo = "HDCZA", HDCZA_threshold = c(), invalid = invalid,
                HASPT.ignore.invalid = FALSE, activity = activity ,
@@ -41,9 +41,20 @@ test_that("HASPT generate correct output", {
   expect_equal(test$SPTE_start, 5000)
   expect_equal(test$SPTE_end, 8000)
   
+  # HDCZA with HASPT.ignore.invalid = FALSE, spt_max_gap_dur = 1 and spt_max_gap_ratio = 0.5
+  test = HASPT(angle = angle, spt_min_block_dur = 30, spt_max_gap_dur = 1,
+               spt_max_gap_ratio = 0.5,
+               ws3 = epochSize,
+               HASPT.algo = "HDCZA", HDCZA_threshold = c(), invalid = invalid,
+               HASPT.ignore.invalid = FALSE, activity = activity ,
+               marker = marker,
+               sibs = sibs,
+               try_marker_button = FALSE)
+  expect_equal(test$SPTE_start, 5000)
+  expect_equal(test$SPTE_end, 8000)
   
   # HDCZA with HASPT.ignore.invalid = TRUE
-  test = HASPT(angle = angle, spt_min_block = 30, spt_max_gap = 60,
+  test = HASPT(angle = angle, spt_min_block_dur = 30, spt_max_gap_dur = 60,
                ws3 = epochSize,
                HASPT.algo = "HDCZA", HDCZA_threshold = c(), invalid = invalid,
                HASPT.ignore.invalid = TRUE, activity = activity,
@@ -53,8 +64,8 @@ test_that("HASPT generate correct output", {
   expect_equal(test$SPTE_start, 5000)
   expect_equal(test$SPTE_end, 5400)
   
-  # nutused
-  test = HASPT(angle = angle, spt_min_block = 30, spt_max_gap = 60,
+  # notused
+  test = HASPT(angle = angle, spt_min_block_dur = 30, spt_max_gap_dur = 60,
                ws3 = epochSize,
                HASPT.algo = "notused", HDCZA_threshold = c(), invalid = invalid,
                HASPT.ignore.invalid = FALSE, activity = activity ,
@@ -65,7 +76,7 @@ test_that("HASPT generate correct output", {
   expect_null(test$SPTE_end)
   
   # HorAngle
-  test = HASPT(angle = angle, spt_min_block = 30, spt_max_gap = 60,
+  test = HASPT(angle = angle, spt_min_block_dur = 30, spt_max_gap_dur = 60,
                ws3 = epochSize,
                HASPT.algo = "HorAngle", HDCZA_threshold = c(), invalid = invalid,
                HASPT.ignore.invalid = FALSE, activity = activity ,
@@ -77,7 +88,7 @@ test_that("HASPT generate correct output", {
   
 
   # NotWorn
-  test = HASPT(angle = angle, spt_min_block = 30, spt_max_gap = 60,
+  test = HASPT(angle = angle, spt_min_block_dur = 30, spt_max_gap_dur = 60,
                ws3 = epochSize,
                HASPT.algo = "NotWorn", HDCZA_threshold = c(), invalid = invalid,
                HASPT.ignore.invalid = FALSE, activity = activity ,
@@ -89,7 +100,7 @@ test_that("HASPT generate correct output", {
   expect_equal(test$tib.threshold, 0.2835165, tolerance = 0.001)
   
   # HLRB
-  test = HASPT(angle = angle, spt_min_block = 30, spt_max_gap = 60,
+  test = HASPT(angle = angle, spt_min_block_dur = 30, spt_max_gap_dur = 60,
                ws3 = epochSize,
                HASPT.algo = "HLRB", HDCZA_threshold = c(), invalid = invalid,
                HASPT.ignore.invalid = FALSE, activity = activity ,
@@ -103,7 +114,7 @@ test_that("HASPT generate correct output", {
   # marker button
   marker[c(4900, 4901, 4902, 7900, 7901, 7902)] = 1
   downsample = seq(1, N, by = 3)
-  test = HASPT(angle = NULL, spt_min_block = 30, spt_max_gap = 60,
+  test = HASPT(angle = NULL, spt_min_block_dur = 30, spt_max_gap_dur = 60,
                ws3 = 15,
                HASPT.algo = "MotionWare", HDCZA_threshold = c(), invalid = invalid[downsample],
                HASPT.ignore.invalid = FALSE, activity = activity[downsample],
@@ -121,7 +132,7 @@ test_that("HASPT generate correct output", {
   # make an attempt to monitor changes in functionality
   marker[c(4900, 4901, 4902, 7900, 7901, 7902)] = 1
   downsample = seq(1, N, by = 3)
-  test = HASPT(angle = NULL, spt_min_block = 30, spt_max_gap = 60,
+  test = HASPT(angle = NULL, spt_min_block_dur = 30, spt_max_gap_dur = 60,
                ws3 = 15,
                HASPT.algo = "MotionWare", HDCZA_threshold = c(), invalid = invalid[downsample],
                HASPT.ignore.invalid = FALSE, activity = activity[downsample] / 1000,
