@@ -410,7 +410,6 @@ HASPT = function(angle, spt_min_block = 30, spt_max_gap = 60, ws3 = 5,
       rle_nomov$values[which(rle_nomov$values == 2)] = 1
       spt_estimate = rep(rle_nomov$values, rle_nomov$length)
       spt_estimate = spt_estimate[1:length(x)]
-      spt_estimate2 = rep(1, length(spt_estimate))
       # identify start and end of longest block
       SPTE_start = which(diff(c(0, spt_estimate, 0)) == 1) - 1
       SPTE_end = which(diff(c(0, spt_estimate, 0)) == -1) - 1
