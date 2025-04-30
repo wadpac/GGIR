@@ -94,6 +94,12 @@ HASPT = function(angle, spt_min_block = 30, spt_max_gap = 60, ws3 = 5,
     }
     return(invalid)
   }
+  rebuild_rle = function(rlex, N) {
+    # after rle values have been changed
+    # this function aids in rebuilding it
+    y = rep(rlex$values, rlex$length)
+    return(rle(y[1:N]))
+  }
   # main code -----------------
   if (HASPT.algo != "notused") {
     if (HASPT.algo == "HDCZA") { # original, default
@@ -375,7 +381,9 @@ HASPT = function(angle, spt_min_block = 30, spt_max_gap = 60, ws3 = 5,
     part3_guider = "none"
     #------------------------------------------------------
     # apply final 3 steps to estimate the main SPT window
-    spt_estimate = rep(NA, length(x))
+    # these steps are the same for HDCZA, HorAngle, and NotWorn
+    N = length(x)
+    spt_estimate = rep(NA, N)
     nomov = c(0, nomov, 0)
     rle_nomov = rle(nomov)
     # only keep the blocks that are long enough
@@ -386,18 +394,14 @@ HASPT = function(angle, spt_min_block = 30, spt_max_gap = 60, ws3 = 5,
       blocks_to_remove = blocks_to_remove[which(blocks_to_remove %in% c(1, length(rle_nomov$values)) == FALSE)]
       if (length(blocks_to_remove) > 0) {
         rle_nomov$values[blocks_to_remove] = 0
-        nomov2 = rep(rle_nomov$values, rle_nomov$length)
-        nomov2 = nomov2[1:length(x)]
-        rle_nomov = rle(nomov2)
+        rle_nomov = rebuild_rle(rle_nomov, N)
       }
       # Step -2: ignore gaps that are too long
       gaps_to_fill = which(rle_nomov$values == 0 & rle_nomov$lengths < (60 / ws3) * spt_max_gap)    
       gaps_to_fill = gaps_to_fill[which(gaps_to_fill %in% c(1, length(rle_nomov$values)) == FALSE)]
       if (length(gaps_to_fill) > 0) {
         rle_nomov$values[gaps_to_fill] = 1
-        nomov3 = rep(rle_nomov$values, rle_nomov$length)
-        nomov3 = nomov3[1:length(x)]
-        rle_nomov = rle(nomov3)
+        rle_nomov = rebuild_rle(rle_nomov, N)
       }
       # Step -1: keep indices for longest spt block
       max_length =  max(rle_nomov$length[which(rle_nomov$values == 1)])
@@ -410,7 +414,6 @@ HASPT = function(angle, spt_min_block = 30, spt_max_gap = 60, ws3 = 5,
       # identify start and end of longest block
       SPTE_start = which(diff(c(0, spt_estimate, 0)) == 1) - 1
       SPTE_end = which(diff(c(0, spt_estimate, 0)) == -1) - 1
-      # browser()
       if (SPTE_start == 0) SPTE_start = 1
       part3_guider = HASPT.algo
       if (is.na(HASPT.ignore.invalid)) {
