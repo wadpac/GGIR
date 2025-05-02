@@ -1470,7 +1470,7 @@ GGIR(mode = 1:5,
       }
       
       \item{spt_max_gap_ratio}{
-        Numeric (default = 1).
+        Numeric (default = 0).
         Only considered when set to a value less than 1
         Maximum ratio between gap duration and either rest block next to it. If
         the ratio for both is less than spt_max_gap_ratio the gap is merged with

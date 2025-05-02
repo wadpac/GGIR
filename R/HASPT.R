@@ -396,7 +396,7 @@ HASPT = function(angle, params_sleep = NULL, ws3 = 5,
       }
       # Step -2: ignore gaps that are too long
       Nsegments = length(rle_nomov$lengths)
-      if (!is.null(params_sleep[["spt_max_gap_ratio"]]) && params_sleep[["spt_max_gap_ratio"]] < 1 && Nsegments > 3) {
+      if (!is.null(params_sleep[["spt_max_gap_ratio"]]) && Nsegments > 3) {
         # Note: spt_max_gap_ratio is NULL by default
         gap_ratios = data.frame(values = rle_nomov$values, lengths = rle_nomov$lengths)
         gap_ratios$ratio = gap_ratios$length_after = gap_ratios$length_before = 0
