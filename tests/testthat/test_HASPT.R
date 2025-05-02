@@ -42,18 +42,18 @@ test_that("HASPT generate correct output", {
   expect_equal(test$SPTE_start, 5000)
   expect_equal(test$SPTE_end, 8000)
   
-  # HDCZA with HASPT.ignore.invalid = FALSE, spt_max_gap_dur = 1 and spt_max_gap_ratio = 0.5
+  # HDCZA with HASPT.ignore.invalid = FALSE, spt_max_gap_dur = 60 and spt_max_gap_ratio = 0.05
   params_sleep = load_params()$params_sleep
   params_sleep[["spt_min_block_dur"]] = 30
-  params_sleep[["spt_max_gap_dur"]] = 120
-  params_sleep[["spt_max_gap_ratio"]] = 0.5
+  params_sleep[["spt_max_gap_dur"]] = 60
+  params_sleep[["spt_max_gap_ratio"]] = 0.05
   params_sleep[["HDCZA_threshold"]] = NULL
   params_sleep[["HASPT.ignore.invalid"]] = FALSE
   params_sleep[["try_marker_button"]] = FALSE
   test = HASPT(angle = angle, params_sleep = params_sleep,
                HASPT.algo = "HDCZA", 
                ws3 = epochSize, invalid = invalid)
-  expect_equal(test$SPTE_start, 5000)
+  expect_equal(test$SPTE_start, 6099)
   expect_equal(test$SPTE_end, 8000)
   
   # HDCZA with HASPT.ignore.invalid = TRUE
