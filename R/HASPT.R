@@ -1,11 +1,7 @@
-HASPT = function(angle, spt_min_block_dur = 30, spt_max_gap_dur = 60, 
-                 spt_max_gap_ratio = NULL, ws3 = 5,
-                 HASPT.algo = "HDCZA", HDCZA_threshold = c(), invalid,
-                 HASPT.ignore.invalid = FALSE, activity = NULL,
-                 marker = NULL,
-                 sibs = NULL,
-                 try_marker_button = FALSE,
-                 HorAngle_threshold = NULL) {
+HASPT = function(angle, params_sleep = NULL, ws3 = 5,
+                 HASPT.algo = "HDCZA", invalid,
+                 activity = NULL, marker = NULL,
+                 sibs = NULL) {
   tib.threshold = SPTE_start = SPTE_end = part3_guider = c()
   
   
@@ -13,7 +9,7 @@ HASPT = function(angle, spt_min_block_dur = 30, spt_max_gap_dur = 60,
   # Use marker button as guider:
   # if available and required by user (only Actiwatch and Philips Health band at the moment)
   # See documentation for parameter consider_marker_button.
-  if (length(marker) > 0 && try_marker_button == TRUE) {
+  if (length(marker) > 0 && params_sleep[["consider_marker_button"]] == TRUE) {
     button_pressed = which(marker != 0)
     N_markers = length(button_pressed)
     # Only consider when there is more than 1 marker and the range spans more than 1 hour
@@ -34,7 +30,8 @@ HASPT = function(angle, spt_min_block_dur = 30, spt_max_gap_dur = 60,
       # ignore pairs that reflect both short distances and involve imputed marker buttons
       pairs$mark1 = marker[pairs$Var1]
       pairs$mark2 = marker[pairs$Var2]
-      pairs_to_ignore = which(pairs$duration_hours < 3 & (pairs$mark1 < 1 | pairs$mark2 < 1))
+      pairs_to_ignore = which((pairs$duration_hours < 3 & (pairs$mark1 < 1 | pairs$mark2 < 1)) |
+                                (pairs$duration_hours < 1))
       if (length(pairs_to_ignore) > 0 & length(pairs_to_ignore) < nrow(pairs)) {
         pairs = pairs[-pairs_to_ignore,]
       }
@@ -114,24 +111,24 @@ HASPT = function(angle, spt_min_block_dur = 30, spt_max_gap_dur = 60,
       k1 = 5 * (60/ws3)
       
       x = zoo::rollapply(angle, width = k1, FUN = medabsdi, fill = 0) # 5 minute rolling median of the absolute difference
-      if (is.null(HDCZA_threshold)) {
-        HDCZA_threshold = c(10, 15)
+      if (is.null(params_sleep[["HDCZA_threshold"]])) {
+        params_sleep[["HDCZA_threshold"]] = c(10, 15)
       }
-      if (length(HDCZA_threshold) == 2) {
-        threshold = quantile(x, probs = HDCZA_threshold[1] / 100) * HDCZA_threshold[2]
+      if (length(params_sleep[["HDCZA_threshold"]]) == 2) {
+        threshold = quantile(x, probs = params_sleep[["HDCZA_threshold"]][1] / 100) * params_sleep[["HDCZA_threshold"]][2]
         if (threshold < 0.13) {
           threshold = 0.13
         } else if (threshold > 0.50) {
           threshold = 0.50
         }
       } else {
-        threshold = HDCZA_threshold
+        threshold = params_sleep[["HDCZA_threshold"]]
       }
     } else if (HASPT.algo == "HorAngle") {  # if hip, then require horizontal angle
       # x = absolute angle
       # threshold = 45 degrees
       x = abs(angle)
-      threshold = HorAngle_threshold
+      threshold = params_sleep[["HorAngle_threshold"]]
     } else if (HASPT.algo == "NotWorn") {
       # When protocol is to not wear sensor during the night,
       # and data is collected in count units we do not know angle
@@ -162,7 +159,7 @@ HASPT = function(angle, spt_min_block_dur = 30, spt_max_gap_dur = 60,
       # Always set HASPT.ignore.invalid to NA for HASPT.algo NotWorn
       # because NotWorn is by definition interested in invalid periods
       # and we definitely do not want to rely on imputed time series
-      HASPT.ignore.invalid = NA
+      params_sleep[["HASPT.ignore.invalid"]] = NA
     } else if (HASPT.algo == "MotionWare") {
       
       # Auto-Sleep Detection / Marking based on description in
@@ -367,11 +364,11 @@ HASPT = function(angle, spt_min_block_dur = 30, spt_max_gap_dur = 60,
     # Now define nomov periods with the selected strategy for invalid time
     nomov = rep(0,length(x)) # no movement
     invalid = adjustlength(x, invalid)
-    if (is.na(HASPT.ignore.invalid)) { # all invalid = no movement
+    if (is.na(params_sleep[["HASPT.ignore.invalid"]])) { # all invalid = no movement
       nomov[which(x < threshold | invalid == 1)] = 1
-    } else if (HASPT.ignore.invalid == FALSE) { # calculate no movement over the imputed angle
+    } else if (params_sleep[["HASPT.ignore.invalid"]] == FALSE) { # calculate no movement over the imputed angle
       nomov[which(x < threshold)] = 1
-    } else if (HASPT.ignore.invalid == TRUE) {  # all invalid = movement
+    } else if (params_sleep[["HASPT.ignore.invalid"]] == TRUE) {  # all invalid = movement
       nomov[which(x < threshold & invalid == 0)] = 1
     }
     
@@ -391,23 +388,25 @@ HASPT = function(angle, spt_min_block_dur = 30, spt_max_gap_dur = 60,
     fraction_night_invalid = sum(invalid) / length(invalid)
     if (fraction_night_invalid < 1) {
       # Step -3: ignore blocks that are too short
-      blocks_to_remove = which(rle_nomov$values == 1 & rle_nomov$lengths <= (60 / ws3) * spt_min_block_dur)    
+      blocks_to_remove = which(rle_nomov$values == 1 & rle_nomov$lengths <= (60 / ws3) * params_sleep[["spt_min_block_dur"]])    
       blocks_to_remove = blocks_to_remove[which(blocks_to_remove %in% c(1, length(rle_nomov$values)) == FALSE)]
       if (length(blocks_to_remove) > 0) {
         rle_nomov$values[blocks_to_remove] = 0
         rle_nomov = rebuild_rle(rle_nomov, N)
       }
       # Step -2: ignore gaps that are too long
-      gaps_to_fill = which(rle_nomov$values == 0 & rle_nomov$lengths < (60 / ws3) * spt_max_gap_dur)    
+      gaps_to_fill = which(rle_nomov$values == 0 & rle_nomov$lengths < (60 / ws3) * params_sleep[["spt_max_gap_dur"]][1])    
       Nsegments = length(rle_nomov$lengths)
-      if (!is.null(spt_max_gap_ratio) & Nsegments > 3) {
+      if (!is.null(params_sleep[["spt_max_gap_ratio"]]) & Nsegments > 3) {
         # Note: spt_max_gap_ratio is NULL by default
         gap_ratios = data.frame(values = rle_nomov$values, lengths = rle_nomov$lengths)
         gap_ratios$ratio = gap_ratios$length_after = gap_ratios$length_before = 0
         gap_ratios$length_after[1:(Nsegments - 1)] = gap_ratios$lengths[2:Nsegments]
         gap_ratios$length_before[2:Nsegments] = gap_ratios$lengths[1:(Nsegments - 1)]
         gap_ratios$ratio = gap_ratios$lengths / (gap_ratios$length_after + gap_ratios$length_before)
-        new_gaps_to_fill = which(gap_ratios$values == 0 & gap_ratios$ratio < spt_max_gap_ratio)
+        new_gaps_to_fill = which(gap_ratios$values == 0 &
+                                   gap_ratios$lengths < (60 / ws3) * params_sleep[["spt_max_gap_dur"]][2] &
+                                   gap_ratios$ratio < params_sleep[["spt_max_gap_ratio"]])
         gaps_to_fill = sort(unique(c(gaps_to_fill, new_gaps_to_fill)))
       }
       gaps_to_fill = gaps_to_fill[which(gaps_to_fill %in% c(1, length(rle_nomov$values)) == FALSE)]
@@ -427,7 +426,7 @@ HASPT = function(angle, spt_min_block_dur = 30, spt_max_gap_dur = 60,
       SPTE_end = which(diff(c(0, spt_estimate, 0)) == -1) - 1
       if (SPTE_start == 0) SPTE_start = 1
       part3_guider = HASPT.algo
-      if (is.na(HASPT.ignore.invalid)) {
+      if (is.na(params_sleep[["HASPT.ignore.invalid"]])) {
         # investigate if invalid time was included in the SPT definition,
         # and if so, keep track of that in the guider. This is needed in the
         # case that sleeplog is used, to inform part 4 that it should

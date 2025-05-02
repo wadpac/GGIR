@@ -31,114 +31,137 @@ test_that("HASPT generate correct output", {
   # Test all HASPT.algo setting
   
   # HDCZA with HASPT.ignore.invalid = FALSE
-  test = HASPT(angle = angle, spt_min_block_dur = 30, spt_max_gap_dur = 60,
-               ws3 = epochSize,
-               HASPT.algo = "HDCZA", HDCZA_threshold = c(), invalid = invalid,
-               HASPT.ignore.invalid = FALSE, activity = activity ,
-               marker = marker,
-               sibs = sibs,
-               try_marker_button = FALSE)
+  params_sleep = load_params()$params_sleep
+  params_sleep[["spt_min_block_dur"]] = 30
+  params_sleep[["spt_max_gap_dur"]] = 60
+  params_sleep[["HDCZA_threshold"]] = NULL
+  params_sleep[["HASPT.ignore.invalid"]] = FALSE
+  params_sleep[["try_marker_button"]] = FALSE
+  test = HASPT(angle = angle, params_sleep = params_sleep,
+               ws3 = epochSize, HASPT.algo = "HDCZA", invalid = invalid,
+               activity = activity, marker = marker, sibs = sibs)
   expect_equal(test$SPTE_start, 5000)
   expect_equal(test$SPTE_end, 8000)
   
   # HDCZA with HASPT.ignore.invalid = FALSE, spt_max_gap_dur = 1 and spt_max_gap_ratio = 0.5
-  test = HASPT(angle = angle, spt_min_block_dur = 30, spt_max_gap_dur = 1,
-               spt_max_gap_ratio = 0.5,
-               ws3 = epochSize,
-               HASPT.algo = "HDCZA", HDCZA_threshold = c(), invalid = invalid,
-               HASPT.ignore.invalid = FALSE, activity = activity ,
-               marker = marker,
-               sibs = sibs,
-               try_marker_button = FALSE)
+  params_sleep = load_params()$params_sleep
+  params_sleep[["spt_min_block_dur"]] = 30
+  params_sleep[["spt_max_gap_dur"]] = c(1, 120)
+  params_sleep[["spt_max_gap_ratio"]] = 0.5
+  params_sleep[["HDCZA_threshold"]] = NULL
+  params_sleep[["HASPT.ignore.invalid"]] = FALSE
+  params_sleep[["try_marker_button"]] = FALSE
+  test = HASPT(angle = angle, params_sleep = params_sleep,
+               HASPT.algo = "HDCZA", 
+               ws3 = epochSize, invalid = invalid, activity = activity,
+               marker = marker, sibs = sibs)
   expect_equal(test$SPTE_start, 5000)
   expect_equal(test$SPTE_end, 8000)
   
   # HDCZA with HASPT.ignore.invalid = TRUE
-  test = HASPT(angle = angle, spt_min_block_dur = 30, spt_max_gap_dur = 60,
-               ws3 = epochSize,
-               HASPT.algo = "HDCZA", HDCZA_threshold = c(), invalid = invalid,
-               HASPT.ignore.invalid = TRUE, activity = activity,
-               marker = marker,
-               sibs = sibs,
-               try_marker_button = FALSE)
+  params_sleep = load_params()$params_sleep
+  params_sleep[["spt_min_block_dur"]] = 30
+  params_sleep[["spt_max_gap_dur"]] = 60
+  params_sleep[["HDCZA_threshold"]] = NULL
+  params_sleep[["HASPT.ignore.invalid"]] = TRUE
+  params_sleep[["try_marker_button"]] = FALSE
+  test = HASPT(angle = angle, params_sleep = params_sleep,
+               ws3 = epochSize, HASPT.algo = "HDCZA", invalid = invalid,
+               activity = activity, marker = marker, sibs = sibs)
   expect_equal(test$SPTE_start, 5000)
   expect_equal(test$SPTE_end, 5400)
   
   # notused
-  test = HASPT(angle = angle, spt_min_block_dur = 30, spt_max_gap_dur = 60,
-               ws3 = epochSize,
-               HASPT.algo = "notused", HDCZA_threshold = c(), invalid = invalid,
-               HASPT.ignore.invalid = FALSE, activity = activity ,
-               marker = marker,
-               sibs = sibs,
-               try_marker_button = FALSE)
+  params_sleep = load_params()$params_sleep
+  params_sleep[["spt_min_block_dur"]] = 30
+  params_sleep[["spt_max_gap_dur"]] = 60
+  params_sleep[["HDCZA_threshold"]] = NULL
+  params_sleep[["HASPT.ignore.invalid"]] = FALSE
+  params_sleep[["try_marker_button"]] = FALSE
+  test = HASPT(angle = angle, params_sleep = params_sleep,
+               ws3 = epochSize, HASPT.algo = "notused", invalid = invalid,
+               activity = activity, marker = marker, sibs = sibs)
   expect_null(test$SPTE_start)
   expect_null(test$SPTE_end)
   
   # HorAngle
-  test = HASPT(angle = angle, spt_min_block_dur = 30, spt_max_gap_dur = 60,
-               ws3 = epochSize,
-               HASPT.algo = "HorAngle", HDCZA_threshold = c(), invalid = invalid,
-               HASPT.ignore.invalid = FALSE, activity = activity ,
-               marker = marker,
-               sibs = sibs,
-               try_marker_button = FALSE, HorAngle_threshold = 60)
+  params_sleep = load_params()$params_sleep
+  params_sleep[["spt_min_block_dur"]] = 30
+  params_sleep[["spt_max_gap_dur"]] = 60
+  params_sleep[["HDCZA_threshold"]] = NULL
+  params_sleep[["HASPT.ignore.invalid"]] = FALSE
+  params_sleep[["try_marker_button"]] = FALSE
+  params_sleep[["HorAngle_threshold"]] = 60
+  test = HASPT(angle = angle, params_sleep = params_sleep,
+               ws3 = epochSize, HASPT.algo = "HorAngle", invalid = invalid,
+               activity = activity, marker = marker, sibs = sibs)
   expect_equal(test$SPTE_start, 2415)
   expect_equal(test$SPTE_end, 17097)
   
-
   # NotWorn
-  test = HASPT(angle = angle, spt_min_block_dur = 30, spt_max_gap_dur = 60,
-               ws3 = epochSize,
-               HASPT.algo = "NotWorn", HDCZA_threshold = c(), invalid = invalid,
-               HASPT.ignore.invalid = FALSE, activity = activity ,
-               marker = marker,
-               sibs = sibs,
-               try_marker_button = FALSE)
+  params_sleep = load_params()$params_sleep
+  params_sleep[["spt_min_block_dur"]] = 30
+  params_sleep[["spt_max_gap_dur"]] = 60
+  params_sleep[["HDCZA_threshold"]] = NULL
+  params_sleep[["HASPT.ignore.invalid"]] = FALSE
+  params_sleep[["try_marker_button"]] = FALSE
+  params_sleep[["HorAngle_threshold"]] = 60
+  test = HASPT(angle = angle, params_sleep = params_sleep,
+               ws3 = epochSize, HASPT.algo = "NotWorn",
+               invalid = invalid, activity = activity,
+               marker = marker, sibs = sibs)
   expect_equal(test$SPTE_start, 5028)
   expect_equal(test$SPTE_end, 7971)
   expect_equal(test$tib.threshold, 0.2835165, tolerance = 0.001)
   
   # HLRB
-  test = HASPT(angle = angle, spt_min_block_dur = 30, spt_max_gap_dur = 60,
-               ws3 = epochSize,
-               HASPT.algo = "HLRB", HDCZA_threshold = c(), invalid = invalid,
-               HASPT.ignore.invalid = FALSE, activity = activity ,
-               marker = marker,
-               sibs = sibs,
-               try_marker_button = FALSE)
+  params_sleep = load_params()$params_sleep
+  params_sleep[["spt_min_block_dur"]] = 30
+  params_sleep[["spt_max_gap_dur"]] = 60
+  params_sleep[["HDCZA_threshold"]] = NULL
+  params_sleep[["HASPT.ignore.invalid"]] = FALSE
+  params_sleep[["try_marker_button"]] = FALSE
+  test = HASPT(angle = angle, params_sleep = params_sleep,
+               ws3 = epochSize, HASPT.algo = "HLRB", invalid = invalid,
+               activity = activity, marker = marker, sibs = sibs)
   expect_equal(test$SPTE_start, 5052)
   expect_equal(test$SPTE_end, 7950)
   expect_equal(test$tib.threshold, 0)
   
   # marker button
+  params_sleep = load_params()$params_sleep
+  params_sleep[["spt_min_block_dur"]] = 30
+  params_sleep[["spt_max_gap_dur"]] = 60
+  params_sleep[["HDCZA_threshold"]] = NULL
+  params_sleep[["HASPT.ignore.invalid"]] = FALSE
+  params_sleep[["consider_marker_button"]] = TRUE
   marker[c(4900, 4901, 4902, 7900, 7901, 7902)] = 1
   downsample = seq(1, N, by = 3)
-  test = HASPT(angle = NULL, spt_min_block_dur = 30, spt_max_gap_dur = 60,
-               ws3 = 15,
-               HASPT.algo = "MotionWare", HDCZA_threshold = c(), invalid = invalid[downsample],
-               HASPT.ignore.invalid = FALSE, activity = activity[downsample],
-               marker = marker[downsample],
-               sibs = sibs[downsample],
-               try_marker_button = TRUE)
-  expect_equal(test$SPTE_start * 3, 4902) # note: times 3 because these are indices in the downsampled data
-  expect_equal(test$SPTE_end * 3, 7902)
+  test = HASPT(angle = angle, params_sleep = params_sleep,
+               ws3 = epochSize,
+               HASPT.algo = "markerbutton", invalid = invalid,
+               activity = activity, marker = marker, sibs = sibs)
+  expect_equal(test$SPTE_start, 4902) # note: times 3 because these are indices in the downsampled data
+  expect_equal(test$SPTE_end, 7902)
   expect_equal(test$part3_guider, "markerbutton")
-  
   
   # MotionWare
   # As we do not know whether implementation is correct
   # this unit-test also has limited value. I am keeping it to at least
   # make an attempt to monitor changes in functionality
+  params_sleep = load_params()$params_sleep
+  params_sleep[["spt_min_block_dur"]] = 30
+  params_sleep[["spt_max_gap_dur"]] = 60
+  params_sleep[["HDCZA_threshold"]] = NULL
+  params_sleep[["HASPT.ignore.invalid"]] = FALSE
+  params_sleep[["consider_marker_button"]] = FALSE
   marker[c(4900, 4901, 4902, 7900, 7901, 7902)] = 1
   downsample = seq(1, N, by = 3)
-  test = HASPT(angle = NULL, spt_min_block_dur = 30, spt_max_gap_dur = 60,
+  test = HASPT(angle = NULL, params_sleep = params_sleep,
                ws3 = 15,
-               HASPT.algo = "MotionWare", HDCZA_threshold = c(), invalid = invalid[downsample],
-               HASPT.ignore.invalid = FALSE, activity = activity[downsample] / 1000,
-               marker = marker[downsample],
-               sibs = sibs[downsample],
-               try_marker_button = FALSE)
+               HASPT.algo = "MotionWare", invalid = invalid[downsample],
+               activity = activity[downsample] / 1000,
+               marker = marker[downsample], sibs = sibs[downsample])
   expect_equal(test$SPTE_start, 0) # note: times 3 because these are indices in the downsampled data
   expect_equal(test$SPTE_end, 5761)
   expect_equal(test$part3_guider, "MotionWare")

@@ -223,6 +223,12 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_output[["save_ms5rawlevels"]] = TRUE
       params_output[["save_ms5raw_without_invalid"]] = FALSE
     }
+    if (length(params_sleep[["spt_max_gap_dur"]]) == 1 &&
+        !is.null(params_sleep[["spt_max_gap_ratio"]])) {
+      params_sleep[["spt_max_gap_dur"]] = rep(params_sleep[["spt_max_gap_dur"]], 2)
+      warning(paste0("Parameter spt_max_gap_dur is expected to have two values ",
+                     "when parameter spt_max_gap_ratio is specified."), call. = FALSE)
+    }
   }
   
   if (length(params_metrics) > 0 & length(params_sleep) > 0) {

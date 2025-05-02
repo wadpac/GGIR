@@ -1465,6 +1465,10 @@ GGIR(mode = 1:5,
         Numeric (default = 60).
         Maximum size in minutes of a gap between resting blocks to be considered part of SPT
         in the estimation of the guider window (algorithms HDCZA, HorAngle and NotWorn).
+        If parameter spt_max_gap_ratio is used it is possible to specify spt_max_gap_dur
+        as vector of length two where the first value is use for an initial gap filtering,
+        while the second value is used as extra condition when assessing whether the 
+        relative duration of the nap is short enough.
       }
       
       \item{spt_max_gap_ratio}{

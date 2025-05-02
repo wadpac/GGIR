@@ -300,18 +300,12 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         }
         if (length(params_sleep[["def.noc.sleep"]]) == 1) {
           spt_estimate = HASPT(angle = tmpANGLE, ws3 = ws3,
-                               spt_min_block_dur = params_sleep[["spt_min_block_dur"]],
-                               spt_max_gap_dur = params_sleep[["spt_max_gap_dur"]],
-                               spt_max_gap_ratio = params_sleep[["spt_max_gap_ratio"]],
+                               params_sleep = params_sleep,
                                HASPT.algo = params_sleep[["HASPT.algo"]][guider_to_use],
                                invalid = invalid[qqq1:qqq2],
-                               HDCZA_threshold = params_sleep[["HDCZA_threshold"]],
-                               HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
                                activity = tmpACC,
                                marker = MARKER[qqq1:qqq2],
-                               sibs = sleep[qqq1:qqq2, 1],
-                               try_marker_button = params_sleep[["consider_marker_button"]],
-                               HorAngle_threshold = params_sleep[["HorAngle_threshold"]])
+                               sibs = sleep[qqq1:qqq2, 1])
         } else {
           spt_estimate = list(SPTE_end = NULL, SPTE_start = NULL, tib.threshold = NULL, part3_guider = NULL)
         }
@@ -345,18 +339,12 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                 }
               }
               spt_estimate_tmp = HASPT(angle = tmpANGLE, ws3 = ws3,
-                                       spt_min_block_dur = params_sleep[["spt_min_block_dur"]],
-                                       spt_max_gap_dur = params_sleep[["spt_max_gap_dur"]],
-                                       spt_max_gap_ratio = params_sleep[["spt_max_gap_ratio"]],
+                                       params_sleep = params_sleep,
                                        HASPT.algo = params_sleep[["HASPT.algo"]][guider_to_use],
                                        invalid = invalid[newqqq1:newqqq2],
-                                       HDCZA_threshold = params_sleep[["HDCZA_threshold"]],
-                                       HASPT.ignore.invalid = params_sleep[["HASPT.ignore.invalid"]],
                                        activity = ACC[newqqq1:newqqq2],
-                                       marker = MARKER[newqqq1:newqqq2],
-                                       sibs = sleep[newqqq1:newqqq2, 1],
-                                       try_marker_button = params_sleep[["consider_marker_button"]],
-                                       HorAngle_threshold = params_sleep[["HorAngle_threshold"]])
+                                       sibs = sleep[newqqq1:newqqq2, 1])
+              
               if (length(spt_estimate_tmp$SPTE_start) > 0) {
                 # If new SPTE_end is beyond noon (qqq2) then use the new SPTE_end
                 if (spt_estimate_tmp$SPTE_end + newqqq1 >= qqq2) {
