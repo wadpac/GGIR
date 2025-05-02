@@ -38,7 +38,7 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                         SRI1_smoothing_frac = NULL,
                         spt_min_block_dur =  30,
                         spt_max_gap_dur =  60,
-                        spt_max_gap_ratio = 0,
+                        spt_max_gap_ratio = 1,
                         HorAngle_threshold = 60)
   }
   if ("metrics" %in% topic) {
