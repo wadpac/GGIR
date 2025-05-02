@@ -38,8 +38,7 @@ test_that("HASPT generate correct output", {
   params_sleep[["HASPT.ignore.invalid"]] = FALSE
   params_sleep[["try_marker_button"]] = FALSE
   test = HASPT(angle = angle, params_sleep = params_sleep,
-               ws3 = epochSize, HASPT.algo = "HDCZA", invalid = invalid,
-               activity = activity, marker = marker, sibs = sibs)
+               ws3 = epochSize, HASPT.algo = "HDCZA", invalid = invalid)
   expect_equal(test$SPTE_start, 5000)
   expect_equal(test$SPTE_end, 8000)
   
@@ -53,8 +52,7 @@ test_that("HASPT generate correct output", {
   params_sleep[["try_marker_button"]] = FALSE
   test = HASPT(angle = angle, params_sleep = params_sleep,
                HASPT.algo = "HDCZA", 
-               ws3 = epochSize, invalid = invalid, activity = activity,
-               marker = marker, sibs = sibs)
+               ws3 = epochSize, invalid = invalid)
   expect_equal(test$SPTE_start, 5000)
   expect_equal(test$SPTE_end, 8000)
   
@@ -66,8 +64,7 @@ test_that("HASPT generate correct output", {
   params_sleep[["HASPT.ignore.invalid"]] = TRUE
   params_sleep[["try_marker_button"]] = FALSE
   test = HASPT(angle = angle, params_sleep = params_sleep,
-               ws3 = epochSize, HASPT.algo = "HDCZA", invalid = invalid,
-               activity = activity, marker = marker, sibs = sibs)
+               ws3 = epochSize, HASPT.algo = "HDCZA", invalid = invalid)
   expect_equal(test$SPTE_start, 5000)
   expect_equal(test$SPTE_end, 5400)
   
@@ -79,8 +76,7 @@ test_that("HASPT generate correct output", {
   params_sleep[["HASPT.ignore.invalid"]] = FALSE
   params_sleep[["try_marker_button"]] = FALSE
   test = HASPT(angle = angle, params_sleep = params_sleep,
-               ws3 = epochSize, HASPT.algo = "notused", invalid = invalid,
-               activity = activity, marker = marker, sibs = sibs)
+               ws3 = epochSize, HASPT.algo = "notused", invalid = invalid)
   expect_null(test$SPTE_start)
   expect_null(test$SPTE_end)
   
@@ -93,8 +89,7 @@ test_that("HASPT generate correct output", {
   params_sleep[["try_marker_button"]] = FALSE
   params_sleep[["HorAngle_threshold"]] = 60
   test = HASPT(angle = angle, params_sleep = params_sleep,
-               ws3 = epochSize, HASPT.algo = "HorAngle", invalid = invalid,
-               activity = activity, marker = marker, sibs = sibs)
+               ws3 = epochSize, HASPT.algo = "HorAngle", invalid = invalid)
   expect_equal(test$SPTE_start, 2415)
   expect_equal(test$SPTE_end, 17097)
   
@@ -109,7 +104,7 @@ test_that("HASPT generate correct output", {
   test = HASPT(angle = angle, params_sleep = params_sleep,
                ws3 = epochSize, HASPT.algo = "NotWorn",
                invalid = invalid, activity = activity,
-               marker = marker, sibs = sibs)
+               marker = marker)
   expect_equal(test$SPTE_start, 5028)
   expect_equal(test$SPTE_end, 7971)
   expect_equal(test$tib.threshold, 0.2835165, tolerance = 0.001)
@@ -123,7 +118,7 @@ test_that("HASPT generate correct output", {
   params_sleep[["try_marker_button"]] = FALSE
   test = HASPT(angle = angle, params_sleep = params_sleep,
                ws3 = epochSize, HASPT.algo = "HLRB", invalid = invalid,
-               activity = activity, marker = marker, sibs = sibs)
+               activity = activity, sibs = sibs)
   expect_equal(test$SPTE_start, 5052)
   expect_equal(test$SPTE_end, 7950)
   expect_equal(test$tib.threshold, 0)
@@ -140,7 +135,7 @@ test_that("HASPT generate correct output", {
   test = HASPT(angle = angle, params_sleep = params_sleep,
                ws3 = epochSize,
                HASPT.algo = "markerbutton", invalid = invalid,
-               activity = activity, marker = marker, sibs = sibs)
+               marker = marker, sibs = sibs)
   expect_equal(test$SPTE_start, 4902) # note: times 3 because these are indices in the downsampled data
   expect_equal(test$SPTE_end, 7902)
   expect_equal(test$part3_guider, "markerbutton")
