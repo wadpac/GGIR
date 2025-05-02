@@ -46,7 +46,7 @@ test_that("HASPT generate correct output", {
   # HDCZA with HASPT.ignore.invalid = FALSE, spt_max_gap_dur = 1 and spt_max_gap_ratio = 0.5
   params_sleep = load_params()$params_sleep
   params_sleep[["spt_min_block_dur"]] = 30
-  params_sleep[["spt_max_gap_dur"]] = c(1, 120)
+  params_sleep[["spt_max_gap_dur"]] = 120
   params_sleep[["spt_max_gap_ratio"]] = 0.5
   params_sleep[["HDCZA_threshold"]] = NULL
   params_sleep[["HASPT.ignore.invalid"]] = FALSE

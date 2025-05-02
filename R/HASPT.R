@@ -395,21 +395,23 @@ HASPT = function(angle, params_sleep = NULL, ws3 = 5,
         rle_nomov = rebuild_rle(rle_nomov, N)
       }
       # Step -2: ignore gaps that are too long
-      gaps_to_fill = which(rle_nomov$values == 0 & rle_nomov$lengths < (60 / ws3) * params_sleep[["spt_max_gap_dur"]][1])    
       Nsegments = length(rle_nomov$lengths)
-      if (!is.null(params_sleep[["spt_max_gap_ratio"]]) & Nsegments > 3) {
+      if (!is.null(params_sleep[["spt_max_gap_ratio"]]) && params_sleep[["spt_max_gap_ratio"]] < 1 && Nsegments > 3) {
         # Note: spt_max_gap_ratio is NULL by default
         gap_ratios = data.frame(values = rle_nomov$values, lengths = rle_nomov$lengths)
         gap_ratios$ratio = gap_ratios$length_after = gap_ratios$length_before = 0
         gap_ratios$length_after[1:(Nsegments - 1)] = gap_ratios$lengths[2:Nsegments]
         gap_ratios$length_before[2:Nsegments] = gap_ratios$lengths[1:(Nsegments - 1)]
-        gap_ratios$ratio = gap_ratios$lengths / (gap_ratios$length_after + gap_ratios$length_before)
-        new_gaps_to_fill = which(gap_ratios$values == 0 &
-                                   gap_ratios$lengths < (60 / ws3) * params_sleep[["spt_max_gap_dur"]][2] &
-                                   gap_ratios$ratio < params_sleep[["spt_max_gap_ratio"]])
-        gaps_to_fill = sort(unique(c(gaps_to_fill, new_gaps_to_fill)))
+        gaps_to_fill = which(gap_ratios$values == 0 &
+                               gap_ratios$lengths < (60 / ws3) * params_sleep[["spt_max_gap_dur"]] &
+                               gap_ratios$lengths / gap_ratios$length_after < params_sleep[["spt_max_gap_ratio"]] &
+                               gap_ratios$lengths / gap_ratios$length_before < params_sleep[["spt_max_gap_ratio"]])
+      } else {
+        gaps_to_fill = which(rle_nomov$values == 0 & rle_nomov$lengths < (60 / ws3) * params_sleep[["spt_max_gap_dur"]])
       }
-      gaps_to_fill = gaps_to_fill[which(gaps_to_fill %in% c(1, length(rle_nomov$values)) == FALSE)]
+      if (length(gaps_to_fill) > 0) {
+        gaps_to_fill = gaps_to_fill[which(gaps_to_fill %in% c(1, length(rle_nomov$values)) == FALSE)]
+      }
       if (length(gaps_to_fill) > 0) {
         rle_nomov$values[gaps_to_fill] = 1
         rle_nomov = rebuild_rle(rle_nomov, N)

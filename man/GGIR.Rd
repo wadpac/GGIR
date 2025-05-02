@@ -1458,24 +1458,25 @@ GGIR(mode = 1:5,
       \item{spt_min_block_dur}{
         Numeric (default = 30).
         Minimum size in minutes of a resting block to be considered part of SPT
-        in the estimation of the guider window (algorithms HDCZA, HorAngle and NotWorn).
+        in the estimation of the guider window (relevant for HASPT.algo settings: 
+        HDCZA, HorAngle and NotWorn).
       }
       
       \item{spt_max_gap_dur}{
         Numeric (default = 60).
         Maximum size in minutes of a gap between resting blocks to be considered part of SPT
-        in the estimation of the guider window (algorithms HDCZA, HorAngle and NotWorn).
-        If parameter spt_max_gap_ratio is used it is possible to specify spt_max_gap_dur
-        as vector of length two where the first value is use for an initial gap filtering,
-        while the second value is used as extra condition when assessing whether the 
-        relative duration of the nap is short enough.
+        in the estimation of the guider window (relevant for HASPT.algo settings: 
+        HDCZA, HorAngle and NotWorn).
       }
       
       \item{spt_max_gap_ratio}{
-        Numeric (default = NULL).
-        Maximum ratio between gap duration and the sum of the neighbouring rest blocks
-        to be considered part of SPT in the estimation of the guider window 
-        (algorithms HDCZA, HorAngle and NotWorn).
+        Numeric (default = 1).
+        Only considered when set to a value less than 1
+        Maximum ratio between gap duration and either rest block next to it. If
+        the ratio for both is less than spt_max_gap_ratio the gap is merged with
+        the neighbouring rest blocks and together they are considered as estimation 
+        of the SPT guider window 
+        (relevant for HASPT.algo settings: HDCZA, HorAngle and NotWorn).
       }
       
       \item{HorAngle_threshold}{
