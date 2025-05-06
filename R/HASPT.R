@@ -417,16 +417,18 @@ HASPT = function(angle, params_sleep = NULL, ws3 = 5,
         rle_nomov = rebuild_rle(rle_nomov, N)
       }
       # Step -1: keep indices for longest spt block
-      max_length =  max(rle_nomov$length[which(rle_nomov$values == 1)])
-      rle_nomov$values[which(rle_nomov$values == 1 & rle_nomov$length == max_length)[1]] = 2
-      rle_nomov$values[which(rle_nomov$values != 2)] = 0
-      rle_nomov$values[which(rle_nomov$values == 2)] = 1
+      if (1 %in% rle_nomov$values) {
+        max_length =  max(rle_nomov$length[which(rle_nomov$values == 1)])
+        rle_nomov$values[which(rle_nomov$values == 1 & rle_nomov$length == max_length)[1]] = 2
+        rle_nomov$values[which(rle_nomov$values != 2)] = 0
+        rle_nomov$values[which(rle_nomov$values == 2)] = 1
+      }
       spt_estimate = rep(rle_nomov$values, rle_nomov$length)
       spt_estimate = spt_estimate[1:length(x)]
       # identify start and end of longest block
       SPTE_start = which(diff(c(0, spt_estimate, 0)) == 1) - 1
       SPTE_end = which(diff(c(0, spt_estimate, 0)) == -1) - 1
-      if (SPTE_start == 0) SPTE_start = 1
+      if (length(SPTE_start) == 1 && length(SPTE_end) == 1 && SPTE_start == 0) SPTE_start = 1
       part3_guider = HASPT.algo
       if (is.na(params_sleep[["HASPT.ignore.invalid"]])) {
         # investigate if invalid time was included in the SPT definition,
