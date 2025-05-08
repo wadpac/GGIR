@@ -1,5 +1,7 @@
 # CHANGES IN GGIR VERSION 3.2-7
 
+- Config file: fix minor issue that made GGIR, GGIRread, and R version packages to overwrite other parameters in config file. #1298 
+
 - Part 3:
 
   - Add parameters "spt_min_block_dur", "spt_max_gap_dur", "spt_max_gap_ratio", and "HorAngle_threshold" to improve control over algorithms used in part 3 #1295
