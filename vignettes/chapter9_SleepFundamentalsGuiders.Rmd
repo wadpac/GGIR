@@ -110,7 +110,7 @@ Relative to the basic sleeplog format the advanced sleep log format comes with t
 
 - GGIR guesses the data format by looping over common date formats. If the date falls within 30 days of the start date of the accelerometer recording then the date format is assumed to be found. It starts with attempting “Y-m-d” (as in 2015-06-25).
 
-- If a column name includes the word "impute" then this column is treated as a log of the diary imputation for outside GGIR for the preceding night. The value will be shown in the visualreport and is stored in the time series by GGIR part 5. The imputation codes we used for testing have the format C0000 to indicate no imputation for inbed, sleeponset, wakeup and outbed, respectively. If one of the numbers would be 1 then that would reflect imputation.
+- If a column name includes the word "impute" then this column is treated as log of your own diary data imputation (outside GGIR) for the night ending on the current day. The value will be shown in the visualreport and is stored in the time series by GGIR part 5. The imputation codes we used for testing have the format C0000 to indicate no imputation for inbed, sleeponset, wakeup and outbed, respectively. If one of the numbers would be 1 then that would reflect imputation.
 
 ### Guider: HDCZA
 
