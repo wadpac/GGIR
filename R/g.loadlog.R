@@ -259,7 +259,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
           if (is.null(Sdates_correct)) {
             # skip this row because it is empty
             warning(paste0("\nSkipping sleeplog row for ID ", ID,
-                           " because it has no date(s)"), call. = FALSE)
+                           " because it has no matching date(s)"), call. = FALSE)
             next
           }
           if (deltadate > 300) {
@@ -487,7 +487,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
   } else {
     sleeplog = NULL
   }
-  if (exists("B") && nnights > 0) {
+  if (exists("B") && ncol(B) > 0 && nnights > 0) {
     bedlog = adjustLogFormat(B, nnights, mode = "bedlog")
   } else {
     bedlog = NULL
