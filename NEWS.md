@@ -2,6 +2,8 @@
 
 - Now generates error message when user provides parameters with unknown names to GGIR function #1300.
 
+- Config file: fix minor issue that caused GGIR, GGIRread, and R version to overwrite the last 3 parameters in the config file. #1298 
+
 # CHANGES IN GGIR VERSION 3.2-6
 
 - Part 3 and 4:
