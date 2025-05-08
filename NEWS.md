@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.2-?
+
+- Config file: fix minor issue that made GGIR, GGIRread, and R version packages to overwrite other parameters in config file. #1298 
+
 # CHANGES IN GGIR VERSION 3.2-6
 
 - Part 3 and 4:
