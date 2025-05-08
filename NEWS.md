@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.2-7
+
+- Now generates error message when user provides parameters with unknown names to GGIR function #1300.
+
 # CHANGES IN GGIR VERSION 3.2-6
 
 - Part 3 and 4:

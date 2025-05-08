@@ -258,6 +258,24 @@ test_that("chainof5parts", {
   expect_true(file.exists("output_test/results/part5_daysummary_OO_L40M100V400_T5A5.csv"))
   dn = "output_test"
   
+  # Expect warning when unknown parameters are provided
+  expect_error(GGIR(mode = NULL, datadir = fn, outputdir = getwd(),
+                    studyname = "test", f0 = 1, f1 = 1,
+                    do.report = NULL, overwrite = FALSE,
+                    verbose = FALSE,
+                    iamnewhere = 0),
+               paste0("\nParameter iamnewhere is unknown to GGIR and will not be",
+                      " used, please check for typos or remove."))
+  
+  expect_error(GGIR(mode = NULL, datadir = fn, outputdir = getwd(),
+                    studyname = "test", f0 = 1, f1 = 1,
+                    do.report = NULL, overwrite = FALSE,
+                    verbose = FALSE,
+                    iamnewhere = 0,
+                    iamnewtoo = 1),
+               paste0("\nParameters iamnewhere and iamnewtoo are unknown to GGIR and will not be used, please check for typos or remove these."))
+  
+
   #=======================
   # Different variations on part 4:
   #--------------------------------------------
