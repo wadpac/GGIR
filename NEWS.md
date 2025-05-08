@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.2-?
+
+- Config file: fix minor issue that caused GGIR, GGIRread, and R version to overwrite the last 3 parameters in the config file. #1298 
+
 # CHANGES IN GGIR VERSION 3.2-6
 
 - Part 3 and 4:
@@ -1577,7 +1581,7 @@ and incorporated in data_quality_report #866
 
 # CHANGES IN GGIR VERSION 1.5-17
 
-- SPT-window detection now updated with a constrained threshold to make it more robust against between accelerometer brand differences. This is the approach used for our PSG in <https://www.biorxiv.org/content/10.1101/257972v1>
+- SPT-window detection now updated with a constrained threshold to make it more robust against between accelerometer brand differences. This is the approach used for our PSG in <http://dx.doi.org/10.1038/s41598-018-31266-z>
 
 # CHANGES IN GGIR VERSION 1.5-16
 
