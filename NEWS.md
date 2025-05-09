@@ -2,6 +2,8 @@
 
 - Config file: fix minor issue that caused GGIR, GGIRread, and R version to overwrite the last 3 parameters in the config file. #1298 
 
+- Part 5: Add option to control maximum allowed acceleration in the minute before or after a sustained inactivity bout to be considered a nap. #967
+
 # CHANGES IN GGIR VERSION 3.2-6
 
 - Part 3 and 4:

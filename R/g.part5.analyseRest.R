@@ -108,6 +108,8 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
                           sibreport$duration >= params_sleep[["possible_nap_dur"]][1] &
                           sibreport$duration < params_sleep[["possible_nap_dur"]][2] &
                           sibreport$acc_edge <= params_sleep[["possible_nap_edge_acc"]] &
+                          sibreport$mean_acc_1min_before <= params_sleep[["possible_nap_1min_before_acc"]] &
+                          sibreport$mean_acc_1min_after <= params_sleep[["possible_nap_1min_after_acc"]] &
                           sibreport$startHour >= params_sleep[["possible_nap_window"]][1] &
                           sibreport$endHour < params_sleep[["possible_nap_window"]][2] &
                           sibreport$ignore == FALSE) |
