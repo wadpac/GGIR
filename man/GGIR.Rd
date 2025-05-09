@@ -1380,6 +1380,18 @@ GGIR(mode = 1:5,
         Maximum acceleration in the 1 minute after the SIB for the nap to be considered.
         By default this will allow all possible naps.
       }
+      
+      \item{possible_nap_acc_mean}{
+        Numeric (default = c(0, Inf))
+        The range in which the mean acceleration during SIB need to fall to be 
+        considered a nap.
+      }
+      
+      \item{possible_nap_angle_stdev}{
+        Numeric (default = c(0, Inf))
+        The range in which the standard deviation of angle during SIB needs to fall 
+        to be considered a nap.
+      }
 
       \item{possible_nap_gap}{
         Numeric (default = 0).

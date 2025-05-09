@@ -11,7 +11,10 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
                            end = character(Nsibs),
                            duration = numeric(Nsibs),
                            mean_acc_1min_before = numeric(Nsibs),
-                           mean_acc_1min_after = numeric(Nsibs), stringsAsFactors = FALSE)
+                           mean_acc_1min_after = numeric(Nsibs),
+                           mean_acc_sib = numeric(Nsibs),
+                           stdev_angle_sib = numeric(Nsibs),
+                           stringsAsFactors = FALSE)
     for (sibi in 1:Nsibs) {
       sibreport$start[sibi]  = format(ts$time[dayind[sib_starts[sibi]]])
       sibreport$end[sibi] = format(ts$time[dayind[sib_ends[sibi]]])
@@ -21,6 +24,7 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
       }
       sibreport$duration[sibi] = ((sib_ends[sibi] - sib_starts[sibi]) + 1) / (60/epochlength)
       boutind = sib_starts[sibi]:sib_ends[sibi]
+      # mean acceleration in minute before and after sib
       minute_before = (sib_starts[sibi] - (60/epochlength)):(sib_starts[sibi] - 1)
       minute_after = (sib_ends[sibi] + 1):(sib_ends[sibi] + (60/epochlength))
       if (min(minute_before) > 1) {
@@ -28,6 +32,14 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
       }
       if (max(minute_after) < nrow(ts)) {
         sibreport$mean_acc_1min_after[sibi]  = round(mean(ts$ACC[dayind[minute_after]]), digits = 3)
+      }
+      # variance in acceleration during sib
+      sibreport$mean_acc_sib[sibi]  = round(sd(ts$ACC[dayind[sib_starts[sibi]:sib_ends[sibi]]]), digits = 3)
+      if ("angle" %in% colnames(ts)) {
+        # variance in angle during sib
+        sibreport$stdev_angle_sib[sibi]  = round(sd(ts$angle[dayind[sib_starts[sibi]:sib_ends[sibi]]]), digits = 3)
+      } else {
+        sibreport$stdev_angle_sib[sibi] = 0
       }
     }
   }

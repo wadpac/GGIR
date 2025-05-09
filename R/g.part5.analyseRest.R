@@ -104,12 +104,18 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
       sibreport$endHour[overlapMidnight] = sibreport$endHour[overlapMidnight] + 24
     }
     
+    acc_mean = params_sleep[["possible_nap_acc_mean"]]
+    angle_sd = params_sleep[["possible_nap_angle_stdev"]]
     longboutsi = which((sibreport$type == "sib" &
                           sibreport$duration >= params_sleep[["possible_nap_dur"]][1] &
                           sibreport$duration < params_sleep[["possible_nap_dur"]][2] &
                           sibreport$acc_edge <= params_sleep[["possible_nap_edge_acc"]] &
                           sibreport$mean_acc_1min_before <= params_sleep[["possible_nap_1min_before_acc"]] &
                           sibreport$mean_acc_1min_after <= params_sleep[["possible_nap_1min_after_acc"]] &
+                          data.table::between(sibreport$mean_acc_sib,
+                                              lower = acc_mean[1], upper = acc_mean[2]) &
+                          data.table::between(sibreport$stdev_angle_sib,
+                                              lower = angle_sd[1], upper = angle_sd[2]) &
                           sibreport$startHour >= params_sleep[["possible_nap_window"]][1] &
                           sibreport$endHour < params_sleep[["possible_nap_window"]][2] &
                           sibreport$ignore == FALSE) |

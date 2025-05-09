@@ -39,7 +39,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "SRI1_smoothing_wsize_hrs",
                        "SRI1_smoothing_frac",
                        "possible_nap_1min_before_acc",
-                       "possible_nap_1min_after_acc")
+                       "possible_nap_1min_after_acc",
+                       "possible_nap_acc_mean",
+                       "possible_nap_angle_stdev")
     boolean_params = c("ignorenonwear", "HASPT.ignore.invalid",
                        "relyonguider", "sleeplogidnum",
                        "impute_marker_button", "consider_marker_button",

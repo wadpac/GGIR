@@ -2,7 +2,11 @@
 
 - Config file: fix minor issue that caused GGIR, GGIRread, and R version to overwrite the last 3 parameters in the config file. #1298 
 
-- Part 5: Add option to control maximum allowed acceleration in the minute before or after a sustained inactivity bout to be considered a nap. #967
+- Part 5: Add new parameters to possible_nap_1min_before_acc, possible_nap_1min_after_acc,
+possible_nap_acc_mean, and possible_nap_angle_stdev to control maximum allowed acceleration
+in the minute before or after, average acceleration during, and standard 
+deviation of angle during a sustained inactivity bout (sib) to be considered a nap. #967
+
 
 # CHANGES IN GGIR VERSION 3.2-6
 
