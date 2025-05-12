@@ -38,8 +38,9 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                        " are unknown to GGIR and will not be used, ",
                     "please check for typos or remove these."), call. = FALSE)
       }
+      rm(unknown_param_names)
     }
-    rm(unknown_param_names, default_params, known_param_names)
+    rm(default_params, known_param_names)
   }
   
   if (length(datadir) == 0) {
