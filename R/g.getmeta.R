@@ -255,8 +255,13 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             }
           }
         }
-        # timegaps inside data chunks are dealt with in g.imputeTimegaps
-        # but timegaps in between data chunks are not dealt with yet.
+        # Timegaps inside data chunks are dealt with in g.imputeTimegaps
+        # but timegaps in between data chunks are not dealt with there,
+        # which could in theory be an issue for csv format data with known time gaps,
+        # such as ActivPAL and ActiGraph.
+        # The time gaps needs to coincide exactly with
+        # edges of a data chunk, by which probability of this occurring is low.
+        # The code blow aims to detect and handle this scenario.
         if ("time" %in% colnames(data) && "time" %in% colnames(S)) {
           timegap_between_chunks = as.numeric(data[1, "time"] - S[nrow(S), "time"])
           if (timegap_between_chunks > 3600 * sf) {
