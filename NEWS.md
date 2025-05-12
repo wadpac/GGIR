@@ -12,6 +12,8 @@
 
 - Config file: fix minor issue that caused GGIR, GGIRread, and R version to overwrite the last 3 parameters in the config file. #1298 
 
+- Part 1: Detect time gaps in between data (24 hour) chunks. Handle these if less than 1 hours and generate error when larger. #1294
+
 # CHANGES IN GGIR VERSION 3.2-6
 
 - Part 3 and 4:

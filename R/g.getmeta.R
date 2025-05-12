@@ -255,7 +255,30 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             }
           }
         }
-        data = rbind(S,data)
+        # Timegaps inside data chunks are dealt with in g.imputeTimegaps
+        # but timegaps in between data chunks are not dealt with there,
+        # which could in theory be an issue for csv format data with known time gaps,
+        # such as ActivPAL and ActiGraph.
+        # The time gaps needs to coincide exactly with
+        # edges of a data chunk, by which probability of this occurring is low.
+        # The code blow aims to detect and handle this scenario.
+        if ("time" %in% colnames(data) && "time" %in% colnames(S)) {
+          timegap_between_chunks = as.numeric(data[1, "time"] - S[nrow(S), "time"])
+          if (timegap_between_chunks > 3600 * sf) {
+            stop(paste0("Time gap observed of more than 1 hour between data ",
+                        "chunks for ", basename(datafile), " . Please contact ",
+                        "package maintainer."), call. = FALSE)
+          } else if (timegap_between_chunks > 3 / sf && timegap_between_chunks <= 60 * sf) {
+            # impute time gap of more than 3 samples and equal to or less than 1 hour
+            # normalise last value
+            S[nrow(S), c("x", "y", "z")] = S[nrow(S), c("x", "y", "z")] / sqrt(sum(S[nrow(S), c("x", "y", "z")]^2))
+            # replicate last row
+            newRows = do.call(rbind, replicate(round(timegap_between_chunks  * sf), S[nrow(S), ], simplify = FALSE))
+            # append to end
+            S = rbind(S, newRows)
+          }
+        }
+        data = rbind(S, data)
       }
       if (i == 1) {
         SWMT = get_starttime_weekday_truncdata(mon, dformat,
