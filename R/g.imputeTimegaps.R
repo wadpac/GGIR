@@ -104,11 +104,11 @@ g.imputeTimegaps = function(x, sf, k=0.25, impute = TRUE,
       GapsLength = sum(x$gap[gapsi])
       #  normalisation to 1 G 
       normalise = which(x$gap > 1)
-      for (i_normalise in normalise) {
-        en_lastknownvalue = sqrt(rowSums(x[i_normalise, xyzCol]^2))
-        if ((abs(en_lastknownvalue) - 1) > 0.005) {   # only if it deviates more than 5 mg from 1 G
-          x[i_normalise, xyzCol] = x[i_normalise, xyzCol] / en_lastknownvalue
-        }
+      en_lastknownvalue = sqrt(rowSums(x[normalise, xyzCol]^2))
+      # only if it deviates more than 5 mg from 1 G
+      good_to_normalise = which((abs(en_lastknownvalue) - 1) > 0.005)
+      if (length(good_to_normalise) > 0) {
+        x[normalise[good_to_normalise], xyzCol] = x[normalise[good_to_normalise], xyzCol] / en_lastknownvalue[good_to_normalise]
       }
       imputation_done = FALSE
       if (!is.null(epochsize)) {
