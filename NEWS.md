@@ -9,6 +9,7 @@ possible_nap_acc_mean, and possible_nap_angle_stdev to control maximum allowed a
 in the minute before or after, average acceleration during, and standard 
 deviation of angle during a sustained inactivity bout (sib) to be considered a nap. #967
 
+- Part 1: Detect time gaps in between data (24 hour) chunks. Handle these if less than 1 hours and generate error when larger. #1294
 
 # CHANGES IN GGIR VERSION 3.2-6
 
