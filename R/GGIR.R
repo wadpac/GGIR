@@ -19,12 +19,27 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       for (dupi in unique(argNames[dupArgNames])) {
         dupArgValues = input[which(argNames %in% dupi)]
         if (all(dupArgValues == dupArgValues[[1]])) { # duplicated arguments, but no confusion about what value should be
-          warning(paste0("\nArgument ", dupi, " has been provided more than once. Try to avoid this."))
+          warning(paste0("\nParameter ", dupi, " has been provided more than once. Try to avoid this."))
         } else {# duplicated arguments, and confusion about what value should be,
-          warning(paste0("\nArgument ", dupi, " has been provided more than once and with inconsistent values. Please fix."))
+          warning(paste0("\nParameter ", dupi, " has been provided more than once and with inconsistent values. Please fix."))
         }
       }
     }
+    default_params = load_params()
+    known_param_names =  unlist(lapply(names(default_params), function(n) names(default_params[[n]])))
+    if (any(argNames %in% known_param_names == FALSE)) {
+      unknown_param_names = argNames[argNames %in% known_param_names == FALSE]
+      if (length(unknown_param_names) == 1) {
+        stop(paste0("\nParameter ", unknown_param_names,
+                       " is unknown to GGIR and will not be used, ",
+                    "please check for typos or remove."), call. = FALSE)
+      } else {
+        stop(paste0("\nParameters ", paste0(unknown_param_names, collapse = " and "),
+                       " are unknown to GGIR and will not be used, ",
+                    "please check for typos or remove these."), call. = FALSE)
+      }
+    }
+    rm(unknown_param_names, default_params, known_param_names)
   }
   
   if (length(datadir) == 0) {
