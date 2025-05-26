@@ -42,7 +42,7 @@ In GGIR, the epoch length is kept constant across the GGIR parts to allow for co
 
 ## Acceleration metrics available in GGIR
 
-Below you will find a list of all metrics that GGIR can apply. Multiple metrics can be derived in the same GGIR run. All acceleration metrics are derived in GGIR function [`g.applymetrics`](https://github.com/wadpac/GGIR/blob/master/R/g.applymetrics.R). Only for Neishabouri counts GGIR relies on the R package `actifelifecounts`. Please see the code in the respective package documentation for information on the exact calculations.
+Below you will find a list of all metrics that GGIR can apply. Multiple metrics can be derived in the same GGIR run. All acceleration metrics are derived in GGIR function [`g.applymetrics`](https://github.com/wadpac/GGIR/blob/main/R/g.applymetrics.R). Only for Neishabouri counts GGIR relies on the R package `actifelifecounts`. Please see the code in the respective package documentation for information on the exact calculations.
 To use the metrics, add the parameters to your GGIR call, e.g.:
 
 ```         

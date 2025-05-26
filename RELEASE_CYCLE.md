@@ -12,7 +12,7 @@ Before releasing, please make sure to check the following:
 
 1. Create GitHub issue at least 1 weeks before the intended release to announce the release and indicate what will be in the release.
 2. Make sure the change log `inst/NEWS.Rd` is up to date and that it says "GitHub-only-release date" rather than "release date"
-3. Make sure the third (last) digit in the version number is incremented by one relative to the master branch and the date is the present date. This applies to the files `DESCRIPTION`, `GGIR-package.Rd` and `NEWS.Rd` file. Use function `prepareNewRelease.R` in the root of GGIR to double check that version number and date are consistent between these files.
+3. Make sure the third (last) digit in the version number is incremented by one relative to the main branch and the date is the present date. This applies to the files `DESCRIPTION`, `GGIR-package.Rd` and `NEWS.Rd` file. Use function `prepareNewRelease.R` in the root of GGIR to double check that version number and date are consistent between these files.
 4. Update package contributor list if new people have contributed.
 5. Run `R CMD check --as-cran` to make sure all tests and checks pass.
 
