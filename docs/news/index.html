@@ -80,7 +80,13 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="3.2-6" id="changes-in-ggir-version-32-6">CHANGES IN GGIR VERSION 3.2-6<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-32-6"></a></h2>
+<h2 class="pkg-version" data-toc-text="3.2-7" id="changes-in-ggir-version-32-7">CHANGES IN GGIR VERSION 3.2-7<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-32-7"></a></h2>
+<ul><li><p>Now generates error message when user provides parameters with unknown names to GGIR function <a href="https://github.com/wadpac/GGIR/issues/1300" class="external-link">#1300</a>.</p></li>
+<li><p>Config file: fix minor issue that caused GGIR, GGIRread, and R version to overwrite the last 3 parameters in the config file. <a href="https://github.com/wadpac/GGIR/issues/1298" class="external-link">#1298</a></p></li>
+<li><p>Part 1: Detect time gaps in between data (24 hour) chunks. Handle these if less than 1 hours and generate error when larger. <a href="https://github.com/wadpac/GGIR/issues/1294" class="external-link">#1294</a></p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.2-6" id="changes-in-ggir-version-32-6">CHANGES IN GGIR VERSION 3.2-6<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-32-6"></a></h2><p class="text-muted">CRAN release: 2025-04-25</p>
 <ul><li>
 <p>Part 3 and 4:</p>
 <ul><li><p>Sleep regularity index (SRI) expanded with option to smooth data. <a href="https://github.com/wadpac/GGIR/issues/1269" class="external-link">#1269</a></p></li>
@@ -1114,7 +1120,7 @@
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.5-17" id="changes-in-ggir-version-15-17">CHANGES IN GGIR VERSION 1.5-17<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-15-17"></a></h2><p class="text-muted">CRAN release: 2018-02-19</p>
-<ul><li>SPT-window detection now updated with a constrained threshold to make it more robust against between accelerometer brand differences. This is the approach used for our PSG in <a href="https://www.biorxiv.org/content/10.1101/257972v1" class="external-link uri">https://www.biorxiv.org/content/10.1101/257972v1</a>
+<ul><li>SPT-window detection now updated with a constrained threshold to make it more robust against between accelerometer brand differences. This is the approach used for our PSG in <a href="http://dx.doi.org/10.1038/s41598-018-31266-z" class="external-link uri">http://dx.doi.org/10.1038/s41598-018-31266-z</a>
 </li>
 </ul></div>
     <div class="section level2">

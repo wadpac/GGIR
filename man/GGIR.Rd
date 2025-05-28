@@ -1445,7 +1445,7 @@ GGIR(mode = 1:5,
         before calculating SRI1. For example, if set to 1 and 0.8, we apply a rolling 
         1 hour window where each window with 80\% or more sleep is classificed as sleep.
       }
-       
+      
       \item{SRI1_smoothing_frac}{
         Numeric (default = NULL)
         As used for Sleep Regularity Calculation in \link{g.part3}.
@@ -1453,6 +1453,35 @@ GGIR(mode = 1:5,
         specified, this is the fraction used to smooth detected sustained inactivity bouts
         before calculating SRI1. For example, if set to 1 and 0.8, we apply a rolling 
         1 hour window where each window with 80\% or more sleep is classificed as sleep.
+      }
+      
+      \item{spt_min_block_dur}{
+        Numeric (default = 30).
+        Minimum size in minutes of a resting block to be considered part of SPT
+        in the estimation of the guider window (relevant for HASPT.algo settings: 
+        HDCZA, HorAngle and NotWorn).
+      }
+      
+      \item{spt_max_gap_dur}{
+        Numeric (default = 60).
+        Maximum size in minutes of a gap between resting blocks to be considered part of SPT
+        in the estimation of the guider window (relevant for HASPT.algo settings: 
+        HDCZA, HorAngle and NotWorn).
+      }
+      
+      \item{spt_max_gap_ratio}{
+        Numeric (default = 1).
+        Only considered when set to a value less than 1
+        Maximum ratio between gap duration and either rest block next to it. If
+        the ratio for both is less than spt_max_gap_ratio the gap is merged with
+        the neighbouring rest blocks and together they are considered as estimation 
+        of the SPT guider window 
+        (relevant for HASPT.algo settings: HDCZA, HorAngle and NotWorn).
+      }
+      
+      \item{HorAngle_threshold}{
+        Numeric (default = 60).
+        Angle threshold used for the HorAngle algorithm.
       }
     }
   }
