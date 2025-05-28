@@ -102,7 +102,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
       }
     }
     ACC = as.numeric(as.matrix(IMP$metashort[,which(colnames(IMP$metashort) == acc.metric)]))
-    night = rep(0, length(ACC))
+    night = spt_crude_estimate = rep(0, length(ACC))
     
     if ("marker" %in% colnames(IMP$metashort)) {
       MARKER = as.numeric(as.matrix(IMP$metashort[,which(colnames(IMP$metashort) == "marker")]))
@@ -264,14 +264,15 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         } else {
           partialFirstDay = FALSE
         }
-        night[qqq1:qqq2] = sptei
+        tSegment = qqq1:qqq2
+        night[tSegment] = sptei
         detection.failed = FALSE
         # Calculate nonwear percentage for this window
-        nonwear_percentage = (length(which(invalid[qqq1:qqq2] == 1)) /  (qqq2 - qqq1 + 1)) * 100
+        nonwear_percentage = (length(which(invalid[tSegment] == 1)) /  (qqq2 - qqq1 + 1)) * 100
         guider_to_use = decide_guider(params_sleep[["HASPT.algo"]], nonwear_percentage)
         #------------------------------------------------------------------
         # calculate L5 because this is used as back-up approach
-        tmpACC = ACC[qqq1:qqq2]
+        tmpACC = ACC[tSegment]
         windowRL = round((3600/ws3) * 5)
         if ((windowRL / 2) == round(windowRL / 2)) windowRL = windowRL + 1
         if (length(tmpACC) < windowRL) {
@@ -288,24 +289,26 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         }
         L5list[sptei] = L5
         # Estimate Sleep Period Time window, because this will be used by g.part4 if sleeplog is not available
-        tmpANGLE = anglez[qqq1:qqq2]
-        tmpTIME = time[qqq1:qqq2]
+        tmpANGLE = anglez[tSegment]
+        tmpTIME = time[tSegment]
         daysleep_offset = 0
         if (do.HASPT.hip == TRUE & params_sleep[["HASPT.algo"]][guider_to_use] != "NotWorn") {
           if (params_sleep[["longitudinal_axis"]] == 1) {
-            tmpANGLE = anglex[qqq1:qqq2]
+            tmpANGLE = anglex[tSegment]
           } else if (params_sleep[["longitudinal_axis"]] == 2) {
-            tmpANGLE = angley[qqq1:qqq2]
+            tmpANGLE = angley[tSegment]
           }
         }
         if (length(params_sleep[["def.noc.sleep"]]) == 1) {
+          
           spt_estimate = HASPT(angle = tmpANGLE, ws3 = ws3,
                                params_sleep = params_sleep,
                                HASPT.algo = params_sleep[["HASPT.algo"]][guider_to_use],
-                               invalid = invalid[qqq1:qqq2],
+                               invalid = invalid[tSegment],
                                activity = tmpACC,
-                               marker = MARKER[qqq1:qqq2],
-                               sibs = sleep[qqq1:qqq2, 1])
+                               marker = MARKER[tSegment],
+                               sibs = sleep[tSegment, 1])
+          
         } else {
           spt_estimate = list(SPTE_end = NULL, SPTE_start = NULL, tib.threshold = NULL, part3_guider = NULL)
         }
@@ -323,28 +326,30 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
             if (newqqq2 > length(anglez)) newqqq2 = length(anglez)
             # only try to extract SPT again if it is possible to extract a window of more than 23 hour
             if (newqqq2 < length(anglez) & (newqqq2 - newqqq1) > (23 * (3600/ws3)) ) {
+              tSegment = newqqq1:newqqq2
               # Recalculate nonwear percentage for new window (6pm to 6pm)
-              nonwear_percentage = (length(which(invalid[newqqq1:newqqq2] == 1)) /  (newqqq2 - newqqq1 + 1)) * 100
+              nonwear_percentage = (length(which(invalid[tSegment] == 1)) /  (newqqq2 - newqqq1 + 1)) * 100
               guider_to_use = decide_guider(params_sleep[["HASPT.algo"]], nonwear_percentage)
               # new TIME (6pm tp 6pm)
-              tmpTIME = time[newqqq1:newqqq2]
+              tmpTIME = time[tSegment]
               if (params_sleep[["HASPT.algo"]][guider_to_use] != "NotWorn") {
-                tmpANGLE = anglez[newqqq1:newqqq2]
+                tmpANGLE = anglez[tSegment]
                 if (do.HASPT.hip == TRUE) {
                   if (params_sleep[["longitudinal_axis"]] == 1) {
-                    tmpANGLE = anglex[newqqq1:newqqq2]
+                    tmpANGLE = anglex[tSegment]
                   } else if (params_sleep[["longitudinal_axis"]] == 2) {
-                    tmpANGLE = angley[newqqq1:newqqq2]
+                    tmpANGLE = angley[tSegment]
                   }
                 }
               }
               spt_estimate_tmp = HASPT(angle = tmpANGLE, ws3 = ws3,
                                        params_sleep = params_sleep,
                                        HASPT.algo = params_sleep[["HASPT.algo"]][guider_to_use],
-                                       invalid = invalid[newqqq1:newqqq2],
-                                       activity = ACC[newqqq1:newqqq2],
-                                       sibs = sleep[newqqq1:newqqq2, 1])
+                                       invalid = invalid[tSegment],
+                                       activity = ACC[tSegment],
+                                       sibs = sleep[tSegment, 1])
               
+             
               if (length(spt_estimate_tmp$SPTE_start) > 0) {
                 # If new SPTE_end is beyond noon (qqq2) then use the new SPTE_end
                 if (spt_estimate_tmp$SPTE_end + newqqq1 >= qqq2) {
@@ -378,6 +383,13 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
           tib.threshold[sptei] = spt_estimate$tib.threshold
           part3_guider[sptei] = spt_estimate$part3_guider
         }
+        # log crude estimate as well:
+        if (length(spt_estimate$spt_crude_estimate) == length(tSegment)) {
+          spt_crude_estimate[tSegment] = spt_estimate$spt_crude_estimate
+        } else {
+          browser()
+          warning("Crude estimate of sleep has unexpected length, please contact GGIR maintainer.")
+        }
       }
       detection.failed = FALSE
     } else {
@@ -385,8 +397,11 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
       detection.failed = TRUE
     }
     metatmp = data.frame(time, invalid, night = night, sleep = sleep, stringsAsFactors = T)
+    if (!is.null(spt_crude_estimate)) {
+      metatmp$spt_crude_estimate = spt_crude_estimate
+    }
   } else {
-    metatmp = L5list = SPTE_end = SPTE_start = tib.threshold = part3_guider = c()
+    metatmp = L5list = SPTE_end = SPTE_start = tib.threshold = part3_guider = NULL
     detection.failed = TRUE
   }
   invisible(list(output = metatmp, detection.failed = detection.failed, L5list = L5list,
