@@ -92,7 +92,7 @@
 <p>Before releasing, please make sure to check the following:</p>
 <ol style="list-style-type: decimal"><li>Create GitHub issue at least 1 weeks before the intended release to announce the release and indicate what will be in the release.</li>
 <li>Make sure the change log <code>inst/NEWS.Rd</code> is up to date and that it says “GitHub-only-release date” rather than “release date”</li>
-<li>Make sure the third (last) digit in the version number is incremented by one relative to the master branch and the date is the present date. This applies to the files <code>DESCRIPTION</code>, <code>GGIR-package.Rd</code> and <code>NEWS.Rd</code> file. Use function <code>prepareNewRelease.R</code> in the root of GGIR to double check that version number and date are consistent between these files.</li>
+<li>Make sure the third (last) digit in the version number is incremented by one relative to the main branch and the date is the present date. This applies to the files <code>DESCRIPTION</code>, <code>GGIR-package.Rd</code> and <code>NEWS.Rd</code> file. Use function <code>prepareNewRelease.R</code> in the root of GGIR to double check that version number and date are consistent between these files.</li>
 <li>Update package contributor list if new people have contributed.</li>
 <li>Run <code>R CMD check --as-cran</code> to make sure all tests and checks pass.</li>
 </ol><p>Note that GitHub releases require a release name. We typically choose a random name of a city or town in South America. Whatever you choose this should be an easy to read and remember word.</p>

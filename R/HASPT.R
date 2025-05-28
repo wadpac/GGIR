@@ -1,9 +1,7 @@
-HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
-                 HASPT.algo = "HDCZA", HDCZA_threshold = c(), invalid,
-                 HASPT.ignore.invalid = FALSE, activity = NULL,
-                 marker = NULL,
-                 sibs = NULL,
-                 try_marker_button = FALSE) {
+HASPT = function(angle, params_sleep = NULL, ws3 = 5,
+                 HASPT.algo = "HDCZA", invalid,
+                 activity = NULL, marker = NULL,
+                 sibs = NULL) {
   tib.threshold = SPTE_start = SPTE_end = part3_guider = c()
   
   
@@ -11,7 +9,7 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
   # Use marker button as guider:
   # if available and required by user (only Actiwatch and Philips Health band at the moment)
   # See documentation for parameter consider_marker_button.
-  if (length(marker) > 0 && try_marker_button == TRUE) {
+  if (length(marker) > 0 && params_sleep[["consider_marker_button"]] == TRUE) {
     button_pressed = which(marker != 0)
     N_markers = length(button_pressed)
     # Only consider when there is more than 1 marker and the range spans more than 1 hour
@@ -32,7 +30,8 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       # ignore pairs that reflect both short distances and involve imputed marker buttons
       pairs$mark1 = marker[pairs$Var1]
       pairs$mark2 = marker[pairs$Var2]
-      pairs_to_ignore = which(pairs$duration_hours < 3 & (pairs$mark1 < 1 | pairs$mark2 < 1))
+      pairs_to_ignore = which((pairs$duration_hours < 3 & (pairs$mark1 < 1 | pairs$mark2 < 1)) |
+                                (pairs$duration_hours < 1))
       if (length(pairs_to_ignore) > 0 & length(pairs_to_ignore) < nrow(pairs)) {
         pairs = pairs[-pairs_to_ignore,]
       }
@@ -93,6 +92,12 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
     }
     return(invalid)
   }
+  rebuild_rle = function(rlex, N) {
+    # after rle values have been changed
+    # this function aids in rebuilding it
+    y = rep(rlex$values, rlex$length)
+    return(rle(y[1:N]))
+  }
   # main code -----------------
   if (HASPT.algo != "notused") {
     if (HASPT.algo == "HDCZA") { # original, default
@@ -106,24 +111,24 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       k1 = 5 * (60/ws3)
       
       x = zoo::rollapply(angle, width = k1, FUN = medabsdi, fill = 0) # 5 minute rolling median of the absolute difference
-      if (is.null(HDCZA_threshold)) {
-        HDCZA_threshold = c(10, 15)
+      if (is.null(params_sleep[["HDCZA_threshold"]])) {
+        params_sleep[["HDCZA_threshold"]] = c(10, 15)
       }
-      if (length(HDCZA_threshold) == 2) {
-        threshold = quantile(x, probs = HDCZA_threshold[1] / 100) * HDCZA_threshold[2]
+      if (length(params_sleep[["HDCZA_threshold"]]) == 2) {
+        threshold = quantile(x, probs = params_sleep[["HDCZA_threshold"]][1] / 100) * params_sleep[["HDCZA_threshold"]][2]
         if (threshold < 0.13) {
           threshold = 0.13
         } else if (threshold > 0.50) {
           threshold = 0.50
         }
       } else {
-        threshold = HDCZA_threshold
+        threshold = params_sleep[["HDCZA_threshold"]]
       }
     } else if (HASPT.algo == "HorAngle") {  # if hip, then require horizontal angle
       # x = absolute angle
       # threshold = 45 degrees
       x = abs(angle)
-      threshold = 60
+      threshold = params_sleep[["HorAngle_threshold"]]
     } else if (HASPT.algo == "NotWorn") {
       # When protocol is to not wear sensor during the night,
       # and data is collected in count units we do not know angle
@@ -154,7 +159,7 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
       # Always set HASPT.ignore.invalid to NA for HASPT.algo NotWorn
       # because NotWorn is by definition interested in invalid periods
       # and we definitely do not want to rely on imputed time series
-      HASPT.ignore.invalid = NA
+      params_sleep[["HASPT.ignore.invalid"]] = NA
     } else if (HASPT.algo == "MotionWare") {
       
       # Auto-Sleep Detection / Marking based on description in
@@ -359,70 +364,73 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
     # Now define nomov periods with the selected strategy for invalid time
     nomov = rep(0,length(x)) # no movement
     invalid = adjustlength(x, invalid)
-    if (is.na(HASPT.ignore.invalid)) { # all invalid = no movement
+    if (is.na(params_sleep[["HASPT.ignore.invalid"]])) { # all invalid = no movement
       nomov[which(x < threshold | invalid == 1)] = 1
-    } else if (HASPT.ignore.invalid == FALSE) { # calculate no movement over the imputed angle
+    } else if (params_sleep[["HASPT.ignore.invalid"]] == FALSE) { # calculate no movement over the imputed angle
       nomov[which(x < threshold)] = 1
-    } else if (HASPT.ignore.invalid == TRUE) {  # all invalid = movement
+    } else if (params_sleep[["HASPT.ignore.invalid"]] == TRUE) {  # all invalid = movement
       nomov[which(x < threshold & invalid == 0)] = 1
     }
-    # apply steps (assumptions on sleep)
-    inspttime = rep(NA,length(x))
-    nomov = c(0,nomov,0)
-    s1 = which(diff(nomov) == 1) #start of blocks in spt
-    e1 = which(diff(nomov) == -1) #end of blocks in spt
-    sptblock = which((e1 - s1) > ((60/ws3)*sptblocksize*1)) #which are the blocks longer than sptblocksize in minutes?
+    
+    # initialise output
+    SPTE_end = c()
+    SPTE_start = c()
+    tib.threshold = c()
+    part3_guider = "none"
+    #------------------------------------------------------
+    # apply final 3 steps to estimate the main SPT window
+    # these steps are the same for HDCZA, HorAngle, and NotWorn
+    N = length(x)
+    spt_estimate = rep(NA, N)
+    nomov = c(0, nomov, 0)
+    rle_nomov = rle(nomov)
+    # only keep the blocks that are long enough
     fraction_night_invalid = sum(invalid) / length(invalid)
-    if (length(sptblock) > 0 & fraction_night_invalid < 1) { #
-      s2 = s1[sptblock] # only keep the sptblocks that are long enough
-      e2 = e1[sptblock] # only keep the sptblocks that are long enough
-      for (j in 1:length(s2)) {
-        inspttime[s2[j]:e2[j]] = 1 #record these blocks in the inspttime vector
+    if (fraction_night_invalid < 1) {
+      # Step -3: ignore blocks that are too short
+      blocks_to_remove = which(rle_nomov$values == 1 & rle_nomov$lengths <= (60 / ws3) * params_sleep[["spt_min_block_dur"]])    
+      blocks_to_remove = blocks_to_remove[which(blocks_to_remove %in% c(1, length(rle_nomov$values)) == FALSE)]
+      if (length(blocks_to_remove) > 0) {
+        rle_nomov$values[blocks_to_remove] = 0
+        rle_nomov = rebuild_rle(rle_nomov, N)
       }
-      # fill up gaps in time between spt blocks
-      outofspt = rep(0,length(inspttime))
-      outofspt[which(is.na(inspttime) == TRUE)] = 1
-      outofspt = c(0,outofspt,0)
-      s3 = which(diff(outofspt) == 1) #start of blocks out of spt?
-      e3 = which(diff(outofspt) == -1) #end blocks out of spt?
-      # starting block not to be filled
-      if (length(s3) > 0) {
-        if (s3[1] == 1) {
-          s3 = s3[-1]
-          e3 = e3[-1]
-        }
+      # Step -2: ignore gaps that are too long
+      Nsegments = length(rle_nomov$lengths)
+      if (!is.null(params_sleep[["spt_max_gap_ratio"]]) && params_sleep[["spt_max_gap_ratio"]] < 1 && Nsegments > 3) {
+        # Note: spt_max_gap_ratio is NULL by default
+        gap_ratios = data.frame(values = rle_nomov$values, lengths = rle_nomov$lengths)
+        gap_ratios$ratio = gap_ratios$length_after = gap_ratios$length_before = 0
+        gap_ratios$length_after[1:(Nsegments - 1)] = gap_ratios$lengths[2:Nsegments]
+        gap_ratios$length_before[2:Nsegments] = gap_ratios$lengths[1:(Nsegments - 1)]
+        gaps_to_fill = which(gap_ratios$values == 0 &
+                               gap_ratios$lengths < (60 / ws3) * params_sleep[["spt_max_gap_dur"]] &
+                               gap_ratios$lengths / gap_ratios$length_after < params_sleep[["spt_max_gap_ratio"]] &
+                               gap_ratios$lengths / gap_ratios$length_before < params_sleep[["spt_max_gap_ratio"]])
+      } else {
+        gaps_to_fill = which(rle_nomov$values == 0 & rle_nomov$lengths < (60 / ws3) * params_sleep[["spt_max_gap_dur"]])
       }
-      if (length(e3) > 0) {
-        if (e3[length(e3)] > length(x)) {
-          # ending block not to be filled
-          s3 = s3[-length(s3)]
-          e3 = e3[-length(e3)]
-        }
+      if (length(gaps_to_fill) > 0) {
+        gaps_to_fill = gaps_to_fill[which(gaps_to_fill %in% c(1, length(rle_nomov$values)) == FALSE)]
       }
-      outofsptblock = which((e3 - s3) < ((60/ws3)*spt_max_gap*1))
-      if (length(outofsptblock) > 0) { # only fill up gap if there are gaps
-        s4 = s3[outofsptblock]
-        e4 = e3[outofsptblock]
-        if (length(s4) > 0) {
-          for (j in 1:length(s4)) {
-            inspttime[ s4[j]:e4[j]] = 1
-          }
-        }
+      if (length(gaps_to_fill) > 0) {
+        rle_nomov$values[gaps_to_fill] = 1
+        rle_nomov = rebuild_rle(rle_nomov, N)
       }
-      if (length(inspttime) == (length(x) + 1)) inspttime = inspttime[1:(length(inspttime) - 1)]
-      # keep indices for longest in spt block:
-      inspttime2 = rep(1,length(inspttime))
-      inspttime2[which(is.na(inspttime) == TRUE)] = 0
-      s5 = which(diff(c(0,inspttime2,0)) == 1) #start of blocks out of spt
-      e5 = which(diff(c(0,inspttime2,0)) == -1) #end of blocks out of spt
-      insptdurations = e5 - s5
-      longestinspt = which(insptdurations == max(insptdurations))
-      if (length(longestinspt) > 1) longestinspt = longestinspt[ceiling(length(longestinspt)/2)]
-      SPTE_start = s5[longestinspt] - 1
-      SPTE_end = e5[longestinspt] - 1
-      if (SPTE_start == 0) SPTE_start = 1
+      # Step -1: keep indices for longest spt block
+      if (1 %in% rle_nomov$values) {
+        max_length =  max(rle_nomov$length[which(rle_nomov$values == 1)])
+        rle_nomov$values[which(rle_nomov$values == 1 & rle_nomov$length == max_length)[1]] = 2
+        rle_nomov$values[which(rle_nomov$values != 2)] = 0
+        rle_nomov$values[which(rle_nomov$values == 2)] = 1
+      }
+      spt_estimate = rep(rle_nomov$values, rle_nomov$length)
+      spt_estimate = spt_estimate[1:length(x)]
+      # identify start and end of longest block
+      SPTE_start = which(diff(c(0, spt_estimate, 0)) == 1) - 1
+      SPTE_end = which(diff(c(0, spt_estimate, 0)) == -1) - 1
+      if (length(SPTE_start) == 1 && length(SPTE_end) == 1 && SPTE_start == 0) SPTE_start = 1
       part3_guider = HASPT.algo
-      if (is.na(HASPT.ignore.invalid)) {
+      if (is.na(params_sleep[["HASPT.ignore.invalid"]])) {
         # investigate if invalid time was included in the SPT definition,
         # and if so, keep track of that in the guider. This is needed in the
         # case that sleeplog is used, to inform part 4 that it should
@@ -434,34 +442,6 @@ HASPT = function(angle, sptblocksize = 30, spt_max_gap = 60, ws3 = 5,
           part3_guider = paste0(HASPT.algo, "+invalid")
         }
       }
-      
-      # # Code to help investigate classifications:
-      # plot(x, col = "black", type = "l")
-      # abline(v = SPTE_start, col = "green", lwd = 2)
-      # abline(v = SPTE_end, col = "red", lwd = 2)
-      # rect(xleft = s1, ybottom = rep(0, length(s1)),
-      #      xright = e1, ytop = rep(0.1, length(s1)),
-      #      col = rgb(0, 0, 255, max = 255, alpha = 50), border = NA)
-      # 
-      # rect(xleft = s5, ybottom = rep(0.1, length(s1)),
-      #      xright = e5, ytop = rep(1, length(s1)),
-      #      col = rgb(255, 0, 0, max = 255, alpha = 20), border = NA)
-      # lines(x, col = "black", type = "l")
-      # abline(h = threshold, col = "purple", lwd = 2)
-      # inva = which(invalid == 1)
-      # if (length(inva) > 0) {
-      #   lines(inva, rep(0.1, length(inva)),
-      #         type = "p", pch = 20, lwd = 4, col = "black")
-      # }
-      # lines(invalid* 0.05, type = "l", col = "red")
-      # # graphics.off()
-      # browser()
-      
-    } else {
-      SPTE_end = c()
-      SPTE_start = c()
-      tib.threshold = c()
-      part3_guider = "none"
     }
     tib.threshold = threshold
   }

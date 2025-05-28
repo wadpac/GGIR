@@ -23,7 +23,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## If you have coding skills…
 
-We welcome contributions in the development, maintenance, and documentation of GGIR. Please find the GGIR’s contributing guidelines [here](https://github.com/wadpac/GGIR/blob/master/CONTRIBUTING.md).
+We welcome contributions in the development, maintenance, and documentation of GGIR. Please find the GGIR’s contributing guidelines [here](https://github.com/wadpac/GGIR/blob/main/CONTRIBUTING.md).
 
 ## If you do not have coding skills….
 
