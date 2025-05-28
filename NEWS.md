@@ -1,6 +1,12 @@
-# CHANGES IN GGIR VERSION 3.2-7
+# CHANGES IN GGIR VERSION 3.2-?
 
 - Now generates error message when user provides parameters with unknown names to GGIR function #1300.
+
+- Part 3:
+
+  - Add parameters "spt_min_block_dur", "spt_max_gap_dur", "spt_max_gap_ratio", and "HorAngle_threshold" to improve control over algorithms used in part 3 #1295
+
+  - Re-factor code corresponding to final 3 steps in HDCZA and HorAngle algorithms. As part of this effort a 1 epoch incorrect offset in window-end was fixed #1295
 
 - Config file: fix minor issue that caused GGIR, GGIRread, and R version to overwrite the last 3 parameters in the config file. #1298 
 
