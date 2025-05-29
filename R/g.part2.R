@@ -31,7 +31,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
     tmp_activityDiary_file = paste0(metadatadir, "/meta/activityDiary_", basename(params_247[["qwindow"]]), ".RData")
     
     if (!file.exists(tmp_activityDiary_file) || (file.exists(tmp_activityDiary_file) && 
-        file.info(params_247[["qwindow"]])$mtime >= file.info(tmp_activityDiary_file)$mtime)) {
+                                                 file.info(params_247[["qwindow"]])$mtime >= file.info(tmp_activityDiary_file)$mtime)) {
       if (verbose == TRUE) cat("\nConverting activity diary...")
       # This will be an object with numeric qwindow values for all individuals and days
       params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]],
@@ -44,7 +44,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       params_247[["qwindow"]] = qwindow
     }
     rm(qwindow)
-
+    
   }
   #---------------------------------
   # Specifying directories with meta-data and extracting filenames
@@ -363,15 +363,29 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       }
     }
   } else {
+    errors = list()
     for (i in f0:f1) {
       if (verbose == TRUE) cat(paste0(i, " "))
-      main_part2(i, ffdone, fnames, metadatadir,
-                 myfun, params_cleaning, params_247,
-                 params_phyact, params_output, params_general,
-                 path, ms2.out, foldername, fullfilenames,
-                 folderstructure, referencefnames,
-                 daySUMMARY, pdffilenumb, pdfpagecount,
-                 csvfolder, cnt78, verbose, use_qwindow_as_diary)
+      tryCatch(
+        main_part2(i, ffdone, fnames, metadatadir,
+                   myfun, params_cleaning, params_247,
+                   params_phyact, params_output, params_general,
+                   path, ms2.out, foldername, fullfilenames,
+                   folderstructure, referencefnames,
+                   daySUMMARY, pdffilenumb, pdfpagecount,
+                   csvfolder, cnt78, verbose, use_qwindow_as_diary),
+        error = function(e) {
+          err_msg = conditionMessage(e)
+          errors[[as.character(fnames[i])]] <<- err_msg
+        }
+      )
+    }
+    # show logged errors after the loop:
+    if (length(errors) > 0) {
+      cat("\n\nErrors in part 2 for:")
+      for (i in 1:length(errors)) {
+        cat(paste0("\n- ", names(errors)[i], ": ", errors[[i]]))
+      }
     }
   }
 }
