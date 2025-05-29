@@ -387,8 +387,9 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         if (length(spt_estimate$spt_crude_estimate) == length(tSegment)) {
           spt_crude_estimate[tSegment] = spt_estimate$spt_crude_estimate
         } else {
-          browser()
-          warning("Crude estimate of sleep has unexpected length, please contact GGIR maintainer.")
+          if (!is.null(spt_estimate$spt_crude_estimate)) {
+            warning("Crude estimate of sleep has unexpected length, please contact GGIR maintainer.")
+          }
         }
       }
       detection.failed = FALSE

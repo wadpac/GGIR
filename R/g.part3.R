@@ -88,8 +88,8 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
         # Optional correction
         check_guider_estimate = FALSE # TO DO add this as central parameter
         if (check_guider_estimate == TRUE &&
-            length(SLE$SPTE_start) > 0 && all(!is.na(SLE$SPTE_start)) &&
-            length(SLE$SPTE_end) > 0 && all(!is.na(SLE$SPTE_end))) {
+            length(SLE$SPTE_start) > 0 && any(!is.na(SLE$SPTE_start)) &&
+            length(SLE$SPTE_end) > 0 && any(!is.na(SLE$SPTE_end))) {
           SLE = g.part3_correct_guider(SLE, desiredtz = params_general[["desiredtz"]], epochSize = M$windowsizes[1])
         }
         

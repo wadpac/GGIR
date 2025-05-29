@@ -24,13 +24,19 @@ test_that("Guiders can be correct in part 3", {
   spt_crude_estimate[which(time >= as.POSIXct("2025-05-23 00:00:00", tz = desiredtz) &
                              time < as.POSIXct("2025-05-23 01:00:00", tz = desiredtz))] = 1
   output = data.frame(time = POSIXtime2iso8601(time, desiredtz),
-                      spt_crude_estimate = spt_crude_estimate)
+                      spt_crude_estimate = spt_crude_estimate,
+                      invalid = rep(0, length(time)),
+                      night = rep(1, length(time)))
+  output$night[which(time >= as.POSIXct("2025-05-22 12:00:00", tz = desiredtz) &
+                       time < as.POSIXct("2025-05-23 12:00:00", tz = desiredtz))] = 2
+  output$night[which(time >= as.POSIXct("2025-05-23 12:00:00", tz = desiredtz))] = 3
+  
   SLE = list(output = output,
              SPTE_end = SPTE_end,
              SPTE_start = SPTE_start)
   # The test whether missed sleep windows are correctly identified
   SLE = g.part3_correct_guider(SLE, desiredtz, epochSize)
-  expect_equal(SLE$SPTE_start, c(22, 24))
-  expect_equal(SLE$SPTE_end, c(29.999, 31.999))
-  expect_equal(length(SLE$output), 34561)
+  expect_equal(SLE$SPTE_start, c(22, 24, NA))
+  expect_equal(SLE$SPTE_end, c(29.999, 31.999, NA))
+  expect_equal(nrow(SLE$output), 34561)
 })
