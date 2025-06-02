@@ -15,6 +15,7 @@
 - Error handling: errors are now logged without interrupting the GGIR function when parallel processing is disabled. 
 
 - Documentation: removed duplicated parameter "part6DFA"" from the GGIR function documentation.
+- Part 2: Fix minor bug that added an extra row (day) in "part2_daysummary" when recording duration was less than one day and did not overlap with midnight. #1313
 
 # CHANGES IN GGIR VERSION 3.2-6
 
