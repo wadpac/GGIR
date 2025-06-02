@@ -12,6 +12,8 @@
 
 - Part 1: Detect time gaps in between data (24 hour) chunks. Handle these if less than 1 hours and generate error when larger. #1294
 
+- Part 2: Fix minor bug that added an extra row (day) in "part2_daysummary" when recording duration was less than one day and did not overlap with midnight. #1313
+
 # CHANGES IN GGIR VERSION 3.2-6
 
 - Part 3 and 4:
