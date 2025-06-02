@@ -25,5 +25,5 @@ test_that("Test that potential errors found in sequential mode are skipped and l
   expect_true(any(grepl("Errors in part 1 for:", console_log)))
   
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
-  if (file.exists(fn)) unlink(fn)
+  if (file.exists("123A_testaccfile.csv")) unlink("123A_testaccfile.csv")
 })
