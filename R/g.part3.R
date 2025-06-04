@@ -86,11 +86,12 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                         sensor.location = params_general[["sensor.location"]],
                         params_sleep = params_sleep, zc.scale = params_metrics[["zc.scale"]])
         # Optional correction
-        check_guider_estimate = FALSE # TO DO add this as central parameter
-        if (check_guider_estimate == TRUE &&
+        if (!is.null(params_sleep[["guider_correction_maxgap_hrs"]]) &&
             length(SLE$SPTE_start) > 0 && any(!is.na(SLE$SPTE_start)) &&
             length(SLE$SPTE_end) > 0 && any(!is.na(SLE$SPTE_end))) {
-          SLE = g.part3_correct_guider(SLE, desiredtz = params_general[["desiredtz"]], epochSize = M$windowsizes[1])
+          SLE = g.part3_correct_guider(SLE, desiredtz = params_general[["desiredtz"]],
+                                       epochSize = M$windowsizes[1],
+                                       guider_correction_maxgap_hrs = params_sleep[["guider_correction_maxgap_hrs"]])
         }
         
         if ("spt_crude_estimate" %in% names(SLE$output)) {
@@ -98,7 +99,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
         }
         # SleepRegulartiyIndex calculation
         if (!is.null(SLE$output)) {
-          if (nrow(SLE$output) > 2*24*(3600/M$windowsizes[1])) { # only calculate SRI if there are at least two days of data
+          if (nrow(SLE$output) > 2 * 24 * (3600/M$windowsizes[1])) { # only calculate SRI if there are at least two days of data
             SleepRegularityIndex = CalcSleepRegularityIndex(data = SLE$output,
                                                             epochsize = M$windowsizes[1],
                                                             desiredtz = params_general[["desiredtz"]],

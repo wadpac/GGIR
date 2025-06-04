@@ -9,7 +9,8 @@
   on knowledge about other nights in the recording.
 }
 \usage{
-   g.part3_correct_guider(SLE, desiredtz, epochSize)
+   g.part3_correct_guider(SLE, desiredtz, epochSize,
+                    guider_correction_maxgap_hrs = NULL)
 }
 \arguments{
   \item{SLE}{
@@ -20,6 +21,9 @@
   }
   \item{epochSize}{
     First value of parameter \code{windowsizes} as discussed in See \link{GGIR}.
+  }
+  \item{guider_correction_maxgap_hrs}{
+   See \link{GGIR}
   }
 }
 \keyword{internal}

@@ -1483,6 +1483,11 @@ GGIR(mode = 1:5,
         Numeric (default = 60).
         Angle threshold used for the HorAngle algorithm.
       }
+      
+      \item{guider_correction_maxgap_hrs}{
+        Numeric (default = NULL).
+        Maximum gap duration in hours as used for the correction method.
+      }
     }
   }
 

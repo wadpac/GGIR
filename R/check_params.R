@@ -39,7 +39,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "SRI1_smoothing_wsize_hrs",
                        "SRI1_smoothing_frac",
                        "spt_min_block_dur",
-                       "spt_max_gap_dur", "spt_max_gap_ratio", "HorAngle_threshold")
+                       "spt_max_gap_dur", "spt_max_gap_ratio", "HorAngle_threshold",
+                       "guider_correction_maxgap_hrs")
     boolean_params = c("ignorenonwear", "HASPT.ignore.invalid",
                        "relyonguider", "sleeplogidnum",
                        "impute_marker_button", "consider_marker_button",

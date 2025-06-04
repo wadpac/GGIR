@@ -39,7 +39,8 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                         spt_min_block_dur =  30,
                         spt_max_gap_dur =  60,
                         spt_max_gap_ratio = 1,
-                        HorAngle_threshold = 60)
+                        HorAngle_threshold = 60,
+                        guider_correction_maxgap_hrs = NULL)
   }
   if ("metrics" %in% topic) {
     params_metrics = list(do.anglex = FALSE, do.angley = FALSE, do.anglez = TRUE,
