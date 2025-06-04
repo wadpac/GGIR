@@ -8,7 +8,6 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                             params_247 = c(), params_phyact = c(),
                             params_general = c(),
                             ...) {
-
   #get input variables
   input = list(...)
   if (length(input) > 0 ||
@@ -34,6 +33,15 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
       startatmidnight =  1
     }
     if (lastmidnight == time[length(time)] & nrow(metashort) < ((60/ws3) * 1440)) {	#if measurement ends at midnight
+      ndays = ndays - 1
+      endatmidnight = 1
+    }
+  } else {
+    # Handle edge case for short recordings without a full day (e.g., a few hours) 
+    # that both start and end at midnight or it does not include any midnight 
+    if (firstmidnighti == 1 & 
+        lastmidnight == time[length(time)] & 
+        nrow(metashort) < ((60/ws3) * 1440)) {
       ndays = ndays - 1
       endatmidnight = 1
     }
