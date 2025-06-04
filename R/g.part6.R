@@ -634,10 +634,24 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         }
       }
     } else {
+      errors = list()
       for (i in f0:f1) {
         if (verbose == TRUE) cat(paste0(i, " "))
-        main_part6_recordlevel(i, metadatadir, f0, f1,
-                               fnames.ms5raw, ffdone, EXT, verbose)
+        tryCatch(
+          main_part6_recordlevel(i, metadatadir, f0, f1,
+                                 fnames.ms5raw, ffdone, EXT, verbose),
+          error = function(e) {
+            err_msg = conditionMessage(e)
+            errors[[as.character(fnames.ms5raw[i])]] <<- err_msg
+          }
+        )
+      }
+      # show logged errors after the loop:
+      if (length(errors) > 0) {
+        cat("\n\nErrors in part 6 for:")
+        for (i in 1:length(errors)) {
+          cat(paste0("\n- ", names(errors)[i], ": ", errors[[i]]))
+        }
       }
     }
   }

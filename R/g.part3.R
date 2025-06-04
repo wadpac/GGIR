@@ -15,7 +15,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
   params_metrics = params$params_metrics
   params_general = params$params_general
   params_output = params$params_output
-
+  
   checkMilestoneFolders(metadatadir, partNumber = 3)
   #------------------------------------------------------
   fnames = dir(paste(metadatadir,"/meta/ms2.out", sep = ""))
@@ -85,7 +85,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                         myfun = myfun,
                         sensor.location = params_general[["sensor.location"]],
                         params_sleep = params_sleep, zc.scale = params_metrics[["zc.scale"]])
-
+        
         # SleepRegulartiyIndex calculation
         if (!is.null(SLE$output)) {
           if (nrow(SLE$output) > 2*24*(3600/M$windowsizes[1])) { # only calculate SRI if there are at least two days of data
@@ -130,7 +130,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
       }
     }
   }
-
+  
   if (params_general[["do.parallel"]] == TRUE) {
     cores = parallel::detectCores()
     Ncores = cores[1]
@@ -182,7 +182,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                                      })
                                      return(tryCatchResult)
                                    }
-
+    
     on.exit(parallel::stopCluster(cl))
     for (oli in 1:length(output_list)) { # logged error and warning messages
       if (is.null(unlist(output_list[oli])) == FALSE) {
@@ -191,12 +191,26 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
       }
     }
   } else {
+    errors = list()
     for (i in f0:f1) {
       if (verbose == TRUE) cat(paste0(i, " "))
-      main_part3(i, metadatadir, f0, f1, myfun,
-                 params_sleep, params_metrics,
-                 params_output,
-                 params_general, fnames, ffdone, verbose)
+      tryCatch(
+        main_part3(i, metadatadir, f0, f1, myfun,
+                   params_sleep, params_metrics,
+                   params_output,
+                   params_general, fnames, ffdone, verbose),
+        error = function(e) {
+          err_msg = conditionMessage(e)
+          errors[[as.character(fnames[i])]] <<- err_msg
+        }
+      )
+    }
+    # show logged errors after the loop:
+    if (length(errors) > 0) {
+      cat("\n\nErrors in part 3 for:")
+      for (i in 1:length(errors)) {
+        cat(paste0("\n- ", names(errors)[i], ": ", errors[[i]]))
+      }
     }
   }
 }

@@ -1653,11 +1653,7 @@ GGIR(mode = 1:5,
         when summarising step counts, if available. When set to NULL, step counts will not be
         summarised in part 5 output. 
       }
-
-      \item{part6DFA}{
-        Boolean (default = FALSE) to indicate whether to perform Detrended Fluctuation
-        Analysis. Turned off by default because it can be time consuming.
-      }
+      
       \item{SRI2_WASOmin}{
         Numeric (default = 30)
         Minimum WASO duration in minutes as used for Sleep Regularity Calculation in \link{g.part6}.

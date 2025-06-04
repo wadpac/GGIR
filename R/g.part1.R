@@ -448,13 +448,26 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
       }
     }
   } else { # simple loop to process files serially file by file
+    errors = list()
     for (i in f0:f1) {
       if (verbose == TRUE) cat(paste0(i, " "))
-      main_part1(i, params_metrics, params_rawdata,
-                 params_cleaning, params_general, datadir, fnames, fnamesfull,
-                 myfun, filelist, ffdone,
-                 use.temp, daylimit, metadatadir, verbose)
-
+      tryCatch(
+        main_part1(i, params_metrics, params_rawdata,
+                   params_cleaning, params_general, datadir, fnames, fnamesfull,
+                   myfun, filelist, ffdone,
+                   use.temp, daylimit, metadatadir, verbose),
+        error = function(e) {
+          err_msg = conditionMessage(e)
+          errors[[as.character(fnames[i])]] <<- err_msg
+        }
+      )
+    }
+    # show logged errors after the loop:
+    if (length(errors) > 0) {
+      cat("\n\nErrors in part 1 for:")
+      for (i in 1:length(errors)) {
+        cat(paste0("\n- ", names(errors)[i], ": ", errors[[i]]))
+      }
     }
   }
 }
