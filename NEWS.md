@@ -1,5 +1,7 @@
 # CHANGES IN GGIR VERSION 3.2-?
 
+- Part 5: Fix bug in reinitialisation of window numbers when using multiple timewindow definitions in GGIR part 5. #1311
+
 - Now generates error message when user provides parameters with unknown names to GGIR function #1300.
 
 - Part 3:
