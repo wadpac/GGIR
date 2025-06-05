@@ -82,31 +82,32 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
       # Identify long resting blocks
       long_rest = which(rle_rest$values == 1 & rle_rest$lengths * epochSize >= min_rest_length * 3600)
       #--------------------------------------------
-      # Label too long wake period:
-      long_wake = which(rle_rest$values == 0 & rle_rest$lengths * epochSize >= guider_correction_maxgap_hrs * 3600)
-      if (length(long_wake) > 0) {
-        rle_rest$values[long_wake] = -1
-      }
-      if (!is.null(guider_correction_maxgap_hrs)) {
-        # Remove any long rest that are separated from main sleep by a too long wake period
-        ind2remove = NULL
-        if (length(long_rest) > 0) {
-          for (lri in 1:length(long_rest)) {
-            original = which(rle_rest$values == 2)
-            this_long_rest = long_rest[lri]
-            too_long_wake = which(rle_rest$values == -1)
-            if (any(too_long_wake > original & too_long_wake < this_long_rest) |
-                any(too_long_wake < original & too_long_wake > this_long_rest)) {
-              ind2remove = c(ind2remove, lri)
+      # Remove any long rest that are separated from main sleep
+      # by a too long wake period
+      if (!is.null(guider_correction_maxgap_hrs) && !is.infinite(guider_correction_maxgap_hrs)) {
+        long_wake = which(rle_rest$values == 0 & rle_rest$lengths * epochSize >= guider_correction_maxgap_hrs * 3600)
+        if (length(long_wake) > 0) {
+          rle_rest$values[long_wake] = -1
+          ind2remove = NULL
+          if (length(long_rest) > 0) {
+            for (lri in 1:length(long_rest)) {
+              original = which(rle_rest$values == 2)
+              this_long_rest = long_rest[lri]
+              too_long_wake = which(rle_rest$values == -1)
+              if (any(too_long_wake > original & too_long_wake < this_long_rest) |
+                  any(too_long_wake < original & too_long_wake > this_long_rest)) {
+                ind2remove = c(ind2remove, lri)
+              }
             }
-          }
-          if (!is.null(ind2remove)) {
-            long_rest = long_rest[-ind2remove]
+            if (!is.null(ind2remove)) {
+              long_rest = long_rest[-ind2remove]
+            }
           }
         }
         
       }
       #--------------------------------------------
+      # Any remaining long rests are considered
       if (length(long_rest) > 0) {
         rle_rest$values[long_rest] = 2
         rle_rest$values[which(rle_rest$values == 1)] = 0
