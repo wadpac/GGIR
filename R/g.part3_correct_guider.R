@@ -42,15 +42,18 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
     }
     HR = floor(reference_window[ki])
     MIN = floor((reference_window[ki] - HR) * 60)
-    SEC = round((reference_window[ki] - HR - (MIN / 60)) * 3600)
+    SEC = floor((reference_window[ki] - HR - (MIN / 60)) * 3600)
+    SEC = floor(SEC / epochSize) * epochSize
     HR = ifelse(HR < 10, yes = paste0("0", HR), no = as.character(HR))
     MIN = ifelse(MIN < 10, yes = paste0("0", MIN), no = as.character(MIN))
     SEC = ifelse(SEC < 10, yes = paste0("0", SEC), no = as.character(SEC))
     ref_time = paste(HR, MIN, SEC, sep = ":")
     if (ki == 1) {
       start_reference = which(SLE$output$clocktime == ref_time)
+      # if (length(start_reference) == 0) browser()
     } else if (ki == 2) {
       end_reference = which(SLE$output$clocktime == ref_time)
+      # if (length(end_reference) == 0) browser()
     }
   }
   if (end_reference[1] < start_reference[1]) {
