@@ -430,7 +430,9 @@ HASPT = function(angle, params_sleep = NULL, ws3 = 5,
       SPTE_start = which(diff(c(0, spt_estimate, 0)) == 1) - 1
       SPTE_end = which(diff(c(0, spt_estimate, 0)) == -1) - 1
       if (length(SPTE_start) == 1 && length(SPTE_end) == 1 && SPTE_start == 0) SPTE_start = 1
-      spt_crude_estimate[SPTE_start:SPTE_end] = 2 # clarify in crude estimate what final estimate is
+      if (length(SPTE_start) > 0 & length(SPTE_end) > 0) {
+        spt_crude_estimate[SPTE_start:SPTE_end] = 2 # clarify in crude estimate what final estimate is
+      }
       spt_crude_estimate = spt_crude_estimate[1:max(c(length(angle), length(activity), length(sibs)))]
       part3_guider = HASPT.algo
       if (is.na(params_sleep[["HASPT.ignore.invalid"]])) {

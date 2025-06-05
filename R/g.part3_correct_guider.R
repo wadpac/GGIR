@@ -5,8 +5,10 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
   invalid_per_night = aggregate(x = SLE$output$invalid, by = list(SLE$output$night), FUN = sum)
   names(invalid_per_night) = c("night", "count")
   valid_nights = invalid_per_night$night[which(invalid_per_night$night > 0 & invalid_per_night$count < 24 * 3600 / epochSize * 0.333)]
-  
-  
+  if (length(valid_nights) > 0) {
+    valid_nights = valid_nights[which(is.na(SLE$SPTE_start[valid_nights]) == FALSE &
+                                        is.na(SLE$SPTE_end[valid_nights]) == FALSE)]
+  }
   SLE$SPTE_corrected = rep(FALSE, length(SLE$SPTE_start))
   
   clean_SLE = function(SLE) {
@@ -16,26 +18,17 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
     return(SLE)
   }
   
-  if (length(valid_nights) > 0) {
-    SPTE_start = SLE$SPTE_start[valid_nights]
-    SPTE_end = SLE$SPTE_end[valid_nights]
-    SPTE_corrected = SLE$SPTE_corrected[valid_nights]
-  } else {
-    SLE = clean_SLE(SLE)
-    return(SLE)
-  }
-  
-  if (length(SPTE_start) > 0 && any(!is.na(SPTE_start)) &&
-      length(SPTE_end) > 0 && any(!is.na(SPTE_end))) {
-  } else {
+  if (length(valid_nights) == 0) {
     SLE = clean_SLE(SLE)
     return(SLE)
   }
   
   # Add reference guider across all nights to each night
-  reference_window = c(min(SPTE_start, na.rm = TRUE), max(SPTE_end, na.rm = TRUE))
+  reference_window = c(min(SLE$SPTE_start[valid_nights], na.rm = TRUE),
+                       max(SLE$SPTE_end[valid_nights], na.rm = TRUE))
   SLE$output$time_POSIX = iso8601chartime2POSIX(SLE$output$time, tz = desiredtz)
   SLE$output$clocktime = format(SLE$output$time_POSIX, format = "%H:%M:%S")
+  start_reference = end_reference = NULL
   for (ki in 1:2) {
     if (reference_window[ki] >= 24) {
       reference_window[ki] = reference_window[ki] - 24
@@ -50,94 +43,94 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
     ref_time = paste(HR, MIN, SEC, sep = ":")
     if (ki == 1) {
       start_reference = which(SLE$output$clocktime == ref_time)
-      # if (length(start_reference) == 0) browser()
     } else if (ki == 2) {
       end_reference = which(SLE$output$clocktime == ref_time)
-      # if (length(end_reference) == 0) browser()
     }
   }
   if (end_reference[1] < start_reference[1]) {
-    # recording started after the start of minmax causing a shift
+    # recording started after the start of reference causing a shift
     # correct for this
-    start_reference = start_reference[-length(start_reference)]
-    end_reference = end_reference[-1]
+    start_reference = c(1, start_reference)
   }
-  # Draft code to implement max gap length:
-  # guider_correction_maxgap_hrs = NULL # hours
-  min_rest_length = 1 #hours
+  if (length(start_reference) > length(end_reference)) {
+    # recording end before end of reference causing a shift
+    # correct for this
+    end_reference = c(end_reference, length(SLE$output$clocktime))
+  }
   
+  # minimum rest duration to be considered as possible extension of guider
+  min_rest_length = 1 #hours
   # # Check each night and correct if needed
   for (ji in 1:length(start_reference)) {
-    # get crude estimate values between min-max pair
-    tSegment = start_reference[ji]:end_reference[ji]
-    crude_est = SLE$output$spt_crude_estimate[tSegment]
-    temp_time = SLE$output$time_POSIX[tSegment]
-    
-    # only consider window if there is rest outside guider
-    # as indicated by a 1, because 2 is the current guider and zero is not resting
-    if (1 %in% crude_est) { 
-      rle_rest = rle(crude_est)
+    if (ji %in% valid_nights) {
+      # get crude estimate values between min-max pair
+      tSegment = start_reference[ji]:end_reference[ji]
+      crude_est = SLE$output$spt_crude_estimate[tSegment]
+      temp_time = SLE$output$time_POSIX[tSegment]
       
-      #--------------------------------------------
-      # Identify long resting blocks
-      long_rest = which(rle_rest$values == 1 & rle_rest$lengths * epochSize >= min_rest_length * 3600)
-      #--------------------------------------------
-      # Remove any long rest that are separated from main sleep
-      # by a too long wake period
-      if (!is.null(guider_correction_maxgap_hrs) && !is.infinite(guider_correction_maxgap_hrs)) {
-        long_wake = which(rle_rest$values == 0 & rle_rest$lengths * epochSize >= guider_correction_maxgap_hrs * 3600)
-        if (length(long_wake) > 0) {
-          rle_rest$values[long_wake] = -1
-          ind2remove = NULL
-          if (length(long_rest) > 0) {
-            for (lri in 1:length(long_rest)) {
-              original = which(rle_rest$values == 2)
-              this_long_rest = long_rest[lri]
-              too_long_wake = which(rle_rest$values == -1)
-              if (any(too_long_wake > original & too_long_wake < this_long_rest) |
-                  any(too_long_wake < original & too_long_wake > this_long_rest)) {
-                ind2remove = c(ind2remove, lri)
+      # only consider window if there is rest outside guider
+      # as indicated by a 1, because 2 is the current guider and zero is not resting
+      if (1 %in% crude_est) { 
+        rle_rest = rle(crude_est)
+        
+        #--------------------------------------------
+        # Identify long resting blocks
+        long_rest = which(rle_rest$values == 1 & rle_rest$lengths * epochSize >= min_rest_length * 3600)
+        #--------------------------------------------
+        # Remove any long rest that are separated from main sleep
+        # by a too long wake period
+        if (!is.null(guider_correction_maxgap_hrs) && !is.infinite(guider_correction_maxgap_hrs)) {
+          long_wake = which(rle_rest$values == 0 & rle_rest$lengths * epochSize >= guider_correction_maxgap_hrs * 3600)
+          if (length(long_wake) > 0) {
+            rle_rest$values[long_wake] = -1
+            ind2remove = NULL
+            if (length(long_rest) > 0) {
+              for (lri in 1:length(long_rest)) {
+                original = which(rle_rest$values == 2)
+                this_long_rest = long_rest[lri]
+                too_long_wake = which(rle_rest$values == -1)
+                if (any(too_long_wake > original & too_long_wake < this_long_rest) |
+                    any(too_long_wake < original & too_long_wake > this_long_rest)) {
+                  ind2remove = c(ind2remove, lri)
+                }
+              }
+              if (!is.null(ind2remove)) {
+                long_rest = long_rest[-ind2remove]
               }
             }
-            if (!is.null(ind2remove)) {
-              long_rest = long_rest[-ind2remove]
-            }
           }
+          
         }
-        
-      }
-      #--------------------------------------------
-      # Any remaining long rests are considered
-      if (length(long_rest) > 0) {
-        rle_rest$values[long_rest] = 2
-        rle_rest$values[which(rle_rest$values == 1)] = 0
-        rle_rest$values[which(rle_rest$values == 2)] = 1
-        N = length(crude_est)
-        crude_est = rep(rle_rest$values, rle_rest$lengths)[1:N]
-        # redefine window by range
-        new_window = range(which(crude_est == 1))
-        new_SPTE = SLE$output$clocktime[tSegment[new_window]]
-        convert_time = function(x) {
-          spit_time = as.numeric(unlist(strsplit(x, ":")))
-          time_hours = round(sum((spit_time * c(3600, 60, 1)) / 3600), digits = 3)
-          if (time_hours <= 12) time_hours = time_hours + 24
-          return(time_hours)
+        #--------------------------------------------
+        # Any remaining long rests are considered
+        if (length(long_rest) > 0) {
+          rle_rest$values[long_rest] = 2
+          rle_rest$values[which(rle_rest$values == 1)] = 0
+          rle_rest$values[which(rle_rest$values == 2)] = 1
+          N = length(crude_est)
+          crude_est = rep(rle_rest$values, rle_rest$lengths)[1:N]
+          # redefine window by range
+          new_window = range(which(crude_est == 1))
+          new_SPTE = SLE$output$clocktime[tSegment[new_window]]
+          convert_time = function(x) {
+            spit_time = as.numeric(unlist(strsplit(x, ":")))
+            time_hours = round(sum((spit_time * c(3600, 60, 1)) / 3600), digits = 3)
+            if (time_hours <= 12) time_hours = time_hours + 24
+            return(time_hours)
+          }
+          new_SPTE = unlist(lapply(X = new_SPTE, FUN = convert_time))
+          # when person falls asleep before 6pm on first day
+          # the 24 hour correction needs to be corrected:
+          if (new_SPTE[1] > new_SPTE[2]) {
+            new_SPTE[1] = new_SPTE[1] - 24
+          }
+          SLE$SPTE_start[ji] = new_SPTE[1]
+          SLE$SPTE_end[ji] = new_SPTE[2]
+          SLE$SPTE_corrected[ji] = TRUE
         }
-        new_SPTE = unlist(lapply(X = new_SPTE, FUN = convert_time))
-        # when person falls asleep before 6pm on first day
-        # the 24 hour correction needs to be corrected:
-        if (new_SPTE[1] > new_SPTE[2]) {
-          new_SPTE[1] = new_SPTE[1] - 24
-        }
-        SPTE_start[ji] = new_SPTE[1]
-        SPTE_end[ji] = new_SPTE[2]
-        SPTE_corrected[ji] = TRUE
       }
     }
   }
-  SLE$SPTE_start[valid_nights] = SPTE_start
-  SLE$SPTE_end[valid_nights] = SPTE_end
-  SLE$SPTE_corrected[valid_nights] = SPTE_corrected
   SLE = clean_SLE(SLE)
   return(SLE)
 }
