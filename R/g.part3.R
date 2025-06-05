@@ -114,6 +114,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
         L5list = SLE$L5list
         SPTE_end = SLE$SPTE_end
         SPTE_start = SLE$SPTE_start
+        SPTE_corrected = SLE$SPTE_corrected
         tib.threshold = SLE$tib.threshold
         longitudinal_axis = SLE$longitudinal_axis
         part3_guider = SLE$part3_guider
@@ -136,7 +137,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
           GGIRversion = utils::packageVersion("GGIR")
           save(sib.cla.sum, L5list, SPTE_end, SPTE_start, tib.threshold, rec_starttime, ID,
                longitudinal_axis, SleepRegularityIndex, tail_expansion_log, GGIRversion,
-               file = ms3out_filename, part3_guider)
+               file = ms3out_filename, part3_guider, SPTE_corrected)
         }
       }
     }

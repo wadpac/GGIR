@@ -7,24 +7,28 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
   valid_nights = invalid_per_night$night[which(invalid_per_night$night > 0 & invalid_per_night$count < 24 * 3600 / epochSize * 0.333)]
   
   
-  SLE$imputed = rep(FALSE, length(SLE$SPTE_start))
+  SLE$SPTE_corrected = rep(FALSE, length(SLE$SPTE_start))
   
-  on.exit({
+  clean_SLE = function(SLE) {
     # remove temp columns on exit
     temp_columns = c("clocktime", "time_POSIX", "spt_crude_estimate")
     SLE$output = SLE$output[, which(names(SLE$output) %in% temp_columns == FALSE)]
-  })
+    return(SLE)
+  }
   
   if (length(valid_nights) > 0) {
     SPTE_start = SLE$SPTE_start[valid_nights]
     SPTE_end = SLE$SPTE_end[valid_nights]
+    SPTE_corrected = SLE$SPTE_corrected[valid_nights]
   } else {
+    SLE = clean_SLE(SLE)
     return(SLE)
   }
   
   if (length(SPTE_start) > 0 && any(!is.na(SPTE_start)) &&
       length(SPTE_end) > 0 && any(!is.na(SPTE_end))) {
   } else {
+    SLE = clean_SLE(SLE)
     return(SLE)
   }
   
@@ -61,7 +65,6 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
   
   # # Check each night and correct if needed
   for (ji in 1:length(start_reference)) {
-    print(paste0("night ", ji))
     # get crude estimate values between min-max pair
     tSegment = start_reference[ji]:end_reference[ji]
     crude_est = SLE$output$spt_crude_estimate[tSegment]
@@ -124,10 +127,13 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
         }
         SPTE_start[ji] = new_SPTE[1]
         SPTE_end[ji] = new_SPTE[2]
+        SPTE_corrected[ji] = TRUE
       }
     }
   }
   SLE$SPTE_start[valid_nights] = SPTE_start
   SLE$SPTE_end[valid_nights] = SPTE_end
+  SLE$SPTE_corrected[valid_nights] = SPTE_corrected
+  SLE = clean_SLE(SLE)
   return(SLE)
 }
