@@ -37,7 +37,7 @@ test_that("Guiders can be correct in part 3", {
   # The test whether missed sleep windows are correctly identified
   SLE = g.part3_correct_guider(SLE, desiredtz, epochSize,
                                guider_correction_maxgap_hrs = Inf)
-  expect_equal(SLE$SPTE_start, c(22, 24, NA))
-  expect_equal(SLE$SPTE_end, c(29.999, 31.999, NA))
+  expect_equal(SLE$SPTE_start, c(22, 24))
+  expect_equal(SLE$SPTE_end, c(29.999, 31.999))
   expect_equal(nrow(SLE$output), 34561)
 })
