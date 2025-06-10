@@ -44,8 +44,10 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
     extract_logs = function(log, ID, logname, firstDate = NULL) {
       logreport = c()
       if (length(log) > 0) {
-        relevant_rows = which(log$ID == ID)
-        
+        idwi = g.part4_extractid(params_general[["idloc"]], fname = log$ID,
+                                 dolog = TRUE,
+                                 sleeplog = log, accid = ID)
+        relevant_rows = idwi$matching_indices_sleeplog
         if (length(relevant_rows) > 0) {
           log = log[relevant_rows,] # extract ID
           if (!is.null(firstDate)) {
