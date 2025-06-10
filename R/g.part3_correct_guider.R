@@ -66,7 +66,30 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
       # get crude estimate values between min-max pair
       tSegment = start_reference[ji]:end_reference[ji]
       crude_est = SLE$output$spt_crude_estimate[tSegment]
+      sib = SLE$output[tSegment, grep(pattern = "time|invalid|night|estimate", x = colnames(SLE$output), invert = TRUE)]
       temp_time = SLE$output$time_POSIX[tSegment]
+      # At this point rle_rest$values can have the following values:
+      # 2: guider based classification of main sleep window
+      # 1: other resting windows that were discarded
+      # 0: remaining time
+      if (1 %in% crude_est) { 
+        # omit segments that have less than 80% sib
+        class_changes = diff(c(0, crude_est, 0)) 
+        segment_start = which(class_changes == 1)
+        segment_end = which(class_changes == -1) - 1
+        for (gi in seq_along(segment_start)) {
+          if (mean(sib[segment_start[gi]:segment_end[gi]]) < 0.8) {
+            crude_est[segment_start[gi]:segment_end[gi]] = 0
+          }
+        }
+      }
+      
+      # hours_in_class_1 = (length(which(crude_est == 1)) * epochSize) / 3600
+      # if (hours_in_class_1 < 2) {
+      #   # only consider nights with 2 or more hours outside main sleep window
+      #   # we are only interested in fixing major night distortions
+      #   next 
+      # }
       
       # only consider window if there is rest outside guider
       # as indicated by a 1, because 2 is the current guider and zero is not resting

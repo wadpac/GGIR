@@ -26,7 +26,8 @@ test_that("Guiders can be correct in part 3", {
   output = data.frame(time = POSIXtime2iso8601(time, desiredtz),
                       spt_crude_estimate = spt_crude_estimate,
                       invalid = rep(0, length(time)),
-                      night = rep(1, length(time)))
+                      night = rep(1, length(time)),
+                      T5A5 = rep(1, length(time)))
   output$night[which(time >= as.POSIXct("2025-05-22 12:00:00", tz = desiredtz) &
                        time < as.POSIXct("2025-05-23 12:00:00", tz = desiredtz))] = 2
   output$night[which(time >= as.POSIXct("2025-05-23 12:00:00", tz = desiredtz))] = 3
