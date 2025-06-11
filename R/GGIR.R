@@ -259,7 +259,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       cat("\n     (1) Helping other users in the GGIR google group or on GitHub.")
       cat("\n     (2) Providing feedback on GGIR documentation.")
       cat("\n     (3) Providing feedback on GGIR source code.")
-      cat("\n     (4) Finding funding to pay for any of the previous points.")
+      cat("\n     (4) Finding funding for work on GGIR")
+      cat("\n   For questions about contributing contact v.vanhees@accelting.com.")
     }
     cat("\n")
   }
