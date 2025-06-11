@@ -239,9 +239,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   }
   if (verbose == TRUE) {
     cat(paste0("\n   GGIR version: ",GGIRversion,"\n"))
-    cat("\n   Do not forget to cite GGIR in your publications via a version number and\n")
-    cat("   Migueles et al. 2019 JMPB. doi: 10.1123/jmpb.2018-0063. \n")
-    cat("   See also: https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#citing-ggir")
+    cat("\n   To cite GGIR in your reports please reference doi: 10.5281/zenodo.1051064")
     cat("\n")
     cat("\n   To make your research reproducible and interpretable always report:")
     cat("\n     (1) Accelerometer brand and product name")
