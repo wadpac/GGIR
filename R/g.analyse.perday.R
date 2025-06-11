@@ -88,6 +88,11 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
       qwindow_times = as.character(params_247[["qwindow"]])
       qwindow_names = as.character(params_247[["qwindow"]])
     }
+    # order qwindow timestamps in current date
+    qwindow_order = order(params_247[["qwindow"]])
+    params_247[["qwindow"]] = qwindow_values_backup = params_247[["qwindow"]][qwindow_order]
+    qwindow_times = qwindow_times[qwindow_order]
+    qwindow_names = qwindow_names[qwindow_order]
     # extract day from matrix D and qcheck
     if (startatmidnight == 1 & endatmidnight == 1) {
       qqq1 = midnightsi[di] * (ws2/ws3)	#a day starts at 00:00
