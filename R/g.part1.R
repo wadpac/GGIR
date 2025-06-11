@@ -451,22 +451,31 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
     errors = list()
     for (i in f0:f1) {
       if (verbose == TRUE) cat(paste0(i, " "))
-      tryCatch(
+      function_to_evaluate = expression(
         main_part1(i, params_metrics, params_rawdata,
                    params_cleaning, params_general, datadir, fnames, fnamesfull,
                    myfun, filelist, ffdone,
-                   use.temp, daylimit, metadatadir, verbose),
-        error = function(e) {
-          err_msg = conditionMessage(e)
-          errors[[as.character(fnames[i])]] <<- err_msg
-        }
+                   use.temp, daylimit, metadatadir, verbose)
       )
+      if (params_general[["use_trycatch"]] == TRUE) {
+        tryCatch(
+          eval(function_to_evaluate),
+          error = function(e) {
+            err_msg = conditionMessage(e)
+            errors[[as.character(fnames[i])]] <<- err_msg
+          }
+        )
+      } else {
+        eval(function_to_evaluate)
+      }
     }
     # show logged errors after the loop:
-    if (length(errors) > 0) {
-      cat("\n\nErrors in part 1 for:")
-      for (i in 1:length(errors)) {
-        cat(paste0("\n- ", names(errors)[i], ": ", errors[[i]]))
+    if (params_general[["use_trycatch"]] == TRUE)  {
+      if (length(errors) > 0) {
+        cat(paste0("\n\nErrors in part 1... for:"))
+        for (e in 1:length(errors)) {
+          cat(paste0("\n- ", names(errors)[e], ": ", errors[[e]]))
+        }
       }
     }
   }

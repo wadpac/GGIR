@@ -15,14 +15,15 @@ test_that("Test that potential errors found in sequential mode are skipped and l
     GGIR(datadir = fn, outputdir = getwd(), studyname = "test", 
          do.cal = FALSE, do.imp = FALSE,
          do.parallel = FALSE,
-         minimumFileSizeMB = minimumFileSizeMB)
+         minimumFileSizeMB = minimumFileSizeMB,
+         use_trycatch = TRUE)
   )
   #--------------------------------------------
   # Were errors skipped and logged?
   #   - did part 5 run?
   expect_true(any(grepl("^ Part 5", console_log)))
   #   - were errors logged in part 1?
-  expect_true(any(grepl("Errors in part 1 for:", console_log)))
+  expect_true(any(grepl("Errors in part 1... for:", console_log)))
   
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
   if (file.exists("123A_testaccfile.csv")) unlink("123A_testaccfile.csv")

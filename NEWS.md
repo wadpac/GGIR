@@ -12,7 +12,7 @@
 
 - Part 1: Detect time gaps in between data (24 hour) chunks. Handle these if less than 1 hours and generate error when larger. #1294
 
-- Error handling: errors are now logged without interrupting the GGIR function when parallel processing is disabled. #1308
+- Error handling: Added parameter "use_trycatch" to optionally log file-level errors without interrupting GGIR when "do.parallel = FALSE". #1308
 
 - Documentation: removed duplicated parameter "part6DFA"" from the GGIR function documentation. #1309
 

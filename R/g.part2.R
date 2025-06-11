@@ -365,25 +365,34 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
     errors = list()
     for (i in f0:f1) {
       if (verbose == TRUE) cat(paste0(i, " "))
-      tryCatch(
+      function_to_evaluate = expression(
         main_part2(i, ffdone, fnames, metadatadir,
                    myfun, params_cleaning, params_247,
                    params_phyact, params_output, params_general,
                    path, ms2.out, foldername, fullfilenames,
                    folderstructure, referencefnames,
                    daySUMMARY, pdffilenumb, pdfpagecount,
-                   csvfolder, cnt78, verbose, use_qwindow_as_diary),
-        error = function(e) {
-          err_msg = conditionMessage(e)
-          errors[[as.character(fnames[i])]] <<- err_msg
-        }
+                   csvfolder, cnt78, verbose, use_qwindow_as_diary)
       )
+      if (params_general[["use_trycatch"]] == TRUE) {
+        tryCatch(
+          eval(function_to_evaluate),
+          error = function(e) {
+            err_msg = conditionMessage(e)
+            errors[[as.character(fnames[i])]] <<- err_msg
+          }
+        )
+      } else {
+        eval(function_to_evaluate)
+      }
     }
     # show logged errors after the loop:
-    if (length(errors) > 0) {
-      cat("\n\nErrors in part 2 for:")
-      for (i in 1:length(errors)) {
-        cat(paste0("\n- ", names(errors)[i], ": ", errors[[i]]))
+    if (params_general[["use_trycatch"]] == TRUE) {
+      if (length(errors) > 0) {
+        cat(paste0("\n\nErrors in part 2... for:"))
+        for (e in 1:length(errors)) {
+          cat(paste0("\n- ", names(errors)[e], ": ", errors[[e]]))
+        }
       }
     }
   }
