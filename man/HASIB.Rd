@@ -10,8 +10,8 @@
 \usage{
   HASIB(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold = c(), 
                  time = c(), anglez = c(), ws3 = c(), zeroCrossingCount = c(),
-                 BrondCount = c(),
-                 NeishabouriCount = c(), activity = NULL)
+                 NeishabouriCount = c(), activity = NULL,
+                 oakley_threshold = NULL)
 }
 \arguments{
   \item{HASIB.algo}{
@@ -36,16 +36,16 @@
   \item{zeroCrossingCount}{
     Vector with zero crossing counts per epoch as required for count-based algorithms
   }
-  \item{BrondCount}{
-    Vector with Brond counts per epoch to be used by the count-based algorithms
-  }
   \item{NeishabouriCount}{
     Vector with Neishabouri counts per epoch to be used by the count-based algorithms
   }
   \item{activity}{
-    Magnitude of acceleration, only used when HASIB.algo is set to NotWorn.
+    Magnitude of acceleration, only used when HASIB.algo is set to NotWorn or Oakley1997.
     Acceleration metric used is specified by argument \code{acc.metric} 
     elsewhere in GGIR.
+  }
+  \item{oakley_threshold}{
+    See \link{GGIR}
   }
 }
 \value{

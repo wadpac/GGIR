@@ -403,7 +403,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
                            "get_starttime_weekday_truncdata", "ismovisens",
                            "g.extractheadervars", "g.imputeTimegaps", "extract_params",
                            "load_params",
-                           "check_params", "detect_nonwear_clipping")
+                           "check_params", "detect_nonwear_clipping", "inspect_binFile_brand")
       errhand = 'stop'
       # Note: This will not work for cwa files, because those also need Rcpp functions.
       # So, it is probably best to turn off parallel when debugging cwa data.

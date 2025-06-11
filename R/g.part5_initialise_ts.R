@@ -1,7 +1,7 @@
 g.part5_initialise_ts = function(IMP, M, params_247, params_general, longitudinal_axis = c()) {
   # extract key variables from the mile-stone data: time, acceleration and elevation angle
   # note that this is imputed ACCELERATION because we use this for describing behaviour:
-  scale = ifelse(test = grepl("^Brond|^Neishabouri|^ZC|^ExtAct", params_general[["acc.metric"]]), yes = 1, no = 1000)
+  scale = ifelse(test = grepl("^Brond|^Neishabouri|^ZC|^ExtAct|^ExtHeartRate", params_general[["acc.metric"]]), yes = 1, no = 1000)
 
   # Use anglez by default or longitudinal axis if specified when sensor is worn on hip
   
@@ -39,6 +39,11 @@ g.part5_initialise_ts = function(IMP, M, params_247, params_general, longitudina
     ts = data.frame(time = IMP$metashort[,1], ACC = IMP$metashort[,params_general[["acc.metric"]]] * scale,
                     guider = rep("unknown", nrow(IMP$metashort)))
   }
+  if ("step_count" %in% colnames(IMP$metashort)) {
+    ts$step_count = 0
+    ts$step_count = IMP$metashort$step_count
+  }
+  
   Nts = nrow(ts)
   # add non-wear column
   nonwear = IMP$rout[,5]
@@ -83,6 +88,10 @@ g.part5_initialise_ts = function(IMP, M, params_247, params_general, longitudina
     temperature = M$metalong$temperaturemean
     # repeate values to match resolution of other data
     ts$temperature = repeatvalues(x = temperature, windowsizes = IMP$windowsizes, Nts)
+  }
+  if ("marker" %in% colnames(M$metashort)) {
+    ts$marker = NA
+    ts$marker = IMP$metashort$marker
   }
   return(ts)
 }

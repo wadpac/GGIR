@@ -1,6 +1,6 @@
 g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
                            ws3, doiglevels, firstmidnighti, ws2, midnightsi, params_247 = c(), 
-                           qcheck = c(), acc.metric = c(), ...) {
+                           qcheck = c(), acc.metric = c(), params_phyact = NULL, ...) {
   #get input variables
   input = list(...)
   if (length(input) > 0 || length(params_247) == 0) {
@@ -14,7 +14,15 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
   }
   if (length(acc.metric) == 0) {
     acc.metric = colnames(IMP$metashort)[which(colnames(IMP$metashort) %in% 
-                                                 c("anglex", "angley", "anglez", "timestamp") == FALSE)[1]]
+                                                 c("anglex", "angley", "anglez", 
+                                                   "ExtSleep", "timestamp", "marker") == FALSE)[1]]
+  }
+
+  getUnitRescale = function(varName) {
+    gUnitMetric = length(grep(x = varName,
+                              pattern = "BrondCount|ZCX|ZCY|ZCZ|marker|NeishabouriCount|ExtAct|ExtHeartRate", invert = TRUE)) > 0
+    UnitReScale = ifelse(test = gUnitMetric, yes = 1000, no = 1)
+    return(UnitReScale)
   }
   
   if (doquan == TRUE) {
@@ -31,7 +39,9 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
   }
   if (doquan == TRUE) {
     for (quani in 1:ncol(averageday)) { # these columns of averageday correspond to the metrics from part 1
-      if (colnames(M$metashort)[(quani + 1)] %in% c("anglex", "angley", "anglez") == FALSE) {
+      if (colnames(M$metashort)[(quani + 1)] %in% c("anglex", "angley", "anglez",
+                                                    "ExtSleep", "marker") == FALSE) {
+        UnitReScale = getUnitRescale(colnames(M$metashort)[(quani + 1)])
         #--------------------------------------
         # quantiles
         QUANtmp =  quantile(averageday[((t_TWDI[1] * (3600 / ws3)) + 1):(t_TWDI[length(t_TWDI)] * (3600 / ws3)), quani],
@@ -56,7 +66,9 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
           # Note that t_TWDI[length(t_TWDI)] in the next line makes that we only calculate ML5 over the full day
           ML5ADtmp = g.getM5L5(avday,ws3,t0_LFMF = t_TWDI[1], t1_LFMF = t_TWDI[length(t_TWDI)],
                                M5L5res = params_247[["M5L5res"]],
-                               winhr_value, qM5L5 = params_247[["qM5L5"]], MX.ig.min.dur = params_247[["MX.ig.min.dur"]])
+                               winhr_value, qM5L5 = params_247[["qM5L5"]],
+                               MX.ig.min.dur = params_247[["MX.ig.min.dur"]],
+                               UnitReScale = UnitReScale)
           ML5AD = as.data.frame(c(ML5AD, ML5ADtmp), stringsAsFactors = TRUE)
         }
         ML5N = names(ML5AD)
@@ -69,7 +81,7 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
         # Acceleration 1-6am
         one2sixname = paste0("1to6am_", colnames(M$metashort)[(quani + 1)], "_mg")
         ML5AD_names = c(ML5AD_names, one2sixname)
-        ML5AD$one2six = mean(avday[((1 * 60 * (60 / ws3)) + 1):(6 * 60 * (60 / ws3))]) * 1000
+        ML5AD$one2six = mean(avday[((1 * 60 * (60 / ws3)) + 1):(6 * 60 * (60 / ws3))]) * UnitReScale
         colnames(ML5AD)[which(colnames(ML5AD) == "one2six")] = one2sixname
       }	
     }	
@@ -80,12 +92,13 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
     # applied to the averageday per metric (except from angle metrics)
     igfullr = igfullr_names = c()
     for (igi in 1:ncol(averageday)) {
-      if (colnames(M$metashort)[(igi + 1)] %in% c("anglex", "angley", "anglez") == FALSE) {
+      if (colnames(M$metashort)[(igi + 1)] %in% c("anglex", "angley", "anglez", "marker") == FALSE) {
+        UnitReScale = getUnitRescale(colnames(M$metashort)[(igi + 1)])
         y_ig = c()
         avday = averageday[, igi] 
         avday = c(avday[(firstmidnighti * (ws2 / ws3)):length(avday)], avday[1:((firstmidnighti * (ws2 / ws3)) - 1)])
         # we are not taking the segment of the day now (too much output)
-        q60 = cut((avday * 1000), breaks = params_247[["iglevels"]], right = FALSE)
+        q60 = cut((avday * UnitReScale), breaks = params_247[["iglevels"]], right = FALSE)
         y_ig  = (as.numeric(table(q60)) * ws3) / 60 #converting to minutes
         x_ig = zoo::rollmean(params_247[["iglevels"]], k = 2)
         igout = g.intensitygradient(x_ig, y_ig)
@@ -99,35 +112,21 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
       }
     }
   }
-  # IS and IV variables
-  fmn = midnightsi[1] * (ws2/ws3) # select data from first midnight to last midnight because we need full calendar days to compare
-  lmn = (midnightsi[length(midnightsi)] * (ws2/ws3)) - 1
-  # By using the metashort from the IMP we do not need to ignore segments, because data imputed
-  Xi = IMP$metashort[fmn:lmn, acc.metric]
-  # IV IS
-  IVISout = g.IVIS(Xi, epochsizesecondsXi = ws3, 
-                   IVIS_epochsize_seconds = params_247[["IVIS_epochsize_seconds"]], 
-                   IVIS_windowsize_minutes = params_247[["IVIS_windowsize_minutes"]],
-                   IVIS.activity.metric = params_247[["IVIS.activity.metric"]],
-                   IVIS_acc_threshold = params_247[["IVIS_acc_threshold"]])
-  InterdailyStability = IVISout$InterdailyStability
-  IntradailyVariability = IVISout$IntradailyVariability
-  rm(Xi)
-  
   #----------------------------------
-  # (Extended) Cosinor analysis
+  # Cosinor analysis, (Extended) Cosinor analysis, including IV, IS, and phi
+  # based on time series where invalid data points are set to NA
   if (params_247[["cosinor"]] == TRUE) {
-    cosinor_coef = applyCosinorAnalyses(ts = IMP$metashort[, c("timestamp", acc.metric)],
-                                        qcheck = qcheck,
-                                        midnightsi, epochsizes = c(ws3, ws2))
+    cosinor_coef = apply_cosinor_IS_IV_Analyses(ts = IMP$metashort[, c("timestamp", acc.metric)],
+                                                qcheck = qcheck,
+                                                midnightsi, epochsizes = c(ws3, ws2),
+                                                threshold = params_phyact[["threshold.lig"]][1]) # only use one threshold
   } else {
     cosinor_coef = c()
   }
-  invisible(list(InterdailyStability = InterdailyStability,
-                 IntradailyVariability = IntradailyVariability, 
-                 igfullr_names = igfullr_names,
+  invisible(list(igfullr_names = igfullr_names,
                  igfullr = igfullr, QUAN = QUAN,
                  qlevels_names = qlevels_names,
                  ML5AD = ML5AD,
-                 ML5AD_names = ML5AD_names, cosinor_coef = cosinor_coef))
+                 ML5AD_names = ML5AD_names,
+                 cosinor_coef = cosinor_coef))
 }

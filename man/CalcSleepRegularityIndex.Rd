@@ -8,7 +8,9 @@
   colleagues in 2017 expanded with day-pair level estimates.
 }
 \usage{
-  CalcSleepRegularityIndex(data = c(), epochsize = c(), desiredtz= c())
+  CalcSleepRegularityIndex(data = c(), epochsize = c(), desiredtz= c(),
+                            SRI1_smoothing_wsize_hrs = NULL,
+                            SRI1_smoothing_frac = NULL)
 }
 \arguments{
   \item{data}{
@@ -18,7 +20,13 @@
     Numeric value of epoch size in seconds.
   }
   \item{desiredtz}{
-    Character with timezone database name, see also \link{g.getmeta}
+    See \link{GGIR}.
+  }
+  \item{SRI1_smoothing_wsize_hrs}{
+    See \link{GGIR}.
+  }
+  \item{SRI1_smoothing_frac}{
+    See \link{GGIR}. 
   }
 }
 \value{

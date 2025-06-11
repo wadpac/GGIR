@@ -26,8 +26,9 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                           configtz = NULL,
                           header = NULL) {
 
-  if (length(rmc.col.time) > 0 && !(rmc.unit.time %in% c("POSIX", "character", "UNIXsec", "ActivPAL"))) {
-    stop("\nUnrecognized rmc.col.time value. The only accepted values are \"POSIX\", \"character\", \"UNIXsec\", and \"ActivPAL\".", call. = FALSE)
+  if (length(rmc.col.time) > 0 && !(rmc.unit.time %in% c("POSIX", "character", "UNIXsec", "UNIXmsec", "ActivPAL"))) {
+    stop(paste0("\nUnrecognized rmc.col.time value. The only accepted values are \"POSIX\", ",
+                "\"character\", \"UNIXsec\", \"UNIXmsec\", and \"ActivPAL\"."), call. = FALSE)
   }
 
   if (!is.null(rmc.desiredtz) || !is.null(rmc.configtz)) {
@@ -257,21 +258,21 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
       }
     } else if (rmc.unit.time == "character") {
       P$time = as.POSIXct(P$time, format = rmc.format.time, origin = rmc.origin, tz = configtz)
-    } else if (rmc.unit.time == "UNIXsec" && rmc.origin != "1970-01-01") {
-      P$time = as.POSIXct(P$time, origin = rmc.origin, tz = desiredtz)
+    } else if (rmc.unit.time == "UNIXsec" || rmc.unit.time == "UNIXmsec") {
+      if (rmc.unit.time == "UNIXmsec") {
+        P$time = P$time / 1000
+      }
+      if (rmc.origin != "1970-01-01") {
+        P$time = as.POSIXct(P$time, origin = rmc.origin, tz = desiredtz)
+      }
     } else if (rmc.unit.time == "ActivPAL") {
       # origin should be specified as: "1899-12-30"
-      rmc.origin = "1899-12-30"
-      datecode = round(P$time) * 3600*24
-      tmp2 = P$time - round(P$time)
-      timecode = ((tmp2 * 10^10) * 8.64) / 1000000
-      numerictime = datecode + timecode
-      P$time = as.POSIXct(numerictime, origin = rmc.origin, tz = desiredtz)
+      P$time = as.POSIXct(P$time * 86400, origin = "1899-12-30", tz = desiredtz)
     }
     if (length(which(is.na(P$time) == FALSE)) == 0) {
       stop("\nExtraction of timestamps unsuccesful, check timestamp format arguments")
     }
-    if(!is.numeric(P$time)) { # we'll return Unix timestamps
+    if (!is.numeric(P$time)) { # we'll return Unix timestamps
       P$time = as.numeric(P$time)
     }
   }

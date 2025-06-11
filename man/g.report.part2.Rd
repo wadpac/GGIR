@@ -9,7 +9,8 @@
 }
 \usage{
   g.report.part2(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
-  store.long = FALSE, params_output, verbose = TRUE, desiredtz = "")
+                  store.long = FALSE, params_output, myfun = c(), 
+                  verbose = TRUE, desiredtz = "")
 }
 \arguments{
   \item{metadatadir}{
@@ -35,6 +36,11 @@
   }
   \item{params_output}{
     Parameters object, see \link{GGIR}
+  }
+  \item{myfun}{
+   (Optional) List as documented in \link{GGIR}. g.report.part2 uses this object
+   to extract the name of the external function being used, such that this
+   can be reused in the output filenames.
   }
   \item{verbose}{
     See details in \link{GGIR}.

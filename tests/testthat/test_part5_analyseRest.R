@@ -5,7 +5,8 @@ tz = "Pacific/Auckland"
 ds_names = rep("", 40)
 dsummary = matrix("", 1, 40)
 startday = as.POSIXct(x = "2022-06-02 08:00:00", tz = tz)
-time = seq(startday, startday + (16 * 3600), by = 60)
+ts = data.frame(time = seq(startday, startday + (16 * 3600), by = 60))
+ts$sibdetection = 0
 
 test_that("Overlap 1 nap and 1 sib", {
   fi = 1
@@ -15,10 +16,13 @@ test_that("Overlap 1 nap and 1 sib", {
                          end = c("2022-06-02 14:20:00", "2022-06-02 14:20:00"))
   sibreport$duration = as.numeric(difftime(time1 = sibreport$end,
                                            time2 = sibreport$start, units = "mins", tz = tz))
+  params_sleep = load_params()$params_sleep
+  params_sleep[["possible_nap_dur"]] =  c(0, 240)
+  params_sleep[["possible_nap_window"]] =  c(9, 18)
   restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
                                      ds_names = ds_names, fi = fi, di = di,
-                                     time = time,
-                                     tz = tz)
+                                     ts = ts, tz = tz,
+                                     params_sleep = params_sleep)
   fi = restAnalyses$fi
   di = restAnalyses$di
   dsummary = restAnalyses$dsummary
@@ -28,12 +32,12 @@ test_that("Overlap 1 nap and 1 sib", {
   names(dsummary) = ds_names
   dsummary = as.data.frame(t(dsummary))
   
-  expect_equal(dsummary$nbouts_day_sib, 1)
+  expect_equal(dsummary$nbouts_day_denap, 1)
   expect_equal(dsummary$nbouts_day_srnap, 1)
-  expect_equal(dsummary$frag_mean_dur_sib_day, 15)
+  expect_equal(dsummary$frag_mean_dur_denap_day, 15)
   expect_equal(dsummary$frag_mean_dur_srnap_day, 20)
-  expect_equal(dsummary$perc_sib_overl_srnap, 100)
-  expect_equal(dsummary$perc_srnap_overl_sib, 75)
+  expect_equal(dsummary$perc_denap_overl_srnap, 100)
+  expect_equal(dsummary$perc_srnap_overl_denap, 75)
   expect_equal(sum(dsummary), 323)
 })
 
@@ -44,10 +48,12 @@ test_that("Overlap 1 nonwear and 1 sib", {
                          start = c("2022-06-02 14:00:00", "2022-06-02 14:05:00"),
                          end = c("2022-06-02 14:20:00", "2022-06-02 14:20:00"))
   sibreport$duration = as.numeric(difftime(time1 = sibreport$end, time2 = sibreport$start, units = "mins", tz = tz))
+  params_sleep = load_params()$params_sleep
+  params_sleep[["possible_nap_dur"]] =  c(0, 240)
+  params_sleep[["possible_nap_window"]] =  c(9, 18)
   restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
                                      ds_names = ds_names, fi = fi, di = di,
-                                     time = time,
-                                     tz = tz)
+                                     ts = ts, tz = tz,params_sleep = params_sleep)
   fi = restAnalyses$fi
   di = restAnalyses$di
   dsummary = restAnalyses$dsummary
@@ -57,12 +63,12 @@ test_that("Overlap 1 nonwear and 1 sib", {
   names(dsummary) = ds_names
   dsummary = as.data.frame(t(dsummary))
   
-  expect_equal(dsummary$nbouts_day_sib, 1)
+  expect_equal(dsummary$nbouts_day_denap, 1)
   expect_equal(dsummary$nbouts_day_srnonw, 1)
-  expect_equal(dsummary$frag_mean_dur_sib_day, 15)
+  expect_equal(dsummary$frag_mean_dur_denap_day, 15)
   expect_equal(dsummary$frag_mean_dur_srnonw_day, 20)
-  expect_equal(dsummary$perc_sib_overl_srnonw, 100)
-  expect_equal(dsummary$perc_srnonw_overl_sib, 75)
+  expect_equal(dsummary$perc_denap_overl_srnonw, 100)
+  expect_equal(dsummary$perc_srnonw_overl_denap, 75)
   expect_equal(sum(dsummary), 323)
 })
 
@@ -74,10 +80,12 @@ test_that("No overlap 1 nonwear, 1 nap, and 1 sib", {
                          start = c("2022-06-02 12:00:00", "2022-06-02 13:00:00", "2022-06-02 15:00:00"),
                          end = c("2022-06-02 12:20:00", "2022-06-02 13:20:00", "2022-06-02 15:20:00"))
   sibreport$duration = as.numeric(difftime(time1 = sibreport$end, time2 = sibreport$start, units = "mins", tz = tz))
+  params_sleep = load_params()$params_sleep
+  params_sleep[["possible_nap_dur"]] =  c(0, 240)
+  params_sleep[["possible_nap_window"]] =  c(9, 18)
   restAnalyses = g.part5.analyseRest(sibreport = sibreport, dsummary = dsummary,
                                      ds_names = ds_names, fi = fi, di = di,
-                                     time = time,
-                                     tz = tz)
+                                     ts = ts, tz = tz, params_sleep = params_sleep)
   fi = restAnalyses$fi
   di = restAnalyses$di
   dsummary = restAnalyses$dsummary
@@ -91,15 +99,15 @@ test_that("No overlap 1 nonwear, 1 nap, and 1 sib", {
   
   expect_equal(ncol(dsummary), 27)
   expect_equal(nrow(dsummary), 1)
-  expect_equal(dsummary$nbouts_day_sib, 1)
+  expect_equal(dsummary$nbouts_day_denap, 1)
   expect_equal(dsummary$nbouts_day_srnap, 1)
   expect_equal(dsummary$nbouts_day_srnonw, 1)
-  expect_equal(dsummary$frag_mean_dur_sib_day, 20)
+  expect_equal(dsummary$frag_mean_dur_denap_day, 20)
   expect_equal(dsummary$frag_mean_dur_srnap_day, 20)
   expect_equal(dsummary$frag_mean_dur_srnonw_day, 20)
-  expect_equal(dsummary$perc_sib_overl_srnap, 0)
-  expect_equal(dsummary$perc_sib_overl_srnonw, 0)
-  expect_equal(dsummary$perc_srnonw_overl_sib, 0)
+  expect_equal(dsummary$perc_denap_overl_srnap, 0)
+  expect_equal(dsummary$perc_denap_overl_srnonw, 0)
+  expect_equal(dsummary$perc_srnonw_overl_denap, 0)
   expect_equal(sum(dsummary, na.rm = TRUE), 129)
   
 })

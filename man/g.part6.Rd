@@ -10,7 +10,7 @@
 \usage{
 g.part6(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                    params_general = c(), params_phyact = c(), params_247 = c(),
-                   verbose = TRUE, ...)
+                   params_cleaning = c(), verbose = TRUE, ...)
 }
 \arguments{
   \item{datadir}{
@@ -38,6 +38,9 @@ g.part6(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
    See details in \link{GGIR}.
   }
   \item{params_247}{
+   See details in \link{GGIR}.
+  }
+  \item{params_cleaning}{
    See details in \link{GGIR}.
   }
   \item{verbose}{

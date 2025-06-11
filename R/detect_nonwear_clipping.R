@@ -2,70 +2,59 @@ detect_nonwear_clipping = function(data = c(), windowsizes = c(5, 900, 3600), sf
                                    clipthres = 7.5, sdcriter = 0.013, racriter = 0.05,
                                    nonwear_approach = "2013",
                                    params_rawdata = c()) {
-  ws3 = windowsizes[1]; ws2 = windowsizes[2]; ws = windowsizes[3]
-  window3 = ws3 * sf #window size in samples
-  window2 = ws2 * sf #window size in samples
-  window = ws * sf #window size in samples
-  nmin = floor(nrow(data)/(window2)) # nmin = minimum number of windows that fit in this block of data
-  CW = NW = matrix(0,nmin,3) #CW is clipping, NW is non-wear
-  CWav = NWav = rep(0, nmin)
-  crit = ((window/window2)/2) + 1
+  MediumEpochSize = windowsizes[2] * sf # Medium window size in samples
+  LongEpochSize = windowsizes[3] * sf #Long window size in samples
+  NMediumEpochs = floor(nrow(data)/(MediumEpochSize)) # Number of non-overlapping Medium Epochs that fit in data
+  # Initialise matrices to collect clipping and nonwear info per axis
+  ClipLog = NonwearLog = matrix(0,NMediumEpochs,3)
+  ClipLogCollapsed = NonwearLogCollapsed = rep(0, NMediumEpochs) # averages
+  # Define minimum number of Medium epochs that need to be present in Long Epoch
+  minimumEpochCount = ((LongEpochSize/MediumEpochSize)/2) + 1
   
   if (nonwear_approach %in% c("2013", "2023")) {
-    # define windows to check:
-    for (h in 1:nmin) { #number of windows
-      
-      # clip detection based on window2 (do not use window)
-      cliphoc1 = (((h - 1) * window2) + window2 * 0.5 ) - window2 * 0.5
-      cliphoc2 = (((h - 1) * window2) + window2 * 0.5 ) + window2 * 0.5
-      
-      # Flag nonwear based on window instead of window2 (2023-02-18)
+    for (h in 1:NMediumEpochs) {
+      # define start and end index for clipping detection (clipstart and clipend)
+      clipstart = (((h - 1) * MediumEpochSize) + MediumEpochSize * 0.5 ) - MediumEpochSize * 0.5
+      clipend = (((h - 1) * MediumEpochSize) + MediumEpochSize * 0.5 ) + MediumEpochSize * 0.5
+      # define start and end index for nonwear detection (nwstart and nwend)
       if (nonwear_approach == "2013") {
-        NWflag = h
-        if (h <= crit) {
-          hoc1 = 1
-          hoc2 = window
-        } else if (h >= (nmin - crit)) {
-          hoc1 = (nmin - crit) * window2
-          hoc2 = nmin * window2 #end of data
-        } else if (h > crit & h < (nmin - crit)) {
-          hoc1 = (((h - 1) * window2) + window2 * 0.5 ) - window * 0.5
-          hoc2 = (((h - 1) * window2) + window2 * 0.5 ) + window * 0.5
+        NonwearLogflag = h
+        if (h <= minimumEpochCount) {
+          nwstart = 1
+          nwend = LongEpochSize
+        } else if (h >= (NMediumEpochs - minimumEpochCount)) {
+          nwstart = (NMediumEpochs - minimumEpochCount) * MediumEpochSize
+          nwend = NMediumEpochs * MediumEpochSize
+        } else if (h > minimumEpochCount & h < (NMediumEpochs - minimumEpochCount)) {
+          nwstart = (((h - 1) * MediumEpochSize) + MediumEpochSize * 0.5 ) - LongEpochSize * 0.5
+          nwend = (((h - 1) * MediumEpochSize) + MediumEpochSize * 0.5 ) + LongEpochSize * 0.5
         }
-      
       } else if (nonwear_approach == "2023") {
-        # long-epoch windows to flag (nonwear)
-        NWflag = h:(h + window/window2 - 1)
-        if (NWflag[length(NWflag)] > nmin) NWflag = NWflag[-which(NWflag > nmin)]
-        # window to check (not aggregated values)
-        hoc1 = h * window2 - window2
-        hoc2 = hoc1 + window
-        if (hoc2 > nrow(data)) {
-          hoc2 = nrow(data)
+        NonwearLogflag = h:(h + LongEpochSize/MediumEpochSize - 1)
+        if (NonwearLogflag[length(NonwearLogflag)] > NMediumEpochs) NonwearLogflag = NonwearLogflag[-which(NonwearLogflag > NMediumEpochs)]
+        # LongEpochSize to check (not aggregated values)
+        nwstart = h * MediumEpochSize - MediumEpochSize
+        nwend = nwstart + LongEpochSize
+        if (nwend > nrow(data)) {
+          nwend = nrow(data)
         }
       }
       # ---
-      if ("wear" %in% colnames(data)) {
-        wearTable = table(data[(1 + hoc1):hoc2, "wear"], useNA = "no")
-        NWav[h] = as.numeric(tail(names(sort(wearTable)), 1)) * 3 # times 3 to simulate heuristic approach
-      }
       xyzCol = which(colnames(data) %in% c("x", "y", "z"))
       for (jj in seq(3)) {
-        # Clipping
-        aboveThreshold = which(abs(data[(1 + cliphoc1):cliphoc2, xyzCol[jj]]) > clipthres)
-        CW[h, jj] = length(aboveThreshold)
+        # Detect clipping
+        aboveThreshold = which(abs(data[(1 + clipstart):clipend, xyzCol[jj]]) > clipthres)
+        ClipLog[h, jj] = length(aboveThreshold)
         if (length(aboveThreshold) > 0) {
-          if (length(which(abs(data[c((1 + cliphoc1):cliphoc2)[aboveThreshold],  xyzCol[jj]]) > clipthres * 1.5)) > 0) {
-            CW[h, jj] = window2 # If there is a a value that is more than 150% the dynamic range then ignore entire block.
+          if (length(which(abs(data[c((1 + clipstart):clipend)[aboveThreshold],  xyzCol[jj]]) > clipthres * 1.5)) > 0) {
+            ClipLog[h, jj] = MediumEpochSize # If there is a a value that is more than 150% the dynamic range then ignore entire block.
           }
         }
-        # Non-wear
-        #hoc1 & hoc2 = edges of windows
-        #window is bigger& window2 is smaller one
+        # Detect nonwear
         if (nonwear_approach == "2013") {
-          indices = (1 + hoc1):hoc2
+          indices = (1 + nwstart):nwend
         } else if (nonwear_approach == "2023") {
-          indices = seq((1 + hoc1), hoc2, by = ceiling(sf / 5))
+          indices = seq((1 + nwstart), nwend, by = ceiling(sf / 5))
         }
         maxwacc = max(data[indices, xyzCol[jj]], na.rm = TRUE)
         minwacc = min(data[indices, xyzCol[jj]], na.rm = TRUE)
@@ -73,25 +62,33 @@ detect_nonwear_clipping = function(data = c(), windowsizes = c(5, 900, 3600), sf
         if (absrange < racriter) {
           sdwacc = sd(data[indices, xyzCol[jj]], na.rm = TRUE)
           if (sdwacc < sdcriter) {
-            NW[NWflag,jj] = 1
+            NonwearLog[NonwearLogflag,jj] = 1
           }
         }
       }
-      CW = CW / (window2)
-      if (!("wear" %in% colnames(data))) {
-        NWav[h] = (NW[h,1] + NW[h,2] + NW[h,3]) #indicator of non-wear
+      # Summarise clipping
+      ClipLog = ClipLog / (MediumEpochSize) # Express as fraction of epoch length
+      ClipLogCollapsed[h] = max(c(ClipLog[h, 1], ClipLog[h, 2], ClipLog[h, 3])) #indicator of clipping
+      
+      # Summarise nonwear
+      if ("wear" %in% colnames(data)) {
+        wearTable = table(data[(1 + nwstart):nwend, "wear"], useNA = "no")
+        NonwearLogCollapsed[h] = as.numeric(tail(names(sort(wearTable)), 1)) * 3 # times 3 to simulate heuristic approach
       }
-      CWav[h] = max(c(CW[h, 1], CW[h, 2], CW[h, 3])) #indicator of clipping
-    }
-  } 
-  # In NWav: single 1's surrounded by 2's or 3's --> 2 (so it is considered nonwear)
-  ones = which(NWav == 1)
-  if (length(ones) > 0) {
-    for (one_i in ones) {
-      if (one_i - 1 < 1) next # skip if we are in the very begining
-      if (one_i + 1 > length(NWav)) next # skip if we are in the very end
-      if (NWav[one_i - 1] > 1 & NWav[one_i + 1] > 1) NWav[one_i] = 2
+      if (!("wear" %in% colnames(data))) {
+        NonwearLogCollapsed[h] = (NonwearLog[h,1] + NonwearLog[h,2] + NonwearLog[h,3]) #indicator of non-wear
+      }
+      
     }
   }
-  return(list(NWav = NWav, CWav = CWav, nmin = nmin))
+  # In NonwearLogCollapsed: single 1's surrounded by 2's or 3's --> 2 (so it is considered nonwear)
+  ones = which(NonwearLogCollapsed == 1)
+  if (length(ones) > 0) {
+    for (one_i in ones) {
+      if (one_i - 1 < 1) next # skip if we are in the very beginning
+      if (one_i + 1 > length(NonwearLogCollapsed)) next # skip if we are in the very end
+      if (NonwearLogCollapsed[one_i - 1] > 1 & NonwearLogCollapsed[one_i + 1] > 1) NonwearLogCollapsed[one_i] = 2
+    }
+  }
+  return(list(NWav = NonwearLogCollapsed, CWav = ClipLogCollapsed, nmin = NMediumEpochs))
 }

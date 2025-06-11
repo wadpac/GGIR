@@ -85,6 +85,10 @@ g.calibrate = function(datafile, params_rawdata = c(),
       blocksize = round(12 * 3600 * sf / 80 * params_rawdata[["chunksize"]])
     }
   }
+  if (mon == MONITOR$PARMAY_MTX && dformat == FORMAT$BIN) {
+    # Matrix data packets have ~2 minutes of data
+    blocksize = round(60 * 12 / 2 * params_rawdata[["chunksize"]])
+  }
   #===============================================
   # Read file
   i = 1 #counter to keep track of which binary block is being read

@@ -8,36 +8,17 @@
   van Someren.
 }
 \usage{
-  g.IVIS(Xi, epochsizesecondsXi = 5, IVIS_epochsize_seconds = c(),
-    IVIS_windowsize_minutes = 60, IVIS.activity.metric = 1,
-    IVIS_acc_threshold = 20, IVIS_per_daypair = FALSE)
+  g.IVIS(Xi, epochSize = 60, threshold = NULL)
 }
 \arguments{
   \item{Xi}{
     Vector with acceleration values, e.g. ENMO metric.
   }
-  \item{epochsizesecondsXi}{
+  \item{epochSize}{
     Epoch size of the values in Xi expressed in seconds.
   }
-  \item{IVIS_epochsize_seconds}{
-    This argument has been depricated.
-  }
-  \item{IVIS_windowsize_minutes}{
-    Window size of the Intradaily Variability (IV) and Interdaily
-    Stability (IS) metrics in minutes, needs to be able to add up to 24 hours.
-  }
-  \item{IVIS.activity.metric}{
-    Metric used for activity calculation.
-    Value = 1, uses continuous scaled acceleration.
-    Value = 2, tries to collapse acceleration into a binary score of rest
-    versus active to try to simulate the original approach.
-  }
-  \item{IVIS_acc_threshold}{
+  \item{threshold}{
     Acceleration threshold to distinguish inactive from active
-  }
-  \item{IVIS_per_daypair}{
-    Boolean to indicate whether IVIS should be calculated per day pair and
-    then aggregated across day pairs weighted by day completeness (default FALSE).
   }
 }
 \value{
@@ -50,6 +31,7 @@
 }
 \keyword{internal}
 \author{
+  Ian Meneghel Danilevicz <ian.meneghel-danilevicz@inserm.fr>
   Vincent T van Hees <v.vanhees@accelting.com>
 }
 \references{
