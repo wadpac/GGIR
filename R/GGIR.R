@@ -239,16 +239,29 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   }
   if (verbose == TRUE) {
     cat(paste0("\n   GGIR version: ",GGIRversion,"\n"))
-    cat("\n   To cite GGIR in your reports please reference doi: 10.5281/zenodo.1051064")
+    random_message = sample(x = 1:4, size = 1)
+    if (random_message == 1) {
+      cat("\n   To cite GGIR as a software in your publications use doi: 10.5281/zenodo.1051064")
+    } else if (random_message == 2) {
+      cat("\n   To help us track where GGIR was used post a link to your publication ")
+      cat("\n   in the GGIR google group or email it to v.vanhees@accelting.com")
+    } else if (random_message == 3) {
+      cat("\n   To make your research reproducible and interpretable always report:")
+      cat("\n     (1) GGIR version")
+      cat("\n     (2) Accelerometer brand and product name")
+      cat("\n     (3) How you configured the accelerometer")
+      cat("\n     (4) Study protocol and wear instructions given to the participants")
+      cat("\n     (5) How GGIR was used: Share the config.csv file or your R script.")
+      cat("\n     (6) How you post-processed / cleaned GGIR output")
+      cat("\n     (7) How reported outcomes relate to the specific variable names in GGIR")
+    } else if (random_message == 4) {
+      cat("\n   The sustainability of GGIR depends on community efforts, please consider:")
+      cat("\n     (1) Helping other users in the GGIR google group or on GitHub.")
+      cat("\n     (2) Providing feedback on GGIR documentation.")
+      cat("\n     (3) Providing feedback on GGIR source code.")
+      cat("\n     (4) Finding funding to pay for any of the previous points.")
+    }
     cat("\n")
-    cat("\n   To make your research reproducible and interpretable always report:")
-    cat("\n     (1) Accelerometer brand and product name")
-    cat("\n     (2) How you configured the accelerometer")
-    cat("\n     (3) Study protocol and wear instructions given to the participants")
-    cat("\n     (4) GGIR version")
-    cat("\n     (5) How GGIR was used: Share the config.csv file or your R script.")
-    cat("\n     (6) How you post-processed / cleaned GGIR output")
-    cat("\n     (7) How reported outcomes relate to the specific variable names in GGIR")
   }
   #-----------------------------------------------------------
   # Now run GGIR parts 1-5
