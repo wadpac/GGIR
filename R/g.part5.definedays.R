@@ -1,5 +1,4 @@
-g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
-                              epochSize, qqq_backup = c(), ts, timewindowi, 
+g.part5.definedays = function(nightsi, wi, indjump, epochSize, qqq_backup = c(), ts, timewindowi, 
                               Nwindows, qwindow, ID = NULL,
                               dayborder = 0) {
   Nts = nrow(ts)
@@ -51,7 +50,12 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
     }
     # define window
     qqq[1] = nightsi[wi]
-    qqq[2] = nightsi[wi + 1] - 1
+    if (length(nightsi) >= wi + 1) {
+      qqq[2] = nightsi[wi + 1] - 1
+    } else {
+      qqq[2] = Nts
+      lastDay = TRUE
+    }
     # is this the last day?
     if (wi == length(nightsi) - 1) {
       lastDay = TRUE

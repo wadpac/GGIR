@@ -23,9 +23,6 @@
   \item{indjump}{
     Number of indices to jump
   }
-  \item{nightsi_bu}{
-    See argument \code{nightsi} this is a backup of this object
-  }
   \item{epochSize}{
     Numeric epoch size in seconds
   }
