@@ -243,7 +243,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     if (random_message == 1) {
       cat("\n   To cite GGIR as a software in your publications use doi: 10.5281/zenodo.1051064")
     } else if (random_message == 2) {
-      cat("\n   To help us track where GGIR was used post a link to your publication ")
+      cat("\n   To help us track where GGIR was used, post a link to your publication ")
       cat("\n   in https://github.com/wadpac/GGIR/discussions/categories/show-and-tell")
       cat("\n   or email it to v.vanhees@accelting.com")
     } else if (random_message == 3) {
@@ -256,7 +256,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       cat("\n     (6) How you post-processed / cleaned GGIR output")
       cat("\n     (7) How reported outcomes relate to the specific variable names in GGIR")
     } else if (random_message == 4) {
-      cat("\n   The sustainability of GGIR depends on community efforts, please consider:")
+      cat("\n   The sustainability of GGIR depends on YOU as user, please consider:")
       cat("\n     (1) Helping other users on https://github.com/wadpac/GGIR/discussions")
       cat("\n     (2) Providing feedback on GGIR documentation.")
       cat("\n     (3) Providing feedback on GGIR source code.")
