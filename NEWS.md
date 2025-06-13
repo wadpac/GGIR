@@ -1,3 +1,8 @@
+
+# CHANGES IN GGIR VERSION 3.2-8
+
+- Revise guidance on GGIR citation. #1303
+
 # CHANGES IN GGIR VERSION 3.2-7
 
 - Part 5: Fix bug in reinitialisation of window numbers when using multiple timewindow definitions in GGIR part 5. #1311
