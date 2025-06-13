@@ -516,9 +516,7 @@ can trust the sleep classification in your data set.
 
 -   The [GGIR package manual](https://CRAN.R-project.org/package=GGIR)
     provides documentation on individual functions.
--   For general questions about how to use GGIR join our [google
-    group/mailing
-    list](https://groups.google.com/forum/#!forum/rpackageggir).
+-   For general questions about how to use GGIR see the [GGIR discussion page](https://github.com/wadpac/GGIR/discussions).
 -   For bug reports please post them
     [here](https://github.com/wadpac/GGIR/issues).
 

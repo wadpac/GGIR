@@ -2,6 +2,8 @@
 
 - Part 2 + 5: Segmentation with activity log is now able to handle non-chronological order of segment definitions in the log. #1318
 
+- General: Promote GitHub discussion page as central place to ask questions and remove references to Google group from the documentation. #1320.
+
 # CHANGES IN GGIR VERSION 3.2-7
 
 - Part 5: Fix bug in reinitialisation of window numbers when using multiple timewindow definitions in GGIR part 5. #1311

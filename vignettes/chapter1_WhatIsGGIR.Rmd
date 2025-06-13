@@ -49,7 +49,7 @@ The time resolutions of GGIR output are:
 6.  GGIR is designed to be accessible for new users without experience in R or programming. GGIR requires only one function call and comes with elaborate open-access documentation.
 7.  GGIR has had over a [dozen code contributors](https://github.com/wadpac/GGIR/graphs/contributors).
 8.  GGIR has been available on the CRAN archive, meaning that it meets CRAN standards and that each release has gone through a series of automated checks.
-9.  We have public email list ([google group](https://groups.google.com/g/rpackageggir/)) for users to reach out to each other and the maintainers.
+9.  We help users as much as possible publicly to maximise the sharing of knowledge. Between 2014 and 2025 this was done via the ([GGIR google group](https://groups.google.com/g/rpackageggir/)) which attracted nearly 1000 conversation, but to ease moderation we now migrate to the GGIR [discussion](https://github.com/wadpac/GGIR/discussions) and [issue](https://github.com/wadpac/GGIR/issues) pages.
 10. Over a hundred [publications](https://github.com/wadpac/GGIR/wiki/Publication-list) have used GGIR, which has been a powerful way to identify problems and improve the code and it has provided us with a wide range of reference values.
 
 ## History
