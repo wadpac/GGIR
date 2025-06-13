@@ -12,7 +12,7 @@
   - [ ] Vignettes for CRAN
 - [ ] Corresponding issue tagged in PR message. If no issue exist, please create an issue and tag it.
 - [ ] Updated release notes in `inst/NEWS.Rd` with a user-readable summary. Please, include references to relevant issues or PR discussions.
-- [ ] Added your name to the contributors lists in the `DESCRIPTION` file, if you think you made a significant contribution.
+- [ ] If you think you made a significant contribution, add your name to the contributors lists in the `DESCRIPTION`, `zenodo.json`, and `inst/CITATION` files.
 - [ ] GGIR parameters were added/removed. If yes, please also complete checklist below.
 
 **If NEW GGIR parameter(s) were added then these NEW parameter(s) are:**
