@@ -8,7 +8,7 @@
   Defines when day windows start and end as part of \link{g.part5}.
 }
 \usage{
-  g.part5.definedays(nightsi, wi, indjump, nightsi_bu, 
+  g.part5.definedays(nightsi, wi, indjump,
                      epochSize, qqq_backup = c(), ts,
                      timewindowi, Nwindows, qwindow, ID = NULL,
                      dayborder = 0)
