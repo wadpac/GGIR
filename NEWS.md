@@ -16,7 +16,7 @@
 
 - Part 2: Fix minor bug that added an extra row (day) in "part2_daysummary" when recording duration was less than one day and did not overlap with midnight. #1313
 
-- Improved segmentation with activity log to allow for non-chronological segment definitions per file. #1318
+- Part 2 + 5: Segmentation with activity log is now able to handle non-chronological order of segment definitions in the log. #1318
 
 # CHANGES IN GGIR VERSION 3.2-6
 
