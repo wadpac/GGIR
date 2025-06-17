@@ -256,8 +256,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     } else if (random_message == 3) {
       cat("\n   The sustainability of GGIR depends on YOU as user, please consider:")
       cat("\n     (1) Helping other users on https://github.com/wadpac/GGIR/discussions")
-      cat("\n     (2) Providing feedback on GGIR documentation.")
-      cat("\n     (3) Providing feedback on GGIR source code.")
+      cat("\n     (2) Providing feedback on or help improve GGIR documentation")
+      cat("\n     (3) Providing feedback on or help improve GGIR source code")
       cat("\n     (4) Finding funding for work on GGIR")
       cat("\n   For questions about contributing contact v.vanhees@accelting.com.")
     }
