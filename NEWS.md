@@ -1,5 +1,7 @@
 # CHANGES IN GGIR VERSION 3.2-?
 
+- Revise guidance on GGIR citation. #1303
+
 - Part 2 + 5: Segmentation with activity log is now able to handle non-chronological order of segment definitions in the log. #1318
 
 - General: Promote GitHub discussion page as central place to ask questions and remove references to Google group from the documentation. #1320.

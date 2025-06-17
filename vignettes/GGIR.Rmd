@@ -526,56 +526,9 @@ A correct citation of research software is important to make your
 research reproducible and to acknowledge the effort that goes into the
 development of open-source software.
 
-To do so, please report the GGIR version you used in the text.
-Additionally, please also cite:
-
-1.  Migueles JH, Rowlands AV, et al. GGIR: A Research Community--Driven
-    Open Source R Package for Generating Physical Activity and Sleep
-    Outcomes From Multi-Day Raw Accelerometer Data. Journal for the
-    Measurement of Physical Behaviour. 2(3) 2019. doi:
-    10.1123/jmpb.2018-0063.
-
-If your work depends on the quantification of **physical activity** then
-also cite:
-
-2.  van Hees VT, Gorzelniak L, et al. Separating Movement and Gravity
-    Components in an Acceleration Signal and Implications for the
-    Assessment of Human Daily Physical Activity. PLoS ONE 8(4) 2013.
-    [link](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691)
-3.  Sabia S, van Hees VT, Shipley MJ, Trenell MI, Hagger-Johnson G,
-    Elbaz A, Kivimaki M, Singh-Manoux A. Association between
-    questionnaire- and accelerometer-assessed physical activity: the
-    role of sociodemographic factors. Am J Epidemiol. 2014 Mar
-    15;179(6):781-90. doi: 10.1093/aje/kwt330. Epub 2014 Feb 4. PMID:
-    24500862 [link](https://pubmed.ncbi.nlm.nih.gov/24500862/)
-
-If you used the **auto-calibration functionality** then also cite:
-
-4.  van Hees VT, Fang Z, et al. Auto-calibration of accelerometer data
-    for free-living physical activity assessment using local gravity and
-    temperature: an evaluation on four continents. J Appl Physiol 2014.
-    [link](https://doi.org/10.1152/japplphysiol.00421.2014)
-
-If you used the **sleep detection** then also cite:
-
-5.  van Hees VT, Sabia S, et al. A novel, open access method to assess
-    sleep duration using a wrist-worn accelerometer, PLoS ONE, 2015
-    [link](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0142533)
-
-If you used the **sleep detection without relying on sleep diary** then
-also cite:
-
-6.  van Hees VT, Sabia S, et al. Estimating sleep parameters using an
-    accelerometer without sleep diary. Scientific Reports 2018. doi:
-    10.1038/s41598-018-31266-z.
-    [link](https://www.nature.com/articles/s41598-018-31266-z)
-
-If you used the **sleep regularity index** then also cite:
-
-7.  Andrew J. K. Phillips, William M. Clerx, et al. Irregular sleep/wake
-    patterns are associated with poorer academic performance and delayed
-    circadian and sleep/wake timing. Scientific Reports. 2017 June 12
-    [link](https://www.nature.com/articles/s41598-017-03171-4).
+This section has been replaced by an updated citation instruction which you
+can find via R command `citation(package = "GGIR")` and by citing the scientific
+literature corresponding to the specific functionality you use as discussed in the GGIR [documentation](https://wadpac.github.io).
 
 ## Copyright for GGIR logo
 
