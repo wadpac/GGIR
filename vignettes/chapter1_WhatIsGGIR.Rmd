@@ -59,6 +59,8 @@ In short, GGIR evolved from a series of R scripts used in research around 2010-2
 A key factor for the growth of GGIR has been its adoption by the research community and the willingness of a variety of researchers to invest in GGIR either in terms of time investment or financially.
 GGIR would not be what it is without all their efforts.
 
+Another good place to learn about GGIR's history is the article by [Migueles JH, et al. from 2019](https://doi.org/10.1123/jmpb.2018-0063) which summarised GGIR's status at that point in time.
+
 ## Philosophy behind GGIR
 
 ### Flexible and accessible
