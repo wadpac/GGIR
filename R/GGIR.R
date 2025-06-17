@@ -199,9 +199,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   if (dir.exists(outputdir) == FALSE) {
     stop("\nDirectory specified by argument outputdir does not exist")
   }
-  if (file.access(outputdir, mode = 2) == 0) {
-    if (verbose == TRUE) cat("\nChecking that user has write access permission for directory specified by argument outputdir: Yes\n")
-  } else {
+  if (file.access(outputdir, mode = 2) != 0) {
     stop("\nUser does not seem to have write access permissions for the directory specified by argument outputdir.\n")
   }
   if (filelist == TRUE) {
@@ -239,14 +237,14 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   }
   if (verbose == TRUE) {
     cat(paste0("\n   GGIR version: ",GGIRversion,"\n"))
-    random_message = sample(x = 1:4, size = 1)
+    cat("\n   << Please cite GGIR in your publications with doi: 10.5281/zenodo.1051064 >>\n")
+    random_message = sample(x = 1:3, size = 1)
+    cat(paste0("\n   [Note #", random_message, "]"))
     if (random_message == 1) {
-      cat("\n   To cite GGIR as a software in your publications use doi: 10.5281/zenodo.1051064")
-    } else if (random_message == 2) {
-      cat("\n   To help us track where GGIR was used, post a link to your publication ")
+      cat("\n   To help us track where GGIR was in the literature, post a link to your publication ")
       cat("\n   in https://github.com/wadpac/GGIR/discussions/categories/show-and-tell")
       cat("\n   or email it to v.vanhees@accelting.com")
-    } else if (random_message == 3) {
+    } else if (random_message == 2) {
       cat("\n   To make your research reproducible and interpretable always report:")
       cat("\n     (1) GGIR version")
       cat("\n     (2) Accelerometer brand and product name")
@@ -255,7 +253,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       cat("\n     (5) How GGIR was used: Share the config.csv file or your R script.")
       cat("\n     (6) How you post-processed / cleaned GGIR output")
       cat("\n     (7) How reported outcomes relate to the specific variable names in GGIR")
-    } else if (random_message == 4) {
+    } else if (random_message == 3) {
       cat("\n   The sustainability of GGIR depends on YOU as user, please consider:")
       cat("\n     (1) Helping other users on https://github.com/wadpac/GGIR/discussions")
       cat("\n     (2) Providing feedback on GGIR documentation.")
