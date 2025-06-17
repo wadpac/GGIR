@@ -36,7 +36,7 @@ This approach comes with the following benefits:
 
 Please post your general questions, suggestions, or news in the [**GGIR discussion page**](https://github.com/wadpac/GGIR/discussions).
 
-If you have multiple unrelated things to report then post them in separate posts.
+If you have multiple unrelated things to report then please post them separately.
 
 **Please be considerate of that fact that all public support is based on voluntary efforts.**
 
