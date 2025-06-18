@@ -8,7 +8,6 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                             params_247 = c(), params_phyact = c(),
                             params_general = c(),
                             ...) {
-
   #get input variables
   input = list(...)
   if (length(input) > 0 ||
@@ -34,6 +33,15 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
       startatmidnight =  1
     }
     if (lastmidnight == time[length(time)] & nrow(metashort) < ((60/ws3) * 1440)) {	#if measurement ends at midnight
+      ndays = ndays - 1
+      endatmidnight = 1
+    }
+  } else {
+    # Handle edge case for short recordings without a full day (e.g., a few hours) 
+    # that both start and end at midnight or it does not include any midnight 
+    if (firstmidnighti == 1 & 
+        lastmidnight == time[length(time)] & 
+        nrow(metashort) < ((60/ws3) * 1440)) {
       ndays = ndays - 1
       endatmidnight = 1
     }
@@ -80,6 +88,11 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
       qwindow_times = as.character(params_247[["qwindow"]])
       qwindow_names = as.character(params_247[["qwindow"]])
     }
+    # order qwindow timestamps in current date
+    qwindow_order = order(params_247[["qwindow"]])
+    params_247[["qwindow"]] = qwindow_values_backup = params_247[["qwindow"]][qwindow_order]
+    qwindow_times = qwindow_times[qwindow_order]
+    qwindow_names = qwindow_names[qwindow_order]
     # extract day from matrix D and qcheck
     if (startatmidnight == 1 & endatmidnight == 1) {
       qqq1 = midnightsi[di] * (ws2/ws3)	#a day starts at 00:00
@@ -426,18 +439,19 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                                  "ZCX", "ZCY", "ZCZ", "BrondCount_x", "BrondCount_y",
                                  "BrondCount_z", "NeishabouriCount_x", "NeishabouriCount_y",
                                  "NeishabouriCount_z", "NeishabouriCount_vm", "ExtAct",
-                                 "ExtHeartRate")
+                                 "ExtHeartRate", myfun$colnames)
               
               if (isAccMetric == TRUE & length(ExtFunColsi) > 0) {
                 # Then also extract count metric
                 
                 varnum_event = as.numeric(as.matrix(vari[,ExtFunColsi]))
-                if (NRV < length(averageday[, ExtFunColsi])) {
+                Ndatapoints = nrow(averageday)
+                if (NRV < Ndatapoints) {
                   if (di == 1) {
                     varnum_event = c(averageday[1:abs(deltaLength), ExtFunColsi], varnum_event)
                   } else {
-                    a56 = length(averageday[, ExtFunColsi]) - abs(deltaLength)
-                    a57 = length(averageday[, ExtFunColsi])
+                    a56 = Ndatapoints - abs(deltaLength)
+                    a57 = Ndatapoints
                     varnum_event = c(varnum_event, averageday[a56:a57, ExtFunColsi])
                   }
                 }
@@ -455,7 +469,8 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               # Starting filling output matrix daysummary with variables per day segment and full day.
               if (minames[mi] %in% c("ZCX", "ZCY", "ZCZ", "BrondCount_x", "BrondCount_y",
                                      "BrondCount_z", "NeishabouriCount_x", "NeishabouriCount_y", 
-                                     "NeishabouriCount_z", "NeishabouriCount_vm", "ExtAct", "ExtHeartRate") == FALSE) {
+                                     "NeishabouriCount_z", "NeishabouriCount_vm", "ExtAct", "ExtHeartRate",
+                                     myfun$colnames) == FALSE) {
                 unit = "_mg"
               } else if (minames[mi] == "ExtAct") {
                 unit = ""

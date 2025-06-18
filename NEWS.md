@@ -1,5 +1,15 @@
 # CHANGES IN GGIR VERSION 3.2-?
 
+- Revise guidance on GGIR citation. #1303
+
+- Part 2 + 5: Segmentation with activity log is now able to handle non-chronological order of segment definitions in the log. #1318
+
+- Part 1 + 2: Update code and documentation for using external functions that produce multicolumn output. #1324
+
+# CHANGES IN GGIR VERSION 3.2-7
+
+- Part 5: Fix bug in reinitialisation of window numbers when using multiple timewindow definitions in GGIR part 5. #1311
+
 - Now generates error message when user provides parameters with unknown names to GGIR function #1300.
 
 - Part 3:
@@ -11,6 +21,8 @@
 - Config file: fix minor issue that caused GGIR, GGIRread, and R version to overwrite the last 3 parameters in the config file. #1298 
 
 - Part 1: Detect time gaps in between data (24 hour) chunks. Handle these if less than 1 hours and generate error when larger. #1294
+
+- Part 2: Fix minor bug that added an extra row (day) in "part2_daysummary" when recording duration was less than one day and did not overlap with midnight. #1313
 
 # CHANGES IN GGIR VERSION 3.2-6
 
