@@ -79,6 +79,9 @@ g.part5.definedays = function(nightsi, wi, indjump, epochSize, qqq_backup = c(),
         if (length(qdate) == 1) { # if ID/date matched with activity log
           qnames = unlist(qwindow$qwindow_names[qdate])
           qwindow = unlist(qwindow$qwindow_values[qdate])
+          qwindow_order = order(qwindow)
+          qwindow = qwindow[qwindow_order]
+          qnames = qnames[qwindow_order]
         } else { # if ID/date not correctly matched with activity log
           qwindow = c(0, 24)
         }
