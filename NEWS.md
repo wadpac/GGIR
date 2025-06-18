@@ -1,5 +1,13 @@
 # CHANGES IN GGIR VERSION 3.2-?
 
+- Revise guidance on GGIR citation. #1303
+
+- Part 2 + 5: Segmentation with activity log is now able to handle non-chronological order of segment definitions in the log. #1318
+
+- Part 1 + 2: Update code and documentation for using external functions that produce multicolumn output. #1324
+
+# CHANGES IN GGIR VERSION 3.2-7
+
 - Part 5: Fix bug in reinitialisation of window numbers when using multiple timewindow definitions in GGIR part 5. #1311
 
 - Now generates error message when user provides parameters with unknown names to GGIR function #1300.
