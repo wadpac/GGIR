@@ -439,18 +439,19 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                                  "ZCX", "ZCY", "ZCZ", "BrondCount_x", "BrondCount_y",
                                  "BrondCount_z", "NeishabouriCount_x", "NeishabouriCount_y",
                                  "NeishabouriCount_z", "NeishabouriCount_vm", "ExtAct",
-                                 "ExtHeartRate")
+                                 "ExtHeartRate", myfun$colnames)
               
               if (isAccMetric == TRUE & length(ExtFunColsi) > 0) {
                 # Then also extract count metric
                 
                 varnum_event = as.numeric(as.matrix(vari[,ExtFunColsi]))
-                if (NRV < length(averageday[, ExtFunColsi])) {
+                Ndatapoints = nrow(averageday)
+                if (NRV < Ndatapoints) {
                   if (di == 1) {
                     varnum_event = c(averageday[1:abs(deltaLength), ExtFunColsi], varnum_event)
                   } else {
-                    a56 = length(averageday[, ExtFunColsi]) - abs(deltaLength)
-                    a57 = length(averageday[, ExtFunColsi])
+                    a56 = Ndatapoints - abs(deltaLength)
+                    a57 = Ndatapoints
                     varnum_event = c(varnum_event, averageday[a56:a57, ExtFunColsi])
                   }
                 }
@@ -468,7 +469,8 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               # Starting filling output matrix daysummary with variables per day segment and full day.
               if (minames[mi] %in% c("ZCX", "ZCY", "ZCZ", "BrondCount_x", "BrondCount_y",
                                      "BrondCount_z", "NeishabouriCount_x", "NeishabouriCount_y", 
-                                     "NeishabouriCount_z", "NeishabouriCount_vm", "ExtAct", "ExtHeartRate") == FALSE) {
+                                     "NeishabouriCount_z", "NeishabouriCount_vm", "ExtAct", "ExtHeartRate",
+                                     myfun$colnames) == FALSE) {
                 unit = "_mg"
               } else if (minames[mi] == "ExtAct") {
                 unit = ""

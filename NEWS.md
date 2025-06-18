@@ -6,6 +6,8 @@
 
 - General: Promote GitHub discussion page as a central place to ask questions. References to Google group have been removed from the documentation. #1320.
 
+- Part 1 + 2: Update code and documentation for using external functions that produce multicolumn output. #1324
+
 # CHANGES IN GGIR VERSION 3.2-7
 
 - Part 5: Fix bug in reinitialisation of window numbers when using multiple timewindow definitions in GGIR part 5. #1311
