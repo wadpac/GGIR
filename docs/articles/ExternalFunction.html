@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -154,9 +154,9 @@ following code:</p>
 <span>  <span class="co"># data: 3 column matrix with acc data</span></span>
 <span>  <span class="co"># parameters: the sample rate of data</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/walkabillylab/activityCounts" class="external-link">"activityCounts"</a></span><span class="op">)</span></span>
-<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">==</span> <span class="fl">4</span><span class="op">)</span> <span class="va">data</span><span class="op">=</span> <span class="va">data</span><span class="op">[</span>,<span class="fl">2</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span></span>
-<span>  <span class="va">mycounts</span> <span class="op">=</span> <span class="fu">counts</span><span class="op">(</span>data<span class="op">=</span><span class="va">data</span>, hertz<span class="op">=</span><span class="va">parameters</span>, </span>
-<span>                    x_axis<span class="op">=</span><span class="fl">1</span>, y_axis<span class="op">=</span><span class="fl">2</span>, z_axis<span class="op">=</span><span class="fl">3</span>,</span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">==</span> <span class="fl">4</span><span class="op">)</span> <span class="va">data</span> <span class="op">=</span> <span class="va">data</span><span class="op">[</span>,<span class="fl">2</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span></span>
+<span>  <span class="va">mycounts</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/activityCounts/man/counts.html" class="external-link">counts</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, hertz <span class="op">=</span> <span class="va">parameters</span>, </span>
+<span>                    x_axis <span class="op">=</span> <span class="fl">1</span>, y_axis <span class="op">=</span> <span class="fl">2</span>, z_axis <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                    start_time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">mycounts</span> <span class="op">=</span> <span class="va">mycounts</span><span class="op">[</span>,<span class="fl">2</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span> <span class="co">#Note: do not provide timestamps to GGIR</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">mycounts</span><span class="op">)</span></span>
@@ -171,17 +171,17 @@ update the filepath on the first line to point to your
 <code>calculateCounts.R</code> file.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="st">"~/calculateCounts.R"</span><span class="op">)</span></span>
-<span><span class="va">myfun</span> <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>FUN<span class="op">=</span><span class="va">calculateCounts</span>,</span>
-<span>              parameters<span class="op">=</span> <span class="fl">30</span>,</span>
-<span>              expected_sample_rate<span class="op">=</span> <span class="fl">30</span>,</span>
-<span>              expected_unit<span class="op">=</span><span class="st">"g"</span>,</span>
+<span><span class="va">myfun</span> <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>FUN <span class="op">=</span> <span class="va">calculateCounts</span>,</span>
+<span>              parameters <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>              expected_sample_rate <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>              expected_unit <span class="op">=</span> <span class="st">"g"</span>,</span>
 <span>              colnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"countsX"</span>,<span class="st">"countsY"</span>,<span class="st">"countsZ"</span><span class="op">)</span>,</span>
 <span>              outputres <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>              minlength <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>              outputtype<span class="op">=</span><span class="st">"numeric"</span>,</span>
+<span>              outputtype <span class="op">=</span> <span class="st">"numeric"</span>,</span>
 <span>              aggfunction <span class="op">=</span> <span class="va">sum</span>,</span>
-<span>              timestamp<span class="op">=</span><span class="cn">F</span>,</span>
-<span>              reporttype<span class="op">=</span><span class="st">"scalar"</span><span class="op">)</span></span></code></pre></div>
+<span>              timestamp <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>              reporttype <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"scalar"</span>, <span class="st">"scalar"</span>, <span class="st">"scalar"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The above code creates object <code>myfun</code> of type
 <code>list</code> which is expected to come with the following
 elements:</p>
@@ -245,12 +245,12 @@ moment name is only use for event detection algorithms</li>
 provided as one of its arguments:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wadpac/GGIR/" class="external-link">GGIR</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/GGIR.html">GGIR</a></span><span class="op">(</span>datadir<span class="op">=</span><span class="st">"~/myaccelerometerdata"</span>,</span>
-<span>             outputdir<span class="op">=</span><span class="st">"~/myresults"</span>,</span>
-<span>             mode<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,</span>
+<span><span class="fu"><a href="../reference/GGIR.html">GGIR</a></span><span class="op">(</span>datadir <span class="op">=</span> <span class="st">"~/myaccelerometerdata"</span>,</span>
+<span>             outputdir <span class="op">=</span> <span class="st">"~/myresults"</span>,</span>
+<span>             mode <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,</span>
 <span>             epochvalues2csv <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>             do.report<span class="op">=</span><span class="fl">2</span>,</span>
-<span>             myfun<span class="op">=</span><span class="va">myfun</span><span class="op">)</span> <span class="co">#&lt;= this is where object myfun is provided to GGIR</span></span></code></pre></div>
+<span>             do.report <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>             myfun <span class="op">=</span> <span class="va">myfun</span><span class="op">)</span> <span class="co">#&lt;= this is where object myfun is provided to GGIR</span></span></code></pre></div>
 <p>Please see the <a href="https://cran.r-project.org/package=GGIR/vignettes/GGIR.html" class="external-link"></a>
 for more information about function GGIR.</p>
 </div>
@@ -287,11 +287,11 @@ function and insert the following code:</p>
 <span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  N <span class="ot">=</span> <span class="fu">nrow</span>(data)</span>
 <span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  ws <span class="ot">=</span> <span class="dv">5</span> <span class="co"># windowsize</span></span>
 <span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">ncol</span>(data) <span class="sc">==</span> <span class="dv">4</span>) data<span class="ot">=</span> data[,<span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>]</span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  data <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">t=</span> <span class="fu">floor</span>(<span class="fu">seq</span>(<span class="dv">0</span>,(N<span class="dv">-1</span>)<span class="sc">/</span>sf,<span class="at">by=</span><span class="dv">1</span><span class="sc">/</span>sf)<span class="sc">/</span>ws),</span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>                    <span class="at">x=</span>data[,<span class="dv">1</span>], <span class="at">y=</span>data[,<span class="dv">2</span>], <span class="at">z=</span>data[,<span class="dv">3</span>])</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  data <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">t =</span> <span class="fu">floor</span>(<span class="fu">seq</span>(<span class="dv">0</span>,(N <span class="sc">-</span> <span class="dv">1</span>)<span class="sc">/</span>sf, <span class="at">by =</span> <span class="dv">1</span><span class="sc">/</span>sf)<span class="sc">/</span>ws),</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>                    <span class="at">x =</span> data[,<span class="dv">1</span>], <span class="at">y =</span> data[,<span class="dv">2</span>], <span class="at">z =</span> data[,<span class="dv">3</span>])</span>
 <span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  df <span class="ot">=</span> <span class="fu">aggregate</span>(data, <span class="at">by =</span> <span class="fu">list</span>(data<span class="sc">$</span>t), </span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>                 <span class="at">FUN=</span><span class="cf">function</span>(x) {<span class="fu">return</span>(<span class="fu">dominant_frequency</span>(x,sf))})</span>
-<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>  df <span class="ot">=</span> df[,<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)]</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>                 <span class="at">FUN=</span><span class="cf">function</span>(x) {<span class="fu">return</span>(<span class="fu">dominant_frequency</span>(x, sf))})</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>  df <span class="ot">=</span> df[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)]</span>
 <span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>  <span class="fu">return</span>(df)</span>
 <span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>}</span>
 <span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="er">}</span></span></code></pre></div>
@@ -314,29 +314,29 @@ dependencies for the external function, here we will only need
 not forget to update the filepath to the
 <code>"~/dominant_frequency.R"</code> file.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"~/dominant_frequency.R"</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>myfun <span class="ot">=</span>  <span class="fu">list</span>(<span class="at">FUN=</span>dominant_frequency,</span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>              <span class="at">parameters=</span> <span class="dv">30</span>,</span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>              <span class="at">expected_sample_rate=</span> <span class="dv">30</span>,</span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>              <span class="at">expected_unit=</span><span class="st">"g"</span>,</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>myfun <span class="ot">=</span>  <span class="fu">list</span>(<span class="at">FUN =</span> dominant_frequency,</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>              <span class="at">parameters =</span> <span class="dv">30</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>              <span class="at">expected_sample_rate =</span> <span class="dv">30</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>              <span class="at">expected_unit =</span> <span class="st">"g"</span>,</span>
 <span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>              <span class="at">colnames =</span> <span class="fu">c</span>(<span class="st">"domfreqX"</span>, <span class="st">"domfreqY"</span>, <span class="st">"domfreqZ"</span>),</span>
 <span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>              <span class="at">minlength =</span> <span class="dv">5</span>,</span>
 <span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>              <span class="at">outputres =</span> <span class="dv">5</span>,</span>
-<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>              <span class="at">outputtype=</span><span class="st">"numeric"</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>              <span class="at">outputtype =</span> <span class="st">"numeric"</span>,</span>
 <span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>              <span class="at">aggfunction =</span> median</span>
-<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>              <span class="at">timestamp=</span>F,</span>
-<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>              <span class="at">reporttype=</span><span class="st">"scalar"</span>)</span></code></pre></div>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>              <span class="at">timestamp =</span> F,</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>              <span class="at">reporttype =</span> <span class="fu">c</span>(<span class="st">"scalar"</span>, <span class="st">"scalar"</span>, <span class="st">"scalar"</span>))</span></code></pre></div>
 <p>Add a call to function GGIR where <code>myfun</code> is provided as
 argument. Note that, do.parallel is set to FALSE. Unfortunately Python
 embedding with R package reticulate and multi-threading with R package
 foreach as used in GGIR do not combine well.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wadpac/GGIR/" class="external-link">GGIR</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/GGIR.html">GGIR</a></span><span class="op">(</span>datadir<span class="op">=</span><span class="st">"~/myaccelerometerdata"</span>,</span>
-<span>             outputdir<span class="op">=</span><span class="st">"~/myresults"</span>,</span>
-<span>             mode<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,</span>
+<span><span class="fu"><a href="../reference/GGIR.html">GGIR</a></span><span class="op">(</span>datadir <span class="op">=</span> <span class="st">"~/myaccelerometerdata"</span>,</span>
+<span>             outputdir <span class="op">=</span> <span class="st">"~/myresults"</span>,</span>
+<span>             mode <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,</span>
 <span>             epochvalues2csv <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>             do.report<span class="op">=</span><span class="fl">2</span>,</span>
-<span>             myfun<span class="op">=</span><span class="va">myfun</span>,</span>
+<span>             do.report <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>             myfun <span class="op">=</span> <span class="va">myfun</span>,</span>
 <span>             do.parallel <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
