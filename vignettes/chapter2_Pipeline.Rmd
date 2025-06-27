@@ -185,7 +185,9 @@ By default GGIR assumes that the data is raw as discussed in chapter 1. However,
 +--------------------------+--------------------+-----------------+----------------+-------------------------+
 | CamNTech                 | Motionwatch 8      | YES             | .awd           | `"actiwatch_awd"`       |
 +--------------------------+--------------------+-----------------+----------------+-------------------------+
-| Fitbit                   | ???                | ???             | several .json  | `"fitbit_json"`         |
+| CamNTech                 | Motionwatch 7      | NO              | .awd           | `"actiwatch_awd"`       |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| FitBit                   | Inspire 3          | YES             | several .json  | `"fitbit_json"`         |
 +--------------------------+--------------------+-----------------+----------------+-------------------------+
 | SenseWear                | SenseWear pro\     | NO              | .xls or .xlsx  | `"sensewear_xls"`       |
 |                          | Armband            |                 |                |                         |
@@ -206,7 +208,7 @@ To process these files, GGIR loads their content and saves it as GGIR part 1 mil
 
 For all above approaches using a one hour window, the actual window length can be modified with the last value of parameter `windowsizes`.
 
-Please find below examples of file formats that are not facilitated yet, but can be facilitated with financial support from you. If you are interested, please contact v.vanhees at accelting.copm.
+Please find below examples of file formats that are not facilitated yet, but can be facilitated with financial support from you. If you are interested, please contact v.vanhees at accelting.com. If there are other data formats you like to work with then do not hesitate to reach out.
 
 +--------------------------+--------------------+-----------------+----------------+-------------------------+
 | Manufacturer             | Product Name       | Still for sale? | File extension |  `dataFormat` parameter |
