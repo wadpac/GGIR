@@ -194,7 +194,7 @@ By default GGIR assumes that the data is raw as discussed in chapter 1. However,
 +--------------------------+--------------------+-----------------+----------------+-------------------------+
 | ActiGraph                | many product names | SOME            | .csv \*        | `"actigraph_csv"`       |
 +--------------------------+--------------------+-----------------+----------------+-------------------------+
-| Axivity                  | AX3                | YES             | UK Biobank \   |  `"ukbiobank_csv"`      |
+| Axivity                  | AX3                | YES             | UK Biobank \   | `"ukbiobank_csv"`       |
 |                          |                    |                 | .csv export    |                         |
 +--------------------------+--------------------+-----------------+----------------+-------------------------+
 \*These are the files with count data, not to be confused with ActiGraph raw acceleration data which can also be exported to .csv format.
