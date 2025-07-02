@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,10 +80,24 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.2-8" id="changes-in-ggir-version-32-8">CHANGES IN GGIR VERSION 3.2-8<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-32-8"></a></h2>
+<ul><li><p>Revise guidance on GGIR citation. <a href="https://github.com/wadpac/GGIR/issues/1303" class="external-link">#1303</a></p></li>
+<li><p>Part 2 + 5: Segmentation with activity log is now able to handle non-chronological order of segment definitions in the log. <a href="https://github.com/wadpac/GGIR/issues/1318" class="external-link">#1318</a></p></li>
+<li><p>General: Promote GitHub discussion page as a central place to ask questions. References to Google group have been removed from the documentation. <a href="https://github.com/wadpac/GGIR/issues/1320" class="external-link">#1320</a>.</p></li>
+<li><p>Part 1 + 2: Update code and documentation for using external functions that produce multicolumn output. <a href="https://github.com/wadpac/GGIR/issues/1324" class="external-link">#1324</a></p></li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.2-7" id="changes-in-ggir-version-32-7">CHANGES IN GGIR VERSION 3.2-7<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-32-7"></a></h2>
-<ul><li><p>Now generates error message when user provides parameters with unknown names to GGIR function <a href="https://github.com/wadpac/GGIR/issues/1300" class="external-link">#1300</a>.</p></li>
+<ul><li><p>Part 5: Fix bug in reinitialisation of window numbers when using multiple timewindow definitions in GGIR part 5. <a href="https://github.com/wadpac/GGIR/issues/1311" class="external-link">#1311</a></p></li>
+<li><p>Now generates error message when user provides parameters with unknown names to GGIR function <a href="https://github.com/wadpac/GGIR/issues/1300" class="external-link">#1300</a>.</p></li>
+<li>
+<p>Part 3:</p>
+<ul><li><p>Add parameters “spt_min_block_dur”, “spt_max_gap_dur”, “spt_max_gap_ratio”, and “HorAngle_threshold” to improve control over algorithms used in part 3 <a href="https://github.com/wadpac/GGIR/issues/1295" class="external-link">#1295</a></p></li>
+<li><p>Re-factor code corresponding to final 3 steps in HDCZA and HorAngle algorithms. As part of this effort a 1 epoch incorrect offset in window-end was fixed <a href="https://github.com/wadpac/GGIR/issues/1295" class="external-link">#1295</a></p></li>
+</ul></li>
 <li><p>Config file: fix minor issue that caused GGIR, GGIRread, and R version to overwrite the last 3 parameters in the config file. <a href="https://github.com/wadpac/GGIR/issues/1298" class="external-link">#1298</a></p></li>
 <li><p>Part 1: Detect time gaps in between data (24 hour) chunks. Handle these if less than 1 hours and generate error when larger. <a href="https://github.com/wadpac/GGIR/issues/1294" class="external-link">#1294</a></p></li>
+<li><p>Part 2: Fix minor bug that added an extra row (day) in “part2_daysummary” when recording duration was less than one day and did not overlap with midnight. <a href="https://github.com/wadpac/GGIR/issues/1313" class="external-link">#1313</a></p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.2-6" id="changes-in-ggir-version-32-6">CHANGES IN GGIR VERSION 3.2-6<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-32-6"></a></h2><p class="text-muted">CRAN release: 2025-04-25</p>

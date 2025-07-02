@@ -1,4 +1,4 @@
-# CHANGES IN GGIR VERSION 3.2-?
+# CHANGES IN GGIR VERSION 3.2-8
 
 - Revise guidance on GGIR citation. #1303
 
