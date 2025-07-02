@@ -528,7 +528,7 @@ development of open-source software.
 
 This section has been replaced by an updated citation instruction which you
 can find via R command `citation(package = "GGIR")` and by citing the scientific
-literature corresponding to the specific functionality you use as discussed in the GGIR [documentation](https://wadpac.github.io).
+literature corresponding to the specific functionality you use as discussed in the GGIR [documentation](https://wadpac.github.io/GGIR/).
 
 ## Copyright for GGIR logo
 
