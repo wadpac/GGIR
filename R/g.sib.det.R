@@ -247,7 +247,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
           qqq2 = midnightsi[j] + (twd[2] * (3600 / ws3)) #next noon
         }
         # twd assumed 24 hour window, which is not the case for DST
-        if (qqq2 < length(time)) {
+        if (qqq2 < length(time) & qqq2 > 0) {
           qqq2_hour = as.numeric(format(iso8601chartime2POSIX(time[qqq2], tz = desiredtz), "%H"))
           if (qqq2_hour == 11) {
             qqq2 = qqq2 + (3600 / ws3)
