@@ -230,6 +230,12 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
         # if ID not available, function part4_extractid will attempt to extract it from the file name
       }
       if (exists("SRI") == FALSE) SRI = NA
+      
+      # Ignore night zero being the night before the recording or partially 
+      # overlapping with the start of the recording
+      # but for which some timestamps are in the sib-report
+      sib.cla.sum = sib.cla.sum[which(sib.cla.sum$night != 0),]
+      
       if (nrow(sib.cla.sum) != 0) {
         # there needs to be some information
         sib.cla.sum$sib.onset.time = iso8601chartime2POSIX(sib.cla.sum$sib.onset.time, tz = params_general[["desiredtz"]])
@@ -336,7 +342,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             } else {
               if (is.na(defaultGuider)) { 
                 # No default guider available, for example when sleeplog is 
-                # available but not accelerometer
+                # available but no accelerometer
                 # In that case guider will be set to "sleeplog" later on
               } else {
                 guider = defaultGuider
