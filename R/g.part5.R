@@ -415,7 +415,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               if (length(sibreport) > 0) {
                 data.table::fwrite(x = sibreport, file = sibreport_fname, row.names = FALSE,
                                    sep = params_output[["sep_reports"]],
-                                   dec = params_output[["dec_reports"]])
+                                   dec = params_output[["dec_reports"]],
+                                   dateTimeAs = "write.csv")
               }
               # nap/sib/nonwear overlap analysis
               if (length(params_sleep[["nap_model"]]) > 0 & length(sibreport) > 0) {

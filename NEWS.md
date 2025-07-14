@@ -2,6 +2,8 @@
 
 - Part 3: For Fitbit data. Fixed bug in storage of ID format was list should be character, by which part5 could not run. #1330
 
+- Part 5: Fix bug that caused sibreport to be stored with timestamps in UTC timezone. #1332
+
 # CHANGES IN GGIR VERSION 3.2-8
 
 - Revise guidance on GGIR citation. #1303
