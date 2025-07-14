@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.2-?
+
+- Part 5: Fix bug in extracting sleep diary when recording starts between midnight and 4am. #1337
+
 # CHANGES IN GGIR VERSION 3.2-8
 
 - Revise guidance on GGIR citation. #1303
