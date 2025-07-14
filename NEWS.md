@@ -1,6 +1,10 @@
 # CHANGES IN GGIR VERSION 3.2-?
 
-- Part 5: Fix bug in extracting sleep diary when recording starts between midnight and 4am. #1337
+- Part 5:
+
+  - Fix bug in extracting sleep diary when recording starts between midnight and 4am. #1337
+
+  - Fix bug that caused sibreport to be stored with timestamps in UTC timezone. #1332
 
 # CHANGES IN GGIR VERSION 3.2-8
 
