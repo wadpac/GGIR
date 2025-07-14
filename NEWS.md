@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.2-?
+
+- Part 5: Fix bug that caused sibreport to be stored with timestamps in UTC timezone. #1332
+
 # CHANGES IN GGIR VERSION 3.2-8
 
 - Revise guidance on GGIR citation. #1303
