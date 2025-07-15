@@ -1,5 +1,7 @@
 # CHANGES IN GGIR VERSION 3.2-?
 
+- Part 3: For Fitbit data. Fixed bug in storage of ID format was list should be character, by which part5 could not run. #1330
+
 - Part 5:
 
   - Fix bug in extracting sleep diary when recording starts between midnight and 4am. #1337
