@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -550,7 +550,9 @@ between the first and last marker event is larger than 1 hour.</li>
 highest value, whichever of the two provides most marker events.</li>
 <li>From these marker events, ignore all marker event pairs that both
 span less than 3 hours and involve at least one imputed marker button
-press, unless these represent all marker button pairs available.</li>
+press OR span less than 1 hour, unless these represent all marker button
+pairs available in which case all marker button pairs available are
+used.</li>
 <li>Ignore all marker event pairs where the percentage of sustained
 inactivity bouts inside the window is lower than outside the
 window.</li>

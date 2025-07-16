@@ -165,16 +165,39 @@ GGIR currently works with the following accelerometer brands and formats:
 
 By default GGIR assumes that the data is raw as discussed in chapter 1. However, for some studies raw data is not available and all we have is an epoch level aggregate. For example, done by external software or done inside the accelerometer device. Although this can introduce some severe limitations to the transparency and flexibility of our analysis, GGIR makes an attempt to facilitate the analysis of these externally performed aggregations of the raw data. Please find below an overview of the file formats currently facilitated:
 
-| Sensor brand / Device name  | Data format           | Parameters              |
-|------------------------|-----------------------|-------------------------|
-| Actiwatch            | .csv                  | `dataFormat = "actiwatch_csv"`  |
-| Actical             | .csv                  | `dataFormat = "actical_csv"`  |
-| Actiwatch | .awd      | `dataFormat = "actiwatch_awd"`  |
-| ActiGraph    | .csv (count files, not be confused with csv raw data files) | `dataFormat = "actigraph_csv"`, `do.neishabouricounts = TRUE`, `acc.metric = "NeishabouriCount_x"`  |
-| Axivity             | UKBiobank csv export of epoch level data      | `dataFormat = "ukbiobank_csv"`  (sleep detection not facilitated)   |
-| SenseWear    | .xls or .xlsx      | `dataFormat = "sensewear_xls"`   |
-| Fitbit      | folder with multiple .json files |  `dataFormat = "fitbit_json"` |
-| Philips Health Band | .xlsx file pairs | `dataFormat = "phb_xlsx"` |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| Manufacturer             | Product Name       | Still for sale? | File extension |  `dataFormat` parameter |
++:=========================+:===================+:================+:===============+:========================+
+| Philips Respironics\     | Actiwatch\         | NO              | .csv           | `"actiwatch_csv"`       |
+| (previously Mini Mitter) | Spectrum Plus      |                 |                |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| Philips Respironics\     | Actiwatch\         | NO              | .awd           | `"actiwatch_awd"`       |
+| (previously Mini Mitter) | Spectrum Plus      |                 |                |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| Philips Respironics\     | Actiwatch 2 (AW2)  | NO              | .csv           | `"actiwatch_csv"`       |
+| (previously Mini Mitter) |                    |                 |                |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| Philips Respironics\     | Actical            | NO              | .csv           | `"actical_csv"`         |
+| (previously Mini Mitter) |                    |                 |                |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| Philips Respironics\     | Philips Health\    | NO              | two .xlsx      | `"phb_xlsx"`            |
+| (previously Mini Mitter) | Band               |                 |                |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| CamNTech                 | Motionwatch 8      | YES             | .awd           | `"actiwatch_awd"`       |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| CamNTech                 | Motionwatch 7      | NO              | .awd           | `"actiwatch_awd"`       |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| FitBit                   | Inspire 3          | YES             | several .json  | `"fitbit_json"`         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| SenseWear                | SenseWear pro\     | NO              | .xls or .xlsx  | `"sensewear_xls"`       |
+|                          | Armband            |                 |                |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| ActiGraph                | many product names | SOME            | .csv \*        | `"actigraph_csv"`       |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| Axivity                  | AX3                | YES             | UK Biobank \   | `"ukbiobank_csv"`       |
+|                          |                    |                 | .csv export    |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+\*These are the files with count data, not to be confused with ActiGraph raw acceleration data which can also be exported to .csv format.
 
 See [GGIR CookBook](https://wadpac.github.io/GGIR/articles/Cookbook.html) for example recipes for working with these externally derived epoch-level data.
 
@@ -184,6 +207,23 @@ To process these files, GGIR loads their content and saves it as GGIR part 1 mil
 - For Fitbit and Sensewear we use missingness in data as an indicator of nonwear, and any one hour time window with a standard deviation in calorie or METS values less than 0.0001 and an average value below 2.
 
 For all above approaches using a one hour window, the actual window length can be modified with the last value of parameter `windowsizes`.
+
+Please find below examples of file formats that are not facilitated yet, but can be facilitated with financial support from you. If you are interested, please contact v.vanhees at accelting.com. If there are other data formats you like to work with then do not hesitate to reach out.
+
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| Manufacturer             | Product Name       | Still for sale? | File extension |  `dataFormat` parameter |
++:=========================+:===================+:================+:===============+:========================+
+| Philips Respironics \    | Actiwatch \        | NO              | .csv           | Not facilitated yet     |
+| (previously Mini Mitter) | Spectrum PRO       |                 |                |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| CamNTech                 | Motionwatch 8      | YES             | .xlsx          | Not facilitated yet     |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| AMI Ambulatory \         | Motionlogger       | YES             | .csv           | Not facilitated yet     |
+| Monitoring               |                    |                 |                |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| Condor Instruments       | ActTrust 2         | YES             | .txt           | Not facilitated yet     |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+
 
 ## How to run your analysis?
 

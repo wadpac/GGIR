@@ -85,22 +85,22 @@ some of the acceleration metrics that has been previously used for the
 calibration of cut-points and how to define them to be used in the physical 
 activity intensity classification with cut-points.
 
-+--------------+-------------------------------+---------------------------------------+
-| Metric       | To derive metric              | Define metric for cut-points          |
-+==============+:==============================+:======================================+
-| ENMO         | `do.enmo = TRUE`              | `acc.metric = \"ENMO\"`                 |
-+--------------+-------------------------------+---------------------------------------+
-| ENMOa        | `do.enmoa = TRUE`             | `acc.metric = \"ENMOa\"`                |
-+--------------+-------------------------------+---------------------------------------+
-| LFENMO       | `do.lfenmo = TRUE`            | `acc.metric = \"LFENMO\"`               |
-+--------------+-------------------------------+---------------------------------------+
-| MAD          | `do.mad = TRUE`               | `acc.metric = \"MAD\"`                  |
-+--------------+-------------------------------+---------------------------------------+
-| Neishabouri\ | `do.neishabouricounts = TRUE` | `acc.metric = \"NeishabouriCount_x\"`\  |
-| counts       |                               | `acc.metric = \"NeishabouriCount_y\"`\  |
-|              |                               | `acc.metric = \"NeishabouriCount_z\"`\  |
-|              |                               | `acc.metric = \"NeishabouriCount_vm\"`  |
-+--------------+-------------------------------+---------------------------------------+
++--------------+-------------------------------+-------------------------------------+
+| Metric       | To derive metric              | Define metric for cut-points        |
++==============+===============================+=====================================+
+| ENMO         | `do.enmo = TRUE`              | `acc.metric = "ENMO"`               |
++--------------+-------------------------------+-------------------------------------+
+| ENMOa        | `do.enmoa = TRUE`             | `acc.metric = "ENMOa"`              |
++--------------+-------------------------------+-------------------------------------+
+| LFENMO       | `do.lfenmo = TRUE`            | `acc.metric = "LFENMO"`             |
++--------------+-------------------------------+-------------------------------------+
+| MAD          | `do.mad = TRUE`               | `acc.metric = "MAD"`                |
++--------------+-------------------------------+-------------------------------------+
+| Neishabouri\ | `do.neishabouricounts = TRUE` | `acc.metric = "NeishabouriCount_x"` |
+| counts       |                               | `acc.metric = "NeishabouriCount_y"` |
+|              |                               | `acc.metric = "NeishabouriCount_z"` |
+|              |                               | `acc.metric = "NeishabouriCount_vm"`|
++--------------+-------------------------------+-------------------------------------+
 
 
 # Summary of published cut-points
@@ -113,123 +113,139 @@ activity intensity classification with cut-points.
 +===============+:===================+:============+:=======================+:=================+
 | Roscoe 2017\* | GENEActiv\         | 4-5 yr      | `do.enmoa = TRUE`\     | Light: 61.8\     |
 |               | Non-dominant wrist |             | `do.enmo = FALSE`\     | Moderate: 100.4\ |
-|               |                    |             | `acc.metric = \"ENMOa\"` | Vigorous: N/A    |
+|               |                    |             | `acc.metric = "ENMOa"` | Vigorous: N/A    |
 +---------------+--------------------+-------------+------------------------+------------------+
 | Roscoe 2017\* | GENEActiv\         | 4-5 yr      | `do.enmoa = TRUE`\     | Light: 94.5\     |
 |               | Dominant wrist     |             | `do.enmo = FALSE`\     | Moderate: 108.5\ |
-|               |                    |             | `acc.metric = \"ENMOa\"` | Vigorous: N/A    |
+|               |                    |             | `acc.metric = "ENMOa"` | Vigorous: N/A    |
 +---------------+--------------------+-------------+------------------------+------------------+
 
 \*These publications used acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. So, to use their cut-point in GGIR, we provide a scaled version of the cut-points presented in the paper as: `(CutPointFromPaper_in_gsecs/85.7) * 1000`. Note that sample frequency of 87.5 as reported in the publication was incorrect and based on correspondence with authors we replaced this by 85.7.
 
 ## Cut-points for children/adolescents
 
-+------------------+--------------------+----------+-----------------------------------+------------------+
-| Cut-points       | Device\            | Age      | Relevant arguments                | thresholds       |
-|                  | Attachment site    |          |                                   |                  |
-+:=================+:===================+:=========+:==================================+:=================+
-| Phillips 2013\*  | GENEA\             | 8-14 yr  | `do.enmoa = TRUE`\                | Light: 87.5\     |
-|                  | Left wrist         |          | `do.enmo = FALSE`\                | Moderate: 250\   |
-|                  |                    |          | `acc.metric = \"ENMOa\"`            | Vigorous: 750    |
-+------------------+--------------------+----------+-----------------------------------+------------------+
-| Phillips 2013\*  | GENEA\             | 8-14 yr  | `do.enmoa = TRUE`\                | Light: 75\       |
-|                  | Right wrist        |          | `do.enmo = FALSE`\                | Moderate: 275\   |
-|                  |                    |          | `acc.metric = \"ENMOa\"`            | Vigorous: 700    |
-+------------------+--------------------+----------+-----------------------------------+------------------+
-| Phillips 2013\*  | GENEA\             | 8-14 yr  | `do.enmoa = TRUE`\                | Light: 37.5\     |
-|                  | Hip                |          | `do.enmo = FALSE`\                | Moderate: 212.5\ |
-|                  |                    |          | `acc.metric = \"ENMOa\"`            | Vigorous: 637.5  |
-+------------------+--------------------+----------+-----------------------------------+------------------+
-| Schaefer 2014\*  | GENEActiv\         | 6-11 yr  | `do.bfen = TRUE`\                 | Light: 190\      |
-|                  | Non-dominant wrist |          | `lb = 0.2`\                       | Moderate: 314\   |
-|                  |                    |          | `hb = 15 `\                       | Vigorous: 998    |
-|                  |                    |          | `do.enmo = FALSE`\                |                  |
-|                  |                    |          | `acc.metric = \"BFEN\"`             |                  |
-+------------------+--------------------+----------+-----------------------------------+------------------+
-| Hildebrand 2014\ | ActiGraph\         | 7-11 yr  | **Default values\                 | Light: 35.6\     |
-| Hildebrand 2016  | Non-dominant wrist |          | **`do.enmo = TRUE`\               | Moderate: 201.4\ |
-|                  |                    |          | `acc.metric = \"ENMO\"`             | Vigorous: 707.0  |
-+------------------+--------------------+----------+-----------------------------------+------------------+
-| Hildebrand 2014\ | GENEActiv\         | 7-11 yr  | **Default values\                 | Light: 56.3\     |
-| Hildebrand 2016  | Non-dominant wrist |          | **`do.enmo = TRUE`\               | Moderate: 191.6\ |
-|                  |                    |          | `acc.metric = \"ENMO\"`             | Vigorous: 695.8  |
-+------------------+--------------------+----------+-----------------------------------+------------------+
-| Hildebrand 2014\ | ActiGraph\         | 7-11 yr  | **Default values\                 | Light: 63.3\     |
-| Hildebrand 2016  | Hip                |          | **`do.enmo = TRUE`\               | Moderate: 142.6\ |
-|                  |                    |          | `acc.metric = \"ENMO\"`             | Vigorous: 464.6  |
-+------------------+--------------------+----------+-----------------------------------+------------------+
-| Hildebrand 2014\ | GENEActiv\         | 7-11 yr  | **Default values\                 | Light: 64.1\     |
-| Hildebrand 2016  | Hip                |          | **`do.enmo = TRUE`\               | Moderate: 152.8\ |
-|                  |                    |          | `acc.metric = \"ENMO\"`             | Vigorous: 514.3  |
-+------------------+--------------------+----------+-----------------------------------+------------------+
-| Aittasalo 2015   | ActiGraph\         | 13-15 yr | **Default values\                 | Light: 26.9\     |
-|                  | Hip                |          | **`do.mad = TRUE`\                | Moderate: 332\   |
-|                  |                    |          | `do.enmo = FALSE`\                | Vigorous: 558.3  |
-|                  |                    |          | `acc.metric = \"MAD\"`              |                  |
-+------------------+--------------------+----------+-----------------------------------+------------------+
-| Aittasalo 2015   | Hookie AM20\       | 13-15 yr | **Default values\                 | Light: 28.7\     |
-|                  | Hip                |          | **`do.mad = TRUE`\                | Moderate: 338\   |
-|                  |                    |          | `do.enmo = FALSE`\                | Vigorous: 558.3  |
-|                  |                    |          | `acc.metric = \"MAD\"`              |                  |
-+------------------+--------------------+----------+-----------------------------------+------------------+
++------------------+--------------------+----------+--------------------------------+------------------+
+| Cut-points       | Device\            | Age      | Relevant arguments             | thresholds       |
+|                  | Attachment site    |          |                                |                  |
++:=================+:===================+:=========+:===============================+:=================+
+| Phillips 2013\*  | GENEA\             | 8-14 yr  | `do.enmoa = TRUE`\             | Light: 87.5\     |
+|                  | Left wrist         |          | `do.enmo = FALSE`\             | Moderate: 250\   |
+|                  |                    |          | `acc.metric = "ENMOa"`         | Vigorous: 750    |
++------------------+--------------------+----------+--------------------------------+------------------+
+| Phillips 2013\*  | GENEA\             | 8-14 yr  | `do.enmoa = TRUE`\             | Light: 75\       |
+|                  | Right wrist        |          | `do.enmo = FALSE`\             | Moderate: 275\   |
+|                  |                    |          | `acc.metric = "ENMOa"`         | Vigorous: 700    |
++------------------+--------------------+----------+--------------------------------+------------------+
+| Phillips 2013\*  | GENEA\             | 8-14 yr  | `do.enmoa = TRUE`\             | Light: 37.5\     |
+|                  | Hip                |          | `do.enmo = FALSE`\             | Moderate: 212.5\ |
+|                  |                    |          | `acc.metric = "ENMOa"`         | Vigorous: 637.5  |
++------------------+--------------------+----------+--------------------------------+------------------+
+| Schaefer 2014\*  | GENEActiv\         | 6-11 yr  | `do.bfen = TRUE`\              | Light: 190\      |
+|                  | Non-dominant wrist |          | `lb = 0.2`\                    | Moderate: 314\   |
+|                  |                    |          | `hb = 15 `\                    | Vigorous: 998    |
+|                  |                    |          | `do.enmo = FALSE`\             |                  |
+|                  |                    |          | `acc.metric = "BFEN"`          |                  |
++------------------+--------------------+----------+--------------------------------+------------------+
+| Hildebrand 2014\ | ActiGraph\         | 7-11 yr  | **Default values\              | Light: 35.6\     |
+| Hildebrand 2016  | Non-dominant wrist |          | **`do.enmo = TRUE`\            | Moderate: 201.4\ |
+|                  |                    |          | `acc.metric = "ENMO"`          | Vigorous: 707.0  |
++------------------+--------------------+----------+--------------------------------+------------------+
+| Hildebrand 2014\ | GENEActiv\         | 7-11 yr  | **Default values\              | Light: 56.3\     |
+| Hildebrand 2016  | Non-dominant wrist |          | **`do.enmo = TRUE`\            | Moderate: 191.6\ |
+|                  |                    |          | `acc.metric = "ENMO"`          | Vigorous: 695.8  |
++------------------+--------------------+----------+--------------------------------+------------------+
+| Hildebrand 2014\ | ActiGraph\         | 7-11 yr  | **Default values\              | Light: 63.3\     |
+| Hildebrand 2016  | Hip                |          | **`do.enmo = TRUE`\            | Moderate: 142.6\ |
+|                  |                    |          | `acc.metric = "ENMO"`          | Vigorous: 464.6  |
++------------------+--------------------+----------+--------------------------------+------------------+
+| Hildebrand 2014\ | GENEActiv\         | 7-11 yr  | **Default values\              | Light: 64.1\     |
+| Hildebrand 2016  | Hip                |          | **`do.enmo = TRUE`\            | Moderate: 152.8\ |
+|                  |                    |          | `acc.metric = "ENMO"`          | Vigorous: 514.3  |
++------------------+--------------------+----------+--------------------------------+------------------+
+| Aittasalo 2015   | ActiGraph\         | 13-15 yr | **Default values\              | Light: 26.9\     |
+|                  | Hip                |          | **`do.mad = TRUE`\             | Moderate: 332\   |
+|                  |                    |          | `do.enmo = FALSE`\             | Vigorous: 558.3  |
+|                  |                    |          | `acc.metric = "MAD"`           |                  |
++------------------+--------------------+----------+--------------------------------+------------------+
+| Aittasalo 2015   | Hookie AM20\       | 13-15 yr | **Default values\              | Light: 28.7\     |
+|                  | Hip                |          | **`do.mad = TRUE`\             | Moderate: 338\   |
+|                  |                    |          | `do.enmo = FALSE`\             | Vigorous: 558.3  |
+|                  |                    |          | `acc.metric = "MAD"`           |                  |
++------------------+--------------------+----------+--------------------------------+------------------+
 
 \*These publications used acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. So, to use their cut-point in GGIR, we provide a scaled version of the cut-points presented in the paper as: `(CutPointFromPaper_in_gmins/(sampleRateFromPaper * EpochLengthInSecondsPaper)) * 1000`
 \*\* This  publication used acceleration metrics that expressed their cut-points in _g_ units. So, to use their cut-point in GGIR, we provide a cut-point  multiplied by 1000.
 
 ## Cut-points for adults
 
-+-------------------+--------------------+---------------+-----------------------------------+------------------+
-| Cut-points        | Device\            | Age           | Relevant arguments                | thresholds       |
-|                   | Attachment site    |               |                                   |                  |
-+:==================+:===================+:==============+:==================================+:=================+
-| Esliger 2011\*    | Left wrist         | 40-65 yr      | `do.enmoa = TRUE`\                | Light: 45\       |
-|                   |                    |               | `do.enmo = FALSE`\                | Moderate: 134\   |
-|                   |                    |               | `acc.metric = \"ENMOa\"`            | Vigorous: 377    |
-+-------------------+--------------------+---------------+-----------------------------------+------------------+
-| Esliger 2011\*    | Right wrist        | 40-65 yr      | `do.enmoa = TRUE`\                | Light: 80\       |
-|                   |                    |               | `do.enmo = FALSE`\                | Moderate: 92\    |
-|                   |                    |               | `acc.metric = \"ENMOa\"`            | Vigorous: 437    |
-+-------------------+--------------------+---------------+-----------------------------------+------------------+
-| Esliger 2011\*    | Waist              | 40-65 yr      | `do.enmoa = TRUE`\                | Light: 16\       |
-|                   |                    |               | `do.enmo = FALSE`\                | Moderate: 46\    |
-|                   |                    |               | `acc.metric = \"ENMOa\"`            | Vigorous: 428    |
-+-------------------+--------------------+---------------+-----------------------------------+------------------+
-| Hildebrand 2014\  | ActiGraph\         | 21-61 yr      | **Default values\                 | Light: 44.8\     |
-| Hildebrand 2016   | Non-dominant wrist |               | **`do.enmo = TRUE`\               | Moderate: 100.6\ |
-|                   |                    |               | `acc.metric = \"ENMO\"`             | Vigorous: 428.8  |
-+-------------------+--------------------+---------------+-----------------------------------+------------------+
-| Hildebrand 2014\  | GENEActiv\         | 21-61 yr      | **Default values\                 | Light: 45.8\     |
-| Hildebrand 2016   | Non-dominant wrist |               | **`do.enmo = TRUE`\               | Moderate: 93.2\  |
-|                   |                    |               | `acc.metric = \"ENMO\"`             | Vigorous: 418.3  |
-+-------------------+--------------------+---------------+-----------------------------------+------------------+
-| Hildebrand 2014\  | ActiGraph\         | 21-61 yr      | **Default values\                 | Light: 47.4\     |
-| Hildebrand 2016   | Hip                |               | **`do.enmo = TRUE`\               | Moderate: 69.1\  |
-|                   |                    |               | `acc.metric = \"ENMO\"`             | Vigorous: 258.7  |
-+-------------------+--------------------+---------------+-----------------------------------+------------------+
-| Hildebrand 2014\  | GENEActiv\         | 21-61 yr      | **Default values\                 | Light: 46.9\     |
-| Hildebrand 2016   | Hip                |               | **`do.enmo = TRUE`\               | Moderate: 68.7\  |
-|                   |                    |               | `acc.metric = \"ENMO\"`             | Vigorous: 266.8  |
-+-------------------+--------------------+---------------+-----------------------------------+------------------+
-| Vähä-Ypyä 2015    | Hookie AM20\       | 35 (SD=11) yr | `do.mad = TRUE`\                  | Light: N/A\      |
-|                   | Hip                |               | `do.enmo = FALSE`\                | Moderate: 91\    |
-|                   |                    |               | `acc.metric = \"MAD\"`              | Vigorous: 414    |
-+-------------------+--------------------+---------------+-----------------------------------+------------------+
-| Dillon 2016\*^,†^ | GENEActiv\         | 50-69 yr      | `do.enmoa = TRUE`\                | Light: 105.6\    |
-|                   | Non-dominant wrist |               | `do.enmo = FALSE`\                | Moderate: 174.2\ |
-|                   |                    |               | `acc.metric = \"ENMOa\"`            | Vigorous: 330    |
-+-------------------+--------------------+---------------+-----------------------------------+------------------+
-| Dillon 2016\*^,†^ | GENEActiv\         | 50-69 yr      | `do.enmoa = TRUE`\                | Light: 127.8\    |
-|                   | Dominant wrist     |               | `do.enmo = FALSE`\                | Moderate: 187.6\ |
-|                   |                    |               | `acc.metric = \"ENMOa\"`            | Vigorous: 396.4  |
-+-------------------+--------------------+---------------+-----------------------------------+------------------+
-| Buchan 2023\*^,†^ | activPAL\          | 23 (SD=4) yr  | **Default values\                 | Light: 26.4\     |
-|                   | Right thigh        |               | `do.enmo = TRUE`\                 | Moderate: N/A\   |
-|                   |                    |               | `acc.metric = \"ENMO\"`             | Vigorous: N/A    |
-+-------------------+--------------------+---------------+-----------------------------------+------------------+
-| Buchan 2023\*^,†^ | activPAL\          | 23 (SD=4) yr  | `do.mad = TRUE`\                  | Light: 30.1\     |
-|                   | Right thigh        |               | `do.enmo = FALSE`\                | Moderate: N/A\   |
-|                   |                    |               | `acc.metric = \"MAD\"`              | Vigorous: N/A    |
-+-------------------+--------------------+---------------+-----------------------------------+------------------+
++-------------------+--------------------+---------------+-------------------------+------------------+
+| Cut-points        | Device\            | Age           | Relevant arguments      | thresholds       |
+|                   | Attachment site    |               |                         |                  |
++:==================+:===================+:==============+:========================+:=================+
+| Esliger 2011\*    | Left wrist         | 40-65 yr      | `do.enmoa = TRUE`\      | Light: 45\       |
+|                   |                    |               | `do.enmo = FALSE`\      | Moderate: 134\   |
+|                   |                    |               | `acc.metric = "ENMOa"`  | Vigorous: 377    |
++-------------------+--------------------+---------------+-------------------------+------------------+
+| Esliger 2011\*    | Right wrist        | 40-65 yr      | `do.enmoa = TRUE`\      | Light: 80\       |
+|                   |                    |               | `do.enmo = FALSE`\      | Moderate: 92\    |
+|                   |                    |               | `acc.metric = "ENMOa"`  | Vigorous: 437    |
++-------------------+--------------------+---------------+-------------------------+------------------+
+| Esliger 2011\*    | Waist              | 40-65 yr      | `do.enmoa = TRUE`\      | Light: 16\       |
+|                   |                    |               | `do.enmo = FALSE`\      | Moderate: 46\    |
+|                   |                    |               | `acc.metric = "ENMOa"`  | Vigorous: 428    |
++-------------------+--------------------+---------------+-------------------------+------------------+
+| Hildebrand 2014\  | ActiGraph\         | 21-61 yr      | **Default values\       | Light: 44.8\     |
+| Hildebrand 2016   | Non-dominant wrist |               | **`do.enmo = TRUE`\     | Moderate: 100.6\ |
+|                   |                    |               | `acc.metric = "ENMO"`   | Vigorous: 428.8  |
++-------------------+--------------------+---------------+-------------------------+------------------+
+| Hildebrand 2014\  | GENEActiv\         | 21-61 yr      | **Default values\       | Light: 45.8\     |
+| Hildebrand 2016   | Non-dominant wrist |               | **`do.enmo = TRUE`\     | Moderate: 93.2\  |
+|                   |                    |               | `acc.metric = "ENMO"`   | Vigorous: 418.3  |
++-------------------+--------------------+---------------+-------------------------+------------------+
+| Hildebrand 2014\  | ActiGraph\         | 21-61 yr      | **Default values\       | Light: 47.4\     |
+| Hildebrand 2016   | Hip                |               | **`do.enmo = TRUE`\     | Moderate: 69.1\  |
+|                   |                    |               | `acc.metric = "ENMO"`   | Vigorous: 258.7  |
++-------------------+--------------------+---------------+-------------------------+------------------+
+| Hildebrand 2014\  | GENEActiv\         | 21-61 yr      | **Default values\       | Light: 46.9\     |
+| Hildebrand 2016   | Hip                |               | **`do.enmo = TRUE`\     | Moderate: 68.7\  |
+|                   |                    |               | `acc.metric = "ENMO"`   | Vigorous: 266.8  |
++-------------------+--------------------+---------------+-------------------------+------------------+
+| Mielke 2023       | GENEActiv\         | 35 (SD=11) yr | **Default values\       | Light: 36\       |
+|                   | Non-dominant wrist |               | **`do.enmo = TRUE`\     | Moderate: 92\    |
+|                   |                    |               | `acc.metric = "ENMO"`   | Vigorous: 283    |
++-------------------+--------------------+---------------+-------------------------+------------------+
+| Mielke 2023       | ActiGraph\         | 35 (SD=11) yr | **Default values\       | Light: 25\       |
+|                   | Non-dominant wrist |               | **`do.enmo = TRUE`\     | Moderate: 78\    |
+|                   |                    |               | `acc.metric = "ENMO"`   | Vigorous: 249    |
++-------------------+--------------------+---------------+-------------------------+------------------+
+| Mielke 2023       | GENEActiv\         | 35 (SD=11) yr | **Default values\       | Light: 30\       |
+|                   | Dominant wrist     |               | **`do.enmo = TRUE`\     | Moderate: 85\    |
+|                   |                    |               | `acc.metric = "ENMO"`   | Vigorous: 270    |
++-------------------+--------------------+---------------+-------------------------+------------------+
+| Mielke 2023       | ActiGraph\         | 35 (SD=11) yr | **Default values\       | Light: 40\       |
+|                   | Dominant wrist     |               | **`do.enmo = TRUE`\     | Moderate: 65\    |
+|                   |                    |               | `acc.metric = "ENMO"`   | Vigorous: 190    |
++-------------------+--------------------+---------------+-------------------------+------------------+
+| Vähä-Ypyä 2015    | Hookie AM20\       | 35 (SD=11) yr | `do.mad = TRUE`\        | Light: N/A\      |
+|                   | Hip                |               | `do.enmo = FALSE`\      | Moderate: 91\    |
+|                   |                    |               | `acc.metric = "MAD"`    | Vigorous: 414    |
++-------------------+--------------------+---------------+-------------------------+------------------+
+| Dillon 2016\*^,†^ | GENEActiv\         | 50-69 yr      | `do.enmoa = TRUE`\      | Light: 105.6\    |
+|                   | Non-dominant wrist |               | `do.enmo = FALSE`\      | Moderate: 174.2\ |
+|                   |                    |               | `acc.metric = "ENMOa"`  | Vigorous: 330    |
++-------------------+--------------------+---------------+-------------------------+------------------+
+| Dillon 2016\*^,†^ | GENEActiv\         | 50-69 yr      | `do.enmoa = TRUE`\      | Light: 127.8\    |
+|                   | Dominant wrist     |               | `do.enmo = FALSE`\      | Moderate: 187.6\ |
+|                   |                    |               | `acc.metric = "ENMOa"`  | Vigorous: 396.4  |
++-------------------+--------------------+---------------+-------------------------+------------------+
+| Buchan 2023\*^,†^ | activPAL\          | 23 (SD=4) yr  | **Default values\       | Light: 26.4\     |
+|                   | Right thigh        |               | `do.enmo = TRUE`\       | Moderate: N/A\   |
+|                   |                    |               | `acc.metric = "ENMO"`   | Vigorous: N/A    |
++-------------------+--------------------+---------------+-------------------------+------------------+
+| Buchan 2023\*^,†^ | activPAL\          | 23 (SD=4) yr  | `do.mad = TRUE`\        | Light: 30.1\     |
+|                   | Right thigh        |               | `do.enmo = FALSE`\      | Moderate: N/A\   |
+|                   |                    |               | `acc.metric = "MAD"`    | Vigorous: N/A    |
++-------------------+--------------------+---------------+-------------------------+------------------+
 
 \*These publications used acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. So, to use their cut-point in GGIR, we provide a scaled version of the cut-points presented in the paper as: `(CutPointFromPaper_in_gmins/(sampleRateFromPaper * EpochLengthInSecondsPaper)) * 1000`
 ^†^ In this [publication](https://doi.org/10.1371%2Fjournal.pone.0109913), there are cut-point based on data sampled at 30 Hz and 100 Hz. When scaling the cut-points as specified in (\*), the resulting thresholds are virtually the same (the ones presented in this table).
@@ -242,83 +258,83 @@ activity intensity classification with cut-points.
 +:=================+:===================+:==================+:=======================+:================+
 | Sanders 2019\*   | GENEActiv\         | 60-86 yr          | **Default values\      | Light: 20\      |
 |                  | Non-dominant wrist |                   | **`do.enmo = TRUE`\    | Moderate: 32\   |
-|                  |                    |                   | `acc.metric = \"ENMO\"`  | Vigorous: N/A   |
+|                  |                    |                   | `acc.metric = "ENMO"`  | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
 | Sanders 2019\*\* | GENEActiv\         | 60-86 yr          | **Default values\      | Light: 57\      |
 |                  | Non-dominant wrist |                   | **`do.enmo = TRUE`\    | Moderate: 104\  |
-|                  |                    |                   | `acc.metric = \"ENMO\"`  | Vigorous: N/A   |
+|                  |                    |                   | `acc.metric = "ENMO"`  | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
 | Sanders 2019\*   | ActiGraph\         | 60-86 yr          | **Default values\      | Light: 6\       |
 |                  | Hip                |                   | **`do.enmo = TRUE`\    | Moderate: 19\   |
-|                  |                    |                   | `acc.metric = \"ENMO\"`  | Vigorous: N/A   |
+|                  |                    |                   | `acc.metric = "ENMO"`  | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
 | Sanders 2019\*\* | ActiGraph\         | 60-86 yr          | **Default values\      | Light: 15\      |
 |                  | Hip                |                   | **`do.enmo = TRUE`\    | Moderate: 69\   |
-|                  |                    |                   | `acc.metric = \"ENMO\"`  | Vigorous: N/A   |
+|                  |                    |                   | `acc.metric = "ENMO"`  | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
 | Migueles 2021    | ActiGraph\         | ≥70 yr \          | **Default values\      | Light: 18\      |
 |                  | Non-dominant wrist | (mean: 78.7 yr)   | **`do.enmo = TRUE`\    | Moderate: 60\   |
-|                  |                    |                   | `acc.metric = \"ENMO\"`  | Vigorous: N/A   |
+|                  |                    |                   | `acc.metric = "ENMO"`  | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
 | Migueles 2021    | ActiGraph\         | ≥70 yr \          | **Default values\      | Light: 22\      |
 |                  | Dominant wrist     | (mean: 78.7 yr)   | **`do.enmo = TRUE`\    | Moderate: 64\   |
-|                  |                    |                   | `acc.metric = \"ENMO\"`  | Vigorous: N/A   |
+|                  |                    |                   | `acc.metric = "ENMO"`  | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
 | Migueles 2021    | ActiGraph\         | ≥70 yr \          | **Default values\      | Light: 7\       |
 |                  | Hip                | (mean: 78.7 yr)   | **`do.enmo = TRUE`\    | Moderate: 14\   |
-|                  |                    |                   | `acc.metric = \"ENMO\"`  | Vigorous: N/A   |
+|                  |                    |                   | `acc.metric = "ENMO"`  | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
 | Bammann 2021     | ActiGraph\         | 62.9 (SD=3.6) yr  | **Default values\      | Moderate: 94\   |
 |                  | Hip                |                   | **`do.enmo = TRUE`\    | Vigorous: 230   |
-|                  |                    |                   | `acc.metric = \"ENMO\"`  |                 |
+|                  |                    |                   | `acc.metric = "ENMO"`  |                 |
 +------------------+--------------------+-------------------+------------------------+-----------------+
 | Bammann 2021     | ActiGraph\         | 62.9 (SD=3.6) yr  | **Default values\      | Moderate: 122\  |
 |                  | Dominant Wrist     |                   | **`do.enmo = TRUE`\    | Vigorous: 234   |
-|                  |                    |                   | `acc.metric = \"ENMO\"`  |                 |
+|                  |                    |                   | `acc.metric = "ENMO"`  |                 |
 +------------------+--------------------+-------------------+------------------------+-----------------+
 | Bammann 2021     | ActiGraph\         | 62.9 (SD=3.6) yr  | **Default values\      | Moderate: 100\  |
 |                  | Non-dominant Wrist |                   | **`do.enmo = TRUE`\    | Vigorous: 245   |
-|                  |                    |                   | `acc.metric = \"ENMO\"`  |                 |
+|                  |                    |                   | `acc.metric = "ENMO"`  |                 |
 +------------------+--------------------+-------------------+------------------------+-----------------+
 | Bammann 2021     | ActiGraph\         | 62.9 (SD=3.6) yr  | **Default values\      | Moderate: 342   |
 |                  | Dominant Ankle     |                   | **`do.enmo = TRUE`\    |                 |
-|                  |                    |                   | `acc.metric = \"ENMO\"`  |                 |
+|                  |                    |                   | `acc.metric = "ENMO"`  |                 |
 +------------------+--------------------+-------------------+------------------------+-----------------+
 | Bammann 2021     | ActiGraph\         | 62.9 (SD=3.6) yr  | **Default values\      | Moderate: 331   |
 |                  | Non-dominant Ankle |                   | **`do.enmo = TRUE`\    |                 |
-|                  |                    |                   | `acc.metric = \"ENMO\"`  |                 |
+|                  |                    |                   | `acc.metric = "ENMO"`  |                 |
 +------------------+--------------------+-------------------+------------------------+-----------------+
 | Fraysse 2020^†^  | GENEActiv\         | ≥70 yr \          | `do.enmoa = TRUE`\     | Light: 42.5\    |
 |                  | Non-dominant wrist | (mean: 77 yr)     | `do.enmo = FALSE`\     | Moderate: 98\   |
-|                  |                    |                   | `acc.metric = \"ENMOa\"` | Vigorous: N/A   |
+|                  |                    |                   | `acc.metric = "ENMOa"` | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
 | Fraysse 2020^†^  | GENEActiv\         | ≥70 yr \          | `do.enmoa = TRUE`\     | Light: 62.5\    |
 |                  | Dominant wrist     | (mean: 77 yr)     | `do.enmo = FALSE`\     | Moderate: 92.5\ |
-|                  |                    |                   | `acc.metric = \"ENMOa\"` | Vigorous: N/A   |
+|                  |                    |                   | `acc.metric = "ENMOa"` | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
 | Dibben 2020^‡^   | GENEActiv\         | 70.7 (SD=14.1) yr | `do.enmoa = TRUE`\     | Light: 18.6\    |
 |                  | Right wrist        |                   | `do.enmo = FALSE`\     | Moderate: 45.5\ |
-|                  |                    |                   | `acc.metric = \"ENMOa\"` | Vigorous: N/A   |
+|                  |                    |                   | `acc.metric = "ENMOa"` | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
 | Dibben 2020^‡^   | GENEActiv\         | 70.7 (SD=14.1) yr | `do.mad = TRUE`\       | Light: 18.3\    |
 |                  | Right wrist        |                   | `do.enmo = FALSE`\     | Moderate: 26.2\ |
-|                  |                    |                   | `acc.metric = \"MAD\"`   | Vigorous: N/A   |
+|                  |                    |                   | `acc.metric = "MAD"`   | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
 | Dibben 2020^‡^   | GENEActiv\         | 70.7 (SD=14.1) yr | `do.enmoa = TRUE`\     | Light: 16.7\    |
 |                  | Left wrist         |                   | `do.enmo = FALSE`\     | Moderate: 43.6\ |
-|                  |                    |                   | `acc.metric = \"ENMOa\"` | Vigorous: N/A   |
+|                  |                    |                   | `acc.metric = "ENMOa"` | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
 | Dibben 2020^‡^   | GENEActiv\         | 70.7 (SD=14.1) yr | `do.mad = TRUE`\       | Light: 18.7\    |
 |                  | Left wrist         |                   | `do.enmo = FALSE`\     | Moderate: 22.8\ |
-|                  |                    |                   | `acc.metric = \"MAD\"`   | Vigorous: N/A   |
+|                  |                    |                   | `acc.metric = "MAD"`   | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
 | Dibben 2020^‡^   | GENEActiv\         | 70.7 (SD=14.1) yr | `do.enmoa = TRUE`\     | Light: 7.6\     |
 |                  | Hip                |                   | `do.enmo = FALSE`\     | Moderate: 40.6\ |
-|                  |                    |                   | `acc.metric = \"ENMOa\"` | Vigorous: N/A   |
+|                  |                    |                   | `acc.metric = "ENMOa"` | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
 | Dibben 2020^‡^   | GENEActiv\         | 70.7 (SD=14.1) yr | `do.mad = TRUE`\       | Light: 1\       |
 |                  | Hip                |                   | `do.enmo = FALSE`\     | Moderate: 2.4\  |
-|                  |                    |                   | `acc.metric = \"MAD\"`   | Vigorous: N/A   |
+|                  |                    |                   | `acc.metric = "MAD"`   | Vigorous: N/A   |
 +------------------+--------------------+-------------------+------------------------+-----------------+
 
 
@@ -364,6 +380,7 @@ why cut-points still have value in GGIR see:
 -   Fraysse 2020: <https://doi.org/10.3389%2Ffspor.2020.579278>
 -   Hildebrand 2014: <https://doi.org/10.1249/mss.0000000000000289>
 -   Hildebrand 2016: <https://doi.org/10.1111/sms.12795>
+-   Mielke 2023: <https://doi.org/10.1111/sms.14416>
 -   Migueles 2021: <https://doi.org/10.3390%2Fs21103326>
 -   Phillips 2013: <https://doi.org/10.1016/j.jsams.2012.05.013>
 -   Sanders 2018: <https://doi.org/10.1080/02640414.2018.1555904>
