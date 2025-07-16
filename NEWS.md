@@ -1,4 +1,26 @@
-# CHANGES IN GGIR VERSION 3.2-?
+# CHANGES IN GGIR VERSION 3.2-9
+
+- Part 3: For Fitbit data. Fixed bug in storage of ID format was list should be character, by which part5 could not run. #1330
+
+- Part 5:
+
+  - Fix bug in extracting sleep diary when recording starts between midnight and 4am. #1337
+
+  - Fix bug that caused sibreport to be stored with timestamps in UTC timezone. #1332
+
+# CHANGES IN GGIR VERSION 3.2-8
+
+- Revise guidance on GGIR citation. #1303
+
+- Part 2 + 5: Segmentation with activity log is now able to handle non-chronological order of segment definitions in the log. #1318
+
+- General: Promote GitHub discussion page as a central place to ask questions. References to Google group have been removed from the documentation. #1320.
+
+- Part 1 + 2: Update code and documentation for using external functions that produce multicolumn output. #1324
+
+# CHANGES IN GGIR VERSION 3.2-7
+
+- Part 5: Fix bug in reinitialisation of window numbers when using multiple timewindow definitions in GGIR part 5. #1311
 
 - Now generates error message when user provides parameters with unknown names to GGIR function #1300.
 

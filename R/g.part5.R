@@ -415,7 +415,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               if (length(sibreport) > 0) {
                 data.table::fwrite(x = sibreport, file = sibreport_fname, row.names = FALSE,
                                    sep = params_output[["sep_reports"]],
-                                   dec = params_output[["dec_reports"]])
+                                   dec = params_output[["dec_reports"]],
+                                   dateTimeAs = "write.csv")
               }
               # nap/sib/nonwear overlap analysis
               if (length(params_sleep[["nap_model"]]) > 0 & length(sibreport) > 0) {
@@ -478,7 +479,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             } else {
               sibreport = NULL
             }
-            ts$window = 0
             # backup of nightsi outside threshold defintions to avoid
             # overwriting the backup after the first iteration
             nightsi_bu = nightsi
@@ -504,6 +504,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                   SO = which(diff(ts$diur) == 1)
                   # now 0.5+6+0.5 midnights and 7 days
                   for (timewindowi in params_output[["timewindow"]]) {
+                    ts$window = 0
                     nightsi = nightsi_bu
                     # part3 estimate used for first night then
                     part3_estimates_firstnight = which(ts$guider == "part3_estimate")

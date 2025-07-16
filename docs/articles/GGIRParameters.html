@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -897,6 +897,26 @@ arguments.</p>
 <td>params_sleep</td>
 </tr>
 <tr class="even">
+<td>spt_min_block_dur</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="odd">
+<td>spt_max_gap_dur</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="even">
+<td>spt_max_gap_ratio</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="odd">
+<td>HorAngle_threshold</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="even">
 <td>loglocation</td>
 <td>4, 5</td>
 <td>params_sleep</td>
@@ -1127,42 +1147,62 @@ arguments.</p>
 <td>params_sleep</td>
 </tr>
 <tr class="even">
+<td>method_research_vars</td>
+<td>5</td>
+<td>params_sleep</td>
+</tr>
+<tr class="odd">
 <td>includecrit.part6</td>
 <td>6</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>part6_threshold_combi</td>
 <td>6</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>part6CR</td>
 <td>6</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>part6HCA</td>
 <td>6</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>part6Window</td>
 <td>6</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>part6DFA</td>
 <td>6</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>require_complete_lastnight_part5</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>visualreport_without_invalid</td>
+<td>visualreport</td>
+<td>params_output</td>
+</tr>
+<tr class="odd">
+<td>visualreport_hrsPerRow</td>
+<td>visualreport</td>
+<td>params_output</td>
+</tr>
+<tr class="even">
+<td>visualreport_focus</td>
+<td>visualreport</td>
+<td>params_output</td>
+</tr>
+<tr class="odd">
+<td>visualreport_validcrit</td>
 <td>visualreport</td>
 <td>params_output</td>
 </tr>
@@ -2659,6 +2699,37 @@ specified, this is the fraction used to smooth detected sustained
 inactivity bouts before calculating SRI1. For example, if set to 1 and
 0.8, we apply a rolling 1 hour window where each window with 80% or more
 sleep is classificed as sleep.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="spt_min_block_dur">spt_min_block_dur<a class="anchor" aria-label="anchor" href="#spt_min_block_dur"></a>
+</h4>
+<p>Numeric (default = 30). Minimum size in minutes of a resting block to
+be considered part of SPT in the estimation of the guider window
+(relevant for HASPT.algo settings: HDCZA, HorAngle and NotWorn).</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="spt_max_gap_dur">spt_max_gap_dur<a class="anchor" aria-label="anchor" href="#spt_max_gap_dur"></a>
+</h4>
+<p>Numeric (default = 60). Maximum size in minutes of a gap between
+resting blocks to be considered part of SPT in the estimation of the
+guider window (relevant for HASPT.algo settings: HDCZA, HorAngle and
+NotWorn).</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="spt_max_gap_ratio">spt_max_gap_ratio<a class="anchor" aria-label="anchor" href="#spt_max_gap_ratio"></a>
+</h4>
+<p>Numeric (default = 1). Only considered when set to a value less than
+1 Maximum ratio between gap duration and either rest block next to it.
+If the ratio for both is less than spt_max_gap_ratio the gap is merged
+with the neighbouring rest blocks and together they are considered as
+estimation of the SPT guider window (relevant for HASPT.algo settings:
+HDCZA, HorAngle and NotWorn).</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="horangle_threshold">HorAngle_threshold<a class="anchor" aria-label="anchor" href="#horangle_threshold"></a>
+</h4>
+<p>Numeric (default = 60). Angle threshold used for the HorAngle
+algorithm.</p>
 </div>
 </div>
 <div class="section level3">

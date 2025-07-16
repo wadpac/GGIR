@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -120,6 +120,9 @@ non-default scenarios.</p>
 </h2>
 <p>This refers to the situation where external software or hardware was
 used to derive epoch level aggregates from accelerometer data.</p>
+<p>In <a href="https://wadpac.github.io/GGIR/articles/chapter2_Pipeline.html#externally-derived-epoch-level-data">Chapter
+2</a> we provide an overview of all brands and data formats
+facilitated.</p>
 <p>In this section you will find key parameters needed for working with
 these data formats. Please refer to the other parts of the <a href="https://wadpac.github.io/GGIR/">GGIR documentation</a> for
 guidance on how to tailor the rest of your analysis towards your study
@@ -134,6 +137,9 @@ R.</p>
 <div class="section level3">
 <h3 id="actiwatch-data">Actiwatch data<a class="anchor" aria-label="anchor" href="#actiwatch-data"></a>
 </h3>
+<p>This includes the Actiwatch Spectrum Plus and Actiwatch 2 (AW2) as
+sold by Philips Respironics (previously Mini Mitter) and the MotionWatch
+as sold by CamNTech.</p>
 <div class="section level4">
 <h4 id="in--awd-format">in .AWD format<a class="anchor" aria-label="anchor" href="#in--awd-format"></a>
 </h4>
@@ -226,6 +232,8 @@ parameter <code>HASIB.algo = "data"</code>.</p>
 <div class="section level3">
 <h3 id="actical-in--csv-format">Actical in .csv format<a class="anchor" aria-label="anchor" href="#actical-in--csv-format"></a>
 </h3>
+<p>The Actical was sold by Philips Respironics (previously Mini
+Mitter).</p>
 <p>An example of how the first couple of hundred lines of this file may
 look like can be found <a href="https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/Actical.csv" class="external-link">here</a></p>
 <p>At a bare minimum the GGIR command to process these files looks as
@@ -242,6 +250,8 @@ follows:</p>
 <div class="section level3">
 <h3 id="philips-health-band-in--xlsx-format">Philips Health Band in .xlsx format<a class="anchor" aria-label="anchor" href="#philips-health-band-in--xlsx-format"></a>
 </h3>
+<p>The Philips Health Band was sold by Philips Respironics (previously
+Mini Mitter).</p>
 <p>The Philips Health Band data comes with .xlsx file pairs per
 recording. One starts with <code>DataList</code> the other one starts
 with <code>Sleep_Wake_</code>. Examples of how the first couple of
@@ -266,8 +276,13 @@ make GGIR fall back on Oakley1997 if this would be the case.</p>
 <div class="section level3">
 <h3 id="fitbit-as-folder-with--json-format-files">Fitbit as folder with .json format files<a class="anchor" aria-label="anchor" href="#fitbit-as-folder-with--json-format-files"></a>
 </h3>
-<p>Fitbit data comes with multiple .json file per recording (individual)
-stored in the same folder, with one folder for each recording.</p>
+<p>Note: We have only tested this for the FitBit Inspire 3 model. We do
+not know whether other versions of the Fitbit watch allow for data to be
+exported in a similar format. Please let us know if you are able to test
+this.</p>
+<p>FitBit Inspire 3 data comes with multiple .json file per recording
+(individual) stored in the same folder, with one folder for each
+recording.</p>
 <p>GGIR uses the .json file names starting with sleep, calories, and
 steps for sleep, magnitude of movement, and steps, respectively.</p>
 <p>Examples of how these files may look like can be found <a href="https://github.com/wadpac/GGIRread/blob/main/inst/testfiles/sleep-1995-06-23_Fitbit.json" class="external-link">here

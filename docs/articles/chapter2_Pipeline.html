@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -422,66 +422,115 @@ severe limitations to the transparency and flexibility of our analysis,
 GGIR makes an attempt to facilitate the analysis of these externally
 performed aggregations of the raw data. Please find below an overview of
 the file formats currently facilitated:</p>
-<table style="width:100%;" class="table">
+<table style="width:97%;" class="table">
 <colgroup>
-<col width="33%">
-<col width="31%">
-<col width="34%">
+<col width="24%">
+<col width="18%">
+<col width="16%">
+<col width="15%">
+<col width="23%">
 </colgroup>
 <thead><tr class="header">
-<th>Sensor brand / Device name</th>
-<th>Data format</th>
-<th>Parameters</th>
+<th align="left">Manufacturer</th>
+<th align="left">Product Name</th>
+<th align="left">Still for sale?</th>
+<th align="left">File extension</th>
+<th align="left">
+<code>dataFormat</code> parameter</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td>Actiwatch</td>
-<td>.csv</td>
-<td><code>dataFormat = "actiwatch_csv"</code></td>
+<td align="left">Philips Respironics<br>
+(previously Mini Mitter)</td>
+<td align="left">Actiwatch<br>
+Spectrum Plus</td>
+<td align="left">NO</td>
+<td align="left">.csv</td>
+<td align="left"><code>"actiwatch_csv"</code></td>
 </tr>
 <tr class="even">
-<td>Actical</td>
-<td>.csv</td>
-<td><code>dataFormat = "actical_csv"</code></td>
+<td align="left">Philips Respironics<br>
+(previously Mini Mitter)</td>
+<td align="left">Actiwatch<br>
+Spectrum Plus</td>
+<td align="left">NO</td>
+<td align="left">.awd</td>
+<td align="left"><code>"actiwatch_awd"</code></td>
 </tr>
 <tr class="odd">
-<td>Actiwatch</td>
-<td>.awd</td>
-<td><code>dataFormat = "actiwatch_awd"</code></td>
+<td align="left">Philips Respironics<br>
+(previously Mini Mitter)</td>
+<td align="left">Actiwatch 2 (AW2)</td>
+<td align="left">NO</td>
+<td align="left">.csv</td>
+<td align="left"><code>"actiwatch_csv"</code></td>
 </tr>
 <tr class="even">
-<td>ActiGraph</td>
-<td>.csv (count files, not be confused with csv raw data files)</td>
-<td>
-<code>dataFormat = "actigraph_csv"</code>,
-<code>do.neishabouricounts = TRUE</code>,
-<code>acc.metric = "NeishabouriCount_x"</code>
-</td>
+<td align="left">Philips Respironics<br>
+(previously Mini Mitter)</td>
+<td align="left">Actical</td>
+<td align="left">NO</td>
+<td align="left">.csv</td>
+<td align="left"><code>"actical_csv"</code></td>
 </tr>
 <tr class="odd">
-<td>Axivity</td>
-<td>UKBiobank csv export of epoch level data</td>
-<td>
-<code>dataFormat = "ukbiobank_csv"</code> (sleep detection not
-facilitated)</td>
+<td align="left">Philips Respironics<br>
+(previously Mini Mitter)</td>
+<td align="left">Philips Health<br>
+Band</td>
+<td align="left">NO</td>
+<td align="left">two .xlsx</td>
+<td align="left"><code>"phb_xlsx"</code></td>
 </tr>
 <tr class="even">
-<td>SenseWear</td>
-<td>.xls or .xlsx</td>
-<td><code>dataFormat = "sensewear_xls"</code></td>
+<td align="left">CamNTech</td>
+<td align="left">Motionwatch 8</td>
+<td align="left">YES</td>
+<td align="left">.awd</td>
+<td align="left"><code>"actiwatch_awd"</code></td>
 </tr>
 <tr class="odd">
-<td>Fitbit</td>
-<td>folder with multiple .json files</td>
-<td><code>dataFormat = "fitbit_json"</code></td>
+<td align="left">CamNTech</td>
+<td align="left">Motionwatch 7</td>
+<td align="left">NO</td>
+<td align="left">.awd</td>
+<td align="left"><code>"actiwatch_awd"</code></td>
 </tr>
 <tr class="even">
-<td>Philips Health Band</td>
-<td>.xlsx file pairs</td>
-<td><code>dataFormat = "phb_xlsx"</code></td>
+<td align="left">FitBit</td>
+<td align="left">Inspire 3</td>
+<td align="left">YES</td>
+<td align="left">several .json</td>
+<td align="left"><code>"fitbit_json"</code></td>
+</tr>
+<tr class="odd">
+<td align="left">SenseWear</td>
+<td align="left">SenseWear pro<br>
+Armband</td>
+<td align="left">NO</td>
+<td align="left">.xls or .xlsx</td>
+<td align="left"><code>"sensewear_xls"</code></td>
+</tr>
+<tr class="even">
+<td align="left">ActiGraph</td>
+<td align="left">many product names</td>
+<td align="left">SOME</td>
+<td align="left">.csv *</td>
+<td align="left"><code>"actigraph_csv"</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Axivity</td>
+<td align="left">AX3</td>
+<td align="left">YES</td>
+<td align="left">UK Biobank<br>
+.csv export</td>
+<td align="left"><code>"ukbiobank_csv"</code></td>
 </tr>
 </tbody>
 </table>
+<p>*These are the files with count data, not to be confused with
+ActiGraph raw acceleration data which can also be exported to .csv
+format.</p>
 <p>See <a href="https://wadpac.github.io/GGIR/articles/Cookbook.html">GGIR
 CookBook</a> for example recipes for working with these externally
 derived epoch-level data.</p>
@@ -505,6 +554,61 @@ calorie or METS values less than 0.0001 and an average value below
 <p>For all above approaches using a one hour window, the actual window
 length can be modified with the last value of parameter
 <code>windowsizes</code>.</p>
+<p>Please find below examples of file formats that are not facilitated
+yet, but can be facilitated with financial support from you. If you are
+interested, please contact v.vanhees at accelting.com. If there are
+other data formats you like to work with then do not hesitate to reach
+out.</p>
+<table style="width:97%;" class="table">
+<colgroup>
+<col width="24%">
+<col width="18%">
+<col width="16%">
+<col width="15%">
+<col width="23%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Manufacturer</th>
+<th align="left">Product Name</th>
+<th align="left">Still for sale?</th>
+<th align="left">File extension</th>
+<th align="left">
+<code>dataFormat</code> parameter</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Philips Respironics<br>
+(previously Mini Mitter)</td>
+<td align="left">Actiwatch<br>
+Spectrum PRO</td>
+<td align="left">NO</td>
+<td align="left">.csv</td>
+<td align="left">Not facilitated yet</td>
+</tr>
+<tr class="even">
+<td align="left">CamNTech</td>
+<td align="left">Motionwatch 8</td>
+<td align="left">YES</td>
+<td align="left">.xlsx</td>
+<td align="left">Not facilitated yet</td>
+</tr>
+<tr class="odd">
+<td align="left">AMI Ambulatory<br>
+Monitoring</td>
+<td align="left">Motionlogger</td>
+<td align="left">YES</td>
+<td align="left">.csv</td>
+<td align="left">Not facilitated yet</td>
+</tr>
+<tr class="even">
+<td align="left">Condor Instruments</td>
+<td align="left">ActTrust 2</td>
+<td align="left">YES</td>
+<td align="left">.txt</td>
+<td align="left">Not facilitated yet</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="section level2">

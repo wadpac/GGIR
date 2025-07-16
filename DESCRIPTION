@@ -1,8 +1,8 @@
 Package: GGIR
 Type: Package
 Title: Raw Accelerometer Data Analysis
-Version: 3.2-6
-Date: 2025-04-25
+Version: 3.2-9
+Date: 2025-07-15
 Authors@R: c(person("Vincent T","van Hees",role=c("aut","cre"),
                     email="v.vanhees@accelting.com"),
              person("Jairo H","Migueles",role="aut",
@@ -33,7 +33,7 @@ Authors@R: c(person("Vincent T","van Hees",role=c("aut","cre"),
              )
 Maintainer: Vincent T van Hees <v.vanhees@accelting.com>
 Description: A tool to process and analyse data collected with wearable raw acceleration sensors as described in Migueles and colleagues (JMPB 2019), and van Hees and colleagues (JApplPhysiol 2014; PLoSONE 2015). The package has been developed and tested for binary data from 'GENEActiv' <https://activinsights.com/>, binary (.gt3x) and .csv-export data from  'Actigraph' <https://theactigraph.com> devices, and binary (.cwa) and .csv-export data from 'Axivity' <https://axivity.com>. These devices are currently widely used in research on human daily physical activity. Further, the package can handle accelerometer data file from any other sensor brand providing that the data is stored in csv format. Also the package allows for external function embedding.
-URL: https://github.com/wadpac/GGIR/, https://groups.google.com/forum/#!forum/RpackageGGIR, https://wadpac.github.io/GGIR/
+URL: https://github.com/wadpac/GGIR/, https://wadpac.github.io/GGIR/
 BugReports: https://github.com/wadpac/GGIR/issues
 License: Apache License (== 2.0) | file LICENSE
 Suggests: testthat, covr, knitr, rmarkdown, actilifecounts, readxl
