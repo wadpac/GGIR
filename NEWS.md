@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.2-?
+
+- Part 5: Fix bug when user works in directory that has that letters csv in the filename. #1341
+
 # CHANGES IN GGIR VERSION 3.2-9
 
 - Part 3: For Fitbit data. Fixed bug in storage of ID format was list should be character, by which part5 could not run. #1330
