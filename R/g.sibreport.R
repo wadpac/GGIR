@@ -41,6 +41,8 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
     dateformat = logs_diaries$dateformat
 
     firstDate = as.Date(ts$time[1], tz = desiredtz)
+    # when recording starts after midnight and before 4am we count the previous date as the first night
+    if (as.numeric(format(ts$time[1], "%H")) < 4) firstDate = firstDate - 1
     extract_logs = function(log, ID, logname, firstDate = NULL) {
       logreport = c()
       if (length(log) > 0) {
