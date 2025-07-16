@@ -73,7 +73,7 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
       # 1: other resting windows that were discarded
       # 0: remaining time
       if (1 %in% crude_est) { 
-        # omit segments that have less than 80% sib
+        # omit 1- segments that have less than 80% sib
         class_changes = diff(c(0, crude_est, 0)) 
         segment_start = which(class_changes == 1)
         segment_end = which(class_changes == -1) - 1
@@ -102,14 +102,18 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
         #--------------------------------------------
         # Remove any long rest that are separated from main sleep
         # by a too long wake period
-        if (!is.null(guider_correction_maxgap_hrs) && !is.infinite(guider_correction_maxgap_hrs)) {
-          long_wake = which(rle_rest$values == 0 & rle_rest$lengths * epochSize >= guider_correction_maxgap_hrs * 3600)
-          if (length(long_wake) > 0) {
-            rle_rest$values[long_wake] = -1
-            ind2remove = NULL
-            if (length(long_rest) > 0) {
+        if (length(long_rest) > 0) {
+          if (!is.null(guider_correction_maxgap_hrs) && 
+              !is.infinite(guider_correction_maxgap_hrs)) {
+            long_wake = which(rle_rest$values == 0 & rle_rest$lengths * epochSize >= guider_correction_maxgap_hrs * 3600)
+            if (length(long_wake) > 0) {
+              rle_rest$values[long_wake] = -1
+              ind2remove = NULL
               for (lri in 1:length(long_rest)) {
-                original = which(rle_rest$values == 2)
+                # for each long rest (1)
+                # check whether any of the long wake (-1) separates
+                # it from the original HDCZA (2)
+                original = which(rle_rest$values == 2) # only one segment is expected to be 2
                 this_long_rest = long_rest[lri]
                 too_long_wake = which(rle_rest$values == -1)
                 if (any(too_long_wake > original & too_long_wake < this_long_rest) |
