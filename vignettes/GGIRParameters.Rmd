@@ -94,7 +94,7 @@ find a description and default value for all the arguments.
 | rmc.unit.temp               | 1                 | params_rawdata           |
 | rmc.origin                  | 1                 | params_rawdata           |
 | rmc.header.length           | 1                 | params_rawdata           |
-| rmc.format.time              | 1                 | params_rawdata           |
+| rmc.format.time              | 1                | params_rawdata           |
 | rmc.bitrate                 | 1                 | params_rawdata           |
 | rmc.dynamic_range           | 1                 | params_rawdata           |
 | rmc.unsignedbit             | 1                 | params_rawdata           |
@@ -231,14 +231,18 @@ find a description and default value for all the arguments.
 | possible_nap_gap            | 5                 | params_sleep             |
 | nap_markerbutton_method     | 5                 | params_sleep             |
 | nap_markerbutton_max_distance | 5               | params_sleep             |
+| method_research_vars        | 5                 | params_sleep             |
 | includecrit.part6           | 6                 | params_cleaning          |
 | part6_threshold_combi       | 6                 | params_phyact            |
 | part6CR                     | 6                 | params_247               |
 | part6HCA                    | 6                 | params_247               |
 | part6Window                 | 6                 | params_247               |
 | part6DFA                    | 6                 | params_247               |
-| require_complete_lastnight_part5 | 5                | params_output            |
+| require_complete_lastnight_part5 | 5            | params_output            |
 | visualreport_without_invalid| visualreport      | params_output            |
+| visualreport_hrsPerRow      | visualreport      | params_output            |
+| visualreport_focus          | visualreport      | params_output            |
+| visualreport_validcrit      | visualreport      | params_output            |
 | dofirstpage                 | visualreport      | params_output            |
 | visualreport                | visualreport      | params_output            |
 | viewingwindow               | visualreport      | params_output            |
