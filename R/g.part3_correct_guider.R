@@ -1,5 +1,92 @@
 g.part3_correct_guider = function(SLE, desiredtz, epochSize,
                                   guider_correction_maxgap_hrs = NULL) {
+  # local functions:
+  get_matching_indices = function(SLE, reference_window, tz) {
+    start_reference = end_reference = NULL
+    for (ki in 1:2) {
+      if (reference_window[ki] >= 24) {
+        reference_window[ki] = reference_window[ki] - 24
+      }
+      HR = floor(reference_window[ki])
+      MIN = floor((reference_window[ki] - HR) * 60)
+      SEC = floor((reference_window[ki] - HR - (MIN / 60)) * 3600)
+      SEC = floor(SEC / epochSize) * epochSize
+      HR = ifelse(HR < 10, yes = paste0("0", HR), no = as.character(HR))
+      MIN = ifelse(MIN < 10, yes = paste0("0", MIN), no = as.character(MIN))
+      SEC = ifelse(SEC < 10, yes = paste0("0", SEC), no = as.character(SEC))
+      ref_time = paste(HR, MIN, SEC, sep = ":")
+      if (ki == 1) {
+        start_reference = which(SLE$output$clocktime == ref_time)
+      } else if (ki == 2) {
+        end_reference = which(SLE$output$clocktime == ref_time)
+      }
+    }
+    if (end_reference[1] < start_reference[1]) {
+      # recording started after the start of reference causing a shift
+      # correct for this
+      start_reference = c(1, start_reference)
+    }
+    if (length(start_reference) > length(end_reference)) {
+      # recording end before end of reference causing a shift
+      # correct for this
+      end_reference = c(end_reference, length(SLE$output$clocktime))
+    }
+    invisible(list(start_reference = start_reference, end_reference = end_reference))
+  }
+  
+  get_crude_estimate = function(SLE, tSegment) {
+    # get crude estimate values between min-max pair
+    crude_est = SLE$output$spt_crude_estimate[tSegment]
+    sib = SLE$output[tSegment, grep(pattern = "time|invalid|night|estimate|medmed", x = colnames(SLE$output), invert = TRUE)]
+    temp_time = SLE$output$time_POSIX[tSegment]
+    # At this point rle_rest$values can have the following values:
+    # 2: guider based classification of main sleep window
+    # 1: other resting windows that were discarded
+    # 0: remaining time
+    if (1 %in% crude_est) { 
+      # omit 1- segments that have less than 80% sib
+      class_changes = diff(c(0, crude_est, 0)) 
+      segment_start = which(class_changes == 1)
+      segment_end = which(class_changes == -1) - 1
+      for (gi in seq_along(segment_start)) {
+        if (mean(sib[segment_start[gi]:segment_end[gi]]) < 0.8) {
+          crude_est[segment_start[gi]:segment_end[gi]] = 0
+        }
+      }
+    }
+    return(crude_est)
+  }
+  
+  clean_SLE = function(SLE) {
+    # remove temp columns on exit
+    temp_columns = c("clocktime", "time_POSIX", "spt_crude_estimate")
+    SLE$output = SLE$output[, which(names(SLE$output) %in% temp_columns == FALSE)]
+    return(SLE)
+  }
+  
+  convert_ts_to_hours = function(SLE, crude_est, tSegment, ref_value = 1) {
+    # convert timeseries to zeros to clock hour in the day
+    # redefine window by range
+    new_window = range(which(crude_est == ref_value ))
+    new_SPTE = SLE$output$clocktime[tSegment[new_window]]
+    convert_time = function(x) {
+      spit_time = as.numeric(unlist(strsplit(x, ":")))
+      time_hours = round(sum((spit_time * c(3600, 60, 1)) / 3600), digits = 3)
+      if (time_hours <= 12) time_hours = time_hours + 24
+      return(time_hours)
+    }
+    new_SPTE = unlist(lapply(X = new_SPTE, FUN = convert_time))
+    if (length(new_SPTE) == 0) browser()
+    # when person falls asleep before 6pm on first day
+    # the 24 hour correction needs to be corrected:
+    if (new_SPTE[1] > new_SPTE[2]) {
+      new_SPTE[1] = new_SPTE[1] - 24
+    }
+    return(new_SPTE)
+  }
+  
+  #-----------------------------------------
+  # main code
   # HASPT includes a guider estimate for every night regardless of how much
   # invalid data there is, but here we should only the valid nights
   invalid_per_night = aggregate(x = SLE$output$invalid, by = list(SLE$output$night), FUN = sum)
@@ -11,51 +98,161 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
   }
   SLE$SPTE_corrected = rep(FALSE, length(SLE$SPTE_start))
   
-  clean_SLE = function(SLE) {
-    # remove temp columns on exit
-    temp_columns = c("clocktime", "time_POSIX", "spt_crude_estimate")
-    SLE$output = SLE$output[, which(names(SLE$output) %in% temp_columns == FALSE)]
-    return(SLE)
-  }
-  
   if (length(valid_nights) == 0) {
     SLE = clean_SLE(SLE)
     return(SLE)
   }
   
-  # Add reference guider across all nights to each night
+  # Identify reference guider across all nights
   reference_window = c(min(SLE$SPTE_start[valid_nights], na.rm = TRUE),
                        max(SLE$SPTE_end[valid_nights], na.rm = TRUE))
   SLE$output$time_POSIX = iso8601chartime2POSIX(SLE$output$time, tz = desiredtz)
   SLE$output$clocktime = format(SLE$output$time_POSIX, format = "%H:%M:%S")
-  start_reference = end_reference = NULL
-  for (ki in 1:2) {
-    if (reference_window[ki] >= 24) {
-      reference_window[ki] = reference_window[ki] - 24
-    }
-    HR = floor(reference_window[ki])
-    MIN = floor((reference_window[ki] - HR) * 60)
-    SEC = floor((reference_window[ki] - HR - (MIN / 60)) * 3600)
-    SEC = floor(SEC / epochSize) * epochSize
-    HR = ifelse(HR < 10, yes = paste0("0", HR), no = as.character(HR))
-    MIN = ifelse(MIN < 10, yes = paste0("0", MIN), no = as.character(MIN))
-    SEC = ifelse(SEC < 10, yes = paste0("0", SEC), no = as.character(SEC))
-    ref_time = paste(HR, MIN, SEC, sep = ":")
-    if (ki == 1) {
-      start_reference = which(SLE$output$clocktime == ref_time)
-    } else if (ki == 2) {
-      end_reference = which(SLE$output$clocktime == ref_time)
-    }
+  
+  # Get indices of full time series where the reference guider matches the timestamps
+  ref_indices = get_matching_indices(SLE, reference_window,  tz = desiredtz)
+  start_reference = ref_indices$start_reference
+  end_reference = ref_indices$end_reference
+  
+  if (length(start_reference) < 2 || length(end_reference) < 2) {
+    SLE = clean_SLE(SLE)
+    return(SLE)
   }
-  if (end_reference[1] < start_reference[1]) {
-    # recording started after the start of reference causing a shift
-    # correct for this
-    start_reference = c(1, start_reference)
-  }
-  if (length(start_reference) > length(end_reference)) {
-    # recording end before end of reference causing a shift
-    # correct for this
-    end_reference = c(end_reference, length(SLE$output$clocktime))
+  
+  medmed_correction = FALSE # TO DO: Give user control of this
+  if (medmed_correction == TRUE) {
+    # Identify median-median window and corresponding indices in the time series
+    medmed_reference_window = c(median(SLE$SPTE_start[valid_nights], na.rm = TRUE),
+                         median(SLE$SPTE_end[valid_nights], na.rm = TRUE))
+    ref_indices = get_matching_indices(SLE, medmed_reference_window,  tz = desiredtz)
+    start_med_reference = ref_indices$start_reference
+    end_med_reference = ref_indices$end_reference
+    
+    if (length(start_med_reference) < 2 || length(start_med_reference) < 2) {
+      SLE = clean_SLE(SLE)
+      return(SLE)
+    }
+    # Deal with unequal lengths caused by incomplete first or last night
+    if (length(start_reference) > length(start_med_reference) &&
+        length(end_reference) > length(end_med_reference)) {
+      if (start_reference[1] == 1) {
+        start_reference = start_reference[2:length(start_reference)]
+        end_reference = end_reference[2:length(end_reference)]
+      }
+      if (end_reference[length(end_reference)] == nrow(SLE$output)) {
+        start_reference = start_reference[1:(length(start_reference) - 1)]
+        end_reference = end_reference[1:(length(end_reference) - 1)]
+      }
+    }
+    # Check each night for main HDCZA outside med-med window and correct if needed
+    for (ji in 1:length(start_reference)) {
+      if (ji %in% valid_nights) {
+        # get crude estimate values between min-max pair
+        tSegment = start_reference[ji]:end_reference[ji]
+        crude_est = get_crude_estimate(SLE, tSegment)
+        sib = SLE$output[tSegment, grep(pattern = "time|invalid|night|estimate|medmed", x = colnames(SLE$output), invert = TRUE)]
+        if (medmed_correction == TRUE) {
+          # derive time series across min-max with medmed indicated
+          tSegment_med = start_med_reference[ji]:end_med_reference[ji]
+          SLE$output$medmed = 0
+          SLE$output$medmed[tSegment_med] = 1
+          medmed = SLE$output$medmed[tSegment]
+        }
+        if (medmed_correction == TRUE) {
+          # Is original HDCZA estimate largely outside median-median window?
+          if (length(which(crude_est == 2)) != 0  &&
+              length(which(crude_est == 2 & medmed == 0)) / 
+              length(which(crude_est == 2)) > 0.9) {
+            
+            # To assess other criteria first create summary per segment
+            # and give each non-zero segment a unique segment id
+            temp_rle = rle(crude_est)
+            nonzero = which(temp_rle$values != 0)
+            temp_rle$values[nonzero] = 1:length(nonzero)
+            seg_id = rep(temp_rle$values, temp_rle$lengths)
+            
+            df = data.frame(crude_est = crude_est, medmed = medmed, 
+                            index = 1:length(crude_est), sib = sib,
+                            seg_id = seg_id)
+            # Crude estimate per segment (code by 0, 1 or 2 as explained above)
+            segment_level = aggregate(df[, c("crude_est", "seg_id")], by = list(df$seg_id), FUN = mean)[, 2:3]
+            # sib
+            segment_sib = aggregate(df[, c("sib", "seg_id")], by = list(df$seg_id), FUN = mean)[, 2:3]
+            segment_summary = merge(segment_level, segment_sib, by = "seg_id")
+            rm(segment_sib)
+            # Overlaps with median-median window
+            perc_value_one = function(x) {
+              return(length(which(x == 1)) / length(x))
+            }
+            segment_overlap_medmed = aggregate(df[, c("medmed", "seg_id")], by = list(df$seg_id), FUN = perc_value_one)[, 2:3]
+            segment_summary = merge(segment_summary, segment_overlap_medmed, by = "seg_id")
+            rm(segment_overlap_medmed)
+            # duration
+            segment_size_hours = aggregate(df$index, by = list(df$seg_id), FUN = length)
+            segment_size_hours[, 2] = segment_size_hours[, 2] / (3600 / epochSize)
+            names(segment_size_hours) = c("seg_id", "segment_size_hours")
+            segment_summary = merge(segment_summary, segment_size_hours, by = "seg_id")
+            rm(segment_size_hours)
+            # Start
+            segment_start = aggregate(df[, c("index", "seg_id")], by = list(df$seg_id), FUN = min)[, 2:3]
+            colnames(segment_start)[1] = "start_index"
+            segment_summary = merge(segment_summary, segment_start, by = "seg_id")
+            rm(segment_start)
+            # End
+            segment_end = aggregate(df[, c("index", "seg_id")], by = list(df$seg_id), FUN = max)[, 2:3]
+            colnames(segment_end)[1] = "end_index"
+            segment_summary = merge(segment_summary, segment_end, by = "seg_id")
+            rm(segment_end)
+            
+            SLE$output = SLE$output[, -which(colnames(SLE$output) == "medmed")]
+            browser()
+            
+            # Identify whether there is a secondary HDCZA window that meets
+            # following criteria:
+            # - (Mostly) Overlaps with the median-median window
+            # - lasts at least 3 hours
+            # - has at least 80% sustained inactivity (already removed above)
+            new_main_HDCZA = which(segment_summary$crude_est == 1 &
+                                     segment_summary$medmed == 1 &
+                                     segment_summary$segment_size_hours > 3 &
+                                     segment_summary$sib > 0.8)
+            
+            if (length(new_main_HDCZA) > 0) {
+              # If yes, then select this other HDCZA window.
+              
+              # Update such that old window has value 1
+              old_2 = which(segment_summary$crude_est == 2)
+              segment_summary$crude_est[old_2] = 1
+              crude_est[segment_summary$start_index[old_2]:segment_summary$end_index[old_2]] = 1
+              # Update such that new window has 2
+              segment_summary$crude_est[new_main_HDCZA] = 2
+              crude_est[segment_summary$start_index[new_main_HDCZA]:segment_summary$end_index[new_main_HDCZA]] = 2
+              
+              # Update corresponding SLE$SPTE_start and SLE$SPTE_end values.
+              new_SPTE = convert_ts_to_hours(SLE, crude_est, tSegment, ref_value = 2)
+              SLE$SPTE_start[ji] = new_SPTE[1]
+              SLE$SPTE_end[ji] = new_SPTE[2]
+              SLE$SPTE_corrected[ji] = TRUE
+            }
+          }
+        }
+      }
+    }
+    if (any(SLE$SPTE_corrected)) {
+      # If any night was corrected, repeat the initial steps of min-max and index extraction:
+      # Identify reference guider across all nights
+      reference_window = c(min(SLE$SPTE_start[valid_nights], na.rm = TRUE),
+                           max(SLE$SPTE_end[valid_nights], na.rm = TRUE))
+      
+      # Get indices of full time series where the reference guider matches the timestamps
+      ref_indices = get_matching_indices(SLE, reference_window,  tz = desiredtz)
+      start_reference = ref_indices$start_reference
+      end_reference = ref_indices$end_reference
+      if (length(start_reference) < 2 || length(end_reference) < 2) {
+        SLE = clean_SLE(SLE)
+        return(SLE)
+      }
+    }
   }
   
   # minimum rest duration to be considered as possible extension of guider
@@ -65,25 +262,7 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
     if (ji %in% valid_nights) {
       # get crude estimate values between min-max pair
       tSegment = start_reference[ji]:end_reference[ji]
-      crude_est = SLE$output$spt_crude_estimate[tSegment]
-      sib = SLE$output[tSegment, grep(pattern = "time|invalid|night|estimate", x = colnames(SLE$output), invert = TRUE)]
-      temp_time = SLE$output$time_POSIX[tSegment]
-      # At this point rle_rest$values can have the following values:
-      # 2: guider based classification of main sleep window
-      # 1: other resting windows that were discarded
-      # 0: remaining time
-      if (1 %in% crude_est) { 
-        # omit 1- segments that have less than 80% sib
-        class_changes = diff(c(0, crude_est, 0)) 
-        segment_start = which(class_changes == 1)
-        segment_end = which(class_changes == -1) - 1
-        for (gi in seq_along(segment_start)) {
-          if (mean(sib[segment_start[gi]:segment_end[gi]]) < 0.8) {
-            crude_est[segment_start[gi]:segment_end[gi]] = 0
-          }
-        }
-      }
-      
+      crude_est = get_crude_estimate(SLE, tSegment)
       # hours_in_class_1 = (length(which(crude_est == 1)) * epochSize) / 3600
       # if (hours_in_class_1 < 2) {
       #   # only consider nights with 2 or more hours outside main sleep window
@@ -126,7 +305,6 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
               }
             }
           }
-          
         }
         #--------------------------------------------
         # Any remaining long rests are considered
@@ -136,21 +314,8 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
           rle_rest$values[which(rle_rest$values == 2)] = 1
           N = length(crude_est)
           crude_est = rep(rle_rest$values, rle_rest$lengths)[1:N]
-          # redefine window by range
-          new_window = range(which(crude_est == 1))
-          new_SPTE = SLE$output$clocktime[tSegment[new_window]]
-          convert_time = function(x) {
-            spit_time = as.numeric(unlist(strsplit(x, ":")))
-            time_hours = round(sum((spit_time * c(3600, 60, 1)) / 3600), digits = 3)
-            if (time_hours <= 12) time_hours = time_hours + 24
-            return(time_hours)
-          }
-          new_SPTE = unlist(lapply(X = new_SPTE, FUN = convert_time))
-          # when person falls asleep before 6pm on first day
-          # the 24 hour correction needs to be corrected:
-          if (new_SPTE[1] > new_SPTE[2]) {
-            new_SPTE[1] = new_SPTE[1] - 24
-          }
+          
+          new_SPTE = convert_ts_to_hours(SLE, crude_est, tSegment, ref_value = 1)
           SLE$SPTE_start[ji] = new_SPTE[1]
           SLE$SPTE_end[ji] = new_SPTE[2]
           SLE$SPTE_corrected[ji] = TRUE
