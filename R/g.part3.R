@@ -180,7 +180,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
       # pass on functions
       functions2passon = c("g.sib.det", "g.detecmidnight", "iso8601chartime2POSIX",
                            "g.sib.plot", "g.sib.sum", "HASPT", "HASIB", "CalcSleepRegularityIndex",
-                           "extract_params", "load_params", "check_params")
+                           "extract_params", "load_params", "check_params", "g.part3_alignIndexVectors")
       errhand = 'stop'
     }
     i = 0 # declare i because foreach uses it, without declaring it
