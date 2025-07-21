@@ -308,7 +308,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                                activity = tmpACC,
                                marker = MARKER[tSegment],
                                sibs = sleep[tSegment, 1])
-          
+          tSegment_backup = tSegment
         } else {
           spt_estimate = list(SPTE_end = NULL, SPTE_start = NULL, tib.threshold = NULL, part3_guider = NULL)
         }
@@ -348,7 +348,6 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                                        invalid = invalid[tSegment],
                                        activity = ACC[tSegment],
                                        sibs = sleep[tSegment, 1])
-              
              
               if (length(spt_estimate_tmp$SPTE_start) > 0) {
                 # If new SPTE_end is beyond noon (qqq2) then use the new SPTE_end
@@ -386,6 +385,8 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         # log crude estimate as well:
         if (length(spt_estimate$spt_crude_estimate) == length(tSegment)) {
           spt_crude_estimate[tSegment] = spt_estimate$spt_crude_estimate
+        } else if (length(spt_estimate$spt_crude_estimate) == length(tSegment_backup)) {
+          spt_crude_estimate[tSegment_backup] = spt_estimate$spt_crude_estimate
         } else {
           if (!is.null(spt_estimate$spt_crude_estimate)) {
             warning("Crude estimate of sleep has unexpected length, please contact GGIR maintainer.")
