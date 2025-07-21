@@ -24,7 +24,7 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
       }
       return(x)
     }
-    start_reference = end_reference = NULL
+    ref_start_min = ref_start_max = NULL
     for (ki in 1:2) {
       if (reference_window[ki] >= 24) {
         reference_window[ki] = reference_window[ki] - 24
@@ -38,25 +38,25 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
       SEC = ifelse(SEC < 10, yes = paste0("0", SEC), no = as.character(SEC))
       ref_time = paste(HR, MIN, SEC, sep = ":")
       if (ki == 1) {
-        start_reference = which(SLE$output$clocktime == ref_time)
+        ref_start_min = which(SLE$output$clocktime == ref_time)
       } else if (ki == 2) {
-        end_reference = which(SLE$output$clocktime == ref_time)
+        ref_start_max = which(SLE$output$clocktime == ref_time)
       }
     }
-    if (end_reference[1] < start_reference[1]) {
+    if (ref_start_max[1] < ref_start_min[1]) {
       # recording started after the start of reference causing a shift
       # correct for this
-      start_reference = c(1, start_reference)
+      ref_start_min = c(1, ref_start_min)
     }
-    if (length(start_reference) > length(end_reference)) {
+    if (length(ref_start_min) > length(ref_start_max)) {
       # recording end before end of reference causing a shift
       # correct for this
-      end_reference = c(end_reference, length(SLE$output$clocktime))
+      ref_start_max = c(ref_start_max, length(SLE$output$clocktime))
     }
-    start_reference = correct_for_DST(start_reference, epochSize)    
-    end_reference = correct_for_DST(end_reference, epochSize)
+    ref_start_min = correct_for_DST(ref_start_min, epochSize)    
+    ref_start_max = correct_for_DST(ref_start_max, epochSize)
     
-    invisible(list(start_reference = start_reference, end_reference = end_reference))
+    invisible(list(ref_start_min = ref_start_min, ref_start_max = ref_start_max))
   }
   
   get_crude_estimate = function(SLE, tSegment) {
@@ -136,10 +136,10 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
   
   # Get indices of full time series where the reference guider matches the timestamps
   ref_indices = get_matching_indices(SLE, reference_window,  tz = desiredtz)
-  start_reference = ref_indices$start_reference
-  end_reference = ref_indices$end_reference
+  ref_start_min = ref_indices$ref_start_min
+  ref_start_max = ref_indices$ref_start_max
   
-  if (length(start_reference) < 2 || length(end_reference) < 2) {
+  if (length(ref_start_min) < 2 || length(ref_start_max) < 2) {
     SLE = clean_SLE(SLE)
     return(SLE)
   }
@@ -150,10 +150,10 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
     medmed_reference_window = c(median(SLE$SPTE_start[valid_nights], na.rm = TRUE),
                                 median(SLE$SPTE_end[valid_nights], na.rm = TRUE))
     ref_indices = get_matching_indices(SLE, medmed_reference_window,  tz = desiredtz)
-    start_med_reference = ref_indices$start_reference
-    end_med_reference = ref_indices$end_reference
+    ref_start_med = ref_indices$ref_start_min
+    ref_end_med = ref_indices$ref_start_max
     
-    if (length(start_med_reference) < 2 || length(end_med_reference) < 2) {
+    if (length(ref_start_med) < 2 || length(ref_end_med) < 2) {
       SLE = clean_SLE(SLE)
       return(SLE)
     }
@@ -162,39 +162,44 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
     # Deal with unmatching indices caused by incomplete first or last night
     Ntimepoints = length(SLE$output$clocktime)
     # # Code used for testing
-    # start_reference =     c(1, 100, 200)
-    # start_med_reference = c(20, 120)
-    # end_med_reference =   c(50, 150)
-    # end_reference =       c(70, 170, 270)
+    # ref_start_min =     c(1, 100, 200)
+    # ref_start_med = c(20, 120)
+    # ref_end_med =   c(50, 150)
+    # ref_start_max =       c(70, 170, 270)
     # Ntimepoints = 300
     # 
-    # print(start_reference)
-    # print(start_med_reference)
-    # print(end_med_reference)
-    # print(end_reference)
-    
-    if (start_med_reference[1] > end_reference[1]) {
-      start_med_reference =  c(1, start_med_reference)
+    # print(ref_start_min)
+    # print(ref_start_med)
+    # print(ref_end_med)
+    # print(ref_start_max)
+    if (ref_start_med[1] > ref_start_max[1]) {
+      ref_start_med =  c(1, ref_start_med)
     }
-    if (end_med_reference[1] > end_reference[1]) {
-      end_med_reference =  c(1, end_med_reference)
+    if (ref_end_med[1] > ref_start_max[1]) {
+      ref_end_med =  c(1, ref_end_med)
     }
-    if (start_med_reference[length(start_med_reference)] < start_reference[length(start_reference)]) {
-      start_med_reference =  c(start_med_reference, Ntimepoints)
+    if (ref_start_med[length(ref_start_med)] < ref_start_min[length(ref_start_min)]) {
+      ref_start_med =  c(ref_start_med, Ntimepoints)
     }
-    if (end_med_reference[length(end_med_reference)] < start_reference[length(start_reference)]) {
-      end_med_reference =  c(end_med_reference, Ntimepoints)
-    }
-    
-    if (length(start_med_reference) !=  length(start_reference) ||
-        length(end_med_reference) !=  length(end_reference)) {
-      browser()
+    if (ref_end_med[length(ref_end_med)] < ref_start_min[length(ref_start_min)]) {
+      ref_end_med =  c(ref_end_med, Ntimepoints)
     }
     
+    if (ref_end_med[length(ref_end_med)] > ref_start_max[length(ref_start_max)]) {
+      ref_end_med =  ref_end_med[1:(length(ref_end_med) - 1)]
+    }
+    
+    if (ref_start_med[length(ref_start_med)] > ref_start_max[length(ref_start_max)]) {
+      ref_start_med =  ref_start_med[1:(length(ref_start_med) - 1)]
+    }
+    # if (length(ref_start_med) !=  length(ref_start_min) ||
+    #     length(ref_end_med) !=  length(ref_start_max)) {
+    #   browser()
+    # }
+  
 
-    
-    if (length(start_reference) != length(start_med_reference) ||
-        length(end_reference) != length(end_med_reference)) {
+    if (length(ref_start_min) != length(ref_start_med) ||
+        length(ref_start_max) != length(ref_end_med)) {
       stop("index vectors do not match")
     }
     
@@ -202,14 +207,14 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
     # and there is a secondary HDCZA in med-med.
     
     # - Check each night for main HDCZA outside med-med window and correct if needed
-    for (ji in 1:length(start_reference)) {
+    for (ji in 1:length(ref_start_min)) {
       if (ji %in% valid_nights) {
         # get crude estimate values between min-max pair
-        tSegment = start_reference[ji]:end_reference[ji]
+        tSegment = ref_start_min[ji]:ref_start_max[ji]
         crude_est = get_crude_estimate(SLE, tSegment)
         sib = SLE$output[tSegment, grep(pattern = "time|invalid|night|estimate|medmed", x = colnames(SLE$output), invert = TRUE)]
         # derive time series across min-max with medmed indicated
-        tSegment_med = start_med_reference[ji]:end_med_reference[ji]
+        tSegment_med = ref_start_med[ji]:ref_end_med[ji]
         SLE$output$medmed = 0
         SLE$output$medmed[tSegment_med] = 1
         medmed = SLE$output$medmed[tSegment]
@@ -272,12 +277,9 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
                                    segment_summary$medmed > perc_HDCZA_inside_medmed &
                                    segment_summary$segment_size_hours > min_hours_HDCZA &
                                    segment_summary$sib > perc_sib_HDCZA)
-          print("new main HDCZA?")
-          # print(segment_summary)
-          
+
           if (length(new_main_HDCZA) > 0) {
             # If yes, then select this other HDCZA window.
-            print("YES")
             # Update such that old window has value 1
             old_2 = which(segment_summary$crude_est == 2)
             segment_summary$crude_est[old_2] = 1
@@ -292,8 +294,6 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
             SLE$SPTE_start[ji] = new_SPTE[1]
             SLE$SPTE_end[ji] = new_SPTE[2]
             SLE$SPTE_corrected[ji] = 2
-          } else {
-            print("NO")
           }
         }
       }
@@ -307,9 +307,9 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
       
       # Get indices of full time series where the reference guider matches the timestamps
       ref_indices = get_matching_indices(SLE, reference_window,  tz = desiredtz)
-      start_reference = ref_indices$start_reference
-      end_reference = ref_indices$end_reference
-      if (length(start_reference) < 2 || length(end_reference) < 2) {
+      ref_start_min = ref_indices$ref_start_min
+      ref_start_max = ref_indices$ref_start_max
+      if (length(ref_start_min) < 2 || length(ref_start_max) < 2) {
         SLE = clean_SLE(SLE)
         return(SLE)
       }
@@ -320,10 +320,10 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
   
   
   # # Check each night and correct if needed
-  for (ji in 1:length(start_reference)) {
+  for (ji in 1:length(ref_start_min)) {
     if (ji %in% valid_nights) {
       # get crude estimate values between min-max pair
-      tSegment = start_reference[ji]:end_reference[ji]
+      tSegment = ref_start_min[ji]:ref_start_max[ji]
       crude_est = get_crude_estimate(SLE, tSegment)
       # hours_in_class_1 = (length(which(crude_est == 1)) * epochSize) / 3600
       # if (hours_in_class_1 < 2) {
