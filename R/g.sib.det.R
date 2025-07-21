@@ -275,7 +275,7 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
         tmpACC = ACC[tSegment]
         windowRL = round((3600/ws3) * 5)
         if ((windowRL / 2) == round(windowRL / 2)) windowRL = windowRL + 1
-        if (length(tmpACC) < windowRL) {
+        if (length(tmpACC) <= windowRL) {
           L5 = 0
         } else {
           ZRM = zoo::rollmean(x = tmpACC, k = windowRL, fill = "extend", align = "center")
