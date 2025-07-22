@@ -40,7 +40,14 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                         spt_max_gap_dur =  60,
                         spt_max_gap_ratio = 1,
                         HorAngle_threshold = 60,
-                        guider_correction_maxgap_hrs = NULL)
+                        guider_cor_maxgap_hrs = 3,
+                        guider_cor_min_frac_sib = 0.8,
+                        guider_cor_min_hrs = 1,
+                        guider_cor_meme_frac_out = 0.9,
+                        guider_cor_meme_frac_in = 0.4,
+                        guider_cor_meme_min_hrs = 2,
+                        guider_cor_do = FALSE,
+                        guider_cor_meme_min_dys = 3)
   }
   if ("metrics" %in% topic) {
     params_metrics = list(do.anglex = FALSE, do.angley = FALSE, do.anglez = TRUE,

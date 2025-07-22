@@ -6,7 +6,6 @@ test_that("Align index vectors", {
   x = c(1, 100, 200)
   y = c(80, 180, 280)
   for (i in 1:11) {
-    print(i)
     a = c(20, 120, 220)
     b = c(60, 160, 260)
     if (i == 1) {

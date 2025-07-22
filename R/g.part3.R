@@ -86,12 +86,12 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                         sensor.location = params_general[["sensor.location"]],
                         params_sleep = params_sleep, zc.scale = params_metrics[["zc.scale"]])
         # Optional correction
-        if (!is.null(params_sleep[["guider_correction_maxgap_hrs"]]) &&
+        if (params_sleep[["guider_cor_do"]] == TRUE &&
             length(SLE$SPTE_start) > 0 && any(!is.na(SLE$SPTE_start)) &&
             length(SLE$SPTE_end) > 0 && any(!is.na(SLE$SPTE_end))) {
           SLE = g.part3_correct_guider(SLE, desiredtz = params_general[["desiredtz"]],
                                        epochSize = M$windowsizes[1],
-                                       guider_correction_maxgap_hrs = params_sleep[["guider_correction_maxgap_hrs"]])
+                                       params_sleep = params_sleep)
         }
         
         if ("spt_crude_estimate" %in% names(SLE$output)) {
@@ -180,7 +180,8 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
       # pass on functions
       functions2passon = c("g.sib.det", "g.detecmidnight", "iso8601chartime2POSIX",
                            "g.sib.plot", "g.sib.sum", "HASPT", "HASIB", "CalcSleepRegularityIndex",
-                           "extract_params", "load_params", "check_params", "g.part3_alignIndexVectors")
+                           "extract_params", "load_params", "check_params", 
+                           "g.part3_correct_guider", "g.part3_alignIndexVectors")
       errhand = 'stop'
     }
     i = 0 # declare i because foreach uses it, without declaring it

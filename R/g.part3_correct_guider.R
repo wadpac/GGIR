@@ -1,15 +1,14 @@
 g.part3_correct_guider = function(SLE, desiredtz, epochSize,
-                                  guider_correction_maxgap_hrs = NULL) {
-  # local parameters:
+                                  params_sleep) {
   
-  # enhancement
-  perc_HDCZA_outside_medmed = 0.9 # required fraction of HDCZA outside med-med to search for secondary HDCZA
-  perc_HDCZA_inside_medmed = 0.4 #  required fraction of HDCZA inside med-med to accept secondary HDCZA
-  min_hours_HDCZA = 2 # minimum duration of secondary HDCZA
-  medmed_correction = TRUE # TO DO: Give user control of this
-  # original algorithm
-  perc_sib_HDCZA = 0.8 # required fraction with sib in HDCZA
-  min_rest_length = 1 # minimum rest duration (hours) to be considered as possible extension of guider
+  guider_cor_maxgap_hrs = params_sleep[["guider_cor_maxgap_hrs"]]
+  guider_cor_min_frac_sib = params_sleep[["guider_cor_min_frac_sib"]]
+  guider_cor_min_hrs = params_sleep[["guider_cor_min_hrs"]]
+  guider_cor_meme_frac_out = params_sleep[["guider_cor_meme_frac_out"]]
+  guider_cor_meme_frac_in = params_sleep[["guider_cor_meme_frac_in"]]
+  guider_cor_meme_min_hrs = params_sleep[["guider_cor_meme_min_hrs"]]
+  # guider_cor_do = params_sleep[["guider_cor_do"]]
+  guider_cor_meme_min_dys = params_sleep[["guider_cor_meme_min_dys"]]
   
   # local functions:
   get_matching_indices = function(SLE, reference_window, tz) {
@@ -121,8 +120,8 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
                                         is.na(SLE$SPTE_end[valid_nights]) == FALSE)]
   }
   SLE$SPTE_corrected = rep(0, length(SLE$SPTE_start))
-  
-  if (length(valid_nights) == 0) {
+  # require at least 2 nights as otherwise min-max becomes meaningless
+  if (length(valid_nights) < 1) {
     SLE = clean_SLE(SLE)
     return(SLE)
   }
@@ -138,13 +137,11 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
   ref_indices = get_matching_indices(SLE, reference_window,  tz = desiredtz)
   ref_min = ref_indices$ref_min
   ref_max = ref_indices$ref_max
-  
   if (length(ref_min) < 2 || length(ref_max) < 2) {
     SLE = clean_SLE(SLE)
     return(SLE)
   }
-  
-  if (medmed_correction == TRUE) {
+  if (length(valid_nights) >= guider_cor_meme_min_dys) {
     # Step 2) Identify median-median window and corresponding indices in the time series
     # this window will be used to assess whether HDCZA window can be replaced
     medmed_reference_window = c(median(SLE$SPTE_start[valid_nights], na.rm = TRUE),
@@ -189,7 +186,7 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
         if (length(tSegment_med) > 3600 / epochSize &&
             length(which(crude_est == 2)) != 0  &&
             length(which(crude_est == 2 & medmed == 0)) / 
-            length(which(crude_est == 2)) > perc_HDCZA_outside_medmed) {
+            length(which(crude_est == 2)) > guider_cor_meme_frac_out) {
           # To assess other criteria first create summary per segment
           # and give each non-zero segment a unique segment id
           temp_rle = rle(crude_est)
@@ -241,9 +238,9 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
           # - lasts at least 3 hours
           # - has at least 80% sustained inactivity (already removed above)
           new_main_HDCZA = which(segment_summary$crude_est == 1 &
-                                   segment_summary$medmed > perc_HDCZA_inside_medmed &
-                                   segment_summary$segment_size_hours > min_hours_HDCZA &
-                                   segment_summary$sib > perc_sib_HDCZA)
+                                   segment_summary$medmed > guider_cor_meme_frac_in &
+                                   segment_summary$segment_size_hours > guider_cor_meme_min_hrs &
+                                   segment_summary$sib > guider_cor_min_frac_sib)
 
           if (length(new_main_HDCZA) > 0) {
             # If yes, then select this other HDCZA window.
@@ -303,17 +300,16 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
       # as indicated by a 1, because 2 is the current guider and zero is not resting
       if (1 %in% crude_est) { 
         rle_rest = rle(crude_est)
-        
         #--------------------------------------------
         # Identify long resting blocks
-        long_rest = which(rle_rest$values == 1 & rle_rest$lengths * epochSize >= min_rest_length * 3600)
+        long_rest = which(rle_rest$values == 1 & rle_rest$lengths * epochSize >= guider_cor_min_hrs * 3600)
         #--------------------------------------------
         # Remove any long rest that are separated from main sleep
         # by a too long wake period
         if (length(long_rest) > 0) {
-          if (!is.null(guider_correction_maxgap_hrs) && 
-              !is.infinite(guider_correction_maxgap_hrs)) {
-            long_wake = which(rle_rest$values == 0 & rle_rest$lengths * epochSize >= guider_correction_maxgap_hrs * 3600)
+          if (!is.null(guider_cor_maxgap_hrs) && 
+              !is.infinite(guider_cor_maxgap_hrs)) {
+            long_wake = which(rle_rest$values == 0 & rle_rest$lengths * epochSize >= guider_cor_maxgap_hrs * 3600)
             if (length(long_wake) > 0) {
               rle_rest$values[long_wake] = -1
               ind2remove = NULL
@@ -347,7 +343,11 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
           new_SPTE = convert_ts_to_hours(SLE, crude_est, tSegment, ref_value = 1)
           SLE$SPTE_start[ji] = new_SPTE[1]
           SLE$SPTE_end[ji] = new_SPTE[2]
-          SLE$SPTE_corrected[ji] = 1
+          if (SLE$SPTE_corrected[ji] == 0) {
+            SLE$SPTE_corrected[ji] = 1
+          } else {
+            SLE$SPTE_corrected[ji] = 3
+          }
         }
       }
     }
