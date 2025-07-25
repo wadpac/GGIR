@@ -417,11 +417,11 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           # is a nightworker onset
           tmp1 = format(guider.df2$sleeponset[1])
           tmp2 = unlist(strsplit(tmp1, ":"))
-          GuiderOnset = as.numeric(tmp2[1]) + (as.numeric(tmp2[2])/60) + (as.numeric(tmp2[3])/3600)
+          GuiderOnset = sum(as.numeric(tmp2) / c(1, 60, 3600))
           # wake
           tmp4 = format(guider.df2$sleepwake[1])
           tmp5 = unlist(strsplit(tmp4, ":"))
-          GuiderWake = as.numeric(tmp5[1]) + (as.numeric(tmp5[2])/60) + (as.numeric(tmp5[3])/3600)
+          GuiderWake = sum(as.numeric(tmp5) / c(1, 60, 3600))
           # Assess whether it is a daysleeper or a nightsleeper
           daysleeper[j] = FALSE  # default
           if (is.na(GuiderOnset) == FALSE & is.na(GuiderWake) == FALSE & tmp1 != "" & tmp4 != "") {

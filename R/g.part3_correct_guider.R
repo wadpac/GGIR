@@ -72,9 +72,13 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
       class_changes = diff(c(0, crude_est, 0)) 
       segment_start = which(class_changes == 1)
       segment_end = which(class_changes == -1) - 1
-      for (gi in seq_along(segment_start)) {
-        if (mean(sib[segment_start[gi]:segment_end[gi]]) < 0.8) {
-          crude_est[segment_start[gi]:segment_end[gi]] = 0
+      if (length(segment_end) == 0) {
+        crude_est[which(crude_est == 1)] = 0
+      } else {
+        for (gi in seq_along(segment_start)) {
+          if (mean(sib[segment_start[gi]:segment_end[gi]]) < 0.8) {
+            crude_est[segment_start[gi]:segment_end[gi]] = 0
+          }
         }
       }
     }
@@ -100,9 +104,9 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
       return(time_hours)
     }
     new_SPTE = unlist(lapply(X = new_SPTE, FUN = convert_time))
-    # when person falls asleep before 6pm on first day
-    # the 24 hour correction needs to be corrected:
-    if (new_SPTE[1] > new_SPTE[2]) {
+    if (new_SPTE[1] > new_SPTE[2] && new_SPTE[2] > 12 && new_SPTE[1] < 24) {
+      new_SPTE[2] = new_SPTE[2] + 24
+    } else if (new_SPTE[1] > new_SPTE[2] & new_SPTE[1] > 24) {
       new_SPTE[1] = new_SPTE[1] - 24
     }
     return(new_SPTE)
