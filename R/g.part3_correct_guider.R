@@ -302,7 +302,7 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
       
       # only consider window if there is rest outside guider
       # as indicated by a 1, because 2 is the current guider and zero is not resting
-      if (1 %in% crude_est) { 
+      if (1 %in% crude_est & 2 %in% crude_est) { 
         rle_rest = rle(crude_est)
         #--------------------------------------------
         # Identify long resting blocks
@@ -317,11 +317,11 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
             if (length(long_wake) > 0) {
               rle_rest$values[long_wake] = -1
               ind2remove = NULL
+              original = which(rle_rest$values == 2) # only one segment is expected to be 2
               for (lri in 1:length(long_rest)) {
                 # for each long rest (1)
                 # check whether any of the long wake (-1) separates
                 # it from the original HDCZA (2)
-                original = which(rle_rest$values == 2) # only one segment is expected to be 2
                 this_long_rest = long_rest[lri]
                 too_long_wake = which(rle_rest$values == -1)
                 if (any(too_long_wake > original & too_long_wake < this_long_rest) |
