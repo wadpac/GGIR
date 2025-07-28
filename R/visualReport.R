@@ -124,19 +124,8 @@ visualReport = function(metadatadir = c(),
            xaxt = 'n', axes = FALSE,
            xlab = "", ylab = "")
       
-      if (hrsPerRow <= 36) {
-        cex_axis = 0.5
-      } else {
-        cex_axis = 0.5
-      }
-      
-      
-      if (hrsPerRow <= 36) {
-        cex_mtext = 0.4
-      } else {
-        cex_mtext = 0.35 #25
-      }
-      
+      cex_axis = 0.5
+      cex_mtext = ifelse(hrsPerRow <= 36, yes = 0.4, no = 0.35)
       line = 0
       line_delta = 0.5
       # assign timestamp axis:
@@ -795,7 +784,4 @@ visualReport = function(metadatadir = c(),
       }
     }
   }
-  
-  
-  
 }
