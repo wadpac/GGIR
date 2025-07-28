@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.2-?
+
+- Part 5 and 6: Fix bug for the specific situation where parameters datadir or outputdir are set to a path that has the letters "csv" in one or multiple parent folder names. #1341
+
 # CHANGES IN GGIR VERSION 3.2-9
 
 - Part 3: For Fitbit data. Fixed bug in storage of ID format was list should be character, by which part5 could not run. #1330
