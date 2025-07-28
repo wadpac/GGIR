@@ -1,6 +1,6 @@
 # CHANGES IN GGIR VERSION 3.2-?
 
-- Part 5: Fix bug when user works in directory that has that letters csv in the filename. #1341
+- Part 5 and 6: Fix bug for the specific situation where parameters datadir or outputdir are set to a path that has the letters "csv" in one or multiple parent folder names. #1341
 
 # CHANGES IN GGIR VERSION 3.2-9
 
