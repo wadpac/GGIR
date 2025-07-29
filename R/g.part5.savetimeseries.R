@@ -135,7 +135,7 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
       # only doing this for RData output, because it would affect file size too much in csv,
       # remember that this function can create many files: sample sizes times all combinations of thresholds.
       mdat$timestamp = as.POSIXct(mdat$timenum, origin = "1970-01-01",tz = desiredtz)
-      rawlevels_fname = gsub(pattern = ".csv", replacement = ".RData", x = rawlevels_fname)
+      rawlevels_fname = gsub(pattern = "[.]csv", replacement = ".RData", x = rawlevels_fname)
       fname = unique(rawlevels_fname[grep("*RData$", rawlevels_fname)])
       save(mdat, filename, Lnames, file = fname)
     }

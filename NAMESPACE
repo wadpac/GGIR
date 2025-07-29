@@ -47,7 +47,7 @@ export(g.analyse, g.calibrate,
        markerButtonForRest, aggregateEvent, inspect_binFile_brand)
 
 importFrom("grDevices", "colors", "dev.off", "pdf",
-           "rgb", "rainbow", "palette", "adjustcolor", "gray.colors")
+           "rgb", "rainbow", "palette", "adjustcolor", "gray.colors", "dev.list")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
            "rect","axis.POSIXct", "barplot", "box", "legend",
            "lines", "mtext", "text", "arrows", "segments", "layout")
