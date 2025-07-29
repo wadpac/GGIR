@@ -9,12 +9,12 @@
 }
 \usage{
   visualReport(metadatadir = c(), 
-              f0 = c(), f1 = c(), overwrite = FALSE,
-              desiredtz = "",
+              f0 = c(), f1 = c(), 
               verbose = TRUE,
               part6_threshold_combi = NULL, GGIRversion = NULL,
               params_sleep = NULL,
-              params_output = NULL)
+              params_output = NULL,
+              params_general = NULL)
 }
 \arguments{
   \item{metadatadir}{
@@ -30,12 +30,6 @@
   \item{f1}{
     File index to finish with (defaults to number of files available, i.e., f1 = 0)
   }
-  \item{overwrite}{
-    See \link{GGIR}
-  }
-  \item{desiredtz}{
-    See \link{GGIR}
-  }
   \item{verbose}{
     See \link{GGIR}
   }
@@ -49,6 +43,9 @@
     See \link{GGIR}
   }
   \item{params_output}{
+    See \link{GGIR}
+  }
+  \item{params_general}{
     See \link{GGIR}
   }
 }
