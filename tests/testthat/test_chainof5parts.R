@@ -247,7 +247,7 @@ test_that("chainof5parts", {
                         f0 = 1, f1 = 1,
                         do.report = c(), overwrite = FALSE, visualreport = TRUE, viewingwindow = 1,
                         do.parallel = do.parallel, minimumFileSizeMB = minimumFileSizeMB, 
-                        verbose = FALSE))
+                        verbose = FALSE, old_visualreport = TRUE))
   expect_true(file.exists("output_test/results/part2_daysummary.csv"))
   expect_true(file.exists("output_test/results/part2_summary.csv"))
   expect_true(file.exists("output_test/results/part4_nightsummary_sleep_cleaned.csv"))

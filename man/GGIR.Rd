@@ -1807,7 +1807,7 @@ GGIR(mode = 1:5,
           biases the sleep estimates for the last night.}
 
       \item{old_visualreport}{
-        Boolean (default = TRUE).
+        Boolean (default = FALSE).
         If TRUE, then generate old visual report in addition to new visualreport.
         The old visualreport will eventually be deprecated}
       

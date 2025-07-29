@@ -480,13 +480,12 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       # The new visual report
       visualReport(metadatadir = metadatadir,
                    f0 = f0, f1 = f1,
-                   overwrite = params_general[["overwrite"]],
-                   desiredtz = params_general[["desiredtz"]],
                    verbose = TRUE,
                    part6_threshold_combi = params_phyact[["part6_threshold_combi"]],
                    GGIRversion = GGIRversion,
                    params_sleep = params_sleep,
-                   params_output = params_output)
+                   params_output = params_output,
+                   params_general = params_general)
       if (params_output[["old_visualreport"]] == TRUE) {
         g.plot5(metadatadir = metadatadir,
                 dofirstpage = params_output[["dofirstpage"]],
