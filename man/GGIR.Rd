@@ -322,6 +322,19 @@ GGIR(mode = 1:5,
         For guidance on how to specify time formats in R see:
         https://wadpac.github.io/GGIR/articles/DateTimeFormatsInR.html.
       }
+      
+      \item{use_trycatch}{
+        Boolean (default = FALSE).
+        If set to \code{TRUE} and \code{do.parallel = FALSE}, GGIR will wrap the 
+        core processing function in each part for each file in a \code{tryCatch} block. 
+        This allows GGIR to continue processing remaining files even if one or 
+        more files cause an error (e.g., due to corruption or unreadable format). 
+        The error messages for failed files are logged and printed in the console 
+        at the end of the processing. This is particularly useful in large batch 
+        analyses where users might leave the processing running without supervision.
+        If set to \code{FALSE}, GGIR will stop execution immediately when an error 
+        occurs as usual.
+      }
     }
     }
 
