@@ -267,7 +267,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
       }
     } else if (rmc.unit.time == "ActivPAL") {
       # origin should be specified as: "1899-12-30"
-      P$time = as.POSIXct(P$time * 86400, origin = "1899-12-30", tz = desiredtz)
+      P$time = lubridate::force_tz(as.POSIXct(P$time * 86400, origin = "1899-12-30", tz = "UTC"), tz = desiredtz)
     }
     if (length(which(is.na(P$time) == FALSE)) == 0) {
       stop("\nExtraction of timestamps unsuccesful, check timestamp format arguments")

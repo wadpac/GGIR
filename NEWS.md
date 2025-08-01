@@ -1,8 +1,12 @@
-# CHANGES IN GGIR VERSION 3.2-?
+# CHANGES IN GGIR VERSION 3.2-10
+
+- Part 1: Correct timestamp extraction from ActivPAL data. #1287
 
 - Part 5 and 6: Fix bug for the specific situation where parameters datadir or outputdir are set to a path that has the letters "csv" in one or multiple parent folder names. #1341
 
 - Visualreport: Now also processes multiple files in parallel like the rest of GGIR. #1351
+
+- Part 4: Fix bug that made it impossible to use basic format sleeplog in combination with sleepwindowType "TimeInBed" #1359
 
 # CHANGES IN GGIR VERSION 3.2-9
 
