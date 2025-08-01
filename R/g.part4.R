@@ -41,7 +41,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                                coln1 = params_sleep[["coln1"]],
                                colid = params_sleep[["colid"]],
                                meta.sleep.folder = meta.sleep.folder,
-                               desiredtz = params_general[["desiredtz"]])
+                               desiredtz = params_general[["desiredtz"]],
+                               sleepwindowType = params_sleep[["sleepwindowType"]])
       
       if (params_sleep[["sleepwindowType"]] == "SPT" && length(logs_diaries$bedlog) > 0 &&
           length(logs_diaries$sleeplog) == 0) {
