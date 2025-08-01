@@ -1,5 +1,7 @@
 # CHANGES IN GGIR VERSION 3.2-?
 
+- Part 1: Correct timestamp extraction from ActivPAL data.
+
 - Part 5 and 6: Fix bug for the specific situation where parameters datadir or outputdir are set to a path that has the letters "csv" in one or multiple parent folder names. #1341
 
 - Visualreport: Now also processes multiple files in parallel like the rest of GGIR. #1351
