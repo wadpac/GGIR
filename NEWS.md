@@ -4,6 +4,8 @@
 
 - Visualreport: Now also processes multiple files in parallel like the rest of GGIR. #1351
 
+- Part 4: Fix bug that made it impossible to use basic format sleeplog in combination with sleepwindowType "TimeInBed" #1359
+
 # CHANGES IN GGIR VERSION 3.2-9
 
 - Part 3: For Fitbit data. Fixed bug in storage of ID format was list should be character, by which part5 could not run. #1330
