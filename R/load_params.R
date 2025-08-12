@@ -47,7 +47,9 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                         guider_cor_meme_frac_in = 0.4,
                         guider_cor_meme_min_hrs = 2,
                         guider_cor_do = FALSE,
-                        guider_cor_meme_min_dys = 3)
+                        guider_cor_meme_min_dys = 3,
+                        HDCZA_roll_windowsize = 5,
+                        LowAcc_threshold = 0.014)
   }
   if ("metrics" %in% topic) {
     params_metrics = list(do.anglex = FALSE, do.angley = FALSE, do.anglez = TRUE,
