@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.2-?
+
+- Part 5: Add option to distinguish multiple nap duration categories similar to physical activity bout duration categories. #967
+
 # CHANGES IN GGIR VERSION 3.2-10
 
 - Part 1: Correct timestamp extraction from ActivPAL data. #1287

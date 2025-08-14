@@ -47,7 +47,7 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
     invisible(list(fi = fi, ds_names = ds_names, dsummary = dsummary, di = di))
   }
   
-  
+  epochSize_min = as.numeric(difftime(ts$time[2], ts$time[1], units = "mins"))
   if (!is.null(sibreport) &&
       length(sibreport[[1]]) > 1)  {
     #---------------------------------------
@@ -82,8 +82,7 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
           break()
         }
       }
-      epochSize = as.numeric(difftime(ts$time[2], ts$time[1], units = "mins"))
-      sibreport$duration = as.numeric(difftime(sibreport$end, sibreport$start, units = "mins")) + epochSize
+      sibreport$duration = as.numeric(difftime(sibreport$end, sibreport$start, units = "mins")) + epochSize_min
     }
     
     # Only consider sib episodes with minimum duration
@@ -106,7 +105,7 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
     
     longboutsi = which((sibreport$type == "sib" &
                           sibreport$duration >= params_sleep[["possible_nap_dur"]][1] &
-                          sibreport$duration < params_sleep[["possible_nap_dur"]][2] &
+                          sibreport$duration < tail(params_sleep[["possible_nap_dur"]], n = 1) &
                           sibreport$acc_edge <= params_sleep[["possible_nap_edge_acc"]] &
                           sibreport$startHour >= params_sleep[["possible_nap_window"]][1] &
                           sibreport$endHour < params_sleep[["possible_nap_window"]][2] &
@@ -170,7 +169,10 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
             # Only consider nap it does not overlap for more than 10% with known nonwear.
             fractionInvalid = length(which(ts$nonwear[sibnap] == 1)) / length(sibnap)
             if (fractionInvalid < 0.1) {
-              ts$sibdetection[sibnap] = 2
+              nap_dur_min = length(sibnap) / (1 / epochSize_min)
+              nap_dur_class = which(c(params_sleep[["possible_nap_dur"]], Inf) >= nap_dur_min)[1]
+              # expected class number is 2 or higher.
+              ts$sibdetection[sibnap] = nap_dur_class
             } else {
               srep_tmp_rowsdelete = c(srep_tmp_rowsdelete , sibnaps[sni])
             }

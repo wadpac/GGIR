@@ -43,7 +43,8 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
   bc.lig = levelList$bc.lig
   
   skiponset = skipwake = TRUE
-  
+  nap_overwrite_bc = params_sleep[["nap_overwrite_behaviourclass"]]
+  nap_class_names = NULL
   #==========================
   # The following is to avoid issue with merging sleep variables from part 4
   # Note that this means that for MM windows there can be multiple or no wake or onsets in window
@@ -179,22 +180,38 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
       dsummary = restAnalyses$dsummary
       ds_names = restAnalyses$ds_names
       
-      # If naps detected add these to LEVELS
-      detectedNaps = which(ts$sibdetection[sse] == 2)
-      if (length(detectedNaps) > 0) {
-        if ("day_nap" %in% Lnames) {
-          LEVELS[sse[detectedNaps]] = length(Lnames) - 1
-        } else {
-          LEVELS[sse[detectedNaps]] = length(Lnames)
-        }
+      # If TRUE: Add detect naps to LEVELS, which probably overwrites the inactivity classification
+      # If FALSE: Create separate vector to indicate when naps happened
+      # so this overwrites the behavioural classes for those time segments
+      # False may become default as this allows for more flexibility for the future
+      # as we retain both classifications
+      if (nap_overwrite_bc == FALSE) {
+        nap_LEVELS = rep(NA, length(LEVELS))
       }
-      if ("day_nap" %in% Lnames == FALSE) {
-        Lnames = c(Lnames, "day_nap")
+      
+      N_nap_dur_classes = length(params_sleep[["possible_nap_dur"]])
+      for (ndi in 1:(N_nap_dur_classes - 1)) {
+        detectedNaps = which(ts$sibdetection[sse] == (ndi + 1))
+        nap_class_name = paste0("day_nap_", params_sleep[["possible_nap_dur"]][ndi],
+                                "_", params_sleep[["possible_nap_dur"]][ndi + 1])
+        if (nap_overwrite_bc == TRUE) {
+          if (nap_class_name %in% Lnames == FALSE) {
+            Lnames = c(Lnames, nap_class_name)
+          }
+        } else {
+          nap_class_names = c(nap_class_names, nap_class_name)
+        }
+        if (length(detectedNaps) > 0) {
+          if (nap_overwrite_bc == TRUE) {
+            LEVELS[sse[detectedNaps]] = which(Lnames == nap_class_name) - 1
+          } else {
+            nap_LEVELS[sse[detectedNaps]] = which(nap_class_names == nap_class_name) - 1
+          }
+        }
       }
     }
     #===============================================
     # TIME SPENT IN WINDOWS (window is either midnight-midnight or waking up-waking up)
-    test_remember = c(si,fi)
     for (levelsc in 0:(length(Lnames) - 1)) {
       dsummary[si,fi] = (length(which(LEVELS[sse] == levelsc)) * ws3new) / 60
       ds_names[fi] = paste0("dur_", Lnames[levelsc + 1],"_min");      fi = fi + 1
@@ -213,6 +230,13 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     ds_names[fi] = "dur_spt_min";      fi = fi + 1
     dsummary[si, fi] = (length(c(sse)) * ws3new) / 60
     ds_names[fi] = "dur_day_spt_min";      fi = fi + 1
+    # TIME SPENT IN NAP WINDOWS
+    if (nap_overwrite_bc == FALSE && length(nap_class_names) > 0) {
+      for (levelsc in 0:(length(nap_class_names) - 1)) {
+        dsummary[si,fi] = (length(which(nap_LEVELS[sse] == levelsc)) * ws3new) / 60
+        ds_names[fi] = paste0("dur_", nap_class_names[levelsc + 1],"_min");      fi = fi + 1
+      }
+    }
     #============================================
     # Number of long wake periods (defined as > 5 minutes) during the night
     Nawake = length(which(abs(diff(which(LEVELS[sse] == 0))) > (300 / ws3new))) - 2
@@ -226,7 +250,8 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     ds_names[fi] = "sleep_efficiency_after_onset";      fi = fi + 1
     #===============================================
     # NAPS (estimation)
-    if (params_output[["do.sibreport"]] == TRUE & "nap1_nonwear2" %in% colnames(ts) &
+    if (params_output[["do.sibreport"]] == TRUE &&
+        "nap1_nonwear2" %in% colnames(ts) &&
         length(params_sleep[["nap_model"]]) > 0) {
       dsummary[si,fi] = length(which(diff(c(-1, which(ts$nap1_nonwear2[sse] == 1 & ts$diur[sse] == 0))) > 1))
       ds_names[fi] = "nap_count";      fi = fi + 1
@@ -367,6 +392,16 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
                                   paste(params_phyact[["boutdur.mvpa"]], collapse = "_"))
     ds_names[fi:(fi + 5)] = c("boutcriter.in", "boutcriter.lig", "boutcriter.mvpa",
                               "boutdur.in",  "boutdur.lig", "boutdur.mvpa"); fi = fi + 6
+    
+    #-------------
+    # If naps are in separate vector than count them separately
+    if (nap_overwrite_bc == FALSE && length(nap_class_names) > 0) {
+      RLE_nap_LEVELS = rle(nap_LEVELS[sse])
+      for (levelsc in 0:(length(nap_class_names) - 1)) {
+        dsummary[si,fi] = length(which(RLE_nap_LEVELS$values == levelsc))
+        ds_names[fi] = paste0("Nblocks_", nap_class_names[levelsc + 1]);      fi = fi + 1
+      }
+    }
     #===========================
     # Intensity gradient over waking hours
     if (length(params_247[["iglevels"]]) > 0) {

@@ -1483,6 +1483,14 @@ GGIR(mode = 1:5,
         Numeric (default = 60).
         Angle threshold used for the HorAngle algorithm.
       }
+      
+      \item{nap_overwrite_behaviourclass}{
+        Boolean (default = TRUE).
+        The behavioural class related to physical activity are first assigned to 
+        each epoch. By default these will overwrite nap classification. When set to
+        FALSE the nap classification is treated as a separate level of analysis and
+        by that leaves the classification of physical activity intensity as it was.
+      }
     }
   }
 

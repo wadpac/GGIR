@@ -43,7 +43,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     boolean_params = c("ignorenonwear", "HASPT.ignore.invalid",
                        "relyonguider", "sleeplogidnum",
                        "impute_marker_button", "consider_marker_button",
-                       "sib_must_fully_overlap_with_TimeInBed")
+                       "sib_must_fully_overlap_with_TimeInBed", "nap_overwrite_behaviourclass")
     character_params = c("HASPT.algo", "HASIB.algo", "Sadeh_axis", "nap_model",
                          "sleeplogsep", "sleepwindowType", "loglocation")
     check_class("Sleep", params = params_sleep, parnames = numeric_params, parclass = "numeric")
@@ -212,9 +212,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                   " while length 2 is expected"), call. = FALSE)
     }
     if (!is.null(params_sleep[["possible_nap_dur"]]) &&
-        length(params_sleep[["possible_nap_dur"]]) != 2) {
+        length(params_sleep[["possible_nap_dur"]]) == 1) {
       stop(paste0("Parameter possible_nap_dur has length ", length(params_sleep[["possible_nap_dur"]]), 
-                  " while length 2 is expected"), call. = FALSE)
+                  " while length of at least 2 is expected"), call. = FALSE)
     }
     if (!is.null(params_sleep[["possible_nap_window"]]) &&
         !is.null(params_sleep[["possible_nap_dur"]])) {
