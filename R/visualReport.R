@@ -179,8 +179,8 @@ visualReport = function(metadatadir = c(),
           if (legend_items$name[labi] == "sib") {
             bin_ts[which(bin_ts != 1)] = 0
           } else if (legend_items$name[labi] == "nap") {
-            bin_ts[which(bin_ts != 2)] = 0
-            bin_ts[which(bin_ts == 2)] = 1
+            bin_ts[which(bin_ts < 2)] = 0
+            bin_ts[which(bin_ts >= 2)] = 1
           }
           freqtab = table(bin_ts)
           if (length(freqtab) > 1 || names(freqtab)[1] == "1") {
