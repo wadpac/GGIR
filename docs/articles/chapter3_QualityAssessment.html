@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-11</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -326,30 +326,43 @@ reasons to do so.</p>
 <h2 id="non-wear-detection">Non-wear detection<a class="anchor" aria-label="anchor" href="#non-wear-detection"></a>
 </h2>
 <p>It can happen that a study participant does not wear the
-accelerometer. This can happen for a variety of reasons: getting tired
-of wearing the accelerometer, forgetting to put the accelerometer back
-on after a short moment of not wearing it, or getting instructed by the
+accelerometer. This can be for a variety of reasons: getting tired of
+wearing the accelerometer, forgetting to put the accelerometer back on
+after a short moment of not wearing it, or getting instructed by the
 researcher to take it off. However, when accelerometer are not worn,
 they still collect data. When the accelerometer is lying still, the data
 collected looks like as if the participant that is supposed to wear it
 does is not moving. If left undetected, not wearing the accelerometer
 would bias the estimates of time spent in inactive behaviours.</p>
-<p>Accelerometer non-wear time is detected by GGIR by looking at the
+<p>Accelerometer non-wear time is detected in GGIR by looking at the
 standard deviation and range in the raw acceleration signals. If the
 time window over which these statistical values are calculated is long
 enough, they turn out to be a reliable indicators of whether the
 accelerometer is worn or not.</p>
-<p>More specifically, the standard deviation and value range (i.e.,
-maximum value <em>minus</em> minimum value) are calculated per 60 minute
-windows that start every 15 minutes (e.g. 14:00, 14:15, etc.) . The
-overlapping nature of the time windows is needed to improve precision.
-Each time window is labelled as non-wear, if at least the statistical
-values of 2 out of the 3 axes meet brand specific thresholds. As a
-result, since multiple overlapping time windows classify the same 15
-minutes, each 15 minute window is classified multiple times. If the
-non-wear criteria are met for any of these windows that overlap with the
-15-minute window, it will be labelled as non-wear. For most brands it is
-13.0 m<em>g</em> and less than 50 m<em>g</em>.</p>
+<p>The standard deviation and value range (i.e., maximum value
+<em>minus</em> minimum value) are calculated per 60 minute windows that
+start every 15 minutes (e.g. 14:00, 14:15, etc.) . The overlapping
+nature of the time windows is needed to improve precision. Each time
+window is labelled as non-wear, if at least the statistical values of 2
+out of the 3 axes meet brand specific thresholds. As a result, since
+multiple overlapping time windows classify the same 15 minutes, each 15
+minute window is classified multiple times. If the non-wear criteria are
+met for any of these windows that overlap with the 15-minute window, it
+will be labelled as non-wear. For most brands it is 13.0 m<em>g</em> and
+less than 50 m<em>g</em>.</p>
+<p>The elegance of using the standard deviation calculated from each raw
+signal over a long time window such as 60 minutes is that it is
+sensitive to even the slightest change in sensor orientation, even if
+the orientation change itself may be brief and slow. The reason for this
+is that the orientation change causes a change in the gravitational
+component of the acceleration signal, which means a change in offset,
+which has a major impact on the standard deviation. Only when the
+accelerometer remains untouched and unmoved for the entire 60 minutes
+the standard deviation represents the noise in the acceleration signal.
+Additionally, the standard deviation may also pick movement-related
+acceleration, but human movement is not possible without any form of
+orientation change and by that it primarily is the sensitivity to
+orientation change that defines the non-wear detection.</p>
 <p>The size of the time window (60 minutes) and the size of the time
 intervals of 15 minutes are defined by the parameter
 <code>windowsizes</code>, which has three values. More specifically, the
@@ -753,7 +766,7 @@ One. 2013 Apr 23</a></p></li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>

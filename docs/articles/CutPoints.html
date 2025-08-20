@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-11</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -173,6 +173,24 @@ like this:</p>
      acc.metric = "NeishabouriCount_y",
      threshold.in = 100 * (5/60),
      [...])</code></pre>
+<p>As a side note - Although counts are epoch length specific it is
+possible to convert them into gravitational units by dividing the count
+value by the sampling rate as used by the count algorithm (30 Hertz for
+ActiGraph counts) multiplied by the number of seconds in the time window
+for which the count value was derived. For example, 100 counts per
+minute equates to an average acceleration per minute of 100 / (30 x 60)
+= 0.055 <em>g</em>, and 1950 counts per minute equals 1.0833 <em>g</em>.
+Note that the absolute acceleration values from different acceleration
+metrics are not comparable. However, expressing data in <em>g</em>-units
+can at least ease evaluating the validity of metrics relative to
+criterion acceleration and removes the non-informative connection to
+sampling rate (van Hees et al. 2013 <a href="https://doi.org/10.1371/journal.pone.0061691" class="external-link uri">https://doi.org/10.1371/journal.pone.0061691</a>). As this
+calculation shows, count-units and <em>g</em>-unit metrics only differ
+by a constant, by which there is no practical difference in their
+ability to explain variance in human behaviour. Similarly, if you would
+like to convert an average daily acceleration of 0.05 <em>g</em> back to
+counts per day then you would have to multiply by (30 Hertz x 60 seconds
+x 1440 minutes), which gives 129600 counts per day.</p>
 </div>
 </div>
 <div class="section level2">
@@ -1031,7 +1049,7 @@ a motivation why cut-points still have value in GGIR see: <a href="https://www.a
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
