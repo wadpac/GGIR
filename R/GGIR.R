@@ -480,7 +480,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       # The new visual report
       visualReport(metadatadir = metadatadir,
                    f0 = f0, f1 = f1,
-                   verbose = TRUE,
+                   verbose = verbose,
                    part6_threshold_combi = params_phyact[["part6_threshold_combi"]],
                    GGIRversion = GGIRversion,
                    params_sleep = params_sleep,
