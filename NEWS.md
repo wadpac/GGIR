@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.2-11
+
+- Part 4: Reload sleeplog when part 3 output is newer than the latest sleeplog export, previously sleeplog was only reloaded if sleeplog itself had changed. #1366
+
 # CHANGES IN GGIR VERSION 3.2-10
 
 - Part 1: Correct timestamp extraction from ActivPAL data. #1287
