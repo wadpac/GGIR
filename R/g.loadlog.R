@@ -1,5 +1,5 @@
 g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), 
-                     sleeplogsep = ",", meta.sleep.folder = c(), desiredtz="") {
+                     sleeplogsep = ",", meta.sleep.folder = c(), desiredtz="", sleepwindowType = c()) {
   # declare local functions:
   getIDstartdate = function(x) {
     rec_starttime = ID = c()
@@ -481,6 +481,12 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
     nnights = floor(nnights)
   }
   nnights = nnights + deltadate + 1 # to account for the possibility of extra night at the beginning of recording
+  if (!is.null(sleepwindowType) && advanced_sleeplog == FALSE) {
+    if (sleepwindowType == "TimeInBed") {
+      B = S
+      rm(S)
+    }
+  }
   # # From here we continue with original code focused on sleeplog only
   if (exists("S") && ncol(S) > 0 && nnights > 0) {
     sleeplog = adjustLogFormat(S, nnights, mode = "sleeplog")

@@ -194,6 +194,8 @@ g.analyse.perfile = function(I, C, metrics_nav,
     v2 = which(is.na(as.numeric(daysummary[wkday, columnWithAlwaysData])) == F  &
                  as.numeric(daysummary[wkday, NVHcolumn]) >= params_cleaning[["includedaycrit"]][1])
     wkday = wkday[v2]
+    validdays = which(is.na(as.numeric(daysummary[, columnWithAlwaysData])) == F  &
+                      as.numeric(daysummary[, NVHcolumn]) >= params_cleaning[["includedaycrit"]][1])
     # Add number of weekend and weekdays to filesummary
     filesummary[vi:(vi + 1)] = c(length(wkend),  length(wkday)) # number of weekend days & weekdays
     iNA = which(is.na(filesummary[vi:(vi + 1)]) == TRUE)
@@ -258,7 +260,7 @@ g.analyse.perfile = function(I, C, metrics_nav,
         # - first value is not empty
         if (storevalue == TRUE) {
           # Plain average of available days
-          v4 = mean(suppressWarnings(as.numeric(daysummary[, dtwi])), na.rm = TRUE)
+          v4 = mean(suppressWarnings(as.numeric(daysummary[validdays, dtwi])), na.rm = TRUE)
           filesummary[(vi + 1 + (dtwtel*sp))] = v4 # #average all availabel days
           s_names[(vi + 1 + (dtwtel * sp))] = paste0("AD_", ds_names[dtwi])
           # Average of available days per weekenddays / weekdays:
@@ -282,7 +284,7 @@ g.analyse.perfile = function(I, C, metrics_nav,
           dtwtel = dtwtel + 1
         }
         # Plain average of available days
-        v4 = mean(suppressWarnings(as.numeric(daysummary[,dtwi])), na.rm = TRUE)
+        v4 = mean(suppressWarnings(as.numeric(daysummary[validdays, dtwi])), na.rm = TRUE)
         filesummary[(vi + 1 + (dtwtel * sp))] = v4
         s_names[(vi + 1 + (dtwtel * sp))] = paste0("AD_", ds_names[dtwi])
         # Average of available days per weekenddays / weekdays:
