@@ -249,9 +249,6 @@ g.analyse.perfile = function(I, C, metrics_nav,
     dtwtel = 0
     if (length(daytoweekvar) >= 1) {
       sp = length(daytoweekvar) + 1
-      # limit matrix to only valid days, to ensure no invalid days are included in person summary
-      validdays = which(as.numeric(daysummary[, which(ds_names == "N valid hours")]) > params_cleaning[["includedaycrit"]])
-      
       for (dtwi in daytoweekvar) {
         #check whether columns is empty:
         uncona = unique(daysummary[,dtwi])
