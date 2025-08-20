@@ -1,5 +1,5 @@
 pandoc: '3.4'
-pkgdown: 2.1.1
+pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   chapter0_Contributing: chapter0_Contributing.html
@@ -32,7 +32,7 @@ articles:
   readmyacccsv: readmyacccsv.html
   SleepRegularityIndex: SleepRegularityIndex.html
   TutorialDaySegmentAnalyses: TutorialDaySegmentAnalyses.html
-last_built: 2025-08-01T09:23Z
+last_built: 2025-08-20T14:23Z
 urls:
   reference: https://wadpac.github.io/GGIR/reference
   article: https://wadpac.github.io/GGIR/articles
