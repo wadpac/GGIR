@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.2-11
+
+- Part 2: In day segment analysis N hours and N valid hours per day segment are now correctly averaged over valid days only, previously calculation included invalid days. This affect only the person level summary. #1350
+
 # CHANGES IN GGIR VERSION 3.2-10
 
 - Part 1: Correct timestamp extraction from ActivPAL data. #1287
