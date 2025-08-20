@@ -44,10 +44,10 @@ export(g.analyse, g.calibrate,
        part6PairwiseAggregation, g.part6, g.report.part6, 
        check_log, g.report.part5_dictionary, DFA, ABI, SSP, visualReport,
        splitRecords, getSplitNames, addSplitNames, getPart1BasicInfo,
-       markerButtonForRest, aggregateEvent, inspect_binFile_brand)
+       markerButtonForRest, aggregateEvent, inspect_binFile_brand, filterNonwearNight) 
 
 importFrom("grDevices", "colors", "dev.off", "pdf",
-           "rgb", "rainbow", "palette", "adjustcolor", "gray.colors")
+           "rgb", "rainbow", "palette", "adjustcolor", "gray.colors", "dev.list")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
            "rect","axis.POSIXct", "barplot", "box", "legend",
            "lines", "mtext", "text", "arrows", "segments", "layout")

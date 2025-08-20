@@ -1,3 +1,19 @@
+# CHANGES IN GGIR VERSION 3.2-11
+
+- Part 2: In day segment analysis N hours and N valid hours per day segment are now correctly averaged over valid days only, previously calculation included invalid days. This affect only the person level summary. #1350
+
+- Part 4: Reload sleeplog when part 3 output is newer than the latest sleeplog export, previously sleeplog was only reloaded if sleeplog itself had changed. #1366
+
+# CHANGES IN GGIR VERSION 3.2-10
+
+- Part 1: Correct timestamp extraction from ActivPAL data. #1287
+
+- Part 5 and 6: Fix bug for the specific situation where parameters datadir or outputdir are set to a path that has the letters "csv" in one or multiple parent folder names. #1341
+
+- Visualreport: Now also processes multiple files in parallel like the rest of GGIR. #1351
+
+- Part 4: Fix bug that made it impossible to use basic format sleeplog in combination with sleepwindowType "TimeInBed" #1359
+
 # CHANGES IN GGIR VERSION 3.2-9
 
 - Part 3: For Fitbit data. Fixed bug in storage of ID format was list should be character, by which part5 could not run. #1330

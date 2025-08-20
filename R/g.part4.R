@@ -33,15 +33,18 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   }
   if (dolog == TRUE) {
     sleeplogRDataFile = paste0(metadatadir,"/meta/sleeplog_", basename(params_sleep[["loglocation"]]), ".RData")
-    # only re-process sleeplog if sleeplog.RData does not exist or if sleeplog
-    # is from a date equal to or after sleeplog.RData
+    # only re-process sleeplog if sleeplog.RData does not exist 
+    # or if sleeplog is from a date equal to or after sleeplog.RData
+    # or if sleeplog.Rdata file is older than the news files in milestone 3.
     if (!file.exists(sleeplogRDataFile) || 
-        file.info(params_sleep[["loglocation"]])$mtime >= file.info(sleeplogRDataFile)$mtime) {
+        file.info(params_sleep[["loglocation"]])$mtime >= file.info(sleeplogRDataFile)$mtime ||
+        max(file.info(dir(meta.sleep.folder, full.names = TRUE))$mtime) >= file.info(sleeplogRDataFile)$mtime) {
       logs_diaries = g.loadlog(params_sleep[["loglocation"]], 
                                coln1 = params_sleep[["coln1"]],
                                colid = params_sleep[["colid"]],
                                meta.sleep.folder = meta.sleep.folder,
-                               desiredtz = params_general[["desiredtz"]])
+                               desiredtz = params_general[["desiredtz"]],
+                               sleepwindowType = params_sleep[["sleepwindowType"]])
       
       if (params_sleep[["sleepwindowType"]] == "SPT" && length(logs_diaries$bedlog) > 0 &&
           length(logs_diaries$sleeplog) == 0) {
