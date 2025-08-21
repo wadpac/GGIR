@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.2-??
+
+- Part 3: Adding option to correct guider classification with new algorithm that comes with new parameters guider_cor_maxgap_hrs, guider_cor_min_frac_sib, guider_cor_min_hrs, guider_cor_meme_frac_out, guider_cor_meme_frac_in, guider_cor_meme_min_hrs #1307
+
 # CHANGES IN GGIR VERSION 3.2-11
 
 - Part 2: In day segment analysis N hours and N valid hours per day segment are now correctly averaged over valid days only, previously calculation included invalid days. This affect only the person level summary. #1350
