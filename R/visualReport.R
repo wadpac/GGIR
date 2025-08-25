@@ -180,22 +180,29 @@ visualReport = function(metadatadir = c(),
             bin_ts[which(bin_ts != 1)] = 0
           } else if (legend_items$name[labi] == "nap") {
             bin_ts[which(bin_ts < 2)] = 0
-            bin_ts[which(bin_ts >= 2)] = 1
+            egt_two = which(bin_ts >= 2)
+            if (length(egt_two) > 0) bin_ts[egt_two] = bin_ts[egt_two] - 1
           }
           freqtab = table(bin_ts)
           if (length(freqtab) > 1 || names(freqtab)[1] == "1") {
-            starti = which(diff(c(0, bin_ts)) == 1)
-            endi = which(diff(c(bin_ts, 0)) == -1) + 1
+            starti = which(diff(c(0, bin_ts)) >= 1)
+            endi = which(diff(c(bin_ts, 0)) <= -1) + 1
             newi = correctRect(starti, endi, NR = nrow(mdat), epochSize)
-            t0 = mdat$timestamp[starti = newi$starti]
-            t1 = mdat$timestamp[endi = newi$endi]
+            t0 = mdat$timestamp[newi$starti]
+            t1 = mdat$timestamp[newi$endi]
             y0 = 25
             y1 = 50
-            if (legend_items$name[labi] == "nap") {
-              y1 = 100
-            }
             col = legend_items$col[labi]
             rect(xleft = t0, xright = t1, ybottom = y0, ytop = y1, col = col, border = FALSE)
+            if (legend_items$name[labi] == "nap") {
+              # draw nap duration category on top of the rectangle, because duration
+              # category is not visually shown as a colour, because these are not behavioural classes
+              for (kin in 1:length(t0)) {
+                nap_class = unique(bin_ts[newi$starti[kin]:newi$endi[kin]])
+                nap_class = nap_class[which(nap_class != 0)]
+                text(x = mean(c(t1[kin], t0[kin])), y = 35, labels = nap_class)
+              }
+            }
           }
         } else {
           diary_names = c("diary_nap", "diary_nonwear", "diary_sleepwindow", "diary_timeinbed")
@@ -447,10 +454,13 @@ visualReport = function(metadatadir = c(),
       legend_items$code = c(legend_items$code, -1)
       legend_items$level = c(legend_items$level, 2)
       
-      legend_items$col = c(legend_items$col, "steelblue1") #"blue3") # "#D55E00""#E69F00") "#56B4E9" "#0072B2"
-      legend_items$name = c(legend_items$name, "nap")
-      legend_items$code = c(legend_items$code, -1)
-      legend_items$level = c(legend_items$level, 2)
+      if (length(grep(pattern = "nap", x = behavioral_code_names)) == 0) {
+        # nap are not considered behavioural classes, so require its own category
+        legend_items$col = c(legend_items$col, "steelblue1") #"blue3") # "#D55E00""#E69F00") "#56B4E9" "#0072B2"
+        legend_items$name = c(legend_items$name, "nap")
+        legend_items$code = c(legend_items$code, -1)
+        legend_items$level = c(legend_items$level, 2)
+      }
       
       # Sleep in SPT
       legend_items = gen_col_names(behavioral_code_names,
@@ -467,11 +477,14 @@ visualReport = function(metadatadir = c(),
       
       # NAPS (acc based not self-reported)
       not_spt = grep(pattern = "spt", x = behavioral_code_names, invert = TRUE)
-      legend_items = gen_col_names(behavioral_code_names = behavioral_code_names[not_spt],
-                                   behavioral_codes = behavioral_codes[not_spt],
-                                   name = "nap",
-                                   legend_items = legend_items, colour = "#A020F0",
-                                   level = 2, reverse = FALSE)
+      if (length(grep(pattern = "nap", x = behavioral_code_names)) > 0) {
+        # nap are considered behavioural classes
+        legend_items = gen_col_names(behavioral_code_names = behavioral_code_names[not_spt],
+                                     behavioral_codes = behavioral_codes[not_spt],
+                                     name = "nap",
+                                     legend_items = legend_items, colour = "steelblue1",
+                                     level = 2, reverse = FALSE)
+      }
       # Inactivity
       legend_items = gen_col_names(behavioral_code_names = behavioral_code_names[not_spt],
                                    behavioral_codes = behavioral_codes[not_spt],
@@ -777,7 +790,6 @@ visualReport = function(metadatadir = c(),
         for (oli in 1:length(output_list)) { # logged error and warning messages
           if (is.null(unlist(output_list[oli])) == FALSE) {
             if (verbose == TRUE) cat(paste0("\nErrors and warnings for ", fnames[oli]))
-            browser()
             print(unlist(output_list[oli])) # print any error and warnings observed
           }
         }
