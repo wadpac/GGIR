@@ -4,20 +4,19 @@ filterNonwearNight = function(r1, metalong, qwindowImp, desiredtz,
   nonwearFilterWindow = params_cleaning[["nonwearFilterWindow"]]
   nonwearEventsFiltered = nonwearHoursFiltered = 0
   # Identify method to use
-  if (!is.null(nonwearFilterWindow)) {
-    filter_method = 1 # set window as provided by user
-  } else {
-    # If nonwearFilterWindow is not provided then
-    # look for qwindow is available
-    if (is.null(qwindowImp)) {
+  if (is.null(qwindowImp)) {
+    filter_method = 1 # set window as provided by user via nonwearFilterWindow
+    if (is.null(nonwearFilterWindow)) {
       stop(paste0("Please specify parameter nonwearFilterWindow or ",
                   "qwindow as diary with columns to define the window for ",
                   "filtering short nonwear. See documentation for ",
                   "parameter nonwearFiltermaxHours"), call. = FALSE)
     }
+  } else {
     if (inherits(qwindowImp, "data.frame")) {
       filter_method = 2 # Use it as a dataframe
     } else {
+      # person ID does not appear in diary
       filter_method = 1 
       nonwearFilterWindow = qwindowImp
     }

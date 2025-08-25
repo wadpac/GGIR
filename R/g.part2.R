@@ -19,6 +19,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   params_general = params$params_general
   #-----------------------------
   use_qwindow_as_diary = TRUE # If there is a diary specified via qwindow use it as qwindow
+  qwindow = qwindow_original = NULL
   if (is.numeric(params_247[["qwindow"]])) {
     params_247[["qwindow"]] = params_247[["qwindow"]][order(params_247[["qwindow"]])]
   } else if (is.character(params_247[["qwindow"]])) {
@@ -34,17 +35,68 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         file.info(params_247[["qwindow"]])$mtime >= file.info(tmp_activityDiary_file)$mtime)) {
       if (verbose == TRUE) cat("\nConverting activity diary...")
       # This will be an object with numeric qwindow values for all individuals and days
-      params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]],
+      qwindow = g.conv.actlog(params_247[["qwindow"]],
                                               params_247[["qwindow_dateformat"]],
                                               epochSize = params_general[["windowsizes"]][1])
-      qwindow = params_247[["qwindow"]]
       save(qwindow, file = tmp_activityDiary_file)
     } else {
-      load(tmp_activityDiary_file)
-      params_247[["qwindow"]] = qwindow
+      load(tmp_activityDiary_file) # loads qwindow
     }
-    rm(qwindow)
+    qwindow_original = params_247[["qwindow"]]
+    params_247[["qwindow"]] = qwindow 
+  }
 
+  #---------------------------------------------------------------
+  # If non-wear filter is requested, the same diary may be needed as for qwindow
+  if (!is.null(params_cleaning[["nonwearFiltermaxHours"]])) {
+    if (!is.null(params_cleaning[["nonwearFilterWindow"]])) {
+      # user specified nonwearFilterWindow
+      # If nonwearFilterWindow is numeric, then it can be used as such
+      # If nonwearFilterWindow is a file path then check whether it is the same as for qwindow
+      if (is.character(params_cleaning[["nonwearFilterWindow"]])) {
+        if (!is.null(params_247[["qwindow"]]) &&
+            is.character(qwindow_original) &&
+            !is.null(qwindow) &&
+            params_cleaning[["nonwearFilterWindow"]] == qwindow_original) {
+          # If qwindow is specified as diary and this diary path is the same
+          # as the one specified for nonwearFilterWindow, reuse qwindow object loaded above
+          params_cleaning[["nonwearFilterWindow"]] = qwindow
+        }  else {
+          # Alternatively, load diary as specified
+          tmp_nonwearFilterDiary_file =  paste0(metadatadir, "/meta/nonwearFilterDiary_",
+                                                basename(params_cleaning[["nonwearFilterWindow"]]), ".RData")
+          if (!file.exists(tmp_nonwearFilterDiary_file) || 
+              (file.exists(tmp_nonwearFilterDiary_file) &&
+               file.info(params_cleaning[["nonwearFilterWindow"]])$mtime >= file.info(tmp_nonwearFilterDiary_file)$mtime)) {
+            nonwearFilterWindow = g.conv.actlog(params_cleaning[["nonwearFilterWindow"]],
+                                                params_247[["qwindow_dateformat"]],
+                                                epochSize = params_general[["windowsizes"]][1])
+            save(nonwearFilterWindow, file = tmp_nonwearFilterDiary_file)
+          } else {
+            # reload if previously stored
+            load(file = tmp_nonwearFilterDiary_file)
+          }
+          params_cleaning[["nonwearFilterWindow"]] = nonwearFilterWindow
+        }
+      }
+    } else {
+      # user did not specify nonwearFilterWindow, try to use qwindow instead:
+      if (!is.null(params_247[["qwindow"]]) &&
+          is.character(qwindow_original) &&
+          !is.null(qwindow)) {
+        params_cleaning[["nonwearFilterWindow"]] = qwindow
+      } else {
+        stop(paste0("Parameters nonwearFilterWindow is not specified and ",
+                    "qwindow is not specified with a file path, either of these ",
+                    "is needed when working with nonwearFiltermaxHours"), call. = FALSE)
+      }
+    }
+  }
+  #---------------------------------------------------------------
+  # Now we no longer need file path stored in params_247[["qwindow"]]
+  # it is time to overwrite it with the data.frame used inside part 2
+  if (exists("qwindow")) {
+    rm(qwindow)
   }
   #---------------------------------
   # Specifying directories with meta-data and extracting filenames
@@ -170,7 +222,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
             }
           }
         }
-        qwindowImp = params_247[["qwindow"]]
+        qwindowImp = params_cleaning[["nonwearFilterWindow"]]
         if (use_qwindow_as_diary == FALSE) {
           # reset qwindow to default, because it is only used
           # for filtering short nighttime nonwear 

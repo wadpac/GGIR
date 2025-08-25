@@ -84,7 +84,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     check_class("Raw data", params = params_rawdata, parnames = numeric_params, parclass = "numeric")
     check_class("Raw data", params = params_rawdata, parnames = boolean_params, parclass = "boolean")
     check_class("Raw data", params = params_rawdata, parnames = character_params, parclass = "character")
-
+    
     if (params_rawdata[["chunksize"]] < 0.1) params_rawdata[["chunksize"]] = 0.1
   }
   if (length(params_247) > 0) {
@@ -111,11 +111,12 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     
   }
   if (length(params_cleaning) > 0) {
+    # nonwearFilterWindow can be numeric or character, so not tested
     numeric_params = c("includedaycrit", "ndayswindow", "data_masking_strategy", "maxdur", "hrs.del.start",
                        "hrs.del.end", "includedaycrit.part5", "minimum_MM_length.part5",
                        "includenightcrit", "max_calendar_days", "includecrit.part6", "includenightcrit.part5",
-                       "nonwearFiltermaxHours", "nonwearFilterWindow")
-
+                       "nonwearFiltermaxHours")
+    
     boolean_params = c("excludefirstlast.part5", "do.imp", "excludefirstlast",
                        "excludefirst.part4", "excludelast.part4", "nonWearEdgeCorrection")
     character_params = c("data_cleaning_file", "TimeSegments2ZeroFile")
@@ -130,7 +131,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "storefolderstructure", "dofirstpage", "visualreport", "week_weekend_aggregate.part5",
                        "do.part3.pdf", "outliers.only", "do.visual", "do.sibreport", "visualreport_without_invalid",
                        "do.part2.pdf", "old_visualreport", "require_complete_lastnight_part5")
-
+    
     character_params = c("save_ms5raw_format", "timewindow", "sep_reports", "sep_config",
                          "dec_reports", "dec_config", "visualreport_focus", "method_research_vars")
     check_class("output", params = params_output, parnames = numeric_params, parclass = "numeric")
@@ -149,7 +150,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     check_class("general", params = params_general, parnames = numeric_params, parclass = "numeric")
     check_class("general", params = params_general, parnames = boolean_params, parclass = "boolean")
     check_class("general", params = params_general, parnames = character_params, parclass = "character")
-
+    
     ws3 = params_general[["windowsizes"]][1]; ws2 = params_general[["windowsizes"]][2]; ws = params_general[["windowsizes"]][3]
     if (ws2/60 != round(ws2/60)) {
       ws2 = as.numeric(60 * ceiling(ws2/60))
@@ -321,8 +322,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       stop("\nNegative value of includedaycrit.part5 is not allowed, please change.")
     } else if (params_cleaning[["includedaycrit.part5"]]  > 24) {
       stop(paste0("\nIncorrect value of includedaycrit.part5, this should be",
-                     " a fraction of the day between zero and one or the number ",
-                     "of hours in a day."))
+                  " a fraction of the day between zero and one or the number ",
+                  "of hours in a day."))
     }
     if (!is.null(params_cleaning[["nonwearFiltermaxHours"]])) {
       if (params_cleaning[["nonwearFiltermaxHours"]] < 0 ||
@@ -330,27 +331,29 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         stop("Parameters nonwearFiltermaxHours is expected to have a value > 0 and < 12")
       }
       if (!is.null(params_cleaning[["nonwearFilterWindow"]])) {
-        if (length(params_cleaning[["nonwearFilterWindow"]]) != 2) {
-          stop("Parameter nonwearFilterWindow does not have expected length of 2, please fix.", call. = FALSE)
-        }
-        if (params_cleaning[["nonwearFilterWindow"]][1] < params_cleaning[["nonwearFilterWindow"]][2] &&
-            params_cleaning[["nonwearFilterWindow"]][2] > 18 &&
-            params_cleaning[["nonwearFilterWindow"]][1] < 12) {
-          warning(paste0("The NonwearFilter applied to window starting at ", 
-                         params_cleaning[["nonwearFilterWindow"]][1], " and ending at ",
-                         params_cleaning[["nonwearFilterWindow"]][2], 
-                         " this is probably not the night, please check that order of",
-                         " values in nonwearFilterWindow is correct"), call. = FALSE)
+        if (is.numeric(params_cleaning[["nonwearFilterWindow"]])) {
+          if (length(params_cleaning[["nonwearFilterWindow"]]) != 2) {
+            stop("Parameter nonwearFilterWindow does not have expected length of 2, please fix.", call. = FALSE)
+          }
+          if (params_cleaning[["nonwearFilterWindow"]][1] < params_cleaning[["nonwearFilterWindow"]][2] &&
+              params_cleaning[["nonwearFilterWindow"]][2] > 18 &&
+              params_cleaning[["nonwearFilterWindow"]][1] < 12) {
+            warning(paste0("The NonwearFilter applied to window starting at ", 
+                           params_cleaning[["nonwearFilterWindow"]][1], " and ending at ",
+                           params_cleaning[["nonwearFilterWindow"]][2], 
+                           " this is probably not the night, please check that order of",
+                           " values in nonwearFilterWindow is correct"), call. = FALSE)
+          }
         }
       }
     }
-
+    
     if (params_cleaning[["includenightcrit.part5"]] < 0) {
       stop("\nNegative value of includenightcrit.part5 is not allowed, please change.")
     } else if (params_cleaning[["includenightcrit.part5"]]  > 24) {
       stop(paste0("\nIncorrect value of includenightcrit.part5, this should be",
-                     " a fraction of the day between zero and one or the number ",
-                     "of hours in a day."))
+                  " a fraction of the day between zero and one or the number ",
+                  "of hours in a day."))
     }
     if (any(params_cleaning[["includecrit.part6"]] < 0) | any(params_cleaning[["includecrit.part6"]] > 1)) {
       stop("Values of includecrit.part6 are not in the range [0, 1]. Please fix.")
@@ -374,8 +377,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_phyact[["boutcriter"]] = params_phyact[["boutcriter.mvpa"]]
     }
     if ((length(params_phyact[["threshold.lig"]]) == 1 &&
-        length(params_phyact[["threshold.mod"]]) == 1 &&
-        length(params_phyact[["threshold.vig"]]) == 1) | is.null(params_phyact[["part6_threshold_combi"]])) {
+         length(params_phyact[["threshold.mod"]]) == 1 &&
+         length(params_phyact[["threshold.vig"]]) == 1) | is.null(params_phyact[["part6_threshold_combi"]])) {
       params_phyact[["part6_threshold_combi"]] = paste(params_phyact[["threshold.lig"]][1],
                                                        params_phyact[["threshold.mod"]][1],
                                                        params_phyact[["threshold.vig"]][1], sep = "_")
@@ -417,6 +420,13 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         params_247[["qwindow"]] = gsub(pattern = "\\\\", replacement = "/", x = params_247[["qwindow"]])
       }
     }
+    if (length(params_cleaning[["nonwearFilterWindow"]]) > 0) {
+      if (is.character(params_cleaning[["nonwearFilterWindow"]])) {
+        # Convert paths from Windows specific slashed to generic slashes
+        params_cleaning[["nonwearFilterWindow"]] = gsub(pattern = "\\\\", replacement = "/", x = params_cleaning[["nonwearFilterWindow"]])
+      }
+    }
+    
     if (length(params_247[["LUX_day_segments"]]) > 0) {
       params_247[["LUX_day_segments"]] = sort(unique(round(params_247[["LUX_day_segments"]])))
       if (params_247[["LUX_day_segments"]][1] != 0) {
@@ -432,7 +442,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       # always add RData if only csv is specified, because otherwise visualreport cannot be generated
       params_output[["save_ms5raw_format"]] = c(params_output[["save_ms5raw_format"]], "RData")
     }
-
+    
     if (length(params_247[["clevels"]]) == 1) {
       warning("\nParameter clevels expects a number vector of at least 2 values, current length is 1", call. = FALSE)
     }
@@ -550,11 +560,11 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                   ", please change."), call. = FALSE)
     } else if (params_cleaning[["includedaycrit.part5"]] < 0) {
       stop(paste0("\nNegative value of includedaycrit.part5 is not allowed",
-                     ", please change."), call. = FALSE)
+                  ", please change."), call. = FALSE)
     } else if (params_cleaning[["includedaycrit.part5"]] > 25) {
       stop(paste0("\nIncorrect value of includedaycrit.part5, this should ",
-                     "be a fraction of the day between zero and one or the ",
-                     "number of hours in a day."), call. = FALSE)
+                  "be a fraction of the day between zero and one or the ",
+                  "number of hours in a day."), call. = FALSE)
     }
     if (is.null(params_cleaning[["segmentWEARcrit.part5"]])) {
       # if null, then assign default value
