@@ -464,8 +464,15 @@ visualReport = function(metadatadir = c(),
                                    name = "spt_wake", #sleep_in_spt
                                    legend_items = legend_items, colour = "yellow3",
                                    level = 2, reverse = FALSE)
-      # Inactivity
+      
+      # NAPS (acc based not self-reported)
       not_spt = grep(pattern = "spt", x = behavioral_code_names, invert = TRUE)
+      legend_items = gen_col_names(behavioral_code_names = behavioral_code_names[not_spt],
+                                   behavioral_codes = behavioral_codes[not_spt],
+                                   name = "nap",
+                                   legend_items = legend_items, colour = "#A020F0",
+                                   level = 2, reverse = FALSE)
+      # Inactivity
       legend_items = gen_col_names(behavioral_code_names = behavioral_code_names[not_spt],
                                    behavioral_codes = behavioral_codes[not_spt],
                                    name = "inactive",
@@ -660,7 +667,8 @@ visualReport = function(metadatadir = c(),
       # reorder and rename behavioural class names and codes:
       neworder = c(grep("sleep", x = behavioral_code_names), grep("IN", x = behavioral_code_names),
                    grep("LIG", x = behavioral_code_names), grep("MOD", x = behavioral_code_names),
-                   grep("VIG", x = behavioral_code_names), grep("MVPA", x = behavioral_code_names)) 
+                   grep("VIG", x = behavioral_code_names), grep("MVPA", x = behavioral_code_names),
+                   grep("nap", x = behavioral_code_names))
       behavioral_code_names = behavioral_code_names[neworder]
       behavioral_codes = behavioral_codes[neworder]
       behavioral_code_names = gsub("day_|spt_", "", x = behavioral_code_names)

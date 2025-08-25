@@ -192,7 +192,7 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
       N_nap_dur_classes = length(params_sleep[["possible_nap_dur"]])
       for (ndi in 1:(N_nap_dur_classes - 1)) {
         detectedNaps = which(ts$sibdetection[sse] == (ndi + 1))
-        nap_class_name = paste0("day_nap_", params_sleep[["possible_nap_dur"]][ndi],
+        nap_class_name = paste0("day_nap_bts_", params_sleep[["possible_nap_dur"]][ndi],
                                 "_", params_sleep[["possible_nap_dur"]][ndi + 1])
         if (nap_overwrite_bc == TRUE) {
           if (nap_class_name %in% Lnames == FALSE) {
