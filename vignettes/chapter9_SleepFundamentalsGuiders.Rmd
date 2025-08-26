@@ -226,3 +226,48 @@ Detected non-wear or study protocol led to parts of the recording to be labelled
 2. If we want to guider to ignore all invalid segment despite our efforts to impute it, see `HASPT.ignore.invalid = TRUE`. This approach may be helpful for studies where the accelerometer is often not worn during the waking hour of the day.
 
 3. If we want the guider to consider invalid segments as no movement period set parameter `HASPT.ignore.invalid = NA`. This approach may be helpful for studies where the accelerometer is often not worn during the night. If this is used, the guider name in the output will be shown with "+invalid" at the end, e.g. "HDCZA+invalid", to reflect that the guider was enhanced.
+
+
+## Automated correction of acceleration-based guiders
+
+In our experience data-driven guiders such as HDCZA can struggle with the following scenarios:
+
+- Unexpected large gaps in the main sleep window resulting, which are not tolerated and resulting in the detection of only one half of the sleep period time window.
+- Sleep is fragmented and the person has a long nap in the middle of the day resulting in afternoon nap being labelled as the main sleep window.
+
+To address this an algorithm has been proposed. The algorithm is currently being optimised and this part of the documentation will be updated once the optimisation has been finalised.
+
+To turn on the correction algorithm set `guider_cor_do=TRUE`.
+
+### Correction algorithm 
+
+The algorithm involves the following steps:
+
+1. Apply default HDCZA to each night, but retain all candidate sleep blocks whereas normally we would only retain the longest block and use that as guider.
+2. Identify min-max window running from the minimum sleep onset to maximum wakeup time from all main HDCZA across all nights in one recording.
+3. If there are at least 3 (parameter: `guider_cor_meme_min_dys`) valid nights:
+    a. Identify median-median window running from the median sleep onset until the median wakeup time from all main HDCZA across all nights in one recording.
+    b. Loop over valid nights and select an alternative main HDCZA if the default main HDCZA is >90% outside the median-median window (parameter: `guider_cor_meme_frac_out`) and there is a secondary HDCZA window that:
+        i. overlaps >40% with the median-median window (parameter: `guider_cor_meme_frac_in`)
+        ii. lasts at least 2 hours (parameter: `guider_cor_meme_min_hrs`)
+        iii. has at least 80% sustained inactivity bouts (parameter: `guider_cor_min_frac_sib`).
+    c. Identify min-max window (step 1) again but now based on the corrected main HDCZA from step 2b.
+4. Loop over nights and expand the main HDCZA towards neighbouring HDCZA windows  if those secondary windows:
+    a. Overlap  with the min-max window (any duration).
+    b. Lasts > 1 hour (parameter: `guider_cor_min_hrs`).
+    c. Have > 80% sustained inactivity bouts (parameter: `guider_cor_min_frac_sib`).
+    d. Are not separated from the main HDCZA window by more than 3 hours (parameter: `guider_cor_maxgap_hrs`).
+
+If you would want to skip step 3 set parameter `guider_cor_meme_min_dys = Inf`.
+
+
+### Guidance on how to change parameter values:
+
+| Parameter | Default	| Reduce risk of missing half of the night? | Reduce risk of detecting daytime nap as main sleep window? |
+|------------------------|--------|-------------------------|---------------------------|
+| guider_cor_maxgap_hrs	   | 3	| Increase value | NA |
+| guider_cor_min_frac_sib  |	0.8	| Decrease value | NA |
+| guider_cor_min_hrs	     | 1 | Decrease value | NA |
+| guider_cor_meme_frac_out | 0.9 | NA	| Decrease value |
+| guider_cor_meme_frac_in  | 0.4 |	NA | Decrease value |
+| guider_cor_meme_min_hrs  | 2 |	NA | Decrease value |
