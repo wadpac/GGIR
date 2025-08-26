@@ -92,7 +92,7 @@ filterNonwearNight = function(r1, metalong, qwindowImp, desiredtz,
                                   r1B$filterWindow == 1)
     
     if (length(short_nonwear_night) > 0) {
-      nonwearHoursFiltered = (length(which(diff(short_nonwear_night) == 1)) * ws2) / 3600
+      nonwearHoursFiltered = (length(short_nonwear_night) * ws2) / 3600
       nonwearEventsFiltered = length(which(diff(short_nonwear_night) != 1)) + 1
       r1[short_nonwear_night] = 0
     }
