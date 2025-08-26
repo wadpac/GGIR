@@ -1029,7 +1029,7 @@ GGIR(mode = 1:5,
         Numeric (default = NULL).
         If not NULL, ignore detected nonwear periods that last shorter than
         nonwearFiltermaxHours during a window as defined by
-        parameter \code{NonwearFilterWindow}. If NonwearFilterWindow is not 
+        parameter \code{nonwearFilterWindow}. If NonwearFilterWindow is not 
         provided (set to NULL as is the default) check
         whether \code{qwindow} is defined as activity diary file and whether it has 
         timestamps that allow for defining a time in bed, SPT or lightsoff window.
@@ -1041,20 +1041,28 @@ GGIR(mode = 1:5,
         as fall back setting. You may realise that these columns are the same as the
         advanced format for the sleelog accepted by GGIR part 4. So, if you already
         have an advanced format sleeplog for part 4 then you can provide this as value
-        for the qwindow parameter.  If you want to
-        use \code{qwindow} to guide the nonwear filtering as described in here but 
-        do not want GGIR to use it for day segment analysis in part 2 or 5 then 
-        make sure the diary filename includes the word \"onlyfilter\" or \"filteronly\"
-        to tell GGIR to only use qwindow for nonwear filtering.
-        The main purpose of this functionality is to offer
+        for the qwindow parameter. The main purpose of this functionality is to offer
         the option to ignore short lasting nonwear episodes during the night
         when there is suspicion that these are falsely detect, e.g. in individuals
-        with extended motionless sleep periods caused by medication.}
+        with extended motionless sleep periods caused by medication.
+        
+        The following functionality will eventually be depricated as this now duplicates
+        the option to specify parameter nonwearFilterWindow differently to qwindow:
+        If you want to use \code{qwindow} to guide the nonwear filtering as described 
+        in here but  do not want GGIR to use it for day segment analysis in 
+        part 2 or 5 then  make sure the diary filename includes the word 
+        \"onlyfilter\" or \"filteronly\" to tell GGIR to only use qwindow for nonwear
+        filtering.
+      }
       
       \item{nonwearFilterWindow}{
-        Numeric (default = NULL).
-        Vector of length 2 to specify the start and end hour of the night to be used
-        for the functionality as described above for NonwearFiltermaxHours.}
+        Numeric or character (default = NULL).
+        When specified as a numeric vector of length 2 it refers to the start and 
+        end hour of the night to be used for the functionality as described above for
+        NonwearFiltermaxHours.
+        When specified as a character then the character value is expected to refer to 
+        diary similar to how parameter qwindow can be specified as diary.
+      }
     }
   }
 
@@ -1556,6 +1564,14 @@ GGIR(mode = 1:5,
         \code{guider_cor_meme_frac_in}, and \code{guider_cor_meme_min_hrs}.
         This parameter is set to 3 by default as a median becomes only meaningful with
         at least three values.
+      }
+      
+      \item{nap_overwrite_behaviourclass}{
+        Boolean (default = TRUE).
+        The behavioural class related to physical activity are first assigned to 
+        each epoch. By default these will overwrite nap classification. When set to
+        FALSE the nap classification is treated as a separate level of analysis and
+        by that leaves the classification of physical activity intensity as it was.
       }
     }
   }

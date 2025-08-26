@@ -2,6 +2,12 @@
 
 - Part 3: Adding option to correct guider classification with new algorithm that comes with new parameters guider_cor_maxgap_hrs, guider_cor_min_frac_sib, guider_cor_min_hrs, guider_cor_meme_frac_out, guider_cor_meme_frac_in, guider_cor_meme_min_hrs #1307
 
+- Part 5: Add option to distinguish multiple nap duration categories similar to physical activity bout duration categories. #967
+
+- Part 2: Parameter nonwearFilterWindow can now also use diary path directly, which now allows for filtering based on a one or specific diary while qwindow can be used for day segment analysis #1373
+
+- Part 5: Add boolean parameter nap_overwrite_behaviourclass to control whether behaviour class or overwritten by naps #967.
+
 # CHANGES IN GGIR VERSION 3.2-11
 
 - Part 2: In day segment analysis N hours and N valid hours per day segment are now correctly averaged over valid days only, previously calculation included invalid days. This affect only the person level summary. #1350
