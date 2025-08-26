@@ -114,6 +114,13 @@ Based on experience, some participants take off the accelerometer in the final 2
 
 Finally, if the recording starts or ends with a period of less than three hours of wear followed or preceded  by non-wear (any length), then this period of wear is classified as non-wear. These additional criteria for screening the beginning and end of the accelerometer file are intended to filter out the movements related to attaching the accelerometer at the start or downloading the data from the accelerometer at the end. This final check can be turned off with parameter `nonWearEdgeCorrection`, which may be relevant when processing accelerometer data collected during single-night polysomnography studies.
 
+### Implausible non-wear in the night
+
+In some recordings some part of sleep is incorrectly detected as non-wear. The acceleration signal is entirely
+without movement for at least an hour. We could address this by increasing the value of the non-wear detection window via the third value of parameter `windowsizes`, which by default is 3600 (seconds). However, this makes the algorithm insensitive to nonwear shorter than this length.
+
+As a possible solution GGIR offers the option to filte, meaning: ignore, any detected non-wear during the night that lasts less than the number of hours specified via parameter `nonwearFiltermaxHours`. The window over which this step is applied is set via parameter `nonwearFilterWindow`.
+
 ## Clipping detection
 
 GGIR part 1 also screens the acceleration signal for "clipping", i.e., sustained unusual high (raw) acceleration values non compatible with human movement. If more than 30% of the data points in a  15-minute window (same as used for non-wear) are close to the maximal values (technical term for this is dynamic range) of this sensor, the corresponding time period is considered as potentially unreliable, which may be explained by the sensor getting stuck at its extreme value or accelerometers being used inappropriately (attached to some heavily accelerating object). For example, for a dynamic range of 8*g*, accelerations over 7.5*g* would be marked as "clipping". The window is also classified as clipping if any value in the window is larger than 150% the dynamic range of the sensor. Given that clipping rarely happens it is reported by GGIR as part of non-wear time. Both clipping and non-wear are treated the same and by merging them we arrive at a single indicator for the amount of invalid data. However, to keep track of the occurrence of clipping time, GGIR does report the fraction of 15-minute windows in a recording during which clipping occurs, see section on output below.

@@ -1029,7 +1029,7 @@ GGIR(mode = 1:5,
         Numeric (default = NULL).
         If not NULL, ignore detected nonwear periods that last shorter than
         nonwearFiltermaxHours during a window as defined by
-        parameter \code{NonwearFilterWindow}. If NonwearFilterWindow is not 
+        parameter \code{nonwearFilterWindow}. If NonwearFilterWindow is not 
         provided (set to NULL as is the default) check
         whether \code{qwindow} is defined as activity diary file and whether it has 
         timestamps that allow for defining a time in bed, SPT or lightsoff window.
