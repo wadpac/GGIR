@@ -2,7 +2,6 @@
 
 - Part 4: Fix bug #1376 affecting included nights.
 
-
 # CHANGES IN GGIR VERSION 3.2-11
 
 - Part 2: In day segment analysis N hours and N valid hours per day segment are now correctly averaged over valid days only, previously calculation included invalid days. This affect only the person level summary. #1350
