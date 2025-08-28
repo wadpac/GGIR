@@ -1,6 +1,6 @@
 # CHANGES IN GGIR VERSION 3.2-12
 
-- Part 4: Fix bug #1376 affecting included nights.
+- Part 4: Fix bug #1376 causing more nights to be included than desirable if sleeplog dates for at least one recording do not overlap with accelerometer recording.
 
 # CHANGES IN GGIR VERSION 3.2-11
 
