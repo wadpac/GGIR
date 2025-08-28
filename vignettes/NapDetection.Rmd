@@ -1,0 +1,37 @@
+---
+title: "Nap Detection"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Nap Detection}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Tutorial on using nap detection.
+
+The nap detection in GGIR has so far been evaluated for pre-schoolers with hip- and with- worn accelerometers, results of which will be shared in a journal publication.
+
+
+### Algorithm description
+
+The first step in the detection of both sleep and naps is the identification of sustained inactivity bouts as described in [Chapter 8](https://wadpac.github.io/GGIR/articles/chapter8_SleepFundamentalsSibs.html). Next, GGIR continues with the identification of the main sleep period time window in the day as discussed in [Chapter 9](https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html). The sustained inactivity bouts that do not overlap with the detected sleep period time window are considered for nap detection in GGIR part 5.
+
+The algorithm identifies these as naps if:
+
+1. Bout duration in minutes falls in range specified by parameter [possible_nap_dur](https://wadpac.github.io/GGIR/articles/GGIRParameters.html#possible_nap_dur), default `c(15, 240)` but for pre-schoolers we used `c(30, 240)`.
+2. Timing in the day falls in range specified by  parameter [possible_nap_window](https://wadpac.github.io/GGIR/articles/GGIRParameters.html#possible_nap_window), use `c(0, 24)` for full day, but for pre-schoolers we used `c(6, 18)`. When not specified (value NULL) nap detection will be skipped
+
+
+## Output related to nap detection
+
+We are currently working on explore how to best summarise. The following is based on the current default, and may change or be expanded in upcoming releases.
+
+Time spent in naps is stored as column "dur_day_nap_min" in the GGIR part 5 csv report where it is treated as one of several mutually exclusive behavioural categories. In other words, time spent in naps never count towards time spent in inactivity (sedentary behaviour) and visa versa.
+
+## Disclaimer:
+
+1.	Make sure that detected sleep period time (SPT) window is plausible. Without plausible SPT detection, nap detection is expected to struggle. This is particularly important for scenario where the accelerometer is not worn consistently or with highly irregular sleeping patterns.
+
+2.	Consider using GGIR’s visualreport functionality to visually inspect the classifications before trusting the numeric output in the csv reports.
+
+3.	Keep in mind that GGIR's nonwear detection is sensitive to non-wear lasting at least 60 minutes. Shorter episodes of non-wear are likely to be missed and my be detected as nap.
