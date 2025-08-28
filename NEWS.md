@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.2-??
+
+- Part 5: Deprecate experimental nap-detection functionality that was added in 2.5-2. This has been superseded by a much more simplified nap detection which is now discussed in Annex NapDetection.
+
 # CHANGES IN GGIR VERSION 3.2-11
 
 - Part 2: In day segment analysis N hours and N valid hours per day segment are now correctly averaged over valid days only, previously calculation included invalid days. This affect only the person level summary. #1350
