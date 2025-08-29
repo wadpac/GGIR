@@ -381,24 +381,6 @@ For example, the following files will be generated if the threshold configuratio
 | `W0.5`      | Derived from power law exponent alpha, see [Chastin et al. 201 0](https://doi.org/10.1016/j.gaitpost.2009.09.002)        |
 
 
-### Old napping behaviour variables (to be deprecated)
-
-These variables will be deprecated as napping, if detection is turned on, is now a behavioural category just like all other behaviours.
-
-| (Term in) variable name | Description |
-|--------------------------|----------------------------------------------|
-| nap_count   | Total number of naps, only calculated when argument do.sibreport = TRUE, currently optimised for 3.5-year olds. See function documentation for function `g.part5.classifyNaps` in the [GGIR function documentation (pdf)](https:/CRAN.R-project.org/package=GGIR/GGIR.pdf). |
-| nap_totalduration       | Total nap duration, only calculated when argument do.sibreport = TRUE, currently optimised for 3.5-year old. See function documentation for function `g.part5.classifyNaps` in the [GGIR function documentation (pdf)](https:/CRAN.R-project.org/package=GGIR/GGIR.pdf).    |
-| sibreport_n_items	| Only created if `do.sibreport = TRUE`. Number of items in the sibreport |
-| sibreport_n_items_day |	Only created if `do.sibreport = TRUE`. Number of items in the sibreport for this specific day |
-| nbouts_X | Only created if `do.sibreport = TRUE`. Number of bouts in a day of X where X can be a detected nap (denap), srnap (self-reported nap) or srnonw (self-reported nonwear) |
-| noverl_X | Only created if `do.sibreport = TRUE`. Number of overlapping bouts in a day of X where X can be denap_srnap, denap_srnonw, srnap_denap, or srnonw_denap |
-| frag_mean_dur_X_day | Only created if `do.sibreport = TRUE`. Mean duration of X per day, where X can be sib, srnap or srnonw |
-| dur_X_min | Only created if `do.sibreport = TRUE`. Total duration in minutes of X per day, where X can be detect nap (denap), srnap or srnonw |
-| mdur_X_overl_Y | Only created if `do.sibreport = TRUE`. Mean duration of the overlap between X and Y, which are combinations of denap, srnap or srnonw |
-| tdur_X_overl_Y | Only created if `do.sibreport = TRUE`. Total duration in minutes of the overlap between X and Y, which are combinations of denap, srnap or srnonw |
-| perc_X_overl_Y | Only created if `do.sibreport = TRUE`. Percentage of overlap between X and Y, which are combinations of denap, srnap or srnonw |
-
 **Special note if you are working on compositional data analysis:**
 
 The duration of all `dur_` variables that have `_total_` in their name should add up to the total length of the waking hours in a day. Similarly, the duration of all other `dur_` variables excluding the variables `_total_` in their name and excluding the variable with `dur_day_min`, `dur_spt_min`, and `dur_day_spt_min` should also add up to the length of the full day.

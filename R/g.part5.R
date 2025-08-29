@@ -418,64 +418,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                    dec = params_output[["dec_reports"]],
                                    dateTimeAs = "write.csv")
               }
-              # nap/sib/nonwear overlap analysis
-              if (length(params_sleep[["nap_model"]]) > 0 & length(sibreport) > 0) {
-                #===========================================
-                # THIS IS THE OLD NAP DETECTION IMPLEMENTATION
-                # nap detection
-                # the new NAP detection happens inside g.part5.analyseRest
-                if (params_general[["acc.metric"]] != "ENMO" |
-                    params_sleep[["HASIB.algo"]] != "vanHees2015") {
-                  warning("\nNap classification currently assumes acc.metric = ENMO and HASIB.algo = vanHees2015, so output may not be meaningful")
-                }
-                naps_nonwear = g.part5.classifyNaps(sibreport = sibreport,
-                                                    desiredtz = params_general[["desiredtz"]],
-                                                    possible_nap_window = params_sleep[["possible_nap_window"]],
-                                                    possible_nap_dur = params_sleep[["possible_nap_dur"]],
-                                                    nap_model = params_sleep[["nap_model"]],
-                                                    HASIB.algo = params_sleep[["HASIB.algo"]])
-                # store in ts object, such that it is exported in as time series
-                ts$nap1_nonwear2 = 0
-                # napsindices = which(naps_nonwear$probability_nap == 1)
-                # if (length(napsindices) > 0) {
-                if (length(naps_nonwear) > 0) {
-                  for (nni in 1:nrow(naps_nonwear)) {
-                    nnc_window = which(time_POSIX >= naps_nonwear$start[nni] & time_POSIX <= naps_nonwear$end[nni] & ts$diur == 0)
-                    if (length(nnc_window) > 0) {
-                      if (naps_nonwear$probability_nap[nni] == 1) {
-                        ts$nap1_nonwear2[nnc_window] = 1 # nap
-                      } else if (naps_nonwear$probability_nap[nni] == 0) {
-                        ts$nap1_nonwear2[nnc_window] = 2 # nonwear
-                      }
-                    }
-                  }
-                }
-                # impute non-naps episodes (non-wear)
-                nonwearindices = which(naps_nonwear$probability_nap == 0)
-                if (length(nonwearindices) > 0) {
-                  for (nni in nonwearindices) {
-                    nwwindow_start = which(time_POSIX >= naps_nonwear$start[nni] & time_POSIX <= naps_nonwear$end[nni] & ts$diur == 0)
-                    if (length(nwwindow_start) > 0) {
-                      Nepochsin24Hours =  (60/ws3new) * 60 * 24
-                      if (nwwindow_start[1] > Nepochsin24Hours) {
-                        nwwindow = nwwindow_start - Nepochsin24Hours # impute time series with preceding day
-                        if (length(which(ts$nap1_nonwear2[nwwindow] == 2)) / length(nwwindow) > 0.5) {
-                          # if there is also a lot of overlap with non-wear there then do next day
-                          nwwindow = nwwindow_start + Nepochsin24Hours
-                        }
-                      } else {
-                        nwwindow = nwwindow_start + Nepochsin24Hours # if there is not preceding day use next day
-                      }
-                      if (max(nwwindow) <= nrow(ts)) { # only attempt imputation if possible
-                        # check again that there is not a lot of overlap with non-wear
-                        if (length(which(ts$nap1_nonwear2[nwwindow] == 2)) / length(nwwindow) > 0.5) {
-                          ts$ACC[nwwindow_start] = ts$ACC[nwwindow] # impute
-                        }
-                      }
-                    }
-                  }
-                }
-              }
             } else {
               sibreport = NULL
             }
@@ -838,7 +780,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                            "g.sibreport", "extract_params", "load_params", "check_params",
                            "correctOlderMilestoneData",
                            "g.part5.addfirstwake", "g.part5.addsib",
-                           "g.part5.classifyNaps",
                            "g.part5.definedays", "g.part5.fixmissingnight",
                            "g.part5.handle_lux_extremes", "g.part5.lux_persegment",
                            "g.part5.savetimeseries", "g.part5.wakesleepwindows",
