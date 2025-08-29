@@ -6,6 +6,10 @@
 
 - Part 5: Add boolean parameter nap_overwrite_behaviourclass to control whether behaviour class or overwritten by naps #967.
 
+- Part 5: Deprecate experimental nap-detection functionality that was added in 2.5-2. This has been superseded by a much more simplified nap detection which is now discussed in Annex NapDetection.
+
+- Part 4: Fix bug #1376 causing more nights to be included than desirable if sleeplog dates for at least one recording do not overlap with accelerometer recording.
+
 # CHANGES IN GGIR VERSION 3.2-11
 
 - Part 2: In day segment analysis N hours and N valid hours per day segment are now correctly averaged over valid days only, previously calculation included invalid days. This affect only the person level summary. #1350
