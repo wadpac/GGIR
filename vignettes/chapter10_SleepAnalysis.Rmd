@@ -32,7 +32,7 @@ Here we have two scenarios:
 
 2.  If a guider reflects the Time in Bed then any SIB that fully overlaps with the guider is considered sleep. In this scenario sleep latency and sleep efficiency can be estimated and are included in the GGIR part 4 report. 
 
-In both cases the start of the first SIB is then considered sleep onset and the end of the last SIB is considered waking up. 
+In both cases the start of the first SIB is then considered sleep onset and the end of the last SIB is considered waking up. When the edge of SIB partially overlaps with the guider it is the edge of SIB that defines the timing of sleep. This can be altered with parameter [relyonguider](https://wadpac.github.io/GGIR/articles/GGIRParameters.html?q=relyonguider#relyonguider), but for most use-cases we recommend not changing the default setting of `relyonguider=FALSE`.
 
 For all guiders, other than "HorAngle", parameter `sleepwindowType` is automatically set to "SPT" corresponding to scenario 1, such that no attempt is made to estimate sleep latency or sleep efficiency. 
 
