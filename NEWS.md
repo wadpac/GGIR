@@ -1,5 +1,7 @@
 # CHANGES IN GGIR VERSION 3.2-12
 
+- Part 5: Deprecate experimental nap-detection functionality that was added in 2.5-2. This has been superseded by a much more simplified nap detection which is now discussed in Annex NapDetection.
+
 - Part 4: Fix bug #1376 causing more nights to be included than desirable if sleeplog dates for at least one recording do not overlap with accelerometer recording.
 
 - Part 2: Always omit spaces from the extracted ID unless the entire filename is used as ID. #1372

@@ -84,6 +84,9 @@ navbar:
           href: articles/DateTimeFormatsInR.html
         - text: Sleep Regularity Index
           href: articles/SleepRegularityIndex.html
+        - text: Nap Detection
+          href: articles/NapDetection.html
+          
   structure:
     left:  [chapters, annexes, installation, intro, news, contributing, help]
     right: [search, github]
@@ -153,7 +156,4 @@ search:
   'reference/read.myacc.csv.html', 'reference/ShellDoc2Vignette.html', 
   'reference/tidyup_df.html', 'reference/updateBlocksize.html',
   'reference/GGIR.html', 'articles/GGIR.html']
-
-
-
 
