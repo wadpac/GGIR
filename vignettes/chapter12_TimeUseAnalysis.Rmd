@@ -123,7 +123,7 @@ Note that the time series exported in GGIR part 5 only includes the acceleration
 -   `save_ms5raw_format` is a character string to specify how data should be stored: either "csv" (default) or "RData". Only used if save_ms5rawlevels=TRUE.
 -   `save_ms5raw_without_invalid` is Boolean to indicate whether to remove invalid days from the time series output files. Only used if save_ms5rawlevels=TRUE.
 
-The exported time series table come with the following columns:
+The exported time series table comes with the following columns:
 
 | Column name         | Description                                                    |
 |-------------------------|-----------------------------------------------|
