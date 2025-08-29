@@ -6,6 +6,10 @@
 
 - Part 4: Fix bug #1376 causing more nights to be included than desirable if sleeplog dates for at least one recording do not overlap with accelerometer recording.
 
+- Part 2: Always omit spaces from the extracted ID unless the entire filename is used as ID. #1372
+
+- Vignette: Clarify definition of acceleration and time ranges in gh-pages chapter 12. #1370
+
 # CHANGES IN GGIR VERSION 3.2-11
 
 - Part 2: In day segment analysis N hours and N valid hours per day segment are now correctly averaged over valid days only, previously calculation included invalid days. This affect only the person level summary. #1350

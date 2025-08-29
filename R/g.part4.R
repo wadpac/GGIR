@@ -253,10 +253,23 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
         # create overview of night numbers in the data file: nnightlist
         if (dolog == TRUE) {
           logid = sleeplog$ID[wi][1]
+          sleeplog_matching_ID = which(sleeplog$ID == accid)
+          if (length(sleeplog_matching_ID) == 0) {
+            # try without letters
+            sleeplog_matching_ID = which(sleeplog$ID == gsub("[^0-9.-]", "", accid))
+            if (length(sleeplog_matching_ID) == 0) {
+              # try without leading zeros
+              sleeplog_matching_ID = which(sleeplog$ID == gsub("^0+", "", accid))
+              if (length(sleeplog_matching_ID) == 0) {
+                # Consider all sleeplog entries
+                sleeplog_matching_ID = 1:length(sleeplog$night)
+              }
+            }
+          }
           first_night = min(min(sib.cla.sum$night), 
-                            min(as.numeric(sleeplog$night)))
+                            min(as.numeric(sleeplog$night[sleeplog_matching_ID])))
           last_night = max(max(sib.cla.sum$night), 
-                           max(as.numeric(sleeplog$night[which(sleeplog$ID == accid)])))
+                           max(as.numeric(sleeplog$night[sleeplog_matching_ID])))
         } else {
           first_night = min(sib.cla.sum$night)
           last_night = max(sib.cla.sum$night)
