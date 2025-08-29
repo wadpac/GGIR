@@ -250,7 +250,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           first_night = min(min(sib.cla.sum$night), 
                             min(as.numeric(sleeplog$night)))
           last_night = max(max(sib.cla.sum$night), 
-                           max(as.numeric(sleeplog$night)))
+                           max(as.numeric(sleeplog$night[which(sleeplog$ID == accid)])))
         } else {
           first_night = min(sib.cla.sum$night)
           last_night = max(sib.cla.sum$night)
