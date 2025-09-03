@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>5. Accounting for Study Protocol • GGIR</title>
+<title>Nap Detection • GGIR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="5. Accounting for Study Protocol">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Nap Detection">
 <script defer data-domain="pkgdown.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
 </head>
 <body>
@@ -30,7 +30,7 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="active nav-item dropdown">
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-the-book" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">The book</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-the-book">
 <li><a class="dropdown-item" href="../articles/chapter1_WhatIsGGIR.html">1. What is GGIR</a></li>
@@ -49,7 +49,7 @@
     <li><a class="dropdown-item" href="../articles/chapter14_BehaviouralFragmentation.html">14. Behavioural Fragmentation</a></li>
   </ul>
 </li>
-<li class="nav-item dropdown">
+<li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-annexes" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Annexes</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-annexes">
 <li><a class="dropdown-item" href="../articles/GGIRParameters.html">GGIR Parameters</a></li>
@@ -105,121 +105,68 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>5. Accounting for Study Protocol</h1>
+      <h1>Nap Detection</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/wadpac/GGIR/blob/HEAD/vignettes/chapter5_StudyProtocol.Rmd" class="external-link"><code>vignettes/chapter5_StudyProtocol.Rmd</code></a></small>
-      <div class="d-none name"><code>chapter5_StudyProtocol.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/wadpac/GGIR/blob/HEAD/vignettes/NapDetection.Rmd" class="external-link"><code>vignettes/NapDetection.Rmd</code></a></small>
+      <div class="d-none name"><code>NapDetection.Rmd</code></div>
     </div>
 
     
     
-<p>When you use an accelerometer in a study, you are likely to give your
-study participants specific instructions on when they should start
-wearing the accelerometer, for how many days, and whether or not they
-are expected to take the accelerometer off during specific activity
-types or parts of the day. Further, it may be that you turned on the
-accelerometers hours or even days before you gave it to the participant
-or stopped it hours or days after you received it back. Your knowledge
-about all these aspects of your study protocol can be used by GGIR to
-mask certain periods of time in the recording. This is important because
-this information is not necessarily obvious from the recorded data. For
-instance, when a recording is started and dispatched to the participant
-via mail, the time during which the devices are in transit and not worn
-may be impossible to distinguish from a participant wearing the
-accelerometer and commuting.</p>
-<div class="section level2">
-<h2 id="selectingmasking-the-data">Selecting/Masking the data<a class="anchor" aria-label="anchor" href="#selectingmasking-the-data"></a>
-</h2>
-<p>It is important that GGIR masks all data outside the time window for
-which the participant was instructed to wear the accelerometer. Study
-protocols differ in duration and expected wear period, which is why GGIR
-offers a variety of ways to account for the study protocol.</p>
-<p>The main parameter to do this is <code>data_masking_strategy</code>.
-It requires a numeric value indicating one of the following
-strategies:</p>
-<ul>
-<li><p><strong>data_masking_strategy = 1</strong> to indicate that a
-specific number of hours should be masked from the start and/or the end
-of the recording, specified with parameters <code>hrs.del.start</code>
-and <code>hrs.del.end</code>, respectively.</p></li>
-<li><p><strong>data_masking_strategy = 2</strong> to indicate that only
-the data between the first and the last midnight in the recording should
-be considered.</p></li>
-<li><p><strong>data_masking_strategy = 3</strong> to indicate that only
-the most active X 24-h blocks starting any time in the day should be
-used, where X is specified by parameter <code>ndayswindow</code>. Note
-that this can be combined with the aforementioned parameters
-<code>hrs.del.start</code> and <code>hrs.del.end</code>, which will trim
-this window at the start and end of the recording.</p></li>
-<li><p><strong>data_masking_strategy = 4</strong> to indicate that only
-the data after the first midnight should be considered.</p></li>
-<li><p><strong>data_masking_strategy = 5</strong> is similar to
-data_masking_strategy = 3, yet it selects X complete calendar days,
-where X is specified with parameter <code>ndayswindow</code>.</p></li>
-</ul>
-<p>Additionally, you can set the maximum duration the accelerometer is
-to be worn after recording starts. Use parameter <code>maxdur</code> to
-specify the duration in the number of 24 hour blocks or parameter
-<code>max_calendar_days</code>for the number of calendar days.</p>
+<p>The nap detection functionality was recently introduced and has so
+far only been evaluated in data from pre-schoolers for hip- or
+wrist-worn accelerometers. These findings can hopefully be shared via
+journal publication in the upcoming year. Further, we are actively
+exploring how to best summarise the detect naps in the GGIR output. The
+description below reflects the current situation.</p>
+<div class="section level3">
+<h3 id="algorithm-description">Algorithm description<a class="anchor" aria-label="anchor" href="#algorithm-description"></a>
+</h3>
+<p>The detection of both sleep and naps starts with the identification
+of sustained inactivity bouts as described in <a href="https://wadpac.github.io/GGIR/articles/chapter8_SleepFundamentalsSibs.html">Chapter
+8</a>. Next, we continue with the identification of the main sleep
+period time window in the day as discussed in <a href="https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html">Chapter
+9</a> and <a href="https://wadpac.github.io/GGIR/articles/chapter10_SleepAnalysis.html">Chapter
+10</a>. The sustained inactivity bouts that do not overlap with the
+detected sleep period time window are detected as nap if both of the
+following conditions are met:</p>
+<ol style="list-style-type: decimal">
+<li>Duration in minutes falls in range specified by parameter <a href="https://wadpac.github.io/GGIR/articles/GGIRParameters.html#possible_nap_dur">possible_nap_dur</a>.
+For pre-schoolers we used <code>c(30, 240)</code>.</li>
+<li>Timing in the day falls in range specified by parameter <a href="https://wadpac.github.io/GGIR/articles/GGIRParameters.html#possible_nap_window">possible_nap_window</a>,
+use <code>c(0, 24)</code> for full day. For pre-schoolers we used
+<code>c(6, 18)</code>.</li>
+</ol>
+<p>Note that default settings are <code>possible_nap_dur=NULL</code> and
+<code>possible_nap_window=NULL</code> meaning that nap detection will
+not be performed.</p>
 </div>
 <div class="section level2">
-<h2 id="key-parameters">Key parameters<a class="anchor" aria-label="anchor" href="#key-parameters"></a>
+<h2 id="output-related-to-nap-detection">Output related to nap detection<a class="anchor" aria-label="anchor" href="#output-related-to-nap-detection"></a>
 </h2>
-<ul>
-<li><p><code>data_masking_strategy</code></p></li>
-<li><p><code>hrs.del.start</code></p></li>
-<li><p><code>hrs.del.end</code></p></li>
-<li><p><code>ndayswindow</code></p></li>
-<li><p><code>maxdur</code></p></li>
-<li><p><code>max_calendar_days</code></p></li>
-</ul>
+<p>Time spent in naps is stored as column “dur_day_nap_min” in the GGIR
+part 5 csv report where it is treated as one of several mutually
+exclusive behavioural categories. Meaning, time spent in naps never
+count towards time spent in inactivity (sedentary behaviour) and visa
+versa.</p>
 </div>
 <div class="section level2">
-<h2 id="related-output">Related output<a class="anchor" aria-label="anchor" href="#related-output"></a>
+<h2 id="disclaimer">Disclaimer<a class="anchor" aria-label="anchor" href="#disclaimer"></a>
 </h2>
-<table class="table">
-<colgroup>
-<col width="20%">
-<col width="72%">
-<col width="7%">
-</colgroup>
-<thead><tr class="header">
-<th>(Part of) variable name</th>
-<th>Description</th>
-<th>Report(s)</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td>data exclusion strategy</td>
-<td>A log of the decision made when calling g.impute: value=1 mean
-ignore specific hours; value=2 mean ignore all data before the first
-midnight and after the last midnight</td>
-<td>part2_summary.csv</td>
-</tr>
-<tr class="even">
-<td>n hours ignored at start of meas</td>
-<td>Number of hours ignored at the end of the measurement (if
-data_masking_strategy = 1) or at the end of the ndayswindow (if
-data_masking_strategy = 3 or 5). A log of decision made in part2.R</td>
-<td>part2_summary.csv</td>
-</tr>
-<tr class="odd">
-<td>n hours ignored at end of meas</td>
-<td>Number of hours ignored at the start of the measurement (if
-data_masking_strategy = 1) or at the start of the ndayswindow (if
-data_masking_strategy = 3 or 5) A log of decision made in part2.R</td>
-<td>part2_summary.csv</td>
-</tr>
-<tr class="even">
-<td>n days of measurement after which all data is ignored</td>
-<td>Number of days of measurement after which all data is ignored (if
-data_masking_strategy = 1, 3 or 5) A log of decision made in
-part2.R</td>
-<td>part2_summary.csv</td>
-</tr>
-</tbody>
-</table>
+<ol style="list-style-type: decimal">
+<li><p>Make sure that detected sleep period time (SPT) window is
+plausible. Without plausible SPT detection, nap detection is expected to
+struggle. This is particularly important for scenario where the
+accelerometer is not worn consistently or with highly irregular sleeping
+patterns.</p></li>
+<li><p>Consider using GGIR’s visualreport functionality to visually
+inspect the classifications before trusting the numeric output in the
+csv reports.</p></li>
+<li><p>Keep in mind that GGIR’s nonwear detection is sensitive to
+non-wear lasting at least 60 minutes. Shorter episodes of non-wear are
+likely to be missed and my be detected as nap.</p></li>
+</ol>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

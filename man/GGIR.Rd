@@ -176,7 +176,18 @@ GGIR(mode = 1:5,
         argument \code{configtz} to specify where the device was configured.
         Use the \"TZ identifier\" as specified at
         https://en.wikipedia.org/wiki/Zone.tab to set desiredtz,
-        e.g., \"Europe/London\".}
+        e.g., \"Europe/London\".
+        As of GGIR 3.2-12, \code{desiredtz} is only configurable in GGIR 
+        part 1 and passed on to the following parts via de milestone data files 
+        stored by each part. This means that if you would run
+        \code{GGIR(mode = 2, desiredtz = "Europe/Berlin")} GGIR would ignore the
+        timezone specification and rely on the timezone specified when part 1 was 
+        processed specific to each recording. As a result, it is now possible
+        to process part 1 separately with different timezones, then pool the milestone
+        data into one output folder, and finally process all files jointly with the 
+        subsequent GGIR parts (2-6) which will automatically accounts for each 
+        individual's file timezone.
+      }
 
       \item{configtz}{
         Character (default = \"\", i.e., system timezone).

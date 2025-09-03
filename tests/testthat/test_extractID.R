@@ -42,12 +42,12 @@ test_that("extractID recognizes IDs correctly", {
   # NAs
   hvars$ID = "NA"
   ID = extractID(hvars, idloc = 1, fname = "123A-testaccfile.csv")
-  expect_equal(ID, "not extracted") # = hvars$iID
+  expect_equal(ID, "notextracted")
   
   hvars$iID = "NA"
   hvars$ID = "123A_testaccfile.csv"
   ID = extractID(hvars, idloc = 1, fname = "123A-testaccfile.csv")
-  expect_equal(ID, "123A_testaccfile.csv") # = hvars$ID
+  expect_equal(ID, "123A_testaccfile.csv")
   
   # no ID
   hvars$ID = hvars$IDd = NULL

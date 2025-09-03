@@ -29,10 +29,11 @@ articles:
   GGIRoutput: GGIRoutput.html
   GGIRParameters: GGIRParameters.html
   HouseHoldCoanalysis: HouseHoldCoanalysis.html
+  NapDetection: NapDetection.html
   readmyacccsv: readmyacccsv.html
   SleepRegularityIndex: SleepRegularityIndex.html
   TutorialDaySegmentAnalyses: TutorialDaySegmentAnalyses.html
-last_built: 2025-08-20T14:23Z
+last_built: 2025-09-01T09:53Z
 urls:
   reference: https://wadpac.github.io/GGIR/reference
   article: https://wadpac.github.io/GGIR/articles

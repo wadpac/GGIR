@@ -220,9 +220,13 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                                       x = colnames(nightsummary))
       }
       sumi = 1  # counter to keep track of where we are in filling the output matrix 'nightsummary'
-      ID  = SPTE_end = SPTE_start = SPTE_corrected = L5list = sib.cla.sum = longitudinal_axis = part3_guider = c()
+      ID  = SPTE_end = SPTE_start = L5list = sib.cla.sum = SPTE_corrected = NULL
+      desiredtz_part1 = longitudinal_axis = part3_guider = NULL
       # load milestone 3 data (RData files), check whether there is data, identify id numbers...
       load(paste0(meta.sleep.folder, "/", fnames[i]))
+      if (!is.null(desiredtz_part1)) {
+        params_general[["desiredtz"]] = desiredtz_part1
+      }
       accid = c()
       logid = NA  # keep track of what log id matched to accid
       if (length(ID) > 0) {
@@ -253,10 +257,24 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
         # create overview of night numbers in the data file: nnightlist
         if (dolog == TRUE) {
           logid = sleeplog$ID[wi][1]
+          sleeplog_matching_ID = which(sleeplog$ID == accid)
+          if (length(sleeplog_matching_ID) == 0) {
+            # try without letters
+            sleeplog_matching_ID = which(sleeplog$ID == gsub("[^0-9.-]", "", accid))
+            if (length(sleeplog_matching_ID) == 0) {
+              # try without leading zeros
+              sleeplog_matching_ID = which(sleeplog$ID == gsub("^0+", "", accid))
+              if (length(sleeplog_matching_ID) == 0) {
+                # Consider all sleeplog entries
+                sleeplog_matching_ID = 1:length(sleeplog$night)
+                warning(paste0("No matching sleeplog entry found for acceleromete recording ", accid))
+              }
+            }
+          }
           first_night = min(min(sib.cla.sum$night), 
-                            min(as.numeric(sleeplog$night)))
+                            min(as.numeric(sleeplog$night[sleeplog_matching_ID])))
           last_night = max(max(sib.cla.sum$night), 
-                           max(as.numeric(sleeplog$night)))
+                           max(as.numeric(sleeplog$night[sleeplog_matching_ID])))
         } else {
           first_night = min(sib.cla.sum$night)
           last_night = max(sib.cla.sum$night)
