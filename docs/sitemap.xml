@@ -28,6 +28,7 @@
 <url><loc>https://wadpac.github.io/GGIR/articles/GGIRParameters.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/articles/HouseHoldCoanalysis.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/articles/index.html</loc></url>
+<url><loc>https://wadpac.github.io/GGIR/articles/NapDetection.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/articles/readmyacccsv.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/articles/SleepRegularityIndex.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/articles/TutorialDaySegmentAnalyses.html</loc></url>
@@ -97,7 +98,6 @@
 <url><loc>https://wadpac.github.io/GGIR/reference/g.part5.addfirstwake.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/g.part5.addsib.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/g.part5.analyseRest.html</loc></url>
-<url><loc>https://wadpac.github.io/GGIR/reference/g.part5.classifyNaps.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/g.part5.definedays.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/g.part5.fixmissingnight.html</loc></url>
 <url><loc>https://wadpac.github.io/GGIR/reference/g.part5.handle_lux_extremes.html</loc></url>

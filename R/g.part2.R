@@ -156,7 +156,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                         params_phyact = c(), params_output = c(), params_general = c(),
                         path, ms2.out, foldername, fullfilenames, folderstructure, referencefnames,
                         daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78, verbose, use_qwindow_as_diary) {
-    Nappended = I_list = tail_expansion_log =  NULL
+    Nappended = I_list = tail_expansion_log = desiredtz_part1 = NULL
     if (length(ffdone) > 0) {
       if (length(which(ffdone == as.character(unlist(strsplit(fnames[i], "eta_"))[2]))) > 0) {
         skip = 1 #skip this file because it was analysed before")
@@ -172,8 +172,10 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       filename_dir = c()
       filefoldername = c()
       file2read = paste0(path,fnames[i])
-      
       load(file2read) #reading RData-file
+      if (!is.null(desiredtz_part1)) {
+        params_general[["desiredtz"]] = desiredtz_part1
+      }
       # convert to character/numeric if stored as factor in metashort and metalong
       M$metashort = correctOlderMilestoneData(M$metashort)
       M$metalong = correctOlderMilestoneData(M$metalong)
