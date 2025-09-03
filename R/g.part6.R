@@ -107,12 +107,15 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       skip = 0
     }
     if (params_general[["overwrite"]] == TRUE) skip = 0
-    Lnames = cosinor_coef = mdat = NULL
+    Lnames = cosinor_coef = mdat = desiredtz_part1 = NULL
     if (skip == 0) {
       # Load time series:
       if (EXT == "RData") {
         load(file = paste0(metadatadir, "/meta/ms5.outraw/",
                            params_phyact[["part6_threshold_combi"]], "/", fnames.ms5raw[i]))
+        if (!is.null(desiredtz_part1)) {
+          params_general[["desiredtz"]] = desiredtz_part1
+        }
         if (is.null(Lnames)) stop("Part 5 was processed with an older version of GGIR, reprocess part 5")
         mdat$time = mdat$timestamp # duplicate column because cosinor function expect columntime
       } else {

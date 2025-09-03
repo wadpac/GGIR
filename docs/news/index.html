@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-12</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,6 +44,7 @@
     <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
     <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
     <li><a class="dropdown-item" href="../articles/SleepRegularityIndex.html">Sleep Regularity Index</a></li>
+    <li><a class="dropdown-item" href="../articles/NapDetection.html">Nap Detection</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_GetStarted.html">Get started</a></li>
@@ -79,6 +80,14 @@
       <small>Source: <a href="https://github.com/wadpac/GGIR/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.2-12" id="changes-in-ggir-version-32-12">CHANGES IN GGIR VERSION 3.2-12<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-32-12"></a></h2>
+<ul><li><p>Part 5: Deprecate experimental nap-detection functionality that was added in 2.5-2. This has been superseded by a much more simplified nap detection which is now discussed in Annex NapDetection.</p></li>
+<li><p>Part 4: Fix bug <a href="https://github.com/wadpac/GGIR/issues/1376" class="external-link">#1376</a> causing more nights to be included than desirable if sleeplog dates for at least one recording do not overlap with accelerometer recording.</p></li>
+<li><p>Part 2: Always omit spaces from the extracted ID unless the entire filename is used as ID. <a href="https://github.com/wadpac/GGIR/issues/1372" class="external-link">#1372</a></p></li>
+<li><p>Vignette: Clarify definition of acceleration and time ranges in gh-pages chapter 12. <a href="https://github.com/wadpac/GGIR/issues/1370" class="external-link">#1370</a></p></li>
+<li><p>All parts: Value of parameter desiredtz is now passed on via milestone data, which enables jointly processing data from multiple timezones in part 2-6 <a href="https://github.com/wadpac/GGIR/issues/1380" class="external-link">#1380</a></p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.2-11" id="changes-in-ggir-version-32-11">CHANGES IN GGIR VERSION 3.2-11<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-32-11"></a></h2>
 <ul><li><p>Part 2: In day segment analysis N hours and N valid hours per day segment are now correctly averaged over valid days only, previously calculation included invalid days. This affect only the person level summary. <a href="https://github.com/wadpac/GGIR/issues/1350" class="external-link">#1350</a></p></li>

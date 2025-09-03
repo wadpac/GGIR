@@ -137,7 +137,7 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
       mdat$timestamp = as.POSIXct(mdat$timenum, origin = "1970-01-01",tz = desiredtz)
       rawlevels_fname = gsub(pattern = "[.]csv", replacement = ".RData", x = rawlevels_fname)
       fname = unique(rawlevels_fname[grep("*RData$", rawlevels_fname)])
-      save(mdat, filename, Lnames, file = fname)
+      save(mdat, filename, Lnames, desiredtz_part1 = desiredtz, file = fname)
     }
     #===============================
     rm(mdat)
