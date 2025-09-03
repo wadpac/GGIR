@@ -62,6 +62,10 @@
 
 - Part 1: Detect time gaps in between data (24 hour) chunks. Handle these if less than 1 hours and generate error when larger. #1294
 
+- Error handling: Added parameter "use_trycatch" to optionally log file-level errors without interrupting GGIR when "do.parallel = FALSE". #1308
+
+- Documentation: removed duplicated parameter "part6DFA"" from the GGIR function documentation. #1309
+
 - Part 2: Fix minor bug that added an extra row (day) in "part2_daysummary" when recording duration was less than one day and did not overlap with midnight. #1313
 
 # CHANGES IN GGIR VERSION 3.2-6
