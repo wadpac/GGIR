@@ -267,7 +267,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
               if (length(sleeplog_matching_ID) == 0) {
                 # Consider all sleeplog entries
                 sleeplog_matching_ID = 1:length(sleeplog$night)
-                warning(paste0("No matching sleeplog entry found for acceleromete recording ", accid))
+                warning(paste0("No matching sleeplog entry found for accelerometer recording ID ", accid), call. = FALSE)
               }
             }
           }

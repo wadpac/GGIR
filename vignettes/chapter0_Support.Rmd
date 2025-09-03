@@ -38,7 +38,7 @@ Please post your general questions, suggestions, or news in the [**GGIR discussi
 
 If you have multiple unrelated things to report then please post them separately.
 
-**Please be considerate of that fact that all public support is based on voluntary efforts.**
+**Please be considerate of the fact that all public support is based on voluntary efforts.**
 
 ### GitHub issue tracker
 
@@ -53,7 +53,7 @@ When you report a problem always try to provide a minimal reproducible example o
 - Copy of full R console output.
 - The result of typing `sessionInfo()` in your R console.
 
-**Please be considerate of that fact that all public support is based on voluntary efforts.**
+**Please be considerate of the fact that all public support is based on voluntary efforts.**
 
 ## Other documentation sources
 
