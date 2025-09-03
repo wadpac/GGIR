@@ -351,8 +351,9 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
       filename = paste0(filename,".RData")
     }
     GGIRversion = utils::packageVersion("GGIR")
+    desiredtz_part1 = params_general[["desiredtz"]]
     save(M, I, C, filename_dir, filefoldername, tail_expansion_log, GGIRversion,
-         file = paste0(metadatadir, "/meta/basic/meta_", filename))
+         desiredtz_part1, file = paste0(metadatadir, "/meta/basic/meta_", filename))
     rm(M); rm(I); rm(C)
   } # end of main_part1
 

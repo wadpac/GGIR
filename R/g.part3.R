@@ -40,7 +40,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                         params_sleep = c(), params_metrics = c(),
                         params_output = c(),
                         params_general = c(), fnames, ffdone, verbose) {
-    tail_expansion_log =  NULL
+    tail_expansion_log = desiredtz_part1 = NULL
     nightsperpage = 7
     FI = file.info(paste(metadatadir, "/meta/ms2.out/", fnames[i], sep = ""))
     if (is.na(FI$size) == TRUE) FI$size = 0
@@ -66,6 +66,11 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
       SUM = IMP = M = c()
       load(paste(metadatadir, "/meta/basic/meta_", fnames[i], sep = ""))
       load(paste(metadatadir, "/meta/ms2.out/", fnames[i], sep = ""))
+      if (!is.null(desiredtz_part1)) {
+        params_general[["desiredtz"]] = desiredtz_part1
+      } else {
+        desiredtz_part1 = params_general[["desiredtz"]]
+      }
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
         if (params_general[["sensor.location"]] == "hip") {
           if (is.null(params_sleep[["longitudinal_axis"]])) {
@@ -138,7 +143,8 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
           GGIRversion = utils::packageVersion("GGIR")
           save(sib.cla.sum, L5list, SPTE_end, SPTE_start, tib.threshold, rec_starttime, ID,
                longitudinal_axis, SleepRegularityIndex, tail_expansion_log, GGIRversion,
-               file = ms3out_filename, part3_guider, SPTE_corrected)
+               part3_guider, desiredtz_part1, SPTE_corrected,
+               file = ms3out_filename)
         }
       }
     }

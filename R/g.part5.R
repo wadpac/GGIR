@@ -135,7 +135,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         fnames.ms3, sleeplog, logs_diaries,
                         referencefnames, folderstructure,
                         fullfilenames, foldername, ffdone, verbose) {
-    tail_expansion_log =  NULL
+    tail_expansion_log =  desiredtz_part1 = NULL
     filename_dir = NULL # to be loaded
     fnames.ms1 = dir(paste(metadatadir, "/meta/basic", sep = ""))
     fnames.ms2 = dir(paste(metadatadir, "/meta/ms2.out", sep = ""))
@@ -197,6 +197,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           if (verbose == TRUE) cat("Warning: Milestone data part 1 could not be retrieved")
         }
         load(paste0(metadatadir, "/meta/basic/", fnames.ms1[selp]))
+        if (!is.null(desiredtz_part1)) {
+          params_general[["desiredtz"]] = desiredtz_part1
+        }
         # convert to character/numeric if stored as factor in metashort and metalong
         M$metashort = correctOlderMilestoneData(M$metashort)
         M$metalong = correctOlderMilestoneData(M$metalong)
