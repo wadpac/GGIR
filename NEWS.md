@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.2-13
+
+- Vignette: Update Parmay Matrix website in gh-pages chapter 2. #1384
+
 # CHANGES IN GGIR VERSION 3.2-12
 
 - Part 5: Deprecate experimental nap-detection functionality that was added in 2.5-2. This has been superseded by a much more simplified nap detection which is now discussed in Annex NapDetection.
