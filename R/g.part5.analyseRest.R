@@ -79,7 +79,7 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
           iter = iter + 1
         }
         if (iter > nrow(sibreport) - 1) {
-          break()
+          break
         }
       }
       sibreport$duration = as.numeric(difftime(sibreport$end, sibreport$start, units = "mins")) + epochSize_min
@@ -153,7 +153,7 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
                              "tdur_srnonw_overl_denap", "perc_srnonw_overl_denap")
   dsummary[di,fi] = Nlongbouts
   fi = fi + 1
-  if (length(longboutsi) > 0) {
+  if (length(longboutsi) > 0 & nrow(ts) > 0) {
     sibreport = sibreport[longboutsi,]
     srep_tmp = sibreport[which(sibreport$start >= min(ts$time) &
                                  sibreport$end <= max(ts$time)),]

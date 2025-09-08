@@ -27,11 +27,14 @@ g.part5.lux_persegment = function(ts, sse, LUX_day_segments, epochSize, desiredt
   expected_N_seg1 = (rep(LUX_day_segments,2)[which(LUX_day_segments == first_hour_seg[1])+1] - LUX_day_segments[which(LUX_day_segments == first_hour_seg[1])]) * 60 * (60/epochSize)
   actual_N_seg1 = length(which(first_hour_seg[1:round(Nepochperday*0.66)] == first_hour_seg[1]))
   missingN_seg1 = expected_N_seg1 - actual_N_seg1
-  if (missingN_seg1 > 0) {
-    extension = (sse[1]-missingN_seg1):(sse[1]-1)
-    ts$lightpeak[extension] = 0 # ensure that light during SPT is treated as zeros
-    sse = c(extension,sse)
-    first_hour_seg = c(rep(first_hour_seg[1], missingN_seg1), first_hour_seg)
+  if (length(sse) > 0) {
+    if (sse[1] - missingN_seg1 < 0) missingN_seg1 = missingN_seg1 + (sse[1] - missingN_seg1 - 1)
+    if (missingN_seg1 > 0) {
+      extension = (sse[1]-missingN_seg1):(sse[1]-1)
+      ts$lightpeak[extension] = 0 # ensure that light during SPT is treated as zeros
+      sse = c(extension,sse)
+      first_hour_seg = c(rep(first_hour_seg[1], missingN_seg1), first_hour_seg)
+    }
   }
   # removing again the data after 24 hours to avoid overlap  Nepochperday = 24 * (3600 / ws3)
   if (length(first_hour_seg) > Nepochperday) {
