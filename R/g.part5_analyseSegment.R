@@ -44,7 +44,7 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
   
   skiponset = skipwake = TRUE
   nap_overwrite_bc = params_sleep[["nap_overwrite_behaviourclass"]]
-  nap_class_names = NULL
+  nap_class_names = sleep_class_names = NULL
   #==========================
   # The following is to avoid issue with merging sleep variables from part 4
   # Note that this means that for MM windows there can be multiple or no wake or onsets in window
@@ -187,6 +187,19 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
       # as we retain both classifications
       if (nap_overwrite_bc == FALSE) {
         nap_LEVELS = rep(NA, length(LEVELS))
+        sleep_LEVELS = rep(0, length(LEVELS[sse]))
+        sleep_LEVELS[which(ts$sibdetection[sse] == 1)] = 100
+        rle_SL = rle(sleep_LEVELS)
+        possible_sleep_dur = c(params_sleep[["possible_nap_dur"]], Inf)
+        for (sleepdur_id in 1:(length(possible_sleep_dur)-1)) {
+          sleep_blocks = which(rle_SL$lengths / (60/ws3new) >= possible_sleep_dur[sleepdur_id] &
+                                 rle_SL$lengths / (60/ws3new) < possible_sleep_dur[sleepdur_id + 1] &
+                                 rle_SL$values == 100)
+          if (length(sleep_blocks) > 0) {
+            rle_SL$values[sleep_blocks] = sleepdur_id
+          }
+        }
+        sleep_LEVELS = rep(rle_SL$values, rle_SL$lengths)
       }
       
       N_nap_dur_classes = length(params_sleep[["possible_nap_dur"]])
@@ -206,6 +219,17 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
             LEVELS[sse[detectedNaps]] = which(Lnames == nap_class_name) - 1
           } else {
             nap_LEVELS[sse[detectedNaps]] = which(nap_class_names == nap_class_name) - 1
+          }
+        }
+        if (nap_overwrite_bc == FALSE) {
+          # also capture sleep levels
+          sleep_class_name = paste0("spt_sleep_bts_", params_sleep[["possible_nap_dur"]][ndi],
+                                  "_", params_sleep[["possible_nap_dur"]][ndi + 1])
+          sleep_class_names = c(sleep_class_names, sleep_class_name)
+          detectedSleep = which(sleep_LEVELS == ndi)
+          
+          if (length(detectedSleep) > 0) {
+            sleep_LEVELS[detectedSleep] = which(sleep_class_names == sleep_class_name)
           }
         }
       }
@@ -230,11 +254,20 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     ds_names[fi] = "dur_spt_min";      fi = fi + 1
     dsummary[si, fi] = (length(c(sse)) * ws3new) / 60
     ds_names[fi] = "dur_day_spt_min";      fi = fi + 1
-    # TIME SPENT IN NAP WINDOWS
-    if (nap_overwrite_bc == FALSE && length(nap_class_names) > 0) {
-      for (levelsc in 0:(length(nap_class_names) - 1)) {
-        dsummary[si,fi] = (length(which(nap_LEVELS[sse] == levelsc)) * ws3new) / 60
-        ds_names[fi] = paste0("dur_", nap_class_names[levelsc + 1],"_min");      fi = fi + 1
+    if (nap_overwrite_bc == FALSE) {
+      # TIME SPENT IN NAP WINDOWS
+      if (length(nap_class_names) > 0) {
+        for (levelsc in 0:(length(nap_class_names) - 1)) {
+          dsummary[si,fi] = (length(which(nap_LEVELS[sse] == levelsc)) * ws3new) / 60
+          ds_names[fi] = paste0("dur_", nap_class_names[levelsc + 1],"_min");      fi = fi + 1
+        }
+      }
+      # TIME SPENT IN SLEEP WINDOWS
+      if (length(sleep_class_names) > 0) {
+        for (levelsc in 1:length(sleep_class_names)) {
+          dsummary[si,fi] = (length(which(sleep_LEVELS == levelsc)) * ws3new) / 60
+          ds_names[fi] = paste0("dur_", sleep_class_names[levelsc],"_min"); fi = fi + 1
+        }
       }
     }
     #============================================
@@ -395,11 +428,21 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     
     #-------------
     # If naps are in separate vector than count them separately
-    if (nap_overwrite_bc == FALSE && length(nap_class_names) > 0) {
-      RLE_nap_LEVELS = rle(nap_LEVELS[sse])
-      for (levelsc in 0:(length(nap_class_names) - 1)) {
-        dsummary[si,fi] = length(which(RLE_nap_LEVELS$values == levelsc))
-        ds_names[fi] = paste0("Nblocks_", nap_class_names[levelsc + 1]);      fi = fi + 1
+    if (nap_overwrite_bc == FALSE) {
+      if (length(nap_class_names) > 0) {
+        RLE_nap_LEVELS = rle(nap_LEVELS[sse])
+        for (levelsc in 0:(length(nap_class_names) - 1)) {
+          dsummary[si,fi] = length(which(RLE_nap_LEVELS$values == levelsc))
+          ds_names[fi] = paste0("Nblocks_", nap_class_names[levelsc + 1]);      fi = fi + 1
+        }
+      }
+      # Count also number of sleep windows per sleep window level
+      if (length(sleep_class_names) > 0) {
+        RLE_sleep_LEVELS = rle(sleep_LEVELS)
+        for (levelsc in 1:length(sleep_class_names)) {
+          dsummary[si,fi] = length(which(RLE_sleep_LEVELS$values == levelsc))
+          ds_names[fi] = paste0("Nblocks_", sleep_class_names[levelsc]); fi = fi + 1
+        }
       }
     }
     #===========================
@@ -468,8 +511,10 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
                                          LUX_day_segments = params_247[["LUX_day_segments"]],
                                          epochSize = ws3new,
                                          desiredtz = params_general[["desiredtz"]])
-      dsummary[si, fi:(fi + (length(luxperseg$values) - 1))] = luxperseg$values
-      ds_names[fi:(fi + (length(luxperseg$values) - 1))] = luxperseg$names
+      if (!is.null(unlist(luxperseg$values))) {
+        dsummary[si, fi:(fi + (length(luxperseg$values) - 1))] = luxperseg$values
+        ds_names[fi:(fi + (length(luxperseg$values) - 1))] = luxperseg$names
+      }
       fi = fi + length(luxperseg$values)
     }
 
