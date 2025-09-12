@@ -1753,20 +1753,14 @@ GGIR(mode = 1:5,
 
       \item{visualreport}{
         Boolean (default = TRUE).
-        If TRUE, store two visualreports in outputfolder 'results/file summary reports'
-        with names starting with \"old_report_...\" and 
-        \"report...\". The report \"old_report_...\" has been in GGIR for years 
-        and is based on combined output from GGIR part 2 and 4. It was initially only a
-        quick development attempt to have something to show to study participants back
-        in 2015.
-        This report is not designed for data quality checking purposes as it makes
-        no attempt to exactly visualise the classifications made in GGIR part 5.
-        Given the number of inaccuracies, this report
-        will eventually be deprecated from GGIR. To turn
-        off the old report use \code{old_visualreport = FALSE}.
-        \"report_...\", is a new report as
-        of GGIR 3.1-8 and is specifically aimed at supporting data quality checks 
-        as it shows the time series data as generated and used in GGIR part 5. }.
+        If TRUE, store a visualreport in outputfolder 'results/file summary reports'
+        for each recording. Note that this report was introduced in release 3.1-8 
+        and replaced an older visual report that had been in GGIR for many years.
+        The older report was only intended as a quick attempt to have something visual to show
+        to study participants back in 2015. It was not designed for data quality 
+        checking purposes. The new visual report is specifically aimed at 
+        supporting data quality checks as it shows the time series data as generated 
+        and used in GGIR part 5. }.
 
       \item{viewingwindow}{
         Numeric (default = 1).
@@ -1820,7 +1814,9 @@ GGIR(mode = 1:5,
       \item{old_visualreport}{
         Boolean (default = FALSE).
         If TRUE, then generate old visual report in addition to new visualreport.
-        The old visualreport will eventually be deprecated}
+        The old visualreport will eventually be deprecated and is not suitable for
+        data quality assessment, see documentation for \code{visualreport} above
+        for details.}
       
       \item{visualreport_hrsPerRow}{
         Numeric (default = 36).
