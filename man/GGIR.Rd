@@ -1756,7 +1756,8 @@ GGIR(mode = 1:5,
         If TRUE, store a visualreport in outputfolder 'results/file summary reports'
         for each recording. Note that this report was introduced in release 3.1-8 
         and replaced an older visual report that had been in GGIR for many years.
-        The older report was only intended as a quick attempt to have something visual to show
+        The older report was only intended as a quick attempt to have 
+        something visual to show
         to study participants back in 2015. It was not designed for data quality 
         checking purposes. The new visual report is specifically aimed at 
         supporting data quality checks as it shows the time series data as generated 
