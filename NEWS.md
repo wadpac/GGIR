@@ -1,3 +1,9 @@
+# CHANGES IN GGIR VERSION 3.3-0
+
+- Error handling: Added parameter "use_trycatch" to optionally log file-level errors without interrupting GGIR when "do.parallel = FALSE". #1308
+
+- Documentation: removed duplicated parameter "part6DFA"" from the GGIR function documentation. #1309
+
 # CHANGES IN GGIR VERSION 3.2-12
 
 - Part 5: Deprecate experimental nap-detection functionality that was added in 2.5-2. This has been superseded by a much more simplified nap detection which is now discussed in Annex NapDetection.
@@ -61,10 +67,6 @@
 - Config file: fix minor issue that caused GGIR, GGIRread, and R version to overwrite the last 3 parameters in the config file. #1298 
 
 - Part 1: Detect time gaps in between data (24 hour) chunks. Handle these if less than 1 hours and generate error when larger. #1294
-
-- Error handling: Added parameter "use_trycatch" to optionally log file-level errors without interrupting GGIR when "do.parallel = FALSE". #1308
-
-- Documentation: removed duplicated parameter "part6DFA"" from the GGIR function documentation. #1309
 
 - Part 2: Fix minor bug that added an extra row (day) in "part2_daysummary" when recording duration was less than one day and did not overlap with midnight. #1313
 
