@@ -353,7 +353,8 @@ GGIR(mode = 1:5,
         to run only on a single thread in a computing cluster. In that scenario it
         would actually be better to investigate whether GGIR can be given more
         computing threads as GGIR is designed to coordinate the processing of files across 
-        processing threads. A second scenario where use_trycatch_serial is useful is
+        processing threads. A second scenario where \code{use_trycatch_serial == TRUE}
+        is useful is
         when processing files that are too large to be processed even if parameter 
         \code{chunksize} is set to a minimal value. In that scenario you may want to 
         set \code{use_trycatch_serial == TRUE} and \code{do.parallel = FALSE}.
