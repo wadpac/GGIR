@@ -2,8 +2,6 @@
 
 - Error handling: Added parameter "use_trycatch" to optionally log file-level errors without interrupting GGIR when "do.parallel = FALSE". #1308
 
-- Documentation: removed duplicated parameter "part6DFA"" from the GGIR function documentation. #1309
-
 # CHANGES IN GGIR VERSION 3.2-12
 
 - Part 5: Deprecate experimental nap-detection functionality that was added in 2.5-2. This has been superseded by a much more simplified nap detection which is now discussed in Annex NapDetection.
