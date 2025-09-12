@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-12</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,6 +62,7 @@
     <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
     <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
     <li><a class="dropdown-item" href="../articles/SleepRegularityIndex.html">Sleep Regularity Index</a></li>
+    <li><a class="dropdown-item" href="../articles/NapDetection.html">Nap Detection</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
@@ -1552,89 +1553,6 @@ the full window (<code>_day_spt_</code>)</td>
 <td>Derived from power law exponent alpha, see <a href="https://doi.org/10.1016/j.gaitpost.2009.09.002" class="external-link">Chastin et al. 201
 0</a>
 </td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section level4">
-<h4 id="old-napping-behaviour-variables-to-be-deprecated">Old napping behaviour variables (to be deprecated)<a class="anchor" aria-label="anchor" href="#old-napping-behaviour-variables-to-be-deprecated"></a>
-</h4>
-<p>These variables will be deprecated as napping, if detection is turned
-on, is now a behavioural category just like all other behaviours.</p>
-<table class="table">
-<colgroup>
-<col width="36%">
-<col width="63%">
-</colgroup>
-<thead><tr class="header">
-<th>(Term in) variable name</th>
-<th>Description</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td>nap_count</td>
-<td>Total number of naps, only calculated when argument do.sibreport =
-TRUE, currently optimised for 3.5-year olds. See function documentation
-for function <code>g.part5.classifyNaps</code> in the <a href="https:/CRAN.R-project.org/package=GGIR/GGIR.pdf">GGIR function
-documentation (pdf)</a>.</td>
-</tr>
-<tr class="even">
-<td>nap_totalduration</td>
-<td>Total nap duration, only calculated when argument do.sibreport =
-TRUE, currently optimised for 3.5-year old. See function documentation
-for function <code>g.part5.classifyNaps</code> in the <a href="https:/CRAN.R-project.org/package=GGIR/GGIR.pdf">GGIR function
-documentation (pdf)</a>.</td>
-</tr>
-<tr class="odd">
-<td>sibreport_n_items</td>
-<td>Only created if <code>do.sibreport = TRUE</code>. Number of items in
-the sibreport</td>
-</tr>
-<tr class="even">
-<td>sibreport_n_items_day</td>
-<td>Only created if <code>do.sibreport = TRUE</code>. Number of items in
-the sibreport for this specific day</td>
-</tr>
-<tr class="odd">
-<td>nbouts_X</td>
-<td>Only created if <code>do.sibreport = TRUE</code>. Number of bouts in
-a day of X where X can be a detected nap (denap), srnap (self-reported
-nap) or srnonw (self-reported nonwear)</td>
-</tr>
-<tr class="even">
-<td>noverl_X</td>
-<td>Only created if <code>do.sibreport = TRUE</code>. Number of
-overlapping bouts in a day of X where X can be denap_srnap,
-denap_srnonw, srnap_denap, or srnonw_denap</td>
-</tr>
-<tr class="odd">
-<td>frag_mean_dur_X_day</td>
-<td>Only created if <code>do.sibreport = TRUE</code>. Mean duration of X
-per day, where X can be sib, srnap or srnonw</td>
-</tr>
-<tr class="even">
-<td>dur_X_min</td>
-<td>Only created if <code>do.sibreport = TRUE</code>. Total duration in
-minutes of X per day, where X can be detect nap (denap), srnap or
-srnonw</td>
-</tr>
-<tr class="odd">
-<td>mdur_X_overl_Y</td>
-<td>Only created if <code>do.sibreport = TRUE</code>. Mean duration of
-the overlap between X and Y, which are combinations of denap, srnap or
-srnonw</td>
-</tr>
-<tr class="even">
-<td>tdur_X_overl_Y</td>
-<td>Only created if <code>do.sibreport = TRUE</code>. Total duration in
-minutes of the overlap between X and Y, which are combinations of denap,
-srnap or srnonw</td>
-</tr>
-<tr class="odd">
-<td>perc_X_overl_Y</td>
-<td>Only created if <code>do.sibreport = TRUE</code>. Percentage of
-overlap between X and Y, which are combinations of denap, srnap or
-srnonw</td>
 </tr>
 </tbody>
 </table>

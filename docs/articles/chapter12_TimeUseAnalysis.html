@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-12</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,6 +62,7 @@
     <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
     <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
     <li><a class="dropdown-item" href="../articles/SleepRegularityIndex.html">Sleep Regularity Index</a></li>
+    <li><a class="dropdown-item" href="../articles/NapDetection.html">Nap Detection</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
@@ -137,15 +138,27 @@ magnitude of acceleration and sleep classification.</li>
 </ul>
 <p>The exact number of behavioural classes as codified depends on how
 parameters are set, but constructed and codified as:</p>
-<p><strong>During the sleep period time window:</strong> - Sleep -
-Wakefulness with low acceleration - Wakefulness with moderate
-acceleration - Wakefulness with vigorous acceleration</p>
-<p><strong>During the waking hours of the day:</strong> - Inactivity
-unbouted - Inactivity bouted, subdivided into one or multiple bout
-durations - Total inactivity time - LIPA unbouted - LIPA bouted,
-subdivided into one or multiple bout durations - Total LIPA time -
-Moderate activity unbouted - Vigorous activity unbouted - MVPA bouted,
-subdivided into one or multiple bout durations - Total MVPA time</p>
+<p><strong>During the sleep period time window:</strong></p>
+<ul>
+<li>Sleep</li>
+<li>Wakefulness with low acceleration</li>
+<li>Wakefulness with moderate acceleration</li>
+<li>Wakefulness with vigorous acceleration</li>
+</ul>
+<p><strong>During the waking hours of the day:</strong></p>
+<ul>
+<li>Inactivity unbouted</li>
+<li>Inactivity bouted, subdivided into one or multiple bout
+durations</li>
+<li>Total inactivity time</li>
+<li>LIPA unbouted</li>
+<li>LIPA bouted, subdivided into one or multiple bout durations</li>
+<li>Total LIPA time</li>
+<li>Moderate activity unbouted</li>
+<li>Vigorous activity unbouted</li>
+<li>MVPA bouted, subdivided into one or multiple bout durations</li>
+<li>Total MVPA time</li>
+</ul>
 <p>It is possible to export the time series generated, which will be
 discussed towards the end of this chapter.</p>
 </div>
@@ -239,13 +252,37 @@ intensity levels, e.g. the fragmentation of physical activity reflects
 the fragmentation of LIPA and MVPA combined relative to Inactive
 time.</li>
 </ul>
-<p>On a side note - If you multiply Acceleration by Duration for a given
+<p>On a side note - If you multiply Acceleration by duration for a given
 class, and by that combine the information from both variables, you
 would arrive at a volume measure of behaviour. This is similar to the
-construct of calories over time. I think this would be a much richer way
-of describing the data as opposed to the conventional approach that only
-looks at either time spent per behavioural class or average acceleration
-in an entire day.</p>
+construct of calories over time. This is a much richer way of describing
+the data as opposed to the conventional approach that only looks at
+either time spent per behavioural class or average acceleration in an
+entire day.</p>
+<div class="section level3">
+<h3 id="range-definition">Range definition<a class="anchor" aria-label="anchor" href="#range-definition"></a>
+</h3>
+<p>Time and acceleration ranges are in GGIR consistently defined to
+include the bottom edge and exclude the top edge of the range.</p>
+<p>An example may best clarify this. Imagine we have define the four
+acceleration ranges in part 5 with <code>threshold.lig = 40</code>,
+<code>threshold.mod = 100</code>, and <code>threshold.vig = 400</code>,
+the durations of the bout categories as <code>boutdur.in = 30</code>,
+<code>boutdur.lig = 15</code>, and <code>boutdur.mvpa = c(5, 10)</code>
+then this gives us the following behavioural bout categories:</p>
+<ul>
+<li>Inactivity with acceleration range <code>[0, 40)</code> and duration
+<code>[30, Inf)</code>.</li>
+<li>Light activity with acceleration range <code>[40, 100)</code> and
+duration <code>[15, Inf)</code>.</li>
+<li>MVPA with acceleration range <code>[100, Inf)</code> and duration
+<code>[5, 10)</code>.</li>
+<li>MVPA with acceleration range <code>[100, Inf)</code> and duration
+<code>[10, 15)</code>.</li>
+</ul>
+<p>Where <code>[</code> means including, <code>)</code> means excluding,
+and <code>Inf</code> infinity.</p>
+</div>
 <div class="section level3">
 <h3 id="complementary-variables">Complementary variables<a class="anchor" aria-label="anchor" href="#complementary-variables"></a>
 </h3>
@@ -317,6 +354,7 @@ save_ms5rawlevels=TRUE.</li>
 whether to remove invalid days from the time series output files. Only
 used if save_ms5rawlevels=TRUE.</li>
 </ul>
+<p>The exported time series table comes with the following columns:</p>
 <table class="table">
 <colgroup>
 <col width="34%">
@@ -452,7 +490,7 @@ available if <code>save_ms5raw_format = TRUE</code>.</td>
 <code>threshold.vig</code>
 </li>
 <li>
-<code>boudur.in</code>, <code>boutdur.lig</code>,
+<code>boutdur.in</code>, <code>boutdur.lig</code>,
 <code>boutdur.mvpa</code>
 </li>
 <li>
