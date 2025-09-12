@@ -158,7 +158,7 @@ GGIR currently works with the following accelerometer brands and formats:
 -   [Axivity](https://axivity.com/) AX3 and AX6 .cwa
 -   [ActiGraph](https://theactigraph.com) .csv and .gt3x (.gt3x only the newer format generated with firmware versions above 2.5.0. Serial numbers that start with “NEO” or “MRA” and have firmware version of 2.5.0 or earlier use an older format of the .gt3x file). If you want to work with .csv exports via the commercial ActiLife software, then note that you have the option to export data with timestamps, which should be turned off. To cope with the absence of timestamps GGIR will calculate timestamps from the sample frequency, the start time, and start date as presented in the file header.
 -   [Movisens](https://www.movisens.com/en/) with data stored in folders.
--   [Parmay Matrix](https://www.parmaytech.com/) .bin and .BIN
+-   [Parmay Matrix](https://www.matrixwearable.net/) .bin and .BIN
 -   Any other accelerometer brand that generates csv output, see documentation for functions `read.myacc.csv` and parameter `rmc.noise` in the vignette [Reading csv files with raw data in GGIR](https://cran.r-project.org/package=GGIR/vignettes/readmyacccsv.html).
 
 ### Externally derived epoch-level data
