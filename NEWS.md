@@ -1,6 +1,6 @@
 # CHANGES IN GGIR VERSION 3.3-0
 
-- Error handling: Added parameter "use_trycatch" to optionally log file-level errors without interrupting GGIR when "do.parallel = FALSE". #1308
+- Error handling: Added parameter "use_trycatch_serial" to optionally log file-level errors without interrupting GGIR when "do.parallel = FALSE". #1308
 
 # CHANGES IN GGIR VERSION 3.2-12
 

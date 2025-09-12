@@ -334,7 +334,7 @@ GGIR(mode = 1:5,
         https://wadpac.github.io/GGIR/articles/DateTimeFormatsInR.html.
       }
       
-      \item{use_trycatch}{
+      \item{use_trycatch_serial}{
         Boolean (default = FALSE).
         If set to \code{TRUE} and \code{do.parallel = FALSE}, GGIR will wrap the 
         core processing function in each part for each file in a \code{tryCatch} block. 
