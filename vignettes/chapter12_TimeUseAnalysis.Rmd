@@ -27,9 +27,25 @@ As a first step we need to map out what happens when during the recording. Here,
 
 The exact number of behavioural classes as codified depends on how parameters are set, but constructed and codified as:
 
-**During the sleep period time window:** - Sleep - Wakefulness with low acceleration - Wakefulness with moderate acceleration - Wakefulness with vigorous acceleration
+**During the sleep period time window:**
 
-**During the waking hours of the day:** - Inactivity unbouted - Inactivity bouted, subdivided into one or multiple bout durations - Total inactivity time - LIPA unbouted - LIPA bouted, subdivided into one or multiple bout durations - Total LIPA time - Moderate activity unbouted - Vigorous activity unbouted - MVPA bouted, subdivided into one or multiple bout durations - Total MVPA time
+- Sleep
+- Wakefulness with low acceleration
+- Wakefulness with moderate acceleration
+- Wakefulness with vigorous acceleration
+
+**During the waking hours of the day:**
+
+- Inactivity unbouted
+- Inactivity bouted, subdivided into one or multiple bout durations
+- Total inactivity time
+- LIPA unbouted
+- LIPA bouted, subdivided into one or multiple bout durations
+- Total LIPA time
+- Moderate activity unbouted
+- Vigorous activity unbouted
+- MVPA bouted, subdivided into one or multiple bout durations
+- Total MVPA time
 
 It is possible to export the time series generated, which will be discussed towards the end of this chapter.
 
@@ -63,7 +79,20 @@ GGIR provides the following metrics over the time windows calculated, i.e., full
 -   Number of bouts: Number of bouts per behavioural class.
 -   Fragmentation: The fragmentation metrics as discussed in the previous chapter. Here no distinction is made between bouted or unbouted behavour. Note that fragmentation classes sometimes group multiple intensity levels, e.g. the fragmentation of physical activity reflects the fragmentation of LIPA and MVPA combined relative to Inactive time.
 
-On a side note - If you multiply Acceleration by Duration for a given class, and by that combine the information from both variables, you would arrive at a volume measure of behaviour. This is similar to the construct of calories over time. I think this would be a much richer way of describing the data as opposed to the conventional approach that only looks at either time spent per behavioural class or average acceleration in an entire day.
+On a side note - If you multiply Acceleration by duration for a given class, and by that combine the information from both variables, you would arrive at a volume measure of behaviour. This is similar to the construct of calories over time. This is a much richer way of describing the data as opposed to the conventional approach that only looks at either time spent per behavioural class or average acceleration in an entire day.
+
+### Range definition
+
+Time and acceleration ranges are in GGIR consistently defined to include the bottom edge and exclude the top edge of the range.
+
+An example may best clarify this. Imagine we have define the four acceleration ranges in part 5 with `threshold.lig = 40`, `threshold.mod = 100`, and `threshold.vig = 400`, the durations of the bout categories as `boutdur.in = 30`, `boutdur.lig = 15`, and `boutdur.mvpa = c(5, 10)` then this gives us the following behavioural bout categories:
+
+- Inactivity with acceleration range `[0, 40)` and duration `[30, Inf)`.
+- Light activity with acceleration range `[40, 100)` and duration `[15, Inf)`.
+- MVPA with acceleration range `[100, Inf)` and duration `[5, 10)`.
+- MVPA with acceleration range `[100, Inf)` and duration `[10, 15)`.
+
+Where `[` means including, `)` means excluding, and `Inf` infinity. 
 
 ### Complementary variables
 
@@ -94,6 +123,8 @@ Note that the time series exported in GGIR part 5 only includes the acceleration
 -   `save_ms5raw_format` is a character string to specify how data should be stored: either "csv" (default) or "RData". Only used if save_ms5rawlevels=TRUE.
 -   `save_ms5raw_without_invalid` is Boolean to indicate whether to remove invalid days from the time series output files. Only used if save_ms5rawlevels=TRUE.
 
+The exported time series table comes with the following columns:
+
 | Column name         | Description                                                    |
 |-------------------------|-----------------------------------------------|
 | timenum             | Time stamp in UTC time format (i.e., seconds since 1970-01-01). To convert timenum to time stamp format, you need to specify your desired time zone, e.g., `as.POSIXct(mdat$timenum, tz = "Europe/London")`. |
@@ -118,7 +149,7 @@ Note that the time series exported in GGIR part 5 only includes the acceleration
 ## Key arguments
 
 -   `threshold.lig`, `threshold.mod`, `threshold.vig`
--   `boudur.in`, `boutdur.lig`, `boutdur.mvpa`
+-   `boutdur.in`, `boutdur.lig`, `boutdur.mvpa`
 -   `boutcriter.in`, `boutcriter.lig`, `boutcriter.mvpa`
 -   `frag.metrics`
 -   `timewindow`

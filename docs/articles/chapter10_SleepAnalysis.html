@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-12</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,6 +62,7 @@
     <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
     <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
     <li><a class="dropdown-item" href="../articles/SleepRegularityIndex.html">Sleep Regularity Index</a></li>
+    <li><a class="dropdown-item" href="../articles/NapDetection.html">Nap Detection</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
@@ -140,7 +141,11 @@ latency and sleep efficiency can be estimated and are included in the
 GGIR part 4 report.</p></li>
 </ol>
 <p>In both cases the start of the first SIB is then considered sleep
-onset and the end of the last SIB is considered waking up.</p>
+onset and the end of the last SIB is considered waking up. When the edge
+of SIB partially overlaps with the guider it is the edge of SIB that
+defines the timing of sleep. This can be altered with parameter <a href="https://wadpac.github.io/GGIR/articles/GGIRParameters.html?q=relyonguider#relyonguider">relyonguider</a>,
+but we recommend not changing the default
+<code>relyonguider=FALSE</code>.</p>
 <p>For all guiders, other than “HorAngle”, parameter
 <code>sleepwindowType</code> is automatically set to “SPT” corresponding
 to scenario 1, such that no attempt is made to estimate sleep latency or
