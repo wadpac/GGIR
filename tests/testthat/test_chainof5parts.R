@@ -276,6 +276,7 @@ test_that("chainof5parts", {
                paste0("\nParameters iamnewhere and iamnewtoo are unknown",
                       " to GGIR and will not be used, please check for ",
                       "typos or remove these."))
+  
 
   #=======================
   # Different variations on part 4:

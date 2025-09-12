@@ -15,7 +15,6 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
   params_metrics = params$params_metrics
   params_general = params$params_general
   params_output = params$params_output
-  
   checkMilestoneFolders(metadatadir, partNumber = 3)
   #------------------------------------------------------
   fnames = dir(paste(metadatadir,"/meta/ms2.out", sep = ""))
@@ -85,7 +84,6 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                         myfun = myfun,
                         sensor.location = params_general[["sensor.location"]],
                         params_sleep = params_sleep, zc.scale = params_metrics[["zc.scale"]])
-        
         # SleepRegulartiyIndex calculation
         if (!is.null(SLE$output)) {
           if (nrow(SLE$output) > 2*24*(3600/M$windowsizes[1])) { # only calculate SRI if there are at least two days of data
@@ -131,7 +129,6 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
       }
     }
   }
-  
   if (params_general[["do.parallel"]] == TRUE) {
     cores = parallel::detectCores()
     Ncores = cores[1]
@@ -183,7 +180,6 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                                      })
                                      return(tryCatchResult)
                                    }
-    
     on.exit(parallel::stopCluster(cl))
     for (oli in 1:length(output_list)) { # logged error and warning messages
       if (is.null(unlist(output_list[oli])) == FALSE) {
