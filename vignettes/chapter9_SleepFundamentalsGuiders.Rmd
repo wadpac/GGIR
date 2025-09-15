@@ -260,6 +260,14 @@ The algorithm involves the following steps:
 
 Step 3 comes with the assumption that the main sleep period typically takes place in the same part of the day for one individual. If you disagree and would like to skip step 3 set parameter `guider_cor_meme_min_dys = Inf`.
 
+### Tracing whether correction algorithm was applied
+
+In the part4_nightsummary output (csv file) you will find a column named guider_corrected. This variable can have the following values:
+
+- Value 0: Step 1 and 2 ran, but none of the conditions for step 3 and 4 were met and no corrections were made.
+- Value 1: Step 4 correction was made.
+- Value 2: Step 3 correction was made.
+- Value 3: Step 3 and 4 corrections were both made.
 
 ### Guidance on how to change parameter values:
 
