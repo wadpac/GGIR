@@ -1533,7 +1533,12 @@ GGIR(mode = 1:5,
       
       \item{guider_cor_do}{
         Boolean (default = FALSE)
-        Whether to apply guider correction algorithm.
+        Whether to apply the guider correction algorithm as discussed in Chapter 9 of the online
+        documentation: https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html.
+        In short, when sleep is fragmented, algorithms to guide the detection of SPT such
+        as HDCZA may occassionally miss a part of the night or incorrectly consider a day 
+        time nap as the main sleep window in a day. This optional algorithm aims
+        to correct for such misclassifications.
       }
       
       \item{guider_cor_meme_min_dys}{

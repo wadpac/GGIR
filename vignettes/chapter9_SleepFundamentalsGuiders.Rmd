@@ -230,12 +230,12 @@ Detected non-wear or study protocol led to parts of the recording to be labelled
 
 ## Automated correction of acceleration-based guiders
 
-In our experience data-driven guiders such as HDCZA can struggle with the following scenarios:
+In our experience guiders that rely on accelerometer data such as HDCZA can struggle with the following scenarios:
 
 - Unexpected large gaps in the main sleep window resulting, which are not tolerated and resulting in the detection of only one half of the sleep period time window.
 - Sleep is fragmented and the person has a long nap in the middle of the day resulting in afternoon nap being labelled as the main sleep window.
 
-To address this an algorithm has been proposed. The algorithm is currently being optimised and this part of the documentation will be updated once the optimisation has been finalised. The algorithm has mainly been tested with the HDCZA guider and current default parameter values were optimised for one specific clinical study population. Therefore, the default correction algorithm configuration should be used with caution and we encourage you to help evaluate its appropriateness for various study populations and guider algorithms.
+To address this an algorithm has been proposed. The algorithm is currently being optimised and this part of the documentation will be updated once the optimisation has been finalised. The algorithm has mainly been tested with the HDCZA guider and current default parameter values were optimised for one specific clinical study population. Therefore, the default correction algorithm configuration should be used with caution and we encourage you to help evaluate its appropriateness for various study populations and guider algorithms. Please note that the correction algorithm is only used for guiders that rely on accelerometer data, as present in GGIR part 3 such as HDCZA, and not for the sleeplogs.
 
 To turn on the correction algorithm set `guider_cor_do=TRUE`.
 
@@ -243,8 +243,8 @@ To turn on the correction algorithm set `guider_cor_do=TRUE`.
 
 The algorithm involves the following steps:
 
-1. Apply default guider (e.g. HDCZA) to each night, but retain all candidate sleep blocks whereas normally we would only retain the longest block and use that as main guider window.
-2. Identify min-max window running from the minimum sleep onset to maximum wakeup time from all main guider windows across all nights in one recording.
+1. Apply default guider (e.g. HDCZA) to each night, but retain both the longest block and refer to it as the main guider window as well as all other candidate sleep blocks that are normally omitted.
+2. Identify min-max window running from the minimum sleep onset to maximum wakeup time from all main guider windows (longest block) across all nights in one recording.
 3. If there are at least 3 (parameter: `guider_cor_meme_min_dys`) valid nights:
     a. Identify median-median window running from the median sleep onset until the median wakeup time from all main guider windows across all nights in one recording.
     b. Loop over valid nights and select an alternative main guider window if the default main guider window is >90% outside the median-median window (parameter: `guider_cor_meme_frac_out`) and there is a secondary guider-identified sleep block that:
@@ -258,7 +258,7 @@ The algorithm involves the following steps:
     c. Have > 80% sustained inactivity bouts (parameter: `guider_cor_min_frac_sib`).
     d. Are not separated from the main guider window by more than 3 hours (parameter: `guider_cor_maxgap_hrs`).
 
-If you would want to skip step 3 set parameter `guider_cor_meme_min_dys = Inf`.
+Step 3 comes with the assumption that the main sleep period typically takes place in the same part of the day for one individual. If you disagree and would like to skip step 3 set parameter `guider_cor_meme_min_dys = Inf`.
 
 
 ### Guidance on how to change parameter values:
