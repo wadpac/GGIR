@@ -258,7 +258,7 @@ The algorithm involves the following steps:
     c. Have > 80% sustained inactivity bouts (parameter: `guider_cor_min_frac_sib`).
     d. Are not separated from the main guider window by more than 3 hours (parameter: `guider_cor_maxgap_hrs`).
 
-Step 3 comes with the assumption that the main sleep period typically takes place in the same part of the day for one individual. If you disagree and would like to skip step 3 set parameter `guider_cor_meme_min_dys = Inf`.
+Step 3 comes with the assumption that the main sleep period typically takes place in the same part of the day within the same individual. If you disagree and would like to skip step 3 set parameter `guider_cor_meme_min_dys = Inf`.
 
 ### Tracing whether correction algorithm was applied
 
