@@ -1,6 +1,6 @@
 # CHANGES IN GGIR VERSION 3.3-0
 
-- Error handling: Added parameter "use_trycatch" to optionally log file-level errors without interrupting GGIR when "do.parallel = FALSE". #1308
+- Error handling: Added parameter "use_trycatch_serial" to optionally log file-level errors without interrupting GGIR when "do.parallel = FALSE". #1308
 
 - Part 3: Adding option to incomplete detection of main sleep period or incorrect focus on daytime nap. The new algorithm comes with new parameters guider_cor_maxgap_hrs, guider_cor_min_frac_sib, guider_cor_min_hrs, guider_cor_meme_frac_out, guider_cor_meme_frac_in, guider_cor_meme_min_hrs #1307
 

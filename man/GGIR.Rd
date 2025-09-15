@@ -334,17 +334,34 @@ GGIR(mode = 1:5,
         https://wadpac.github.io/GGIR/articles/DateTimeFormatsInR.html.
       }
       
-      \item{use_trycatch}{
+      \item{use_trycatch_serial}{
         Boolean (default = FALSE).
-        If set to \code{TRUE} and \code{do.parallel = FALSE}, GGIR will wrap the 
-        core processing function in each part for each file in a \code{tryCatch} block. 
-        This allows GGIR to continue processing remaining files even if one or 
-        more files cause an error (e.g., due to corruption or unreadable format). 
+        If set to TRUE and when using the non-default 
+        \code{do.parallel = FALSE}, the 
+        core processing function in each GGIR part is wrapped for each file in 
+        a \code{tryCatch} block. This allows GGIR to continue processing remaining 
+        files even if one or more files cause an error (e.g., due to file corruption). 
         The error messages for failed files are logged and printed in the console 
-        at the end of the processing. This is particularly useful in large batch 
-        analyses where users might leave the processing running without supervision.
-        If set to \code{FALSE}, GGIR will stop execution immediately when an error 
-        occurs as usual.
+        at the end of the processing. Note: these error messages are less
+        detailed compared to when processing data with \code{use_trycatch_serial == FALSE}.
+        So, to investigate an error message it may be advisable to set 
+        \code{use_trycatch_serial == FALSE}. Further,
+        it should be noted that \code{tryCatch} blocks are always used when processing 
+        \code{do.parallel = TRUE}. The functionally described here is envisioned
+        to be primarily useful when it not possible to process accelerometer files
+        in parallel and there are many files. For example, when GGIR is expected 
+        to run only on a single thread in a computing cluster. In that scenario it
+        would actually be better to investigate whether GGIR can be given more
+        computing threads as GGIR is designed to coordinate the processing of files across 
+        processing threads. A second scenario where \code{use_trycatch_serial == TRUE}
+        is useful is
+        when processing files that are too large to be processed even if parameter 
+        \code{chunksize} is set to a minimal value. In that scenario you may want to 
+        set \code{use_trycatch_serial == TRUE} and \code{do.parallel = FALSE}.
+        Note that under normal conditions we expect GGIR to
+        not generate errors. If an error occurs, always investigate
+        and report the error to the community to help make GGIR better. GGIR is free
+        software and depends on you as community.
       }
     }
     }

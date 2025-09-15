@@ -644,7 +644,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           main_part6_recordlevel(i, metadatadir, f0, f1,
                                  fnames.ms5raw, ffdone, EXT, verbose)
         )
-        if (params_general[["use_trycatch"]] == TRUE) {
+        if (params_general[["use_trycatch_serial"]] == TRUE) {
           tryCatch(
             eval(function_to_evaluate),
             error = function(e) {
@@ -657,7 +657,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         }
       }
       # show logged errors after the loop:
-      if (params_general[["use_trycatch"]] == TRUE)  {
+      if (params_general[["use_trycatch_serial"]] == TRUE)  {
         if (length(errors) > 0) {
           cat(paste0("\n\nErrors in part 6... for:"))
           for (e in 1:length(errors)) {

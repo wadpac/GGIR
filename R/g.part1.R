@@ -458,7 +458,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
                    myfun, filelist, ffdone,
                    use.temp, daylimit, metadatadir, verbose)
       )
-      if (params_general[["use_trycatch"]] == TRUE) {
+      if (params_general[["use_trycatch_serial"]] == TRUE) {
         tryCatch(
           eval(function_to_evaluate),
           error = function(e) {
@@ -471,7 +471,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
       }
     }
     # show logged errors after the loop:
-    if (params_general[["use_trycatch"]] == TRUE)  {
+    if (params_general[["use_trycatch_serial"]] == TRUE)  {
       if (length(errors) > 0) {
         cat(paste0("\n\nErrors in part 1... for:"))
         for (e in 1:length(errors)) {

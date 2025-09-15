@@ -16,7 +16,7 @@ test_that("Test that potential errors found in sequential mode are skipped and l
          do.cal = FALSE, do.imp = FALSE,
          do.parallel = FALSE,
          minimumFileSizeMB = minimumFileSizeMB,
-         use_trycatch = TRUE)
+         use_trycatch_serial = TRUE)
   )
   #--------------------------------------------
   # Were errors skipped and logged?
