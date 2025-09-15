@@ -267,7 +267,6 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
       }
     }
     if (any(SLE$SPTE_corrected != 0)) {
-      # Step 4):
       # If any night was corrected, repeat the initial steps of min-max and index extraction:
       # Identify reference guider across all nights
       reference_window = c(min(SLE$SPTE_start[valid_nights], na.rm = TRUE),
@@ -283,7 +282,7 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
       }
     }
   }
-  # Step 5): Loop again over nights but this time expand HDCZA with neighboring HDCZA
+  # Step 4): Loop again over nights but this time expand HDCZA with neighboring HDCZA
   # if criteria are met.
   
   
