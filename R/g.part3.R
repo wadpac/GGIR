@@ -90,10 +90,21 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                         myfun = myfun,
                         sensor.location = params_general[["sensor.location"]],
                         params_sleep = params_sleep, zc.scale = params_metrics[["zc.scale"]])
-
+        # Optional correction
+        if (params_sleep[["guider_cor_do"]] == TRUE &&
+            length(SLE$SPTE_start) > 0 && any(!is.na(SLE$SPTE_start)) &&
+            length(SLE$SPTE_end) > 0 && any(!is.na(SLE$SPTE_end))) {
+          SLE = g.part3_correct_guider(SLE, desiredtz = params_general[["desiredtz"]],
+                                       epochSize = M$windowsizes[1],
+                                       params_sleep = params_sleep)
+        }
+        
+        if ("spt_crude_estimate" %in% names(SLE$output)) {
+          SLE$output = SLE$output[, -which(names(SLE$output) == "spt_crude_estimate")]
+        }
         # SleepRegulartiyIndex calculation
         if (!is.null(SLE$output)) {
-          if (nrow(SLE$output) > 2*24*(3600/M$windowsizes[1])) { # only calculate SRI if there are at least two days of data
+          if (nrow(SLE$output) > 2 * 24 * (3600/M$windowsizes[1])) { # only calculate SRI if there are at least two days of data
             SleepRegularityIndex = CalcSleepRegularityIndex(data = SLE$output,
                                                             epochsize = M$windowsizes[1],
                                                             desiredtz = params_general[["desiredtz"]],
@@ -108,6 +119,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
         L5list = SLE$L5list
         SPTE_end = SLE$SPTE_end
         SPTE_start = SLE$SPTE_start
+        SPTE_corrected = SLE$SPTE_corrected
         tib.threshold = SLE$tib.threshold
         longitudinal_axis = SLE$longitudinal_axis
         part3_guider = SLE$part3_guider
@@ -131,7 +143,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
           GGIRversion = utils::packageVersion("GGIR")
           save(sib.cla.sum, L5list, SPTE_end, SPTE_start, tib.threshold, rec_starttime, ID,
                longitudinal_axis, SleepRegularityIndex, tail_expansion_log, GGIRversion,
-               part3_guider, desiredtz_part1,
+               part3_guider, desiredtz_part1, SPTE_corrected,
                file = ms3out_filename)
         }
       }
@@ -174,7 +186,8 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
       # pass on functions
       functions2passon = c("g.sib.det", "g.detecmidnight", "iso8601chartime2POSIX",
                            "g.sib.plot", "g.sib.sum", "HASPT", "HASIB", "CalcSleepRegularityIndex",
-                           "extract_params", "load_params", "check_params")
+                           "extract_params", "load_params", "check_params", 
+                           "g.part3_correct_guider", "g.part3_alignIndexVectors")
       errhand = 'stop'
     }
     i = 0 # declare i because foreach uses it, without declaring it

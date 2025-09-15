@@ -38,7 +38,7 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                "number_sib_wakinghours", "duration_sib_wakinghours_atleast15min", "sleeponset_ts", "wakeup_ts", "guider_onset_ts",
                                "guider_wakeup_ts", "sleeplatency", "sleepefficiency", "page", "daysleeper", "weekday", "calendar_date",
                                "filename", "cleaningcode", "sleeplog_used", "sleeplog_ID", "acc_available", "guider", "SleepRegularityIndex1", "SriFractionValid",
-                               "longitudinal_axis")
+                               "longitudinal_axis", "guider_corrected")
     nightsummary2 = as.data.frame(matrix(0, 0, length(colnames_nightsummary2)))
 
     sumi = 1
@@ -322,6 +322,7 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
             if (dotwice == 1) {
               nightsummary.tmp = turn_numeric(x = nightsummary.tmp, varnames = gdn)
             }
+            # names of numeric columns
             varnames_tmp = c("SptDuration", "sleeponset",
                              "wakeup", "WASO", "SleepDurationInSpt",
                              "number_sib_sleepperiod", "duration_sib_wakinghours",
@@ -490,6 +491,10 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                   personSummarynames = c(personSummarynames, paste("SriFractionValid_", TW, "_", udefn[j],
                                                                    "_mn", sep = ""), paste("SriFractionValid_", TW, "_", udefn[j], "_sd", sep = ""))
                   cnt = cnt + 27
+                  personSummary[i, (cnt + 1)] = sum(as.numeric(nightsummary.tmp$guider_corrected[indexUdef]),
+                                                    na.rm = TRUE)
+                  personSummarynames = c(personSummarynames, "N_nights_guider_corrected")
+                  cnt = cnt + 1
                   if (params_sleep[["sleepwindowType"]] == "TimeInBed" || params_sleep[["consider_marker_button"]] == TRUE) {
                     sleepefficiency = nightsummary.tmp$sleepefficiency[indexUdef]
                     latency = nightsummary.tmp$sleeplatency[indexUdef]

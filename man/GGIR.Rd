@@ -1494,6 +1494,61 @@ GGIR(mode = 1:5,
         Numeric (default = 60).
         Angle threshold used for the HorAngle algorithm.
       }
+
+      \item{guider_cor_maxgap_hrs}{
+        Numeric (default = 2).
+        Maximum gap duration in hours as used for the correction method.
+      }
+
+      \item{guider_cor_min_frac_sib}{
+        Numeric (default = 0.5)
+        Required fraction of guider-based rest period with sustained inactivity bouts (sib) to be considered as possible extension of guider.
+      }
+      
+      \item{guider_cor_min_hrs}{
+        Numeric (default = 2)
+        Minimum guider-based rest duration (hours) to be considered as possible extension of guider.
+      }
+      
+      \item{guider_cor_meme_frac_out}{
+        Numeric (default = 0.9)
+        Minimum required fraction of initial guider classification outside the 
+        median start to median end (abbreviated as meme) of the guider across days
+        to initiate search for secondary that falls within this window. 
+      }
+      
+      \item{guider_cor_meme_frac_in}{
+        Numeric (default = 0.4)
+        Minimum required fraction of alternative guider classification inside the
+        median start to median end (abbreviated as meme) of the guider across days 
+        to be considered the new guider window.
+      }
+      
+      \item{guider_cor_meme_min_hrs}{
+        Numeric (default = 1)
+        Minimum required duration of the alternative guider classification inside the
+        median start to median end (abbreviated as meme) of the guider across days 
+        to be considered the new guider window. 
+      }
+      
+      \item{guider_cor_do}{
+        Boolean (default = FALSE)
+        Whether to apply the guider correction algorithm as discussed in Chapter 9 of the online
+        documentation: https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html.
+        In short, when sleep is fragmented, algorithms to guide the detection of SPT such
+        as HDCZA may occassionally miss a part of the night or incorrectly consider a day 
+        time nap as the main sleep window in a day. This optional algorithm aims
+        to correct for such misclassifications.
+      }
+      
+      \item{guider_cor_meme_min_dys}{
+        Numeric (default = 3)
+        Minimum number of days required to consider median-median based step in the 
+        guider correction algorithm as controlled by parameter \code{guider_cor_meme_frac_out},
+        \code{guider_cor_meme_frac_in}, and \code{guider_cor_meme_min_hrs}.
+        This parameter is set to 3 by default as a median becomes only meaningful with
+        at least three values.
+      }
     }
   }
 
