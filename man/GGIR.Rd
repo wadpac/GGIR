@@ -1494,19 +1494,19 @@ GGIR(mode = 1:5,
         Numeric (default = 60).
         Angle threshold used for the HorAngle algorithm.
       }
-      
+
       \item{guider_cor_maxgap_hrs}{
-        Numeric (default = NULL).
+        Numeric (default = 2).
         Maximum gap duration in hours as used for the correction method.
       }
 
       \item{guider_cor_min_frac_sib}{
-        Numeric (default = 0.8)
+        Numeric (default = 0.5)
         Required fraction of guider-based rest period with sustained inactivity bouts (sib) to be considered as possible extension of guider.
       }
       
       \item{guider_cor_min_hrs}{
-        Numeric (default = 1)
+        Numeric (default = 2)
         Minimum guider-based rest duration (hours) to be considered as possible extension of guider.
       }
       
@@ -1525,7 +1525,7 @@ GGIR(mode = 1:5,
       }
       
       \item{guider_cor_meme_min_hrs}{
-        Numeric (default = 2)
+        Numeric (default = 1)
         Minimum required duration of the alternative guider classification inside the
         median start to median end (abbreviated as meme) of the guider across days 
         to be considered the new guider window. 
@@ -1533,7 +1533,12 @@ GGIR(mode = 1:5,
       
       \item{guider_cor_do}{
         Boolean (default = FALSE)
-        Whether to apply guider correction algorithm.
+        Whether to apply the guider correction algorithm as discussed in Chapter 9 of the online
+        documentation: https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html.
+        In short, when sleep is fragmented, algorithms to guide the detection of SPT such
+        as HDCZA may occassionally miss a part of the night or incorrectly consider a day 
+        time nap as the main sleep window in a day. This optional algorithm aims
+        to correct for such misclassifications.
       }
       
       \item{guider_cor_meme_min_dys}{
@@ -1814,20 +1819,15 @@ GGIR(mode = 1:5,
 
       \item{visualreport}{
         Boolean (default = TRUE).
-        If TRUE, store two visualreports in outputfolder 'results/file summary reports'
-        with names starting with \"old_report_...\" and 
-        \"report...\". The report \"old_report_...\" has been in GGIR for years 
-        and is based on combined output from GGIR part 2 and 4. It was initially only a
-        quick development attempt to have something to show to study participants back
-        in 2015.
-        This report is not designed for data quality checking purposes as it makes
-        no attempt to exactly visualise the classifications made in GGIR part 5.
-        Given the number of inaccuracies, this report
-        will eventually be deprecated from GGIR. To turn
-        off the old report use \code{old_visualreport = FALSE}.
-        \"report_...\", is a new report as
-        of GGIR 3.1-8 and is specifically aimed at supporting data quality checks 
-        as it shows the time series data as generated and used in GGIR part 5. }.
+        If TRUE, store a visualreport in outputfolder 'results/file summary reports'
+        for each recording. Note that this report was introduced in release 3.1-8 
+        and replaced an older visual report that had been in GGIR for many years.
+        The older report was only intended as a quick attempt to have 
+        something visual to show
+        to study participants back in 2015. It was not designed for data quality 
+        checking purposes. The new visual report is specifically aimed at 
+        supporting data quality checks as it shows the time series data as generated 
+        and used in GGIR part 5. }.
 
       \item{viewingwindow}{
         Numeric (default = 1).
@@ -1881,7 +1881,9 @@ GGIR(mode = 1:5,
       \item{old_visualreport}{
         Boolean (default = FALSE).
         If TRUE, then generate old visual report in addition to new visualreport.
-        The old visualreport will eventually be deprecated}
+        The old visualreport will eventually be deprecated and is not suitable for
+        data quality assessment, see documentation for \code{visualreport} above
+        for details.}
       
       \item{visualreport_hrsPerRow}{
         Numeric (default = 36).

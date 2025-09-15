@@ -261,11 +261,12 @@ These additional are only stored if you used a sleeplog that captures time in be
 
 | (Part of) variable name | Description |
 |--------------------------|----------------------------------------------|
-| guider_guider_inbedStart | Time of getting in bed |
-| guider_guider_inbedEnd | Time of getting out of bed |
+| guider_inbedStart | Time of getting in bed |
+| guider_inbedEnd | Time of getting out of bed |
 | guider_inbedDuration | Time in Bed: guider_inbedEnd - guider_inbedStart |
 | sleepefficiency | Sleep efficiency, calculated by one of two metrics as controlled by argument `sleepefficiency.metric`: SleepDurationInSpt / guider_inbedDuration (default) or SleepDurationInSpt / (SptDuration + latency) |
 | sleeplatency | Sleep latency, calculated as: sleeponset - guider_inbedStart |
+| guider_corrected | When using the guider correction algortihm with parameter `guider_cor_do` this output variable can have the following values: **0** means that the guider was not correct; **1** indicates that only basic expansion with neighboring windows was applied as done by step 4 of the algorithm; **2** indicates that main guider window was changes as done by step 3 of the algorithm, and; **3** indicates that both the main guider window was changed and the window was expanded. |
 
 ## Person level summaries (csv)
 

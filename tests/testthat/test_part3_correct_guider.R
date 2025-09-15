@@ -39,7 +39,9 @@ test_that("Guider that misses half of the night can be corrected", {
   params_sleep[["guider_cor_do"]] = TRUE # to run correction
   params_sleep[["guider_cor_maxgap_hrs "]] = Inf # to use max gap size
   params_sleep[["guider_cor_meme_min_dys"]] = Inf # to not do meme
-
+  params_sleep[["guider_cor_min_frac_sib"]]  = 0.8
+  params_sleep[["guider_cor_min_hrs"]]  = 1
+  params_sleep[["guider_cor_meme_min_hrs"]]  = 2
   SLE = g.part3_correct_guider(SLE, desiredtz, epochSize,
                                params_sleep = params_sleep)
   expect_equal(SLE$SPTE_start, c(22, 24))
@@ -98,7 +100,9 @@ test_that("Guider that focusses on afternoon nap can be corrected", {
   params_sleep[["guider_cor_do"]] = TRUE # to run correction
   params_sleep[["guider_cor_maxgap_hrs "]] = 3 # to use max gap size
   params_sleep[["guider_cor_meme_min_dys"]] = 3 # to not do meme
-  
+  params_sleep[["guider_cor_min_frac_sib"]]  = 0.8
+  params_sleep[["guider_cor_min_hrs"]]  = 1
+  params_sleep[["guider_cor_meme_min_hrs"]]  = 2
   SLE = g.part3_correct_guider(SLE, desiredtz, epochSize,
                                params_sleep = params_sleep)
   expect_equal(SLE$SPTE_start, c(25, 22, 26, 22))
