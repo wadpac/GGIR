@@ -488,7 +488,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     while (lastDay == FALSE) { #loop through windows
                       # Define indices of start and end of the day window (e.g. midnight-midnight, or waking-up or wakingup
                       defdays = g.part5.definedays(nightsi, wi, indjump,
-                                                   nightsi_bu, epochSize = ws3new, qqq_backup, ts, 
+                                                   epochSize = ws3new, qqq_backup, ts, 
                                                    timewindowi, Nwindows, qwindow = params_247[["qwindow"]],
                                                    ID = ID, dayborder = params_general[["dayborder"]])
                       qqq = defdays$qqq

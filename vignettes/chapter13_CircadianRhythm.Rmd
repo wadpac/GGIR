@@ -29,7 +29,7 @@ Further, part 6 offers a few additional circadian rhythm estimates such as DFA (
 
 MXLX looks for the continuous least (LX) and most (MX) active X hour window in a day, where X is defined by parameter `winhr`. For both LX and MX, GGIR calculates the average acceleration, the start time, and if argument `iglevels` is specified also the intensity gradient. If parameter `winhr` is a vector then MX and LX are derived for each value in the vector.
 
-Within GGIR part 2 MXLX is calculated per calendar day and, if argument `qwindow` is specified, per segment of the day. Within GGIR part 5 MXLX is calculated per [window](https://wadpac.github.io/GGIR/articles/chapter12_TimeUseAnalysis.html#defining-the-time-windows). If used in combination with the GENEActiv or Axivity accelerometer brands, LUX estimates per LX and MX are also included in GGIR part 5 csv reports.
+Within GGIR part 2 MXLX is calculated per calendar day and, if argument `qwindow` is specified, per segment of the day. Within GGIR part 6 MXLX is calculated per [window](https://wadpac.github.io/GGIR/articles/chapter12_TimeUseAnalysis.html#defining-the-time-windows). If used in combination with the GENEActiv or Axivity accelerometer brands, LUX estimates per LX and MX are also included in GGIR part 6 csv reports.
 
 The MX metric described here should not be confused by the MX metrics as proposed by [Rowlands et al.](https://doi.org/10.1186/s40798-019-0225-9) which looks at accumulated most active time which may not always be continuous in time. The MX metrics by Rowlands et al. are discussed [here](https://wadpac.github.io/GGIR/articles/chapter7_DescribingDataWithoutKnowingSleep.html#sets-of-quantiles-mx-metrics-by-rowlands-et-al-).
 

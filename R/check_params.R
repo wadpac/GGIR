@@ -39,11 +39,16 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "SRI1_smoothing_wsize_hrs",
                        "SRI1_smoothing_frac",
                        "spt_min_block_dur",
-                       "spt_max_gap_dur", "spt_max_gap_ratio", "HorAngle_threshold")
+                       "spt_max_gap_dur", "spt_max_gap_ratio", "HorAngle_threshold",
+                       "guider_cor_maxgap_hrs",
+                       "guider_cor_min_frac_sib", "guider_cor_min_hrs",
+                       "guider_cor_meme_frac_out",
+                       "guider_cor_meme_frac_in", "guider_cor_meme_min_hrs",
+                       "guider_cor_meme_min_dys")
     boolean_params = c("ignorenonwear", "HASPT.ignore.invalid",
                        "relyonguider", "sleeplogidnum",
                        "impute_marker_button", "consider_marker_button",
-                       "sib_must_fully_overlap_with_TimeInBed")
+                       "sib_must_fully_overlap_with_TimeInBed", "guider_cor_do")
     character_params = c("HASPT.algo", "HASIB.algo", "Sadeh_axis", "nap_model",
                          "sleeplogsep", "sleepwindowType", "loglocation")
     check_class("Sleep", params = params_sleep, parnames = numeric_params, parclass = "numeric")

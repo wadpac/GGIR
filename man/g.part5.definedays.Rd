@@ -8,7 +8,7 @@
   Defines when day windows start and end as part of \link{g.part5}.
 }
 \usage{
-  g.part5.definedays(nightsi, wi, indjump, nightsi_bu, 
+  g.part5.definedays(nightsi, wi, indjump,
                      epochSize, qqq_backup = c(), ts,
                      timewindowi, Nwindows, qwindow, ID = NULL,
                      dayborder = 0)
@@ -22,9 +22,6 @@
   }
   \item{indjump}{
     Number of indices to jump
-  }
-  \item{nightsi_bu}{
-    See argument \code{nightsi} this is a backup of this object
   }
   \item{epochSize}{
     Numeric epoch size in seconds
