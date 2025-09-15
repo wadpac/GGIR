@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -717,20 +717,20 @@ ENMO</td>
 </tr>
 <tr class="even">
 <td>ig_gradient_ENMO_0-24hr</td>
-<td>Gradient from intensity gradient analysis proposed by <a href="https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx" class="external-link">Rowlands
-et al. 2018</a> based on metric ENMO for the time segment 0 to 24
+<td>Gradient from intensity gradient analysis proposed by <a href="https://doi.org/10.1249/mss.0000000000001561" class="external-link">Rowlands et
+al. 2018</a> based on metric ENMO for the time segment 0 to 24
 hours</td>
 </tr>
 <tr class="odd">
 <td>ig_intercept_ENMO_0-24hr</td>
-<td>Intercept from intensity gradient analysis proposed by <a href="https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx" class="external-link">Rowlands
-et al. 2018</a> based on metric ENMO for the time segment 0 to 24
+<td>Intercept from intensity gradient analysis proposed by <a href="https://doi.org/10.1249/mss.0000000000001561" class="external-link">Rowlands et
+al. 2018</a> based on metric ENMO for the time segment 0 to 24
 hours</td>
 </tr>
 <tr class="even">
 <td>ig_rsquared_ENMO_0-24hr</td>
-<td>r squared from intensity gradient analysis proposed by <a href="https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx" class="external-link">Rowlands
-et al. 2018</a> based on metric ENMO for the time segment 0 to 24
+<td>r squared from intensity gradient analysis proposed by <a href="https://doi.org/10.1249/mss.0000000000001561" class="external-link">Rowlands et
+al. 2018</a> based on metric ENMO for the time segment 0 to 24
 hours</td>
 </tr>
 </tbody>
@@ -1118,11 +1118,11 @@ data. If either of these applies set argument
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td>guider_guider_inbedStart</td>
+<td>guider_inbedStart</td>
 <td>Time of getting in bed</td>
 </tr>
 <tr class="even">
-<td>guider_guider_inbedEnd</td>
+<td>guider_inbedEnd</td>
 <td>Time of getting out of bed</td>
 </tr>
 <tr class="odd">
@@ -1139,6 +1139,17 @@ latency)</td>
 <tr class="odd">
 <td>sleeplatency</td>
 <td>Sleep latency, calculated as: sleeponset - guider_inbedStart</td>
+</tr>
+<tr class="even">
+<td>guider_corrected</td>
+<td>When using the guider correction algortihm with parameter
+<code>guider_cor_do</code> this output variable can have the following
+values: <strong>0</strong> means that the guider was not correct;
+<strong>1</strong> indicates that only basic expansion with neighboring
+windows was applied as done by step 4 of the algorithm;
+<strong>2</strong> indicates that main guider window was changes as done
+by step 3 of the algorithm, and; <strong>3</strong> indicates that both
+the main guider window was changed and the window was expanded.</td>
 </tr>
 </tbody>
 </table>
@@ -1473,14 +1484,14 @@ the full window (<code>_day_spt_</code>)</td>
 </tr>
 <tr class="odd">
 <td><code>_intercept</code></td>
-<td>Intercept from intensity gradient analysis proposed by <a href="https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx" class="external-link">Rowlands
-et al. 2018</a> for the waking hours window (<code>_day_</code>) and for
+<td>Intercept from intensity gradient analysis proposed by <a href="https://doi.org/10.1249/mss.0000000000001561" class="external-link">Rowlands et
+al. 2018</a> for the waking hours window (<code>_day_</code>) and for
 the full window (<code>_day_spt_</code>)</td>
 </tr>
 <tr class="even">
 <td><code>_rsquared</code></td>
-<td>r squared from intensity gradient analysis proposed by <a href="https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx" class="external-link">Rowlands
-et al. 2018</a> for the waking hours window (<code>_day_</code>) and for
+<td>r squared from intensity gradient analysis proposed by <a href="https://doi.org/10.1249/mss.0000000000001561" class="external-link">Rowlands et
+al. 2018</a> for the waking hours window (<code>_day_</code>) and for
 the full window (<code>_day_spt_</code>)</td>
 </tr>
 </tbody>
