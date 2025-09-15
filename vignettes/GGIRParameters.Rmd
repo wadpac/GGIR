@@ -186,6 +186,14 @@ find a description and default value for all the arguments.
 | spt_max_gap_dur             | 3                 | params_sleep             |
 | spt_max_gap_ratio           | 3                 | params_sleep             |
 | HorAngle_threshold          | 3                 | params_sleep             |
+| guider_cor_maxgap_hrs       | 3                 | params_sleep             |
+| guider_cor_min_frac_sib     | 3                 | params_sleep             |
+| guider_cor_min_hrs          | 3                 | params_sleep             |
+| guider_cor_meme_frac_out    | 3                 | params_sleep             |
+| guider_cor_meme_frac_in     | 3                 | params_sleep             |
+| guider_cor_meme_min_hrs     | 3                 | params_sleep             |
+| guider_cor_do               | 3                 | params_sleep             |
+| guider_cor_meme_min_dys     | 3                 | params_sleep             |
 | loglocation                 | 4, 5              | params_sleep             |
 | colid                       | 4                 | params_sleep             |
 | coln1                       | 4                 | params_sleep             |
