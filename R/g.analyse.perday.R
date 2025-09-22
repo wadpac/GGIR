@@ -442,26 +442,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                                  "ExtHeartRate", myfun$colnames)
               
               if (isAccMetric == TRUE & length(ExtFunColsi) > 0) {
-                # Then also extract count metric
-                
                 varnum_event = as.numeric(as.matrix(vari[,ExtFunColsi]))
-                Ndatapoints = nrow(averageday)
-                if (NRV < Ndatapoints) {
-                  if (di == 1) {
-                    varnum_event = c(averageday[1:abs(deltaLength), ExtFunColsi], varnum_event)
-                  } else {
-                    a56 = Ndatapoints - abs(deltaLength)
-                    a57 = Ndatapoints
-                    varnum_event = c(varnum_event, averageday[a56:a57, ExtFunColsi])
-                  }
-                }
-                if (anwi_index != 1) {
-                  if (length(anwindices) > 0) {
-                    varnum_event = as.numeric(varnum_event[anwindices]) #cut short varnum_event to match day segment of interest
-                  } else {
-                    varnum_event = c()
-                  }
-                }
               }
               #=====
               gUnitMetric = length(grep(x = colnames(vari)[mi], pattern = "BrondCount|ZCX|ZCY|ZCZ|marker|NeishabouriCount|ExtAct|ExtHeartRate", invert = TRUE)) > 0
