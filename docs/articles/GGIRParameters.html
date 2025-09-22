@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,6 +71,8 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news">
 <li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-3-0/">Version 3.3-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-6/">Version 3.2-6</a></li>
     <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-0/">Version 3.2-0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-5/">Version 3.1-5</a></li>
     <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-0/">Version 3.1-0</a></li>
@@ -918,6 +920,46 @@ arguments.</p>
 <td>params_sleep</td>
 </tr>
 <tr class="even">
+<td>guider_cor_maxgap_hrs</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="odd">
+<td>guider_cor_min_frac_sib</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="even">
+<td>guider_cor_min_hrs</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="odd">
+<td>guider_cor_meme_frac_out</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="even">
+<td>guider_cor_meme_frac_in</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="odd">
+<td>guider_cor_meme_min_hrs</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="even">
+<td>guider_cor_do</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="odd">
+<td>guider_cor_meme_min_dys</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="even">
 <td>loglocation</td>
 <td>4, 5</td>
 <td>params_sleep</td>
@@ -1371,7 +1413,16 @@ place in a different timezone, then use this argument for the timezone
 in which the experiments took place and argument configtz to specify
 where the device was configured. Use the "TZ identifier" as specified at
 <a href="https://en.wikipedia.org/wiki/Zone.tab" class="external-link uri">https://en.wikipedia.org/wiki/Zone.tab</a> to set desiredtz,
-e.g., "Europe/London".</p>
+e.g., "Europe/London". As of GGIR 3.2-12, desiredtz is only configurable
+in GGIR part 1 and passed on to the following parts via de milestone
+data files stored by each part. This means that if you would run
+GGIR(mode = 2, desiredtz = “Europe/Berlin”) GGIR would ignore the
+timezone specification and rely on the timezone specified when part 1
+was processed specific to each recording. As a result, it is now
+possible to process part 1 separately with different timezones, then
+pool the milestone data into one output folder, and finally process all
+files jointly with the subsequent GGIR parts (2-6) which will
+automatically accounts for each individual’s file timezone.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="configtz">configtz<a class="anchor" aria-label="anchor" href="#configtz"></a>
@@ -2732,6 +2783,69 @@ HDCZA, HorAngle and NotWorn).</p>
 <p>Numeric (default = 60). Angle threshold used for the HorAngle
 algorithm.</p>
 </div>
+<div class="section level4">
+<h4 class="unnumbered" id="guider_cor_maxgap_hrs">guider_cor_maxgap_hrs<a class="anchor" aria-label="anchor" href="#guider_cor_maxgap_hrs"></a>
+</h4>
+<p>Numeric (default = 2). Maximum gap duration in hours as used for the
+correction method.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="guider_cor_min_frac_sib">guider_cor_min_frac_sib<a class="anchor" aria-label="anchor" href="#guider_cor_min_frac_sib"></a>
+</h4>
+<p>Numeric (default = 0.5) Required fraction of guider-based rest period
+with sustained inactivity bouts (sib) to be considered as possible
+extension of guider.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="guider_cor_min_hrs">guider_cor_min_hrs<a class="anchor" aria-label="anchor" href="#guider_cor_min_hrs"></a>
+</h4>
+<p>Numeric (default = 2) Minimum guider-based rest duration (hours) to
+be considered as possible extension of guider.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="guider_cor_meme_frac_out">guider_cor_meme_frac_out<a class="anchor" aria-label="anchor" href="#guider_cor_meme_frac_out"></a>
+</h4>
+<p>Numeric (default = 0.9) Minimum required fraction of initial guider
+classification outside the median start to median end (abbreviated as
+meme) of the guider across days to initiate search for secondary that
+falls within this window.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="guider_cor_meme_frac_in">guider_cor_meme_frac_in<a class="anchor" aria-label="anchor" href="#guider_cor_meme_frac_in"></a>
+</h4>
+<p>Numeric (default = 0.4) Minimum required fraction of alternative
+guider classification inside the median start to median end (abbreviated
+as meme) of the guider across days to be considered the new guider
+window.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="guider_cor_meme_min_hrs">guider_cor_meme_min_hrs<a class="anchor" aria-label="anchor" href="#guider_cor_meme_min_hrs"></a>
+</h4>
+<p>Numeric (default = 1) Minimum required duration of the alternative
+guider classification inside the median start to median end (abbreviated
+as meme) of the guider across days to be considered the new guider
+window.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="guider_cor_do">guider_cor_do<a class="anchor" aria-label="anchor" href="#guider_cor_do"></a>
+</h4>
+<p>Boolean (default = FALSE) Whether to apply the guider correction
+algorithm as discussed in Chapter 9 of the online documentation: <a href="https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html" class="uri">https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html</a>.
+In short, when sleep is fragmented, algorithms to guide the detection of
+SPT such as HDCZA may occassionally miss a part of the night or
+incorrectly consider a day time nap as the main sleep window in a day.
+This optional algorithm aims to correct for such misclassifications.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="guider_cor_meme_min_dys">guider_cor_meme_min_dys<a class="anchor" aria-label="anchor" href="#guider_cor_meme_min_dys"></a>
+</h4>
+<p>Numeric (default = 3) Minimum number of days required to consider
+median-median based step in the guider correction algorithm as
+controlled by parameter guider_cor_meme_frac_out,
+guider_cor_meme_frac_in, and guider_cor_meme_min_hrs. This parameter is
+set to 3 by default as a median becomes only meaningful with at least
+three values.</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="physical-activity-parameters">Physical activity Parameters<a class="anchor" aria-label="anchor" href="#physical-activity-parameters"></a>
@@ -3150,19 +3264,15 @@ TRUE.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="visualreport">visualreport<a class="anchor" aria-label="anchor" href="#visualreport"></a>
 </h4>
-<p>Boolean (default = TRUE). If TRUE, store two visualreports in
-outputfolder ‘results/file summary reports’ with names starting with
-"old_report_…" and "report…". The report "old_report_…" has been in GGIR
-for years and is based on combined output from GGIR part 2 and 4. It was
-initially only a quick development attempt to have something to show to
-study participants back in 2015. This report is not designed for data
-quality checking purposes as it makes no attempt to exactly visualise
-the classifications made in GGIR part 5. Given the number of
-inaccuracies, this report will eventually be deprecated from GGIR. To
-turn off the old report use old_visualreport = FALSE. "report_…", is a
-new report as of GGIR 3.1-8 and is specifically aimed at supporting data
-quality checks as it shows the time series data as generated and used in
-GGIR part 5. .</p>
+<p>Boolean (default = TRUE). If TRUE, store a visualreport in
+outputfolder ‘results/file summary reports’ for each recording. Note
+that this report was introduced in release 3.1-8 and replaced an older
+visual report that had been in GGIR for many years. The older report was
+only intended as a quick attempt to have something visual to show to
+study participants back in 2015. It was not designed for data quality
+checking purposes. The new visual report is specifically aimed at
+supporting data quality checks as it shows the time series data as
+generated and used in GGIR part 5. .</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="week_weekend_aggregate-part5">week_weekend_aggregate.part5<a class="anchor" aria-label="anchor" href="#week_weekend_aggregate-part5"></a>
@@ -3257,7 +3367,8 @@ sufficiently valid data according to includedaycrit when viewingwindow =
 </h4>
 <p>Boolean (default = FALSE). If TRUE, then generate old visual report
 in addition to new visualreport. The old visualreport will eventually be
-deprecated</p>
+deprecated and is not suitable for data quality assessment, see
+documentation for visualreport above for details.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="visualreport_hrsperrow">visualreport_hrsPerRow<a class="anchor" aria-label="anchor" href="#visualreport_hrsperrow"></a>
