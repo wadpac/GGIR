@@ -6,9 +6,11 @@ detectEventBouts = function(myfun, varnum_event, varnum,
   if ("ebout.th.acc" %in% names(myfun) == FALSE) myfun$ebout.th.acc = 50
   if ("ebout.criter" %in% names(myfun) == FALSE) myfun$ebout.criter = 0.8
   if ("ebout.condition" %in% names(myfun) == FALSE) myfun$ebout.condition = "AND"
+  if ("ebout.cad.perc" %in% names(myfun) == FALSE) myfun$ebout.cad.perc = c(50, 90)
   
   # varnum = metashort[anwindices, mi]
   cadence = varnum_event * (60/ws3)
+  track_bouts = rep(0, length(cadence))
   # Event bouts
   for (boutdur in myfun$ebout.dur) {
     boutduration = boutdur * (60/ws3) # per minute
@@ -23,6 +25,7 @@ detectEventBouts = function(myfun, varnum_event, varnum,
     getboutout = g.getbout(x = rr1, boutduration = boutduration,
                            boutcriter = myfun$ebout.criter,
                            ws3 = ws3)
+    track_bouts[which(getboutout == 1)] = 1
     # time spent in bouts in minutes
     eventbout = length(which(getboutout == 1)) / (60/ws3)
     eboutname = paste0("ExtFunEvent_Bout_totdur_E", ws3, "S_B", boutdur,
@@ -65,6 +68,25 @@ detectEventBouts = function(myfun, varnum_event, varnum,
     ds_names[fi] = ebout_varname;
     fi = fi + 1
   }
+  # Cadence distribution
+  if (1 %in% track_bouts) {
+    cad_bouts = cadence[which(track_bouts == 1)]
+    percentiles = quantile(x = cad_bouts, probs = myfun$ebout.cad.perc / 100)
+  } else {
+    percentiles = rep(NA, length(myfun$ebout.cad.perc))
+  }
+  daysummary[di, fi:(fi + length(percentiles) - 1)] = percentiles
+  ds_names[fi:(fi + length(percentiles) - 1)] = paste0("ExtFunEvent_Bout_cadp",
+                                                       myfun$ebout.cad.perc,
+                                                       "_E", ws3, "S_M",
+                                                       (myfun$ebout.criter  * 100),
+                                                       "%_cadT",myfun$ebout.th.cad,"_",
+                                                       myfun$ebout.condition,
+                                                       "_accT", myfun$ebout.th.acc,
+                                                       "_", boutnameEnding)
+  
+  fi = fi + length(percentiles)
+  #----------------------------
   invisible(list(daysummary = daysummary, ds_names = ds_names,
                  fi = fi, di = di))
 }
