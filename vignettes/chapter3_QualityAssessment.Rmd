@@ -116,10 +116,10 @@ Finally, if the recording starts or ends with a period of less than three hours 
 
 ### Implausible non-wear in the night
 
-In some recordings some part of sleep is incorrectly detected as non-wear. The acceleration signal is entirely
-without movement for at least an hour. We could address this by increasing the value of the non-wear detection window via the third value of parameter `windowsizes`, which by default is 3600 (seconds). However, this makes the algorithm insensitive to nonwear shorter than this length.
+In some recordings the nonwear detection algorithm, as described above, falsely detects a part of the night as nonwear. We investigate this as observed that the acceleration signal is entirely
+without movement for at least an hour. So, the signal truly looks as if the sensor was not worn. In theory we can sometimes address this by increasing the value of the non-wear detection window via the third value of parameter `windowsizes`, which by default is 3600 (seconds). However, this would make the algorithm insensitive to nonwear shorter than this length.
 
-As a possible solution GGIR offers the option to filte, meaning: ignore, any detected non-wear during the night that lasts less than the number of hours specified via parameter `nonwearFiltermaxHours`. The window over which this step is applied is set via parameter `nonwearFilterWindow`.
+As a possible solution, GGIR offers the option to filter out these periods, meaning: treat any detected non-wear lasting less than the number of hours specified via parameter `nonwearFiltermaxHours` as wear time. The time window over which this step is applied is set by parameter `nonwearFilterWindow`, e.g. `c(23, 7)` would refer to the window from 11pm to 7am.
 
 ## Clipping detection
 
