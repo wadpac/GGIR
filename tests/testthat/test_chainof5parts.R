@@ -209,7 +209,7 @@ test_that("chainof5parts", {
           part5_agg2_60seconds = TRUE, do.sibreport = TRUE, 
           iglevels = 1, timewindow = c("MM", "WW", "OO"),
           possible_nap_window = c(0, 24),
-          possible_nap_dur = c(0, 240),
+          possible_nap_dur = c(0, 15, 60, 240),
           possible_nap_edge_acc = Inf,
           possible_nap_gap = 0)
   sibreport_dirname = "output_test/meta/ms5.outraw/sib.reports"
@@ -224,11 +224,15 @@ test_that("chainof5parts", {
   
   expect_true(dir.exists(dirname))
   expect_true(file.exists(rn[1]))
-  expect_that(nrow(output),equals(5))
-  expect_that(ncol(output),equals(158))
-  expect_that(round(as.numeric(output$wakeup[2]), digits = 4), equals(36))
-  expect_that(as.numeric(output$dur_day_spt_min[4]), equals(1150)) # WW window duration
-  expect_that(as.numeric(output$dur_day_spt_min[5]), equals(1680)) # OO window duration
+  expect_equal(nrow(output), 5)
+  expect_equal(ncol(output), 164)
+  expect_equal(round(as.numeric(output$wakeup[2]), digits = 4), 36)
+  expect_equal(as.numeric(output$dur_day_spt_min[4]), 1150) # WW window duration
+  expect_equal(as.numeric(output$dur_day_spt_min[5]), 1680) # OO window duration
+  expect_equal(sum(as.numeric(output$dur_day_nap_bts_0_15_min)), 45)
+  expect_equal(sum(as.numeric(output$dur_day_nap_bts_15_60_min)), 0)
+  expect_equal(sum(as.numeric(output$dur_day_nap_bts_60_240_min)), 185)
+  
   dirname_raw = "output_test/meta/ms5.outraw/40_100_400"
   rn2 = dir(dirname_raw,full.names = TRUE, recursive = T)
   rn2_index = grep(pattern = "[.]csv", x = rn2, value = FALSE)
@@ -236,7 +240,13 @@ test_that("chainof5parts", {
   TSFILE = read.csv(rn2[rn2_index])
   expect_that(nrow(TSFILE),equals(2820))
   expect_equal(ncol(TSFILE), 13)
-  expect_equal(length(unique(TSFILE$class_id)), 11)
+  expect_equal(length(unique(TSFILE$sibdetection)), 4) # sleep and 2 levels of nap duration
+  expect_equal(length(unique(TSFILE$class_id)), 12)
+  legend_file = dir("output_test/meta/ms5.outraw", pattern = "behavioralcode", full.names = TRUE)
+  class_legend = read.csv(file = legend_file)
+  expect_equal(nrow(class_legend), 21)
+  expect_equal(grep(pattern = "day_nap_bts_15_60", x = class_legend$class_name), 20)
+  
   #GGIR
   suppressWarnings(GGIR(mode = c(2,3,4,5), datadir = fn, outputdir = getwd(),
                         studyname = "test", f0 = 1, f1 = 1,
