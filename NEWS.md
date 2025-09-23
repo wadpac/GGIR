@@ -8,7 +8,7 @@
 
 # CHANGES IN GGIR VERSION 3.3-0
 
-- Part 3: Adding option to incomplete detection of main sleep period or incorrect focus on daytime nap. The new algorithm comes with new parameters guider_cor_maxgap_hrs, guider_cor_min_frac_sib, guider_cor_min_hrs, guider_cor_meme_frac_out, guider_cor_meme_frac_in, guider_cor_meme_min_hrs #1307
+- Part 3: Adding option to auto-correct sleep guider that failed to detect the full main sleep period or incorrectly focused on a daytime nap. The new algorithm comes with new parameters guider_cor_maxgap_hrs, guider_cor_min_frac_sib, guider_cor_min_hrs, guider_cor_meme_frac_out, guider_cor_meme_frac_in, guider_cor_meme_min_hrs #1307
 
 # CHANGES IN GGIR VERSION 3.2-12
 
