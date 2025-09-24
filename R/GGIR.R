@@ -241,8 +241,9 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     random_message = sample(x = 1:3, size = 1)
     cat(paste0("\n   [Note #", random_message, "]"))
     if (random_message == 1) {
-      cat("\n   To help us track where GGIR was in the literature, post a link to your publication ")
-      cat("\n   in https://github.com/wadpac/GGIR/discussions/categories/show-and-tell")
+      cat("\n   To help us track where GGIR was used in the literature, ")
+      cat("\n   post a link to your publication in ")
+      cat("\n   https://github.com/wadpac/GGIR/discussions/categories/show-and-tell")
       cat("\n   or email it to v.vanhees@accelting.com")
     } else if (random_message == 2) {
       cat("\n   To make your research reproducible and interpretable always report:")
