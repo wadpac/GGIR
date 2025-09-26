@@ -664,9 +664,12 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   }
                 }
                 
-                if (length(ExtFunColsi) > 0) { # If events are detected with external function
-                  if (mi %in% ExtFunColsi == TRUE) { # INSERT HERE VARIABLES DERIVED WITH EXTERNAL FUNCTION
-                    if (length(rti) == 1 && myfun$reporttype[rti] == "event") {
+                if (length(ExtFunColsi_backup) > 0) { # If events are detected with external function
+                  # bout detection depends on access to non-wear bout variables
+                  # so, skip detection of event bouts when working with external function output
+                  if (mi %in% ExtFunColsi == FALSE) { # INSERT HERE VARIABLES DERIVED WITH EXTERNAL FUNCTION
+                    # if (length(rti) == 1 && myfun$reporttype[rti] == "event") {
+                    if (length(varnum_event) > 0) {
                       # Step bout detection
                       eventBouts = detectEventBouts(myfun, varnum_event = varnum_event,
                                                     varnum = varnum,
