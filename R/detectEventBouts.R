@@ -73,13 +73,13 @@ detectEventBouts = function(myfun, varnum_event, varnum,
     percentiles = rep(NA, length(myfun$ebout.cad.perc))
   }
   daysummary[di, fi:(fi + length(percentiles) - 1)] = percentiles
-  ds_names[fi:(fi + length(percentiles) - 1)] = paste0("ExtFunEvent_Bout_cadp",
+  ds_names[fi:(fi + length(percentiles) - 1)] = paste0("ExtFunEvent_cad_pctl",
                                                        myfun$ebout.cad.perc,
-                                                       "_E", ws3, "S_M",
+                                                       "_B",
                                                        (myfun$ebout.criter  * 100),
-                                                       "%_cadT",myfun$ebout.th.cad,"_",
+                                                       "%_cad",myfun$ebout.th.cad,
                                                        myfun$ebout.condition,
-                                                       "_accT", myfun$ebout.th.acc,
+                                                       "acc", myfun$ebout.th.acc,
                                                        "_", boutnameEnding)
   
   fi = fi + length(percentiles)
