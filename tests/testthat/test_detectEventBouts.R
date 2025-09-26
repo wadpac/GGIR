@@ -39,6 +39,6 @@ test_that("Detect bouts in events", {
   
   
   expect_equal(as.numeric(eventBouts$daysummary)[1:5], c(3.5, 1, 3.5, 0, 0))
-  expect_equal(eventBouts$ds_names[5], "ExtFunEvent_Bout_number_E5S_B5M100%_cadT30_AND_accT50__anyRandomText")
+  expect_equal(eventBouts$ds_names[5], "ExtFunEvent_number_B5M100%_cad30ANDacc50__anyRandomText")
   
 })
