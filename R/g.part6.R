@@ -96,7 +96,9 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   # Declare recording level functionality, which at the end of this g.part6 is either
   # applied to the file in parallel with foreach or serially with a loop
   main_part6_recordlevel = function(i, metadatadir = c(), f0 = c(), f1 = c(),
-                                    fnames.ms5raw, ffdone, EXT, verbose) {
+                                    fnames.ms5raw, ffdone, EXT, verbose,
+                                    params_general = c(), params_phyact = c(), params_247 = c(),
+                                    params_cleaning = c()) {
     if (length(ffdone) > 0) {
       if (length(which(ffdone == fnames.ms5raw[i])) > 0) {
         skip = 1 #skip this file because it was analysed before")
@@ -625,7 +627,9 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                      .export = functions2passon, .errorhandling = errhand) %myinfix% {
                                        tryCatchResult = tryCatch({
                                          main_part6_recordlevel(i, metadatadir, f0, f1,
-                                                                fnames.ms5raw, ffdone, EXT, verbose)
+                                                                fnames.ms5raw, ffdone, EXT, verbose,
+                                                                params_general, params_phyact, params_247,
+                                                                params_cleaning)
                                        })
                                        return(tryCatchResult)
                                      }
@@ -642,7 +646,9 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         if (verbose == TRUE) cat(paste0(i, " "))
         function_to_evaluate = expression(
           main_part6_recordlevel(i, metadatadir, f0, f1,
-                                 fnames.ms5raw, ffdone, EXT, verbose)
+                                 fnames.ms5raw, ffdone, EXT, verbose,
+                                 params_general, params_phyact, params_247,
+                                 params_cleaning)
         )
         if (params_general[["use_trycatch_serial"]] == TRUE) {
           tryCatch(
