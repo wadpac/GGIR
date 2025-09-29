@@ -165,7 +165,8 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                           recording_split_times = NULL,
                           recording_split_timeformat = "%d/%m/%Y %H:%M",
                           recording_split_overlap = 0,
-                          recording_split_ignore_edges = FALSE)
+                          recording_split_ignore_edges = FALSE,
+                          use_trycatch_serial = FALSE)
   }
   invisible(list(params_sleep = params_sleep,
                  params_metrics = params_metrics,

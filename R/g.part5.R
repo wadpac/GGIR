@@ -815,16 +815,37 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
       }
     }
   } else {
+    errors = list()
     for (i in f0:f1) {
       if (verbose == TRUE) cat(paste0(i, " "))
-      main_part5(i, metadatadir, f0, f1,
-                 params_sleep, params_metrics,
-                 params_247, params_phyact,
-                 params_cleaning, params_output,
-                 params_general, ms5.out, ms5.outraw,
-                 fnames.ms3, sleeplog, logs_diaries,
-                 referencefnames, folderstructure,
-                 fullfilenames, foldername, ffdone, verbose)
+      function_to_evaluate = expression(
+        main_part5(i, metadatadir, f0, f1,
+                   params_sleep, params_metrics,
+                   params_247, params_phyact,
+                   params_cleaning, params_output,
+                   params_general, ms5.out, ms5.outraw,
+                   fnames.ms3, sleeplog, logs_diaries,
+                   referencefnames, folderstructure,
+                   fullfilenames, foldername, ffdone, verbose)
+      )
+      if (params_general[["use_trycatch_serial"]] == TRUE) {
+        tryCatch(
+          eval(function_to_evaluate),
+          error = function(e) {
+            err_msg = conditionMessage(e)
+            errors[[as.character(fnames.ms3[i])]] <<- err_msg
+          }
+        )
+      } else {
+        eval(function_to_evaluate)
+      }
+    }
+    # show logged errors after the loop:
+    if (params_general[["use_trycatch_serial"]] == TRUE && verbose == TRUE) {
+      if (length(errors) > 0) {
+        cat(paste0("\n\nErrors in part 5... for:"))
+        cat(paste0("\n-", names(errors), ": ", unlist(errors), collapse = ""))
+      }
     }
   }
 }
