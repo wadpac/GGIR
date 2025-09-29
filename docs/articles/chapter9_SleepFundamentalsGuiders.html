@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,6 +71,8 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news">
 <li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-3-0/">Version 3.3-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-6/">Version 3.2-6</a></li>
     <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-0/">Version 3.2-0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-5/">Version 3.1-5</a></li>
     <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-0/">Version 3.1-0</a></li>
@@ -584,6 +586,154 @@ worn during the night. If this is used, the guider name in the output
 will be shown with “+invalid” at the end, e.g. “HDCZA+invalid”, to
 reflect that the guider was enhanced.</p></li>
 </ol>
+</div>
+<div class="section level2">
+<h2 id="automated-correction-of-acceleration-based-guiders">Automated correction of acceleration-based guiders<a class="anchor" aria-label="anchor" href="#automated-correction-of-acceleration-based-guiders"></a>
+</h2>
+<p>In our experience guiders that rely on accelerometer data such as
+HDCZA can struggle with the following scenarios:</p>
+<ul>
+<li>Unexpected large gaps in the main sleep window resulting, which are
+not tolerated and resulting in the detection of only one half of the
+sleep period time window.</li>
+<li>Sleep is fragmented and the person has a long nap in the middle of
+the day resulting in afternoon nap being labelled as the main sleep
+window.</li>
+</ul>
+<p>To address this an algorithm has been proposed. The algorithm is
+currently being optimised and this part of the documentation will be
+updated once the optimisation has been finalised. The algorithm has
+mainly been tested with the HDCZA guider and current default parameter
+values were optimised for one specific clinical study population.
+Therefore, the default correction algorithm configuration should be used
+with caution and we encourage you to help evaluate its appropriateness
+for various study populations and guider algorithms. Please note that
+the correction algorithm is only used for guiders that rely on
+accelerometer data, as present in GGIR part 3 such as HDCZA, and not for
+the sleeplogs.</p>
+<p>To turn on the correction algorithm set
+<code>guider_cor_do=TRUE</code>.</p>
+<div class="section level3">
+<h3 id="correction-algorithm">Correction algorithm<a class="anchor" aria-label="anchor" href="#correction-algorithm"></a>
+</h3>
+<p>The algorithm involves the following steps:</p>
+<ol style="list-style-type: decimal">
+<li>Apply default guider (e.g. HDCZA) to each night, but retain both the
+longest block and refer to it as the main guider window as well as all
+other candidate sleep blocks that are normally omitted.</li>
+<li>Identify min-max window running from the minimum sleep onset to
+maximum wakeup time from all main guider windows (longest block) across
+all nights in one recording.</li>
+<li>If there are at least 3 (parameter:
+<code>guider_cor_meme_min_dys</code>) valid nights:
+<ol style="list-style-type: lower-alpha">
+<li>Identify median-median window running from the median sleep onset
+until the median wakeup time from all main guider windows across all
+nights in one recording.</li>
+<li>Loop over valid nights and select an alternative main guider window
+if the default main guider window is &gt;90% outside the median-median
+window (parameter: <code>guider_cor_meme_frac_out</code>) and there is a
+secondary guider-identified sleep block that:
+<ol style="list-style-type: lower-roman">
+<li>overlaps &gt;40% with the median-median window (parameter:
+<code>guider_cor_meme_frac_in</code>)</li>
+<li>lasts at least 2 hours (parameter:
+<code>guider_cor_meme_min_hrs</code>)</li>
+<li>has at least 80% sustained inactivity bouts (parameter:
+<code>guider_cor_min_frac_sib</code>).</li>
+</ol>
+</li>
+<li>Identify min-max window (step 1) again but now based on the
+corrected main guider window from step 2b.</li>
+</ol>
+</li>
+<li>Loop over nights and expand the main guider window towards
+neighbouring guider-identified sleep blocks if those secondary sleep
+blocks:
+<ol style="list-style-type: lower-alpha">
+<li>Overlap with the min-max window (any duration).</li>
+<li>Lasts &gt; 1 hour (parameter: <code>guider_cor_min_hrs</code>).</li>
+<li>Have &gt; 80% sustained inactivity bouts (parameter:
+<code>guider_cor_min_frac_sib</code>).</li>
+<li>Are not separated from the main guider window by more than 3 hours
+(parameter: <code>guider_cor_maxgap_hrs</code>).</li>
+</ol>
+</li>
+</ol>
+<p>Step 3 comes with the assumption that the main sleep period typically
+takes place in the same part of the day within the same individual. If
+you disagree and would like to skip step 3 set parameter
+<code>guider_cor_meme_min_dys = Inf</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="tracing-whether-correction-algorithm-was-applied">Tracing whether correction algorithm was applied<a class="anchor" aria-label="anchor" href="#tracing-whether-correction-algorithm-was-applied"></a>
+</h3>
+<p>In the part4_nightsummary output (csv file) you will find a column
+named guider_corrected. This variable can have the following values:</p>
+<ul>
+<li>Value 0: Step 1 and 2 ran, but none of the conditions for step 3 and
+4 were met and no corrections were made.</li>
+<li>Value 1: Step 4 correction was made.</li>
+<li>Value 2: Step 3 correction was made.</li>
+<li>Value 3: Step 3 and 4 corrections were both made.</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="guidance-on-how-to-change-parameter-values">Guidance on how to change parameter values:<a class="anchor" aria-label="anchor" href="#guidance-on-how-to-change-parameter-values"></a>
+</h3>
+<table class="table">
+<colgroup>
+<col width="28%">
+<col width="9%">
+<col width="29%">
+<col width="32%">
+</colgroup>
+<thead><tr class="header">
+<th>Parameter</th>
+<th>Default</th>
+<th>Reduce risk of missing half of the night?</th>
+<th>Reduce risk of detecting daytime nap as main sleep window?</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>guider_cor_maxgap_hrs</td>
+<td>3</td>
+<td>Increase value</td>
+<td>NA</td>
+</tr>
+<tr class="even">
+<td>guider_cor_min_frac_sib</td>
+<td>0.8</td>
+<td>Decrease value</td>
+<td>NA</td>
+</tr>
+<tr class="odd">
+<td>guider_cor_min_hrs</td>
+<td>1</td>
+<td>Decrease value</td>
+<td>NA</td>
+</tr>
+<tr class="even">
+<td>guider_cor_meme_frac_out</td>
+<td>0.9</td>
+<td>NA</td>
+<td>Decrease value</td>
+</tr>
+<tr class="odd">
+<td>guider_cor_meme_frac_in</td>
+<td>0.4</td>
+<td>NA</td>
+<td>Decrease value</td>
+</tr>
+<tr class="even">
+<td>guider_cor_meme_min_hrs</td>
+<td>2</td>
+<td>NA</td>
+<td>Decrease value</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

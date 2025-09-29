@@ -94,6 +94,10 @@ navbar:
 news:
   cran_dates: TRUE
   releases:
+  - text: "Version 3.3-0"
+    href: https://www.accelting.com/ggir-release-3-3-0/
+  - text: "Version 3.2-6"
+    href: https://www.accelting.com/ggir-release-3-2-6/
   - text: "Version 3.2-0"
     href: https://www.accelting.com/ggir-release-3-2-0/
   - text: "Version 3.1-5"
