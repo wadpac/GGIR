@@ -15,7 +15,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
   params_metrics = params$params_metrics
   params_general = params$params_general
   params_output = params$params_output
-
+  
   checkMilestoneFolders(metadatadir, partNumber = 3)
   #------------------------------------------------------
   fnames = dir(paste(metadatadir,"/meta/ms2.out", sep = ""))
@@ -149,7 +149,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
       }
     }
   }
-
+  
   if (params_general[["do.parallel"]] == TRUE) {
     cores = parallel::detectCores()
     Ncores = cores[1]
@@ -202,7 +202,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                                      })
                                      return(tryCatchResult)
                                    }
-
+    
     on.exit(parallel::stopCluster(cl))
     for (oli in 1:length(output_list)) { # logged error and warning messages
       if (is.null(unlist(output_list[oli])) == FALSE) {
@@ -211,12 +211,33 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
       }
     }
   } else {
+    errors = list()
     for (i in f0:f1) {
       if (verbose == TRUE) cat(paste0(i, " "))
-      main_part3(i, metadatadir, f0, f1, myfun,
-                 params_sleep, params_metrics,
-                 params_output,
-                 params_general, fnames, ffdone, verbose)
+      function_to_evaluate = expression(
+        main_part3(i, metadatadir, f0, f1, myfun,
+                   params_sleep, params_metrics,
+                   params_output,
+                   params_general, fnames, ffdone, verbose)
+      )
+      if (params_general[["use_trycatch_serial"]] == TRUE) {
+        tryCatch(
+          eval(function_to_evaluate),
+          error = function(e) {
+            err_msg = conditionMessage(e)
+            errors[[as.character(fnames[i])]] <<- err_msg
+          }
+        )
+      } else {
+        eval(function_to_evaluate)
+      }
+    }
+    # show logged errors after the loop:
+    if (params_general[["use_trycatch_serial"]] == TRUE && verbose == TRUE) {
+      if (length(errors) > 0) {
+        cat(paste0("\n\nErrors in part 3... for:"))
+        cat(paste0("\n-", names(errors), ": ", unlist(errors), collapse = ""))
+      }
     }
   }
 }
