@@ -641,12 +641,33 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         }
       }
     } else {
+      errors = list()
       for (i in f0:f1) {
         if (verbose == TRUE) cat(paste0(i, " "))
-        main_part6_recordlevel(i, metadatadir, f0, f1,
-                               fnames.ms5raw, ffdone, EXT, verbose,
-                               params_general, params_phyact, params_247,
-                               params_cleaning)
+        function_to_evaluate = expression(
+          main_part6_recordlevel(i, metadatadir, f0, f1,
+                                 fnames.ms5raw, ffdone, EXT, verbose,
+                                 params_general, params_phyact, params_247,
+                                 params_cleaning)
+        )
+        if (params_general[["use_trycatch_serial"]] == TRUE) {
+          tryCatch(
+            eval(function_to_evaluate),
+            error = function(e) {
+              err_msg = conditionMessage(e)
+              errors[[as.character(fnames.ms5raw[i])]] <<- err_msg
+            }
+          )
+        } else {
+          eval(function_to_evaluate)
+        }
+      }
+      # show logged errors after the loop:
+      if (params_general[["use_trycatch_serial"]] == TRUE && verbose == TRUE) {
+        if (length(errors) > 0) {
+          cat(paste0("\n\nErrors in part 6... for:"))
+          cat(paste0("\n-", names(errors), ": ", unlist(errors), collapse = ""))
+        }
       }
     }
   }
