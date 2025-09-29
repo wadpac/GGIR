@@ -220,7 +220,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                    params_output,
                    params_general, fnames, ffdone, verbose)
       )
-      if (params_general[["use_trycatch"]] == TRUE) {
+      if (params_general[["use_trycatch_serial"]] == TRUE) {
         tryCatch(
           eval(function_to_evaluate),
           error = function(e) {
@@ -233,7 +233,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
       }
     }
     # show logged errors after the loop:
-    if (params_general[["use_trycatch"]] == TRUE) {
+    if (params_general[["use_trycatch_serial"]] == TRUE) {
       if (length(errors) > 0) {
         cat(paste0("\n\nErrors in part 3... for:"))
         for (e in 1:length(errors)) {

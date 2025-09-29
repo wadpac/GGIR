@@ -38,7 +38,7 @@ find a description and default value for all the arguments.
 | overwrite                   | 1, 2, 3, 4, 5     | params_general           |
 | do.parallel                 | 1, 2, 3, 5        | params_general           |
 | maxNcores                   | 1, 2, 3, 5        | params_general           |
-| use_trycatch                | 1, 2, 3, 5, 6     | params_general           |
+| use_trycatch_serial         | 1, 2, 3, 5, 6     | params_general           |
 | myfun                       | 1, 2, 3           | not in parameter objects |
 | outputdir                   | 1                 | not in parameter objects |
 | studyname                   | 1                 | not in parameter objects |
