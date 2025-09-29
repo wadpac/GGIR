@@ -1,10 +1,15 @@
-# CHANGES IN GGIR VERSION 3.2-?
+# CHANGES IN GGIR VERSION 3.3-?
 
 - Part 5: Add option to distinguish multiple nap duration categories similar to physical activity bout duration categories. #967
 
 - Part 2: Parameter nonwearFilterWindow can now also use diary path directly, which now allows for filtering based on a one or specific diary while qwindow can be used for day segment analysis #1373
 
 - Part 5: Add boolean parameter nap_overwrite_behaviourclass to control whether behaviour class or overwritten by naps #967.
+
+- Part 6: Fixed bug #1400 triggering an error when running part 6 with do.parallel = TRUE.
+
+- Error handling: Added parameter "use_trycatch_serial" to optionally log file-level errors without interrupting GGIR when "do.parallel = FALSE". #1308
+
 
 # CHANGES IN GGIR VERSION 3.3-0
 
