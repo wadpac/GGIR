@@ -471,12 +471,10 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
       }
     }
     # show logged errors after the loop:
-    if (params_general[["use_trycatch_serial"]] == TRUE)  {
+    if (params_general[["use_trycatch_serial"]] == TRUE && verbose == TRUE) {
       if (length(errors) > 0) {
         cat(paste0("\n\nErrors in part 1... for:"))
-        for (e in 1:length(errors)) {
-          cat(paste0("\n- ", names(errors)[e], ": ", errors[[e]]))
-        }
+        cat(paste0("\n-", names(errors), ": ", unlist(errors), collapse = ""))
       }
     }
   }
