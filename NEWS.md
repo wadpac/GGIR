@@ -1,5 +1,7 @@
 # CHANGES IN GGIR VERSION 3.3-?
 
+- Part 2: Replaces QC plot as pdf file by QC plots as png file per recording to help speed up report generation #1402
+
 - Part 6: Fixed bug #1400 triggering an error when running part 6 with do.parallel = TRUE.
 
 - Error handling: Added parameter "use_trycatch_serial" to optionally log file-level errors without interrupting GGIR when "do.parallel = FALSE". #1308

@@ -65,6 +65,12 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
     }
   }
   ffdone = dir(paste0(metadatadir,ms2.out))
+  if (params_output[["do.part2.pdf"]] == TRUE) {
+    QC_plotfolder = paste0(metadatadir, "/results/QC/plots")
+    if (!dir.exists(QC_plotfolder)) {
+      dir.create(QC_plotfolder)
+    }
+  }
   #---------------------------------
   # house keeping variables
   pdfpagecount = 1 # counter to keep track of files being processed (for pdf)
@@ -194,7 +200,21 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                        acc.metric = params_general[["acc.metric"]],
                        ID = ID, qwindowImp = qwindowImp)
         
-        if (params_cleaning[["do.imp"]] == FALSE) { #for those interested in sensisitivity analysis
+        if (params_output[["do.part2.pdf"]] == TRUE & length(IMP) > 0) {
+          Ndays = (nrow(M$metalong) * M$windowsizes[2]) / (3600 * 24)
+          if (params_cleaning[["maxdur"]] != 0) {
+            durplot = params_cleaning[["maxdur"]]
+          } else {
+            durplot = 7 #how many DAYS to plot? (only used if maxdur is not specified as a number above zero)
+          }
+          IDname = gsub(pattern = "meta_|[.]bin|[.]RData|[.]csv|[.]gt3x", replacement = "", x = fnames[i])
+          png(paste0(QC_plotfolder, "/plot_", IDname, ".png"),
+              width = 7, height = 7, units = "in", res = 300)
+          g.plot(IMP, M, I,
+                 durplot = ifelse(test = Ndays > durplot, yes = Ndays, no = durplot))
+          dev.off()
+        }
+        if (params_cleaning[["do.imp"]] == FALSE) { #for those interested in sensitivity analysis
           IMP$metashort = M$metashort
           # IMP$metalong = M$metalong
         }
