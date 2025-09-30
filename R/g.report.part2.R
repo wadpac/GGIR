@@ -33,30 +33,33 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(),
       M = c()
       fname2read = paste0(path, fnames[i])
       try(expr = {load(fname2read)}, silent = TRUE) #reading RData-file
+      # Checks for availability of file and data
       if (length(M) == 0) {
-        warning(paste0("g.report2: Struggling to read: ",fname2read)) #fnames[i]
+        warning(paste0("g.report2: Struggling to read: ", fname2read)) #fnames[i]
       }
       fname = as.character(unlist(strsplit(fnames[i],"eta_"))[2])
       selp = which(fnames.ms2 == fname)
       if (length(selp) == 0 ) {
         if (verbose == TRUE) cat(paste0("File ",fname," not available in part 2"))
       }
-      if (M$filecorrupt == FALSE & M$filetooshort == FALSE & length(selp) > 0) { #If part 1 milestone data indicates that file was useful
+      # If part 1 milestone data indicates that file was useful
+      # try loading part 2
+      if (M$filecorrupt == FALSE & M$filetooshort == FALSE & length(selp) > 0) { 
         # Load part 2 data
         IMP = c()
         fname2read = paste0(metadatadir, ms2.out, "/", fnames.ms2[selp])
         try(expr = {load(file = fname2read)}, silent = TRUE)
+        # Checks for availability of file and data
         if (length(IMP) == 0) {
           warning(paste0("g.report2: Struggling to read: ",fname2read))
         }
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
           if (i == 1 | i == f0) {
             SUMMARY = SUM$summary
-            SUM$summary = SUMMARY
             daySUMMARY = SUM$daysummary
           } else {
             bind_with_prev_data = function(df1, df2) {
-              df1 = data.table::rbindlist(list(df1, df2), fill=TRUE)
+              df1 = data.table::rbindlist(list(df1, df2), fill = TRUE)
               df1 = as.data.frame(df1)
               return(df1)
             }
