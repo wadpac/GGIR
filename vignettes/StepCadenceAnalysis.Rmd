@@ -117,14 +117,10 @@ Columns names related to detect bouts start with the word **Bout_**, e.g. "Bout_
 - The setting of parameter **ebout.condition** is directly copied into the variable name as **AND** or **OR**.
 
 
-## Summary of how to use the new functionality
-
-Below you can find an integrated example of how to use the functionality.
+## Integrated example of how R script may look like
 
 ```
-verisense_count_steps = "C:/verisense_count_steps.R"
-
-myfun = list(FUN = verisense_count_steps,
+myfun = list(FUN = "C:/verisense_count_steps.R",
              parameters = c(4, 4, 20, -1.0, 4, 4, 0.01, 1.25),
              expected_sample_rate = 15,
              expected_unit = "g",
@@ -141,29 +137,21 @@ myfun = list(FUN = verisense_count_steps,
              ebout.th.acc = 50, # event bout threshold for acceleration
              ebout.criter = 0.8, # event bout criteria (same as boutcriter)
              ebout.condition = "AND") # event bout logic (see below)
+```
+ 
+Next, use GGIR as you normally would but add the `myfun` object as parameter. For example:
 
-
-# Next, use GGIR as you normally would but add the myfun object as parameter. For example:
+```
 GGIR(# general parameters:
      mode = 1:2,
      outputdir = outputdir, # specify your output directory
      datadir = datadir, # specify your input directory
-     do.parallel = FALSE,
-     overwrite = TRUE,
      do.report = 2,
      
      # specify myfun object:
      myfun = myfun, # this is the myfun object specified above
      
-     # parameter used to trigger daysegment analysis
+     # GGIR parameter used that affect step/cadence analysis
      qwindow = c(0, 14, 24),
-     
-     # other parameters you may use for GGIR unrelated to step/cadence analyses
-     iglevels = TRUE,
-     qlevels = c(0.75, 0.8),
-     winhr = c(5, 10), 
-     qM5L5 = c(0.8, 0.9),
-     visualreport = FALSE,
-     desiredtz = "US/Pacific",
-     includedaycrit = 12) 
+     winhr = c(5, 10)) 
 ```
