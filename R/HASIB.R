@@ -21,6 +21,9 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
         x_matrix[((Nz - ((Ncol - 1) - jj)):Nz) + (Ncol - 1), jj] = tail(x, 1)
       }
     }
+    # Remove redundant rows at start and end
+    Nremove = ceiling(Ncol / 2)
+    x_matrix = x_matrix[Nremove:(nrow(x_matrix) - (Nremove - 1)),]
     return(x_matrix)
   }
   
@@ -95,7 +98,6 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
         Countpermin = ifelse(test = Countpermin > 300, yes = 300, no = Countpermin)
       }
       Countpermin_matrix = create_rollfun_mat(Countpermin, Ncol = 11)
-      Countpermin_matrix = Countpermin_matrix[11:(nrow(Countpermin_matrix) - 10),]
       CalcSadehFT = function(x) {
         MeanW5 = mean(x, na.rm = TRUE)
         SDlast = sd(x[6:11]) #last five in this matrix means columns 6:11
@@ -156,7 +158,6 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
       CountperWindow = CountperWindow / 6 
       # Prepare matrix to ease applying weights
       CountperWindow_matrix = create_rollfun_mat(CountperWindow, Ncol = 7)
-      CountperWindow_matrix = CountperWindow_matrix[7:(nrow(CountperWindow_matrix) - 6),]
       # Apply weights
       CKweights = c(67, 74, 230, 76, 58, 54, 106) # reversed to match order of matrix
       PS = 0.001 * (CountperWindow_matrix %*% CKweights)
@@ -245,7 +246,6 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
       # Apply coefficients to estimate sleep
       Noak = length(oakley_coef)
       counts_matrix = create_rollfun_mat(counts, Ncol = Noak)
-      counts_matrix = counts_matrix[Noak:(nrow(counts_matrix) - (Noak - 1)),]
       PS = counts_matrix %*% oakley_coef
       rm(counts_matrix)
       PSscores = rep(0, length(PS))
