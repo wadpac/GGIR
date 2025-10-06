@@ -7,15 +7,104 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-Enhancing the step detection integration in GGIR
-Verisense algorithm offers steps per epoch, e.g. 5 second, from which we can derive cadence. Next, we can describe them:
-•	per acceleration level, e.g. between 0 and 100 mg, between 100 and 250 mg.
-•	per cadence level, e.g. between 0 and 80 steps per minute.
-•	via their percentile (quantile, e.g. 0.5 would be the median)
-•	event bout (which you could interpret as a walking bout), which we define based on duration, minimum candece level AND/OR minimum acceleration level and the fraction of the bout for which these criteria need to be met. In that sense we do the reverse of what others have done, we first detect steps and then define walking bouts based on specific criteria on sequences of steps.
+GGIR facilitates the embedding of external algorithms. GGIR applies these algorithms to the raw data and then treats the algorithm output as alongside the information GGIR extracts from the data. This functionality is discussed in the [Annex Embedding external functions in GGIR](https://wadpac.github.io/GGIR/articles/ExternalFunction.html).
 
-1.	How to use the new functionality
-The functionality is part of the external function embedding functionality as documented here, where you can now provide addition objects. See comments below to clarify what the new objects/arguments do.
+When the external function is a step detection function, we expect you to set parameter `reporttype="event"`. Next, will automatically run an analysis tailored to event type data such as steps.
+-	The step bout detection functionality automatically uses the acceleration metrics specified by the user. So, if you want to try it out with both ENMO, ENMOa, and MAD metric then that should work.
+
+Below you will find and overview of all extracted information.
+
+## Per time segment
+
+All outcomes discussed on this page are derived as summary per day and per recording stored in `results/part2_dayeventsummary.csv` and `results/part2_eventsummary.csv`, respectively. The column name extensions `AD_`, `WD_`, `WE_`,`WWD_`, and `WWE_` in `part2_eventsummary.csv` have the same meaning as in the [other part 2 output](https://wadpac.github.io/GGIR/articles/chapter7_DescribingDataWithoutKnowingSleep.html?q=WWD#related-output).
+
+When you use GGIR's [day segment analysis functionality](https://wadpac.github.io/GGIR/articles/TutorialDaySegmentAnalyses.html) the outcomes are also derived per time segment of the day. The time segment for which a variable is derived is clarified in the ending of a column name as `_startHour-endHourhr`. For example, `_0-14hr` indicates that the variable was extracted from data between midnight and 14:00.
+
+## Steps count and cadence
+
+Total step count is stored with `tot_step_count` in the column name. Cadence is derived in the unit steps per minute, even if the epoch size for step detection is not 1 minute. Cadence is abbreviated as `cad` in the column name.
+
+**Note: ** [Chapter 6](https://wadpac.github.io/GGIR/articles/chapter6_DataImputation.html) discusses how acceleration metrics are imputed based on a mean of valid time points on other days of the recording. For steps and cadence this would be problematic as the average between walking and non-walking is not informative. Therefore, imputation is done by the median instead and by that represents typical stepping behaviour at that time of the day.
+
+## Stratified by acceleration and/or cadence level
+
+### Per acceleration level
+
+As discussed in [Chapter 7](https://wadpac.github.io/GGIR/articles/chapter7_DescribingDataWithoutKnowingSleep.html) accelerometer data can be described in terms of acceleration levels. As such, we can also describe step count and cadence per acceleration level.
+
+**How to do this:**
+
+We do this by providing the `myfun` object, which is an R list, with a numeric vector with the acceleration values provide as object `ilevels`, e.g. `ilevels= c(0, 50)`.
+
+**Output:**
+
+- Mean cadence for the acceleration range 0-50 m_g_ when working with acceleration metric `ENMO` will be stored with column name `mn_cad_acc0-50mg_ENMO`. Note: The step bout detection functionality automatically uses the acceleration metrics specified by the user. So, if you want to try it out with both ENMO, ENMOa, and MAD metric then that should work.
+
+- Total step count for the acceleration range 0-50m_g_ when working with acceleration metric `ENMO` will be stored with column name `tot_step_count_acc0-50mg_ENMO`.  
+
+
+### Per cadence level with absolute thresholds
+
+Similarly, we can also describe the data based on cadence level and use absolute cadence thresholds. 
+
+**How to do this:**
+
+We do this by providing the `myfun` object, which is an R list, with the items `clevels`, e.g. `clevels = c(0, 30, 120)`.
+
+**Output:**
+
+- Total step count for the cadence range 0-30spm will be stored with column name `tot_step_count_cad0-30spm`.
+- Time spent in the cadence range 0-30spm will be stored with column name `dur_cad0-30spm`
+- Mean acceleration in the cadence range 0-30spm will be stored with column name `mn_ENMO_cad0-30spm`
+
+### Per cadence level with relative thresholds
+
+Instead of setting absolute thresholds to define cadence levels we can use percentiles.
+
+**How to do this:**
+
+We do this by providing the `myfun` object, which is an R list, with the items `qlevels`, e.g. `qlevels = c(0.5, 0.9)`.
+
+**Output:**
+
+- Cadence value for the 50th percentile of the candence distribution, e.g. `cad_p50` for `qlevels = 0.5` and `cad_p90` for `qlevels = 0.9`.
+
+## Walking bouts
+
+Similar to the detection of physical activity bouts as discussed in [Chapter 11](https://wadpac.github.io/GGIR/articles/chapter11_DescribingDataCutPoints.html) we can try to detect bouts of stepping behaviours.
+
+In GGIR we define these based on duration, minimum cadence AND/OR minimum acceleration and the fraction of the bout for which these criteria need to be met.
+
+**How to do this:**
+
+We do this by providing the `myfun` object, which is an R list, where add the following items:
+
+- `ebout.dur` a numeric vector of length 1 or larger with the minimum bout duration(s) of interest, e.g. `ebout.dur = c(1, 5, 10)`.
+- `ebout.th.cad` a single number being the minimum cadence value in steps per minute, e.g. `ebout.th.cad = 30`.
+- `ebout.th.acc` a single number being the minimum acceleration value in steps per minute, e.g. `ebout.th.acc = 50`.
+- `ebout.criter` a fraction of 1 being the faction of a bout for which the inclusion criteria need to be met identical to `boutcriter` in the context of physical activity bouts, e.g. `ebout.criter = 0.8`.
+- `ebout.condition` whether cadence and acceleration condition are both required (`ebout.condition = "AND"`) or either of the conditions is required (`ebout.condition = "OR"`). If both cadence and acc need to meet a thresholds then fill in “AND”. If it also acceptable if only one of the thresholds is met then fill in “OR”. If you do not want cadence or acceleration to be used in the equation then simply set ebout.th.cad = 0 or ebout.th.acc = 0.
+
+**Output:**
+
+Columns names related to detect bouts start with the word `Bout_`, e.g.  `Bout_meandur_E5S_B10M80%_cadT30_AND_accT50_ENMO`, `Bout_number_E5S_B5M80%_cadT30_AND_accT50_ENMO` or `Bout_totdur_E5S_B5M80%_cadT30_AND_accT50_ENMO`.
+
+- Average bout duration is indicated with `Bout_meandur_` in the column name.
+- The total duration is indicated with `Bout_totdur_` in the column name.
+- The number of bouts is indicated with `Bout_number_` in the column name.
+- Underlying epoch size is indicated with `E5S` in the column name where `5S` would refer to a 5sec epochs.
+- Minimum bout duration is indicated with `B10M` in the column name where `10M`would refer to a 10 minutes.
+- The minimum fraction for which the bout conditions need to be met is indicated as a percentage  in the column name, e.g. `80%`.
+- The miminum cadence and acceleration vallues are presented in the column name as`cadT30` and `accT50_ENMO` when using a 30 and 50 thresholds, respectively. 
+- The setting of parameter `ebout.condition` is directly copied into the variable name as `AND` or `OR`.
+
+
+## Summary of how to use the new functionality
+
+Below you can find an integrated example of how to use the functionality.
+
+```
+verisense_count_steps = "C:/verisense_count_steps.R"
 
 myfun = list(FUN = verisense_count_steps,
              parameters = c(4, 4, 20, -1.0, 4, 4, 0.01, 1.25),
@@ -24,7 +113,7 @@ myfun = list(FUN = verisense_count_steps,
              colnames = "step_count",
              outputres = 1, minlength = 1,
              outputtype = "numeric",
-aggfunction = sum, # aggregate step by taking sum
+             aggfunction = sum, # aggregate step by taking sum
              timestamp = F, reporttype = "event",
              ilevels = c(0, 100, 250), # acceleration levels to be used
              clevels = c(0, 80, 100, 120), # cadence levels to be used
@@ -35,9 +124,8 @@ aggfunction = sum, # aggregate step by taking sum
              ebout.criter = 0.8, # event bout criteria (same as boutcriter)
              ebout.condition = "AND") # event bout logic (see below)
 
-event bout logic: If both cadence and acc need to meet a thresholds then fill in “AND”. If it also acceptable if only one of the thresholds is met then fill in “OR”. If you do not want cadence or acceleration to be used in the equation then simply set ebout.th.cad = 0 or ebout.th.acc = 0.
 
-Next, use GGIR as you normally do with step detection by specifying the myfun object. For example:
+# Next, use GGIR as you normally do with step detection by specifying the myfun object. For example:
 GGIR(mode = 1:2,
      outputdir = outputdir, # specify your output directory
      iglevels = TRUE,
@@ -45,46 +133,12 @@ GGIR(mode = 1:2,
      datadir = datadir, # specify your input directory
      qlevels = c(0.75, 0.8), 
      overwrite = TRUE,
-     do.report = c(2),
+     do.report = 2,
      qwindow = c(0, 14, 24),
      myfun = myfun, # this is the myfun object specified above
      winhr = c(5, 10), 
      qM5L5 = c(0.8, 0.9),
-     segmentDAYSPTcrit.part5 = c(0, 0.9),
      visualreport = FALSE,
      desiredtz = "US/Pacific",
      includedaycrit = 12) 
-3.	Output files
-GGIR will store the following output files:
-
- 
-As you see the step reports are stored with the term “event” summaries, one with summaries per day and one with summaries per recording. I have oriented all code to the summarising “events” in general, which in our case are steps. I have done this to make the code sufficiently generic to be re-used for other event-detection algorithms in the future. For example, people may be interested in fall detection or scratch detection at some point. I do not have algorithms for those but at least we avoid having to do double work if/when those algorithms become available.
-If you think this is confusing then I can add the option for you as user to specify the desired name of the output file.  For example, by having a myfun object called name = “step”, which is then used instead of the term “event”.
-
-4.	Variable name clarification
-Disclaimer 1:  I am aware that the bout variable names are now unpractically long, so we may need to think about a way to shorten them.
-
-Disclaimer 2: The example above generated 168 variables (columns) in the day eventsummary. Below I have only highlighted the most unique names which hopefully clarify how all variables names can be interpreted.
-
-1.	Bout_meandur_E5S_B10M80%_cadT30_AND_accT50_ENMO_0-14hr: Average bout duration, based on 5sec epochs, lasting at least 10 minutes where at least 80% of the epochs meet the bout criteria which in this case is at least a cadence of 30 and an acceleration of 50 with metric ENMO, between midnight and 2pm. (Note that AND will be OR if you specified that in the myfun object).
-2.	Bout_meandur_E5S_B1M80%_cadT30_AND_accT50_ENMO_0-14hr: See previous but now for bouts lasting 1 minute or longer
-3.	Bout_meandur_E5S_B5M80%_cadT30_AND_accT50_ENMO_0-14hr: See previous but now for bouts lasting 5 minutes or longer
-4.	Bout_number_E5S_B5M80%_cadT30_AND_accT50_ENMO_0-14hr: Same as above but now focussed on the number of bouts.
-5.	Bout_totdur_E5S_B5M80%_cadT30_AND_accT50_ENMO_0-14hr: Same as previous but now focussed on total duration of time spent in bouts.
-6.	cad_p50_0-14hr: Cadence 50th percentile between midnight and 2pm
-7.	cad_p90_0-14hr: Cadence 90th percentile between midnight and 2pm
-8.	dur_cad0-30spm_0-14hr: Time spent in cadence 0-30 steps per minute between midnight and 2pm
-9.	dur_cadatleast50spm_0-14hr: Time spent in cadence of at least 50 steps per minute between midnight and 2pm
-10.	mn_cad_0-14hr: Mean cadence between midnight and 2pm
-11.	mn_cad_acc0-50mg_ENMO_0-14hr: Mean cadence for this specific acceleration value range and time window
-12.	mn_cad_cad0-30spm_0-14hr: Mean cadence for this specific cadence value range and time window
-13.	mn_ENMO_cad0-30spm_0-14hr: Mean acceleration value for a specific cadence range and time window
-14.	tot_step_count_0-14hr: Total step count for a time window
-15.	tot_step_count_acc0-50mg_ENMO_0-14hr: Total step count for an acceleration value range in a time window
-16.	tot_step_count_cad0-30spm_0-14hr: Total step count for an cadence value range in a time window
-
-Variable names in part2_eventsummary.csv are the same but have AD_, WD_, WE, WWD, and WWE_ appended to them in line with how it has worked for other variables.
-
-5.	Notes
--	The step bout detection functionality automatically uses the acceleration metrics specified by the user. So, if you want to try it out with both ENMO, ENMOa, and MAD metric then that should work.
--	Imputation for steps and cadence is now based on medium and not on mean as we do for acceleration metrics.
+```
