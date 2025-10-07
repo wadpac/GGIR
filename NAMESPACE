@@ -48,7 +48,7 @@ export(g.analyse, g.calibrate,
        g.part3_correct_guider, g.part3_alignIndexVectors, filterNonwearNight)
 
 importFrom("grDevices", "colors", "dev.off", "pdf",
-           "rgb", "rainbow", "palette", "adjustcolor", "gray.colors", "dev.list")
+           "rgb", "rainbow", "palette", "adjustcolor", "gray.colors", "dev.list", "png")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
            "rect","axis.POSIXct", "barplot", "box", "legend",
            "lines", "mtext", "text", "arrows", "segments", "layout")
