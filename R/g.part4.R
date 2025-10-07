@@ -398,6 +398,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             defaultGuiderOnset = params_sleep[["def.noc.sleep"]][1]  #onset
             defaultGuiderWake = params_sleep[["def.noc.sleep"]][2]  #wake
             defaultGuider = guider = "setwindow"
+            defaultGuiderCorrected = NULL
           }
           if (defaultGuiderOnset >= 24) {
             defaultGuiderOnset = defaultGuiderOnset - 24
