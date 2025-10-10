@@ -422,8 +422,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                    dateTimeAs = "write.csv")
               }
               addNapOut = g.part5.addNaps(sibreport = sibreport, ts = ts,
-                                   params_general = params_general,
-                                   params_sleep = params_sleep)
+                                          params_general = params_general,
+                                          params_sleep = params_sleep)
               ts = addNapOut$ts
               sibreport = addNapOut$sibreport
               long_nap_boutsi = addNapOut$long_nap_boutsi
@@ -516,7 +516,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                             if (extraRowsNeeded > 0) {
                               dsummary = rbind(dsummary, matrix(data = "", nrow = extraRowsNeeded, ncol = ncol(dsummary)))
                             }
-                            if (timewindowi == "MM" & si > 1) { # because first segment is always full window
+                            if (timewindowi %in% c("MM", "WW") & si > 1) { # because first segment is always full window
                               if (("segment" %in% colnames(ts)) == FALSE) ts$segment = NA
                               if (!is.na(segStart) && !is.na(segEnd)) {
                                 ts$segment[segStart:segEnd] = si
@@ -797,7 +797,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                            "g.part5.onsetwaketiming", "g.part5_analyseSegment",
                            "g.part5_initialise_ts", "g.part5.analyseRest",
                            "g.fragmentation", "g.intensitygradient",
-                           "g.part5.addNaps")
+                           "g.part5.addNaps", "g.part4_extractid",
+                           "markerButtonForRest")
       errhand = 'stop'
     }
     i = 0 # declare i because foreach uses it, without declaring it

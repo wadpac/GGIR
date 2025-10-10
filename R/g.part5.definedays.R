@@ -39,30 +39,52 @@ g.part5.definedays = function(nightsi, wi, indjump, epochSize, qqq_backup = c(),
   qqq = rep(0,2); segments = segments_names = c()
   # Check that it is possible to find both windows (WW and MM)
   # in the data for this day.
-  if (timewindowi == "MM") {
-    # include first and last partial days in MM
-    if (nightsi[1] > 1 && nightsi[1] < 25 * 3600 / epochSize) {
-      nightsi = c(1, nightsi)
-    }
-    if (nightsi[length(nightsi)] < nrow(ts) && 
-        nrow(ts) - nightsi[length(nightsi)] < 25 * 3600 / epochSize) {
-      nightsi = c(nightsi, nrow(ts))
-    }
-    # define window
-    qqq[1] = nightsi[wi]
-    if (length(nightsi) >= wi + 1) {
-      qqq[2] = nightsi[wi + 1] - 1
+  if (timewindowi == "MM" || timewindowi == "WW") {
+    if (timewindowi == "MM") {
+      # include first and last partial days in MM
+      if (nightsi[1] > 1 && nightsi[1] < 25 * 3600 / epochSize) {
+        nightsi = c(1, nightsi)
+      }
+      if (nightsi[length(nightsi)] < nrow(ts) && 
+          nrow(ts) - nightsi[length(nightsi)] < 25 * 3600 / epochSize) {
+        nightsi = c(nightsi, nrow(ts))
+      }
+      # define window
+      qqq[1] = nightsi[wi]
+      if (length(nightsi) >= wi + 1) {
+        qqq[2] = nightsi[wi + 1] - 1
+      } else {
+        qqq[2] = Nts
+        lastDay = TRUE
+      }
+      # is this the last day?
+      if (wi == length(nightsi) - 1) {
+        lastDay = TRUE
+      }
+      if (qqq[2] >= Nts - 1) {
+        qqq[2] = Nts
+        lastDay = TRUE
+      }
+      
     } else {
-      qqq[2] = Nts
-      lastDay = TRUE
-    }
-    # is this the last day?
-    if (wi == length(nightsi) - 1) {
-      lastDay = TRUE
-    }
-    if (qqq[2] >= Nts - 1) {
-      qqq[2] = Nts
-      lastDay = TRUE
+      windowEdge = ifelse(timewindowi == "WW", yes = -1, no = 1)
+      if (wi <= (Nwindows - 1)) { # all full windows
+        qqq[1] = which(diff(ts$diur) == windowEdge)[wi] + 1
+        qqq[2] = which(diff(ts$diur) == windowEdge)[wi + 1]
+      } else {
+        # time after last reliable waking up or onset (this can be more than 24 hours)
+        # ignore this window, because if the night was ignored for sleep analysis
+        # then the description of the day in part 5 including that night is
+        # not informative.
+        qqq = c(NA, NA)
+      }
+      if (wi == length(which(diff(ts$diur) == windowEdge)) - 1) {
+        lastDay = TRUE
+      }
+      if (qqq[2] >= Nts - 1) {
+        qqq[2] = Nts
+        lastDay = TRUE
+      }
     }
     qqq_backup = qqq
     # in MM, also define segments of the day based on qwindow
@@ -101,10 +123,10 @@ g.part5.definedays = function(nightsi, wi, indjump, epochSize, qqq_backup = c(),
       segments_timing = paste(startOfSegments, endOfSegments, sep = "-")
       # define segment names based on qnames or segmentX
       if (is.null(qnames)) {
-        segments_names = paste0("segment", 0:(length(segments_timing) - 1))
-        segments_names = gsub("segment0", "MM", segments_names)
+        segments_names = paste0(paste0(timewindowi, "segment"), 0:(length(segments_timing) - 1))
+        segments_names = gsub(paste0(timewindowi, "segment0"), timewindowi, segments_names)
       } else {
-        segments_names = c("MM", paste(qnames[-length(qnames)], qnames[-1], sep = "-"))
+        segments_names = c(timewindowi, paste(qnames[-length(qnames)], qnames[-1], sep = "-"))
       }
       # Get indices in ts for segments start and end limits
       hms = format(ts$time[fullQqq], format = "%H:%M:%S")
