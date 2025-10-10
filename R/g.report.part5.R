@@ -16,7 +16,8 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                    "your current value (which is above 1) by 24."), call. = FALSE)
   }
   getValidDayIndices = function(x, window, params_cleaning) {
-    if (window != "Segments") {
+    window_is_segment = length(grep(pattern = "segment", x = window)) > 0
+    if (window_is_segment == FALSE) {
       if (params_cleaning[["includedaycrit.part5"]] >= 0 &
           params_cleaning[["includedaycrit.part5"]] <= 1) { # if includedaycrit.part5 is used as a ratio
         includeday_wearPercentage = params_cleaning[["includedaycrit.part5"]] * 100
@@ -97,7 +98,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                           x$wear_min_day_spt >= minimumValidMinutesMM)
         # Note: By default for MM analysis only full days are interesting (23 hours for one day in the year)
       }
-    } else if (window == "Segments") {
+    } else if (window_is_segment) {
       # clean based on segments (even if a day is not valid, a certain segment of that
       # day could be valid if participant wore device enough in that part of the day)
       maxpernwday = 100 - (params_cleaning[["segmentWEARcrit.part5"]] * 100)
@@ -232,7 +233,11 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
     # filesize and to ease organising dataset
     uwi = as.character(unique(outputfinal$window))
     if (!all(uwi %in% c("MM", "WW", "OO"))) {
-      uwi = c(uwi[uwi %in% c("MM", "WW", "OO")], "Segments")
+      uwi[grep(pattern = "MMseg", x = uwi)] = "MMsegment"
+      uwi[grep(pattern = "WWseg", x = uwi)] = "WWsegment"
+      uwi[grep(pattern = "OOseg", x = uwi)] = "OOsegment"
+      uwi = unique(uwi)
+      # uwi = c(uwi[uwi %in% c("MM", "WW", "OO")], "Segments")
     }
     uTRLi = as.character(unique(outputfinal$TRLi))
     uTRMi = as.character(unique(outputfinal$TRMi))
@@ -266,6 +271,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
     outputfinal_bu = outputfinal
     if (verbose == TRUE) cat(" generating csv report for every parameter configurations...\n")
     for (j in 1:length(uwi)) {
+      window_is_segment = length(grep("segment", x = uwi[j])) > 0
       for (h1 in 1:length(uTRLi)) {
         for (h2 in 1:length(uTRMi)) {
           for (h3 in 1:length(uTRVi)) {
@@ -274,8 +280,12 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 cat(paste0(" ", uwi[j], "-", uTRLi[h1], "-", uTRMi[h2],
                            "-", uTRVi[h3], "-", usleepparam[h4]))
               }
-              select_window = as.character(outputfinal$window) == uwi[j]
-              if (!(uwi[j] %in% c("MM", "WW", "OO"))) select_window = !(as.character(outputfinal$window) %in% c("MM", "WW", "OO"))
+              select_window = rep(FALSE, nrow(outputfinal))
+              uwi_available = grep(pattern = uwi[j], x = as.character(outputfinal$window))
+              if (length(uwi_available) > 0) {
+                select_window[uwi_available] = TRUE
+              }
+              # if (!(uwi[j] %in% c("MM", "WW", "OO"))) select_window = !(as.character(outputfinal$window) %in% c("MM", "WW", "OO"))
               seluwi = which(select_window &
                                as.character(outputfinal$TRLi) == uTRLi[h1] &
                                as.character(outputfinal$TRMi) == uTRMi[h2] &
@@ -290,7 +300,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 colnames(outputfinal2) = CN
                 delcol = grep(pattern = "TRLi|TRMi|TRVi|sleepparam",
                               x = colnames(outputfinal2))
-                if (uwi[j] != "Segments") {
+                if (window_is_segment == FALSE) {
                   delcol = c(delcol, which(colnames(outputfinal2) == "window"))
                 }
                 outputfinal2 = outputfinal2[,-delcol]
@@ -359,7 +369,8 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                     return(plain_mean)
                   }
                   # aggregate across all days
-                  if (window == "Segments") {
+                  window_is_segment = length(grep("segment", x = window)) > 0
+                  if (window_is_segment) {
                     by = list(df$filename, df$window)
                   } else {
                     by = list(df$filename)
@@ -367,7 +378,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   PlainAggregate = aggregate.data.frame(df, by = by, FUN = plain_mean)
                   PlainAggregate = PlainAggregate[, -grep("^Group", colnames(PlainAggregate))]
                   # aggregate per day type (weekday or weekenddays)
-                  if (window == "Segments") {
+                  if (window_is_segment) {
                     by = list(df$filename, df$window, df$daytype)
                   } else {
                     by = list(df$filename, df$daytype)
@@ -387,12 +398,12 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                       by = by,
                       FUN = function(x) length(which(is.na(x) == FALSE))
                     )
-                    if (window != "Segments") {
+                    if (window_is_segment == FALSE) {
                       colnames(DAYCOUNT_Frag_Multiclass)[1:2] = c("filename","daytype")
                       # AL10F, abbreviation for: at least 10 fragments
                       colnames(DAYCOUNT_Frag_Multiclass)[3] = "Nvaliddays_AL10F" 
                       by.x = c("filename", "daytype")
-                    } else if (window == "Segments") {
+                    } else if (window_is_segment) {
                       colnames(DAYCOUNT_Frag_Multiclass)[1:3] = c("filename","window", "daytype")
                       # AL10F, abbreviation for: at least 10 fragments
                       colnames(DAYCOUNT_Frag_Multiclass)[4] = "Nvalidsegments_AL10F"
@@ -404,7 +415,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   AggregateWDWE$len <- 0
                   AggregateWDWE$len[which(as.character(AggregateWDWE$daytype) == "WD")] = 5 #weighting of weekdays
                   AggregateWDWE$len[which(as.character(AggregateWDWE$daytype) == "WE")] = 2 #weighting of weekend days
-                  if (window == "Segments") {
+                  if (window_is_segment) {
                     dt <- data.table::as.data.table(AggregateWDWE[,which(lapply(AggregateWDWE, class) == "numeric" | 
                                                                            names(AggregateWDWE) == filename |
                                                                            names(AggregateWDWE) == "window")])
@@ -415,7 +426,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   
                   options(warn = -1)
                   .SD <- .N <- count <- a <- NULL
-                  if (window == "Segments") {
+                  if (window_is_segment) {
                     WeightedAggregate <- dt[, lapply(.SD, weighted.mean, w = len, na.rm = TRUE), by = list(filename, window)]
                   } else {
                     WeightedAggregate <- dt[, lapply(.SD, weighted.mean, w = len, na.rm = TRUE), by = list(filename)]
@@ -485,7 +496,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   numcol = which(lapply(PlainAggregate, class) == "numeric" | LUX_segment_vars)
                   WeightedAggregate = as.data.frame(WeightedAggregate, stringsAsFactors = TRUE)
                   
-                  if (window == "Segments") {
+                  if (window_is_segment) {
                     by = c("filename", "window")
                   } else {
                     by = "filename"
@@ -514,7 +525,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                                         names(temp_aggregate) != filename)
                       numcol = which(lapply(temp_aggregate, class) %in% c("numeric", "integer") == TRUE)
                       names(temp_aggregate)[numcol] = paste0(names(temp_aggregate)[numcol], "_", weeksegment)
-                      if (window == "Segments") {
+                      if (window_is_segment) {
                         temp_aggregate = temp_aggregate[, c(which(colnames(temp_aggregate) == "filename" |
                                                                     colnames(temp_aggregate) == "window"), numcol)]
                       } else {
@@ -556,7 +567,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                                    "acc_available", "nonwear_perc_day", "nonwear_perc_spt",
                                    "daytype", "dur_day_min",
                                    "dur_spt_min")
-                  if (uwi[j] == "Segments") {
+                  if (window_is_segment) {
                     columns2keep = c(columns2keep, "window")
                   }
                   OF3tmp = OF3[, columns2keep]
@@ -570,8 +581,12 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                     # we want to extra the number of days per individuals that meet the
                     # criteria in df, and make it allign with aggPerIndividual.
                     df2 = function(x) df2 = length(which(x == cval)) # check which values meets criterion
-                    if (window == "Segments") by = list(df$filename, df$window)
-                    if (window != "Segments") by = list(df$filename)
+                    window_is_segment = length(grep("segment", x = window)) > 0
+                    if (window_is_segment) {
+                      by = list(df$filename, df$window)
+                    } else {
+                      by = list(df$filename)
+                    }
                     mmm = as.data.frame(aggregate.data.frame(df, by = by, FUN = df2),
                                         stringsAsFactors = TRUE)
                     mmm2 = data.frame(
@@ -579,10 +594,10 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                       cc = mmm[, nameold],
                       stringsAsFactors = TRUE
                     )
-                    if (window == "Segments") {
+                    if (window_is_segment) {
                       mmm2$window = mmm$Group.2
                       by = c("filename", "window")
-                    } else if (window != "Segments") {
+                    } else {
                       by = "filename"
                     }
                     aggPerIndividual = merge(aggPerIndividual, mmm2, by = by)
@@ -596,7 +611,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   # now we have a label for the valid days, we can create a new variable
                   # in OF4 that is a count of the number of valid days:
                   namenew = "Nvaliddays"
-                  if (uwi[j] == "Segments") namenew = "Nvalidsegments"
+                  if (window_is_segment) namenew = "Nvalidsegments"
                   OF4 = foo34(
                     df = OF3tmp,
                     aggPerIndividual = OF4,
@@ -609,7 +624,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   OF3tmp$validdays = 0
                   OF3tmp$validdays[validdaysi[which(OF3tmp$daytype[validdaysi] == "WE")]] = 1
                   namenew = "Nvaliddays_WE"
-                  if (uwi[j] == "Segments") namenew = "Nvalidsegments_WE"
+                  if (window_is_segment) namenew = "Nvalidsegments_WE"
                   OF4 = foo34(
                     df = OF3tmp,
                     aggPerIndividual = OF4,
@@ -622,7 +637,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   OF3tmp$validdays = 0
                   OF3tmp$validdays[validdaysi[which(OF3tmp$daytype[validdaysi] == "WD")]] = 1
                   namenew = "Nvaliddays_WD"
-                  if (uwi[j] == "Segments") namenew = "Nvalidsegments_WD"
+                  if (window_is_segment) namenew = "Nvalidsegments_WD"
                   OF4 = foo34(df = OF3tmp, 
                               aggPerIndividual = OF4, 
                               nameold = "validdays", 

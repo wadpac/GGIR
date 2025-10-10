@@ -28,7 +28,7 @@ test_that("g.part5.definedays considers qwindow to generate segments", {
   expect_equal(definedays$segments[[3]], c(421, 1080))
   expect_equal(names(definedays$segments)[4], "18:00:00-23:59:00")
   expect_equal(definedays$segments[[4]], c(1081, 1440))
-  expect_equal(definedays$segments_names, c("MM", "segment1", "segment2", "segment3"))
+  expect_equal(definedays$segments_names, c("MM", "MMsegment1", "MMsegment2", "MMsegment3"))
   
   # With slash as separator
   actlog = data.frame(id = c("1RAW"),
