@@ -10,7 +10,8 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
                                   add_one_day_to_next_date,
                                   lightpeak_available,
                                   tail_expansion_log,
-                                  foldernamei, sibreport = NULL) {
+                                  foldernamei, sibreport = NULL,
+                                  long_nap_boutsi = NULL) {
   # unpack list objects:
   # indexlog
   fileIndex = indexlog$fileIndex
@@ -173,7 +174,8 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
                                          ds_names = ds_names, fi = fi, di = si,
                                          ts = ts[sse[ts$diur[sse] == 0], ],
                                          tz = params_general[["desiredtz"]],
-                                         params_sleep = params_sleep)
+                                         params_sleep = params_sleep,
+                                         long_nap_boutsi = long_nap_boutsi)
       fi = restAnalyses$fi
       si = restAnalyses$di
       ts[sse[ts$diur[sse] == 0], ] = restAnalyses$ts

@@ -45,7 +45,8 @@ export(g.analyse, g.calibrate,
        check_log, g.report.part5_dictionary, DFA, ABI, SSP, visualReport,
        splitRecords, getSplitNames, addSplitNames, getPart1BasicInfo,
        markerButtonForRest, aggregateEvent, inspect_binFile_brand,
-       g.part3_correct_guider, g.part3_alignIndexVectors, filterNonwearNight)
+       g.part3_correct_guider, g.part3_alignIndexVectors, filterNonwearNight,
+       g.part5.addNaps)
 
 importFrom("grDevices", "colors", "dev.off", "pdf",
            "rgb", "rainbow", "palette", "adjustcolor", "gray.colors", "dev.list")

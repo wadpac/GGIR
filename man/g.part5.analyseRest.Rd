@@ -11,7 +11,8 @@
   g.part5.analyseRest(sibreport = NULL, dsummary = NULL,
                                 ds_names = NULL, fi = NULL,
                                 di = NULL, ts = NULL, tz = NULL,
-                                params_sleep = NULL)
+                                params_sleep = NULL,
+                                long_nap_boutsi = NULL)
 }
 \arguments{
   \item{sibreport}{
@@ -38,6 +39,9 @@
   }
   \item{params_sleep}{
     See \link{GGIR}
+  }
+  \item{long_nap_boutsi}{
+    Vector with row indiceses of sibreport that meet the nap criteria.
   }
 }
 \value{

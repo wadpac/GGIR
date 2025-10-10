@@ -19,7 +19,8 @@
                                   add_one_day_to_next_date,
                                   lightpeak_available,
                                   tail_expansion_log,
-                                  foldernamei, sibreport = NULL)
+                                  foldernamei, sibreport = NULL,
+                                  long_nap_boutsi = NULL)
 }
 \arguments{
   \item{indexlog}{
@@ -85,6 +86,9 @@
   }
   \item{sibreport}{
     Sibreport object as passed on from \link{g.part5}
+  }
+  \item{long_nap_boutsi}{
+    Vector with row indiceses of sibreport that meet the nap criteria.
   }
 }
 \value{

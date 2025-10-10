@@ -229,8 +229,8 @@ test_that("chainof5parts", {
   expect_equal(round(as.numeric(output$wakeup[2]), digits = 4), 36)
   expect_equal(as.numeric(output$dur_day_spt_min[4]), 1150) # WW window duration
   expect_equal(as.numeric(output$dur_day_spt_min[5]), 1680) # OO window duration
-  expect_equal(sum(as.numeric(output$dur_day_nap_bts_0_15_min)), 45)
-  expect_equal(sum(as.numeric(output$dur_day_nap_bts_15_60_min)), 0)
+  expect_equal(sum(as.numeric(output$dur_day_nap_bts_0_15_min)), 0)
+  expect_equal(sum(as.numeric(output$dur_day_nap_bts_15_60_min)), 45)
   expect_equal(sum(as.numeric(output$dur_day_nap_bts_60_240_min)), 185)
   
   dirname_raw = "output_test/meta/ms5.outraw/40_100_400"

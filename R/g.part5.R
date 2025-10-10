@@ -421,8 +421,15 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                    dec = params_output[["dec_reports"]],
                                    dateTimeAs = "write.csv")
               }
+              addNapOut = g.part5.addNaps(sibreport = sibreport, ts = ts,
+                                   params_general = params_general,
+                                   params_sleep = params_sleep)
+              ts = addNapOut$ts
+              sibreport = addNapOut$sibreport
+              long_nap_boutsi = addNapOut$long_nap_boutsi
             } else {
               sibreport = NULL
+              long_nap_boutsi = NULL
             }
             # backup of nightsi outside threshold defintions to avoid
             # overwriting the backup after the first iteration
@@ -554,7 +561,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                          add_one_day_to_next_date,
                                                          lightpeak_available, tail_expansion_log,
                                                          foldernamei = foldername[i],
-                                                         sibreport = sibreport)
+                                                         sibreport = sibreport,
+                                                         long_nap_boutsi = long_nap_boutsi)
                             # Extract essential object to be used as input for the next 
                             # segment
                             indexlog = gas$indexlog
@@ -788,7 +796,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                            "g.part5.savetimeseries", "g.part5.wakesleepwindows",
                            "g.part5.onsetwaketiming", "g.part5_analyseSegment",
                            "g.part5_initialise_ts", "g.part5.analyseRest",
-                           "g.fragmentation", "g.intensitygradient")
+                           "g.fragmentation", "g.intensitygradient",
+                           "g.part5.addNaps")
       errhand = 'stop'
     }
     i = 0 # declare i because foreach uses it, without declaring it

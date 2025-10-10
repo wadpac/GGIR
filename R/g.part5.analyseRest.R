@@ -1,7 +1,7 @@
 g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
                                ds_names = NULL, fi = NULL, di = NULL,
                                ts = NULL, tz = NULL,
-                               params_sleep = NULL) {
+                               params_sleep = NULL, long_nap_boutsi = NULL) {
   # define function to summarise overlap between selfreported behaviour and sibs
   summarise_overlap = function(srep_tmp, X, Y, xi, yi, name = "", sumobject = NULL) {
     # X: column name in srep_temp to reflect overlap SIB with Selfreport
@@ -31,7 +31,7 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
                               paste0("tdur_denap_overl_", name),
                               paste0("perc_denap_overl_", name))
     fi = fi + 3
-    # Overlap selfreportwith sib
+    # Overlap selfreport with sib
     if (length(xi) > 0) {
       dsummary[di,fi:(fi + 2)] = c(mean(srep_tmp$duration[yi]),
                                    sum(srep_tmp$duration[yi]),
@@ -48,95 +48,7 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
   }
   
   epochSize_min = as.numeric(difftime(ts$time[2], ts$time[1], units = "mins"))
-  if (!is.null(sibreport) &&
-      length(sibreport[[1]]) > 1)  {
-    #---------------------------------------
-    # transform time to POSIX
-    if (is.ISO8601(as.character(ts$time[1]))) {
-      ts$time = iso8601chartime2POSIX(ts$time, tz = tz)
-    }
-    sibreport$end = as.POSIXct(sibreport$end, tz = tz)
-    sibreport$start = as.POSIXct(sibreport$start, tz = tz)
-    
-    #---------------------------------------
-    # merge sibs when gap is shorter than possible_nap_gap
-    if (params_sleep[["possible_nap_gap"]] > 0) {
-      sibreport$gap2next = NA
-      Nrow = nrow(sibreport)
-      sibreport$gap2next[1:(Nrow - 1)] = (as.numeric(sibreport$start[2:Nrow]) - as.numeric(sibreport$end[1:(Nrow - 1)])) / 60
-      sibreport$gap2next[which(sibreport$type != "sib" | sibreport$gap2next < 0)] = NA
-      iter = 1
-      while (iter < nrow(sibreport)) {
-        if (!is.na(sibreport$gap2next[iter]) &&
-            sibreport$gap2next[iter] < params_sleep[["possible_nap_gap"]]) {
-          sibreport$end[iter] = sibreport$end[iter + 1]
-          sibreport$mean_acc_1min_after[iter] = sibreport$mean_acc_1min_after[iter + 1]
-          sibreport = sibreport[-(iter + 1),]
-          sibreport$gap2next[iter] = as.numeric(sibreport$start[iter + 1]) - as.numeric(sibreport$end[iter])
-          # no need to increment iter, because by merging the sib blocks
-          # the current iter now refers to the next gap
-        } else {
-          iter = iter + 1
-        }
-        if (iter > nrow(sibreport) - 1) {
-          break
-        }
-      }
-      sibreport$duration = as.numeric(difftime(sibreport$end, sibreport$start, units = "mins")) + epochSize_min
-    }
-    
-    # Only consider sib episodes with minimum duration
-    if (length(grep(pattern = "mean_acc_1min", x = colnames(sibreport))) > 0) {
-      sibreport$acc_edge = pmax(sibreport$mean_acc_1min_before, sibreport$mean_acc_1min_after)
-    } else {
-      sibreport$acc_edge = 0
-    }
-    #-----------------------------------------------------------
-    # Consider using marker button data to aid nap detection
-    sibreport = markerButtonForRest(sibreport, params_sleep, ts)
-    
-    sibreport$startHour = as.numeric(format(sibreport$start, "%H"))
-    sibreport$endHour = as.numeric(format(sibreport$end, "%H"))
-    
-    overlapMidnight = which(sibreport$endHour < sibreport$startHour)
-    if (length(overlapMidnight) > 0) {
-      sibreport$endHour[overlapMidnight] = sibreport$endHour[overlapMidnight] + 24
-    }
-    
-    longboutsi = which((sibreport$type == "sib" &
-                          sibreport$duration >= params_sleep[["possible_nap_dur"]][1] &
-                          sibreport$duration < tail(params_sleep[["possible_nap_dur"]], n = 1) &
-                          sibreport$acc_edge <= params_sleep[["possible_nap_edge_acc"]] &
-                          sibreport$startHour >= params_sleep[["possible_nap_window"]][1] &
-                          sibreport$endHour < params_sleep[["possible_nap_window"]][2] &
-                          sibreport$ignore == FALSE) |
-                         (sibreport$type != "sib" & sibreport$duration >= 1))
-    
-    Nlongbouts  = length(longboutsi)
-    # add segment of sleeplog to sibreport. Done here and not near 
-    # function g.sibreport called in function g.part5 because the segment needs to
-    # be part of the time range otherwise it is omitted further down
-    sibreport = sibreport[which(sibreport$type != "sleeplog" & sibreport$type != "sleeplog+bedlog"),]
-    sleeplogi = which(ts$selfreported == "sleeplog" | ts$selfreported == "sleeplog+bedlog")
-    if (length(sleeplogi) > 0) {
-      dsi = diff(sleeplogi)
-      sl_starts = c(1, which(dsi != 1) + 1)
-      sl_ends = c(which(dsi != 1), length(sleeplogi))
-      if (length(sl_starts) > 0) {
-        for (Nsi in 1:length(sl_starts)) {
-          newline = nrow(sibreport) + 1
-          sibreport[newline,] = NA
-          sibreport$ID[newline] = sibreport$ID[newline - 1]
-          sibreport$type[newline] = "sleeplog"
-          sibreport$start[newline] = format(ts$time[sleeplogi[sl_starts[Nsi]]])
-          sibreport$end[newline] = format(ts$time[sleeplogi[sl_ends[Nsi]]])
-        }
-      }
-    }
-  } else {
-    Nlongbouts = 0
-    longboutsi = NULL
-  }
+  Nlongbouts = length(long_nap_boutsi)
   ds_names[fi:(fi + 26)] = c("sibreport_n_items",
                              "sibreport_n_items_day", "nbouts_day_denap",
                              "nbouts_day_srnap", "nbouts_day_srnonw",
@@ -153,8 +65,8 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
                              "tdur_srnonw_overl_denap", "perc_srnonw_overl_denap")
   dsummary[di,fi] = Nlongbouts
   fi = fi + 1
-  if (length(longboutsi) > 0 & nrow(ts) > 0) {
-    sibreport = sibreport[longboutsi,]
+  if (length(long_nap_boutsi) > 0 & nrow(ts) > 0) {
+    sibreport = sibreport[long_nap_boutsi,]
     srep_tmp = sibreport[which(sibreport$start >= min(ts$time) &
                                  sibreport$end <= max(ts$time)),]
     
@@ -168,12 +80,7 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
           if (length(sibnap) > 0) {
             # Only consider nap it does not overlap for more than 10% with known nonwear.
             fractionInvalid = length(which(ts$nonwear[sibnap] == 1)) / length(sibnap)
-            if (fractionInvalid < 0.1) {
-              nap_dur_min = length(sibnap) / (1 / epochSize_min)
-              nap_dur_class = which(c(params_sleep[["possible_nap_dur"]], Inf) >= nap_dur_min)[1]
-              # expected class number is 2 or higher.
-              ts$sibdetection[sibnap] = nap_dur_class
-            } else {
+            if (fractionInvalid >= 0.5) {
               srep_tmp_rowsdelete = c(srep_tmp_rowsdelete , sibnaps[sni])
             }
           }
@@ -266,11 +173,6 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
                                    length(SIBoverlapNonwear_indices),
                                    length(NapOverlapSIB_indices),
                                    length(NonwearOverlapSIB_indices))
-      # if (any(ds_names[fi:(fi + 6)] != c("nbouts_day_denap", "nbouts_day_srnap", "nbouts_day_srnonw", 
-      #                                    "noverl_denap_srnap", "noverl_denap_srnonw",
-      #                                    "noverl_srnap_denap", "noverl_srnonw_denap"))) {
-      #   stop("mismatch in columnnames 2")
-      # }
       fi = fi + 7      
       
       # mean and total duration in sib per day
@@ -280,9 +182,6 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
       } else {
         dsummary[di,fi:(fi + 1)] = c(0, 0)
       }
-      # if (any(ds_names[fi:(fi + 1)] != c("frag_mean_dur_denap_day", "dur_day_denap_min"))) {
-      #   stop("mismatch in columnnames 3")
-      # }
       fi = fi + 2
       # mean and total duration in self-reported naps per day
       if (length(nap_indices) > 0) {
@@ -293,9 +192,6 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
       } else {
         dsummary[di,fi:(fi + 1)] = c(0, 0)
       }
-      # if (any(ds_names[fi:(fi + 1)] != c("frag_mean_dur_srnap_day", "dur_day_srnap_min"))) {
-      #   stop("mismatch in columnnames 4")
-      # }
       fi = fi + 2
       # mean and total duration in self-reported nonwear per day
       if (length(nonwear_indices) > 0) {
@@ -304,9 +200,6 @@ g.part5.analyseRest = function(sibreport = NULL, dsummary = NULL,
       } else {
         dsummary[di,fi:(fi + 1)] = c(0, 0)
       }
-      # if (any(ds_names[fi:(fi + 1)] != c("frag_mean_dur_srnonw_day", "dur_day_srnonw_min"))) {
-      #   stop("mismatch in columnnames 5")
-      # }
       fi = fi + 2
       so = list(fi = fi, ds_names = ds_names, dsummary = dsummary, di = di)
       # Self-reported naps
