@@ -24,13 +24,15 @@ g.part5.lux_persegment = function(ts, sse, LUX_day_segments, epochSize, desiredt
     sse = sse[1:Nepochperday]
   }
   # expanding first time segment
-  expected_N_seg1 = (rep(LUX_day_segments,2)[which(LUX_day_segments == first_hour_seg[1])+1] - LUX_day_segments[which(LUX_day_segments == first_hour_seg[1])]) * 60 * (60/epochSize)
-  actual_N_seg1 = length(which(first_hour_seg[1:round(Nepochperday*0.66)] == first_hour_seg[1]))
+  isFirstHour = which(LUX_day_segments == first_hour_seg[1])
+  expected_N_seg1 = (rep(LUX_day_segments, 2)[isFirstHour + 1] - 
+                       LUX_day_segments[isFirstHour]) * 60 * (60 / epochSize)
+  actual_N_seg1 = length(which(first_hour_seg[1:round(Nepochperday * 0.66)] == first_hour_seg[1]))
   missingN_seg1 = expected_N_seg1 - actual_N_seg1
   if (length(sse) > 0) {
     if (sse[1] - missingN_seg1 < 0) missingN_seg1 = missingN_seg1 + (sse[1] - missingN_seg1 - 1)
     if (missingN_seg1 > 0) {
-      extension = (sse[1]-missingN_seg1):(sse[1]-1)
+      extension = (sse[1] - missingN_seg1):(sse[1] - 1)
       ts$lightpeak[extension] = 0 # ensure that light during SPT is treated as zeros
       sse = c(extension,sse)
       first_hour_seg = c(rep(first_hour_seg[1], missingN_seg1), first_hour_seg)
@@ -56,9 +58,9 @@ g.part5.lux_persegment = function(ts, sse, LUX_day_segments, epochSize, desiredt
     colnames(x) = c("seg", "light")
     if (24 %in% LUX_day_segments) LUX_day_segments = LUX_day_segments[which(LUX_day_segments != 24)] # remove end of day
     Nsegs = length(LUX_day_segments)
-    x = base::merge(x, data.frame(seg= LUX_day_segments, 
+    x = base::merge(x, data.frame(seg = LUX_day_segments, 
                                   light = rep(NA, Nsegs)),
-                    by =c("seg"), all.y=TRUE)
+                    by = c("seg"), all.y = TRUE)
     x = x[,c("seg","light.x")]
     colnames(x) = c("seg", "light")
     LUX_day_segments = c(LUX_day_segments, 24) # end of day back in
@@ -98,5 +100,5 @@ g.part5.lux_persegment = function(ts, sse, LUX_day_segments, epochSize, desiredt
   names = c(standardLPS1$names, standardLPS2$names,
             standardLPS3$names, standardLPS4$names,
             standardLPS5$names)
-  invisible(list(values=values, names=names))
+  invisible(list(values = values, names = names))
 }
