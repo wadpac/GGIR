@@ -506,20 +506,27 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                       if (length(which(is.na(qqq) == TRUE)) == 0) { #if it is a meaningful day then none of the values in qqq should be NA
                         if ((qqq[2] - qqq[1]) * ws3new > 900) {
                           ts$window[qqq[1]:qqq[2]] = wi
-                          if (di == 1) next_si = 1 else next_si = sum(dsummary[,1] != "") + 1
+                          if (di == 1) {
+                            next_si = 1
+                          } else {
+                            next_si = sum(dsummary[,1] != "") + 1
+                          }
                           for (si in next_si:(next_si + length(segments) - 1)) {
                             fi = 1
                             current_segment_i = si - next_si + 1
-                            segStart = segments[[current_segment_i]][1]
-                            segEnd = segments[[current_segment_i]][2]
+                            Nsegments = length(segments[[current_segment_i]])
+                            segStart = segments[[current_segment_i]][seq(1, Nsegments, by = 2)]
+                            segEnd = segments[[current_segment_i]][seq(2, Nsegments, by = 2)]
                             extraRowsNeeded = max(c(si, di)) - nrow(dsummary)
                             if (extraRowsNeeded > 0) {
                               dsummary = rbind(dsummary, matrix(data = "", nrow = extraRowsNeeded, ncol = ncol(dsummary)))
                             }
                             if (timewindowi %in% c("MM", "WW") & si > 1) { # because first segment is always full window
                               if (("segment" %in% colnames(ts)) == FALSE) ts$segment = NA
-                              if (!is.na(segStart) && !is.na(segEnd)) {
-                                ts$segment[segStart:segEnd] = si
+                              for (gi in 1:Nsegments) {
+                                if (!is.na(segStart[gi]) && !is.na(segEnd[gi])) {
+                                  ts$segment[segStart[gi]:segEnd[gi]] = si
+                                }
                               }
                             }
                             # Already store basic information about the file

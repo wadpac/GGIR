@@ -4,6 +4,8 @@
 
 - Part 5: Re-factor nap detection such that classifications are done on full time series prior to segment specific rest analysis #967.
 
+- Part 5: Allow for day segment analysis for the WW and OO window definition
+
 - Part 2: Parameter nonwearFilterWindow can now also use diary path directly, which now allows for filtering based on a one or specific diary while qwindow can be used for day segment analysis #1373
 
 - Part 5: Add boolean parameter nap_overwrite_behaviourclass to control whether behaviour class or overwritten by naps #967.
