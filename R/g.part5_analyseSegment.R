@@ -204,14 +204,15 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
       # as we retain both classifications
       if (nap_overwrite_bc == FALSE) {
         nap_LEVELS = rep(NA, length(LEVELS))
-        sleep_LEVELS = rep(0, length(LEVELS[sse]))
-        sleep_LEVELS[which(ts$sibdetection[sse] == 1)] = 100
+        sleep_LEVELS = rep(0, length(LEVELS))
+        sleep_LEVELS[which(ts$sibdetection == 1)] = 1
         rle_SL = rle(sleep_LEVELS)
+        sleep_LEVELS_dur = rep(rle_SL$lengths, rle_SL$lengths)
         possible_sleep_dur = c(params_sleep[["possible_nap_dur"]], Inf)
         for (sleepdur_id in 1:(length(possible_sleep_dur)-1)) {
           sleep_blocks = which(rle_SL$lengths / (60/ws3new) >= possible_sleep_dur[sleepdur_id] &
                                  rle_SL$lengths / (60/ws3new) < possible_sleep_dur[sleepdur_id + 1] &
-                                 rle_SL$values == 100)
+                                 rle_SL$values == 1)
           if (length(sleep_blocks) > 0) {
             rle_SL$values[sleep_blocks] = sleepdur_id
           }
@@ -220,6 +221,13 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
       }
       
       N_nap_dur_classes = length(params_sleep[["possible_nap_dur"]])
+      nap_LEVELS = ts$sibdetection - 2
+      # track duration of each nap
+      rle_tmp = rle(nap_LEVELS)
+      nap_LEVELS_dur = rep(rle_tmp$lengths, rle_tmp$lengths)
+      if (any(nap_LEVELS < 0)) {
+        is.na(nap_LEVELS[which(nap_LEVELS < 0)]) = TRUE
+      }
       for (ndi in 1:(N_nap_dur_classes - 1)) {
         detectedNaps = which(ts$sibdetection[sse] == (ndi + 1))
         nap_class_name = paste0("day_nap_bts_", params_sleep[["possible_nap_dur"]][ndi],
@@ -234,8 +242,6 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
         if (length(detectedNaps) > 0) {
           if (nap_overwrite_bc == TRUE) {
             LEVELS[sse[detectedNaps]] = which(Lnames == nap_class_name) - 1
-          } else {
-            nap_LEVELS[sse[detectedNaps]] = which(nap_class_names == nap_class_name) - 1
           }
         }
         if (nap_overwrite_bc == FALSE) {
@@ -243,10 +249,10 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
           sleep_class_name = paste0("spt_sleep_bts_", params_sleep[["possible_nap_dur"]][ndi],
                                     "_", params_sleep[["possible_nap_dur"]][ndi + 1])
           sleep_class_names = c(sleep_class_names, sleep_class_name)
-          detectedSleep = which(sleep_LEVELS == ndi)
+          detectedSleep = which(sleep_LEVELS[sse] == ndi)
           
           if (length(detectedSleep) > 0) {
-            sleep_LEVELS[detectedSleep] = which(sleep_class_names == sleep_class_name)
+            sleep_LEVELS[sse[detectedSleep]] = which(sleep_class_names == sleep_class_name)
           }
         }
       }
@@ -282,7 +288,7 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
       # TIME SPENT IN SLEEP WINDOWS
       if (length(sleep_class_names) > 0) {
         for (levelsc in 1:length(sleep_class_names)) {
-          dsummary[si,fi] = (length(which(sleep_LEVELS == levelsc)) * ws3new) / 60
+          dsummary[si,fi] = (length(which(sleep_LEVELS[sse] == levelsc)) * ws3new) / 60
           ds_names[fi] = paste0("dur_", sleep_class_names[levelsc],"_min"); fi = fi + 1
         }
       }
@@ -299,17 +305,8 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
                                      ts$diur[sse] == 1)) / length(which(ts$diur[sse] == 1))
     ds_names[fi] = "sleep_efficiency_after_onset";      fi = fi + 1
     #===============================================
-    # NAPS (estimation)
-    if (params_output[["do.sibreport"]] == TRUE &&
-        "nap1_nonwear2" %in% colnames(ts) &&
-        length(params_sleep[["nap_model"]]) > 0) {
-      dsummary[si,fi] = length(which(diff(c(-1, which(ts$nap1_nonwear2[sse] == 1 & ts$diur[sse] == 0))) > 1))
-      ds_names[fi] = "nap_count";      fi = fi + 1
-      dsummary[si,fi] = round((sum(ts$nap1_nonwear2[sse[which(ts$nap1_nonwear2[sse] == 1 & ts$diur[sse] == 0)]]) * ws3new) / 60, digits = 2)
-      ds_names[fi] = "nap_totalduration";      fi = fi + 1
-    }
+    # Track tail expansion
     if (length(tail_expansion_log) != 0) {
-      # do not store sleep variables if data was expanded in GGIR part 1
       dsummary[si, fi] = (tail_expansion_log[["short"]] * ws3new) / 60
     } else {
       dsummary[si, fi] = 0
@@ -454,18 +451,54 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     #-------------
     # If naps are in separate vector than count them separately
     if (nap_overwrite_bc == FALSE) {
+      NepochPerDay = 24 * 60 * (60 / ws3new)
+      countPartialBlocks = function(RLE_LEVELS, start_end_index, x, sse, NepochPerDay,
+                                    LEVELS_dur, levelsc) {
+        # Calculate partial overlap
+        Noverlap_neighbour_before = Noverlap_neighbour_after = 0
+        # Class and duration of the first bout
+        first_class = RLE_LEVELS$values[start_end_index[1]]
+        first_dur = RLE_LEVELS$length[start_end_index[1]]
+        if (!is.na(first_class)) {
+          if (first_class == levelsc) {
+            Noverlap_neighbour_before = round(1 - (first_dur / LEVELS_dur[sse[1]]), digits = 2)
+          }
+        }
+        # Class and duration of the last bout
+        last_class = RLE_LEVELS$values[start_end_index[2]]
+        last_dur = RLE_LEVELS$length[start_end_index[2]]
+        if (!is.na(last_class)) {
+          if (last_class == levelsc) {
+            Noverlap_neighbour_after = round(1 - (last_dur / LEVELS_dur[sse[length(sse)]]), digits = 2)
+          }
+        }
+        Npartial = Noverlap_neighbour_before + Noverlap_neighbour_after
+        # if (Npartial != 0) {
+        #   print(paste0(Npartial, " ", Noverlap_neighbour_before, " ", Noverlap_neighbour_after))
+        # }
+        return(Npartial)
+      }
+      
       if (length(nap_class_names) > 0) {
         RLE_nap_LEVELS = rle(nap_LEVELS[sse])
+        start_end_index = c(1, length(RLE_nap_LEVELS$values))
         for (levelsc in 0:(length(nap_class_names) - 1)) {
-          dsummary[si,fi] = length(which(RLE_nap_LEVELS$values == levelsc))
+          Nblocks = length(which(RLE_nap_LEVELS$values == levelsc))
+          Nblocks_partial = countPartialBlocks(RLE_nap_LEVELS, start_end_index, nap_LEVELS, sse, 
+                                               NepochPerDay, nap_LEVELS_dur, levelsc)
+          dsummary[si,fi] = Nblocks - Nblocks_partial
           ds_names[fi] = paste0("Nblocks_", nap_class_names[levelsc + 1]);      fi = fi + 1
         }
       }
       # Count also number of sleep windows per sleep window level
       if (length(sleep_class_names) > 0) {
-        RLE_sleep_LEVELS = rle(sleep_LEVELS)
+        RLE_sleep_LEVELS = rle(sleep_LEVELS[sse])
+        start_end_index = c(1, length(RLE_sleep_LEVELS$values))
         for (levelsc in 1:length(sleep_class_names)) {
-          dsummary[si,fi] = length(which(RLE_sleep_LEVELS$values == levelsc))
+          Nblocks = length(which(RLE_sleep_LEVELS$values == levelsc))
+          Nblocks_partial = countPartialBlocks(RLE_sleep_LEVELS, start_end_index, sleep_LEVELS + 1, sse, 
+                                               NepochPerDay, sleep_LEVELS_dur, levelsc)
+          dsummary[si,fi] = Nblocks - Nblocks_partial
           ds_names[fi] = paste0("Nblocks_", sleep_class_names[levelsc]); fi = fi + 1
         }
       }
