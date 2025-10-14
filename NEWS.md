@@ -1,4 +1,4 @@
-# CHANGES IN GGIR VERSION 3.3-?
+# CHANGES IN GGIR VERSION 3.3-1
 
 - Part 2: Replaces QC plot as pdf file by QC plots as png file per recording to help speed up report generation #1402
 
