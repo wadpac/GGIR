@@ -1,4 +1,4 @@
-# CHANGES IN GGIR VERSION 3.3-?
+# CHANGES IN GGIR VERSION 3.3-1
 
 - Part 5: Add option to distinguish multiple nap duration categories similar to physical activity bout duration categories. #967
 
@@ -14,7 +14,7 @@
 
 - Part 3: Fix bug in calculation of Oakley1994, Galland2012, and ColeKripke1997 #1404
 
-- Part 6: Fixed bug #1400 triggering an error when running part 6 with do.parallel = TRUE.
+- Part 6: Fixed bug triggering an error when running part 6 with do.parallel = TRUE. #1400
 
 - Error handling: Added parameter "use_trycatch_serial" to optionally log file-level errors without interrupting GGIR when "do.parallel = FALSE". #1308
 
