@@ -51,7 +51,7 @@ The specific order and content of the parts is a result of how GGIR evolved over
 
 #### Milestone data
 
-Each part, when run, stores its output in an R-data file that has `.RData` as its extension, which we refer to as the milestone data. As user, you are unlikely to ever need to interact directly with the milestone data files because all relevant output for you is stored in csv and pdf files in the output folder `results`.
+Each part, when run, stores its output in an R-data file that has `.RData` as its extension, which we refer to as the milestone data. As user, you are unlikely to ever need to interact directly with the milestone data files because all relevant output for you is stored in csv, png and pdf files in the output folder `results`.
 
 The milestone files are read by the next GGIR part. The advantage of this design is that it offers internal modularity. For example, we can run part 1 now and continue with part 2 another time without having to repeat part 1 again. So, this design eases re-processing and is also helpful when developing and testing the GGIR code.
 
@@ -394,13 +394,13 @@ GGIR generates reports in the parts 2, 4, 5, and 6 of the pipeline. With paramet
 
 ***Output files in results/QC subfolder:***
 
-| File path                                                | Resolution                                                       | GGIR part |
-|--------------------------------------|-----------------|-----------------|
-| data_quality_report.csv                       | one row per recording                                            | 5         |
-| part4_summary_sleep_full.csv                  | one row per recording                                            | 4         |
-| part4_nightsummary_sleep_full.csv             | one row per night                                                | 4         |
-| part5_daysummary_full_WW_L40M100V400_T5A5.csv | one row per day                                                  | 5         |
-| plots_to_check_data_quality_1.pdf             | one recording per page                                           | 2         |
+| File path                                     | Resolution             | GGIR part |
+|-----------------------------------------------|------------------------|-----------|
+| data_quality_report.csv                       | one row per recording  | 5         |
+| part4_summary_sleep_full.csv                  | one row per recording  | 4         |
+| part4_nightsummary_sleep_full.csv             | one row per night      | 4         |
+| part5_daysummary_full_WW_L40M100V400_T5A5.csv | one row per day        | 5         |
+| plots_part2 folder with .png files            | one recording per png  | 2         |
 
 : A detailed discussion of each output can be found in the other chapters.
 
