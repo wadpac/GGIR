@@ -300,7 +300,6 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
           }
         }
         if (length(params_sleep[["def.noc.sleep"]]) == 1) {
-          
           spt_estimate = HASPT(angle = tmpANGLE, ws3 = ws3,
                                params_sleep = params_sleep,
                                HASPT.algo = params_sleep[["HASPT.algo"]][guider_to_use],
@@ -308,10 +307,10 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
                                activity = tmpACC,
                                marker = MARKER[tSegment],
                                sibs = sleep[tSegment, 1])
-          tSegment_backup = tSegment
         } else {
           spt_estimate = list(SPTE_end = NULL, SPTE_start = NULL, tib.threshold = NULL, part3_guider = NULL)
         }
+        tSegment_backup = tSegment
         if (length(spt_estimate$SPTE_end) != 0 & length(spt_estimate$SPTE_start) != 0) {
           if (spt_estimate$SPTE_end + qqq1 >= qqq2 - (1 * (3600 / ws3))) {
             # if estimated SPT ends within one hour of noon, re-run with larger window
