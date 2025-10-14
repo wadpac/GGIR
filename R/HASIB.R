@@ -21,6 +21,9 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
         x_matrix[((Nz - ((Ncol - 1) - jj)):Nz) + (Ncol - 1), jj] = tail(x, 1)
       }
     }
+    # Remove redundant rows at start and end
+    Nremove = ceiling(Ncol / 2)
+    x_matrix = x_matrix[Nremove:(nrow(x_matrix) - (Nremove - 1)),]
     return(x_matrix)
   }
   
@@ -95,7 +98,6 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
         Countpermin = ifelse(test = Countpermin > 300, yes = 300, no = Countpermin)
       }
       Countpermin_matrix = create_rollfun_mat(Countpermin, Ncol = 11)
-      Countpermin_matrix = Countpermin_matrix[11:(nrow(Countpermin_matrix) - 10),]
       CalcSadehFT = function(x) {
         MeanW5 = mean(x, na.rm = TRUE)
         SDlast = sd(x[6:11]) #last five in this matrix means columns 6:11
@@ -156,10 +158,9 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
       CountperWindow = CountperWindow / 6 
       # Prepare matrix to ease applying weights
       CountperWindow_matrix = create_rollfun_mat(CountperWindow, Ncol = 7)
-      CountperWindow_matrix = CountperWindow_matrix[7:(nrow(CountperWindow_matrix) - 6),]
       # Apply weights
       CKweights = c(67, 74, 230, 76, 58, 54, 106) # reversed to match order of matrix
-      PS = 0.001 * rowSums(CKweights * CountperWindow_matrix)
+      PS = 0.001 * (CountperWindow_matrix %*% CKweights)
       # Add 4 wake score because first 4 epochs are not classified by the algorithm
       PS = c(rep(2, 4), PS) 
       # Not applying rescoring as described by Cole 1992, because accuracy improvements
@@ -194,7 +195,7 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
       CountScaled_matrix = create_rollfun_mat(CountScaled, Ncol = 7)
       # In next line I use intentionally a reversed order relative to Galland publication
       # because our matrix is reversed relative to paper
-      WeightCounts = abs(rowSums(CountScaled_matrix * c(1,3,5:1))) * 2.7 
+      WeightCounts = abs(CountScaled_matrix %*% c(1,3,5:1)) * 2.7 
       WeightCounts = WeightCounts[-c(1:2)] # remove first two time stamps, to align with 5th element (7-5=2)
       GallandScore = rep(0, length(WeightCounts))
       GallandScore[which(WeightCounts < 1)] = 1
@@ -245,8 +246,7 @@ HASIB = function(HASIB.algo = "vanHees2015", timethreshold = c(), anglethreshold
       # Apply coefficients to estimate sleep
       Noak = length(oakley_coef)
       counts_matrix = create_rollfun_mat(counts, Ncol = Noak)
-      counts_matrix = counts_matrix[Noak:(nrow(counts_matrix) - (Noak - 1)),]
-      PS = rowSums(counts_matrix * oakley_coef)
+      PS = counts_matrix %*% oakley_coef
       rm(counts_matrix)
       PSscores = rep(0, length(PS))
       PSsibs = which(PS <= oakley_threshold)

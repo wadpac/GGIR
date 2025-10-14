@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,6 +82,13 @@
       <small>Source: <a href="https://github.com/wadpac/GGIR/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.3-1" id="changes-in-ggir-version-33-1">CHANGES IN GGIR VERSION 3.3-1<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-33-1"></a></h2>
+<ul><li><p>Part 2: Replaces QC plot as pdf file by QC plots as png file per recording to help speed up report generation <a href="https://github.com/wadpac/GGIR/issues/1402" class="external-link">#1402</a></p></li>
+<li><p>Part 3: Fix bug in calculation of Oakley1994, Galland2012, and ColeKripke1997 <a href="https://github.com/wadpac/GGIR/issues/1404" class="external-link">#1404</a></p></li>
+<li><p>Part 6: Fixed bug triggering an error when running part 6 with do.parallel = TRUE. <a href="https://github.com/wadpac/GGIR/issues/1400" class="external-link">#1400</a></p></li>
+<li><p>Error handling: Added parameter “use_trycatch_serial” to optionally log file-level errors without interrupting GGIR when “do.parallel = FALSE”. <a href="https://github.com/wadpac/GGIR/issues/1308" class="external-link">#1308</a></p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.3-0" id="changes-in-ggir-version-33-0">CHANGES IN GGIR VERSION 3.3-0<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-33-0"></a></h2><p class="text-muted">CRAN release: 2025-09-15</p>
 <ul><li>Part 3: Adding option to auto-correct sleep guider that failed to detect the full main sleep period or incorrectly focused on a daytime nap. The new algorithm comes with new parameters guider_cor_maxgap_hrs, guider_cor_min_frac_sib, guider_cor_min_hrs, guider_cor_meme_frac_out, guider_cor_meme_frac_in, guider_cor_meme_min_hrs <a href="https://github.com/wadpac/GGIR/issues/1307" class="external-link">#1307</a></li>
