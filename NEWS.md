@@ -1,7 +1,14 @@
 # CHANGES IN GGIR VERSION 3.3-?
+
 - Part 2: Step/cadence expanded with a variety of output variables #1398.
 
-- Part 6: Fixed bug #1400 triggering an error when running part 6 with do.parallel = TRUE.
+# CHANGES IN GGIR VERSION 3.3-1
+
+- Part 2: Replaces QC plot as pdf file by QC plots as png file per recording to help speed up report generation #1402
+
+- Part 3: Fix bug in calculation of Oakley1994, Galland2012, and ColeKripke1997 #1404
+
+- Part 6: Fixed bug triggering an error when running part 6 with do.parallel = TRUE. #1400
 
 - Error handling: Added parameter "use_trycatch_serial" to optionally log file-level errors without interrupting GGIR when "do.parallel = FALSE". #1308
 
