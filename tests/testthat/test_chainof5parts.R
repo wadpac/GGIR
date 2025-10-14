@@ -146,7 +146,7 @@ test_that("chainof5parts", {
           do.parallel = do.parallel, myfun = c(), qlevels = c(0.5, 0.9),
           cosinor = TRUE, verbose = FALSE)
   params_output = load_params()$params_output
-  g.report.part2(metadatadir = metadatadir, f0 = 1, f1 = 1, maxdur = Ndays, params_output = params_output)
+  g.report.part2(metadatadir = metadatadir, f0 = 1, f1 = 1, params_output = params_output)
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])

@@ -1784,7 +1784,15 @@ GGIR(mode = 1:5,
 
       \item{do.part2.pdf}{
         Boolean (default = TRUE).
-        In \link{g.part2}: Whether to generate a pdf for \link{g.part2}.}
+        Now replaced by \code{do.part2.png}. If specified and 
+        \code{do.part2.png} is not specified then value will be assigned 
+        to \code{do.part2.png}. Used in \link{g.part2} to indicate whether
+        to generate a pdf before, but this is now a png file.}
+        
+      \item{do.part2.png}{
+        Boolean (default = TRUE).
+        Used in \link{g.part2} to indicate whether to generate a png file for 
+        each recording.}
 
       \item{do.part3.pdf}{
         Boolean (default = FALSE).

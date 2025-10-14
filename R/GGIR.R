@@ -423,7 +423,6 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
         store.long = FALSE
       }
       g.report.part2(metadatadir = metadatadir, f0 = f0, f1 = f1,
-                     maxdur = params_cleaning[["maxdur"]],
                      store.long = store.long, params_output,
                      verbose = verbose, desiredtz = params_general[["desiredtz"]])
     }
