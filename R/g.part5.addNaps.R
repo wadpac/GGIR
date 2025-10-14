@@ -104,7 +104,7 @@ g.part5.addNaps = function(sibreport = NULL, ts = NULL, params_general = NULL,
           if (length(sibnap) > 0) {
             # Only consider nap it does not overlap for more than 10% with known nonwear.
             fractionInvalid = length(which(ts$nonwear[sibnap] == 1)) / length(sibnap)
-            if (fractionInvalid < 0.5) {
+            if (fractionInvalid < 0.1) {
               nap_dur_min = length(sibnap) / (1 / epochSize_min)
               nap_dur_class = which(c(params_sleep[["possible_nap_dur"]], Inf) > nap_dur_min)[1]
               # expected class number is 2 or higher, e.g.
