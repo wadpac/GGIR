@@ -65,16 +65,14 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
     }
   }
   ffdone = dir(paste0(metadatadir,ms2.out))
-  if (params_output[["do.part2.pdf"]] == TRUE) {
-    QC_plotfolder = paste0(metadatadir, "/results/QC/plots")
+  if (params_output[["do.part2.png"]] == TRUE) {
+    QC_plotfolder = paste0(metadatadir, "/results/QC/plots_part2")
     if (!dir.exists(QC_plotfolder)) {
       dir.create(QC_plotfolder)
     }
   }
   #---------------------------------
   # house keeping variables
-  pdfpagecount = 1 # counter to keep track of files being processed (for pdf)
-  pdffilenumb = 1 #counter to keep track of number of pdf-s being generated
   daySUMMARY = c()
   if (length(f0) == 0) f0 = 1
   if (length(f1) == 0) f1 = length(fnames)
@@ -109,7 +107,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                         myfun=c(), params_cleaning = c(), params_247 = c(),
                         params_phyact = c(), params_output = c(), params_general = c(),
                         path, ms2.out, foldername, fullfilenames, folderstructure, referencefnames,
-                        daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78, verbose, use_qwindow_as_diary) {
+                        daySUMMARY, csvfolder, cnt78, verbose, use_qwindow_as_diary) {
     Nappended = I_list = tail_expansion_log = desiredtz_part1 = NULL
     if (length(ffdone) > 0) {
       if (length(which(ffdone == as.character(unlist(strsplit(fnames[i], "eta_"))[2]))) > 0) {
@@ -200,7 +198,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                        acc.metric = params_general[["acc.metric"]],
                        ID = ID, qwindowImp = qwindowImp)
         
-        if (params_output[["do.part2.pdf"]] == TRUE & length(IMP) > 0) {
+        if (params_output[["do.part2.png"]] == TRUE & length(IMP) > 0) {
           Ndays = (nrow(M$metalong) * M$windowsizes[2]) / (3600 * 24)
           if (params_cleaning[["maxdur"]] != 0) {
             durplot = params_cleaning[["maxdur"]]
@@ -371,8 +369,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                                   params_phyact, params_output, params_general,
                                                   path, ms2.out, foldername, fullfilenames,
                                                   folderstructure, referencefnames,
-                                                  daySUMMARY, pdffilenumb, pdfpagecount, 
-                                                  csvfolder, cnt78, verbose, use_qwindow_as_diary)
+                                                  daySUMMARY, csvfolder, cnt78,
+                                                  verbose, use_qwindow_as_diary)
                                        
                                      })
                                      return(tryCatchResult)
@@ -394,8 +392,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                    params_phyact, params_output, params_general,
                    path, ms2.out, foldername, fullfilenames,
                    folderstructure, referencefnames,
-                   daySUMMARY, pdffilenumb, pdfpagecount,
-                   csvfolder, cnt78, verbose, use_qwindow_as_diary)
+                   daySUMMARY, csvfolder, 
+                   cnt78, verbose, use_qwindow_as_diary)
       )
       if (params_general[["use_trycatch_serial"]] == TRUE) {
         tryCatch(

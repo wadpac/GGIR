@@ -18,8 +18,8 @@ vignette: >
 GGIR generates the following types of output:
 
 -   csv-spreadsheets with all the variables you need for physical activity, sleep and circadian rhythm research
--   Pdfs with on each page a low resolution plot of the data per file and quality indicators
--   R objects with milestone data
+-   .png images with on each image a low time resolution plot of the data per file and quality indicators
+-   .RData files with milestone data
 -   Pdfs with a visual summary of the physical activity and sleep patterns as identified (see example below)
 
 # GGIR Part 1
@@ -33,7 +33,7 @@ Part 2 generates the following output:
 -   part2_summary.csv: Person level summary (see below)
 -   part2_daysummary.csv: Day level summary (see below)
 -   QC/data_quality_report.csv: Overview of calibration results and whether or not a file was corrupt or too short to be processed,
--   QC/plots to check data quality 1.pdf: A pdf with visualisation of the acceleration time series in 15 minute resolution and with invalid data segments highlighted in colours (yellow: non-wear based on standard deviation threshold, brown: non-wear after extra filtering step (introduced in 2013), and purple: clipping)
+-   QC/plots_part2: A folder with .png files holding a visualisation of the acceleration time series in 15 minute resolution and with invalid data segments highlighted in colours (yellow: non-wear based on standard deviation threshold, brown: non-wear after extra filtering step (introduced in 2013), and purple: clipping)
 
 ## Person level summary (csv)
 
@@ -60,8 +60,6 @@ Part 2 generates the following output:
 | n hours ignored at end of meas (if data_masking_strategy=1, 3 or 5) | number of hours ignored at the end of the measurement (if data_masking_strategy = 1) or at the end of the `ndayswindow` (if data_masking_strategy = 3 or 5). A log of decision made in part2.R |
 | n days of measurement after which all data is ignored (if data_masking_strategy=1) | number of days of measurement after which all data is ignored (if data_masking_strategy = 1, 3 or 5) A log of decision made in part2.R |
 | epoch size to which acceleration was averaged (seconds) | A log of decision made in part1.R |
-| pdffilenumb | Indicator of in which pdf-file the plot was stored |
-| pdfpagecount | Indicator of in which pdf-page the plot was stored |
 | data_masking_strategy | A log of the decision made when calling g.impute: value=1 mean ignore specific hours; value=2 mean ignore all data before the first midnight and after the last midnight |
 
 ### Letter codes to indicate aggregation type
@@ -239,7 +237,6 @@ The csv. files contain the variables as shown below.
 | wakeup_ts | wakeup formatted as a timestamp |
 | guider_onset_ts | guider_onset formatted as a timestamp |
 | guider_wake_ts | guider_wake formatted as a timestamp |
-| page | pdf page on which the visualisation can be found |
 | daysleeper | If 0 then the person is a nightsleeper (sleep period did not overlap with noon) if value=1 then the person is a daysleeper (sleep period did overlap with noon) |
 | weekday | Day of the week on which the night started |
 | calendardate | Calendar date on which the night started in day/month/year format. |

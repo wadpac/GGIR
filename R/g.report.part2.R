@@ -46,7 +46,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(),
       # try loading part 2
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE & length(selp) > 0) { 
         # Load part 2 data
-        IMP = c()
+        SUM = IMP = c()
         fname2read = paste0(metadatadir, ms2.out, "/", fnames.ms2[selp])
         try(expr = {load(file = fname2read)}, silent = TRUE)
         # Checks for availability of file and data

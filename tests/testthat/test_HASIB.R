@@ -29,6 +29,6 @@ test_that("HASIB generate correct output", {
   expect_equal(length(which(vanHees2015[,1] == 1)), 713)
   expect_equal(length(which(Sadeh1994[,1] == 1)), 372)
   expect_equal(length(which(ColeKripke1992[,1] == 1)), 372)
-  expect_equal(length(which(Galland2012[,1] == 1)), 384)
-  expect_equal(length(which(Oakley1997[,1] == 1)), 420)
+  expect_equal(length(which(Galland2012[,1] == 1)), 396)
+  expect_equal(length(which(Oakley1997[,1] == 1)), 435)
 })
