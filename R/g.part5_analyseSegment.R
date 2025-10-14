@@ -473,33 +473,45 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
           }
         }
         Npartial = Noverlap_neighbour_before + Noverlap_neighbour_after
-        # if (Npartial != 0) {
-        #   print(paste0(Npartial, " ", Noverlap_neighbour_before, " ", Noverlap_neighbour_after))
-        # }
         return(Npartial)
       }
-      
-      if (length(nap_class_names) > 0) {
-        RLE_nap_LEVELS = rle(nap_LEVELS[sse])
-        start_end_index = c(1, length(RLE_nap_LEVELS$values))
-        for (levelsc in 0:(length(nap_class_names) - 1)) {
-          Nblocks = length(which(RLE_nap_LEVELS$values == levelsc))
-          Nblocks_partial = countPartialBlocks(RLE_nap_LEVELS, start_end_index, nap_LEVELS, sse, 
-                                               NepochPerDay, nap_LEVELS_dur, levelsc)
-          dsummary[si,fi] = Nblocks - Nblocks_partial
-          ds_names[fi] = paste0("Nblocks_", nap_class_names[levelsc + 1]);      fi = fi + 1
-        }
+      if (Nsegments > 1) {
+        # segment occurs twice, which is possible when defining a day as WW or OO
+        gap = which(diff(sse) != 1)
+        sse_temp = list(sse[1:gap], sse[(gap + 1):length(sse)])
+      } else {
+        sse_temp = list(sse)
       }
-      # Count also number of sleep windows per sleep window level
-      if (length(sleep_class_names) > 0) {
-        RLE_sleep_LEVELS = rle(sleep_LEVELS[sse])
-        start_end_index = c(1, length(RLE_sleep_LEVELS$values))
-        for (levelsc in 1:length(sleep_class_names)) {
-          Nblocks = length(which(RLE_sleep_LEVELS$values == levelsc))
-          Nblocks_partial = countPartialBlocks(RLE_sleep_LEVELS, start_end_index, sleep_LEVELS + 1, sse, 
-                                               NepochPerDay, sleep_LEVELS_dur, levelsc)
-          dsummary[si,fi] = Nblocks - Nblocks_partial
-          ds_names[fi] = paste0("Nblocks_", sleep_class_names[levelsc]); fi = fi + 1
+      fi_backup = fi
+      for (sei in 1:length(sse_temp)) {
+        if (sei == 2) {
+          fi = fi_backup # for second segment use same output columns
+        }
+        sset = sse_temp[[sei]]
+        if (length(nap_class_names) > 0) {
+          RLE_nap_LEVELS = rle(nap_LEVELS[sset])
+          start_end_index = c(1, length(RLE_nap_LEVELS$values))
+          for (levelsc in 0:(length(nap_class_names) - 1)) {
+            Nblocks = length(which(RLE_nap_LEVELS$values == levelsc))
+            Nblocks_partial = countPartialBlocks(RLE_nap_LEVELS, start_end_index, nap_LEVELS, sset, 
+                                                 NepochPerDay, nap_LEVELS_dur, levelsc)
+            if (sei == 2) Nblocks = Nblocks + dsummary[si,fi]
+            dsummary[si,fi] = Nblocks - Nblocks_partial
+            ds_names[fi] = paste0("Nblocks_", nap_class_names[levelsc + 1]);      fi = fi + 1
+          }
+        }
+        # Count also number of sleep windows per sleep window level
+        if (length(sleep_class_names) > 0) {
+          RLE_sleep_LEVELS = rle(sleep_LEVELS[sset])
+          start_end_index = c(1, length(RLE_sleep_LEVELS$values))
+          for (levelsc in 1:length(sleep_class_names)) {
+            Nblocks = length(which(RLE_sleep_LEVELS$values == levelsc))
+            Nblocks_partial = countPartialBlocks(RLE_sleep_LEVELS, start_end_index, sleep_LEVELS + 1, sset, 
+                                                 NepochPerDay, sleep_LEVELS_dur, levelsc)
+            if (sei == 2) Nblocks = Nblocks + dsummary[si,fi]
+            dsummary[si,fi] = Nblocks - Nblocks_partial
+            ds_names[fi] = paste0("Nblocks_", sleep_class_names[levelsc]); fi = fi + 1
+          }
         }
       }
     }
