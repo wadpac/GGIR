@@ -495,7 +495,9 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
             Nblocks = length(which(RLE_nap_LEVELS$values == levelsc))
             Nblocks_partial = countPartialBlocks(RLE_nap_LEVELS, start_end_index, nap_LEVELS, sset, 
                                                  NepochPerDay, nap_LEVELS_dur, levelsc)
-            if (sei == 2) Nblocks = Nblocks + dsummary[si,fi]
+            if (sei == 2) {
+              Nblocks = Nblocks + as.numeric(dsummary[si,fi])
+            }
             dsummary[si,fi] = Nblocks - Nblocks_partial
             ds_names[fi] = paste0("Nblocks_", nap_class_names[levelsc + 1]);      fi = fi + 1
           }
@@ -508,7 +510,9 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
             Nblocks = length(which(RLE_sleep_LEVELS$values == levelsc))
             Nblocks_partial = countPartialBlocks(RLE_sleep_LEVELS, start_end_index, sleep_LEVELS + 1, sset, 
                                                  NepochPerDay, sleep_LEVELS_dur, levelsc)
-            if (sei == 2) Nblocks = Nblocks + dsummary[si,fi]
+            if (sei == 2) {
+              Nblocks = Nblocks + as.numeric(dsummary[si,fi])
+              }
             dsummary[si,fi] = Nblocks - Nblocks_partial
             ds_names[fi] = paste0("Nblocks_", sleep_class_names[levelsc]); fi = fi + 1
           }
