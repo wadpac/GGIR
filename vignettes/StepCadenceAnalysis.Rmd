@@ -7,19 +7,19 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-GGIR does not have a build-in step detection algorithm, but does facilitate the [embedding of an external function](https://wadpac.github.io/GGIR/articles/ExternalFunction.html) for event detection such as steps. Such algorithms typically count steps per epoch, where an epoch is usually a 5 second or larger time interval. Steps and cadence per epoch alone is not of direct value for research. Therefore, GGIR facilitate the extraction of summary statistics, which will be discussed below.
+GGIR does not have a build-in step detection algorithm, but does facilitate the [embedding of an external function](https://wadpac.github.io/GGIR/articles/ExternalFunction.html) for event detection such as steps. Such algorithms typically count steps per epoch, where an epoch is usually a 5 second or larger time interval. Steps and cadence per epoch alone is not of direct value for research. Therefore, GGIR facilitates the extraction of summary statistics, which will be discussed below.
 
 
 ## Verisense algorithm
 
-The only external algorithm for step detection currently available for GGIR is the Verisense algorithm, which was design for wrist location. The algorithm has been described and evaluated in studies by [Maylor 2022](https://doi.org/10.3390/s22249984) and [Rowlands 2022](https://doi.org/10.1080/02640414.2022.2147134).
+The only external algorithm for step detection currently available for GGIR is the Verisense algorithm, which was design for data collected on the wrist. The algorithm has been described and evaluated in studies by [Maylor 2022](https://doi.org/10.3390/s22249984) and [Rowlands 2022](https://doi.org/10.1080/02640414.2022.2147134).
 
 The original [Verisense algortihm code](https://github.com/ShimmerEngineering/Verisense-Toolbox/tree/master/Verisense_step_algorithm) is not actively maintained at the time of writing this documentation. An [improved copy of the Verisense algortihms code](https://github.com/wadpac/GGIR/blob/master/user-scripts/verisense_count_steps.R) with minor bug fixes is part of the GGIR GitHub repository.
 
 
 ### How to use the Verisense algorithm?
 
-To use the algorithm, add the following code at the top of your R script and update the file path to the function file on your computer. A discussion of this code will follow further down.
+To use the algorithm, copy-paste the following code to the top of your R script and update the file path in the first line to the Verisense function file on your computer. A discussion of this code will follow further down.
 
 ```
 source("C:/path_to_file/verisense_count_steps.R")
