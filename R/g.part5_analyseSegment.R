@@ -293,6 +293,18 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
         }
       }
     }
+    #----
+    # Experimental variable, count time spent in nap + acc above light
+    if (nap_overwrite_bc == FALSE) {
+      # TIME SPENT IN NAP WINDOWS
+      if (length(nap_class_names) > 0) {
+        for (levelsc in 0:(length(nap_class_names) - 1)) {
+          dsummary[si,fi] = (length(which(nap_LEVELS[sse] == levelsc & ts$ACC[sse] >= params_phyact[["threshold.lig"]])) * ws3new) / 60
+          ds_names[fi] = paste0("dur_", nap_class_names[levelsc + 1],"_min_with_LMVPA");      fi = fi + 1
+        }
+      }
+    }
+    
     #============================================
     # Number of long wake periods (defined as > 5 minutes) during the night
     Nawake = length(which(abs(diff(which(LEVELS[sse] == 0))) > (300 / ws3new))) - 2
