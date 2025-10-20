@@ -136,20 +136,25 @@ g.part5.definedays = function(nightsi, wi, indjump, epochSize, qqq_backup = c(),
       s0s1 = format(s0s1, format = "%H:%M:%S")
       # tryCatch is needed in the case that the segment is not available in ts,
       # then a no non-missing values warning would be triggered by the which function
-      test_seg_condition = which(hms >= s0s1[1] & hms <= s0s1[2])
-      if (any(diff(test_seg_condition) > 1) & segments_names[si] %in% c("WW", "OO") == FALSE) {
-        # window is more than 24 hours and segment occurs twice
-        # we keep both index ranges
-        jump = which(diff(test_seg_condition) > 1)
-        test_seg_condition1 = test_seg_condition[1:jump]
-        test_seg_condition2 = test_seg_condition[(jump + 1):length(test_seg_condition)]
-        segments[[si]] = c(tryCatch(range(fullQqq[test_seg_condition1]), #segStart and segEnd
-                                    warning = function(w) rep(NA, 2)),
-                           tryCatch(range(fullQqq[test_seg_condition2]), #segStart and segEnd
-                                    warning = function(w) rep(NA, 2)))
+      if (si == 1) {
+        test_seg_condition = NULL
+        segments[[si]] = range(fullQqq)
       } else {
-        segments[[si]] = tryCatch(range(fullQqq[test_seg_condition]), #segStart and segEnd
-                                  warning = function(w) rep(NA, 2))
+        test_seg_condition = which(hms >= s0s1[1] & hms <= s0s1[2])
+        if (any(diff(test_seg_condition) > 1) & segments_names[si] %in% c("WW", "OO") == FALSE) {
+          # window is more than 24 hours and segment occurs twice
+          # we keep both index ranges
+          jump = which(diff(test_seg_condition) > 1)
+          test_seg_condition1 = test_seg_condition[1:jump]
+          test_seg_condition2 = test_seg_condition[(jump + 1):length(test_seg_condition)]
+          segments[[si]] = c(tryCatch(range(fullQqq[test_seg_condition1]), #segStart and segEnd
+                                      warning = function(w) rep(NA, 2)),
+                             tryCatch(range(fullQqq[test_seg_condition2]), #segStart and segEnd
+                                      warning = function(w) rep(NA, 2)))
+        } else {
+          segments[[si]] = tryCatch(range(fullQqq[test_seg_condition]), #segStart and segEnd
+                                    warning = function(w) rep(NA, 2))
+        }
       }
     }
   }

@@ -49,7 +49,7 @@ test_that("g.part5.definedays considers qwindow to generate segments", {
   expect_true(is.list(definedays$segments))
   expect_equal(length(definedays$segments), 6)
   expect_equal(names(definedays$segments)[1], "22:00:00-21:59:00") # full recording from W to W
-  expect_equal(definedays$segments[[1]], c(NA, NA))
+  expect_equal(definedays$segments[[1]], c(1321, 2760))
   expect_equal(names(definedays$segments)[2], "00:00:00-06:59:00")
   expect_equal(definedays$segments[[2]], c(1441, 1860))
   expect_equal(names(definedays$segments)[3], "07:00:00-08:59:00")

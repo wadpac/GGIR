@@ -281,11 +281,14 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                            "-", uTRVi[h3], "-", usleepparam[h4]))
               }
               select_window = rep(FALSE, nrow(outputfinal))
-              uwi_available = grep(pattern = uwi[j], x = as.character(outputfinal$window))
+              if (uwi[j] %in% c("MM", "WW", "OO")) {
+                uwi_available = which(outputfinal$window == uwi[j])
+              } else {
+                uwi_available = grep(pattern = uwi[j], x = outputfinal$window)
+              }
               if (length(uwi_available) > 0) {
                 select_window[uwi_available] = TRUE
               }
-              # if (!(uwi[j] %in% c("MM", "WW", "OO"))) select_window = !(as.character(outputfinal$window) %in% c("MM", "WW", "OO"))
               seluwi = which(select_window &
                                as.character(outputfinal$TRLi) == uTRLi[h1] &
                                as.character(outputfinal$TRMi) == uTRMi[h2] &
