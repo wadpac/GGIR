@@ -1,5 +1,5 @@
 g.part5.addNaps = function(sibreport = NULL, ts = NULL, params_general = NULL,
-                           params_sleep = NULL) {
+                           params_sleep = NULL, params_phyact = NULL) {
   tz = params_general[["desiredtz"]]
   epochSize_min = as.numeric(difftime(ts$time[2], ts$time[1], units = "mins"))
   if (!is.null(sibreport) &&
@@ -99,12 +99,14 @@ g.part5.addNaps = function(sibreport = NULL, ts = NULL, params_general = NULL,
     if ("sib" %in% srep_tmp$type) {
       sibnaps = which(srep_tmp$type == "sib")
       if (length(sibnaps) > 0) {
+        accThreshold = min(params_phyact[["threshold.lig"]])
         for (sni in 1:length(sibnaps)) {
           sibnap = which(ts$time >= srep_tmp$start[sibnaps[sni]] & ts$time <= srep_tmp$end[sibnaps[sni]])
           if (length(sibnap) > 0) {
             # Only consider nap it does not overlap for more than 10% with known nonwear.
             fractionInvalid = length(which(ts$nonwear[sibnap] == 1)) / length(sibnap)
-            if (fractionInvalid < 0.1) {
+            ACCp90 = as.numeric(quantile(ts$ACC[sibnap], probs = 0.9))
+            if (fractionInvalid < 0.1 && ACCp90 < accThreshold) {
               nap_dur_min = length(sibnap) / (1 / epochSize_min)
               nap_dur_class = which(c(params_sleep[["possible_nap_dur"]], Inf) > nap_dur_min)[1]
               # expected class number is 2 or higher, e.g.

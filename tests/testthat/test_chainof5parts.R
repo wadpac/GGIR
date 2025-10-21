@@ -211,7 +211,9 @@ test_that("chainof5parts", {
           possible_nap_window = c(0, 24),
           possible_nap_dur = c(0, 15, 60, 240),
           possible_nap_edge_acc = Inf,
-          possible_nap_gap = 0)
+          possible_nap_gap = 0,
+          threshold.lig = 80,
+          threshold.mod = 120)
   sibreport_dirname = "output_test/meta/ms5.outraw/sib.reports"
   expect_true(dir.exists(sibreport_dirname))
   expect_true(file.exists(paste0(sibreport_dirname, "/sib_report_123A_testaccfile_T5A5.csv")))
@@ -233,7 +235,7 @@ test_that("chainof5parts", {
   expect_equal(sum(as.numeric(output$dur_day_nap_bts_15_60_min)), 45)
   expect_equal(sum(as.numeric(output$dur_day_nap_bts_60_240_min)), 185)
   
-  dirname_raw = "output_test/meta/ms5.outraw/40_100_400"
+  dirname_raw = "output_test/meta/ms5.outraw/80_120_400"
   rn2 = dir(dirname_raw,full.names = TRUE, recursive = T)
   rn2_index = grep(pattern = "[.]csv", x = rn2, value = FALSE)
   expect_true(file.exists(rn2[rn2_index]))
@@ -241,7 +243,7 @@ test_that("chainof5parts", {
   expect_that(nrow(TSFILE),equals(2820))
   expect_equal(ncol(TSFILE), 13)
   expect_equal(length(unique(TSFILE$sibdetection)), 4) # sleep and 2 levels of nap duration
-  expect_equal(length(unique(TSFILE$class_id)), 12)
+  expect_equal(length(unique(TSFILE$class_id)), 9)
   legend_file = dir("output_test/meta/ms5.outraw", pattern = "behavioralcode", full.names = TRUE)
   class_legend = read.csv(file = legend_file)
   expect_equal(nrow(class_legend), 21)
@@ -263,9 +265,9 @@ test_that("chainof5parts", {
   expect_true(file.exists("output_test/results/part4_nightsummary_sleep_cleaned.csv"))
   expect_true(file.exists("output_test/results/part4_summary_sleep_cleaned.csv"))
   expect_true(file.exists("output_test/results/file summary reports/old_report_123A_testaccfile.csv.pdf"))
-  expect_true(file.exists("output_test/results/part5_daysummary_MM_L40M100V400_T5A5.csv"))
-  expect_true(file.exists("output_test/results/part5_daysummary_WW_L40M100V400_T5A5.csv"))
-  expect_true(file.exists("output_test/results/part5_daysummary_OO_L40M100V400_T5A5.csv"))
+  expect_true(file.exists("output_test/results/part5_daysummary_MM_L80M120V400_T5A5.csv"))
+  expect_true(file.exists("output_test/results/part5_daysummary_WW_L80M120V400_T5A5.csv"))
+  expect_true(file.exists("output_test/results/part5_daysummary_OO_L80M120V400_T5A5.csv"))
   dn = "output_test"
   
   # Expect warning when unknown parameters are provided

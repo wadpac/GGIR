@@ -423,7 +423,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               }
               addNapOut = g.part5.addNaps(sibreport = sibreport, ts = ts,
                                           params_general = params_general,
-                                          params_sleep = params_sleep)
+                                          params_sleep = params_sleep,
+                                          params_phyact = params_phyact)
               ts = addNapOut$ts
               sibreport = addNapOut$sibreport
               long_nap_boutsi = addNapOut$long_nap_boutsi

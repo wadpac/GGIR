@@ -9,7 +9,7 @@
 }
 \usage{
     g.part5.addNaps(sibreport = NULL, ts = NULL, params_general = NULL,
-                           params_sleep = NULL)
+                           params_sleep = NULL, params_phyact = NULL)
 }
 \arguments{
   \item{sibreport}{
@@ -22,6 +22,9 @@
     See \link{GGIR}
   }
   \item{params_sleep}{
+    See \link{GGIR}
+  }
+  \item{params_phyact}{
     See \link{GGIR}
   }
 }

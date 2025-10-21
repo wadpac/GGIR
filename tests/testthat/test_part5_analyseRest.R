@@ -7,6 +7,7 @@ dsummary = matrix("", 1, 40)
 startday = as.POSIXct(x = "2022-06-02 08:00:00", tz = tz)
 ts = data.frame(time = seq(startday, startday + (16 * 3600), by = 60))
 ts$sibdetection = 0
+ts$ACC = 0
 params_general = load_params()$params_general
 params_general[["desiredtz"]] = tz
 
@@ -19,12 +20,14 @@ test_that("Overlap 1 nap and 1 sib", {
   sibreport$duration = as.numeric(difftime(time1 = sibreport$end,
                                            time2 = sibreport$start, units = "mins", tz = tz))
   params_sleep = load_params()$params_sleep
+  params_phyact = load_params()$params_phyact
   params_sleep[["possible_nap_dur"]] =  c(0, 240)
   params_sleep[["possible_nap_window"]] =  c(9, 18)
   
   out_add_nap = g.part5.addNaps(sibreport = sibreport, ts = ts,
                                 params_general = params_general,
-                                params_sleep = params_sleep)
+                                params_sleep = params_sleep,
+                                params_phyact = params_phyact)
   ts = out_add_nap$ts
   sibreport = out_add_nap$sibreport
   long_nap_boutsi = out_add_nap$long_nap_boutsi
@@ -58,14 +61,17 @@ test_that("Overlap 1 nonwear and 1 sib", {
   sibreport = data.frame(ID = rep("test123", 2), type = c("nonwear", "sib"),
                          start = c("2022-06-02 14:00:00", "2022-06-02 14:05:00"),
                          end = c("2022-06-02 14:20:00", "2022-06-02 14:20:00"))
-  sibreport$duration = as.numeric(difftime(time1 = sibreport$end, time2 = sibreport$start, units = "mins", tz = tz))
+  sibreport$duration = as.numeric(difftime(time1 = sibreport$end, 
+                                           time2 = sibreport$start, units = "mins", tz = tz))
   params_sleep = load_params()$params_sleep
+  params_phyact = load_params()$params_phyact
   params_sleep[["possible_nap_dur"]] =  c(0, 240)
   params_sleep[["possible_nap_window"]] =  c(9, 18)
   
   out_add_nap = g.part5.addNaps(sibreport = sibreport, ts = ts,
                                 params_general = params_general,
-                                params_sleep = params_sleep)
+                                params_sleep = params_sleep,
+                                params_phyact = params_phyact)
   ts = out_add_nap$ts
   sibreport = out_add_nap$sibreport
   long_nap_boutsi = out_add_nap$long_nap_boutsi
@@ -102,12 +108,14 @@ test_that("No overlap 1 nonwear, 1 nap, and 1 sib", {
                          end = c("2022-06-02 12:20:00", "2022-06-02 13:20:00", "2022-06-02 15:20:00"))
   sibreport$duration = as.numeric(difftime(time1 = sibreport$end, time2 = sibreport$start, units = "mins", tz = tz))
   params_sleep = load_params()$params_sleep
+  params_phyact = load_params()$params_phyact
   params_sleep[["possible_nap_dur"]] =  c(0, 240)
   params_sleep[["possible_nap_window"]] =  c(9, 18)
   
   out_add_nap = g.part5.addNaps(sibreport = sibreport, ts = ts,
                                 params_general = params_general,
-                                params_sleep = params_sleep)
+                                params_sleep = params_sleep,
+                                params_phyact = params_phyact)
   ts = out_add_nap$ts
   sibreport = out_add_nap$sibreport
   long_nap_boutsi = out_add_nap$long_nap_boutsi
