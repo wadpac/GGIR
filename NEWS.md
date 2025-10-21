@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.3-?
+
+- Part 5: Add filter to excluded naps that have high accelerations or for which the surrounded hour has less than 1/6 naps or sleep.
+
 # CHANGES IN GGIR VERSION 3.3-1
 
 - Part 5: Add option to distinguish multiple nap duration categories similar to physical activity bout duration categories. #967
