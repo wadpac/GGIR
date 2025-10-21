@@ -65,7 +65,7 @@ All step and cadence statistics are derived as summary per recording day and per
 
 ### Per day segment
 
-When you use GGIR's [day segment analysis functionality](https://wadpac.github.io/GGIR/articles/TutorialDaySegmentAnalyses.html) the statistics are also derived per time segment within a day. The time segment for which each statistic is derived is clarified in the ending of a column name as **_startHour-endHourhr**. For example, **_0-14hr** indicates that it was extracted from data between midnight and 14:00.
+When you use GGIR's [day segment analysis functionality](https://wadpac.github.io/GGIR/articles/TutorialDaySegmentAnalyses.html) the statistics are also derived per time segment within a day. The time segment for which each statistic is derived is clarified in the ending of a column name as **\_startHour-endHourhr**. For example, **\_0-14hr** indicates that it was extracted from data between midnight and 14:00.
 
 
 ## Step count and cadence summary statistics
@@ -125,6 +125,7 @@ Output:
 - The X hour window with the most amount of cadence will be stored with column name **MX_cad_**, e.g. `M5_cad_`.
 
 This is then followed by:
+
 - **mean_Y** where Y reflects the metrics being average, which can be acceleration metrics, step count per epoch or the mean cadence. For example, "L10_cad_mean_ENMO_mg_0-24hr", "L10_cad_mean_step_count_mg_0-24hr", "L10_cad_meancad_0-24hr".
 - **L10hr_** indicates the timing of the 10 hours with the least cadence.
 
@@ -140,7 +141,7 @@ To control the criteria for bout detection, include in your `myfun` object the i
 - `ebout.th.cad` a single number being the minimum cadence value in steps per minute, e.g. `ebout.th.cad = 30`.
 - `ebout.th.acc` a single number being the minimum acceleration value in steps per minute, e.g. `ebout.th.acc = 50`.
 - `ebout.criter` a single number as a fraction of 1 being the faction of a bout for which the inclusion criteria need to be met identical to `boutcriter` in the context of physical activity bouts, e.g. `ebout.criter = 0.8`.
-- `ebout.condition` whether cadence and acceleration condition are both required (`ebout.condition = "AND"`) or either of the conditions is required (`ebout.condition = "OR"`). If both cadence and acc need to meet a thresholds then fill in `"AND"`. If it also acceptable if only one of the thresholds is met then fill in `"OR"`. If you do not want cadence or acceleration to be used in the equation then simply set ebout.th.cad = 0 or ebout.th.acc = 0.
+- `ebout.condition` whether cadence and acceleration condition are both required (`ebout.condition = "AND"`) or either of the conditions is required (`ebout.condition = "OR"`). If both cadence and acc need to meet a thresholds then fill in `"AND"`. If it also acceptable if only one of the thresholds is met then fill in `"OR"`. If you do not want cadence or acceleration to be used in the equation then simply set `ebout.th.cad = 0` or `ebout.th.acc = 0`.
 
 Output:
 
