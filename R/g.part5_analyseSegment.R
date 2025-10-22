@@ -464,7 +464,7 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     # If naps are in separate vector than count them separately
     if (nap_overwrite_bc == FALSE) {
       NepochPerDay = 24 * 60 * (60 / ws3new)
-      countPartialBlocks = function(RLE_LEVELS, start_end_index, x, sse, NepochPerDay,
+      countPartialBlocks = function(RLE_LEVELS, start_end_index, x, sset, NepochPerDay,
                                     LEVELS_dur, levelsc) {
         # Calculate partial overlap
         Noverlap_neighbour_before = Noverlap_neighbour_after = 0
@@ -473,15 +473,23 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
         first_dur = RLE_LEVELS$length[start_end_index[1]]
         if (!is.na(first_class)) {
           if (first_class == levelsc) {
-            Noverlap_neighbour_before = round(1 - (first_dur / LEVELS_dur[sse[1]]), digits = 2)
+            Noverlap_neighbour_before = round(1 - (first_dur / LEVELS_dur[sset[1]]), digits = 2)
           }
         }
         # Class and duration of the last bout
         last_class = RLE_LEVELS$values[start_end_index[2]]
         last_dur = RLE_LEVELS$length[start_end_index[2]]
-        if (!is.na(last_class)) {
-          if (last_class == levelsc) {
-            Noverlap_neighbour_after = round(1 - (last_dur / LEVELS_dur[sse[length(sse)]]), digits = 2)
+        # Does block run from start to end?
+        if (length(RLE_LEVELS$lengths) == 1 && first_dur == last_dur && 
+            !is.na(first_class) &&
+            !is.na(last_class) && first_class == last_class) {
+          # block overlaps entire segment, so prevent double counting time outside segment
+          Noverlap_neighbour_after = 0
+        } else {
+          if (!is.na(last_class)) {
+            if (last_class == levelsc) {
+              Noverlap_neighbour_after = round(1 - (last_dur / LEVELS_dur[sset[length(sset)]]), digits = 2)
+            }
           }
         }
         Npartial = Noverlap_neighbour_before + Noverlap_neighbour_after
