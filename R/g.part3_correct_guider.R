@@ -69,6 +69,7 @@ g.part3_correct_guider = function(SLE, desiredtz, epochSize,
     # 0: remaining time
     if (1 %in% crude_est) { 
       # omit 1- segments that have less than 80% sib
+      crude_est = as.integer(crude_est == 1) # maps 2 to 0 to avoid conflicts in cases in which 1 is preceeding 2 or vice versa
       class_changes = diff(c(0, crude_est, 0)) 
       segment_start = which(class_changes == 1)
       segment_end = which(class_changes == -1) - 1
