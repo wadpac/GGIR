@@ -176,7 +176,18 @@ GGIR(mode = 1:5,
         argument \code{configtz} to specify where the device was configured.
         Use the \"TZ identifier\" as specified at
         https://en.wikipedia.org/wiki/Zone.tab to set desiredtz,
-        e.g., \"Europe/London\".}
+        e.g., \"Europe/London\".
+        As of GGIR 3.2-12, \code{desiredtz} is only configurable in GGIR 
+        part 1 and passed on to the following parts via de milestone data files 
+        stored by each part. This means that if you would run
+        \code{GGIR(mode = 2, desiredtz = "Europe/Berlin")} GGIR would ignore the
+        timezone specification and rely on the timezone specified when part 1 was 
+        processed specific to each recording. As a result, it is now possible
+        to process part 1 separately with different timezones, then pool the milestone
+        data into one output folder, and finally process all files jointly with the 
+        subsequent GGIR parts (2-6) which will automatically accounts for each 
+        individual's file timezone.
+      }
 
       \item{configtz}{
         Character (default = \"\", i.e., system timezone).
@@ -321,6 +332,36 @@ GGIR(mode = 1:5,
         \"2023-07-11 01:24:01 PM\" or \"\%m/\%d/\%Y \%H:\%M:\%S\" \"2023-07-11 13:24:01\".
         For guidance on how to specify time formats in R see:
         https://wadpac.github.io/GGIR/articles/DateTimeFormatsInR.html.
+      }
+      
+      \item{use_trycatch_serial}{
+        Boolean (default = FALSE).
+        If set to TRUE and when using the non-default 
+        \code{do.parallel = FALSE}, the 
+        core processing function in each GGIR part is wrapped for each file in 
+        a \code{tryCatch} block. This allows GGIR to continue processing remaining 
+        files even if one or more files cause an error (e.g., due to file corruption). 
+        The error messages for failed files are logged and printed in the console 
+        at the end of the processing. Note: these error messages are less
+        detailed compared to when processing data with \code{use_trycatch_serial == FALSE}.
+        So, to investigate an error message it may be advisable to set 
+        \code{use_trycatch_serial == FALSE}. Further,
+        it should be noted that \code{tryCatch} blocks are always used when processing 
+        \code{do.parallel = TRUE}. The functionally described here is envisioned
+        to be primarily useful when it not possible to process accelerometer files
+        in parallel and there are many files. For example, when GGIR is expected 
+        to run only on a single thread in a computing cluster. In that scenario it
+        would actually be better to investigate whether GGIR can be given more
+        computing threads as GGIR is designed to coordinate the processing of files across 
+        processing threads. A second scenario where \code{use_trycatch_serial == TRUE}
+        is useful is
+        when processing files that are too large to be processed even if parameter 
+        \code{chunksize} is set to a minimal value. In that scenario you may want to 
+        set \code{use_trycatch_serial == TRUE} and \code{do.parallel = FALSE}.
+        Note that under normal conditions we expect GGIR to
+        not generate errors. If an error occurs, always investigate
+        and report the error to the community to help make GGIR better. GGIR is free
+        software and depends on you as community.
       }
     }
     }
@@ -1483,6 +1524,61 @@ GGIR(mode = 1:5,
         Numeric (default = 60).
         Angle threshold used for the HorAngle algorithm.
       }
+
+      \item{guider_cor_maxgap_hrs}{
+        Numeric (default = 2).
+        Maximum gap duration in hours as used for the correction method.
+      }
+
+      \item{guider_cor_min_frac_sib}{
+        Numeric (default = 0.5)
+        Required fraction of guider-based rest period with sustained inactivity bouts (sib) to be considered as possible extension of guider.
+      }
+      
+      \item{guider_cor_min_hrs}{
+        Numeric (default = 2)
+        Minimum guider-based rest duration (hours) to be considered as possible extension of guider.
+      }
+      
+      \item{guider_cor_meme_frac_out}{
+        Numeric (default = 0.9)
+        Minimum required fraction of initial guider classification outside the 
+        median start to median end (abbreviated as meme) of the guider across days
+        to initiate search for secondary that falls within this window. 
+      }
+      
+      \item{guider_cor_meme_frac_in}{
+        Numeric (default = 0.4)
+        Minimum required fraction of alternative guider classification inside the
+        median start to median end (abbreviated as meme) of the guider across days 
+        to be considered the new guider window.
+      }
+      
+      \item{guider_cor_meme_min_hrs}{
+        Numeric (default = 1)
+        Minimum required duration of the alternative guider classification inside the
+        median start to median end (abbreviated as meme) of the guider across days 
+        to be considered the new guider window. 
+      }
+      
+      \item{guider_cor_do}{
+        Boolean (default = FALSE)
+        Whether to apply the guider correction algorithm as discussed in Chapter 9 of the online
+        documentation: https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html.
+        In short, when sleep is fragmented, algorithms to guide the detection of SPT such
+        as HDCZA may occassionally miss a part of the night or incorrectly consider a day 
+        time nap as the main sleep window in a day. This optional algorithm aims
+        to correct for such misclassifications.
+      }
+      
+      \item{guider_cor_meme_min_dys}{
+        Numeric (default = 3)
+        Minimum number of days required to consider median-median based step in the 
+        guider correction algorithm as controlled by parameter \code{guider_cor_meme_frac_out},
+        \code{guider_cor_meme_frac_in}, and \code{guider_cor_meme_min_hrs}.
+        This parameter is set to 3 by default as a median becomes only meaningful with
+        at least three values.
+      }
     }
   }
 
@@ -1654,10 +1750,6 @@ GGIR(mode = 1:5,
         summarised in part 5 output. 
       }
 
-      \item{part6DFA}{
-        Boolean (default = FALSE) to indicate whether to perform Detrended Fluctuation
-        Analysis. Turned off by default because it can be time consuming.
-      }
       \item{SRI2_WASOmin}{
         Numeric (default = 30)
         Minimum WASO duration in minutes as used for Sleep Regularity Calculation in \link{g.part6}.
@@ -1676,7 +1768,15 @@ GGIR(mode = 1:5,
 
       \item{do.part2.pdf}{
         Boolean (default = TRUE).
-        In \link{g.part2}: Whether to generate a pdf for \link{g.part2}.}
+        Now replaced by \code{do.part2.png}. If specified and 
+        \code{do.part2.png} is not specified then value will be assigned 
+        to \code{do.part2.png}. Used in \link{g.part2} to indicate whether
+        to generate a pdf before, but this is now a png file.}
+        
+      \item{do.part2.png}{
+        Boolean (default = TRUE).
+        Used in \link{g.part2} to indicate whether to generate a png file for 
+        each recording.}
 
       \item{do.part3.pdf}{
         Boolean (default = FALSE).
@@ -1746,20 +1846,15 @@ GGIR(mode = 1:5,
 
       \item{visualreport}{
         Boolean (default = TRUE).
-        If TRUE, store two visualreports in outputfolder 'results/file summary reports'
-        with names starting with \"old_report_...\" and 
-        \"report...\". The report \"old_report_...\" has been in GGIR for years 
-        and is based on combined output from GGIR part 2 and 4. It was initially only a
-        quick development attempt to have something to show to study participants back
-        in 2015.
-        This report is not designed for data quality checking purposes as it makes
-        no attempt to exactly visualise the classifications made in GGIR part 5.
-        Given the number of inaccuracies, this report
-        will eventually be deprecated from GGIR. To turn
-        off the old report use \code{old_visualreport = FALSE}.
-        \"report_...\", is a new report as
-        of GGIR 3.1-8 and is specifically aimed at supporting data quality checks 
-        as it shows the time series data as generated and used in GGIR part 5. }.
+        If TRUE, store a visualreport in outputfolder 'results/file summary reports'
+        for each recording. Note that this report was introduced in release 3.1-8 
+        and replaced an older visual report that had been in GGIR for many years.
+        The older report was only intended as a quick attempt to have 
+        something visual to show
+        to study participants back in 2015. It was not designed for data quality 
+        checking purposes. The new visual report is specifically aimed at 
+        supporting data quality checks as it shows the time series data as generated 
+        and used in GGIR part 5. }.
 
       \item{viewingwindow}{
         Numeric (default = 1).
@@ -1811,9 +1906,11 @@ GGIR(mode = 1:5,
           biases the sleep estimates for the last night.}
 
       \item{old_visualreport}{
-        Boolean (default = TRUE).
+        Boolean (default = FALSE).
         If TRUE, then generate old visual report in addition to new visualreport.
-        The old visualreport will eventually be deprecated}
+        The old visualreport will eventually be deprecated and is not suitable for
+        data quality assessment, see documentation for \code{visualreport} above
+        for details.}
       
       \item{visualreport_hrsPerRow}{
         Numeric (default = 36).

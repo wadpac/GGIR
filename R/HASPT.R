@@ -2,8 +2,7 @@ HASPT = function(angle, params_sleep = NULL, ws3 = 5,
                  HASPT.algo = "HDCZA", invalid,
                  activity = NULL, marker = NULL,
                  sibs = NULL) {
-  tib.threshold = SPTE_start = SPTE_end = part3_guider = c()
-  
+  tib.threshold = SPTE_start = SPTE_end = part3_guider = spt_crude_estimate = NULL
   
   #-------------------------------------
   # Use marker button as guider:
@@ -394,7 +393,7 @@ HASPT = function(angle, params_sleep = NULL, ws3 = 5,
         rle_nomov$values[blocks_to_remove] = 0
         rle_nomov = rebuild_rle(rle_nomov, N)
       }
-      # Step -2: ignore gaps that are too long
+      # Step -2: fill gaps that are short
       Nsegments = length(rle_nomov$lengths)
       if (!is.null(params_sleep[["spt_max_gap_ratio"]]) && params_sleep[["spt_max_gap_ratio"]] < 1 && Nsegments > 3) {
         # Note: spt_max_gap_ratio is NULL by default
@@ -416,6 +415,8 @@ HASPT = function(angle, params_sleep = NULL, ws3 = 5,
         rle_nomov$values[gaps_to_fill] = 1
         rle_nomov = rebuild_rle(rle_nomov, N)
       }
+      # Retain estimate before the selecting the longest block
+      spt_crude_estimate = rep(rle_nomov$values, rle_nomov$length)
       # Step -1: keep indices for longest spt block
       if (1 %in% rle_nomov$values) {
         max_length =  max(rle_nomov$length[which(rle_nomov$values == 1)])
@@ -429,6 +430,10 @@ HASPT = function(angle, params_sleep = NULL, ws3 = 5,
       SPTE_start = which(diff(c(0, spt_estimate, 0)) == 1) - 1
       SPTE_end = which(diff(c(0, spt_estimate, 0)) == -1) - 1
       if (length(SPTE_start) == 1 && length(SPTE_end) == 1 && SPTE_start == 0) SPTE_start = 1
+      if (length(SPTE_start) > 0 & length(SPTE_end) > 0) {
+        spt_crude_estimate[SPTE_start:SPTE_end] = 2 # clarify in crude estimate what final estimate is
+      }
+      spt_crude_estimate = spt_crude_estimate[1:max(c(length(angle), length(activity), length(sibs)))]
       part3_guider = HASPT.algo
       if (is.na(params_sleep[["HASPT.ignore.invalid"]])) {
         # investigate if invalid time was included in the SPT definition,
@@ -446,5 +451,5 @@ HASPT = function(angle, params_sleep = NULL, ws3 = 5,
     tib.threshold = threshold
   }
   invisible(list(SPTE_start = SPTE_start, SPTE_end = SPTE_end, tib.threshold = tib.threshold,
-                 part3_guider = part3_guider))
+                 part3_guider = part3_guider, spt_crude_estimate = spt_crude_estimate))
 }

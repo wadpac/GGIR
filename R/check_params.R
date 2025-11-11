@@ -39,11 +39,16 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "SRI1_smoothing_wsize_hrs",
                        "SRI1_smoothing_frac",
                        "spt_min_block_dur",
-                       "spt_max_gap_dur", "spt_max_gap_ratio", "HorAngle_threshold")
+                       "spt_max_gap_dur", "spt_max_gap_ratio", "HorAngle_threshold",
+                       "guider_cor_maxgap_hrs",
+                       "guider_cor_min_frac_sib", "guider_cor_min_hrs",
+                       "guider_cor_meme_frac_out",
+                       "guider_cor_meme_frac_in", "guider_cor_meme_min_hrs",
+                       "guider_cor_meme_min_dys")
     boolean_params = c("ignorenonwear", "HASPT.ignore.invalid",
                        "relyonguider", "sleeplogidnum",
                        "impute_marker_button", "consider_marker_button",
-                       "sib_must_fully_overlap_with_TimeInBed")
+                       "sib_must_fully_overlap_with_TimeInBed", "guider_cor_do")
     character_params = c("HASPT.algo", "HASIB.algo", "Sadeh_axis", "nap_model",
                          "sleeplogsep", "sleepwindowType", "loglocation")
     check_class("Sleep", params = params_sleep, parnames = numeric_params, parclass = "numeric")
@@ -129,7 +134,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     boolean_params = c("epochvalues2csv", "save_ms5rawlevels", "save_ms5raw_without_invalid",
                        "storefolderstructure", "dofirstpage", "visualreport", "week_weekend_aggregate.part5",
                        "do.part3.pdf", "outliers.only", "do.visual", "do.sibreport", "visualreport_without_invalid",
-                       "do.part2.pdf", "old_visualreport", "require_complete_lastnight_part5")
+                       "do.part2.pdf", "do.part2.png", "old_visualreport", "require_complete_lastnight_part5")
 
     character_params = c("save_ms5raw_format", "timewindow", "sep_reports", "sep_config",
                          "dec_reports", "dec_config", "visualreport_focus", "method_research_vars")
@@ -142,7 +147,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "expand_tail_max_hours", "maxRecordingInterval",
                        "recording_split_overlap")
     boolean_params = c("overwrite", "print.filename", "do.parallel", "part5_agg2_60seconds",
-                       "recording_split_ignore_edges")
+                       "recording_split_ignore_edges", "use_trycatch_serial")
     character_params = c("acc.metric", "desiredtz", "configtz", "sensor.location", 
                          "dataFormat", "extEpochData_timeformat", "recording_split_times",
                          "recording_split_timeformat")
@@ -403,6 +408,14 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         params_output[["visualreport_hrsPerRow"]] > 48) {
       stop("Parameter visualreport_hrsPerRow is expected to be set in the range 24-48")
     }
+    
+    if (!is.null(params_output[["do.part2.pdf"]]) && is.null(params_output[["do.part2.png"]])) {
+      params_output[["do.part2.png"]] = params_output[["do.part2.pdf"]]
+    }
+    if (is.null(params_output[["do.part2.png"]])) {
+      params_output[["do.part2.png"]] = TRUE
+    }
+    
   }
   # params 247
   if (length(params_247) > 0) {

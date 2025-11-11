@@ -96,7 +96,9 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   # Declare recording level functionality, which at the end of this g.part6 is either
   # applied to the file in parallel with foreach or serially with a loop
   main_part6_recordlevel = function(i, metadatadir = c(), f0 = c(), f1 = c(),
-                                    fnames.ms5raw, ffdone, EXT, verbose) {
+                                    fnames.ms5raw, ffdone, EXT, verbose,
+                                    params_general = c(), params_phyact = c(), params_247 = c(),
+                                    params_cleaning = c()) {
     if (length(ffdone) > 0) {
       if (length(which(ffdone == fnames.ms5raw[i])) > 0) {
         skip = 1 #skip this file because it was analysed before")
@@ -107,12 +109,15 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       skip = 0
     }
     if (params_general[["overwrite"]] == TRUE) skip = 0
-    Lnames = cosinor_coef = mdat = NULL
+    Lnames = cosinor_coef = mdat = desiredtz_part1 = NULL
     if (skip == 0) {
       # Load time series:
       if (EXT == "RData") {
         load(file = paste0(metadatadir, "/meta/ms5.outraw/",
                            params_phyact[["part6_threshold_combi"]], "/", fnames.ms5raw[i]))
+        if (!is.null(desiredtz_part1)) {
+          params_general[["desiredtz"]] = desiredtz_part1
+        }
         if (is.null(Lnames)) stop("Part 5 was processed with an older version of GGIR, reprocess part 5")
         mdat$time = mdat$timestamp # duplicate column because cosinor function expect columntime
       } else {
@@ -622,7 +627,9 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                      .export = functions2passon, .errorhandling = errhand) %myinfix% {
                                        tryCatchResult = tryCatch({
                                          main_part6_recordlevel(i, metadatadir, f0, f1,
-                                                                fnames.ms5raw, ffdone, EXT, verbose)
+                                                                fnames.ms5raw, ffdone, EXT, verbose,
+                                                                params_general, params_phyact, params_247,
+                                                                params_cleaning)
                                        })
                                        return(tryCatchResult)
                                      }
@@ -634,10 +641,33 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         }
       }
     } else {
+      errors = list()
       for (i in f0:f1) {
         if (verbose == TRUE) cat(paste0(i, " "))
-        main_part6_recordlevel(i, metadatadir, f0, f1,
-                               fnames.ms5raw, ffdone, EXT, verbose)
+        function_to_evaluate = expression(
+          main_part6_recordlevel(i, metadatadir, f0, f1,
+                                 fnames.ms5raw, ffdone, EXT, verbose,
+                                 params_general, params_phyact, params_247,
+                                 params_cleaning)
+        )
+        if (params_general[["use_trycatch_serial"]] == TRUE) {
+          tryCatch(
+            eval(function_to_evaluate),
+            error = function(e) {
+              err_msg = conditionMessage(e)
+              errors[[as.character(fnames.ms5raw[i])]] <<- err_msg
+            }
+          )
+        } else {
+          eval(function_to_evaluate)
+        }
+      }
+      # show logged errors after the loop:
+      if (params_general[["use_trycatch_serial"]] == TRUE && verbose == TRUE) {
+        if (length(errors) > 0) {
+          cat(paste0("\n\nErrors in part 6... for:"))
+          cat(paste0("\n-", names(errors), ": ", unlist(errors), collapse = ""))
+        }
       }
     }
   }

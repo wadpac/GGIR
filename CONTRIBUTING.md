@@ -13,7 +13,7 @@ The sections below outline the steps in each case.
 
 ## Questions
 
-1. use the search functionality [here](https://groups.google.com/g/RpackageGGIR) to see if someone already experienced the same issue;
+1. use the search functionality [here](https://github.com/wadpac/GGIR/discussions) to see if someone already raised the same question;
 2. if your search did not yield any relevant results, start a new conversation.
 
 ## Bugs

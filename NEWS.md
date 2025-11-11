@@ -1,3 +1,65 @@
+# CHANGES IN GGIR VERSION 3.3-1
+
+- Part 2: Replaces QC plot as pdf file by QC plots as png file per recording to help speed up report generation #1402
+
+- Part 3: Fix bug in calculation of Oakley1994, Galland2012, and ColeKripke1997 #1404
+
+- Part 6: Fixed bug triggering an error when running part 6 with do.parallel = TRUE. #1400
+
+- Error handling: Added parameter "use_trycatch_serial" to optionally log file-level errors without interrupting GGIR when "do.parallel = FALSE". #1308
+
+# CHANGES IN GGIR VERSION 3.3-0
+
+- Part 3: Adding option to auto-correct sleep guider that failed to detect the full main sleep period or incorrectly focused on a daytime nap. The new algorithm comes with new parameters guider_cor_maxgap_hrs, guider_cor_min_frac_sib, guider_cor_min_hrs, guider_cor_meme_frac_out, guider_cor_meme_frac_in, guider_cor_meme_min_hrs #1307
+
+# CHANGES IN GGIR VERSION 3.2-12
+
+- Part 5: Deprecate experimental nap-detection functionality that was added in 2.5-2. This has been superseded by a much more simplified nap detection which is now discussed in Annex NapDetection.
+
+- Part 4: Fix bug #1376 causing more nights to be included than desirable if sleeplog dates for at least one recording do not overlap with accelerometer recording.
+
+- Part 2: Always omit spaces from the extracted ID unless the entire filename is used as ID. #1372
+
+- Vignette: Clarify definition of acceleration and time ranges in gh-pages chapter 12. #1370
+
+- All parts: Value of parameter desiredtz is now passed on via milestone data, which enables jointly processing data from multiple timezones in part 2-6 #1380
+
+# CHANGES IN GGIR VERSION 3.2-11
+
+- Part 2: In day segment analysis N hours and N valid hours per day segment are now correctly averaged over valid days only, previously calculation included invalid days. This affect only the person level summary. #1350
+
+- Part 4: Reload sleeplog when part 3 output is newer than the latest sleeplog export, previously sleeplog was only reloaded if sleeplog itself had changed. #1366
+
+# CHANGES IN GGIR VERSION 3.2-10
+
+- Part 1: Correct timestamp extraction from ActivPAL data. #1287
+
+- Part 5 and 6: Fix bug for the specific situation where parameters datadir or outputdir are set to a path that has the letters "csv" in one or multiple parent folder names. #1341
+
+- Visualreport: Now also processes multiple files in parallel like the rest of GGIR. #1351
+
+- Part 4: Fix bug that made it impossible to use basic format sleeplog in combination with sleepwindowType "TimeInBed" #1359
+
+# CHANGES IN GGIR VERSION 3.2-9
+
+- Part 3: For Fitbit data. Fixed bug in storage of ID format was list should be character, by which part5 could not run. #1330
+
+- Part 5:
+
+  - Fix bug in extracting sleep diary when recording starts between midnight and 4am. #1337
+
+  - Fix bug that caused sibreport to be stored with timestamps in UTC timezone. #1332
+
+# CHANGES IN GGIR VERSION 3.2-8
+
+- Revise guidance on GGIR citation. #1303
+
+- Part 2 + 5: Segmentation with activity log is now able to handle non-chronological order of segment definitions in the log. #1318
+
+- General: Promote GitHub discussion page as a central place to ask questions. References to Google group have been removed from the documentation. #1320.
+
+- Part 1 + 2: Update code and documentation for using external functions that produce multicolumn output. #1324
+
 # CHANGES IN GGIR VERSION 3.2-7
 
 - Part 5: Fix bug in reinitialisation of window numbers when using multiple timewindow definitions in GGIR part 5. #1311

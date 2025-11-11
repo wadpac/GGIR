@@ -84,6 +84,9 @@ navbar:
           href: articles/DateTimeFormatsInR.html
         - text: Sleep Regularity Index
           href: articles/SleepRegularityIndex.html
+        - text: Nap Detection
+          href: articles/NapDetection.html
+          
   structure:
     left:  [chapters, annexes, installation, intro, news, contributing, help]
     right: [search, github]
@@ -91,6 +94,10 @@ navbar:
 news:
   cran_dates: TRUE
   releases:
+  - text: "Version 3.3-0"
+    href: https://www.accelting.com/ggir-release-3-3-0/
+  - text: "Version 3.2-6"
+    href: https://www.accelting.com/ggir-release-3-2-6/
   - text: "Version 3.2-0"
     href: https://www.accelting.com/ggir-release-3-2-0/
   - text: "Version 3.1-5"
@@ -153,7 +160,4 @@ search:
   'reference/read.myacc.csv.html', 'reference/ShellDoc2Vignette.html', 
   'reference/tidyup_df.html', 'reference/updateBlocksize.html',
   'reference/GGIR.html', 'articles/GGIR.html']
-
-
-
 

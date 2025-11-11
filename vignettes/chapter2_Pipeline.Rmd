@@ -51,7 +51,7 @@ The specific order and content of the parts is a result of how GGIR evolved over
 
 #### Milestone data
 
-Each part, when run, stores its output in an R-data file that has `.RData` as its extension, which we refer to as the milestone data. As user, you are unlikely to ever need to interact directly with the milestone data files because all relevant output for you is stored in csv and pdf files in the output folder `results`.
+Each part, when run, stores its output in an R-data file that has `.RData` as its extension, which we refer to as the milestone data. As user, you are unlikely to ever need to interact directly with the milestone data files because all relevant output for you is stored in csv, png and pdf files in the output folder `results`.
 
 The milestone files are read by the next GGIR part. The advantage of this design is that it offers internal modularity. For example, we can run part 1 now and continue with part 2 another time without having to repeat part 1 again. So, this design eases re-processing and is also helpful when developing and testing the GGIR code.
 
@@ -158,23 +158,46 @@ GGIR currently works with the following accelerometer brands and formats:
 -   [Axivity](https://axivity.com/) AX3 and AX6 .cwa
 -   [ActiGraph](https://theactigraph.com) .csv and .gt3x (.gt3x only the newer format generated with firmware versions above 2.5.0. Serial numbers that start with “NEO” or “MRA” and have firmware version of 2.5.0 or earlier use an older format of the .gt3x file). If you want to work with .csv exports via the commercial ActiLife software, then note that you have the option to export data with timestamps, which should be turned off. To cope with the absence of timestamps GGIR will calculate timestamps from the sample frequency, the start time, and start date as presented in the file header.
 -   [Movisens](https://www.movisens.com/en/) with data stored in folders.
--   [Parmay Matrix](https://www.parmaytech.com/) .bin and .BIN
+-   [Parmay Matrix](https://www.matrixwearable.net/) .bin and .BIN
 -   Any other accelerometer brand that generates csv output, see documentation for functions `read.myacc.csv` and parameter `rmc.noise` in the vignette [Reading csv files with raw data in GGIR](https://cran.r-project.org/package=GGIR/vignettes/readmyacccsv.html).
 
 ### Externally derived epoch-level data
 
 By default GGIR assumes that the data is raw as discussed in chapter 1. However, for some studies raw data is not available and all we have is an epoch level aggregate. For example, done by external software or done inside the accelerometer device. Although this can introduce some severe limitations to the transparency and flexibility of our analysis, GGIR makes an attempt to facilitate the analysis of these externally performed aggregations of the raw data. Please find below an overview of the file formats currently facilitated:
 
-| Sensor brand / Device name  | Data format           | Parameters              |
-|------------------------|-----------------------|-------------------------|
-| Actiwatch            | .csv                  | `dataFormat = "actiwatch_csv"`  |
-| Actical             | .csv                  | `dataFormat = "actical_csv"`  |
-| Actiwatch | .awd      | `dataFormat = "actiwatch_awd"`  |
-| ActiGraph    | .csv (count files, not be confused with csv raw data files) | `dataFormat = "actigraph_csv"`, `do.neishabouricounts = TRUE`, `acc.metric = "NeishabouriCount_x"`  |
-| Axivity             | UKBiobank csv export of epoch level data      | `dataFormat = "ukbiobank_csv"`  (sleep detection not facilitated)   |
-| SenseWear    | .xls or .xlsx      | `dataFormat = "sensewear_xls"`   |
-| Fitbit      | folder with multiple .json files |  `dataFormat = "fitbit_json"` |
-| Philips Health Band | .xlsx file pairs | `dataFormat = "phb_xlsx"` |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| Manufacturer             | Product Name       | Still for sale? | File extension |  `dataFormat` parameter |
++:=========================+:===================+:================+:===============+:========================+
+| Philips Respironics\     | Actiwatch\         | NO              | .csv           | `"actiwatch_csv"`       |
+| (previously Mini Mitter) | Spectrum Plus      |                 |                |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| Philips Respironics\     | Actiwatch\         | NO              | .awd           | `"actiwatch_awd"`       |
+| (previously Mini Mitter) | Spectrum Plus      |                 |                |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| Philips Respironics\     | Actiwatch 2 (AW2)  | NO              | .csv           | `"actiwatch_csv"`       |
+| (previously Mini Mitter) |                    |                 |                |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| Philips Respironics\     | Actical            | NO              | .csv           | `"actical_csv"`         |
+| (previously Mini Mitter) |                    |                 |                |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| Philips Respironics\     | Philips Health\    | NO              | two .xlsx      | `"phb_xlsx"`            |
+| (previously Mini Mitter) | Band               |                 |                |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| CamNTech                 | Motionwatch 8      | YES             | .awd           | `"actiwatch_awd"`       |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| CamNTech                 | Motionwatch 7      | NO              | .awd           | `"actiwatch_awd"`       |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| FitBit                   | Inspire 3          | YES             | several .json  | `"fitbit_json"`         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| SenseWear                | SenseWear pro\     | NO              | .xls or .xlsx  | `"sensewear_xls"`       |
+|                          | Armband            |                 |                |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| ActiGraph                | many product names | SOME            | .csv \*        | `"actigraph_csv"`       |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| Axivity                  | AX3                | YES             | UK Biobank \   | `"ukbiobank_csv"`       |
+|                          |                    |                 | .csv export    |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+\*These are the files with count data, not to be confused with ActiGraph raw acceleration data which can also be exported to .csv format.
 
 See [GGIR CookBook](https://wadpac.github.io/GGIR/articles/Cookbook.html) for example recipes for working with these externally derived epoch-level data.
 
@@ -184,6 +207,23 @@ To process these files, GGIR loads their content and saves it as GGIR part 1 mil
 - For Fitbit and Sensewear we use missingness in data as an indicator of nonwear, and any one hour time window with a standard deviation in calorie or METS values less than 0.0001 and an average value below 2.
 
 For all above approaches using a one hour window, the actual window length can be modified with the last value of parameter `windowsizes`.
+
+Please find below examples of file formats that are not facilitated yet, but can be facilitated with financial support from you. If you are interested, please contact v.vanhees at accelting.com. If there are other data formats you like to work with then do not hesitate to reach out.
+
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| Manufacturer             | Product Name       | Still for sale? | File extension |  `dataFormat` parameter |
++:=========================+:===================+:================+:===============+:========================+
+| Philips Respironics \    | Actiwatch \        | NO              | .csv           | Not facilitated yet     |
+| (previously Mini Mitter) | Spectrum PRO       |                 |                |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| CamNTech                 | Motionwatch 8      | YES             | .xlsx          | Not facilitated yet     |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| AMI Ambulatory \         | Motionlogger       | YES             | .csv           | Not facilitated yet     |
+| Monitoring               |                    |                 |                |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| Condor Instruments       | ActTrust 2         | YES             | .txt           | Not facilitated yet     |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+
 
 ## How to run your analysis?
 
@@ -354,13 +394,13 @@ GGIR generates reports in the parts 2, 4, 5, and 6 of the pipeline. With paramet
 
 ***Output files in results/QC subfolder:***
 
-| File path                                                | Resolution                                                       | GGIR part |
-|--------------------------------------|-----------------|-----------------|
-| data_quality_report.csv                       | one row per recording                                            | 5         |
-| part4_summary_sleep_full.csv                  | one row per recording                                            | 4         |
-| part4_nightsummary_sleep_full.csv             | one row per night                                                | 4         |
-| part5_daysummary_full_WW_L40M100V400_T5A5.csv | one row per day                                                  | 5         |
-| plots_to_check_data_quality_1.pdf             | one recording per page                                           | 2         |
+| File path                                     | Resolution             | GGIR part |
+|-----------------------------------------------|------------------------|-----------|
+| data_quality_report.csv                       | one row per recording  | 5         |
+| part4_summary_sleep_full.csv                  | one row per recording  | 4         |
+| part4_nightsummary_sleep_full.csv             | one row per night      | 4         |
+| part5_daysummary_full_WW_L40M100V400_T5A5.csv | one row per day        | 5         |
+| plots_part2 folder with .png files            | one recording per png  | 2         |
 
 : A detailed discussion of each output can be found in the other chapters.
 
