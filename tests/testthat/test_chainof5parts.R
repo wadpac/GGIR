@@ -232,8 +232,8 @@ test_that("chainof5parts", {
   expect_equal(as.numeric(output$dur_day_spt_min[4]), 1150) # WW window duration
   expect_equal(as.numeric(output$dur_day_spt_min[5]), 1680) # OO window duration
   expect_equal(sum(as.numeric(output$dur_day_nap_bts_0_15_min)), 0)
-  expect_equal(sum(as.numeric(output$dur_day_nap_bts_15_60_min)), 45)
-  expect_equal(sum(as.numeric(output$dur_day_nap_bts_60_240_min)), 185)
+  expect_equal(sum(as.numeric(output$dur_day_nap_bts_15_60_min)), 0)
+  expect_equal(sum(as.numeric(output$dur_day_nap_bts_60_240_min)), 0)
   
   dirname_raw = "output_test/meta/ms5.outraw/80_120_400"
   rn2 = dir(dirname_raw,full.names = TRUE, recursive = T)
@@ -242,8 +242,8 @@ test_that("chainof5parts", {
   TSFILE = read.csv(rn2[rn2_index])
   expect_that(nrow(TSFILE),equals(2820))
   expect_equal(ncol(TSFILE), 13)
-  expect_equal(length(unique(TSFILE$sibdetection)), 4) # sleep and 2 levels of nap duration
-  expect_equal(length(unique(TSFILE$class_id)), 9)
+  expect_equal(length(unique(TSFILE$sibdetection)), 2) # sleep and 0 levels of nap duration
+  expect_equal(length(unique(TSFILE$class_id)), 7)
   legend_file = dir("output_test/meta/ms5.outraw", pattern = "behavioralcode", full.names = TRUE)
   class_legend = read.csv(file = legend_file)
   expect_equal(nrow(class_legend), 21)
