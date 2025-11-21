@@ -2,6 +2,12 @@
 
 - Part 5: Add filter to excluded naps that have high accelerations or for which the surrounded hour has less than 1/6 naps or sleep.
 
+# CHANGES IN GGIR VERSION 3.3-2
+
+- Part 3: Fixed a bug in handling HASPT_ignore_invalid = NA when no guider (SPT) window was detected #1414
+
+- Part 3: Fixed bug in the guider correction algorithm where the main SPT window was directly preceded or followed by candidate (discarded) windows. #1415
+
 # CHANGES IN GGIR VERSION 3.3-1
 
 - Part 5: Add option to distinguish multiple nap duration categories similar to physical activity bout duration categories. #967

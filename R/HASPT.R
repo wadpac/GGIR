@@ -441,7 +441,9 @@ HASPT = function(angle, params_sleep = NULL, ws3 = 5,
         # case that sleeplog is used, to inform part 4 that it should
         # trust the sleeplog times for this specific night.
         spt_long = rep(0, length(invalid))
-        spt_long[SPTE_start:SPTE_end] = 1
+        if (length(SPTE_start) > 0 & length(SPTE_end) > 0) {
+          spt_long[SPTE_start:SPTE_end] = 1
+        }
         invalid_in_spt = which(invalid == 1 & spt_long == 1)
         if (length(invalid_in_spt)) {
           part3_guider = paste0(HASPT.algo, "+invalid")
