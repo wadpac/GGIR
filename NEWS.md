@@ -1,3 +1,9 @@
+# CHANGES IN GGIR VERSION 3.3-2
+
+- Part 3: Fixed a bug in handling HASPT_ignore_invalid = NA when no guider (SPT) window was detected #1414
+
+- Part 3: Fixed bug in the guider correction algorithm where the main SPT window was directly preceded or followed by candidate (discarded) windows. #1415
+
 # CHANGES IN GGIR VERSION 3.3-1
 
 - Part 2: Step/cadence expanded with a variety of output variables #1398.
