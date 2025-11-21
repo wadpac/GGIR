@@ -53,6 +53,10 @@ Studies often forget to clarify whether the accelerometers were configured to pa
 
 ActiGraph files might be exported in gt3x or csv formats. When idle sleep mode is used, data in these files are different. In gt3x files, time gaps can be found in the signal, with no imputation made by the ActiLife software. However, csv files exported in ActiLife will have imputed values in all three axes during periods of no movement. Note that this imputation by the ActiLife software has changed at some point in time. Initially the imputation was zeros but with more recent versions of ActiLife the imputation uses the last recorded value for each axis. Therefore, you need to be aware that GGIR will take care of the time gap imputation relative to the idle sleep mode when using gt3x files, but not when using ActiGraph csv files (because the latter come with the time gaps already imputed). 
 
+### Resampling for GENEActiv with 85.7 Hertz
+
+The GENEActiv accelerometer can be configured to record at 85.7 Hertz. As of GGIR 3.3-2 the data is automatically resampled to 86 Hertz to ease summarising the data per epoch, e.g. 1 second or 5 seconds. This only applies to GENEActiv with 85.7 Hertz configuration.
+
 ## Accelerometer sensor calibration
 
 Many measurement tools require calibration ranging from weighting scales for body weight, to Oxygen sensor, to accelerometers. Without good calibration we risk that the error caused by lack of calibration undermines accurate and reliable measurement.
