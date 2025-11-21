@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -242,6 +242,14 @@ each axis. Therefore, you need to be aware that GGIR will take care of
 the time gap imputation relative to the idle sleep mode when using gt3x
 files, but not when using ActiGraph csv files (because the latter come
 with the time gaps already imputed).</p>
+</div>
+<div class="section level3">
+<h3 id="resampling-for-geneactiv-with-85-7-hertz">Resampling for GENEActiv with 85.7 Hertz<a class="anchor" aria-label="anchor" href="#resampling-for-geneactiv-with-85-7-hertz"></a>
+</h3>
+<p>The GENEActiv accelerometer can be configured to record at 85.7
+Hertz. As of GGIR 3.3-2, the data in this specific scenario is
+automatically resampled to 86 Hertz to ease summarising the data per
+epoch, e.g. 1 second or 5 seconds.</p>
 </div>
 </div>
 <div class="section level2">
