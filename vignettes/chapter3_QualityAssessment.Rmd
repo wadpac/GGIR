@@ -55,7 +55,7 @@ ActiGraph files might be exported in gt3x or csv formats. When idle sleep mode i
 
 ### Resampling for GENEActiv with 85.7 Hertz
 
-The GENEActiv accelerometer can be configured to record at 85.7 Hertz. As of GGIR 3.3-2 the data is automatically resampled to 86 Hertz to ease summarising the data per epoch, e.g. 1 second or 5 seconds. This only applies to GENEActiv with 85.7 Hertz configuration.
+The GENEActiv accelerometer can be configured to record at 85.7 Hertz. As of GGIR 3.3-2, the data in this specific scenario is automatically resampled to 86 Hertz to ease summarising the data per epoch, e.g. 1 second or 5 seconds.
 
 ## Accelerometer sensor calibration
 
