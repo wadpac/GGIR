@@ -1,5 +1,7 @@
 # CHANGES IN GGIR VERSION 3.3-2
 
+- Part 1: Fractional sampling rate for GENEActiv now automatically resampled to rounded sampling rate to ease and avoid ambiguity in epoch level aggregation #1408.
+
 - Part 3: Fixed a bug in handling HASPT_ignore_invalid = NA when no guider (SPT) window was detected #1414
 
 - Part 3: Fixed bug in the guider correction algorithm where the main SPT window was directly preceded or followed by candidate (discarded) windows. #1415
