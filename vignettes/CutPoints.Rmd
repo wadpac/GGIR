@@ -225,7 +225,7 @@ activity intensity classification with cut-points.
 |                   |                    |               | `acc.metric = "ENMO"`   | Vigorous: 270    |
 +-------------------+--------------------+---------------+-------------------------+------------------+
 | Mielke 2023       | ActiGraph\         | 35 (SD=11) yr | **Default values\       | Light: 40\       |
-|                   | Dominant wrist     |               | **`do.enmo = TRUE`\     | Moderate: 65\    |
+|                   | Dominant waist     |               | **`do.enmo = TRUE`\     | Moderate: 65\    |
 |                   |                    |               | `acc.metric = "ENMO"`   | Vigorous: 190    |
 +-------------------+--------------------+---------------+-------------------------+------------------+
 | Vähä-Ypyä 2015    | Hookie AM20\       | 35 (SD=11) yr | `do.mad = TRUE`\        | Light: N/A\      |

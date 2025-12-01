@@ -96,8 +96,8 @@ Part 2 generates the following output:
 | M5hr_A_mg_0-24 | Starting time in hours and fractions of hours of M5_A_mg_0-24 |
 | ig_gradient_ENMO_0 -24hr_fullRecording | Intensity gradient calculated over the full recording. |
 | 1to6am_ENMO_mg | Average metric value ENMO between 1am and 6am |
-| N valid WEdays | Number of valid weekend days |
-| N valid WKdays | Number of valid week days |
+| N valid weekdays (WD) | Number of valid weekend days |
+| N valid weekend days (WE) | Number of valid week days |
 | IS | Interdaily stability as dicussed in [chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) |
 | IV | Intradaily variability as dicussed in [chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) |
 | phi | Indicator of auto-correlation in acceleration time series over multiple days, see [chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) for details. |
