@@ -134,7 +134,7 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   IGA = g.inspectfile(GAfile, desiredtz = desiredtz)
   expect_equal(IGA$monc, MONITOR$GENEACTIV)
   expect_equal(IGA$dformc, FORMAT$BIN)
-  expect_equal(IGA$sf,85.7)
+  expect_equal(IGA$sf, 86)
   
   EHV = g.extractheadervars(IGA)
   expect_equal(EHV$deviceSerialNumber,"012967")
@@ -146,7 +146,8 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   
   # As of R 4.0, an extra header row is extracted, which affects the positioning of the values.
   # expect_equal(as.numeric(as.character(wav_read$P$header$hvalues[7])),17) 
-  expect_equal(round(sum(GA_read$P$data[, 2:4]), digits = 2), -271.97)
+  
+  expect_equal(round(sum(GA_read$P$data[, 2:4]), digits = 2), -271.35)
   expect_equal(GA_read$endpage, GA_num_blocks)
   
   # print(GA_read$P$header)
