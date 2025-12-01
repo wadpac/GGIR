@@ -453,11 +453,11 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
                            PreviousEndPage = 1, inspectfileobject = Imtx,
                            params_rawdata = params_rawdata, params_general = params_general)
   expect_equal(nrow(mtx_read$P$QClog), 4) # 4 blocks of data in this file
-  
+
   expect_equal(sum(round(mtx_read$P$data[c("x")], digits = 4)), 8546.728, tolerance = .1, scale = 1)
   expect_equal(sum(round(mtx_read$P$data[c("y")], digits = 4)), 10913.9, tolerance = .1, scale = 1)
   expect_equal(sum(round(mtx_read$P$data[c("z")], digits = 4)), -13005.89, tolerance = .1, scale = 1)
-  
+
   Mmtx = g.getmeta(mtxfile, desiredtz = desiredtz, windowsize = c(1,300,300),
                    inspectfileobject = Imtx)
   expect_true(Mmtx$filetooshort)
