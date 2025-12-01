@@ -56,8 +56,8 @@ test_that("chainof5parts", {
   expect_equal(rle(IMP$rout$r4)$lengths[3], 13)
   expect_equal(round(mean(IMP$metashort$ENMO), digits = 5), 0.00802, tolerance = 3)
   expect_equal(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 3), 1)
-  expect_equal(SUM$summary$`N valid WEdays`, 1)
-  expect_equal(SUM$summary$`N valid WKdays`, 2)
+  expect_equal(SUM$summary$`N valid weekend days (WE)`, 1)
+  expect_equal(SUM$summary$`N valid weekdays (WD)`, 2)
   # check the ndayswindow included is 24 hours exactly 
   # ndayswindow = 1 with windowsizes = c(15, 3600, 3600)
   first_epoch_in_protocol = rle(IMP$rout$r4)$lengths[1] + 1
@@ -96,8 +96,8 @@ test_that("chainof5parts", {
   expect_equal(rle(IMP$rout$r4)$lengths[3], 8)
   expect_equal(round(mean(IMP$metashort$ENMO), digits = 5), 0.03398, tolerance = 3)
   expect_equal(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 3), 1)
-  expect_equal(SUM$summary$`N valid WEdays`, 1)
-  expect_equal(SUM$summary$`N valid WKdays`, 2)
+  expect_equal(SUM$summary$`N valid weekend days (WE)`, 1)
+  expect_equal(SUM$summary$`N valid weekdays (WD)`, 2)
   # check the ndayswindow included is 24 hours exactly
   # ndayswindow = 1 with windowsizes = c(15, 3600, 3600)
   first_epoch_in_protocol = rle(IMP$rout$r4)$lengths[1] + 1
