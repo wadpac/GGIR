@@ -294,7 +294,7 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
           dsummary[si,fi] = tmp1
           ds_names[fi] = paste0("dur_", nap_class_names[levelsc + 1], "_min");      fi = fi + 1
           #<<<
-          # Experimental variable, count time spent in nap if nonwear would not be a criteria
+          # Experimental variable, count time spent in nap with more than 10% nonwear
           tmp2 = (length(which(nap_LEVELS_controle[sse] == levelsc)) * ws3new) / 60
           dsummary[si,fi] = tmp2
           ds_names[fi] = paste0("dur_", nap_class_names[levelsc + 1], "_with_nonwear_min");      fi = fi + 1
