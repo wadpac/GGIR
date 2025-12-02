@@ -114,14 +114,21 @@ g.part5.addNaps = function(sibreport = NULL, ts = NULL, params_general = NULL,
             if (sib_window[1] < 1) sib_window[1] = 1
             if (sib_window[2] > nrow(ts)) sib_window[2] = nrow(ts)
             fractionRest = length(which(ts$sibdetection[sib_window[1]:sib_window[2]] > 0)) / (61 / epochSize_min)
-            if (fractionInvalid < 0.1 && ACCp90 < accThreshold && fractionRest > 0.25) {
+            if (ACCp90 < accThreshold && fractionRest > 0.25) {
+              
               nap_dur_min = length(sibnap) / (1 / epochSize_min)
               nap_dur_class = which(c(params_sleep[["possible_nap_dur"]], Inf) > nap_dur_min)[1]
               # expected class number is 2 or higher, e.g.
               # possible_nap_dur c(0, 10, 30) with nap_dur_min = 5, will result in 2
               # possible_nap_dur c(10, 30) with nap_dur_min = 12, will result in 2
               # possible_nap_dur c(10, 30) with nap_dur_min = 10, will result in 2
-              ts$sibdetection[sibnap] = nap_dur_class
+              if (fractionInvalid < 0.1) {
+                ts$sibdetection[sibnap] = nap_dur_class
+              } else {
+                # add negative value of class to track how often a
+                # class was rejected because of nonwear
+                ts$sibdetection[sibnap] = -nap_dur_class
+              }
             }
           }
         }

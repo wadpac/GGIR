@@ -221,7 +221,16 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
       }
       
       N_nap_dur_classes = length(params_sleep[["possible_nap_dur"]])
+      negvalues = which(ts$sibdetection < 0)
+      if (length(negvalues) > 0) {
+        sibdetect_backup = ts$sibdetection
+        sibdetect_backup[which(sibdetect_backup > 0)] = 0
+        nap_LEVELS_controle = abs(sibdetect_backup) - 2
+      } else {
+        nap_LEVELS_controle = NULL
+      }
       nap_LEVELS = ts$sibdetection - 2
+      if (is.null(nap_LEVELS_controle)) nap_LEVELS_controle = nap_LEVELS
       # track duration of each nap
       rle_tmp = rle(nap_LEVELS)
       nap_LEVELS_dur = rep(rle_tmp$lengths, rle_tmp$lengths)
@@ -281,8 +290,15 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
       # TIME SPENT IN NAP WINDOWS
       if (length(nap_class_names) > 0) {
         for (levelsc in 0:(length(nap_class_names) - 1)) {
-          dsummary[si,fi] = (length(which(nap_LEVELS[sse] == levelsc)) * ws3new) / 60
-          ds_names[fi] = paste0("dur_", nap_class_names[levelsc + 1],"_min");      fi = fi + 1
+          tmp1 = (length(which(nap_LEVELS[sse] == levelsc)) * ws3new) / 60
+          dsummary[si,fi] = tmp1
+          ds_names[fi] = paste0("dur_", nap_class_names[levelsc + 1], "_min");      fi = fi + 1
+          #<<<
+          # Experimental variable, count time spent in nap if nonwear would not be a criteria
+          tmp2 = (length(which(nap_LEVELS_controle[sse] == levelsc)) * ws3new) / 60
+          dsummary[si,fi] = tmp2
+          ds_names[fi] = paste0("dur_", nap_class_names[levelsc + 1], "_with_nonwear_min");      fi = fi + 1
+          #>>>
         }
       }
       # TIME SPENT IN SLEEP WINDOWS
