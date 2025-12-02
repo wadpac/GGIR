@@ -2,16 +2,6 @@
 
 - Part 5: Add filter to excluded naps that have high accelerations or for which the surrounded hour has less than 1/6 naps or sleep.
 
-# CHANGES IN GGIR VERSION 3.3-2
-
-- Part 1: Fractional sampling rate for GENEActiv now automatically resampled to rounded sampling rate to ease and avoid ambiguity in epoch level aggregation #1408.
-
-- Part 3: Fixed a bug in handling HASPT_ignore_invalid = NA when no guider (SPT) window was detected #1414
-
-- Part 3: Fixed bug in the guider correction algorithm where the main SPT window was directly preceded or followed by candidate (discarded) windows. #1415
-
-# CHANGES IN GGIR VERSION 3.3-1
-
 - Part 5: Add option to distinguish multiple nap duration categories similar to physical activity bout duration categories. #967
 
 - Part 5: Re-factor nap detection such that classifications are done on full time series prior to segment specific rest analysis #967.
@@ -22,6 +12,16 @@
 
 - Part 5: Add boolean parameter nap_overwrite_behaviourclass to control whether behaviour class or overwritten by naps #967.
 
+# CHANGES IN GGIR VERSION 3.3-2
+
+- Part 1: Fractional sampling rate for GENEActiv now automatically resampled to rounded sampling rate to ease and avoid ambiguity in epoch level aggregation #1408.
+
+- Part 3: Fixed a bug in handling HASPT_ignore_invalid = NA when no guider (SPT) window was detected #1414
+
+- Part 3: Fixed bug in the guider correction algorithm where the main SPT window was directly preceded or followed by candidate (discarded) windows. #1415
+
+# CHANGES IN GGIR VERSION 3.3-1
+
 - Part 2: Replaces QC plot as pdf file by QC plots as png file per recording to help speed up report generation #1402
 
 - Part 3: Fix bug in calculation of Oakley1994, Galland2012, and ColeKripke1997 #1404
@@ -29,7 +29,6 @@
 - Part 6: Fixed bug triggering an error when running part 6 with do.parallel = TRUE. #1400
 
 - Error handling: Added parameter "use_trycatch_serial" to optionally log file-level errors without interrupting GGIR when "do.parallel = FALSE". #1308
-
 
 # CHANGES IN GGIR VERSION 3.3-0
 
