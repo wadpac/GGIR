@@ -227,7 +227,7 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
         sibdetect_backup[which(sibdetect_backup <= 9)] = 0
         nap_LEVELS_controle = (sibdetect_backup / 10) - 2
       } else {
-        nap_LEVELS_controle = rep(0, nrow(ts))
+        nap_LEVELS_controle = rep(-2, nrow(ts))
       }
       nap_LEVELS = ts$sibdetection - 2
       if (is.null(nap_LEVELS_controle)) nap_LEVELS_controle = nap_LEVELS
