@@ -221,13 +221,13 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
       }
       
       N_nap_dur_classes = length(params_sleep[["possible_nap_dur"]])
-      negvalues = which(ts$sibdetection < 0)
-      if (length(negvalues) > 0) {
+      high_values = which(ts$sibdetection > 9)
+      if (length(high_values) > 0) {
         sibdetect_backup = ts$sibdetection
-        sibdetect_backup[which(sibdetect_backup > 0)] = 0
-        nap_LEVELS_controle = abs(sibdetect_backup) - 2
+        sibdetect_backup[which(sibdetect_backup <= 9)] = 0
+        nap_LEVELS_controle = (sibdetect_backup / 10) - 2
       } else {
-        nap_LEVELS_controle = NULL
+        nap_LEVELS_controle = rep(0, nrow(ts))
       }
       nap_LEVELS = ts$sibdetection - 2
       if (is.null(nap_LEVELS_controle)) nap_LEVELS_controle = nap_LEVELS

@@ -86,7 +86,7 @@ g.part5.definedays = function(nightsi, wi, indjump, epochSize, qqq_backup = c(),
     }
   }
   qqq_backup = qqq
-  # in MM, also define segments of the day based on qwindow
+  # Define segments of the day based on qwindow
   if (!is.na(qqq[1]) & !is.na(qqq[2])) {
     segments_timing = NULL
     if (qqq[2] > Nts) qqq[2] = Nts
@@ -145,12 +145,27 @@ g.part5.definedays = function(nightsi, wi, indjump, epochSize, qqq_backup = c(),
           # window is more than 24 hours and segment occurs twice
           # we keep both index ranges
           jump = which(diff(test_seg_condition) > 1)
-          test_seg_condition1 = test_seg_condition[1:jump]
-          test_seg_condition2 = test_seg_condition[(jump + 1):length(test_seg_condition)]
-          segments[[si]] = c(tryCatch(range(fullQqq[test_seg_condition1]), #segStart and segEnd
-                                      warning = function(w) rep(NA, 2)),
-                             tryCatch(range(fullQqq[test_seg_condition2]), #segStart and segEnd
-                                      warning = function(w) rep(NA, 2)))
+          if (length(jump) == 1) {
+            test_seg_condition1 = test_seg_condition[1:jump]
+            test_seg_condition2 = test_seg_condition[(jump + 1):length(test_seg_condition)]
+            segments[[si]] = c(tryCatch(range(fullQqq[test_seg_condition1]), #segStart and segEnd
+                                        warning = function(w) rep(NA, 2)),
+                               tryCatch(range(fullQqq[test_seg_condition2]), #segStart and segEnd
+                                        warning = function(w) rep(NA, 2)))
+            
+          } else if (length(jump) == 2) {
+            test_seg_condition1 = test_seg_condition[1:jump[1]]
+            test_seg_condition2 = test_seg_condition[(jump[1] + 1):jump[2]]
+            test_seg_condition3 = test_seg_condition[(jump[2] + 1):length(test_seg_condition)]
+            segments[[si]] = c(tryCatch(range(fullQqq[test_seg_condition1]), #segStart and segEnd
+                                        warning = function(w) rep(NA, 2)),
+                               tryCatch(range(fullQqq[test_seg_condition2]), #segStart and segEnd
+                                        warning = function(w) rep(NA, 2)),
+                               tryCatch(range(fullQqq[test_seg_condition3]), #segStart and segEnd
+                                        warning = function(w) rep(NA, 2)))
+          } else {
+            stop("more than 3 segments, contact maintainer")
+          }
         } else {
           segments[[si]] = tryCatch(range(fullQqq[test_seg_condition]), #segStart and segEnd
                                     warning = function(w) rep(NA, 2))

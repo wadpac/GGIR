@@ -42,11 +42,10 @@ g.part5.addfirstwake = function(ts, summarysleep, nightsi, sleeplog, ID,
           wake_night1_hour = clock2numtime(wake_night1)
           onset_night1_hour = clock2numtime(onset_night1)
           # If wake is in the afternoon or evening and onset hour is at noon
-          # then this cannot be a daysleeper and wakie time need to be correct
+          # then this cannot be a daysleeper and wake time need to be correct
           if (wake_night1_hour > 12 & (onset_night1_hour >= 12 & onset_night1_hour < 18)) {
             wake_night1_hour = wake_night1_hour - 24 # express hour relative to midnight
           }
-          # onset_night1_hour = clock2numtime(onset_night1)
           wake_night1_index = nightsi[1] + round(wake_night1_hour * Nepochsinhour)
           # express hour relative to midnight within the noon-noon:
           if (wake_night1_index > Nts) wake_night1_index = Nts

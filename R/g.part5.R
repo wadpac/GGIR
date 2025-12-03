@@ -310,8 +310,12 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                           sleeplog,
                                           epochSize = ws3, ID, Nepochsinhour)
             # Add first waking up time, if it is missing:
-            ts = g.part5.addfirstwake(ts, summarysleep = summarysleep_tmp2, nightsi, sleeplog, ID,
-                                      Nepochsinhour, SPTE_end)
+            # but only if first sleep onset is within 48 hours of start of recording
+            first_diur = which(diff(ts$diur) == 1)[1] / (60 / ws3)
+            if (first_diur < 48 * 60) {
+              ts = g.part5.addfirstwake(ts, summarysleep = summarysleep_tmp2, nightsi, sleeplog, ID,
+                                        Nepochsinhour, SPTE_end)
+            }
             # Convert time column from iso8601 to POSIX regardless of whether it is aggregated
             # to ensure the format is consistent
             ts$time = iso8601chartime2POSIX(ts$time,tz = params_general[["desiredtz"]])

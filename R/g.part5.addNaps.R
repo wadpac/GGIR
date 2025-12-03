@@ -127,7 +127,7 @@ g.part5.addNaps = function(sibreport = NULL, ts = NULL, params_general = NULL,
               } else {
                 # add negative value of class to track how often a
                 # class was rejected because of nonwear
-                ts$sibdetection[sibnap] = -nap_dur_class
+                ts$sibdetection[sibnap] = nap_dur_class * 10
               }
             }
           }
