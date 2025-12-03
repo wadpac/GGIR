@@ -312,7 +312,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             # Add first waking up time, if it is missing:
             # but only if first sleep onset is within 48 hours of start of recording
             first_diur = which(diff(ts$diur) == 1)[1] / (60 / ws3)
-            if (first_diur < 48 * 60) {
+            if (length(first_diur) > 0 && first_diur < 48 * 60) {
               ts = g.part5.addfirstwake(ts, summarysleep = summarysleep_tmp2, nightsi, sleeplog, ID,
                                         Nepochsinhour, SPTE_end)
             }
