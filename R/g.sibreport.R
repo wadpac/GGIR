@@ -1,7 +1,7 @@
 g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
-  dayind = which(ts$diur == 0)
-  sib_starts = which(diff(c(0,ts$sibdetection[dayind],0)) == 1)
-  sib_ends = which(diff(c(ts$sibdetection[dayind],0)) == -1)
+  ts$sibdetection[which(ts$diur == 1)] = 0 # ignore sib during the night within this function
+  sib_starts = which(diff(c(0,ts$sibdetection, 0)) == 1)
+  sib_ends = which(diff(c(ts$sibdetection, 0)) == -1)
   Nsibs = length(sib_starts)
   sibreport = c()
   if (Nsibs > 0) {
@@ -13,8 +13,8 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
                            mean_acc_1min_before = numeric(Nsibs),
                            mean_acc_1min_after = numeric(Nsibs), stringsAsFactors = FALSE)
     for (sibi in 1:Nsibs) {
-      sibreport$start[sibi]  = format(ts$time[dayind[sib_starts[sibi]]])
-      sibreport$end[sibi] = format(ts$time[dayind[sib_ends[sibi]]])
+      sibreport$start[sibi]  = format(ts$time[sib_starts[sibi]])
+      sibreport$end[sibi] = format(ts$time[sib_ends[sibi]])
       if (is.ISO8601(sibreport$start[sibi])) {
         sibreport$start[sibi] = format(iso8601chartime2POSIX(sibreport$start[sibi], tz = desiredtz))
         sibreport$end[sibi] = format(iso8601chartime2POSIX(sibreport$end[sibi], tz = desiredtz))
@@ -24,10 +24,10 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
       minute_before = (sib_starts[sibi] - (60/epochlength)):(sib_starts[sibi] - 1)
       minute_after = (sib_ends[sibi] + 1):(sib_ends[sibi] + (60/epochlength))
       if (min(minute_before) > 1) {
-        sibreport$mean_acc_1min_before[sibi]  = round(mean(ts$ACC[dayind[minute_before]]), digits = 3)
+        sibreport$mean_acc_1min_before[sibi]  = round(mean(ts$ACC[minute_before]), digits = 3)
       }
       if (max(minute_after) < nrow(ts)) {
-        sibreport$mean_acc_1min_after[sibi]  = round(mean(ts$ACC[dayind[minute_after]]), digits = 3)
+        sibreport$mean_acc_1min_after[sibi]  = round(mean(ts$ACC[minute_after]), digits = 3)
       }
     }
   }
