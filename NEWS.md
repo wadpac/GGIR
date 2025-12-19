@@ -2,6 +2,8 @@
 
 - Part 2: Step/cadence expanded with a variety of output variables #1398. Credits for funding this enhancement: Ben Maylor and Alex Rowlands.
 
+- Part 1: Fix bug that caused GENEAsleep binary data to no longer to be recognised as such since the introduction of functionality for Parmay binary data. #1432
+
 # CHANGES IN GGIR VERSION 3.3-2
 
 - Part 1: Fractional sampling rate for GENEActiv now automatically resampled to rounded sampling rate to ease and avoid ambiguity in epoch level aggregation #1408.
