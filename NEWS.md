@@ -4,7 +4,11 @@
 
 - Part 1: Fix bug that caused GENEAsleep binary data to no longer to be recognised as such since the introduction of functionality for Parmay binary data. #1432
 
-- Part 4: Fix bug causing the error about missing object defaultGuiderCorrected #1438
+- Part 4:
+
+  - Now attempts to handle scenario where an integer participant ID is saved by Excel with decimal places, e.g. 123 versus 123.00. #1256
+
+  - Fix bug causing the error about missing object defaultGuiderCorrected. #1438
 
 # CHANGES IN GGIR VERSION 3.3-2
 
