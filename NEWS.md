@@ -1,8 +1,10 @@
-# CHANGES IN GGIR VERSION 3.3-?
+# CHANGES IN GGIR VERSION 3.3-3
 
 - Part 2: Step/cadence expanded with a variety of output variables #1398. Credits for funding this enhancement: Ben Maylor and Alex Rowlands.
 
 - Part 1: Fix bug that caused GENEAsleep binary data to no longer to be recognised as such since the introduction of functionality for Parmay binary data. #1432
+
+- Part 4: Fix bug causing the error about missing object defaultGuiderCorrected #1438
 
 # CHANGES IN GGIR VERSION 3.3-2
 
