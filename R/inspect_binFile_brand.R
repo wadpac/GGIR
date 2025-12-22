@@ -5,7 +5,7 @@ inspect_binFile_brand = function(filename) {
   # look for device type field
   suppressWarnings({deviceGeneactiv = grep("Device Type", fh, ignore.case = T)})
   if (length(deviceGeneactiv) > 0) {
-    if (grepl("GENEActiv", fh[deviceGeneactiv])) mon = MONITOR$GENEACTIV
+    if (grepl("GENEActiv|GENEAsleep", fh[deviceGeneactiv])) mon = MONITOR$GENEACTIV
   } else {
     # check if it is a Matrix device
     raw = readBin(filename, "raw", file.info(filename)$size)
