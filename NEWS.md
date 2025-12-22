@@ -4,6 +4,8 @@
 
 - Part 1: Fix bug that caused GENEAsleep binary data to no longer to be recognised as such since the introduction of functionality for Parmay binary data. #1432
 
+- Part 4: Now attempts to handle scenario where an integer participant ID is saved by Excel with decimal places, e.g. 123 versus 123.00. #1256
+
 # CHANGES IN GGIR VERSION 3.3-2
 
 - Part 1: Fractional sampling rate for GENEActiv now automatically resampled to rounded sampling rate to ease and avoid ambiguity in epoch level aggregation #1408.
