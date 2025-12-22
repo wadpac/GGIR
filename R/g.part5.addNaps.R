@@ -99,7 +99,7 @@ g.part5.addNaps = function(sibreport = NULL, ts = NULL, params_general = NULL,
     if ("sib" %in% srep_tmp$type) {
       sibnaps = which(srep_tmp$type == "sib")
       if (length(sibnaps) > 0) {
-        accThreshold = min(params_phyact[["threshold.lig"]])
+        accThreshold = min(params_phyact[["threshold.lig"]]) * 0.5
         for (sni in 1:length(sibnaps)) {
           sibnap = which(ts$time >= srep_tmp$start[sibnaps[sni]] & ts$time <= srep_tmp$end[sibnaps[sni]])
           if (length(sibnap) > 0) {
