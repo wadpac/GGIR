@@ -354,6 +354,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
               defaultGuiderWake = 31
             }
             defaultGuider = guider
+            defaultGuiderCorrected = NULL
           } else if ((length(params_sleep[["def.noc.sleep"]]) == 1 ||
                       length(params_sleep[["loglocation"]]) != 0) &&
                      length(SPTE_start) != 0) {
