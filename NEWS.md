@@ -12,6 +12,8 @@
 
 - Part 5: Add boolean parameter nap_overwrite_behaviourclass to control whether behaviour class or overwritten by naps #967.
 
+- Part 5: Parameter threshold.nap added as threshold for the 95th percentile in acceleration during a sib.
+
 # CHANGES IN GGIR VERSION 3.3-2
 
 - Part 1: Fractional sampling rate for GENEActiv now automatically resampled to rounded sampling rate to ease and avoid ambiguity in epoch level aggregation #1408.

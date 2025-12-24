@@ -44,7 +44,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "guider_cor_min_frac_sib", "guider_cor_min_hrs",
                        "guider_cor_meme_frac_out",
                        "guider_cor_meme_frac_in", "guider_cor_meme_min_hrs",
-                       "guider_cor_meme_min_dys")
+                       "guider_cor_meme_min_dys", "threshold.nap")
     boolean_params = c("ignorenonwear", "HASPT.ignore.invalid",
                        "relyonguider", "sleeplogidnum",
                        "impute_marker_button", "consider_marker_button",

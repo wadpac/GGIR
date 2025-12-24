@@ -1595,6 +1595,12 @@ GGIR(mode = 1:5,
         This parameter is set to 3 by default as a median becomes only meaningful with
         at least three values.
       }
+      
+      \item{threshold.nap}{
+        Numeric (default = 20)
+        Threshold for the maximum 95th percentile in the acceleration distribution
+        during sustained inactivity bouts to be considered a nap.
+      }
     }
   }
 
