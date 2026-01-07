@@ -15,6 +15,9 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   params_cleaning = params$params_cleaning
   params_output = params$params_output
   params_general = params$params_general
+  params$params_sleep$HASPT.algo = "notused" # Aaron Lam edit
+  params_sleep$HASPT.algo = "notused" # Aaron Lam edit
+  
   if (exists("relyonsleeplog") == TRUE & exists("relyonguider") == FALSE) relyonguider = params_sleep[["relyonsleeplog"]]
   # description: function to load sleep detection from g.part3 and to convert it into night-specific summary measures of sleep,
   # possibly aided by sleep log/diary information (if available and provided by end-user)

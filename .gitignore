@@ -17,3 +17,5 @@ vignettes/*.R
 # pkgdown site is focussed on vignettes, and not on package functions, so
 # they should not appear in the search results.
 docs/reference/*.html
+.DS_Store
+.DS_Store

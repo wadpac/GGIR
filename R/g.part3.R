@@ -15,7 +15,9 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
   params_metrics = params$params_metrics
   params_general = params$params_general
   params_output = params$params_output
-
+  params$params_sleep$HASPT.algo = "notused" # Aaron Lam edit
+  params_sleep$HASPT.algo = "notused" # Aaron Lam edit
+  
   checkMilestoneFolders(metadatadir, partNumber = 3)
   #------------------------------------------------------
   fnames = dir(paste(metadatadir,"/meta/ms2.out", sep = ""))
