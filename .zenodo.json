@@ -1,85 +1,100 @@
 {
-  "creators": [
-    {
-      "affiliation": "Accelting",
-      "name": "van Hees, Vincent",
-      "orcid": "0000-0003-0182-9008"
-    },
-    {
-      "affiliation": "University of Granada",
-      "name": "Migueles, Jairo H.",
-      "orcid": "0000-0003-0366-6935"
-    },
-  ],
-  "contributors": [
-    {
-      "affiliation": "Activinsights Ltd.",
-      "name": "Fang, Zhou"
-    },
-    {
-      "affiliation": "Verisense",
-      "name": "Patterson, Matthew R"
-    },
-    {
-      "affiliation": "University College London",
-      "name": "Heywood, Joe"
-    },
-    {
-      "affiliation": "Zoe",
-      "name": "Capdevila Pujol, Joan"
-    },
-    {
-      "affiliation": "Private",
-      "name": "Kushleyeva, Lena"
-    },
-    {
-      "affiliation": "Inserm",
-      "name": "Chen, Mathilde",
-    },
-    {
-      "affiliation": "Inserm",
-      "name": "Yerramalla, Manasa",
-    },
-    {
-      "affiliation": "Patrick Bos Data Science",
-      "name": "Bos, Patrick",
-      "orcid": "0000-0002-6033-960X"
-    },
-    {
-      "affiliation": "Central South University",
-      "name": "Chenxuan, Zhao"
-    },
-    {
-      "affiliation": "Australian Catholic University",
-      "name": "Sanders, Taren",
-    },
-    {
-      "affiliation": "Patrick Bos Data Science",
-      "name": "Meneghel Danilevicz, Ian",
-      "orcid": "0000-0003-4541-0524"
-    },
-    {
-      "affiliation": "Universidade Federal da Bahia",
-      "name": "Barreto Mesquita, Victor",
-    },
-    {
-      "affiliation": "Amsterdam University Medical Centers",
-      "name": "Segantin, Gaia",
-    },
-    {
-      "affiliation": "Inserm",
-      "name": "Sabia, Séverine",
-      "orcid": "0000-0003-3109-9720"
-    }
-  ],
+  "title": "GGIR",
   "description": "Converts raw data from wearables into insightful reports for researchers investigating human daily physical activity and sleep.",
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "Apache-2.0",
+  "language": "eng",
   "keywords": [
     "sleep research",
     "accelerometer",
     "physical activity research"
   ],
-  "license": {
-    "id": "Apache-2.0"
-  },
-  "title": "GGIR"
+  "creators": [
+    {
+      "name": "van Hees, Vincent",
+      "affiliation": "Accelting",
+      "orcid": "0000-0003-0182-9008"
+    },
+    {
+      "name": "Migueles, Jairo H.",
+      "affiliation": "University of Granada",
+      "orcid": "0000-0003-0366-6935"
+    }
+  ],
+  "contributors": [
+    {
+      "name": "Fang, Zhou",
+      "affiliation": "Activinsights Ltd.",
+      "type": "Researcher"
+    },
+    {
+      "name": "Patterson, Matthew R",
+      "affiliation": "Verisense",
+      "type": "Researcher"
+    },
+    {
+      "name": "Heywood, Joe",
+      "affiliation": "University College London",
+      "type": "Researcher"
+    },
+    {
+      "name": "Capdevila Pujol, Joan",
+      "affiliation": "Zoe",
+      "type": "Researcher"
+    },
+    {
+      "name": "Kushleyeva, Lena",
+      "affiliation": "Private",
+      "type": "Researcher"
+    },
+    {
+      "name": "Chen, Mathilde",
+      "affiliation": "Inserm",
+      "type": "Researcher"
+    },
+    {
+      "name": "Yerramalla, Manasa",
+      "affiliation": "Inserm",
+      "type": "Researcher"
+    },
+    {
+      "name": "Bos, Patrick",
+      "affiliation": "Patrick Bos Data Science",
+      "orcid": "0000-0002-6033-960X",
+      "type": "Researcher"
+    },
+    {
+      "name": "Chenxuan, Zhao",
+      "affiliation": "Central South University",
+      "type": "Researcher"
+    },
+    {
+      "name": "Sanders, Taren",
+      "affiliation": "Australian Catholic University",
+      "type": "Researcher"
+    },
+    {
+      "name": "Meneghel Danilevicz, Ian",
+      "affiliation": "Patrick Bos Data Science",
+      "orcid": "0000-0003-4541-0524",
+      "type": "Researcher"
+    },
+    {
+      "name": "Barreto Mesquita, Victor",
+      "affiliation": "Universidade Federal da Bahia",
+      "type": "Researcher"
+    },
+    {
+      "name": "Segantin, Gaia",
+      "affiliation": "Amsterdam University Medical Centers",
+      "type": "Researcher"
+    },
+    {
+      "name": "Sabia, Séverine",
+      "affiliation": "Inserm",
+      "orcid": "0000-0003-3109-9720",
+      "type": "Researcher"
+    }
+  ]
 }
