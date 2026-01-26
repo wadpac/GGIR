@@ -32,8 +32,9 @@ articles:
   NapDetection: NapDetection.html
   readmyacccsv: readmyacccsv.html
   SleepRegularityIndex: SleepRegularityIndex.html
+  StepCadenceAnalysis: StepCadenceAnalysis.html
   TutorialDaySegmentAnalyses: TutorialDaySegmentAnalyses.html
-last_built: 2025-11-21T14:51Z
+last_built: 2025-12-22T18:26Z
 urls:
   reference: https://wadpac.github.io/GGIR/reference
   article: https://wadpac.github.io/GGIR/articles

@@ -25,11 +25,10 @@ detectEventBouts = function(myfun, varnum_event, varnum,
                            ws3 = ws3)
     # time spent in bouts in minutes
     eventbout = length(which(getboutout == 1)) / (60/ws3)
-    eboutname = paste0("ExtFunEvent_Bout_totdur_E", ws3, "S_B", boutdur,
+    eboutname = paste0("ExtFunEvent_totdur_B", boutdur,
                        "M", (myfun$ebout.criter  * 100),
-                       "%_cadT",myfun$ebout.th.cad,"_",
-                       myfun$ebout.condition,
-                       "_accT", myfun$ebout.th.acc)
+                       "%_cad",myfun$ebout.th.cad, myfun$ebout.condition,
+                       "acc", myfun$ebout.th.acc)
     ebout_varname = paste0(eboutname, "_", boutnameEnding)
     # fi = correct_fi(di, ds_names, fi, varname = ebout_varname)
     daysummary[di,fi] = eventbout # total time in ebouts
@@ -40,11 +39,10 @@ detectEventBouts = function(myfun, varnum_event, varnum,
     rle_bout1 = which(rle_bout$values == 1)
     number_of_bouts = length(rle_bout1)
     
-    eboutname = paste0("ExtFunEvent_Bout_number_E", ws3, "S_B", boutdur,
+    eboutname = paste0("ExtFunEvent_number_B", boutdur,
                        "M", (myfun$ebout.criter  * 100),
-                       "%_cadT",myfun$ebout.th.cad,"_",
-                       myfun$ebout.condition,
-                       "_accT", myfun$ebout.th.acc)
+                       "%_cad",myfun$ebout.th.cad, myfun$ebout.condition,
+                       "acc", myfun$ebout.th.acc)
     ebout_varname = paste0(eboutname, "_", boutnameEnding)
     daysummary[di,fi] = number_of_bouts
     ds_names[fi] = ebout_varname;
@@ -55,11 +53,10 @@ detectEventBouts = function(myfun, varnum_event, varnum,
     } else {
       mn_dur_bouts = 0
     }
-    eboutname = paste0("ExtFunEvent_Bout_meandur_E", ws3, "S_B", boutdur,
+    eboutname = paste0("ExtFunEvent_meandur_B", boutdur,
                        "M", (myfun$ebout.criter  * 100),
-                       "%_cadT",myfun$ebout.th.cad,"_",
-                       myfun$ebout.condition,
-                       "_accT", myfun$ebout.th.acc)
+                       "%_cad",myfun$ebout.th.cad, myfun$ebout.condition,
+                       "acc", myfun$ebout.th.acc)
     ebout_varname = paste0(eboutname, "_", boutnameEnding)
     daysummary[di,fi] = mn_dur_bouts
     ds_names[fi] = ebout_varname;

@@ -265,9 +265,17 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
               # try without leading zeros
               sleeplog_matching_ID = which(sleeplog$ID == gsub("^0+", "", accid))
               if (length(sleeplog_matching_ID) == 0) {
-                # Consider all sleeplog entries
-                sleeplog_matching_ID = 1:length(sleeplog$night)
-                warning(paste0("No matching sleeplog entry found for accelerometer recording ID ", accid), call. = FALSE)
+                # try interpret as integer that was accidentally stored as decimal 
+                # number, e.g. 123.00
+                split_by_dot = unlist(strsplit(accid, "[.]"))
+                if (length(split_by_dot) == 2) {
+                  sleeplog_matching_ID = which(sleeplog$ID == split_by_dot[1])
+                }
+                if (length(sleeplog_matching_ID) == 0) {
+                  # Consider all sleeplog entries
+                  sleeplog_matching_ID = 1:length(sleeplog$night)
+                  warning(paste0("No matching sleeplog entry found for acceleromete recording ", accid))
+                }
               }
             }
           }
@@ -346,6 +354,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
               defaultGuiderWake = 31
             }
             defaultGuider = guider
+            defaultGuiderCorrected = NULL
           } else if ((length(params_sleep[["def.noc.sleep"]]) == 1 ||
                       length(params_sleep[["loglocation"]]) != 0) &&
                      length(SPTE_start) != 0) {
