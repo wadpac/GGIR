@@ -31,27 +31,30 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(),
       if (verbose == TRUE) cat(paste0(" ",i))
       # First load part 1 data
       M = c()
-      fname2read = paste0(path, fnames[i])
-      try(expr = {load(fname2read)}, silent = TRUE) #reading RData-file
+      part1_fname2read = paste0(path, fnames[i])
+      try(expr = {load(part1_fname2read)}, silent = TRUE) #reading RData-file
       # Checks for availability of file and data
       if (length(M) == 0) {
-        warning(paste0("g.report2: Struggling to read: ", fname2read)) #fnames[i]
+        tmp = unlist(strsplit(part1_fname2read, "/"))
+        part1_fname2read_display = paste0(tmp[length(tmp) - 1], "/", tmp[length(tmp)])
+        warning(paste0("Struggling to read: ", part1_fname2read_display))
+        next
       }
       fname = as.character(unlist(strsplit(fnames[i],"eta_"))[2])
       selp = which(fnames.ms2 == fname)
       if (length(selp) == 0 ) {
-        if (verbose == TRUE) cat(paste0("File ",fname," not available in part 2"))
+        if (verbose == TRUE) cat(paste0("File ", fname, " not available in part 2"))
       }
       # If part 1 milestone data indicates that file was useful
       # try loading part 2
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE & length(selp) > 0) { 
         # Load part 2 data
         SUM = IMP = c()
-        fname2read = paste0(metadatadir, ms2.out, "/", fnames.ms2[selp])
-        try(expr = {load(file = fname2read)}, silent = TRUE)
+        part2_fname2read = paste0(metadatadir, ms2.out, "/", fnames.ms2[selp])
+        try(expr = {load(file = part2_fname2read)}, silent = TRUE)
         # Checks for availability of file and data
         if (length(IMP) == 0) {
-          warning(paste0("g.report2: Struggling to read: ",fname2read))
+          warning(paste0("Struggling to read: ", part2_fname2read))
         }
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
           if (i == 1 | i == f0) {
@@ -154,7 +157,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(),
           QC[setdiff(names(QCout), names(QC))] <- NA
           QCout = rbind(QCout, QC)
         }
-        next()
+        next
       }
       
       filehealth_cols = grep(pattern = "filehealth", x = names(SUMMARY), value = FALSE)
@@ -184,7 +187,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(),
       }
     }
     # tidy up memory
-    if (M$filecorrupt == FALSE & M$filetooshort == FALSE & exists("IMP")) rm(IMP)
+    if (exists("IMP")) rm(IMP)
     rm(M); rm(I)
 
     #--------------------------------------
