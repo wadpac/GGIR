@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.3-?
+
+- Part 2: Improved handling of corrupted RData files in part 1 or 2. #1447 and #1449
+
 # CHANGES IN GGIR VERSION 3.3-3
 
 - Part 2: Step/cadence expanded with a variety of output variables #1398. Credits for funding this enhancement: Ben Maylor and Alex Rowlands.
