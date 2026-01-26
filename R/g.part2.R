@@ -172,12 +172,15 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       skip = 0
     }
     if (params_general[["overwrite"]] == TRUE) skip = 0
+    M = I = c()
     if (skip == 0) {
-      M = I = c()
+      file2read = paste0(path,fnames[i])
+      try(expr = {load(file2read)}, silent = TRUE) #reading RData-file
+    }
+    if (length(M) == 0) skip = 1
+    if (skip == 0) {
       filename_dir = c()
       filefoldername = c()
-      file2read = paste0(path,fnames[i])
-      load(file2read) #reading RData-file
       if (!is.null(desiredtz_part1)) {
         params_general[["desiredtz"]] = desiredtz_part1
       }

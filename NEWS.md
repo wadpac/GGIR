@@ -14,6 +14,20 @@
 
 - Part 5: Parameter threshold.nap added as threshold for the 95th percentile in acceleration during a sib.
 
+- Part 2: Improved handling of corrupted RData files in part 1 or 2. #1447 and #1449
+
+# CHANGES IN GGIR VERSION 3.3-3
+
+- Part 2: Step/cadence expanded with a variety of output variables #1398. Credits for funding this enhancement: Ben Maylor and Alex Rowlands.
+
+- Part 1: Fix bug that caused GENEAsleep binary data to no longer to be recognised as such since the introduction of functionality for Parmay binary data. #1432
+
+- Part 4:
+
+  - Now attempts to handle scenario where an integer participant ID is saved by Excel with decimal places, e.g. 123 versus 123.00. #1256
+
+  - Fix bug causing the error about missing object defaultGuiderCorrected. #1438
+
 # CHANGES IN GGIR VERSION 3.3-2
 
 - Part 1: Fractional sampling rate for GENEActiv now automatically resampled to rounded sampling rate to ease and avoid ambiguity in epoch level aggregation #1408.
