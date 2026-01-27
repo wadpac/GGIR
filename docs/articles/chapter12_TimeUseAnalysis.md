@@ -1,0 +1,269 @@
+# 12. Time-use Analysis
+
+With the sleep classifications from GGIR part 4 as discussed in the
+previous chapter it is now possible to segment the recording into waking
+periods and sleeping periods. With this segmentation we can do a
+time-use analysis for both periods. The main purpose of GGIR part 5 is
+to facilitate this.
+
+## Creating a multi-variate time series object
+
+As a first step we need to map out what happens when during the
+recording. Here, the GGIR code combines the information derived in parts
+2, 3 and 4 into a multi-variate single time series object, including:
+
+- Timestamp
+- A log of when data was classified as invalid.
+- Average acceleration as derived in GGIR part 2, where invalid epochs
+  are imputed and only the acceleration metric is used as specified with
+  parameter `acc.metric`.
+- Sleep classifications from GGIR part 3 and 4. Behavioural class code,
+  which GGIR part 5 derives the behavioural classes based on the
+  magnitude of acceleration and sleep classification.
+
+The exact number of behavioural classes as codified depends on how
+parameters are set, but constructed and codified as:
+
+**During the sleep period time window:**
+
+- Sleep
+- Wakefulness with low acceleration
+- Wakefulness with moderate acceleration
+- Wakefulness with vigorous acceleration
+
+**During the waking hours of the day:**
+
+- Inactivity unbouted
+- Inactivity bouted, subdivided into one or multiple bout durations
+- Total inactivity time
+- LIPA unbouted
+- LIPA bouted, subdivided into one or multiple bout durations
+- Total LIPA time
+- Moderate activity unbouted
+- Vigorous activity unbouted
+- MVPA bouted, subdivided into one or multiple bout durations
+- Total MVPA time
+
+It is possible to export the time series generated, which will be
+discussed towards the end of this chapter.
+
+## Defining the time windows
+
+In GGIR part 2 we defined days from midnight to midnight, and in GGIR
+part 4 we typically defined nights from noon to noon. With the access to
+sleep timing, GGIR part 5 offers additional definitions of a day.
+However, given that our definitions of a day are becoming very different
+from a calendar day, we refer to them as windows in the data.
+
+GGIR part 5 facilitates the following time window definitions, which can
+be selected with parameter `timewindow`:
+
+| Timewindow | Meaning | Definition |
+|----|----|----|
+| "MM" | midnight to midnight | Each day is defined as the 24 hours starting and ending a calendar day (by default midnight, but modifiable with the parameter `dayborder`). |
+| "WW" | waking up to waking up | Each day is defined as the time from the participant wakes up a given day to the time they wake up the next day. |
+| "OO" | sleep onset to sleep onset | Each day is defined as the time from the sleep onset a given day to the sleep onset of the next day. |
+
+For "WW" and "OO", the onset and waking times are guided by the
+estimates from part 4, but if they are missing, part 5 will attempt to
+retrieve the estimate from the guider method. Note that the parameter
+`timewindow` can consist of one of the options beforementioned or any
+combination of them, for example, the default value is
+`timewindow = c("MM", "WW")`.
+
+When recordings end in the night or early morning the sleep estimates
+for the night are likely affected. For example, if a recording ends at
+10am we cannot be sure that the participant did not sleep until after
+10am, and if a recording ends at 2am we cannot be sure that the sleep
+onset time was reliably estimated. To handle this and ignore the final
+window in the data, set parameter
+`require_complete_lastnight_part5 = TRUE` (not default).
+
+### Defining segments within the MM window
+
+By default GGIR segments a window in waking hours of the day (referred
+to as `day`) and the sleep period time window (referred to as `spt`).
+Additionally, when timewindow is set to “MM”, day segment specific
+analysis are performed based on the segments as defined by parameters
+`qwindow` . Please see the annex on day segmentation for more
+information.
+
+## Metrics calculated per window and per segment
+
+GGIR provides the following metrics over the time windows calculated,
+i.e., full day, awake time, sleep period time, as well as (optionally)
+the day segments that might have been provided via the parameter
+`qwindow`.
+
+- Duration: Time spent in minute per behavioural class.
+- Acceleration: Average acceleration per behavioural class
+- Number of blocks: Number of blocks per behavioural class, where a
+  distinction is made between bouted and unbouted, except for the total
+  number of blocks per intensity levels (Nblocks_day_total_IN,
+  Nblocks_day_total_LIPA, Nblocks_day_total_MOD, and
+  Nblocks_day_total_VIG).
+- Number of bouts: Number of bouts per behavioural class.
+- Fragmentation: The fragmentation metrics as discussed in the previous
+  chapter. Here no distinction is made between bouted or unbouted
+  behavour. Note that fragmentation classes sometimes group multiple
+  intensity levels, e.g. the fragmentation of physical activity reflects
+  the fragmentation of LIPA and MVPA combined relative to Inactive time.
+
+On a side note - If you multiply Acceleration by duration for a given
+class, and by that combine the information from both variables, you
+would arrive at a volume measure of behaviour. This is similar to the
+construct of calories over time. This is a much richer way of describing
+the data as opposed to the conventional approach that only looks at
+either time spent per behavioural class or average acceleration in an
+entire day.
+
+### Range definition
+
+Time and acceleration ranges are in GGIR consistently defined to include
+the bottom edge and exclude the top edge of the range.
+
+An example may best clarify this. Imagine we have define the four
+acceleration ranges in part 5 with `threshold.lig = 40`,
+`threshold.mod = 100`, and `threshold.vig = 400`, the durations of the
+bout categories as `boutdur.in = 30`, `boutdur.lig = 15`, and
+`boutdur.mvpa = c(5, 10)` then this gives us the following behavioural
+bout categories:
+
+- Inactivity with acceleration range `[0, 40)` and duration `[30, Inf)`.
+- Light activity with acceleration range `[40, 100)` and duration
+  `[15, Inf)`.
+- MVPA with acceleration range `[100, Inf)` and duration `[5, 10)`.
+- MVPA with acceleration range `[100, Inf)` and duration `[10, 15)`.
+
+Where `[` means including, `)` means excluding, and `Inf` infinity.
+
+### Complementary variables
+
+If your primary interest is on sleep research then we recommend you to
+work with the GGIR part 4 reports. However, for those who want to look
+at interactions between behaviour and sleep, GGIR part 5 reports include
+sleep estimates as used for the part 5 analysis. Note that in part 5 the
+criteria for sleep estimate inclusion are different than for part 4. In
+part 5 we are happy with any estimate, even if the accelerometer was not
+worn during the night.
+
+Additionally, part 5 will also come with the duration of the awake time,
+the sleep period time, the full-day windows, and percentage of non-wear
+(read invalid data, which is typically non-wear).
+
+### Seemingly overlapping variables between GGIR part 2 and part 5 output
+
+As it might be noticed, there are some variables that are reported in
+both GGIR part 2 and part 5, such as the average acceleration and the
+bouts of moderate-to-vigorous physical activity. However, please note
+that their values are not necessarily identical for the following
+reasons:
+
+- **Times when MVPA can happen** . In part 2 MVPA can happen at any time
+  in the day, but never overlap with midnight. In part 5 MVPA only
+  happens during the waking hours of a single day, but can overlap with
+  midnight if midnight is not part of the sleep period time window. For
+  those of you who use the `dayborder` parameter with a value not equal
+  to zero: midnight in this scenario is not actually midnight but the
+  time you set with parameter `dayborder`, e.g. 2 equates to 2am. .
+
+- **Difference in epoch length**. GGIR part 5 comes with the possibility
+  to aggregate the epochs to 60 seconds with the parameter
+  `part5_agg2_60seconds`. If this parameter is set to TRUE, then the
+  full time series will be aggregated to 60 seconds, in contrast to the
+  default 5 second epoch length used in part 2.
+
+- **Different time window definition**. GGIR part 2 always uses the “MM”
+  definition of the days. In GGIR part 5, you have the option to define
+  the days in different ways (see above).
+
+### Exporting time series
+
+To export the time series set parameter `save_ms5rawlevels = TRUE`. GGIR
+part 5 will then store them in a subfolder of `meta/ms5.outraw` where
+each subfolder is named after the unique MVPA threshold combination
+used.
+
+The behavioral classes are included as numbers, the legend for these
+classes numbers is stored as a separate legend file in the
+meta/ms5.outraw folder named “behavioralcodes2020-04-26.csv” where the
+date will correspond to the date you ran GGIR.
+
+Note that the time series exported in GGIR part 5 only includes the
+acceleration metric as specified with parameter `acc.metric` (default =
+“ENMO”), and if angle metrics are selected, the angle metrics. If you
+want to explore multiple acceleration metric values, please see
+documentation for parameter `epochvalues2csv` as discussed in chapter 3.
+
+**Additional input parameters that may be of interest:**
+
+- `save_ms5raw_format` is a character string to specify how data should
+  be stored: either “csv” (default) or “RData”. Only used if
+  save_ms5rawlevels=TRUE.
+- `save_ms5raw_without_invalid` is Boolean to indicate whether to remove
+  invalid days from the time series output files. Only used if
+  save_ms5rawlevels=TRUE.
+
+The exported time series table comes with the following columns:
+
+| Column name | Description |
+|----|----|
+| timenum | Time stamp in UTC time format (i.e., seconds since 1970-01-01). To convert timenum to time stamp format, you need to specify your desired time zone, e.g., `as.POSIXct(mdat$timenum, tz = "Europe/London")`. |
+| ACC | Average acceleration metric selected by `acc.metric`, default = `"ENMO"`. |
+| SleepPeriodTime | Is 1 if SPT is detected, 0 if not. Note that this refers to the combined usage of guider and detected sustained inactivity bouts (rest periods). |
+| invalidepoch | Is 1 if epoch was detect as invalid (e.g. non-wear), 0 if not. |
+| guider | Number to indicate what guider type was used, where 1=sleeplog, 2=HDCZA, 3=swetwindow, 4=L512, 5=HorAngle, 6=NotWorn, 7=markerbutton, 8=HLRB, 9=MotionWare |
+| window | Numeric indicator of the analysis window in the recording. If timewindow = `"MM"` then these correspond to calendar days, if timewindow = `"WW"` then these correspond to which wakingup-wakingup window in the recording, if timewindow = `"OO"` then these correspond to which sleeponset-sleeponset window in the recording. So, in a recording of one week you may find window numbers 1, 2, 3, 4, 5 and 6. |
+| class_id | The behavioural class codes are documented in the exported csv file meta/ms5outraw/behaviouralcodes.csv. Class codes above class 8 will be analysis specific, because it depends on the number time variants of the bouts used. For example, if you look at MVPA lasting 1-10, 10-20, 30-40 then all of them will have their own class_id. In behaviouralcodes.csv you will find a column with class_names which match the behavioural classes as reported in the part 5 report. |
+| sibdetection | 1 if sustained inactivity bout was detect, 2 if nap was detected |
+| lightpeak | If lux sensor data is available in the data file then it was summarised at an epoch length defined by the second value of parameter `windowsizes` (defaults to 900 seconds = 15 minutes), to add this value to the time series it is interpolated, so the original time resolution is not necessarily reflected in this column. |
+| selfreported | Factor to indicator what behaviour was reported via sleep diary, if no behaviour was reported value is NA |
+| angle | anglez by default. If `sensor.location = "hip"` or `HASPT.algo = "HorAngle"` then angle represents the angle for the longitudinal axis as provided by argument longitudinal_axis or estimated if no angle was provided. If more angles were extracted in part 1 then these will be add with their letter appended. |
+| step_count | Only stored when external algortihm for step detection is used. |
+| diaryImputationCode | Code stored in the advanced format sleeplog that will be shown in the visualisation. |
+| temperature | If temperature was available in the data file then it was summarised at an epoch length defined by the second value of parameter `windowsizes` (defaults to 900 seconds = 15 minutes), to add this value to the time series it is interpolated, so the original time resolution is not necessarily reflected in this column. |
+| invalid_fullwindow | Percentage of the window (see above) that represents invalid data, included to ease filtering the timeseries based on whether windows are valid or not. |
+| invalid_sleepperiod | Percentage of SPT within the current window that represents invalid data. |
+| invalid_wakinghours | Percentage of waking hours within the current window that represents invalid data. |
+| timestamp | Time stamp derived from converting the column timenum, only available if `save_ms5raw_format = TRUE`. |
+
+## Key arguments
+
+- `threshold.lig`, `threshold.mod`, `threshold.vig`
+- `boutdur.in`, `boutdur.lig`, `boutdur.mvpa`
+- `boutcriter.in`, `boutcriter.lig`, `boutcriter.mvpa`
+- `frag.metrics`
+- `timewindow`
+- `part5_agg2_60seconds`
+- `save_ms5rawlevels`
+- `save_ms5raw_format`
+- `save_ms5raw_without_invalid`
+- `excludefirstlast.part5`
+- `includedaycrit.part5`
+- `minimum_MM_length.part5`
+
+## Related output
+
+In <https://wadpac.github.io/GGIR/articles/GGIRoutput.html#ggir-part-5>
+you will find a detailed discussion of the part 5 output. In summary,
+part 5 produces the following files.
+
+- Day level summary
+- Person level summary
+- Day level summary of behaviour per segment of a day analysis
+- Person level summary of behaviour per segment of a day
+- Variable dictionary (see below)
+- Time series
+- Pdf reports with vsiualisation
+
+### Variables dictionary
+
+Considering the different time window segmentation options, the number
+of metrics calculated, and the different aggregation strategies (i.e.,
+plain averages, weighted averages, and -optionally- weekday and
+weekend-day averages), the number of variables exported in Part 5 can be
+high. To help you with the understanding and interpretation of the
+variables, GGIR Part5 exports a variable dictionary for the daysummary
+and personsummary csv reports. The dictionaries include a list of the
+variable names calculated in your analyses together with the definition
+of the variables.
