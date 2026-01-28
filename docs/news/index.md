@@ -2,6 +2,8 @@
 
 ## CHANGES IN GGIR VERSION 3.3-4
 
+CRAN release: 2026-01-27
+
 - Part 2: Improved handling of corrupted RData files in part 1 or 2.
   [\#1447](https://github.com/wadpac/GGIR/issues/1447) and
   [\#1449](https://github.com/wadpac/GGIR/issues/1449)

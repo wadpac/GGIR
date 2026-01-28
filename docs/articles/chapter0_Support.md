@@ -29,13 +29,13 @@ discussion page**](https://github.com/wadpac/GGIR/discussions).
 If you have multiple unrelated things to report then please post them
 separately.
 
-**Please be considerate of that fact that all public support is based on
+**Please be considerate of the fact that all public support is based on
 voluntary efforts.**
 
 ### GitHub issue tracker
 
 For clearly defined problems with the use of GGIR, please report them as
-issue in the [**GGIR issue
+an issue in the [**GGIR issue
 tracker**](https://github.com/wadpac/GGIR/issues).
 
 Use the message template as displayed as that makes it easier for others
