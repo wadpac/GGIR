@@ -86,6 +86,8 @@ navbar:
           href: articles/SleepRegularityIndex.html
         - text: Nap Detection
           href: articles/NapDetection.html
+        - text: Step and Cadence Analysis
+          href: articles/StepCadenceAnalysis.html
           
   structure:
     left:  [chapters, annexes, installation, intro, news, contributing, help]
