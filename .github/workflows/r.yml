@@ -42,7 +42,7 @@ jobs:
         run: echo "options(repos = c(CRAN = 'https://cran.rstudio.com'))" >> ~/.Rprofile
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck data.table
+          extra-packages: any::rcmdcheck data.table bslib
           needs: check
 
       - uses: r-lib/actions/check-r-package@v2

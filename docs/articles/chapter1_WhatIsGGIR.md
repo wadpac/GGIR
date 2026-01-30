@@ -1,0 +1,232 @@
+# 1. What is GGIR
+
+## A brief overview
+
+[GGIR](https://CRAN.R-project.org/package=GGIR) is an R-package
+primarily designed to process multi-day ***raw*** accelerometer data for
+physical activity, sleep, and circadian rhythm research. The term
+***raw*** refers to data being expressed in gravitational units (1 *g*
+equal gravitational acceleration, which on average is 9.81 m/s²) as
+opposed to the previous generation of accelerometers which stored data
+in accelerometer brand-specific units at epoch level, typically 5, 30,
+or 60 seconds in length. Despite the focus on the raw data, GGIR also
+offers functionality to process previous-generation accelerometer data.
+The signal processing for raw data includes many steps that are
+explained in these pages. For example, automatic calibration to gravity,
+detection of abnormally high values, imputation of raw-level time gaps
+(only for specific sensor brands), and calculation of orientation angle
+and average magnitude acceleration based on a variety of metrics. Next,
+the signal processing for both raw and previous-generation data continue
+with the detection of non-wear and epoch-level imputation. Finally, GGIR
+uses all this information to describe the data on data quality and data
+summary metrics that could be interpreted as estimates of physical
+activity, inactivity, sleep, and circadian rhythm.
+
+The time resolutions of GGIR output are:
+
+- **Per recording**, which typically matches to one participant ID.
+- **Calendar day** with an option to specify the day border timing with
+  midnight as default.
+- **Night** a period of time where a participant is likely to have their
+  main daily sleep period, where the initial focus is on the time window
+  defined from noon to noon the next day, unless the person wakes up
+  after noon the next day, in that case the focus shifts to 6pm to 6pm
+  the next day.
+- **Day segment**, which can be defined via code to indicate timing of
+  the segments within a day standardised for all recordings and days in
+  a dataset or via diary file, where the segment definition is allowed
+  to vary per recording and day.
+- **Window defined from Waking-up after main sleep period to Waking-up
+  after the next main sleep period**.
+- **Window defined from Sleep onset at the start of the main sleep
+  period to sleep onset at the start of the next main sleep period**.
+- **Epoch-level time series**, where an epoch length is set by the user
+  at for example 5 seconds.
+
+**Additionally, GGIR facilitates appending or splitting recordings:**
+
+- Appending combines a sequence of recordings with matching participant
+  IDs. For example, when a person is tracked for a couple of weeks with
+  one accelerometer which is replaced after those weeks by a new
+  accelerometer also worn for a couple of weeks. GGIR is able to append
+  these recordings and treat them as a single recording. For details on
+  how to use this, see documentation on GGIR parameter
+  `maxRecordingInterval` and documentation on how to use GGIR parameters
+  as explained further down.
+- Splitting recording into multiple sequential recordings based on
+  user-specified time points. For example, when a person is tracked for
+  multiple weeks and you want to analyse the segment before and after an
+  intervention separately. For details on how GGIR can split a recording
+  into multiple new recordings, see documentation on GGIR parameters
+  `recording_split_times`, `recording_split_overlap`, and
+  `recording_split_timeformat` and documentation on how to use GGIR
+  parameters as explained further down.
+
+## Key strengths
+
+1.  GGIR has a permissive open-source software license to maximise
+    re-use and collaboration.
+2.  GGIR is applicable to data from multiple sensor brands and file
+    formats.
+3.  GGIR facilitates sleep, physical activity, and circadian rhythm
+    research.
+4.  GGIR has extensive quantitative output designed for use in
+    quantitative research.
+5.  GGIR is designed to be computationally efficient such as the option
+    to store and re-use intermediate milestone data and the option to
+    process multiple files in parallel on the same computer as discussed
+    in Chapter 2.
+6.  GGIR is designed to be accessible for new users without experience
+    in R or programming. GGIR requires only one function call and comes
+    with elaborate open-access documentation.
+7.  GGIR has had over a [dozen code
+    contributors](https://github.com/wadpac/GGIR/graphs/contributors).
+8.  GGIR has been available on the CRAN archive, meaning that it meets
+    CRAN standards and that each release has gone through a series of
+    automated checks.
+9.  We help users as much as possible publicly to maximise the sharing
+    of knowledge and stimulate community efforts. Between 2014 and 2025
+    this was done via the ([GGIR google
+    group](https://groups.google.com/g/rpackageggir/)) which attracted
+    nearly 1000 conversations, but to ease moderation we now use the
+    GGIR [GitHub discussion
+    page](https://github.com/wadpac/GGIR/discussions) and [GitHub issues
+    page](https://github.com/wadpac/GGIR/issues).
+10. Hundreds of
+    [publications](https://github.com/wadpac/GGIR/wiki/Publication-list)
+    have used GGIR, which has been a powerful way to test and improve
+    GGIR towards the needs of the research community.
+
+## History
+
+An elaborate reflection on GGIR’s first 10 years of existence can be
+found in [this blog
+post](https://www.accelting.com/updates/10th-anniversary-of-ggir/). In
+short, GGIR evolved from a series of R scripts used in research around
+2010-2012 to a first release in 2013. A key factor for the growth of
+GGIR has been its adoption by the research community and the willingness
+of a variety of researchers to invest in GGIR either in terms of time
+investment or financially. GGIR would not be what it is without all
+their efforts.
+
+Another good place to learn about GGIR’s history is the article by
+[Migueles JH, et al. from 2019](https://doi.org/10.1123/jmpb.2018-0063)
+which summarised GGIR’s status at that point in time.
+
+## Philosophy behind GGIR
+
+### Flexible and accessible
+
+The research field is highly heterogeneous in: the choice of sensor
+brand, data format, the study protocols used, and the research questions
+it tries to answer. At the same time many within the field lack the time
+or skills to write their own custom data processing software. GGIR aims
+to be flexible to handle all these different scenarios and at the same
+time remain accessible to those who lack time or skills to write
+software. Further, we hope GGIR is of use to those without the financial
+resources for commercial software, although we would like to stress that
+we are not a charity and depend on paid and unpaid contributions from
+the community.
+
+### Algorithm design
+
+The philosophy behind the algorithms as implemented in GGIR is that
+biomechanical explainable (heuristic or knowledge driven) approaches to
+measurement in science are preferable over purely data-driven
+approaches. Please note the phrasing of the previous sentence specific
+to the scientific context rather than measurement in general,
+e.g. consumer wearables. Only when a knowledge driven approach is
+unrealistic we consider a data-driven approach.
+
+The idea of a knowledge driven approach is that in order to advance
+insight, it is essential to have an understanding of the causal relation
+between the phenomena being observed (e.g. acceleration of one body
+part), the way the (acceleration) sensor works, what we do with the data
+produced, and how we interpret the data. For example, we know that body
+acceleration relates to energy expenditure because of physics and human
+physiology. The abundance of scientific publications that have reported
+a positive correlation between accelerometer data and energy expenditure
+only served to confirm prior knowledge.
+
+In contrast, data-driven methods focus on optimal correlation between
+sensor data and reference labels or values, and are much less concerned
+with causal associations that are the focus of knowledge driven
+approaches, as defined above. Identical to how correlation is not
+necessarily equal to causation in health research, the process of
+measurement can also be confounded. Some examples: We may see
+differences in body acceleration patterns that correlate with different
+activity types or different levels of energy expenditure, but that does
+not mean that we actually measure those activity types or energy
+expenditure levels. Ignoring this distinction can easily lead to
+overestimating the value of an accelerometer for measuring those
+constructs (activity type, etc) and to underestimate the value of an
+accelerometer for capturing acceleration as a useful measure of
+behaviour, if appropriately used and interpreted.
+
+A second problem with data-driven methods is that they heavily depend on
+the availability of reliable criterion methods.
+
+We argue that such reliable criterion methods do not exist for physical
+behaviour measurement:
+
+1.  Indirect calorimetry and the indicators of energy metabolism that
+    can be derived from it are unable to account for the activity type
+    specific role of body weight on energy metabolism. This makes it
+    impossible to make a standardised comparison of the energy cost of
+    different activity types across individuals that differ in body
+    weight. See also reflections in [this blog
+    post](https://www.accelting.com/why-does-ggir-facilitate-cut-points/).
+2.  Polysomnography (PSG) is the standard in sleep research. PSG offers
+    a physiological definition of sleep that is impossible to capture
+    directly with a movement sensor. Therefore, we are forced to
+    simplify our definition of ‘sleep’ towards a definition that can be
+    captured by a movement sensor. As a result, the act of evaluating an
+    accelerometer on its ability to classify sleep with PSG becomes
+    somewhat meaningless as we already know that we are not measuring
+    the same construct as PSG.
+3.  Activity types are ambiguous to define given the high number of ways
+    they can be performed. This introduces a fundamental level of
+    uncertainty about the robustness of models outside the datasets and
+    context they were developed in.
+
+As a result, it is essential to put strong emphasis on algorithms that
+have descriptive value on their own regardless of whether they offer a
+high correlation with supposed criterion methods.
+
+### Permissive open-source license
+
+It may sound obvious to some that research software is open-source, but
+in the fields of physical activity and sleep research, this is far from
+the accepted approach. GGIR is one of the very few research tools in
+this field that has a permissive license aimed to maximise its potential
+for re-use and collaboration.
+
+## Documentation structure and origin
+
+The documentation is mainly written in a narrative style where we have
+tried to explain both the theory and practice of all GGIR
+functionalities. As mentioned above, GGIR offers a vast amount of
+functionality. If you arrive here with the expectation to find a quick
+instruction to run and use GGIR in your research then we have to
+disappoint you. Learning to use GGIR requires some time investment.
+
+Everything you need to type in your R script is `highlighted like this`.
+
+This documentation is not intended as an academic review: We only cite
+publications to clarify the origin of algorithms and we only discuss
+what is part of GGIR.
+
+All documentation text has been written in the ‘we’-form even though
+many parts have been written by just one person (Vincent). However,
+switching between ‘I’ and ‘we’ for each section depending on whether
+others have helped seemed unpractical.
+
+Finally, the first version of this documentation was sponsored by
+[Accelting](https://www.accelting.com/) with the commitment that this
+will remain available as free open-access documentation. However, open
+documentation is best maintained as a community: We would be grateful
+for your help to improve the documentation either by giving feedback
+(e.g. via v.vanhees at accelting dot com), pull requests (for those who
+know how to do it), or financially to sponsor time investments. For
+example, it would be great if we had funding for creating high quality
+complementary info graphics and videos.

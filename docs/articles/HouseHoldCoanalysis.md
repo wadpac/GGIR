@@ -1,0 +1,247 @@
+# Household Co-Analysis
+
+**NOTE: If you are viewing this page via CRAN note that the main GGIR
+documentation has been migrated to the [GGIR GitHub
+pages](https://wadpac.github.io/GGIR/).**
+
+Household co-analysis facilitates the analysis of how sleep and physical
+activity relate between members of the same household.
+
+## Accelerometer file names
+
+The household co-analysis requires that households and family member can
+be recognised. To do this we assume the following logic in the file
+names:
+
+`StudyNumber-HouseholdID-MemberID_anyotherinformation.bin`
+
+This example is for a .bin file, but the same applies to .cwa or .csv
+files.
+
+For example the files:
+
+- `001-002-001_12345-2023.bin`
+- `001-002-002_23456-2023.bin`
+- `001-002-M_23456-2023.bin`
+
+will be recognised as household ID `002` with member IDs `001`, `002`,
+and `M`.
+
+## Configuring GGIR
+
+The following input arguments are needed to run the Household
+co-analysis:
+
+- The Household co-analysis is integrated in GGIR as part 6, so we need
+  to run GGIR with part 1 to 6, with `mode = 1:6`.
+- `windowsizes = c(5, 60, 3600)`. Setting the second value to 60 ensures
+  that light and temperature, if available, are aggregated per minute.
+- `part5_agg2_60seconds = TRUE`. This ensures that GGIR part 5 stores
+  the time series at 1 minute resolution.
+- `part6HCA = TRUE` to tell GGIR to perform Household Co-Analysis.
+- `part6_threshold_combi = "30_100_400"` where 30, 100 and 400 need to
+  correspond to the accelerometer threshold combination that is used in
+  part 5 that you want to use in part 6. GGIR part 5 facilitates
+  multiple threshold combinations but in part 6 you need to select one.
+
+Other GGIR arguments can be set according to your own needs. For an
+example:
+
+    datadir = "C:/projects/studyZ/binfiles"
+    outputdir = "C:/projects/studyZ"
+    library(GGIR)
+    GGIR(mode = 1:5, 
+         datadir = datadir,
+         idloc = 2, 
+         outputdir = outputdir,
+         do.report = c(2, 4, 5),
+         do.parallel = TRUE,
+         overwrite = FALSE,
+         printsummary = TRUE,
+         desiredtz = "America/Halifax",
+         windowsizes = c(5, 60, 3600),
+         threshold.lig = 30,
+         threshold.mod = 100,
+         threshold.vig = 400,
+         part6_threshold_combi = "30_100_400",
+         boutcriter.in = 1, boutcriter.lig = 1,  boutcriter.mvpa = 0.9,
+         boutdur.in = 30,
+         boutdur.lig = 10,
+         boutdur.mvpa = 5,
+         part6HCA = TRUE,
+         save_ms5rawlevels = TRUE, # Not necessary because GGIR will set this to TRUE when part6HCA is TRUE.
+         save_ms5raw_without_invalid = FALSE, # <= Needed for household co-analysis
+         part5_agg2_60seconds = TRUE,
+         visualreport = FALSE) 
+         
+
+## Household co-analysis
+
+In GGIR part 1, 2, 3, 4, and 5 each recording is processed individually
+without considering relations between recordings. Next, part 6 is
+subdivided in alligning the time series produced by part 1 and 5 per
+household, and the pairwise analysis of the data.
+
+### Align individuals
+
+Household members with only one member are ignored. Next, per household
+and per household member the code loads and merges the time series
+produced by GGIR part 1 and part 5. Days, defined from waking-up to
+waking-up, are removed if they have less than 20% valid data during
+waking hours, the sleep period time window, or the day as a whole. Next,
+time series are completed with indicates of valid household member pairs
+for each time points.
+
+Finally, we store:
+
+- The aligned time series per household in separate csv files in the
+  GGIR output directory
+  (`.../results/part6HouseholdCoAnalysis/alignedTimeseries`). The
+  columns for this file are documented further down.
+- A pdf file names timeseriesPlot.pdf with plots of the aligned time
+  series to facilitate visual inspection of the data completeness per
+  household.
+
+### Pairwise analysis
+
+Per household we identify all possible member pairs and loop over these
+pairs.
+
+Per member pair the code identify wake-up time pairs. Here, wake-up
+times that occur within the last 15 minutes of the time series are
+ignored as we need at least some recording time to quantify behaviour
+after waking up.
+
+Per wake-up pair we assess who woke up first and second, the time
+difference, and the corresponding calendar dates of waking up.
+
+Next, the code quantifies:
+
+- Activity of person who first woke up during minute before second
+  person woke up
+- Activity of second person to wake up before they woke up
+- LUX of person who first woke up during tminute before second person
+  woke up
+- LUX of second person to wake up before they woke up.
+
+Describe matching waking hours between pairs:
+
+- Correlation between continuous acceleration values (ENMO metric)
+- Derive binary class of inactivity/active (ENMO metric, and threshold
+  \< 50)
+- ICC based on binary scores (irr package, model=twoway, type=agreement,
+  unit=single)
+- Cohen’s Kappa (psych package)
+- Similarity in binary scores (calculation in line with Sleep Regularity
+  Index)
+
+Describe noon-noon window with a stronger focus on sleep:
+
+- Describe binary class of sleep/wakefulness (note: does not attempt to
+  classify daytime naps)
+- ICC based on binary scores (irr package, model=twoway, type=agreement,
+  unit=single)
+- Cohen’s Kappa (psych package)
+- Similarity in binary scores (calculation in line with Sleep Regularity
+  Index)
+
+Describe wakefulness dynamics during the SPT prior to wakeup:
+
+- Look up indices of spt prior to wakeup where both individuals where in
+  SPT.
+- Assess fraction of data valid
+- Identify wake up times during the night
+
+For each wake-up time:
+
+- Assess whether both persons woke up at the same time, other person
+  wake up within 5 minutes, or other person does not wake up within 5
+  minutes.
+- Store output to csv one row per unique household pair, with columns to
+  clarify who the household members are in the pair and from which
+  household they are.
+
+## Output variables
+
+### alignedTimesieres
+
+In the GGIR output folder
+`.../results/part6HouseholdCoAnalysis/alignedTimeseries` you will find
+csv files with the time series per household.
+
+The data dictionary below shows the column names you would get for a
+household with two members: X and Y. Most of the columns are copied from
+the time series output files, which are documented
+[here](https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#571_Time_series_output_files).
+Therefore, those column are not documented here.
+
+| Variable name | Description |
+|----|----|
+| timenum | Timestamp for tSeconds since since 1-1-1970 |
+| HID | Household ID |
+| ACC.X | Average magnitude of acceleration for household member X |
+| SleepPeriodTime.X | \- |
+| invalidepoch.X | \- |
+| guider.X | \- |
+| window.X | \- |
+| class_id.X | \- |
+| lightmean.X | Mean light sensor value for member X |
+| lightpeak.X | Peak light sensor value for member X |
+| temperaturemean.X | Mean temperature value for member X |
+| onset.X | 1 to indicate sleep onset time for member X |
+| wakeup.X | 1 to indicate waking up for member X |
+| validepoch.X | 1 if epoch was valid |
+| ACC.Y | Average magnitude of acceleration for household member X |
+| SleepPeriodTime.Y | \- |
+| invalidepoch.Y | \- |
+| guider.Y | \- |
+| window.Y | \- |
+| class_id.Y | \- |
+| lightmean.Y | See lightmean.X but now for member Y |
+| lightpeak.Y | See lightpeak.X but now for member Y |
+| temperaturemean.Y | \- |
+| onset.Y | \- |
+| wakeup.Y | \- |
+| validepoch.Y | \- |
+| time_POSIX | Timestamp in character format |
+| N_valid_hhmembers | Number of valid household member pairs |
+| validpair_X_Y | TRUE or FALSE to indicate whether the pair had valid data for this timestamp |
+
+### Pairwise summary report
+
+As stored inside `pairwise_summary_all_housholds.csv`
+
+| Variable name | Description |
+|----|----|
+| HID | Household ID |
+| Npairs | Number of unique pairs in a household |
+| PID | Pair ID |
+| MID1 | Household member ID for the first person in the pair |
+| MID2 | Household member ID for the second person in the pair |
+| event | Number to count the number of events, for now these are days with valid wake-up estimates in both individuals |
+| time1 | Time person 1 wakes up |
+| time2 | Time person 2 wakes up |
+| date1 | Date person 1 wakes up |
+| date2 | Date person 2 wakes up |
+| index_wake1 | Index in the time series when person 1 woke up (probably not relevant for end-user) |
+| index_wake2 | Index in the time series when person 2 woke up (probably not relevant for end-user) |
+| firstawake | Who of the two individuals woke up first? If equal then value will be “equal” |
+| wakeup_acc_wake1_before_wake2_mg | Mean acceleration (m*g*) of the person who wakes up first during the four minutes before the second person wakes up |
+| wakeup_acc_wake2_before_wake2_mg | Mean acceleration (m*g*) of second person to wake up before they woke up |
+| wakeup_lux_wake1_before_wake2 | Peak LUX of the person who wakes up first during the four minutes before the second person wakes up |
+| wakeup_lux_wake2_before_wake2 | Peak LUX of second person to wake up before they woke up |
+| wakeup_deltatime_min | Difference in wake up time in minutes |
+| r_acceleration | Pearson correlation in continuous acceleration values |
+| ICC_sleep | ICC (from R package irr) calculated based on binary scores of sleep (excluding WASO) |
+| ICC_sleep_Fvalue | Fvalue for ICC_sleep |
+| ICC_active | ICC (from R package irr) calculated based on binary scores of activity (metric ENMO \< 50 chosen for now) |
+| ICC_active_Fvalue | Favlue for ICC_active |
+| frac_valid | Fraction of pair epochs between individuals for a certain day that were valid |
+| SleepSimilarityIndex | Similarity in binary sleep/wake patterns between pairs per calendar day |
+| ActivitySimilarityIndex | Similarity in binary active/inactive patterns between pairs per calendar day |
+| Kappa_sleep | Weighted Cohen’s Kappa coefficient calculated based on binary scores of sleep (excluding WASO) |
+| Kappa_sleep_CI_lower | Lower confidence interval of Kappa_sleep |
+| Kappa_sleep_CI_lupper | Upper confidence interval of Kappa_sleep |
+| Kappa_active | Weighted Cohen’s Kappa coefficient calculated based on binary scores of activity (metric ENMO \< 50 chosen for now) |
+| Kappa_active_CI_lower | Lower confidence interval of Kappa_active |
+| Kappa_active_CI_upper | Upper confidence interval of Kappa_active |

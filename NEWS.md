@@ -1,4 +1,4 @@
-# CHANGES IN GGIR VERSION 3.3-?
+# CHANGES IN GGIR VERSION 3.3-4
 
 - Part 5: Add filter to excluded naps that have high accelerations or for which the surrounded hour has less than 1/6 naps or sleep.
 
@@ -15,6 +15,10 @@
 - Part 5: Parameter threshold.nap added as threshold for the 95th percentile in acceleration during a sib.
 
 - Part 2: Improved handling of corrupted RData files in part 1 or 2. #1447 and #1449
+
+- Part 1: Minor tidy up of code related to splitting recordings. #1446
+
+- General: Zenodo release generation again has not been triggered since release 3.2-8, this is now fixed by correcting mistake in json file. #1426
 
 # CHANGES IN GGIR VERSION 3.3-3
 

@@ -1,0 +1,185 @@
+# 7. Describing the Data Without Knowing Sleep
+
+With the metric values imputed in the previous chapter, GGIR part 2
+offers a first descriptive analysis of the data. Although we will have
+to wait till later GGIR parts (chapters) to see the segmentation of days
+in waking and sleep hours, there is already enough that can be
+quantified at this point. In this chapter we focus on descriptive
+analysis of the data that are informative even without the knowledge on
+when the participant was sleeping or awake.
+
+## Data quality indicators
+
+GGIR part 2 summarises all the data quality checks done in the previous
+four chapters, ranging from a report on the successfulness of the
+auto-calibration procedure to the number of valid days. In this way,
+GGIR part 2 is an ideal place to start for data quality assurance.
+
+## Basic descriptives
+
+Descriptive variables are calculated and reported for valid days only,
+where the criteria for valid day is defined by parameter
+`includedaycrit`.
+
+### Average acceleration
+
+Average acceleration is known to be correlated with the total
+activity-related energy expenditure. GGIR part 2 provide two types of
+average acceleration:
+
+- Average per day, only stored when the day was considered valid. Note
+  that this descriptive and most other descriptives are also stored by
+  GGIR as averages across all days, weekend days, or weekdays, which we
+  will discuss in more detail later on.
+
+- Weighted average of all valid data points in the recording, weighted
+  by timing in the day of all valid epochs, regardless of whether they
+  come from days that as a whole are classified as valid or not.
+
+### Acceleration distribution
+
+The distribution of acceleration values can be informative too. GGIR
+facilitates this in two ways:
+
+1.  By specifying the quantiles of the distribution with parameter
+    `qlevels`, which are fed to the base R function `quantile`, GGIR
+    gives us the acceleration metric values corresponding to such
+    quantiles (a quantile multiplied by 100 is the same as a
+    percentile).
+
+2.  By describing the time spent in acceleration ranges, which are
+    defined by parameter `ilevels` .
+
+The distribution of acceleration values is often referred to as
+intensity distribution in the physical activity literature.
+
+## Derived descriptives
+
+### Sets of quantiles (MX metrics by [Rowlands et al.](https://pubmed.ncbi.nlm.nih.gov/29360664/))
+
+The quantiles, as discussed above, can be used to describe the
+accelerations that participants exceed in their most active “X”
+accumulated minutes in a day. In the specific approach, as proposed by
+[Rowlands et al.](https://pubmed.ncbi.nlm.nih.gov/31808014/), these
+quantiles are referred to as the **MX metrics**. The MX metrics should
+not be confused with the most active continuous X hours, e.g. M10, as
+used in circadian rhythm research that also can be derived with GGIR
+(see parameter `winhr`).
+
+To use the MX metrics as proposed by Rowlands et al., specify the
+durations of the 24h day during which you want to identify the
+accelerations values. For example, to generate the minimum acceleration
+value for the most active accumulated 30 minutes, you can call
+`qlevels = (1410/1440)`. This parameter also accepts a vector to
+generate multiple MX metrics. For example, to call M60, M30, and M10,
+you can specify the following:
+
+`qlevels = c(c(1380/1440), c(1410/1440), c(1430/1440))`.
+
+Note: If time segments shorter than 24 hours are specified in parameter
+`qwindow`, such as the 8-hour school day (as described in [Fairclough et
+al 2020](https://pubmed.ncbi.nlm.nih.gov/31593604/)), the denominator in
+`qlevels` should change from 1440 (24h) to the specific segment length.
+In this example, we would use 480 (8h). Accordingly, the argument to
+call M60, M30, and M10 would be:
+
+`qlevels = c(c(420/480), c(450/480), c(470/480))`.
+
+At the moment, this only works for one segment length and GGIR does not
+facilitate the generation of MX metrics for multiple unequal time
+segments within the same GGIR function call.
+
+The output in the part 2 summary report file will refer to this as a
+percentile of the day. Thus, for a 24-h day, M30 will appear as
+“p97.91666_ENMO_mg_0.24hr”. To create the radar plots of these MX
+metrics as first described by [Rowlands et
+al.](https://pubmed.ncbi.nlm.nih.gov/31808014/), this [GitHub
+repository](https://github.com/Maylor8/RadarPlotGenerator) provides the
+R code and detailed instructions on how to make the radar plots using
+your own data.
+
+### Intensity gradient
+
+If we plot the time spent in equally spaced acceleration ranges, we
+would end up with an asymptotic-shaped curve, indicating little time
+spent at high intensities (acceleration levels) and much time spent at
+low intensities. The shape of the distribution may be informative but is
+hard to quantify with a single number in its standard form. Therefore, a
+new concept called the intensity gradient was proposed by [Rowlands and
+colleagues](https://pubmed.ncbi.nlm.nih.gov/29360664/).
+
+The intensity gradient defines the slope of the log-transformed axes of
+this intensity distribution. More specifically, we calculate the time
+accumulated in incremental acceleration bins (bin size = 25 m*g*) but
+also keep track of the mid-point of each intensity bin, e.g. 62.5 m*g*
+for the bin ranging from 50 to 75 m*g*. Both the mid-point acceleration
+of a bin expressed in m*g* and the time spent in a bin expressed in
+minutes are then log-transformed. The log-transformation is expected to
+change the asymptotic-shaped curve into a straight line. Subsequently, a
+linear regression is fitted through these data points. The slope of this
+regression line represents the intensity gradient. Further, we calculate
+the correlation coefficient for the data points to help verify the
+degree to which they form a straight line (R^2).
+
+The intensity gradient is not calculated by default. To include this
+metric in the part 2 output, set `iglevels = TRUE`.
+
+Further, if you want to do more methodological research on this, you can
+use this parameter to define alternative acceleration bins, e.g. for
+using bins of 20 instead of 25 mg
+`iglevels = c(seq(0, 4000, by = 20), 8000)`.
+
+## Key arguments
+
+- `includedaycrit`
+
+- `ilevels`
+
+- `qlevels`
+
+- `iglevels`
+
+- `qwindow`
+
+- `do.report`
+
+## Related output
+
+GGIR part 2 generates three csv reports: part2_daysummary.csv,
+part2_summary.csv, and data_quality_report.csv. As
+data_quality_report.csv was discussed in chapter 3, we will focus only
+on the first two reports in this chapter.
+
+The variables in part2_summary.csv are the recording level aggregates of
+the variables in part2_daysummary.csv. Here, variable names starting
+with the “AD\_” refer to average across all days, “WD” refers to the
+average across weekdays, “WE” refers to the average across weekend days,
+“WWE” refers to weighted weekend days to ensure both weekend days
+contribute equally, “WWD” refers to weighted weekdays to ensure all
+weekdays contribute equally.
+
+Further, GGIR part 2 generates a report named
+part2_daysummary_longformat.csv, which is generated when GGIR is used
+for day segment analysis, see documentation for parameter `qwindow`.
+This report contains the exact same information as part2_daysummary.csv,
+but in long format instead of wide format. In
+part2_daysummary_longformat.csv, each row represents one segment from
+one day in one recording, while in part2_daysummary.csv, each row
+contains one day in one recording and the segments of the day are
+organised in different columns.
+
+### Descriptive variables
+
+| (Part of) variable name | Description | Report(s) |
+|----|----|----|
+| mean_ENMO_mg_0-24hr | average acceleration defined by metric ENMO for the full day | `b` |
+| ENMO_fullRecordingMean | Weighted average over acceleration across recording | `r` |
+| p20_ENMO_mg_0-24h | 20th percentile based on the full day | `b` |
+| p20_ENMO_mg_0-24h_fullRecording | 20th percentile based on the weighted average day from the full recording | `r` |
+| \[0,50)\_ENMO_mg_0-24hr | time spent in minutes between 0 and 50 m_g\_ acceleration defined by metric ENMO for the full day. Square bracket means that the value itself is included, round bracket indicated that value itself is not included | `b` |
+| ig_gradient_ENMO_0-24hr | Gradient for the intensity gradient | `b` |
+| ig_intercept_ENMO_0-24hr | Intercept for the intensity gradient | `b` |
+| ig_rsquared_ENMO_0-24hr | R-squared for the intensity gradient | `b` |
+
+To clarify that `b` refers to both part2_summary.csv and
+part2_daysummary.csv, `r` refers to part2_summary.csv only.
