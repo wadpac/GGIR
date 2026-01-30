@@ -367,7 +367,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
       if (length(params_general[["maxNcores"]]) == 0) params_general[["maxNcores"]] = Ncores
       Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]], (f1 - f0) + 1))
       if (Ncores2use > 1) {
-        cl <- parallel::makeCluster(Ncores2use) # not to overload your computer
+        cl <- parallel::makeCluster(Ncores2use, type = "MPI") # not to overload your computer
         parallel::clusterExport(cl = cl, 
                                 varlist = c(unclass(lsf.str(envir = asNamespace("GGIR"), all = T)),
                                             "MONITOR", "FORMAT"),
