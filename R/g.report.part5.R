@@ -74,7 +74,28 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
         x$lastWindow = x$window_number == max(x$window_number)
         x$lastDate = as.Date(x$lastDate)
       }
+      #------------------------------------------------------------------------
+      # NEW
+      sleeplog_required_before_and_after = TRUE # <== make configurable by user
+      
       if (window == "WW" | window == "OO") {
+        if (sleeplog_required_before_and_after == TRUE) {
+          x$guider_nb = ""
+          for (fn in unique(x$filename)) { 
+            # loop through files to generate extra column
+            # to reflect the guider used in the neighbouring nigth
+            xtemp = x[which(x$filename == fn),]
+            nv = nrow(xtemp)
+            if (window == "WW") {
+              xtemp$guider_nb[2:nv] = xtemp$guider[1:(nv - 1)]
+              xtemp$guider_nb[1] = xtemp$guider_neighbour_WW[1]
+            } else if (window == "OO") {
+              xtemp$guider_nb[1:(nv - 1)] = xtemp$guider[2:nv]
+              xtemp$guider_nb[nv] = xtemp$guider_neighbour_OO[1]
+            }
+            x[which(x$filename == fn),] = xtemp
+          }
+        }
         indices = which(x$wear_perc_day >= includeday_wearPercentage &
                           x$wear_min_day >= includeday_absolute &
                           x$wear_perc_spt >= includenight_wearPercentage &
@@ -85,6 +106,9 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                              x$lastWindow == FALSE) &
                           include_window == TRUE &
                           x$wear_min_day_spt >= minimumValidMinutesMM)
+        if (sleeplog_required_before_and_after == TRUE) {
+          indices = which(x$guider_nb[indices] == "sleeplog" & x$guider[indices] == "sleeplog")
+        }
       } else if (window == "MM") {
         indices = which(x$wear_perc_day >= includeday_wearPercentage &
                           x$wear_min_day >= includeday_absolute &
@@ -149,7 +173,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                  " take a few minutes\n"))
     }
     myfun = function(x, expectedCols = c()) {
-      tail_expansion_log = last_timestamp = output = NULL
+      tail_expansion_log = last_timestamp = output = guider_neighbour = NULL
       load(file = x)
       cut = which(output[, 1] == "")
       if (length(cut) > 0 & length(cut) < nrow(output)) {
@@ -189,6 +213,16 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
         if (length(col2na) > 0 & length(lastwindow_indices) > 0) {
           out[lastwindow_indices, col2na] = "" # set last row to NA for all sleep related variables
         }
+      }
+      # add column to indicate guider used in neighbouring window
+      if ("guider_neighbour_OO" %in% colnames(out)) {
+        out[, "guider_neighbour_OO"] = guider_neighbour$OO
+        out[, "guider_neighbour_WW"] = guider_neighbour$WW
+      } else {
+        out = cbind(out, guider_neighbour$OO)
+        colnames(out)[ncol(out)] = "guider_neighbour_OO"
+        out = cbind(out, guider_neighbour$WW)
+        colnames(out)[ncol(out)] = "guider_neighbour_WW"
       }
       return(out)
     }
@@ -314,7 +348,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 OF3_clean = tidyup_df(OF3)
                 OF3_clean = addSplitNames(OF3_clean) # If recording was split
                 data.table::fwrite(
-                  OF3_clean,
+                  OF3_clean[,grep(pattern = "guider_neighbour", x = colnames(OF3_clean), invert = TRUE)],
                   paste(
                     metadatadir,
                     "/results/QC/part5_daysummary_full_",
@@ -330,7 +364,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 }
                 if (length(validdaysi) > 0) {
                   data.table::fwrite(
-                    OF3_clean[validdaysi, ],
+                    OF3_clean[validdaysi, grep(pattern = "guider_neighbour", x = colnames(OF3_clean), invert = TRUE)],
                     paste(metadatadir, "/results/part5_daysummary_",
                           uwi[j], "_L", uTRLi[h1], "M", uTRMi[h2], "V", uTRVi[h3],
                           "_", usleepparam[h4], ".csv", sep = ""), row.names = FALSE, na = "",
@@ -561,6 +595,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 validdaysi = getValidDayIndices(x = OF3, window = uwi[j],
                                                 params_cleaning = params_cleaning)
                 if (length(validdaysi) > 0) { # do not attempt to aggregate if there are no valid days
+                  OF3 = OF3[,grep(pattern = "guider_neighbour", x = colnames(OF3), invert = TRUE)]
                   # aggregate OF3 (days) to person summaries in OF4
                   OF4 = agg_plainNweighted(df = OF3[validdaysi,], filename = "filename", 
                                            daytype = "daytype", window = uwi[j])

@@ -32,6 +32,7 @@ g.part5.addfirstwake = function(ts, summarysleep, nightsi, sleeplog, ID,
     wake_night1_index = c()
     if (length(sleeplog) > 0) {
       # use sleeplog for waking up after first night
+      if (is.na(match(ID, sleeplog$ID))) ID = gsub('\\D', '', ID) # ignore characters if match cannot be made
       wake_night1 = sleeplog[which(sleeplog$ID == ID & sleeplog$night == 1),
                                        grep(pattern = "bedend|wake", x = colnames(sleeplog))]
       onset_night1 = sleeplog[which(sleeplog$ID == ID & sleeplog$night == 1),
