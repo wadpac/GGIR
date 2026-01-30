@@ -87,10 +87,10 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
             xtemp = x[which(x$filename == fn),]
             nv = nrow(xtemp)
             if (window == "WW") {
-              xtemp$guider_nb[2:nv] = xtemp$guider[1:(nv - 1)]
+              if (nv > 1) xtemp$guider_nb[2:nv] = xtemp$guider[1:(nv - 1)]
               xtemp$guider_nb[1] = xtemp$guider_neighbour_WW[1]
             } else if (window == "OO") {
-              xtemp$guider_nb[1:(nv - 1)] = xtemp$guider[2:nv]
+              if (nv > 1) xtemp$guider_nb[1:(nv - 1)] = xtemp$guider[2:nv]
               xtemp$guider_nb[nv] = xtemp$guider_neighbour_OO[1]
             }
             x[which(x$filename == fn),] = xtemp

@@ -24,3 +24,5 @@ index.md
 ^vignettes/Cookbook.Rmd
 ^vignettes/SleepRegularityIndex.Rmd
 ^vignettes/DateTimeFormatsInR.Rmd
+.nojekyll
+docs/.nojekyll
