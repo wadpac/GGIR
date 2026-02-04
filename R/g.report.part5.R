@@ -107,7 +107,9 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                           include_window == TRUE &
                           x$wear_min_day_spt >= minimumValidMinutesMM)
         if (sleeplog_required_before_and_after == TRUE) {
-          indices = which(x$guider_nb[indices] == "sleeplog" & x$guider[indices] == "sleeplog")
+          indices_subset = which(x$guider_nb[indices] == "sleeplog" &
+                            x$guider[indices] == "sleeplog")
+          indices = indices[indices_subset]
         }
       } else if (window == "MM") {
         indices = which(x$wear_perc_day >= includeday_wearPercentage &
