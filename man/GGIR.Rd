@@ -1962,6 +1962,18 @@ GGIR(mode = 1:5,
         output. The variables are intended for methodological research only and
         are by default turned off.
       }
+      
+      \item{require_sleeplog_part5}{
+        Boolean (default = FALSE)
+        Whether the night before and after the current waking period is required to be 
+        guided by sleeplog. When parameter \code{timewindow = "WW"} this means 
+        that the SPT window from the previous and current window are expected to 
+        be guided by sleeplog.
+        When parameter \code{timewindow = "OO"} this means that the SPT window from the
+        current and next window are expected to be guided by sleeplog.
+        This functionality currently does not apply to \code{timewindow = "MM"},
+        please contact us if you think this is needed.
+      }
     }
   }
 }

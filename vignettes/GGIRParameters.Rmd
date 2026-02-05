@@ -248,6 +248,7 @@ find a description and default value for all the arguments.
 | part6Window                 | 6                 | params_247               |
 | part6DFA                    | 6                 | params_247               |
 | require_complete_lastnight_part5 | 5            | params_output            |
+| require_sleeplog_part5      | 5                 | params_output            |
 | visualreport_without_invalid| visualreport      | params_output            |
 | visualreport_hrsPerRow      | visualreport      | params_output            |
 | visualreport_focus          | visualreport      | params_output            |

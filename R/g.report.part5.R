@@ -76,10 +76,9 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
       }
       #------------------------------------------------------------------------
       # NEW
-      sleeplog_required_before_and_after = TRUE # <== make configurable by user
-      
+
       if (window == "WW" | window == "OO") {
-        if (sleeplog_required_before_and_after == TRUE) {
+        if (params_output[["require_sleeplog_part5"]] == TRUE) {
           x$guider_nb = ""
           for (fn in unique(x$filename)) { 
             # loop through files to generate extra column
@@ -106,7 +105,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                              x$lastWindow == FALSE) &
                           include_window == TRUE &
                           x$wear_min_day_spt >= minimumValidMinutesMM)
-        if (sleeplog_required_before_and_after == TRUE) {
+        if (params_output[["require_sleeplog_part5"]] == TRUE) {
           indices_subset = which(x$guider_nb[indices] == "sleeplog" &
                             x$guider[indices] == "sleeplog")
           indices = indices[indices_subset]

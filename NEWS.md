@@ -1,18 +1,26 @@
-# CHANGES IN GGIR VERSION 3.3-4
+# CHANGES IN GGIR VERSION 3.3-?
 
-- Part 5: Add filter to excluded naps that have high accelerations or for which the surrounded hour has less than 1/6 naps or sleep.
+- Part 5: Updates related to nap detection.
 
-- Part 5: Add option to distinguish multiple nap duration categories similar to physical activity bout duration categories. #967
+  - Add filter to excluded naps that have high accelerations or for which the surrounded hour has less than 1/6 naps or sleep.
 
-- Part 5: Re-factor nap detection such that classifications are done on full time series prior to segment specific rest analysis #967.
+  - Add option to distinguish multiple nap duration categories similar to physical activity bout duration categories. #967
 
-- Part 5: Allow for day segment analysis for the WW and OO window definition
+  - Re-factor nap detection such that classifications are done on full time series prior to segment specific rest analysis #967.
+
+  - Add boolean parameter nap_overwrite_behaviourclass to control whether behaviour class or overwritten by naps #967.
+
+  - Parameter threshold.nap added as threshold for the 95th percentile in acceleration during a sib.
+  
+- Part 5:
+
+  - Allow for day segment analysis for the WW and OO window definition.
+  
+  - Parameter require_sleeplog_part5 added to control whether SPT needs to be guided in night before and after waking period.
 
 - Part 2: Parameter nonwearFilterWindow can now also use diary path directly, which now allows for filtering based on a one or specific diary while qwindow can be used for day segment analysis #1373
 
-- Part 5: Add boolean parameter nap_overwrite_behaviourclass to control whether behaviour class or overwritten by naps #967.
-
-- Part 5: Parameter threshold.nap added as threshold for the 95th percentile in acceleration during a sib.
+# CHANGES IN GGIR VERSION 3.3-4
 
 - Part 2: Improved handling of corrupted RData files in part 1 or 2. #1447 and #1449
 

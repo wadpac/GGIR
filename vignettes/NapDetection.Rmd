@@ -23,6 +23,8 @@ Note that default settings are `possible_nap_dur=NULL` and `possible_nap_window=
 
 Time spent in naps is stored as column "dur_day_nap_min" in the GGIR part 5 csv report where it is treated as one of several mutually exclusive behavioural categories. Meaning, time spent in naps never count towards time spent in inactivity (sedentary behaviour) and visa versa.
 
+If you are concerned that sleep estimates are not reliable without being guided by sleeplog, then use parameter `require_sleeplog_part5 = TRUE`. This forces the GGIR part 5 csv output to only keep day window that are both preceded and succeeded by an SPT window that is guided by sleeplog.
+
 ## Disclaimer
 
 1.	Make sure that detected sleep period time (SPT) window is plausible. Without plausible SPT detection, nap detection is expected to struggle. This is particularly important for scenario where the accelerometer is not worn consistently or with highly irregular sleeping patterns.
