@@ -1963,14 +1963,17 @@ GGIR(mode = 1:5,
         are by default turned off.
       }
       
-      \item{require_sleeplog_part5}{
+      \item{require_good_neighbours_part5}{
         Boolean (default = FALSE)
-        Whether the night before and after the current waking period is required to be 
-        guided by sleeplog. When parameter \code{timewindow = "WW"} this means 
-        that the SPT window from the previous and current window are expected to 
-        be guided by sleeplog.
+        Whether the night before and after the current waking period are both required to be 
+        guided by sleeplog, if parameter loglocation is specified, and
+        whether both nights need to meet the inclusion criteria as specified by 
+        parameter \code{includenightcrit.part5}.
+        When parameter \code{timewindow = "WW"} this means 
+        that the SPT window from the previous and current window need to meet these
+        criteria.
         When parameter \code{timewindow = "OO"} this means that the SPT window from the
-        current and next window are expected to be guided by sleeplog.
+        current and next window are expected to be meet these criteria.
         This functionality currently does not apply to \code{timewindow = "MM"},
         please contact us if you think this is needed.
       }

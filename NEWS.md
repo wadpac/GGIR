@@ -16,7 +16,7 @@
 
   - Allow for day segment analysis for the WW and OO window definition.
   
-  - Parameter require_sleeplog_part5 added to control whether SPT needs to be guided in night before and after waking period.
+  - Parameter require_good_neighbours_part5 added to control whether both neighbouring two SPT windows need to be guided by sleeplog (if available) and have sufficient wear time.
 
 - Part 2: Parameter nonwearFilterWindow can now also use diary path directly, which now allows for filtering based on a one or specific diary while qwindow can be used for day segment analysis #1373
 

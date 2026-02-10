@@ -150,7 +150,7 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                          visualreport_focus = "day",
                          visualreport_validcrit = 0, require_complete_lastnight_part5 = FALSE,
                          method_research_vars = NULL,
-                         require_sleeplog_part5 = FALSE)
+                         require_good_neighbours_part5 = FALSE)
 
   }
   if ("general" %in% topic) {

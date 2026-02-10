@@ -78,19 +78,37 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
       # NEW
 
       if (window == "WW" | window == "OO") {
-        if (params_output[["require_sleeplog_part5"]] == TRUE) {
-          x$guider_nb = ""
+        if (params_output[["require_good_neighbours_part5"]] == TRUE) {
+          if (!is.null(loglocation)) {
+            x$guider_nb = ""
+            for (fn in unique(x$filename)) { 
+              # loop through files to generate extra column
+              # to reflect the guider used in the neighbouring nigth
+              xtemp = x[which(x$filename == fn),]
+              nv = nrow(xtemp)
+              if (window == "WW") {
+                if (nv > 1) xtemp$guider_nb[2:nv] = xtemp$guider[1:(nv - 1)]
+                xtemp$guider_nb[1] = xtemp$guider_neighbour_WW[1]
+              } else if (window == "OO") {
+                if (nv > 1) xtemp$guider_nb[1:(nv - 1)] = xtemp$guider[2:nv]
+                xtemp$guider_nb[nv] = xtemp$guider_neighbour_OO[1]
+              }
+              x[which(x$filename == fn),] = xtemp
+            }
+          }
+          
+          x$nonwear_perc_spt_nb = 0
           for (fn in unique(x$filename)) { 
             # loop through files to generate extra column
             # to reflect the guider used in the neighbouring nigth
             xtemp = x[which(x$filename == fn),]
             nv = nrow(xtemp)
             if (window == "WW") {
-              if (nv > 1) xtemp$guider_nb[2:nv] = xtemp$guider[1:(nv - 1)]
-              xtemp$guider_nb[1] = xtemp$guider_neighbour_WW[1]
+              if (nv > 1) xtemp$nonwear_perc_spt_nb[2:nv] = xtemp$nonwear_perc_spt[1:(nv - 1)]
+              xtemp$nonwear_perc_spt_nb[1] = xtemp$nonwear_neighbour_WW[1]
             } else if (window == "OO") {
-              if (nv > 1) xtemp$guider_nb[1:(nv - 1)] = xtemp$guider[2:nv]
-              xtemp$guider_nb[nv] = xtemp$guider_neighbour_OO[1]
+              if (nv > 1) xtemp$nonwear_perc_spt_nb[1:(nv - 1)] = xtemp$nonwear_perc_spt[2:nv]
+              xtemp$nonwear_perc_spt_nb[nv] = xtemp$nonwear_neighbour_OO[1]
             }
             x[which(x$filename == fn),] = xtemp
           }
@@ -105,9 +123,14 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                              x$lastWindow == FALSE) &
                           include_window == TRUE &
                           x$wear_min_day_spt >= minimumValidMinutesMM)
-        if (params_output[["require_sleeplog_part5"]] == TRUE) {
-          indices_subset = which(x$guider_nb[indices] == "sleeplog" &
-                            x$guider[indices] == "sleeplog")
+        if (params_output[["require_good_neighbours_part5"]] == TRUE) {
+          if (!is.null(loglocation)) {
+            indices_subset = which(x$guider_nb[indices] == "sleeplog" &
+                              x$guider[indices] == "sleeplog")
+            indices = indices[indices_subset]
+          }
+          indices_subset = which(x$nonwear_perc_spt_nb[indices] < params_cleaning[["includenightcrit.part5"]] * 100 &
+                                   x$nonwear_perc_spt[indices] < params_cleaning[["includenightcrit.part5"]] * 100)
           indices = indices[indices_subset]
         }
       } else if (window == "MM") {
@@ -174,7 +197,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                  " take a few minutes\n"))
     }
     myfun = function(x, expectedCols = c()) {
-      tail_expansion_log = last_timestamp = output = guider_neighbour = NULL
+      tail_expansion_log = last_timestamp = output = guider_neighbour = nonwear_neighbour = NULL
       load(file = x)
       cut = which(output[, 1] == "")
       if (length(cut) > 0 & length(cut) < nrow(output)) {
@@ -224,6 +247,16 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
         colnames(out)[ncol(out)] = "guider_neighbour_OO"
         out = cbind(out, guider_neighbour$WW)
         colnames(out)[ncol(out)] = "guider_neighbour_WW"
+      }
+      # add column to indicate nonwear in neighbouring window
+      if ("nonwear_neighbour_OO" %in% colnames(out)) {
+        out[, "guider_neighbour_OO"] = nonwear_neighbour$OO
+        out[, "guider_neighbour_WW"] = nonwear_neighbour$WW
+      } else {
+        out = cbind(out, nonwear_neighbour$OO)
+        colnames(out)[ncol(out)] = "nonwear_neighbour_OO"
+        out = cbind(out, nonwear_neighbour$WW)
+        colnames(out)[ncol(out)] = "nonwear_neighbour_WW"
       }
       return(out)
     }
@@ -349,7 +382,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 OF3_clean = tidyup_df(OF3)
                 OF3_clean = addSplitNames(OF3_clean) # If recording was split
                 data.table::fwrite(
-                  OF3_clean[,grep(pattern = "guider_neighbour", x = colnames(OF3_clean), invert = TRUE)],
+                  OF3_clean[,grep(pattern = "guider_neighbour|nonwear_neighbour", x = colnames(OF3_clean), invert = TRUE)],
                   paste(
                     metadatadir,
                     "/results/QC/part5_daysummary_full_",
@@ -365,7 +398,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 }
                 if (length(validdaysi) > 0) {
                   data.table::fwrite(
-                    OF3_clean[validdaysi, grep(pattern = "guider_neighbour", x = colnames(OF3_clean), invert = TRUE)],
+                    OF3_clean[validdaysi, grep(pattern = "guider_neighbour|nonwear_neighbour", x = colnames(OF3_clean), invert = TRUE)],
                     paste(metadatadir, "/results/part5_daysummary_",
                           uwi[j], "_L", uTRLi[h1], "M", uTRMi[h2], "V", uTRVi[h3],
                           "_", usleepparam[h4], ".csv", sep = ""), row.names = FALSE, na = "",
@@ -596,7 +629,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 validdaysi = getValidDayIndices(x = OF3, window = uwi[j],
                                                 params_cleaning = params_cleaning)
                 if (length(validdaysi) > 0) { # do not attempt to aggregate if there are no valid days
-                  OF3 = OF3[,grep(pattern = "guider_neighbour", x = colnames(OF3), invert = TRUE)]
+                  OF3 = OF3[,grep(pattern = "guider_neighbour|nonwear_neighbour", x = colnames(OF3), invert = TRUE)]
                   # aggregate OF3 (days) to person summaries in OF4
                   OF4 = agg_plainNweighted(df = OF3[validdaysi,], filename = "filename", 
                                            daytype = "daytype", window = uwi[j])

@@ -302,6 +302,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           #Initialise diur variable, which will  indicate the diurnal rhythm: 0 if wake/daytime, 1 if sleep/nighttime
           ts$diur = 0
           guider_neighbour = list(WW = "", OO = "")
+          nonwear_neighbour = list(WW = NA, OO = NA)
           if (nrow(summarysleep_tmp2) > 0) {
             # Add defenition of wake and sleep windows in diur column of data.frame ts
             ts = g.part5.wakesleepwindows(ts,
@@ -610,17 +611,33 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                       di = di + 1
                       wi = wi + 1
                     }
-                    # Add object to track guider used in night before first (WW) or night after last (OO)
+                    # Add object to track guider used and level of nonwear
+                    # in night before first (WW) or night after last (OO)
                     if (timewindowi == "WW") {
                       first_window_start = match(1, ts$window)
                       guider_neighbour$WW = ifelse(test = first_window_start < nrow(ts),
                                                 yes = ts$guider[first_window_start - 1],
                                                 no = "")
+                      # Use 6 hours prior to first window as indicator for nonwear during neighboring night
+                      check_nonwear_t0 = pmax(1, first_window_start - 6 * (60/ws3new))
+                      check_nonwear_t1 = first_window_start - 1
                     } else if (timewindowi == "OO") {
                       last_window_end = max(which(ts$window != 0))
                       guider_neighbour$OO = ifelse(test = last_window_end < nrow(ts),
                                                 yes = ts$guider[last_window_end + 1],
                                                 no = "")
+                      # Use 6 hours after last window as indicator for nonwear during neighboring night
+                      check_nonwear_t0 = last_window_end
+                      check_nonwear_t1 = pmax(1,  last_window_end + 6 * (60/ws3new))
+                    }
+                    if (timewindowi == "WW" || timewindowi == "OO") {
+                      if (check_nonwear_t1 - check_nonwear_t0 > 4 * (60/ws3new) &&
+                          check_nonwear_t0 > 1 &&
+                          check_nonwear_t1 < nrow(ts)) {
+                        nonwear_neighbour[[timewindowi]] = mean(ts$nonwear[check_nonwear_t0:check_nonwear_t1]) * 100
+                      } else {
+                        nonwear_neighbour[[timewindowi]] = 0
+                      }
                     }
                   }
                   if (params_output[["save_ms5rawlevels"]] == TRUE || params_247[["part6HCA"]] == TRUE || params_247[["part6CR"]] == TRUE) {
@@ -763,8 +780,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                 output = output[, grep(pattern = "denap|srnap|srnonw|sibreport_n_items", x = names(output), invert = TRUE, value = FALSE)]
               }
               save(output, tail_expansion_log, GGIRversion, last_timestamp,
-                   file = paste(metadatadir, ms5.out, "/", fnames.ms3[i], sep = ""),
-                   guider_neighbour)
+                   file = paste0(metadatadir, ms5.out, "/", fnames.ms3[i]),
+                   guider_neighbour, nonwear_neighbour)
             }
           }
         }
