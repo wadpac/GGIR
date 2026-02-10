@@ -631,12 +631,14 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                       check_nonwear_t1 = pmax(1,  last_window_end + 6 * (60/ws3new))
                     }
                     if (timewindowi == "WW" || timewindowi == "OO") {
-                      if (check_nonwear_t1 - check_nonwear_t0 > 4 * (60/ws3new) &&
+                      if (!is.na(check_nonwear_t0) &&
+                          !is.na(check_nonwear_t1) &&
+                          check_nonwear_t1 - check_nonwear_t0 > 4 * (60/ws3new) &&
                           check_nonwear_t0 > 1 &&
                           check_nonwear_t1 < nrow(ts)) {
                         nonwear_neighbour[[timewindowi]] = mean(ts$nonwear[check_nonwear_t0:check_nonwear_t1]) * 100
                       } else {
-                        nonwear_neighbour[[timewindowi]] = 0
+                        nonwear_neighbour[[timewindowi]] = 100
                       }
                     }
                   }
