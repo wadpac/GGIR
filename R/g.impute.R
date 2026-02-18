@@ -103,6 +103,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   #===================================================================
   # Trim data based on study_dates_file
   study_dates_log_used = FALSE
+  study_date_indices = NULL
   if (!is.null(params_cleaning[["study_dates_file"]])) {
     # Read content of study dates file 
     studyDates = data.table::fread(file = params_cleaning[["study_dates_file"]], data.table = FALSE)
@@ -140,7 +141,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
         #                "The data was not trimmed at the beginning of the recording."), call. = FALSE)
       }
       # trim data at the end
-      if (length(lastmidnighti) > 0 & !is.na(lastmidnighti)) {
+      if (length(lastmidnighti) > 0 && !is.na(lastmidnighti)) {
         r4[lastmidnighti:nrow(r4)] = 1
         study_dates_log_used = TRUE
       } else {
@@ -156,7 +157,8 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
       # after application of strategies, r4 would reset to the original length
       if (study_dates_log_used == TRUE) {
         r4_bu = r4 # backup copy of r4 before cutting it to be imputed later on
-        r4 = as.matrix(r4[which(r4[,1] == 0),])
+        study_date_indices = which(r4[,1] == 0)
+        r4 = as.matrix(r4[study_date_indices,])
       }
     } else if (length(rowID) == 0) {
       warning(paste0("The ID ", ID, " does not appear  in the study dates log ",
@@ -212,49 +214,35 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     r2tempe = rep(r2, each = (ws2/ws3))
     r1tempe = rep(r1, each = (ws2/ws3))
     atest[which(r2tempe == 1 | r1tempe == 1)] = 0
+    
+    if (!is.null(study_date_indices)) {
+      # If study_dates_file was used then r4 has possibly been trimmed
+      # If this is the case then also trim atest to allow for direct comparisons
+      tt = (((study_date_indices[1] - 1) * ws2/ws3) + 1):(max(study_date_indices) * ws2/ws3)
+      atest = atest[(((study_date_indices[1] - 1) * ws2/ws3) + 1):(max(study_date_indices) * ws2/ws3)]
+    }
     if (params_cleaning[["data_masking_strategy"]] == 3) {
-      # Select the most active 24-h blocks by a rolling window of windowsizes[3]
+      # Find the most active ndayswindow block via a rolling mean window
       NDAYS = length(atest) / n_ws3_perday
-      # rolling window in ws3
-      rolling_window = n_ws3_perhour * n_ws_perhour
-      pend = round((NDAYS - params_cleaning[["ndayswindow"]]) * n_ws_perday)
-      if (pend < 1) pend = 1
-      atestlist = rep(0, pend)
-      for (ati in 1:pend) {
-        p0 = (((ati - 1)*rolling_window) + 1)
-        p1 = (ati + (params_cleaning[["ndayswindow"]]*n_ws_perday)) * rolling_window  #ndayswindow x quarter of a day = 1 week
-        if (p0 > length(atest)) p0 = length(atest)
-        if (p1 > length(atest)) p1 = length(atest)
-        if ((p1 - p0) > 1000) {
-          atestlist[ati] = mean(atest[p0:p1], na.rm = TRUE)
-        } else {
-          atestlist[ati] = 0
-        }
-      }
-      # atik is the ws2 index where the most active ndayswindow starts
-      atik = which(atestlist == max(atestlist))[1]
-      ignore_until_hours = (atik - 1) / (3600/ws2)
-      params_cleaning[["hrs.del.start"]] = ignore_until_hours + params_cleaning[["hrs.del.start"]]
-      ignore_from_hours = (atik - 1) / (3600/ws2)
-      params_cleaning[["maxdur"]] = ((ignore_from_hours/24) + params_cleaning[["ndayswindow"]]) - (params_cleaning[["hrs.del.end"]]/24)
+      atestlist = zoo::rollmean(x = atest, k = params_cleaning[["ndayswindow"]] * n_ws3_perday, align = "left")
+      start_ndayswindow_hour = floor(which(atestlist == max(atestlist))[1] / (3600 / ws3))
+      params_cleaning[["hrs.del.start"]] = start_ndayswindow_hour + params_cleaning[["hrs.del.start"]]
+      params_cleaning[["maxdur"]] = ((start_ndayswindow_hour / 24) + params_cleaning[["ndayswindow"]]) - (params_cleaning[["hrs.del.end"]]/24)
       if (params_cleaning[["maxdur"]] > NDAYS) params_cleaning[["maxdur"]] = NDAYS
-      # now calculate r4
+      # Update r4 (vector with 0 for valid and 1 for invalid,
+      # default time resolution 15 minutes
       if (params_cleaning[["hrs.del.start"]] > 0) {
-        r4[1:(params_cleaning[["hrs.del.start"]]*(3600/ws2))] = 1
+        start_epoch = (params_cleaning[["hrs.del.start"]] * (3600 / ws2)) - 1
+        if (start_epoch <= 0) start_epoch = 1
+        r4[1:start_epoch] = 1
       }
-      # if (params_cleaning[["hrs.del.end"]] > 0) {
-      #   if (length(r4) > params_cleaning[["hrs.del.end"]]*(3600/ws2)) {
-      #     r4[((length(r4) + 1) - (params_cleaning[["hrs.del.end"]]*(3600/ws2))):length(r4)] = 1
-      #   } else {
-      #     r4[1:length(r4)] = 1
-      #   }
-      # }
-      if (params_cleaning[["maxdur"]] > 0 & (length(r4) > ((params_cleaning[["maxdur"]]*n_ws2_perday) + 1))) {
-        ignore_from = (params_cleaning[["maxdur"]]*n_ws2_perday) + 1
+      if (params_cleaning[["maxdur"]] > 0 &&
+          (length(r4) > ((params_cleaning[["maxdur"]] * n_ws2_perday) + 1))) {
+        ignore_from = round((params_cleaning[["maxdur"]] * n_ws2_perday))
         r4[ignore_from:length(r4)] = 1
       }
       if (LD < 1440) {
-        r4 = r4[1:floor(LD/(ws2/60))]
+        r4 = r4[1:floor(LD / (ws2 / 60))]
       }
     } else if (params_cleaning[["data_masking_strategy"]] == 5) {
       # Select the most active calendar days

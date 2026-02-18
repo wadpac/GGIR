@@ -97,8 +97,8 @@ test_that("chainof5parts", {
   t0 = iso8601chartime2POSIX(M$metalong$timestamp[first_epoch_in_protocol], tz = "Europe/London")
   last_epoch_in_protocol = max(which(IMP$rout$r4 == 0))
   t1 = iso8601chartime2POSIX(M$metalong$timestamp[last_epoch_in_protocol], tz = "Europe/London")
-  expect_true(t0 >= as.POSIXct("2016-06-24 00:00:00", tz = "Europe/London"))
-  expect_true(t1 < as.POSIXct("2016-06-26 00:00:00", tz = "Europe/London"))
+  expect_true(t0 == as.POSIXct("2016-06-24 14:45:00", tz = "Europe/London"))
+  expect_true(t1 == as.POSIXct("2016-06-25 14:30:00", tz = "Europe/London"))
   # check the total time included is exactly 1 day (= 96 long epochs)
   expect_equal(last_epoch_in_protocol - first_epoch_in_protocol + 1,  96)
   
