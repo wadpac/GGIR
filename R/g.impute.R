@@ -258,11 +258,21 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
       # readjust midnightsi if study dates log used for trimming the data
       if (study_dates_log_used == TRUE) {
         midnightsi = midnightsi[midnightsi >= firstmidnighti & midnightsi <= lastmidnighti]
+        firstmidnighti = firstmidnighti - (midnightsi[1] - 1)
+        lastmidnighti = lastmidnighti - midnightsi[1]
+        midnightsi = midnightsi - midnightsi[1] + 1
       }
+      
       for (ati in 1:length(midnightsi)) {
-        p0 = (midnightsi[ati] * n_short_in_mediumEpoch) - n_short_in_mediumEpoch + 1
-        p1 = ((midnightsi[ati + ndayswindow] * n_short_in_mediumEpoch) - n_short_in_mediumEpoch)
-        if (is.na(p1) || p1 > length(atest)) break
+        p0 = ((midnightsi[ati] - 1) * n_short_in_mediumEpoch) + 1
+        if (ati == length(midnightsi) && ati + ndayswindow > length(midnightsi)) {
+            p1 = length(atest)
+        } else {
+          p1 = (midnightsi[ati + ndayswindow] - 1) * n_short_in_mediumEpoch
+        }
+        if (is.na(p1) || p1 > length(atest)) {
+          break
+        }
         atestlist[ati] = mean(atest[p0:p1], na.rm = TRUE)
       }
       # atik is the index where the most active ndayswindow starts
