@@ -250,8 +250,8 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
       }
       # add column to indicate nonwear in neighbouring window
       if ("nonwear_neighbour_OO" %in% colnames(out)) {
-        out[, "guider_neighbour_OO"] = nonwear_neighbour$OO
-        out[, "guider_neighbour_WW"] = nonwear_neighbour$WW
+        out[, "nonwear_neighbour_OO"] = nonwear_neighbour$OO
+        out[, "nonwear_neighbour_WW"] = nonwear_neighbour$WW
       } else {
         out = cbind(out, nonwear_neighbour$OO)
         colnames(out)[ncol(out)] = "nonwear_neighbour_OO"
