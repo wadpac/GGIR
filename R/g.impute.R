@@ -223,8 +223,8 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
                         value = TRUE, invert = TRUE)[1]
       atest = as.numeric(as.matrix(metashort[, acc.metric]))
     }
-    r2tempe = rep(r2, each = (n_short_in_mediumEpoch))
-    r1tempe = rep(r1, each = (n_short_in_mediumEpoch))
+    r2tempe = rep(r2, each = n_short_in_mediumEpoch)
+    r1tempe = rep(r1, each = n_short_in_mediumEpoch)
     atest[which(r2tempe == 1 | r1tempe == 1)] = 0
     
     if (!is.null(study_date_indices)) {
