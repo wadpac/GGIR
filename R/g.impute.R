@@ -19,23 +19,34 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   windowsizes = M$windowsizes #default: c(5,900,3600)
   metashort = M$metashort
   metalong = M$metalong
-  ws3 = windowsizes[1]
-  ws2 = windowsizes[2]
-  ws = windowsizes[3]
+  shortEpoch = windowsizes[1]
+  mediumEpoch = windowsizes[2]
+  longEpoch = windowsizes[3]
+  n_short_in_mediumEpoch = mediumEpoch/shortEpoch
+  # Move some object from params_cleaning to local to reduce repeated retrieval
+  # and for readability
+  ndayswindow = params_cleaning[["ndayswindow"]] 
+  data_masking_strategy = params_cleaning[["data_masking_strategy"]]
+  hrs.del.start = params_cleaning[["hrs.del.start"]]
+  hrs.del.end = params_cleaning[["hrs.del.end"]]
+  maxdur = params_cleaning[["maxdur"]]
+  max_calendar_days = params_cleaning[["max_calendar_days"]]
   rm(M)
   # What is the minimum number of accelerometer axis needed to meet the criteria for nonwear in order for the data to be detected as nonwear?
   wearthreshold = 2 #needs to be 0, 1 or 2
   # windows per day
-  n_ws_perday = (1440*60) / ws
-  n_ws2_perday = (1440*60) / ws2
-  n_ws3_perday = (1440*60) / ws3
+  n_longEpoch_perday = 86400 / longEpoch
+  n_mediumEpoch_perday = 86400 / mediumEpoch
+  n_shortEpoch_perday = 86400 / shortEpoch
   # windows per minute
-  n_ws3_permin = 60/ws3
+  n_shortEpoch_permin = 60 / shortEpoch
   # windows per hour
-  n_ws3_perhour = 3600/ws3
-  n_ws_perhour = 3600/ws
+  n_longEpoch_perhour = 3600 / longEpoch
+  n_medium_perhour = 3600 / mediumEpoch
+  n_shortEpoch_perhour = 3600 / shortEpoch
+  
   #check that matrices match
-  if (((nrow(metalong)/(n_ws2_perday)*10) - (nrow(metashort)/n_ws3_perday) * 10) > 1) {
+  if ((nrow(metalong) / n_mediumEpoch_perday) - (nrow(metashort) / n_shortEpoch_perday) > 0.1) {
     warning("Matrices 'metalong' and 'metashort' are not compatible", call. = FALSE)
   }
   tmi = which(colnames(metalong) == "timestamp")
@@ -43,16 +54,17 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   startt = as.matrix(metalong[1, tmi])
   #====================================
   # Deriving file characteristics from 15 min summary files
-  LD = nrow(metalong) * (ws2/60) #length data in minutes
-  ND = nrow(metalong)/n_ws2_perday #number of days
+  LD = nrow(metalong) * (mediumEpoch / 60) #length data in minutes
+  ND = nrow(metalong) / n_mediumEpoch_perday #number of days
   #==============================================
   # Generating time variable
-  timeline = seq(0, ceiling(nrow(metalong)/n_ws2_perday), by = 1/n_ws2_perday)
+  timeline = seq(0, ceiling(nrow(metalong) / n_mediumEpoch_perday),
+                 by = 1/n_mediumEpoch_perday)
   timeline = timeline[1:nrow(metalong)]
   
   #========================================
   # Extracting non-wear and clipping and make decision on which additional time needs to be considered non-wear
-  out = g.weardec(metalong, wearthreshold, ws2,
+  out = g.weardec(metalong, wearthreshold, mediumEpoch,
                   params_cleaning = params_cleaning,
                   desiredtz = desiredtz,
                   qwindowImp = qwindowImp)
@@ -73,10 +85,10 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   # So, those time windows should not be imputed.
   # and acceleration metrics should have value zero during these windows.
   if (length(TimeSegments2Zero) > 0) {
-    r1long = matrix(0,length(r1),(ws2/ws3)) #r5long is the same as r5, but with more values per period of time
-    r1long = replace(r1long,1:length(r1long),r1)
+    r1long = matrix(0, length(r1), n_short_in_mediumEpoch)
+    r1long = replace(r1long, 1:length(r1long), r1)
     r1long = t(r1long)
-    dim(r1long) = c((length(r1)*(ws2/ws3)),1)
+    dim(r1long) = c((length(r1)*(n_short_in_mediumEpoch)),1)
     timelinePOSIX = iso8601chartime2POSIX(metashort$timestamp,tz = desiredtz)
     # Combine r1Long with TimeSegments2Zero
     for (kli in 1:nrow(TimeSegments2Zero)) {
@@ -84,11 +96,12 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
       endTurnZero = which(timelinePOSIX == TimeSegments2Zero$windowend[kli])
       r1long[startTurnZero:endTurnZero] = 0
       # Force ENMO and other acceleration metrics to be zero for these intervals
-      metashort[startTurnZero:endTurnZero,which(colnames(metashort) %in% c("timestamp","anglex","angley","anglez") == FALSE)] = 0
+      metashort[startTurnZero:endTurnZero, 
+                which(colnames(metashort) %in% c("timestamp","anglex","angley","anglez") == FALSE)] = 0
     }
     # collaps r1long (short epochs) back to r1 (long epochs)
-    r1longc = cumsum(c(0,r1long))
-    select = seq(1,length(r1longc), by = (ws2/ws3))
+    r1longc = cumsum(c(0, r1long))
+    select = seq(1, length(r1longc), by = n_short_in_mediumEpoch)
     r1 = diff(r1longc[round(select)]) / abs(diff(round(select)))
     r1 = round(r1)
   }
@@ -96,7 +109,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   #======================================
   # detect first and last midnight and all midnights
   tooshort = 0
-  dmidn = g.detecmidnight(time,desiredtz,dayborder) #,ND
+  dmidn = g.detecmidnight(time, desiredtz, dayborder)
   firstmidnight = dmidn$firstmidnight;  firstmidnighti = dmidn$firstmidnighti
   lastmidnight = dmidn$lastmidnight;    lastmidnighti = dmidn$lastmidnighti
   midnights = dmidn$midnights;          midnightsi = dmidn$midnightsi
@@ -122,33 +135,32 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
         warning(paste0("The ID ", ID, " appears twice in the study dates log"), call. = FALSE)
       }
       # expected first and last midnight
-      firstmidnight = as.Date(studyDates[rowID, 2], format = params_cleaning[["study_dates_dateformat"]])
-      lastmidnight = as.Date(studyDates[rowID, 3], format = params_cleaning[["study_dates_dateformat"]])
+      fmt = params_cleaning[["study_dates_dateformat"]]
+      firstmidnight = as.Date(studyDates[rowID, 2], format = fmt)
+      lastmidnight = as.Date(studyDates[rowID, 3], format = fmt)
       # find the dates in metalong
       firstmidnighti = midnightsi[grep(firstmidnight, midnights)]
       lastmidnighti = midnightsi[grep(lastmidnight, midnights) + 1] # plus 1 to include the reported date in log
-      # trim data at the beginning
+      # trim start
       if (length(firstmidnighti) > 0) {
         r4[1:(firstmidnighti - 1)] = 1
         study_dates_log_used = TRUE
       } else {
         # if midnight timestamp for the date is not available, 
         # do not trim the data and recover the firstmidnight value
-        firstmidnighti = dmidn$firstmidnighti
-        firstmidnight = dmidn$firstmidnight
+        list2env(dmidn[c("lastmidnighti", "lastmidnight")], envir = environment())
         # warning(paste0("The start date provided in the study dates file for ID = ", 
         #                ID, "is not within the dates available in the recording. ",
         #                "The data was not trimmed at the beginning of the recording."), call. = FALSE)
       }
-      # trim data at the end
+      # trim end
       if (length(lastmidnighti) > 0 && !is.na(lastmidnighti)) {
         r4[lastmidnighti:nrow(r4)] = 1
         study_dates_log_used = TRUE
       } else {
         # if midnight timestamp for the date is not available, 
         # do not trim the data and recover the lastmidnight value
-        lastmidnighti = dmidn$lastmidnighti
-        lastmidnight = dmidn$lastmidnight
+        list2env(dmidn[c("lastmidnighti", "lastmidnight")], envir = environment())
         # warning(paste0("The end date provided in the study dates file for ID = ", 
         #                ID, "is not within the dates available in the recording. ",
         #                "The data was not trimmed at the end of the recording."), call. = FALSE)
@@ -157,8 +169,8 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
       # after application of strategies, r4 would reset to the original length
       if (study_dates_log_used == TRUE) {
         r4_bu = r4 # backup copy of r4 before cutting it to be imputed later on
-        study_date_indices = which(r4[,1] == 0)
-        r4 = as.matrix(r4[study_date_indices,])
+        study_date_indices = which(r4[, 1] == 0)
+        r4 = as.matrix(r4[study_date_indices, , drop = FALSE])
       }
     } else if (length(rowID) == 0) {
       warning(paste0("The ID ", ID, " does not appear  in the study dates log ",
@@ -168,24 +180,24 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   }
   #===================================================================
   # Select data based on data_masking_strategy
-  if (params_cleaning[["data_masking_strategy"]] == 1) { 	#protocol based data selection
-    if (params_cleaning[["hrs.del.start"]] > 0) {
-      r4[1:(params_cleaning[["hrs.del.start"]]*(3600/ws2))] = 1
+  if (data_masking_strategy == 1) { 	#protocol based data selection
+    if (hrs.del.start > 0) {
+      r4[1:(hrs.del.start * n_medium_perhour)] = 1
     }
-    if (params_cleaning[["hrs.del.end"]] > 0) {
-      if (length(r4) > params_cleaning[["hrs.del.end"]]*(3600/ws2)) {
-        r4[((length(r4) + 1) - (params_cleaning[["hrs.del.end"]]*(3600/ws2))):length(r4)] = 1
+    if (hrs.del.end > 0) {
+      if (length(r4) > hrs.del.end * n_medium_perhour) {
+        r4[((length(r4) + 1) - (hrs.del.end * n_medium_perhour)):length(r4)] = 1
       } else {
         r4[1:length(r4)] = 1
       }
     }
     
     if (LD < 1440) {
-      r4 = r4[1:floor(LD/(ws2/60))]
+      r4 = r4[1:floor(LD/(mediumEpoch/60))]
     }
     starttimei = 1
     endtimei = length(r4)
-  } else if (params_cleaning[["data_masking_strategy"]] == 2) { #midnight to midnight data_masking_strategy
+  } else if (data_masking_strategy == 2) { #midnight to midnight data_masking_strategy
     starttime = firstmidnight
     endtime = lastmidnight  
     # only apply data_masking_strategy 2 if study dates log is not used for trimming the data,
@@ -201,7 +213,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
       starttimei = 1
       endtimei = length(r4)
     }
-  } else if (params_cleaning[["data_masking_strategy"]] %in% c(3, 5)) { #select X most active days
+  } else if (data_masking_strategy %in% c(3, 5)) { #select X most active days
     #==========================================
     # Look out for X most active days and use this to define window of interest
     if (acc.metric %in% colnames(metashort)) {
@@ -211,80 +223,65 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
                         value = TRUE, invert = TRUE)[1]
       atest = as.numeric(as.matrix(metashort[,acc.metric]))
     }
-    r2tempe = rep(r2, each = (ws2/ws3))
-    r1tempe = rep(r1, each = (ws2/ws3))
+    r2tempe = rep(r2, each = (n_short_in_mediumEpoch))
+    r1tempe = rep(r1, each = (n_short_in_mediumEpoch))
     atest[which(r2tempe == 1 | r1tempe == 1)] = 0
     
     if (!is.null(study_date_indices)) {
       # If study_dates_file was used then r4 has possibly been trimmed
       # If this is the case then also trim atest to allow for direct comparisons
-      tt = (((study_date_indices[1] - 1) * ws2/ws3) + 1):(max(study_date_indices) * ws2/ws3)
-      atest = atest[(((study_date_indices[1] - 1) * ws2/ws3) + 1):(max(study_date_indices) * ws2/ws3)]
+      tt = (((study_date_indices[1] - 1) * n_short_in_mediumEpoch) + 1):(max(study_date_indices) * n_short_in_mediumEpoch)
+      atest = atest[(((study_date_indices[1] - 1) * n_short_in_mediumEpoch) + 1):(max(study_date_indices) * n_short_in_mediumEpoch)]
     }
-    if (params_cleaning[["data_masking_strategy"]] == 3) {
+    if (data_masking_strategy == 3) {
       # Find the most active ndayswindow block via a rolling mean window
-      NDAYS = length(atest) / n_ws3_perday
-      atestlist = zoo::rollmean(x = atest, k = params_cleaning[["ndayswindow"]] * n_ws3_perday, align = "left")
-      start_ndayswindow_hour = floor(which(atestlist == max(atestlist))[1] / (3600 / ws3))
-      params_cleaning[["hrs.del.start"]] = start_ndayswindow_hour + params_cleaning[["hrs.del.start"]]
-      params_cleaning[["maxdur"]] = ((start_ndayswindow_hour / 24) + params_cleaning[["ndayswindow"]]) - (params_cleaning[["hrs.del.end"]]/24)
-      if (params_cleaning[["maxdur"]] > NDAYS) params_cleaning[["maxdur"]] = NDAYS
-      # Update r4 (vector with 0 for valid and 1 for invalid,
-      # default time resolution 15 minutes
-      if (params_cleaning[["hrs.del.start"]] > 0) {
-        start_epoch = (params_cleaning[["hrs.del.start"]] * (3600 / ws2)) - 1
-        if (start_epoch <= 0) start_epoch = 1
+      NDAYS = length(atest) / n_shortEpoch_perday
+      atestlist = zoo::rollmean(x = atest, k = ndayswindow * n_shortEpoch_perday, align = "left")
+      start_ndayswindow_hour = floor(which(atestlist == max(atestlist))[1] / n_shortEpoch_perhour)
+      hrs.del.start = start_ndayswindow_hour + hrs.del.start
+      maxdur = ((start_ndayswindow_hour / 24) + ndayswindow) - (hrs.del.end/24)
+      if (maxdur > NDAYS) maxdur = NDAYS
+      # Update r4 (which is medianEpoch size)
+      if (hrs.del.start > 0) {
+        start_epoch = max((hrs.del.start * n_medium_perhour) - 1, 1)
         r4[1:start_epoch] = 1
       }
-      if (params_cleaning[["maxdur"]] > 0 &&
-          (length(r4) > ((params_cleaning[["maxdur"]] * n_ws2_perday) + 1))) {
-        ignore_from = round((params_cleaning[["maxdur"]] * n_ws2_perday))
+      ignore_from = round((maxdur * n_mediumEpoch_perday))
+      if (maxdur > 0 && length(r4) > (ignore_from + 1)) {
         r4[ignore_from:length(r4)] = 1
       }
-      if (LD < 1440) {
-        r4 = r4[1:floor(LD / (ws2 / 60))]
-      }
-    } else if (params_cleaning[["data_masking_strategy"]] == 5) {
+      if (LD < 1440) r4 = r4[1:floor(LD / (mediumEpoch / 60))]
+    } else if (data_masking_strategy == 5) {
       # Select the most active calendar days
       atestlist = c()
       # readjust midnightsi if study dates log used for trimming the data
       if (study_dates_log_used == TRUE) {
-        midnights2keep = which(midnightsi >= firstmidnighti & midnightsi <= lastmidnighti)
-        midnightsi = midnightsi[midnights2keep]
+        midnightsi = midnightsi[midnightsi >= firstmidnighti & midnightsi <= lastmidnighti]
       }
       for (ati in 1:length(midnightsi)) {
-        p0 = ((midnightsi[ati] * ws2/ws3) - ws2/ws3) + 1
-        p1 = ((midnightsi[ati + params_cleaning[["ndayswindow"]]] * ws2/ws3) - ws2/ws3)
-        if (is.na(p1)) break
-        if (p1 > length(atest)) break
+        p0 = ((midnightsi[ati] * n_short_in_mediumEpoch) - n_short_in_mediumEpoch) + 1
+        p1 = ((midnightsi[ati + ndayswindow] * n_short_in_mediumEpoch) - n_short_in_mediumEpoch)
+        if (is.na(p1) || p1 > length(atest)) break
         atestlist[ati] = mean(atest[p0:p1], na.rm = TRUE)
       }
       # atik is the index where the most active ndayswindow starts
-      atik = 1 # intitialise atik as 1, which will be used in case ndayswindow is longer than recording days
-      if (!is.null(atestlist)) atik = which(atestlist == max(atestlist))[1]
-      #ignore everything before the first ndayswindow midnight plus hrs.del.start
-      ignore_until = (midnightsi[atik]) + (params_cleaning[["hrs.del.start"]]*(3600/ws2)) - 1 # minus 1 for not ignoring the first epoch in ndayswindow
-      if (ignore_until > 0 && study_dates_log_used == TRUE) {
-          ignore_until = ignore_until - firstmidnighti + 1
+      atik = if (length(atestlist) > 0) which.max(atestlist) else 1
+      
+      offset = if (isTRUE(study_dates_log_used)) (firstmidnighti - 1) else 0
+      # Ignore until
+      ignore_until = midnightsi[atik] + (hrs.del.start * n_medium_perhour) - 1 - offset
+      if (ignore_until > 0) r4[1:pmin(ignore_until, length(r4))] = 1
+      # Ignore from
+      target_idx = atik + ndayswindow
+      if (target_idx > length(midnightsi)) target_idx = length(midnightsi)
+      ignore_from = midnightsi[target_idx] - (hrs.del.end * n_medium_perhour) - offset
+      if (!is.na(ignore_from) && ignore_from < length(r4)) {
+        r4[pmax(1, ignore_from):length(r4)] = 1
       }
-      if (ignore_until > 0) {
-        r4[1:ignore_until] = 1
-      }
-      #ignore everything after the last midnight plus hrs.del.end
-      ignore_from = midnightsi[atik + params_cleaning[["ndayswindow"]]] - (params_cleaning[["hrs.del.end"]]*(3600/ws2))
-      if (study_dates_log_used == TRUE) {
-        ignore_from = ignore_from - firstmidnighti + 1
-        if (ignore_from >= length(r4)) ignore_from = length(r4)
-      }
-      # if ndayswindow is higher than number of midnights, use last midnight
-      if (is.na(ignore_from)) ignore_from = midnightsi[length(midnightsi)] - (params_cleaning[["hrs.del.end"]]*(3600/ws2))
-      # if ignore_from == length(r4) it means that recording ends at midnight 
-      # and the code should not ignore anything at the end of the recording
-      if (ignore_from < length(r4)) r4[ignore_from:length(r4)] = 1
     }
     starttimei = 1
     endtimei = length(r4)
-  } else if (params_cleaning[["data_masking_strategy"]] == 4) { #from first midnight to end of recording
+  } else if (data_masking_strategy == 4) { #from first midnight to end of recording
     starttime = firstmidnight
     endtime = lastmidnight  
     # only apply data_masking_strategy 4 if study dates log is not used for trimming the data,
@@ -301,19 +298,21 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     }
   }
   # Mask data based on maxdur
-  if (params_cleaning[["maxdur"]] > 0 & (length(r4) > ((params_cleaning[["maxdur"]]*n_ws2_perday) + 1))) {
-    r4[((params_cleaning[["maxdur"]]*n_ws2_perday) + 1):length(r4)] = 1
+  if (maxdur > 0 &&
+      (length(r4) > (maxdur * n_mediumEpoch_perday) + 1)) {
+    r4[((maxdur * n_mediumEpoch_perday) + 1):length(r4)] = 1
   }
   # Mask data based on max_calendar_days
-  if (params_cleaning[["max_calendar_days"]] > 0) {
+  if (max_calendar_days > 0) {
     # get dates that are part of the study protocol
     if (study_dates_log_used == TRUE) {
-      dates = as.Date(iso8601chartime2POSIX(metalong$timestamp[firstmidnighti:(lastmidnighti - 1)], tz = desiredtz))
+      datetime = metalong$timestamp[firstmidnighti:(lastmidnighti - 1)]
     } else {
-      dates = as.Date(iso8601chartime2POSIX(metalong$timestamp, tz = desiredtz))
+      datetime = metalong$timestamp
     }
-    if (params_cleaning[["max_calendar_days"]] < length(unique(dates))) {
-      lastDateToInclude = sort(unique(dates))[params_cleaning[["max_calendar_days"]]]
+    dates = as.Date(iso8601chartime2POSIX(datetime, tz = desiredtz))
+    if (max_calendar_days < length(unique(dates))) {
+      lastDateToInclude = sort(unique(dates))[max_calendar_days]
       r4[which(dates > lastDateToInclude)] = 1
     }
   }
@@ -324,14 +323,14 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     r4 = r4_bu
   }
   #========================================================================================
-  # Impute ws3 second data based on ws2 minute estimates of non-wear time
+  # Impute shortEpoch second data based on mediumEpoch minute estimates of non-wear time
   r5 = r1 + r2 + r3 + r4
   r5[which(r5 > 1) ] = 1
   r5[which(metalong$nonwearscore == -1) ] = -1 # expanded data with expand_tail_max_hours
-  r5long = matrix(0,length(r5),(ws2/ws3)) #r5long is the same as r5, but with more values per period of time
-  r5long = replace(r5long,1:length(r5long),r5)
+  r5long = matrix(0,length(r5), n_short_in_mediumEpoch) #r5long is the same as r5, but with more values per period of time
+  r5long = replace(r5long, 1:length(r5long), r5)
   r5long = t(r5long)
-  dim(r5long) = c((length(r5)*(ws2/ws3)),1)
+  dim(r5long) = c(length(r5) * n_short_in_mediumEpoch,1)
   
   #------------------------------
   # detect which features have been calculated in part 1 and in what column they have ended up
@@ -341,25 +340,25 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   if (nrow(metashort) > length(r5long)) {
     metashort = metashort[1:length(r5long),]
   }
-  wpd = 1440*n_ws3_permin #windows per day
-  averageday = matrix(0,wpd,(ncol(metashort) - 1))
+  wpd = 1440 * n_shortEpoch_permin #windows per day
+  averageday = matrix(0, wpd, ncol(metashort) - 1)
   
   for (mi in 2:ncol(metashort)) {# generate 'average' day for each variable
     # The average day is used for imputation and defined relative to the starttime of the measurement
     # irrespective of dayborder as used in other parts of GGIR
     metr = as.numeric(as.matrix(metashort[, mi]))
     is.na(metr[which(r5long != 0)]) = T #turn all values of metr to na if r5long is different to 0 (it now leaves the expanded time with expand_tail_max out of the averageday calculation)
-    imp = matrix(NA,wpd,ceiling(length(metr)/wpd)) #matrix used for imputation of seconds
+    imp = matrix(NA, wpd, ceiling(length(metr) / wpd)) #matrix used for imputation of seconds
     ndays = ncol(imp) #number of days (rounded upwards)
-    nvalidsec = matrix(0,wpd,1)
+    nvalidsec = matrix(0, wpd, 1)
     dcomplscore = length(which(r5 == 0)) / length(r5)
     if (ndays > 1 ) { # only do imputation if there is more than 1 day of data #& length(which(r5 == 1)) > 1
       # all days except last one
       for (j in 1:(ndays - 1)) {
-        imp[,j] = as.numeric(metr[(((j - 1)*wpd) + 1):(j*wpd)])
+        imp[, j] = as.numeric(metr[(((j - 1) * wpd) + 1):(j * wpd)])
       }
       # last day
-      lastday = metr[(((ndays - 1)*wpd) + 1):length(metr)]
+      lastday = metr[(((ndays - 1) * wpd) + 1):length(metr)]
       imp[1:length(lastday),ndays] = as.numeric(lastday)
       if (colnames(metashort)[mi] == "step_count") {
         # Median per row, which equals to median for one time point in the 'average' day
@@ -393,12 +392,12 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
         }
       }
       # imp is now the imputed time series
-      dim(imp) = c(length(imp),1)
+      dim(imp) = c(length(imp), 1)
       # but do not use imp for expanded time
       toimpute = which(r5long != -1)       # do not impute the expanded time with expand_tail_max_hours
       metashort[toimpute, mi] = as.numeric(imp[toimpute]) #to cut off the latter part of the last day used as a dummy data
     } else {
-      dcomplscore = length(which(r5long == 0))/wpd
+      dcomplscore = length(which(r5long == 0)) / wpd
     }
   }
   n_decimal_places = 4
@@ -406,8 +405,8 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   metashort[,2:ncol(metashort)] = round(metashort[,2:ncol(metashort)], digits = n_decimal_places)
   rout = data.frame(r1 = r1, r2 = r2, r3 = r3, r4 = r4, r5 = r5, stringsAsFactors = TRUE)
   invisible(list(metashort = metashort, rout = rout, r5long = r5long, dcomplscore = dcomplscore,
-                 averageday = averageday, windowsizes = windowsizes, data_masking_strategy = params_cleaning[["data_masking_strategy"]],
-                 LC = LC, LC2 = LC2, hrs.del.start = params_cleaning[["hrs.del.start"]], hrs.del.end = params_cleaning[["hrs.del.end"]],
-                 maxdur = params_cleaning[["maxdur"]], nonwearHoursFiltered = nonwearHoursFiltered,
+                 averageday = averageday, windowsizes = windowsizes, data_masking_strategy = data_masking_strategy,
+                 LC = LC, LC2 = LC2, hrs.del.start = hrs.del.start, hrs.del.end = hrs.del.end,
+                 maxdur = maxdur, nonwearHoursFiltered = nonwearHoursFiltered,
                  nonwearEventsFiltered = nonwearEventsFiltered))
 }
