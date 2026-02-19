@@ -34,14 +34,14 @@ test_that("chainof5parts", {
   # Strategy 1 ----
   GGIR(datadir = fn, outputdir = getwd(), studyname = "test", mode = 2, verbose = FALSE,
        # study dates file
-       study_dates_file = "study_dates_file.csv", 
+       study_dates_file = "study_dates_file.csv",
        study_dates_dateformat = "%d/%m/%Y",
        # strategy
        data_masking_strategy = 1, hrs.del.start = 0,hrs.del.end = 0)
   # load data
   load(dir("output_test/meta/ms2.out/",full.names = TRUE)[1])
   # removed time before 24/06/2016 and after  25/06/2016
-  expect_equal(rle(IMP$rout$r4)$lengths[1], 60) 
+  expect_equal(rle(IMP$rout$r4)$lengths[1], 60)
   expect_equal(rle(IMP$rout$r4)$lengths[3], 36)
   # check the total time included is exactly 2 days (= 192 long epochs)
   first_epoch_in_protocol = rle(IMP$rout$r4)$lengths[1] + 1
@@ -50,7 +50,7 @@ test_that("chainof5parts", {
   
   GGIR(datadir = fn, outputdir = getwd(), studyname = "test", mode = 2, verbose = FALSE,
        # study dates file
-       study_dates_file = "study_dates_file.csv", 
+       study_dates_file = "study_dates_file.csv",
        study_dates_dateformat = "%d/%m/%Y",
        # strategy
        data_masking_strategy = 1, hrs.del.start = 4, hrs.del.end = 4)
@@ -59,7 +59,7 @@ test_that("chainof5parts", {
   load(dir("output_test/meta/ms2.out/",full.names = TRUE)[1])
   # first epoch in protocol 24/06/2016 04:00:00
   first_epoch_in_protocol = rle(IMP$rout$r4)$lengths[1] + 1
-  expect_equal(M$metalong$timestamp[first_epoch_in_protocol], "2016-06-24T04:00:00+0100") 
+  expect_equal(M$metalong$timestamp[first_epoch_in_protocol], "2016-06-24T04:00:00+0100")
   # last epoch in protocol 25/06/2016 19:45:00
   last_epoch_in_protocol = max(which(IMP$rout$r4 == 0))
   expect_equal(M$metalong$timestamp[last_epoch_in_protocol], "2016-06-25T19:45:00+0100")
@@ -76,7 +76,7 @@ test_that("chainof5parts", {
   load(dir("output_test/meta/ms2.out/",full.names = TRUE)[1])
   # first epoch in protocol 24/06/2016 00:00:00
   first_epoch_in_protocol = rle(IMP$rout$r4)$lengths[1] + 1
-  expect_equal(M$metalong$timestamp[first_epoch_in_protocol], "2016-06-24T00:00:00+0100") 
+  expect_equal(M$metalong$timestamp[first_epoch_in_protocol], "2016-06-24T00:00:00+0100")
   # last epoch in protocol 25/06/2016 23:45:00
   last_epoch_in_protocol = max(which(IMP$rout$r4 == 0))
   expect_equal(M$metalong$timestamp[last_epoch_in_protocol], "2016-06-25T23:45:00+0100")
@@ -135,7 +135,7 @@ test_that("chainof5parts", {
   load(dir("output_test/meta/ms2.out/",full.names = TRUE)[1])
   # first epoch in protocol 24/06/2016 00:00:00
   first_epoch_in_protocol = rle(IMP$rout$r4)$lengths[1] + 1
-  expect_equal(M$metalong$timestamp[first_epoch_in_protocol], "2016-06-24T00:00:00+0100") 
+  expect_equal(M$metalong$timestamp[first_epoch_in_protocol], "2016-06-24T00:00:00+0100")
   # last epoch in protocol 25/06/2016 23:45:00
   last_epoch_in_protocol = max(which(IMP$rout$r4 == 0))
   expect_equal(M$metalong$timestamp[last_epoch_in_protocol], "2016-06-25T23:45:00+0100")
@@ -156,8 +156,8 @@ test_that("chainof5parts", {
   t0 = iso8601chartime2POSIX(M$metalong$timestamp[first_epoch_in_protocol], tz = "Europe/London")
   last_epoch_in_protocol = max(which(IMP$rout$r4 == 0))
   t1 = iso8601chartime2POSIX(M$metalong$timestamp[last_epoch_in_protocol], tz = "Europe/London")
-  expect_true(t0 == as.POSIXct("2016-06-25 00:00:00", tz = "Europe/London"))
-  expect_true(t1 == as.POSIXct("2016-06-25 23:45:00", tz = "Europe/London"))
+  expect_true(t0 == as.POSIXct("2016-06-24 00:00:00", tz = "Europe/London"))
+  expect_true(t1 == as.POSIXct("2016-06-24 23:45:00", tz = "Europe/London"))
   # check the total time included is exactly 1 day (= 96 long epochs)
   expect_equal(last_epoch_in_protocol - first_epoch_in_protocol + 1,  96)
   
@@ -176,8 +176,8 @@ test_that("chainof5parts", {
   t0 = iso8601chartime2POSIX(M$metalong$timestamp[first_epoch_in_protocol], tz = "Europe/London")
   last_epoch_in_protocol = max(which(IMP$rout$r4 == 0))
   t1 = iso8601chartime2POSIX(M$metalong$timestamp[last_epoch_in_protocol], tz = "Europe/London")
-  expect_true(t0 == as.POSIXct("2016-06-25 05:00:00", tz = "Europe/London"))
-  expect_true(t1 == as.POSIXct("2016-06-25 18:45:00", tz = "Europe/London"))
+  expect_true(t0 == as.POSIXct("2016-06-24 05:00:00", tz = "Europe/London"))
+  expect_true(t1 == as.POSIXct("2016-06-24 18:45:00", tz = "Europe/London"))
   
   # start date out of recorded dates (warning and do not trim) -----
   # studydates = data.frame(ID = "123A",
