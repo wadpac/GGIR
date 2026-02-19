@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.3-?
+
+- Part 2: Re-factor and tidy-up code related to data_masking_strategy 3 and 5, which also includes higher resolution for rolling window used in data_masking_strategy 3 #1458
+
 # CHANGES IN GGIR VERSION 3.3-4
 
 - Part 2: Improved handling of corrupted RData files in part 1 or 2. #1447 and #1449
