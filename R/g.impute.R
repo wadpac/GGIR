@@ -88,7 +88,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     r1long = matrix(0, length(r1), n_short_in_mediumEpoch)
     r1long = replace(r1long, 1:length(r1long), r1)
     r1long = t(r1long)
-    dim(r1long) = c((length(r1)*(n_short_in_mediumEpoch)),1)
+    dim(r1long) = c(length(r1) * n_short_in_mediumEpoch, 1)
     timelinePOSIX = iso8601chartime2POSIX(metashort$timestamp,tz = desiredtz)
     # Combine r1Long with TimeSegments2Zero
     for (kli in 1:nrow(TimeSegments2Zero)) {
@@ -186,14 +186,14 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     }
     if (hrs.del.end > 0) {
       if (length(r4) > hrs.del.end * n_medium_perhour) {
-        r4[((length(r4) + 1) - (hrs.del.end * n_medium_perhour)):length(r4)] = 1
+        r4[(length(r4) + 1 - (hrs.del.end * n_medium_perhour)):length(r4)] = 1
       } else {
         r4[1:length(r4)] = 1
       }
     }
     
     if (LD < 1440) {
-      r4 = r4[1:floor(LD/(mediumEpoch/60))]
+      r4 = r4[1:floor(LD / (mediumEpoch / 60))]
     }
     starttimei = 1
     endtimei = length(r4)
@@ -217,11 +217,11 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     #==========================================
     # Look out for X most active days and use this to define window of interest
     if (acc.metric %in% colnames(metashort)) {
-      atest = as.numeric(as.matrix(metashort[,acc.metric]))
+      atest = as.numeric(as.matrix(metashort[, acc.metric]))
     } else {
       acc.metric = grep("timestamp|angle", colnames(metashort),
                         value = TRUE, invert = TRUE)[1]
-      atest = as.numeric(as.matrix(metashort[,acc.metric]))
+      atest = as.numeric(as.matrix(metashort[, acc.metric]))
     }
     r2tempe = rep(r2, each = (n_short_in_mediumEpoch))
     r1tempe = rep(r1, each = (n_short_in_mediumEpoch))
@@ -230,8 +230,9 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     if (!is.null(study_date_indices)) {
       # If study_dates_file was used then r4 has possibly been trimmed
       # If this is the case then also trim atest to allow for direct comparisons
-      tt = (((study_date_indices[1] - 1) * n_short_in_mediumEpoch) + 1):(max(study_date_indices) * n_short_in_mediumEpoch)
-      atest = atest[(((study_date_indices[1] - 1) * n_short_in_mediumEpoch) + 1):(max(study_date_indices) * n_short_in_mediumEpoch)]
+      tt1 = ((study_date_indices[1] - 1) * n_short_in_mediumEpoch) + 1
+      tt2 = max(study_date_indices) * n_short_in_mediumEpoch
+      atest = atest[tt1:tt2]
     }
     if (data_masking_strategy == 3) {
       # Find the most active ndayswindow block via a rolling mean window
@@ -259,7 +260,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
         midnightsi = midnightsi[midnightsi >= firstmidnighti & midnightsi <= lastmidnighti]
       }
       for (ati in 1:length(midnightsi)) {
-        p0 = ((midnightsi[ati] * n_short_in_mediumEpoch) - n_short_in_mediumEpoch) + 1
+        p0 = (midnightsi[ati] * n_short_in_mediumEpoch) - n_short_in_mediumEpoch + 1
         p1 = ((midnightsi[ati + ndayswindow] * n_short_in_mediumEpoch) - n_short_in_mediumEpoch)
         if (is.na(p1) || p1 > length(atest)) break
         atestlist[ati] = mean(atest[p0:p1], na.rm = TRUE)
