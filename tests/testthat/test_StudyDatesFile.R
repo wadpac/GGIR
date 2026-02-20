@@ -224,6 +224,49 @@ test_that("chainof5parts", {
          hrs.del.start = 0,hrs.del.end = 0),
     regexp = "The ID 123A does not appear")
   
+  
+  # Missing start date and data_masking_strategy 1
+  studydates = data.frame(ID = "123A",
+                          start = "", # intentional wrong format (hyphen) to force tests on check_log
+                          end = "25/06/2016")
+  write.csv(studydates, "study_dates_file.csv", row.names = FALSE)
+  GGIR(datadir = fn, outputdir = getwd(), studyname = "test", mode = 2, verbose = FALSE,
+       # study dates file
+       study_dates_file = "study_dates_file.csv", 
+       study_dates_dateformat = "%d/%m/%Y",
+       # strategy
+       data_masking_strategy = 1, hrs.del.start = 0,hrs.del.end = 0)
+  # load data
+  load(dir("output_test/meta/basic/",full.names = TRUE)[1])
+  load(dir("output_test/meta/ms2.out/",full.names = TRUE)[1])
+  first_epoch_in_protocol = which(IMP$rout$r4 == 0)[1]
+  t0 = iso8601chartime2POSIX(M$metalong$timestamp[first_epoch_in_protocol], tz = "Europe/London")
+  last_epoch_in_protocol = max(which(IMP$rout$r4 == 0))
+  t1 = iso8601chartime2POSIX(M$metalong$timestamp[last_epoch_in_protocol], tz = "Europe/London")
+  expect_true(t0 == as.POSIXct("2016-06-23 09:00:00", tz = "Europe/London"))
+  expect_true(t1 == as.POSIXct("2016-06-25 23:45:00", tz = "Europe/London"))
+  
+  # Missing end date and data_masking_strategy 1
+  studydates = data.frame(ID = "123A",
+                          start = "24/06/2016", # intentional wrong format (hyphen) to force tests on check_log
+                          end = "")
+  write.csv(studydates, "study_dates_file.csv", row.names = FALSE)
+  GGIR(datadir = fn, outputdir = getwd(), studyname = "test", mode = 2, verbose = FALSE,
+       # study dates file
+       study_dates_file = "study_dates_file.csv", 
+       study_dates_dateformat = "%d/%m/%Y",
+       # strategy
+       data_masking_strategy = 1, hrs.del.start = 0,hrs.del.end = 0)
+  # load data
+  load(dir("output_test/meta/basic/",full.names = TRUE)[1])
+  load(dir("output_test/meta/ms2.out/",full.names = TRUE)[1])
+  first_epoch_in_protocol = which(IMP$rout$r4 == 0)[1]
+  t0 = iso8601chartime2POSIX(M$metalong$timestamp[first_epoch_in_protocol], tz = "Europe/London")
+  last_epoch_in_protocol = max(which(IMP$rout$r4 == 0))
+  t1 = iso8601chartime2POSIX(M$metalong$timestamp[last_epoch_in_protocol], tz = "Europe/London")
+  expect_true(t0 == as.POSIXct("2016-06-24 00:00:00", tz = "Europe/London"))
+  expect_true(t1 == as.POSIXct("2016-06-26 08:45:00", tz = "Europe/London"))
+  
   if (file.exists("study_dates_file.csv")) file.remove("study_dates_file.csv")
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
   if (file.exists(fn)) unlink(fn)

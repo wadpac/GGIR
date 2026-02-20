@@ -139,8 +139,16 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
       firstmidnight = as.Date(studyDates[rowID, 2], format = fmt)
       lastmidnight = as.Date(studyDates[rowID, 3], format = fmt)
       # find the dates in metalong
-      firstmidnighti = midnightsi[grep(firstmidnight, midnights)]
-      lastmidnighti = midnightsi[grep(lastmidnight, midnights) + 1] # plus 1 to include the reported date in log
+      if (!is.na(firstmidnight)) {
+        firstmidnighti = midnightsi[grep(firstmidnight, midnights)][1]
+      } else {
+        firstmidnighti = NULL
+      }
+      if (!is.na(lastmidnight)) {
+        lastmidnighti = midnightsi[grep(lastmidnight, midnights) + 1][1] # plus 1 to include the reported date in log
+      } else {
+        lastmidnighti = NULL
+      }
       # trim start
       if (length(firstmidnighti) > 0) {
         r4[1:(firstmidnighti - 1)] = 1
@@ -154,7 +162,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
         #                "The data was not trimmed at the beginning of the recording."), call. = FALSE)
       }
       # trim end
-      if (length(lastmidnighti) > 0 && !is.na(lastmidnighti)) {
+      if (length(lastmidnighti) > 0) {
         r4[lastmidnighti:nrow(r4)] = 1
         study_dates_log_used[2] = TRUE
       } else {
@@ -222,7 +230,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
       acc = as.numeric(as.matrix(metashort[, acc.metric]))
     }
     acc[which(rep(r2, each = n_short_in_mediumEpoch) == 1 |
-                  rep(r1, each = n_short_in_mediumEpoch) == 1)] = 0
+                rep(r1, each = n_short_in_mediumEpoch) == 1)] = 0
     if (!is.null(study_date_indices)) {
       # If study_dates_file was used then r4 has possibly been trimmed
       # If this is the case then also trim acc to allow for direct comparisons
@@ -269,7 +277,7 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
       for (i in 1:length(midnightsi)) {
         p0 = ((midnightsi[i] - 1) * n_short_in_mediumEpoch) + 1
         if (i == length(midnightsi) && i + ndayswindow > length(midnightsi)) {
-            p1 = length(acc)
+          p1 = length(acc)
         } else {
           p1 = (midnightsi[i + ndayswindow] - 1) * n_short_in_mediumEpoch
         }
