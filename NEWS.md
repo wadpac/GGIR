@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.3-5
+
+- Part 2: Walking bout detection expanded to allow for multiple cadence and acceleration thresholds. #1466
+
 # CHANGES IN GGIR VERSION 3.3-4
 
 - Part 2: Improved handling of corrupted RData files in part 1 or 2. #1447 and #1449
