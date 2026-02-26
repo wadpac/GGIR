@@ -181,7 +181,7 @@ test_that("chainof5parts", {
   
   # start date out of recorded dates (warning and do not trim) -----
   # studydates = data.frame(ID = "123A",
-  #                         start = "18/06/2016", # intentional wrong format (hyphen) to force tests on check_log
+  #                         start = "18/06/2016",
   #                         end = "25/06/2016")
   # write.csv(studydates, "study_dates_file.csv", row.names = FALSE)
   # expect_warning(
@@ -196,7 +196,7 @@ test_that("chainof5parts", {
   
   # end date out of recorded dates (warning and do not trim) -----
   # studydates = data.frame(ID = "123A",
-  #                         start = "24/06/2016", # intentional wrong format (hyphen) to force tests on check_log
+  #                         start = "24/06/2016",
   #                         end = "26/06/2016")
   # write.csv(studydates, "study_dates_file.csv", row.names = FALSE)
   # expect_warning(
@@ -211,7 +211,7 @@ test_that("chainof5parts", {
   
   # ID not in study dates file (warning and do not trim) -----
   studydates = data.frame(ID = "dummyID",
-                          start = "24/06/2016", # intentional wrong format (hyphen) to force tests on check_log
+                          start = "24/06/2016",
                           end = "25/06/2016")
   write.csv(studydates, "study_dates_file.csv", row.names = FALSE)
   expect_warning(
@@ -227,7 +227,7 @@ test_that("chainof5parts", {
   
   # Missing start date and data_masking_strategy 1
   studydates = data.frame(ID = "123A",
-                          start = "", # intentional wrong format (hyphen) to force tests on check_log
+                          start = "",
                           end = "25/06/2016")
   write.csv(studydates, "study_dates_file.csv", row.names = FALSE)
   GGIR(datadir = fn, outputdir = getwd(), studyname = "test", mode = 2, verbose = FALSE,
@@ -248,7 +248,7 @@ test_that("chainof5parts", {
   
   # Missing end date and data_masking_strategy 1
   studydates = data.frame(ID = "123A",
-                          start = "24/06/2016", # intentional wrong format (hyphen) to force tests on check_log
+                          start = "24/06/2016",
                           end = "")
   write.csv(studydates, "study_dates_file.csv", row.names = FALSE)
   GGIR(datadir = fn, outputdir = getwd(), studyname = "test", mode = 2, verbose = FALSE,
