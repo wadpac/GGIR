@@ -2,6 +2,8 @@
 
 - Part 2: Walking bout detection expanded to allow for multiple cadence and acceleration thresholds. #1466
 
+- Part 2: Re-factor and tidy-up code related to data_masking_strategy 3 and 5 and study dates file. The resolution for the rolling window used in data_masking_strategy 3 is now higher (5 seconds by default). #1458
+
 # CHANGES IN GGIR VERSION 3.3-4
 
 - Part 2: Improved handling of corrupted RData files in part 1 or 2. #1447 and #1449

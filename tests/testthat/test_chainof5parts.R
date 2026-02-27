@@ -74,8 +74,8 @@ test_that("chainof5parts", {
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_equal(nrow(IMP$metashort), 11280)
-  expect_equal(rle(IMP$rout$r4)$lengths[1], 16) # removed 6 hours from the ndayswindow at the beginning
-  expect_equal(rle(IMP$rout$r4)$lengths[3], 19) # removed 6 hours from the ndayswindow at the end
+  expect_equal(rle(IMP$rout$r4)$lengths[1], 16)
+  expect_equal(rle(IMP$rout$r4)$lengths[3], 19)
   # check the ndayswindow included is 12 hours exactly (24 minus hrs.del.start/end)
   # ndayswindow = 1 with windowsizes = c(15, 3600, 3600)
   first_epoch_in_protocol = rle(IMP$rout$r4)$lengths[1] + 1
@@ -114,8 +114,8 @@ test_that("chainof5parts", {
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_equal(nrow(IMP$metashort), 11280)
-  expect_equal(rle(IMP$rout$r4)$lengths[1], 21) # removed 6 hours from the ndayswindow at the beginning
-  expect_equal(rle(IMP$rout$r4)$lengths[3], 14) # removed 6 hours from the ndayswindow at the end
+  expect_equal(rle(IMP$rout$r4)$lengths[1], 21)
+  expect_equal(rle(IMP$rout$r4)$lengths[3], 14)
   # check the ndayswindow included is 12 hours exactly (24 minus hrs.del.start/end)
   # ndayswindow = 1 with windowsizes = c(15, 3600, 3600)
   first_epoch_in_protocol = rle(IMP$rout$r4)$lengths[1] + 1
