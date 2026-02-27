@@ -34,13 +34,13 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   rm(M)
   # What is the minimum number of accelerometer axis needed to meet the criteria for nonwear in order for the data to be detected as nonwear?
   wearthreshold = 2 #needs to be 0, 1 or 2
-  # windows per day
-  n_longEpoch_perday = 86400 / longEpoch
+  # epochs per day (there are 86400 seconds in a day)
+  n_longEpoch_perday = 86400 / longEpoch # note: 
   n_mediumEpoch_perday = 86400 / mediumEpoch
   n_shortEpoch_perday = 86400 / shortEpoch
-  # windows per minute
+  # epochs per minute
   n_shortEpoch_permin = 60 / shortEpoch
-  # windows per hour
+  # epochs per hour
   n_longEpoch_perhour = 3600 / longEpoch
   n_medium_perhour = 3600 / mediumEpoch
   n_shortEpoch_perhour = 3600 / shortEpoch
