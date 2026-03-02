@@ -1,4 +1,0 @@
-ID,filename,start_time,calendar_date,bodylocation,N valid hours,N hours,weekday,measurementday,L5hr_ENMO_mg_0-24hr,L5_ENMO_mg_0-24hr,M5hr_ENMO_mg_0-24hr,M5_ENMO_mg_0-24hr,mean_ENMO_mg_1-6am,mean_ENMO_mg_0-24hr,MVPA_E5S_T100_ENMO_0-24hr,MVPA_E1M_T100_ENMO_0-24hr,MVPA_E5M_T100_ENMO_0-24hr,MVPA_E5S_B1M80%_T100_ENMO_0-24hr,MVPA_E5S_B5M80%_T100_ENMO_0-24hr,MVPA_E5S_B10M80%_T100_ENMO_0-24hr
-123A_testaccfile.csv,123A_testaccfile.csv,2016-06-23T09:00:00+0100,2016-06-23,not extracted,13,15,Thursday,1,,,,,,,,,,,,
-123A_testaccfile.csv,123A_testaccfile.csv,2016-06-24T00:00:00+0100,2016-06-24,not extracted,22.25,24,Friday,2,21.5,5.558,11.833,87.411,5.892,34.277,111.667,70,25,111.917,24,20
-123A_testaccfile.csv,123A_testaccfile.csv,2016-06-25T00:00:00+0100,2016-06-25,not extracted,8.75,8.75,Saturday,3,,,,,,,,,,,,
