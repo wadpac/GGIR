@@ -122,7 +122,7 @@ All parameters are accepted as parameter to function `GGIR`, because `GGIR` is l
 
 #### Configuration file.
 
-GGIR stores all the parameter values in a csv-file named config.csv. The file is stored after each run of GGIR in the root of the output folder, overwriting any existing config.csv file. So, if you would like to add annotations in the file, e.g. in the fourth column, then you will need to store it somewhere outside the output folder and specify the path to that file with parameter `configfile`. The code below shows an example of this, where `"D:/myconfigfiles/config.csv"` is used every time the script is run and can include comments. Note that parameters `datadir` and `outputdir`discussed below always need to be specified directly and are not part of the configfile.
+GGIR stores all the parameter values in a csv-file named config.csv. The file is stored after each run of GGIR in the root of the output folder, overwriting any existing config.csv file. So, if you would like to add annotations in the file, e.g. in the fourth column, then you will need to store it somewhere outside the output folder and specify the path to that file with parameter `configfile`. The code below shows an example of this, where `"D:/myconfigfiles/config.csv"` is used every time the script is run and can include your comments in the fourth column. Note that parameters `datadir` and `outputdir`discussed below always need to be specified directly and are not part of the configfile.
 
 ```{R,eval=FALSE}
 library(GGIR)
