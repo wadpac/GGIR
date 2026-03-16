@@ -1,3 +1,8 @@
+
+# CHANGES IN GGIR VERSION 3.3-?
+
+- Part 5: Remove variables lastHour and lastDate from csv output and dictionary as they were included by accident #1472
+
 # CHANGES IN GGIR VERSION 3.3-5
 
 - Part 2: Walking bout detection expanded to allow for multiple cadence and acceleration thresholds. #1466
