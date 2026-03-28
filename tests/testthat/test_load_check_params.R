@@ -17,7 +17,7 @@ test_that("load_params can load parameters", {
   expect_equal(length(params$params_247), 25)
   expect_equal(length(params$params_cleaning), 28)
   expect_equal(length(params$params_phyact), 14)
-  expect_equal(length(params$params_output), 28)
+  expect_equal(length(params$params_output), 29)
   expect_equal(length(params$params_general), 22)
 
   params_sleep = params$params_sleep
