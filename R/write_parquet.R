@@ -305,7 +305,27 @@ write_dashboard_parquet = function(metadatadir = c(),
   # ---------------------------------------------------------------
   # 12. Write Parquet file
   # ---------------------------------------------------------------
-  parquet_path = paste0(results_dir, "/ggir_results.parquet")
+  # Name parquet after participant ID when possible.
+  # If multiple IDs exist, use a stable fallback filename.
+  parquet_basename = "ggir_results"
+  if ("id" %in% names(consolidated)) {
+    ids = unique(as.character(consolidated$id))
+  } else if ("ID" %in% names(consolidated)) {
+    ids = unique(as.character(consolidated$ID))
+  } else {
+    ids = character(0)
+  }
+  ids = ids[!is.na(ids) & nzchar(ids)]
+  if (length(ids) == 1) {
+    parquet_basename = ids[1]
+  } else if (length(ids) > 1) {
+    parquet_basename = "multiple_participants"
+    if (verbose) {
+      warning("\nMultiple participant IDs found. Using 'multiple_participants.parquet'.", call. = FALSE)
+    }
+  }
+  parquet_basename = gsub("[^A-Za-z0-9._-]", "_", parquet_basename)
+  parquet_path = paste0(results_dir, "/", parquet_basename, ".parquet")
 
   # Convert to Arrow table so we can attach key-value metadata
   tbl = arrow::arrow_table(consolidated)
