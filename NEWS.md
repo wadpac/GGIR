@@ -2,6 +2,8 @@
 
 - Documentation: Remove suggestion that configfile can be used to store annotations inside the configuration file, this was a bad idea. #1473
 
+- Part 6: Enable extraction of participant ID from filename consistent with the other parts #1478
+
 # CHANGES IN GGIR VERSION 3.3-5
 
 - Part 2: Walking bout detection expanded to allow for multiple cadence and acceleration thresholds. #1466
