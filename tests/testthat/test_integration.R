@@ -1,6 +1,6 @@
 library(GGIR)
-context("Chainof5parts")
-test_that("chainof5parts", {
+context("Integration")
+test_that("All GGIR parts work together (integration test)", {
   skip_on_cran()
   Ndays = 2
   create_test_acc_csv(Nmin = Ndays*1440)
