@@ -320,25 +320,25 @@ can provide <code>HASIB.algo</code> as parameter to GGIR, but not
 <div class="section level4">
 <h4 id="configuration-file-">Configuration file.<a class="anchor" aria-label="anchor" href="#configuration-file-"></a>
 </h4>
-<p>GGIR stores all the parameter values in a csv-file named config.csv.
-The file is stored after each run of GGIR in the root of the output
-folder, overwriting any existing config.csv file. So, if you would like
-to add annotations in the file, e.g. in the fourth column, then you will
-need to store it somewhere outside the output folder and specify the
-path to that file with parameter <code>configfile</code>. Note that
-parameters <code>datadir</code> and <code>outputdir</code>discussed
-below always need to be specified directly and are not part of the
-configfile.</p>
+<p>GGIR automatically stores all its parameter settings in a csv-file
+named config.csv. The file is stored after each run of GGIR in the root
+of the output folder, overwriting any existing config.csv file. So, it
+acts as log of how GGIR was configured during the most recent run.</p>
+<p>One practical value of the configuration file is that you can share
+it with others such that they can replicate your analyses via GGIR
+parameter <code>configfile</code>. The code below shows an example where
+<code>"D:/myconfigfiles/config.csv"</code> is used as configuration
+file. Note that parameters <code>datadir</code> and
+<code>outputdir</code> discussed below are stored in the configuration
+file but always need to be specified directly in R code as they are
+never extracted from the configuration file.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wadpac/GGIR/" class="external-link">GGIR</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/GGIR.html">GGIR</a></span><span class="op">(</span>datadir <span class="op">=</span> <span class="st">"C:/mystudy/mydata"</span>,</span>
 <span>     outputdir <span class="op">=</span> <span class="st">"D:/myresults"</span>, </span>
 <span>     configfile <span class="op">=</span> <span class="st">"D:/myconfigfiles/config.csv"</span><span class="op">)</span></span></code></pre></div>
-<p>The practical value of this is that it eases the replication of the
-analysis, because instead of having to share you R script with
-colleagues, sharing your config.csv file will be sufficient. Please make
-sure you have the same GGIR and R version installed when using this for
-reproducibility. See <a href="https://wadpac.github.io/GGIR/articles/chapter0_Installation.html">here</a>
+<p>Be aware that, to replicate GGIR analysis, one should also make sure
+that consistent GGIR and R versions are used. See <a href="https://wadpac.github.io/GGIR/articles/chapter0_Installation.html">here</a>
 for guidance on how to install older package versions.</p>
 </div>
 <div class="section level4">
