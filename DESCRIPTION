@@ -8,6 +8,9 @@ Authors@R: c(person("Vincent T","van Hees",role=c("aut","cre"),
              person("Jairo H","Migueles",role="aut",
                     email="jairo@jhmigueles.com",
                     comment = c(ORCID = "0000-0003-0366-6935")),
+             person("Samuel T","Afolabi",role="ctb",
+                    email="samuelafolabimails@gmail.com",
+                    comment = c(ORCID = "0009-0002-7325-6405")),                    
              person("Severine","Sabia",role="ctb"),
              person("Matthew R","Patterson",role="ctb"),
              person("Zhou","Fang",role="ctb"),
@@ -38,6 +41,6 @@ URL: https://github.com/wadpac/GGIR/, https://wadpac.github.io/GGIR/
 BugReports: https://github.com/wadpac/GGIR/issues
 License: Apache License (== 2.0) | file LICENSE
 Suggests: testthat, covr, knitr, rmarkdown, actilifecounts, readxl
-Imports: data.table, foreach, doParallel, signal, zoo, unisensR, ineq, methods, psych, irr, lubridate, GGIRread, ActCR, read.gt3x
+Imports: data.table, foreach, doParallel, signal, zoo, unisensR, ineq, methods, psych, irr, lubridate, GGIRread, ActCR, read.gt3x, arrow
 Depends: stats, utils, R (>= 3.5)
 VignetteBuilder: knitr
