@@ -1,5 +1,32 @@
 # Changelog
 
+## CHANGES IN GGIR VERSION 3.3-?
+
+- Documentation: Remove suggestion that configfile can be used to store
+  annotations inside the configuration file to keep focus on the main
+  purpose of the configfile, which is to facilitate reproducing
+  analysis. [\#1473](https://github.com/wadpac/GGIR/issues/1473)
+
+- Part 6: Enable extraction of participant ID from filename consistent
+  with the other parts
+  [\#1478](https://github.com/wadpac/GGIR/issues/1478)
+
+## CHANGES IN GGIR VERSION 3.3-5
+
+- Part 2: Walking bout detection expanded to allow for multiple cadence
+  and acceleration thresholds.
+  [\#1466](https://github.com/wadpac/GGIR/issues/1466)
+
+- Part 2: Re-factor and tidy-up code related to data_masking_strategy 3
+  and 5 and study dates file. The resolution for the rolling window used
+  in data_masking_strategy 3 is now higher (5 seconds by default).
+  [\#1458](https://github.com/wadpac/GGIR/issues/1458)
+
+- Part 4: Remove duplicated column N_nights_guider_corrected in output
+  file part4_summary_sleep_cleaned.csv when parameter
+  guider_cor_do=TRUE.
+  [\#1448](https://github.com/wadpac/GGIR/issues/1448)
+
 ## CHANGES IN GGIR VERSION 3.3-4
 
 CRAN release: 2026-01-27

@@ -242,7 +242,9 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         ts$invalidepoch[invalidWindows] = 1
       }
       # Include basic information in the summary
-      summary[fi] = unlist(strsplit(fnames.ms5raw[i], "_"))[1]
+      summary[fi] = extractID(hvars = list(ID = "NA", iID = "NA", IDd = "NA"),
+                              idloc = params_general[["idloc"]],
+                              fname = fnames.ms5raw[i])
       s_names[fi] = "ID"
       fi = fi + 1
       starttime = as.POSIXlt(ts$time[1], tz = params_general[["desiredtz"]],
