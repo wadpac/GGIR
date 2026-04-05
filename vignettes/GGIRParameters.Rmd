@@ -255,7 +255,7 @@ find a description and default value for all the arguments.
 | dofirstpage                 | visualreport      | params_output            |
 | visualreport                | visualreport      | params_output            |
 | viewingwindow               | visualreport      | params_output            |
-| save_dashboard_parquet      | 1, 2, 3, 4, 5     | params_output            |
+| save_dashboard_parquet      | end of GGIR run   | params_output            |
 
 
 # Arguments/parameters description {#default-argument-values}

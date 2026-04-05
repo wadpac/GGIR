@@ -177,6 +177,50 @@ write_dashboard_parquet = function(metadatadir = c(),
     }
   }
 
+  # Arrow expects every element of a list<struct> column to be a data.frame.
+  # After a left merge, unmatched rows can carry NA in `epochs`; replace them
+  # with a typed empty data.frame to keep nested serialization valid.
+  if ("epochs" %in% names(consolidated)) {
+    first_df_idx = which(vapply(consolidated$epochs, is.data.frame, logical(1)))
+    if (length(first_df_idx) > 0) {
+      empty_epoch_struct = consolidated$epochs[[first_df_idx[1]]][0, , drop = FALSE]
+    } else if (!is.null(epoch_by_day) &&
+               nrow(epoch_by_day) > 0 &&
+               "epochs" %in% names(epoch_by_day) &&
+               any(vapply(epoch_by_day$epochs, is.data.frame, logical(1)))) {
+      first_epoch_idx = which(vapply(epoch_by_day$epochs, is.data.frame, logical(1)))[1]
+      empty_epoch_struct = epoch_by_day$epochs[[first_epoch_idx]][0, , drop = FALSE]
+    } else {
+      empty_epoch_struct = data.frame(
+        timenum = numeric(0),
+        acc = numeric(0),
+        class_id = integer(0),
+        spt = logical(0),
+        invalid = logical(0),
+        window = integer(0)
+      )
+    }
+
+    bad_epoch_cells = which(!vapply(consolidated$epochs, is.data.frame, logical(1)))
+    if (length(bad_epoch_cells) > 0) {
+      consolidated$epochs[bad_epoch_cells] = replicate(
+        length(bad_epoch_cells),
+        empty_epoch_struct,
+        simplify = FALSE
+      )
+      if (verbose) {
+        warning(
+          paste0(
+            "\nReplaced ",
+            length(bad_epoch_cells),
+            " unmatched epoch rows with empty nested epoch tables."
+          ),
+          call. = FALSE
+        )
+      }
+    }
+  }
+
   # ---------------------------------------------------------------
   # 9. Clean column names for SQL-friendly access
   # ---------------------------------------------------------------
@@ -687,6 +731,11 @@ build_epoch_lists_by_day = function(metadatadir = c(),
 
   # Map filename -> ID from part2_summary.csv if available
   id_map = NULL
+  normalize_filename = function(x) {
+    x = tolower(as.character(x))
+    x = gsub("\\\\", "/", x)
+    basename(x)
+  }
   p2_file = paste0(results_dir, "/part2_summary.csv")
   if (file.exists(p2_file)) {
     p2 = tryCatch(
@@ -695,6 +744,7 @@ build_epoch_lists_by_day = function(metadatadir = c(),
     )
     if (!is.null(p2) && all(c("filename", "ID") %in% names(p2))) {
       id_map = unique(p2[, c("filename", "ID")])
+      id_map$filename_norm = normalize_filename(id_map$filename)
     }
   }
 
@@ -758,7 +808,8 @@ build_epoch_lists_by_day = function(metadatadir = c(),
 
     # Attach ID via filename if mapping is available
     if (!("ID" %in% names(df)) && !is.null(id_map) && !is.na(filename_val)) {
-      id_match = id_map[id_map$filename == filename_val, , drop = FALSE]
+      filename_norm = normalize_filename(filename_val)
+      id_match = id_map[id_map$filename_norm == filename_norm, , drop = FALSE]
       if (nrow(id_match) > 0) {
         df$ID = id_match$ID[1]
       }
