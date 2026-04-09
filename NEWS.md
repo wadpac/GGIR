@@ -1,6 +1,10 @@
 # CHANGES IN GGIR VERSION 3.3-?
 
-- Documentation: Remove suggestion that configfile can be used to store annotations inside the configuration file to keep focus on the main purpose of the configfile, which is to facilitate reproducing analysis. #1473
+- Documentation: 
+
+  - Remove suggestion that configfile can be used to store annotations inside the configuration file to keep focus on the main purpose of the configfile, which is to facilitate reproducing analysis. #1473
+
+  - Updated documentation in chapter 13 (Circadian Rhythm Analyses). #1494
 
 - Part 6: Enable extraction of participant ID from filename consistent with the other parts #1478
 
