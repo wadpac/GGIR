@@ -27,6 +27,7 @@ Authors@R: c(person("Vincent T","van Hees",role=c("aut","cre"),
              person("Victor","Barreto Mesquita", role="ctb",
                     email="victormesquita40@hotmail.com"),
              person("Gaia","Segantin",role="ctb"),
+             person("Xiaoyu","Zong",role="ctb", comment = c(ORCID = "0000-0001-5646-710X")),
              person("Medical Research Council UK",  role = c("cph", "fnd")),
              person("Accelting",  role = c("cph", "fnd")),
              person("French National Research Agency",  role = c("cph", "fnd"))

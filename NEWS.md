@@ -1,7 +1,10 @@
-
 # CHANGES IN GGIR VERSION 3.3-?
 
 - Part 5: Remove variables lastHour and lastDate from csv output and dictionary as they were included by accident #1472
+
+- Documentation: Remove suggestion that configfile can be used to store annotations inside the configuration file to keep focus on the main purpose of the configfile, which is to facilitate reproducing analysis. #1473
+
+- Part 6: Enable extraction of participant ID from filename consistent with the other parts #1478
 
 # CHANGES IN GGIR VERSION 3.3-5
 
