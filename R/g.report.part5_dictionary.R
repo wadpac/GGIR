@@ -65,6 +65,11 @@ g.report.part5_dictionary = function(metadatadir, params_output) {
           what = "Time accumulated"
         } else if ("ACC" %in% elements) {
           what = "Mean acceleration"
+          if ("median" %in% elements) {
+            what = "Median acceleration"
+          } else if ("stdev" %in% elements) {
+            what = "Standard deviation of acceleration"
+          }
         } else if ("Nbouts" %in% elements) {
           what = "Number of bouts"
         } else if ("Nblocks" %in% elements) {
