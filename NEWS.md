@@ -4,6 +4,8 @@
 
 - Part 6: Enable extraction of participant ID from filename consistent with the other parts #1478
 
+- Part 5: Variable dictionary, now also documents ACC_spt_mg, ACC_spt_mg_median, and ACC_spt_mg_stdev. #1490
+
 # CHANGES IN GGIR VERSION 3.3-5
 
 - Part 2: Walking bout detection expanded to allow for multiple cadence and acceleration thresholds. #1466
