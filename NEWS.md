@@ -2,8 +2,12 @@
 
 - Documentation: Remove suggestion that configfile can be used to store annotations inside the configuration file to keep focus on the main purpose of the configfile, which is to facilitate reproducing analysis. #1473
 
-- Part 6: Enable extraction of participant ID from filename consistent with the other parts #1478
+- Part 6: 
 
+  - Enable extraction of participant ID from filename consistent with the other parts #1478
+
+  - Improve speed calculation of DFA analysis using a vectorized approach #1499
+  
 - Part 5: Variable dictionary, now also documents ACC_spt_mg, ACC_spt_mg_median, and ACC_spt_mg_stdev. #1490
 
 # CHANGES IN GGIR VERSION 3.3-5
