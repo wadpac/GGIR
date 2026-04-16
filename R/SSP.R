@@ -116,5 +116,5 @@ SSP = function(data, scale = 2^(1/8), box_size = 4, m = 1, epochSize){
       alpha_2 = NA
     }
   }
-  return(list(alpha_overall = alpha_overall, alpha_1 = alpha_1, alpha_2 = alpha_2))
+  return(list(alpha_overall = alpha_hat, alpha_1 = alpha_1, alpha_2 = alpha_2))
 } 
