@@ -165,6 +165,7 @@ find a description and default value for all the arguments.
 | qM5L5                       | 2                 | params_247               |
 | MX.ig.min.dur               | 2                 | params_247               |
 | qwindow_dateformat          | 2                 | params_247               |
+| part2CR                     | 2                 | params_247               |
 | anglethreshold              | 3                 | params_sleep             |
 | timethreshold               | 3                 | params_sleep             |
 | ignorenonwear               | 3                 | params_sleep             |

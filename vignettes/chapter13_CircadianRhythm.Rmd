@@ -33,11 +33,11 @@ Within GGIR part 2 MXLX is calculated per calendar day and, if argument `qwindow
 
 The MX metric described here should not be confused by the MX metrics as proposed by [Rowlands et al.](https://doi.org/10.1186/s40798-019-0225-9) which looks at accumulated most active time which may not always be continuous in time. The MX metrics by Rowlands et al. are discussed [here](https://wadpac.github.io/GGIR/articles/chapter7_DescribingDataWithoutKnowingSleep.html#sets-of-quantiles-mx-metrics-by-rowlands-et-al-).
 
-## (Extended) Cosinor analysis {#extended-cosinor-analysis}
+## (Extended) Cosinor analysis
 
 The Cosinor analysis quantifies the circadian 24 hour cycle. Cosinor analysis refers to fitting a cosine function to a log transformed time series, while the extended cosinor analysis refers to fitting a non-linear transformation of the traditional cosinor curve to after Marler et al. Statist. Med. 2006 (doi: 10.1002/sim.2466).
 
-Cosinor analysis is applied in GGIR Part 2 and Part 6, yet it is not run by default. In part 2, the parameter `cosinor = TRUE` enables this analysis. In part 6, GGIR relies in parameter `part6CR = TRUE` for running the full circadian rhythm analyses, including the Cosinor and Extended Cosinor. The implementation is as follows:
+Cosinor analysis is applied in GGIR Part 2 and Part 6, yet it is not run by default. In part 2, the parameter `part2CR = TRUE` enables this analysis. In part 6, GGIR relies in parameter `part6CR = TRUE` for running the full circadian rhythm analyses, including the Cosinor and Extended Cosinor. The implementation is as follows:
 
 1.  The acceleration metric as specified with parameter `acc.metric` is used.
 2.  Acceleration metric values are averaged per minute and expressed in m*g* if the input is in *g*, and then log transformed as `log(acceleration + 1)`.
@@ -72,7 +72,7 @@ Phi indicates how correlated the multi-day acceleration time series is with itse
 
 ## Activating the calculation of IS, IV, and phi
 
-It is important to note that the calculation of the metrics IS, IV, and phi is tied to the performance of the (Extended) Cosinor analyses. Therefore, to get these metrics both in part 2 and part 6, you need to activate the Cosinor analyses with `cosinor = TRUE` in part 2 and with `part6CR = TRUE` in part 6, as described [here](#extended-cosinor-analysis).
+The parameter `part2CR = TRUE` enables the calculation of metrics IS, IV, and phi in part 2, and the parameter `part6CR = TRUE` in part 6.
 
 ## Detrended fluctuation analysis (DFA)
 
