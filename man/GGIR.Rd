@@ -1715,8 +1715,14 @@ GGIR(mode = 1:5,
 
       \item{cosinor}{
         Boolean (default = FALSE). Whether to apply the cosinor analysis from the ActCR package in part 2.
-        In part 6 cosinor analysis is applied by default and cannot be turned off.}
-        
+        In part 6 cosinor analysis is applied by default and cannot be turned off.
+        This parameter will be deprecated, for now its value overwrites part2CR in the 
+        case that \code{cosinor = TRUE} and \code{part2CR = FALSE}}
+      
+      \item{part2CR}{
+        Boolean (default = FALSE). Whether to circadian rhythm analysis should be run in
+        part 2, including: cosinor analysis, extended cosinor analysis, IS, IV, and phi.}
+      
       \item{part6CR}{
         Boolean (default = FALSE) to indicate whether circadian rhythm analysis should
         be run by part 6, this includes: cosinor analysis, extended cosinor analysis,
