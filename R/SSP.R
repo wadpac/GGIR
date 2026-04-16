@@ -11,10 +11,11 @@
 #- @param scale Specifies the ratio between successive box sizes (by default scale = 2^(1/8))
 #- @param box_size Vector of box sizes (must be used in conjunction with scale = "F")
 #- @param m An integer of the polynomial order for the detrending (by default m=1)
+#- @param epochSize An integer with epoch length in seconds
 #-
 #- @details The DFA fluctuation can be computed in a geometric scale or for different choices of boxes sizes.
 #-
-#- @return Estimated alpha is a real number between zero and two.
+#- @return Estimated alpha, alpha_1, and alpha_2: real number between zero and two.
 #- 
 #- @note It is not possible estimating alpha for multiple time series at once. 
 #-
@@ -30,7 +31,7 @@
 #- SSP(sunspot.year, scale = 2)
 #- SSP(sunspot.year, scale = 1.2)
 
-SSP = function(data, scale = 2^(1/8), box_size = 4, m = 1){
+SSP = function(data, scale = 2^(1/8), box_size = 4, m = 1, epochSize){
   
   # Helper to replicate the fluctuation analysis using sapply later
   calc_fluctuation = function(n, y, N_total) {
@@ -69,7 +70,7 @@ SSP = function(data, scale = 2^(1/8), box_size = 4, m = 1){
     data = data[, 1]
   }
   if (length(data) <= box_size || any(is.na(data))) {
-    alpha_hat = NA
+    return(list(alpha_overall = NA, alpha_1 = NA, alpha_2 = NA))
   } else {
     # Box size calculation (imitating DFA() function)
     N = length(data)
@@ -87,10 +88,33 @@ SSP = function(data, scale = 2^(1/8), box_size = 4, m = 1){
 
     # Apply to all box sizes
     dfa_values = sapply(box_sizes, calc_fluctuation, y = y_k, N_total = N)
-
-    # Final Alpha Calculation
+    
+    # Convert box sizes to minutes to apply boundaries for alpha_1 and alpha_2
+    box_sizes_min = box_sizes * epochSize / 60
+    
+    # OUTPUT ----
+    
+    # 1. Overal Alpha (SSP)
     model = lm(log(dfa_values) ~ log(box_sizes))
     alpha_hat = as.numeric(coef(model)[2])
+    
+    # 2. alpha_1 (<= 90 minutes)
+    idx_1 = which(box_sizes_min <= 90)
+    if (length(idx_1) >= 3) { # required at least 3 values to fit the lm
+      model_1 = lm(log(dfa_values[idx_1]) ~ log(box_sizes[idx_1]))
+      alpha_1 = as.numeric(coef(model_1)[2])
+    } else {
+      alpha_1 = NA
+    }
+    
+    # 3. Final Alpha_2 Calculation (Between 120 and 600 minutes)
+    idx_2 = which(box_sizes_min >= 120 & box_sizes_min <= 600)
+    if (length(idx_2) >= 3) {
+      model_2 = lm(log(dfa_values[idx_2]) ~ log(box_sizes[idx_2]))
+      alpha_2 = as.numeric(coef(model_2)[2])
+    } else {
+      alpha_2 = NA
+    }
   }
-  return(alpha_hat)
+  return(list(alpha_overall = alpha_overall, alpha_1 = alpha_1, alpha_2 = alpha_2))
 } 
