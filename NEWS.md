@@ -1,4 +1,4 @@
-# CHANGES IN GGIR VERSION 3.3-?
+# CHANGES IN GGIR VERSION 3.3-???
 
 - Part 5: Updates related to nap detection.
 
@@ -19,6 +19,24 @@
   - Parameter require_good_neighbours_part5 added to control whether both neighbouring two SPT windows need to be guided by sleeplog (if available) and have sufficient wear time.
 
 - Part 2: Parameter nonwearFilterWindow can now also use diary path directly, which now allows for filtering based on a one or specific diary while qwindow can be used for day segment analysis #1373
+
+# CHANGES IN GGIR VERSION 3.3-?
+
+- Part 5: Remove variables lastHour and lastDate from csv output and dictionary as they were included by accident #1472
+
+- Documentation: Remove suggestion that configfile can be used to store annotations inside the configuration file to keep focus on the main purpose of the configfile, which is to facilitate reproducing analysis. #1473
+
+- Part 6: Enable extraction of participant ID from filename consistent with the other parts #1478
+
+- Part 5: Variable dictionary, now also documents ACC_spt_mg, ACC_spt_mg_median, and ACC_spt_mg_stdev. #1490
+
+# CHANGES IN GGIR VERSION 3.3-5
+
+- Part 2: Walking bout detection expanded to allow for multiple cadence and acceleration thresholds. #1466
+
+- Part 2: Re-factor and tidy-up code related to data_masking_strategy 3 and 5 and study dates file. The resolution for the rolling window used in data_masking_strategy 3 is now higher (5 seconds by default). #1458
+
+- Part 4: Remove duplicated column N_nights_guider_corrected in output file part4_summary_sleep_cleaned.csv when parameter guider_cor_do=TRUE. #1448
 
 # CHANGES IN GGIR VERSION 3.3-4
 
