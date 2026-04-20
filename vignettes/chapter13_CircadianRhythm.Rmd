@@ -18,12 +18,16 @@ Circadian rhythm are the physical, mental, and behavioral changes an organism ex
 
 Most of the techniques are applied in both GGIR part 2 and 6. The main differences between these implementations are:
 
-- In GGIR part 2 the circadian rhythm analysis tries to use every valid data point in the recording.
-- In GGIR part 6 the circadian rhythm analysis uses a specific time window as defined by the user, e.g. from first wake-up time till before last wake-up time, and omits entire days that are considered invalid or incomplete.
+-   In GGIR part 2 the circadian rhythm analysis tries to use every valid data point in the recording.
+-   In GGIR part 6 the circadian rhythm analysis uses a specific time window as defined by the user, e.g. from first wake-up time till before last wake-up time, and omits entire days that are considered invalid or incomplete.
 
 As a result, when your intention is to compare physical activity or sleep estimates derived in GGIR, part 6 estimates ensure that the same days and time points are used as in the other parts of GGIR. Whereas, part 2 does not attempt to do so.
 
 Further, part 6 offers a few additional circadian rhythm estimates such as DFA (discussed below), and when fragmentation analysis is turned on (see parameter `frag.metrics` as discussed in the [next chapter](https://wadpac.github.io/GGIR/articles/chapter14_BehaviouralFragmentation.html)) activity and sleep fragmentation are also estimated.
+
+## Controlling which circadian rhythm estimates are derived
+
+Cosinor, IV, IS, and phi as discussed below are not derived by default. To activate them set parameters `part2CR = TRUE` and `part6CR = TRUE`, for part 2 and part 6 respectively. MXLX as discussed below is run by default in part 2 irrespective of how `part2CR` is set. However, in part 6 MXLX is only run when `part6CR = TRUE`.
 
 ## MXLX
 
@@ -37,7 +41,7 @@ The MX metric described here should not be confused by the MX metrics as propose
 
 The Cosinor analysis quantifies the circadian 24 hour cycle. Cosinor analysis refers to fitting a cosine function to a log transformed time series, while the extended cosinor analysis refers to fitting a non-linear transformation of the traditional cosinor curve to after Marler et al. Statist. Med. 2006 (doi: 10.1002/sim.2466).
 
-Corinos analyssis are not run by default, to tell GGIR to perform these analyse specify parameter `cosinor = TRUE`. The implementation is as follows:
+The implementation of Cosinor and Extended Cosinor in GGIR is as follows:
 
 1.  The acceleration metric as specified with parameter `acc.metric` is used.
 2.  Acceleration metric values are averaged per minute and expressed in m*g* if the input is in *g*, and then log transformed as `log(acceleration + 1)`.
@@ -55,39 +59,34 @@ IV and IS were first proposed by [Witting W et al. 1990](https://doi.org/10.1016
 
 -   IS measures how constant is the routine of activity over several days and ranges from 0 to 1, values close to 1 indicate more constant routine.
 
--   IV measures the variability in activity hour by hour throughout the days. It ranges from 0 to +$\infty$, value close to 2 indicates more fragmented rhythm, and \>2 indicates ultradian rhythm (very uncommon).
+-   IV measures the variability in activity hour by hour throughout the days. It ranges from 0 to +$\infty$, value close to 2 indicates more fragmented rhythm, and \>2 indicates ultradian rhythm (cycles occurring more frequently than once a day, very uncommon).
 
 The GGIR implementation of IV and IS since GGIR release 3.1-6 has been described in [Danilevicz et al. 2024](https://doi.org/10.1186/s12874-024-02255-w). This implementation replaces the experimental implementation of IS and IV that was present in GGIR since release 1.5-1. In the experimental implementation we were not sure how to go from raw acceleration signal to an indicator of being active as this aspect was not documented in the original publications. Similarly, we were not sure how to deal with missing data. However, these issues were both resolved in release 3.1-6:
 
--   Being active is now defined as a mean acceleration metric value above the light physical activity threshold as specified with parameter `threshold.lig`.
+-   Being active is now defined as a mean acceleration metric value above the light physical activity threshold as specified with parameter `threshold.lig`. In the case that more than a `threshold.lig` is defined (e.g., `threshold.lig = c(40, 60)`), GGIR will use the first value provided in Part 2, and the specific threshold indicated by parameter `part6_threshold_combi` in Part 6.
 -   Missing values are left missing and not imputed, the algorithm now accounts for this.
 
 The new implementation as documented by [Danilevicz et al. 2024](https://doi.org/10.1186/s12874-024-02255-w) is not compatible with the older experimental implementation. Parameters `IVIS.activity.metric`, `IVIS_windowsize_minutes`, `IVIS_epochsize_seconds`, and `IVIS_acc_threshold` that were used before is no longer needed and have been deprecated.
 
-**Cosinor analysis compatible IV and IS**
-
-IS is sometimes used as a measure of behavioural robustness when conducting Cosinor analysis. However, to work with the combination of the two outcomes it seems important that IS is calculated from the same time series. Therefore, when `cosinor = TRUE,` IV and IS are calculated twice: Once as part of the default IV and IS analysis as discussed above, and once as part of the Cosinor analysis using the same log transformed time series.
-
-The Cosinor-compatible IV and IS estimates are stored as output variables `cosinorIV` and `cosinorIS`.
+IS is sometimes used as a measure of behavioural robustness when conducting Cosinor analysis. However, to work with the combination of the two outcomes it is important that IS is calculated from the same time series. 
 
 ## phi
 
 Phi indicates how correlated the multi-day acceleration time series is with itself when there is an hour shift, also known as first-order auto-correlation from the first-order autoregressive model AR(1). A higher phi value indicates a higher autocorrelation, while a phi close to zero or even negative indicates more fragmented behavior. For a detailed discussion of phi see [Dickey and Fuller (1979)](https://doi.org/10.1080/01621459.1979.10482531) and [Danilevicz et al. 2024](https://doi.org/10.1186/s12874-024-02255-w). Phi is calculated by default in GGIR part 2 and in part 6 only when parameter `part6CR` is set to TRUE.
 
-## Detrended fluctionation analysis (DFA)
+## Detrended fluctuation analysis (DFA)
 
-### Self-similarity paramerter (SSP)
+### Self-Similarity Parameter (SSP)
 
-The self-similarity paramter (SSP) is also known as scaling exponent or alpha. SSP is a real number between zero and two. Values in the range (0, 1) indicate stationary motion behaviour. Values int he range (1, 2 indicate nonstationary motion behaviour. For details see [Mesquita et al 2020](https://doi.org/10.1093/bioinformatics/btaa955) and [Danilevicz et al. 2024](https://doi.org/10.1186/s12874-024-02255-w).
+The self-similarity parameter (SSP) is also known as scaling exponent or alpha. SSP is a real number between zero and two. Values in the range (0, 1) indicate stationary motion behaviour. Values in the range (1, 2) indicate non-stationary motion behaviour. For details see [Mesquita et al 2020](https://doi.org/10.1093/bioinformatics/btaa955) and [Danilevicz et al. 2024](https://doi.org/10.1186/s12874-024-02255-w).
 
 ### Activity Balance Index (ABI)
 
-The Activity Balance Index (ABI) was introduced by [Danilevicz et al. 2024](https://doi.org/10.1186/s12874-024-02255-w) and is a transformation of SSP. ABI measures how the activity over the observed period is balanced, higher values reflect a more balanced pattern of activity. ABI is a real number between zero and one and calculated from the acceleration metric time series directly without the need for cut-points.
+The Activity Balance Index (ABI) was introduced by [Danilevicz et al. 2024](https://doi.org/10.1186/s12874-024-02255-w) and is a transformation of SSP. ABI measures how the activity over the observed period is balanced, higher values reflect a more balanced pattern of activity. ABI is a real number between zero and one and calculated from the acceleration metric time series directly without the need for cut-points. A higher ABI reflects a more balanced pattern of activity.
 
 ### Sleep Regularity Index (SRI)
 
-A discussion of the Sleep Regularity Index can be found in
-<https://wadpac.github.io/GGIR/articles/SleepRegularityIndex.html>
+A discussion of the Sleep Regularity Index can be found in <https://wadpac.github.io/GGIR/articles/SleepRegularityIndex.html>
 
 ## Related output
 
