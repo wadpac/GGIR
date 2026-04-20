@@ -138,8 +138,8 @@ The step bout detection functionality automatically uses all acceleration metric
 To control the criteria for bout detection, include in your `myfun` object the items:
 
 - `ebout.dur` a numeric vector of length 1 or larger with the minimum bout duration(s) of interest, e.g. `ebout.dur = c(1, 5, 10)`.
-- `ebout.th.cad` a single number being the minimum cadence value in steps per minute, e.g. `ebout.th.cad = 30`.
-- `ebout.th.acc` a single number being the minimum acceleration value in steps per minute, e.g. `ebout.th.acc = 50`.
+- `ebout.th.cad` a numeric vector of length 1 or larger being the minimum cadence value in steps per minute, e.g. `ebout.th.cad = 30`.
+- `ebout.th.acc` a numeric vector of length 1 or larger being the minimum acceleration value in steps per minute, e.g. `ebout.th.acc = 50`.
 - `ebout.criter` a single number as a fraction of 1 being the faction of a bout for which the inclusion criteria need to be met identical to `boutcriter` in the context of physical activity bouts, e.g. `ebout.criter = 0.8`.
 - `ebout.condition` whether cadence and acceleration condition are both required (`ebout.condition = "AND"`) or either of the conditions is required (`ebout.condition = "OR"`). If both cadence and acc need to meet a thresholds then fill in `"AND"`. If it also acceptable if only one of the thresholds is met then fill in `"OR"`. If you do not want cadence or acceleration to be used in the equation then simply set `ebout.th.cad = 0` or `ebout.th.acc = 0`.
 

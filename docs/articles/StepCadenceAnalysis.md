@@ -207,10 +207,11 @@ object the items:
 
 - `ebout.dur` a numeric vector of length 1 or larger with the minimum
   bout duration(s) of interest, e.g. `ebout.dur = c(1, 5, 10)`.
-- `ebout.th.cad` a single number being the minimum cadence value in
-  steps per minute, e.g. `ebout.th.cad = 30`.
-- `ebout.th.acc` a single number being the minimum acceleration value in
-  steps per minute, e.g. `ebout.th.acc = 50`.
+- `ebout.th.cad` a numeric vector of length 1 or larger being the
+  minimum cadence value in steps per minute, e.g. `ebout.th.cad = 30`.
+- `ebout.th.acc` a numeric vector of length 1 or larger being the
+  minimum acceleration value in steps per minute,
+  e.g. `ebout.th.acc = 50`.
 - `ebout.criter` a single number as a fraction of 1 being the faction of
   a bout for which the inclusion criteria need to be met identical to
   `boutcriter` in the context of physical activity bouts,

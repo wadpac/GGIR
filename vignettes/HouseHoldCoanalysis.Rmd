@@ -79,14 +79,13 @@ GGIR(mode = 1:5,
      save_ms5rawlevels = TRUE, # Not necessary because GGIR will set this to TRUE when part6HCA is TRUE.
      save_ms5raw_without_invalid = FALSE, # <= Needed for household co-analysis
      part5_agg2_60seconds = TRUE,
-     visualreport = FALSE) 
-     
+     visualreport = FALSE)
 ```
 
-# Household co-analysis
+# Household co-analysis components
 
 In GGIR part 1, 2, 3, 4, and 5 each recording is processed individually without
-considering relations between recordings. Next, part 6 is subdivided in alligning
+considering relations between recordings. Next, part 6 is subdivided in aligning
 the time series produced by part 1 and 5 per household, and the pairwise analysis of the data.
 
 ## Align individuals
