@@ -439,7 +439,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         params_247[["LUX_day_segments"]] = c(params_247[["LUX_day_segments"]], 24)
       }
     }
-    if (params_247[["cosinor"]] == TRUE & params_247[["part2CR"]] == FALSE) {
+    if (params_247[["cosinor"]] == TRUE && params_247[["part2CR"]] == FALSE) {
       params_247[["part2CR"]] = TRUE
     }
     # params 247 & params output
