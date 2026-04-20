@@ -343,7 +343,7 @@ activity intensity classification with cut-points.
 \*Cut-points derived from applying the Youden index on ROC curves.\
 \*\* Cut-points derived from increasing Sensitivity over Specificity for light and vice versa for moderate on ROC curves (see [paper](https://doi.org/10.1080/02640414.2018.1555904) for more details).\
 ^†^ These publications used acceleration metrics that sum their values per epoch rather than average them per epoch like GGIR does. So, to use their cut-point in GGIR, we provide a scaled version of the cut-points presented in the paper as: `(CutPointFromPaper_in_gmins/(sampleRateFromPaper * EpochLengthInSecondsPaper)) * 1000`
-^‡^ More cut-points excluding data on aided walking and washing up activities can be found in the [publication](https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7).
+^‡^ More cut-points excluding data on aided walking and washing up activities can be found in the [publication](https://doi.org/10.1186/s13102-020-00196-7).
 
 # Notes on cut-point validity
 

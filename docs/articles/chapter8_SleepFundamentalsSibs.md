@@ -1,0 +1,248 @@
+# 8. Sleep Fundamentals: Sustained Inactivity Bout Detection (SIB)
+
+Sleep analysis in GGIR comes at three stages:
+
+1.  The discrimination of sustained inactivity and wakefulness periods,
+    discussed in this chapter.
+
+2.  Identification of time windows that guide the eventual sleep
+    detection, as discussed in the next chapter.
+
+3.  Assess overlap between the windows identified in step 1 and 2, which
+    we use to define the Sleep Period Time window (SPT) or the time in
+    bed window (TimeInBed) as discussed in chapter 10.
+
+The term “sleep” is somewhat controversial in the context of
+accelerometry, because accelerometers can only capture lack of movement,
+while sleep is not formally defined by a lack of movement. To
+acknowledge this, GGIR refers to these classified ‘sleep’ periods as
+**sustained inactivity bouts abbreviated as SIB**. However, we use the
+term sleep in GGIR to denote the broader topic of describing the main
+resting period in the day.
+
+Most SIB detection algorithms are designed for wrist-worn data. No
+evidence exists that they are informative for other wear locations.
+However, if your main interest is in daytime behaviour and not in sleep,
+you can still use them. In that case set parameter `relyonguider = TRUE`
+in combination with any of the SIB algorithms described below. GGIR will
+then rely on the guider (discussed in next chapter) to define the Sleep
+Period Time window (this is, the main episode of sleep in the day) and
+by that the waking hours of the day. The sleep analysis based on the SIB
+detection may not be informative though and best ignored.
+
+GGIR offers the user the choice to identify SIB period with the
+following algorithms:
+
+## SIB: vanHees2015
+
+This algorithm looks for the periods of time where the z-angle does not
+change by more than 5 degrees for at least 5 minutes. This algorithm was
+proposed in a [2015
+article](https://doi.org/10.1371/journal.pone.0142533). The idea behind
+the algorithm is that it is a more interpretable heuristic compared with
+the conventional approaches that use the magnitude of acceleration to
+distinguish sustained inactivity bouts. There is no reason to assume
+that `vanHees2015` is a better or worse reflection of sleep, the
+advancement is purely intended to be in terms of interpretability. The
+`vanHees2015` algorithm is the default. The values 5 and 5 in the
+algorithm can be modified with parameters `anglethreshold` and
+`timethreshold`, but we currently see no basis to recommend doing this
+and advise sticking to default values.
+
+## SIB: NotWorn (EXPERIMENTAL)
+
+**Disclaimer: The status of this SIB algorithm is experimental because
+it has not been described and evaluated in a peer-reviewed publication
+yet. This means revisions to the algorithm can be expected as the
+algorithm matures.**
+
+The algorithms named “NotWorn” for both sib and guider (next chapter)
+are designed for studies where the instruction is to not wear the
+accelerometer during the night. It should be obvious that this does not
+facilitate any meaningful sleep analysis. Nonetheless we need a crude
+estimate of night time versus day time in order for GGIR part 5 to
+characterise day time behaviours.
+
+If this is the case for your dataset then use guider setting
+`HASPT.algo = "NotWorn"` as discussed in the next chapter. Further, we
+recommend combining the using of ‘“NotWorn”’ with: `do.imp = FALSE`,
+`HASPT.ignore.invalid = NA`, and `ignorenonwear = FALSE`.
+
+The detection of sib periods is based on the acceleration metric as
+defined with parameter `acc.metric`.
+
+### Combined with count acceleration metrics
+
+If you are using a count accelereration metric then set
+`HASIB.algo = "NotWorn"`. In part 4 the sib will be set equal to the
+detected guider window. So, effectively guider and sib algorithm are
+identical in this case.
+
+### Combined with gravitational unit acceleration metrics
+
+If you are using an acceleration metrics the expresses acceleration in
+gravitational units then set `HASIB.algo` as you would do if the
+accelerometer was expected to be worn and specify a second guider for
+parameter `HASPT.algo` as discussed int he next chapter,
+e.g. `HASPT.algo = c("NotWorn", "HDCZA)"`. In this way GGIR will first
+search for long non-wear periods as indicator of sleep and use those to
+define the sleep window but if those are not found it will fall back on
+the sib-algortihm as specified with `HASIB.algo`, e.g. `"vanHees2015"`.
+
+## SIB: Count based algorithms (EXPERIMENTAL)
+
+Accelerometers have been used for sleep research since the 1990s.
+However, they did not store their data in gravitational units at
+sub-second level as we use nowadays. Instead they stored their data in
+30 or 60 second epoch aggregates. Although these aggregates are referred
+to as counts by many manufacturers the calculation of counts differs by
+manufacturer.
+
+**Externally derived epoch data**
+
+If you use GGIR with not raw but externally derived epoch data we can
+only assume that the count calculation is consistent with how counts
+were calculated when the sleep detection algortihm was proposed.
+
+**Raw data**
+
+If you apply GGIR to raw data it is critical you select a suitable count
+metric. We have attempted to facilitate several sleep detection
+algorithms from the literature in that period such as "Sadeh1994",
+"ColeKripke1992", "Galland2012", and "Oakley1997". A problem with all
+these algorithms is that the preprocessing done to generate the counts
+is insufficiently described in the literature. For the zero-crossing
+count as used by Sadeh1994 and ColeKripke1992 an attempt has been made
+to collect as much information as could be found and made an educated
+guess on the missing information. The zero-crossing counts are discussed
+in the chapter 4 about acceleration metrics. Note that it is uncertain
+whether the Y-axis direction on modern accelerometers matches the
+direction of the Y-axis in literature because for old studies the
+direction of Y-axis was to our knowledge never clarified.
+
+The Galland2012 and Oakley1997 are based on the specific count
+calculated as used by Oakley and collagues and re-used in all Actiwatch
+and Actiwatch-derived products such as MotionWatch8, Philips Health
+Band. From what I have been able to retrieve from product documentation
+(source The MotionWatch User guide: Issue 1.4.20b, page 30) the count is
+calculated on-board the device in four stages:
+
+1.  The channel perpendicular to the watch is separated and subjected to
+    the bandwidth filtering specified above (3-11Hz).
+2.  The peak acceleration (either positive or negative) during each
+    second is recorded.
+3.  This is compared to a minimum “not moving” threshold of
+    approximately 0.1g. Although, in other places this is referred to as
+    0.05g. Values below this threshold are ignored to simplify the final
+    activity graph.
+4.  The result from each second is summed over the epoch and scaled to
+    produce a standard result in controlled jig testing. This value is
+    then recorded as the MotionWatch count for the epoch.
+
+Currently, GGIR does not attempt to imitate this count calculation.
+Instead Oakley1997 can only be applied when the GGIR input data is from
+any of the devices as listed above.
+
+Once counts are read or calculated we can use the following SIB
+algorithms.
+
+### Sadeh1994
+
+The algorithm proposed by Sadeh et
+al. [link](https://doi.org/10.1093/sleep/17.3.201). To use this set
+parameter `HASIB.algo = "Sadeh1994"` and argument `Sadeh_axis = "Y"` to
+indicate that the algorithm should use the Y-axis of the sensor.
+
+### Galland2012
+
+The algorithm proposed by Galland et
+al. [link](http://dx.doi.org/10.1016/j.sleep.2012.01.018). To use our
+implementation of the Galland2012 algorithm specify parameter
+`HASIB.algo = "Galland2012"`. Further, set `Sadeh_axis = "Y"` to specify
+that the algorithm should use the Y-axis.
+
+### ColeKripke1992
+
+The algorithm proposed by Cole et
+al. [link](https://doi.org/10.1093/sleep/15.5.461), more specifically
+GGIR uses the algortihm proposed in the paper for 10-second
+non-overlapping epochs with counts expressed average per minute. We skip
+the re-scoring steps as the paper showed marginal added value of this
+added complexity. To use the GGIR implementation of this algortihm,
+specify parameters `HASIB.algo = "ColeKripke1992"` and
+`Sadeh_axis = "Y"` to indicate that the algorithm should use the Y-axis
+of the sensor.
+
+### Oakley1997
+
+#### Algorithm origin
+
+This algorithm is often referred to as Oakley et al. 1997. The reference
+gives the impression that there is an academic publication by Oakley
+from 1997, but actually this refers to “Oakley et al. Validation with
+Polysomnography of the Sleepwatch Sleep/Wake Scoring Algorithm used by
+the Actiwatch Activity Monitoring System” which is a two page pdf
+document presenting an evaluation of the algorithm but not the actual
+algorithm. Further, it is unclear in what context it was written, it may
+have been a short conference proceeding but this is not clarified.
+
+The algorithm was originally created by Dr. Oakley and Mr Gary Ungless.
+Cambridge Neurotechnology was co-founded by Dr Nigel Oakley. Additional
+validation work was performed by the company MiniMitter who licensed the
+Actiwatch technology from Cambridge Neurotechnology until 2008 when
+MiniMitter was purchased by Respironics and subsequently Philips who
+also bought all rights to Actiwatch at that time. The same algorithms
+have hence been used by Cambridge Neurotechnology, Philips and by
+CamNtech.
+
+These manufacturers have produced actigraphy devices such as Philips
+Health Band, Actiwatch, MotionWatch8, and Actical.
+
+#### Algorithm
+
+The algorithm takes as input epoch-by-epoch count values. The algorithm
+itself has been communicated by the manufacturers via product
+information documents. For example, Cambridge Neurotechnologiesy shares
+the algorithm via a pdf titled “Information bulletin no.3 sleep
+algorithms” (please contact manufacturer for copy), and for Actiwatch by
+Respironics it was described in “Actiwatch Communication and Sleep
+Analysis Software: Instruction Manual Appendix A” [link to
+pdf](https://johnawinegarden.files.wordpress.com/2015/03/actiwatchsoftware.pdf).
+
+In short, the algorithm uses a weighted sum of the count value of the
+current and surrounding epochs, where weights and number of epochs to be
+used are dependent on the epoch length. The algorithm facilitates 15,
+30, 60, and 120 second epoch lengths. In GGIR we only facilitate 15, 30
+and 60.
+
+The Oakley algorithm uses a threshold of 20, 40 or 80, which is
+documented
+[here](https://wadpac.github.io/GGIR/articles/GGIRParameters.html#oakley_threshold).
+
+To use the GGIR implementation of this algorithm, specify parameter
+`HASIB.algo = "Oakley1997"`.
+
+### Data
+
+Some data formats come with a sleep classification, which can be used by
+setting parameter `HASIB.algo = "data"`. This applies to:
+
+- Fitbit
+- Philips Health Band
+- Actiwatch and Motionwatch
+
+If no sleep classification can be found in the data GGIR will fall back
+on the second value of `HASIB.algo` parameter. For example,
+`HASIB.algo = c("data", "Oakley1997")`.
+
+However, if `HASIB.algo` is specified to one of the before mentioned
+algorithms, GGIR will attempt to apply those algorithms to the data and
+will directly ignore the sleep classification in the data.
+
+## Dealing with expected or detected nonwear time segments
+
+Depending on study protocol we may want to interpret invalid data
+(typically non-wear) differently. When you set parameter
+`ignorenonwear=TRUE` (default) it will ignore any non-wear period for
+the SIB detection. This is useful to prevent nonwear episodes before
+going to bed or after waking up from contributing to sleep.
