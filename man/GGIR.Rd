@@ -1358,14 +1358,15 @@ GGIR(mode = 1:5,
 
       \item{nap_model}{
         Character (default = NULL).
-        To specify classification model. Currently the only option is \"hip3yr\", which
-        corresponds to a model trained with hip data in 3-3.5 olds trained with 
-        parent diary data. This functionality is currently superseded by
+        This functionality is currently superseded by
         nap detection which is triggered by \code{possible_nap_window}
         and \code{possible_nap_dur}. Leave nap_model as NULL when using the new
-        functionality. More documentation to follow in 2025 when development work 
-        has completed.}
-
+        functionality.
+        The old functionality has only option is \"hip3yr\", which
+        corresponds to a model trained with hip data in 3-3.5 olds trained with 
+        parent diary data. However, this will eventually be deprecated.
+      }
+      
       \item{longitudinal_axis}{
         Integer (default = NULL).
         To indicate which axis is the longitudinal axis.
@@ -1417,6 +1418,12 @@ GGIR(mode = 1:5,
         Numeric (default = Inf).
         Maximum acceleration before or after the SIB for the nap to be considered.
         By default this will allow all possible naps.
+      }
+      
+      \item{nap_invalid_crit}{
+        Numeric (default = 1).
+        Fraction of invalid data during candidate naps is expected to below this threshold.
+        The default value of 1 means that by default invalid data is not considered.
       }
 
       \item{possible_nap_gap}{

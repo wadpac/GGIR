@@ -10,7 +10,9 @@
 
   - Add boolean parameter nap_overwrite_behaviourclass to control whether behaviour class or overwritten by naps #967.
 
-  - Parameter threshold.nap added as threshold for the 95th percentile in acceleration during a sib.
+  - Add parameter threshold.nap as threshold for the 95th percentile in acceleration during a sib.
+  
+  - Add parameter nap_invalid_crit to control the fraction of invalid data permitted during a candidate nap. This was hard-coded to 0.1 before and is now 1 by default.
   
 - Part 5:
 
