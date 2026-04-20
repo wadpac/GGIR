@@ -1,5 +1,7 @@
 # CHANGES IN GGIR VERSION 3.3-?
 
+- Part 2: Step/cadence analysis expanded with percentiles in the cadence distribution during stepping bouts. Controlled via new parameter ebout.cad.perc. #1396.
+
 - Part 5: Remove variables lastHour and lastDate from csv output and dictionary as they were included by accident #1472
 
 - Documentation: Remove suggestion that configfile can be used to store annotations inside the configuration file to keep focus on the main purpose of the configfile, which is to facilitate reproducing analysis. #1473
@@ -45,8 +47,6 @@
 - Part 3: Fixed bug in the guider correction algorithm where the main SPT window was directly preceded or followed by candidate (discarded) windows. #1415
 
 # CHANGES IN GGIR VERSION 3.3-1
-
-- Part 2: Step/cadence expanded with a variety of output variables #1398.
 
 - Part 2: Replaces QC plot as pdf file by QC plots as png file per recording to help speed up report generation #1402
 
