@@ -98,7 +98,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "IVIS.activity.metric", "IVIS_acc_threshold",
                        "qM5L5", "MX.ig.min.dur", "M5L5res", "winhr", "LUXthresholds", "LUX_cal_constant",
                        "LUX_cal_exponent", "LUX_day_segments", "L5M5window", "clevels", "SRI2_WASOmin")
-    boolean_params = c("cosinor", "part6CR", "part6HCA", "part6DFA")
+    boolean_params = c("cosinor", "part6CR", "part6HCA", "part6DFA", "part2CR")
     character_params = c("qwindow_dateformat", "part6Window")
     check_class("247", params = params_247, parnames = numeric_params, parclass = "numeric")
     check_class("247", params = params_247, parnames = boolean_params, parclass = "boolean")
@@ -438,6 +438,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       if (params_247[["LUX_day_segments"]][length(params_247[["LUX_day_segments"]])] != 24) {
         params_247[["LUX_day_segments"]] = c(params_247[["LUX_day_segments"]], 24)
       }
+    }
+    if (params_247[["cosinor"]] == TRUE && params_247[["part2CR"]] == FALSE) {
+      params_247[["part2CR"]] = TRUE
     }
     # params 247 & params output
     if (length(params_output[["save_ms5raw_format"]]) == 1 && 

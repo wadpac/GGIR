@@ -1714,9 +1714,15 @@ GGIR(mode = 1:5,
         over which L5M5 needs to be calculated. Now this is done with parameter qwindow.}
 
       \item{cosinor}{
-        Boolean (default = FALSE). Whether to apply the cosinor analysis from the ActCR package in part 2.
-        In part 6 cosinor analysis is applied by default and cannot be turned off.}
-        
+        Boolean (default = FALSE). Whether to apply the circadian rhythm analysis in part 2.
+        This parameter will be superseded by new parameter \code{part2CR} to better reflect
+        that this controls all circadian rhythm parameters. If \code{part2CR} is specified then
+        that setting overwrites \code{cosinor}.}
+      
+      \item{part2CR}{
+        Boolean (default = FALSE). Whether circadian rhythm analysis should be run in
+        part 2, including: cosinor analysis, extended cosinor analysis, IS, IV, and phi.}
+      
       \item{part6CR}{
         Boolean (default = FALSE) to indicate whether circadian rhythm analysis should
         be run by part 6, this includes: cosinor analysis, extended cosinor analysis,
