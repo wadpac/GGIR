@@ -1,8 +1,8 @@
 Package: GGIR
 Type: Package
 Title: Raw Accelerometer Data Analysis
-Version: 3.3-2
-Date: 2025-11-21
+Version: 3.3-4
+Date: 2026-01-27
 Authors@R: c(person("Vincent T","van Hees",role=c("aut","cre"),
                     email="v.vanhees@accelting.com"),
              person("Jairo H","Migueles",role="aut",
@@ -27,6 +27,7 @@ Authors@R: c(person("Vincent T","van Hees",role=c("aut","cre"),
              person("Victor","Barreto Mesquita", role="ctb",
                     email="victormesquita40@hotmail.com"),
              person("Gaia","Segantin",role="ctb"),
+             person("Xiaoyu","Zong",role="ctb", comment = c(ORCID = "0000-0001-5646-710X")),
              person("Medical Research Council UK",  role = c("cph", "fnd")),
              person("Accelting",  role = c("cph", "fnd")),
              person("French National Research Agency",  role = c("cph", "fnd"))

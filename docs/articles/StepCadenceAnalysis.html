@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +49,7 @@
     <li><a class="dropdown-item" href="../articles/chapter14_BehaviouralFragmentation.html">14. Behavioural Fragmentation</a></li>
   </ul>
 </li>
-<li class="nav-item dropdown">
+<li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-annexes" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Annexes</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-annexes">
 <li><a class="dropdown-item" href="../articles/GGIRParameters.html">GGIR Parameters</a></li>
@@ -63,6 +63,7 @@
     <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
     <li><a class="dropdown-item" href="../articles/SleepRegularityIndex.html">Sleep Regularity Index</a></li>
     <li><a class="dropdown-item" href="../articles/NapDetection.html">Nap Detection</a></li>
+    <li><a class="dropdown-item" href="../articles/StepCadenceAnalysis.html">Step and Cadence Analysis</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
@@ -335,11 +336,12 @@ out with both ENMO, ENMOa, and MAD metric then that should work.</p>
 the minimum bout duration(s) of interest,
 e.g. <code>ebout.dur = c(1, 5, 10)</code>.</li>
 <li>
-<code>ebout.th.cad</code> a single number being the minimum cadence
-value in steps per minute, e.g. <code>ebout.th.cad = 30</code>.</li>
+<code>ebout.th.cad</code> a numeric vector of length 1 or larger
+being the minimum cadence value in steps per minute,
+e.g. <code>ebout.th.cad = 30</code>.</li>
 <li>
-<code>ebout.th.acc</code> a single number being the minimum
-acceleration value in steps per minute,
+<code>ebout.th.acc</code> a numeric vector of length 1 or larger
+being the minimum acceleration value in steps per minute,
 e.g. <code>ebout.th.acc = 50</code>.</li>
 <li>
 <code>ebout.criter</code> a single number as a fraction of 1 being
@@ -397,7 +399,7 @@ directly copied into the variable name as <strong>AND</strong> or
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
