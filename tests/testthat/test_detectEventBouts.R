@@ -39,15 +39,13 @@ test_that("Detect bouts in events", {
   
   
   # all bouts of 1 minute have the same estimates as they all meet the cadence and acc criteria
-  expect_equal(as.numeric(eventBouts$daysummary)[1:12], c(rep(c(3.5, 1.0, 3.5), 4)))
+  # bouts of 5 or 10 minutes are undetected with any cadence and acc criteria
+  expect_equal(as.numeric(eventBouts$daysummary)[1:44],
+               c(rep(c(3.5, 1.0, 3.5, 0, 0, 0, 0, 0, 0, 120, 120), 4)))
   
   # expect different estimates are calculated
   expect_true("ExtFunEvent_number_B5M100%_cad30ANDacc50__anyRandomText" %in% eventBouts$ds_names)
   expect_true("ExtFunEvent_totdur_B1M100%_cad30ANDacc100__anyRandomText" %in% eventBouts$ds_names)
   expect_true("ExtFunEvent_totdur_B1M100%_cad100ANDacc100__anyRandomText" %in% eventBouts$ds_names)
   expect_true("ExtFunEvent_totdur_B1M100%_cad100ANDacc50__anyRandomText" %in% eventBouts$ds_names)
-  
-  # Bouts of 5 or 10 minutes are undetected with any cadence and acc criteria
-  expect_equal(sum(as.numeric(eventBouts$daysummary)[13:36]), 0)
-  
 })

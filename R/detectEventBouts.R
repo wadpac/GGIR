@@ -10,12 +10,14 @@ detectEventBouts = function(myfun, varnum_event, varnum,
   
   # varnum = metashort[anwindices, mi]
   cadence = varnum_event * (60/ws3)
-  track_bouts = rep(0, length(cadence))
-  # Event bouts
+  
+  
   # Loop over cadence thresholds
   for (cad_th in myfun$ebout.th.cad) {
     # Loop over acceleration thresholds
     for (acc_th in myfun$ebout.th.acc) {
+      # Event bouts
+      track_bouts = rep(0, length(cadence))
       # Loop over bout durations
       for (boutdur in myfun$ebout.dur) {
         boutduration = boutdur * (60/ws3) # per minute
