@@ -102,7 +102,7 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                       part6CR = FALSE, part6HCA = FALSE,
                       part6Window = c("start", "end"),
                       part6DFA = FALSE, clevels = c(30, 150),
-                      SRI2_WASOmin = 30)
+                      SRI2_WASOmin = 30, part2CR = FALSE)
 
   }
   if ("phyact" %in% topic) {
