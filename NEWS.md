@@ -12,7 +12,15 @@
 
   - Variable dictionary, now also documents ACC_spt_mg, ACC_spt_mg_median, and ACC_spt_mg_stdev. #1490
 
-- Part 6: Enable extraction of participant ID from filename consistent with the other parts #1478
+- Part 6: 
+
+  - Enable extraction of participant ID from filename consistent with the other parts #1478
+
+  - Improve speed calculation of DFA analysis using a vectorized approach #1499
+  
+  - Included Piecewise DFA analysis: short-term (box sizes < 90 min) and long-term (box-sizes 2-to-10 hours) #1501
+
+- Part 5: Variable dictionary, now also documents ACC_spt_mg, ACC_spt_mg_median, and ACC_spt_mg_stdev. #1490
 
 # CHANGES IN GGIR VERSION 3.3-5
 
