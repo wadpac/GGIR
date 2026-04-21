@@ -14,7 +14,7 @@ GGIR does not have a build-in step detection algorithm, but does facilitate the 
 
 The only external algorithm for step detection currently available for GGIR is the Verisense algorithm, which was design for data collected on the wrist. The algorithm has been described and evaluated in studies by [Maylor 2022](https://doi.org/10.3390/s22249984) and [Rowlands 2022](https://doi.org/10.1080/02640414.2022.2147134).
 
-The original [Verisense algortihm code](https://github.com/ShimmerEngineering/Verisense-Toolbox/tree/master/Verisense_step_algorithm) is not actively maintained at the time of writing this documentation. An [improved copy of the Verisense algortihms code](https://github.com/wadpac/GGIR/blob/master/user-scripts/verisense_count_steps.R) with minor bug fixes is part of the GGIR GitHub repository.
+The original [Verisense algortihm code](https://github.com/ShimmerResearch/Verisense-Toolbox/tree/master/Verisense_step_algorithm) is not actively maintained at the time of writing this documentation. An [improved copy of the Verisense algortihms code](https://github.com/wadpac/GGIR/blob/master/user-scripts/verisense_count_steps.R) with minor bug fixes is part of the GGIR GitHub repository.
 
 
 ### How to use the Verisense algorithm?

@@ -30,7 +30,7 @@ g.report.part5_dictionary = function(metadatadir, params_output) {
   ds = grep("^part5_daysummary", basename(reports))[1]
   ps = grep("^part5_personsummary", basename(reports))[1]
   reports = reports[c(ds, ps)]
-  if (length(reports) == 0 || all(is.na( reports))) {
+  if (length(reports) == 0 || all(is.na(reports))) {
     # No cleaned part 5 report probably because no valid windows, so try full report instead
     reports = dir(file.path(metadatadir, "results", "QC"), full.names = TRUE, 
                     pattern = "^part5.*\\.csv$")
@@ -65,6 +65,11 @@ g.report.part5_dictionary = function(metadatadir, params_output) {
           what = "Time accumulated"
         } else if ("ACC" %in% elements) {
           what = "Mean acceleration"
+          if ("median" %in% elements) {
+            what = "Median acceleration"
+          } else if ("stdev" %in% elements) {
+            what = "Standard deviation of acceleration"
+          }
         } else if ("Nbouts" %in% elements) {
           what = "Number of bouts"
         } else if ("Nblocks" %in% elements) {
@@ -209,7 +214,7 @@ g.report.part5_dictionary = function(metadatadir, params_output) {
         if (is.null(what)) {
           if ("sleeponset" %in% elements | "wakeup" %in% elements) {
             if ("sleeponset" %in% elements) what = "Sleep onset time"
-            if ("wakeup" %in% elements) what = "Sleep onset time"
+            if ("wakeup" %in% elements) what = "Wake up time"
             if ("ts" %in% elements) {
               unit = "(hh:mm:ss)"
             } else {
