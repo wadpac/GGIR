@@ -1904,9 +1904,17 @@ parameters are used in GGIR
 
 - cosinor:
 
-  Boolean (default = FALSE). Whether to apply the cosinor analysis from
-  the ActCR package in part 2. In part 6 cosinor analysis is applied by
-  default and cannot be turned off.
+  Boolean (default = FALSE). Whether to apply the circadian rhythm
+  analysis in part 2. This parameter will be superseded by new parameter
+  `part2CR` to better reflect that this controls all circadian rhythm
+  parameters. If `part2CR` is specified then that setting overwrites
+  `cosinor`.
+
+- part2CR:
+
+  Boolean (default = FALSE). Whether circadian rhythm analysis should be
+  run in part 2, including: cosinor analysis, extended cosinor analysis,
+  IS, IV, and phi.
 
 - part6CR:
 
