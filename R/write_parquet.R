@@ -12,12 +12,16 @@ write_dashboard_parquet = function(metadatadir = c(),
   # params_output$save_dashboard_parquet is TRUE.
   # It reads the already-generated CSVs, joins them, cleans column names,
   # casts types, embeds the variable dictionary as Parquet key-value metadata,
-  # and writes results/ggir_results.parquet.
+  # and writes results/parquet/ggir_results.parquet.
 
   results_dir = paste0(metadatadir, "/results")
   if (!dir.exists(results_dir)) {
     warning("\nNo results directory found. Skipping Parquet export.", call. = FALSE)
     return(invisible(NULL))
+  }
+  parquet_dir = file.path(results_dir, "parquet")
+  if (!dir.exists(parquet_dir)) {
+    dir.create(parquet_dir, recursive = TRUE, showWarnings = FALSE)
   }
 
   # ---------------------------------------------------------------
@@ -369,7 +373,7 @@ write_dashboard_parquet = function(metadatadir = c(),
     }
   }
   parquet_basename = gsub("[^A-Za-z0-9._-]", "_", parquet_basename)
-  parquet_path = paste0(results_dir, "/", parquet_basename, ".parquet")
+  parquet_path = file.path(parquet_dir, paste0(parquet_basename, ".parquet"))
 
   # Convert to Arrow table so we can attach key-value metadata
   tbl = arrow::arrow_table(consolidated)
@@ -579,6 +583,10 @@ write_epoch_parquet = function(metadatadir = c(),
     warning("\nNo results directory found. Skipping epoch Parquet export.", call. = FALSE)
     return(invisible(NULL))
   }
+  parquet_dir = file.path(results_dir, "parquet")
+  if (!dir.exists(parquet_dir)) {
+    dir.create(parquet_dir, recursive = TRUE, showWarnings = FALSE)
+  }
 
   result = build_epoch_table(metadatadir = metadatadir,
                               params_general = params_general,
@@ -620,7 +628,7 @@ write_epoch_parquet = function(metadatadir = c(),
   # ---------------------------------------------------------------
   # Build Arrow table and attach Parquet key-value metadata
   # ---------------------------------------------------------------
-  parquet_path = paste0(results_dir, "/ggir_epochs.parquet")
+  parquet_path = file.path(parquet_dir, "ggir_epochs.parquet")
 
   tbl = arrow::arrow_table(epoch_df)
 

@@ -4,6 +4,8 @@
 
 - Part 6: Enable extraction of participant ID from filename consistent with the other parts #1478
 
+- Functionality added to save all key output to one parquet file per person. #1460
+
 # CHANGES IN GGIR VERSION 3.3-5
 
 - Part 2: Walking bout detection expanded to allow for multiple cadence and acceleration thresholds. #1466
@@ -27,7 +29,6 @@
 - Part 1: Fix bug that caused GENEAsleep binary data to no longer to be recognised as such since the introduction of functionality for Parmay binary data. #1432
 
 - Part 4:
-
   - Now attempts to handle scenario where an integer participant ID is saved by Excel with decimal places, e.g. 123 versus 123.00. #1256
 
   - Fix bug causing the error about missing object defaultGuiderCorrected. #1438
@@ -87,7 +88,6 @@
 - Part 3: For Fitbit data. Fixed bug in storage of ID format was list should be character, by which part5 could not run. #1330
 
 - Part 5:
-
   - Fix bug in extracting sleep diary when recording starts between midnight and 4am. #1337
 
   - Fix bug that caused sibreport to be stored with timestamps in UTC timezone. #1332
@@ -109,12 +109,11 @@
 - Now generates error message when user provides parameters with unknown names to GGIR function #1300.
 
 - Part 3:
-
   - Add parameters "spt_min_block_dur", "spt_max_gap_dur", "spt_max_gap_ratio", and "HorAngle_threshold" to improve control over algorithms used in part 3 #1295
 
   - Re-factor code corresponding to final 3 steps in HDCZA and HorAngle algorithms. As part of this effort a 1 epoch incorrect offset in window-end was fixed #1295
 
-- Config file: fix minor issue that caused GGIR, GGIRread, and R version to overwrite the last 3 parameters in the config file. #1298 
+- Config file: fix minor issue that caused GGIR, GGIRread, and R version to overwrite the last 3 parameters in the config file. #1298
 
 - Part 1: Detect time gaps in between data (24 hour) chunks. Handle these if less than 1 hours and generate error when larger. #1294
 
@@ -123,17 +122,12 @@
 # CHANGES IN GGIR VERSION 3.2-6
 
 - Part 3 and 4:
-
   - Sleep regularity index (SRI) expanded with option to smooth data. #1269
-  
   - SRI renamed to be SRI1 and documentation updated to clarify difference with new SRI2 in part 6. #1269
-  
   - Added parameters SRI1_smoothing_wsize_hrs and SRI1_smoothing_frac to control optional smoothing for SRI1. #1269
-  
-- Part 6: 
 
+- Part 6:
   - Added SRI2 based on sleep and (currently experimental) naps. #1269
-  
   - Added parameters SRI2_WASOmin to control minimum duration of WASO in SRI2.#1269
 
 - Part 1: Improve recently added functionality to split recordings to handle partial overlap with reference time windows.
@@ -161,7 +155,6 @@ This release primarily includes fixes to minor bugs observed after more elaborat
 # CHANGES IN GGIR VERSION 3.2-4
 
 - Part 1:
-
   - Expand split recording functionality that was added in 3.2-1 with parameter recording_split_ignore_edges. #1278
 
   - Add option to load externally derived epoch data from Actical, Philips Health Band, and Fitbit. #1205
@@ -171,17 +164,14 @@ This release primarily includes fixes to minor bugs observed after more elaborat
 - Part 1 and 5: Now saves marker button data from Actiwatch, MotionWatch8, and Philips Health band to GGIR milestone data and includes it in the visualreport.
 
 - Part 3:
-
   - Added new HASIB.algo option "Oakley1997" as described in the non-public document "Information bulletin no.3 sleep algorithms" as written by Cambridge Neurotechnologies. For which the threshold can be set with new parameter oakley_threshold. #1267
 
   - Added new HASIB.algo option "data", as a way to tell GGIR to use the sleep classification that is stored in the data. Only relevant for externally derived epoch data such as Actiwatch, Fitbit, Sensewear.
-  
   - Added new HASPT.algo option "MotionWare" which is an attempt to imitate the auto-detection of sleep as described in the non-public document by Cambridge Neurotechnologies: Information bulletin no.3 sleep algorithms. #1267
 
   - Added new HASPT.algo option "HLRB", a new heuristic algorithm specific to aid detecting the sleep window based on sustained inactivity bouts. Although intended for Actiwatch/MotionWatch/PHB data it may also work for other data types.
 
   - Added option to utilise marker button data from Actiwatch, MotionWatch8 and Philips Health Band for sleep and nap detection, with new parameter consider_marker_button, impute_marker_button, nap_markerbutton_method, nap_markerbutton_max_distance. #1267
-  
   - Remove code sections relating to the previously deprecated BrondCounts.
 
 - Vignettes: Added Annex page on date and time formats in R.
@@ -199,7 +189,7 @@ This release primarily includes fixes to minor bugs observed after more elaborat
 - Part 4: Now detects duplicated ID in sleeplog and generates error to inform user #1281
 
 - Part 4: No longer shows warning when GGIR part 4 falls back on 9am-7pm guider because it is
-unlikely to be used and if it is used the user will be able to see this in the output. #1281
+  unlikely to be used and if it is used the user will be able to see this in the output. #1281
 
 # CHANGES IN GGIR VERSION 3.2-1
 
@@ -216,101 +206,90 @@ unlikely to be used and if it is used the user will be able to see this in the o
 # CHANGES IN GGIR VERSION 3.2-0
 
 - Part 2:
-
   - Bug fixed in handling part 1 output with the uncommon scenario of having only 1 metric (in object metashort) #1265
 
   - Make sure all event variables are stored in event summary and advanced event variables are skipped until testing is finished #635
 
-- Part 6 and new visual report: Fix bug related to determining the combination of thresholds to use for the 
-  visual report and for part 6 analyses when there are several options and 
+- Part 6 and new visual report: Fix bug related to determining the combination of thresholds to use for the
+  visual report and for part 6 analyses when there are several options and
   part6_threshold_combi is NULL. #1260
 
 - Part 6: Improve robustness of column name initialization for part6 output #1240
 
 - Visualisations:
-
   - Bug fixed in handling recordings that start at midnight #1257
 
   - The new and old general pdf report have been renamed to clarify which one is old (eventually to be deprecated) and which one is new.
 
-  - Report_...pdf has been renamed to old_report_...pdf.
+  - Report*...pdf has been renamed to old_report*...pdf.
 
-  - Time_report...pdf has been renamed to report_...pdf
-  
+  - Time*report...pdf has been renamed to report*...pdf
+
 - Part 3: Default for parameter do.part3.pdf changed from TRUE to FALSE because this visualisation has become redundant with the addition of the new general visual report.
 
 # CHANGES IN GGIR VERSION 3.1-11
 
 - Part 2:
-
-  - Fix bug related to determining the files to be included in the part 2 csv report, 
-  causing some files to be unnecessarily excluded from the part 2 csv report if the number
-  of files in the part 2 milestone data is smaller than than number of milestone files
-  in the part 1 milestone data, because internally it uses the part 1 milestone data
-  file list as reference. #1252
+  - Fix bug related to determining the files to be included in the part 2 csv report,
+    causing some files to be unnecessarily excluded from the part 2 csv report if the number
+    of files in the part 2 milestone data is smaller than than number of milestone files
+    in the part 1 milestone data, because internally it uses the part 1 milestone data
+    file list as reference. #1252
 
   - Speed up activity diary extraction. #1250
 
-  - Make sure part 2 event report, e.g. based on step detection, is saved to csv format 
-  with intended sep_reports and dec_reports parameter values rather than default.
-  
-  - Simplify MVPA parameter specification in part 2 (mvpathreshold, boutcriter). When not 
-  specified, GGIR copies the values from the corresponding part 5 parameter values (threshold.mod and 
-  boutcriter.mvpa). #1247
+  - Make sure part 2 event report, e.g. based on step detection, is saved to csv format
+    with intended sep_reports and dec_reports parameter values rather than default.
+  - Simplify MVPA parameter specification in part 2 (mvpathreshold, boutcriter). When not
+    specified, GGIR copies the values from the corresponding part 5 parameter values (threshold.mod and
+    boutcriter.mvpa). #1247
 
-- Part 2 and 4: Both activity diary and sleep diary are now always reloaded if the derived 
-copy of it (in .RData) is older than the diary itself or if the diary name has changed. #1250
+- Part 2 and 4: Both activity diary and sleep diary are now always reloaded if the derived
+  copy of it (in .RData) is older than the diary itself or if the diary name has changed. #1250
 
-- Visual report: Recently added visual report is now also able to handle epoch sizes not equal 
-to 1 minutes, and now also able to handle recordings 
-with only 1 valid day, these were previously skipped. #1246
+- Visual report: Recently added visual report is now also able to handle epoch sizes not equal
+  to 1 minutes, and now also able to handle recordings
+  with only 1 valid day, these were previously skipped. #1246
 
 - Part 4:
-
   - Improvements to handling dates in sleeplog as a follow-up to work on #1243 in the previous release.
-  
   - Added warning when there are two accelerometer recordings with the same participant ID.
 
-  - Change extraction of imputation code from sleep diary, which is now assumed to 
-  correspond to preceding night. #1251
-  
+  - Change extraction of imputation code from sleep diary, which is now assumed to
+    correspond to preceding night. #1251
+
 - Part 1, 5 and 6: Update code to be backward compatible with R 4.2.0
 
 - Part 5: Default values for parameters `do.sibreport` and `save_ms5rawlevels` changed
-to TRUE, for `save_ms5raw_format` changed to "RData" in order to ease generating visual 
-report, including our explorative nap detection, and working with part 6.
+  to TRUE, for `save_ms5raw_format` changed to "RData" in order to ease generating visual
+  report, including our explorative nap detection, and working with part 6.
 
 # CHANGES IN GGIR VERSION 3.1-10
 
 - Part 4:
-
   - Speed up the loading of advanced format sleeplog
-  
   - Improve automated recognition of date format in sleeplog
 
 # CHANGES IN GGIR VERSION 3.1-9
 
-- Part 3: 
-
+- Part 3:
   - Identification of daylight saving time days in the detection of the spt is improved as it had the risk to misclassify partial last days as daylight saving time.
-  
   - In days classified as daysleeper, the window over which the fraction_night_invalid is calculated now also shifts to 6pm-6pm, as it used to report the nonwear within 12pm-12pm.
-  
+
 - Vignette: Now documented that missing dates can be skipped in advanced format sleeplog.
 
 - Step detection: I have included the Verisense step detection R script inside GitHub repository folder 'user-scripts' to ease future maintenance. Verisense does not seem to be interested in maintaining their code, causing confusion about the latest version and people reaching out to me with questions.
 
 # CHANGES IN GGIR VERSION 3.1-8
 
-- Part 4: 
-
-  - Parameter sib_must_fully_overlap_with_TimeInBed added to control whether sustained inactivity bouts (sib) 
-  must overlap fully with the start and/or end of time in bed to be considered 
-  sleep (default TRUE), this is consistent with functionality in the past, but 
-  offers the freedom to experiment with alternative settings. #1223
+- Part 4:
+  - Parameter sib_must_fully_overlap_with_TimeInBed added to control whether sustained inactivity bouts (sib)
+    must overlap fully with the start and/or end of time in bed to be considered
+    sleep (default TRUE), this is consistent with functionality in the past, but
+    offers the freedom to experiment with alternative settings. #1223
 
   - Handle unexpected combinations of sleep diary column names. For example, if only inbed and wakeup are available then treat these as the time in bed period, while if only sleeponset and outbed are available then these are treated as SPT window.
-  
+
 - Part 5: Expanded functionality for exploring possibility of nap detection, this includes the addition of new parameter possible_nap_gap.
 
 - Visual report: Added new visualreport that is automatically generated when visualreport = TRUE (default) and intended to eventually replace the problematic legacy report. You can set parameter old_visualreport = TRUE to turn off the old visualreport generation. #1173
@@ -320,7 +299,7 @@ report, including our explorative nap detection, and working with part 6.
 - Part 2: Add parameters nonwearFiltermaxHours and nonwearFilterWindow to give user the option to filter short lasting nighttime nonwear #1218.
 
 - Part 5 and 6: part6_threshold_combi when not specified now defaults to first threshold as
-specified for light, moderate and vigorous intensity, respectively.
+  specified for light, moderate and vigorous intensity, respectively.
 
 # CHANGES IN GGIR VERSION 3.1-7
 
@@ -335,48 +314,41 @@ specified for light, moderate and vigorous intensity, respectively.
 # CHANGES IN GGIR VERSION 3.1-6
 
 - Part 6:
-
   - Add DFA functionality #839 (credits: Ian Meneghel Danilevicz and Victor Barreto Mesquita)
 
   - Add fragmentation metrics, same function as in part 5 but now applied at recording level #839
-  
   - Circadian rhythm analysis now ignores invalid nights controlled with new parameter "includecrit.part6".
-  
   - Circadian rhythm analysis now provides consistent results for both regardless of whether time series are stored with or without valid windows with parameter save_ms5raw_without_invalid.
 
-- Part 2 + 6: Revised and simplified IV and IS calculation which now ignores 
-invalid timestamps and also comes with phi statistic (credits: Ian Meneghel Danilevicz). 
-In part 2 we used to have 2 calculations, which is now replaced by just one and 
-applied to all valid data points in the recordings. In part 6 this is repeated 
-for the time window as specified with parameter part6Window. Further, IVIS 
-now uses argument threshold.lig as threshold to distinguish inactivity from 
-active, instead of a hardcoded threshold of 20 mg.
+- Part 2 + 6: Revised and simplified IV and IS calculation which now ignores
+  invalid timestamps and also comes with phi statistic (credits: Ian Meneghel Danilevicz).
+  In part 2 we used to have 2 calculations, which is now replaced by just one and
+  applied to all valid data points in the recordings. In part 6 this is repeated
+  for the time window as specified with parameter part6Window. Further, IVIS
+  now uses argument threshold.lig as threshold to distinguish inactivity from
+  active, instead of a hardcoded threshold of 20 mg.
 
 - Part 2: Increase sensitivity clipping detection from 80% to 30% of a window. If the long epoch has more than 30% of its values close to the dynamic range of the sensor then it will be labelled as clipping.
 
 - Part 4: Now also has copy of part 5 variable ACC_spt_mg.
 
 - Part 5:
-
   - Moving LXMX from part 5 to part 6 as these are circadian rhythm analysis.
-  
   - Omitted fragmentation metrics for spt window as not meaningful given that part 5 only focuses on valid daytime behaviours.
-  
   - includenightcrit.part5 added to allow for controlling inclusion of windows in part 5 based on their amount of valid data during spt window. Default remains the same.
 
   - Fix incorrect usage of part 5 inclusion criteria, which used fraction as percentage.
 
 # CHANGES IN GGIR VERSION 3.1-5
 
-- Part 5: 
-
+- Part 5:
   - Add parameters require_complete_lastnight_part5 to control whether last window is included if last night is incomplete. #1196
 
   - Handle sleeplog times beyond the end of the recording. #1206
 
   - Fixed minor bug in g.part5.addfirstwake causing the first wake is not correctly added when no SIBs are detected in between the start of the recorded and the algorithm or diary based estimate of wakeup time. #1198
 
-  - Revise MM window definition in daylight saving time days, as it assumed fixed day duration of 24 hours #1211 
+  - Revise MM window definition in daylight saving time days, as it assumed fixed day duration of 24 hours #1211
 
 - General: GGIR version look-up in .onattach() no longer crashes when computer is offline, fixes #1203.
 
@@ -393,39 +365,33 @@ active, instead of a hardcoded threshold of 20 mg.
 - Part 3: Update threshold used for HorAngle to 60 degree, and auto-setting HASPT.ignore.invalid to NA when NotWorn guider is used. #1186
 
 - Part 4:
-
   - Fixed issue with merging sleeplog advanced format and acc data starting at midnight, #1188
-  
   - When sleeplog column name is accidentally left empty generate error message, #1138.
 
   - Improved logging of what guider was used when using NotWorn and optional backup guider, #1156
 
   - Skip night in part 4 csv report if guider was NotWorn, #1156
-  
-- Part 5: Fixed bug in g.part5.wakesleepwindows causing the first SPT window in a recording incorrectly to be  defined from the first timestamp in the recording. For details see: #1192
 
+- Part 5: Fixed bug in g.part5.wakesleepwindows causing the first SPT window in a recording incorrectly to be defined from the first timestamp in the recording. For details see: #1192
 
 # CHANGES IN GGIR VERSION 3.1-3
 
 - Report part 4 and 5:
-
   - Fix bug at identifying days and nights specified in the data_cleaning_file #1168
 
 - Part 5: Data dictionary generates error when no valid days are seen dictionary, fixed #1176
-  
 - Part 5: Fix bug in addition of first wake-up time if not present #1179
 
 - Part 2: Correctly skip MXLX calculation when it cannot be calculated, which caused error when trying to use the output. Fixes #1180
 
 - Part 1: Add parameter nonwear_range_threshold to control range threshold for nonwear detection,
-this used to be a constant. And default changed to 50mg. #1172
+  this used to be a constant. And default changed to 50mg. #1172
 
 - Part 4: Improved error message when a sleeplog timestamp is not in expected format. #1184
 
 # CHANGES IN GGIR VERSION 3.1-2
 
 - Part 1:
-
   - Enable timegap imputation for ad-hoc csv data. #1154
 
   - Reduce constraints on value for parameter chunksize #1155.
@@ -437,21 +403,17 @@ this used to be a constant. And default changed to 50mg. #1172
 - Part 3: Fix handling of recordings with only 1 midnight that start before 4am. #1160
 
 - Part 3 and 4:
-
   - Revise NotWorn algorithm to work with both count and raw data with varying degrees of nonwear. Further, when parameter HASPT.algo is set to NotWorn then a second guider can now optionally be specified in case the accelerometer unexpectedly worn by the participant. #1089
 
   - Fix bug in detection of waking up after noon, referred to as daysleeper. #1165
 
 - Report part 5:
-
   - fix bug that was introduced on 2024-Feb-19 in the calculation of wear percentage #1148
-  
   - Rename variable sleep_efficiency to sleep_efficiency_after_onset, #1157
 
 - Vignette: Migrated many sections from main CRAN vignette to wadpac.github.io/GGIR/
 
 - Visualreport: Improve handling of recordings where the accelerometer was not worn.
-
 
 # CHANGES IN GGIR VERSION 3.1-1
 
@@ -462,7 +424,6 @@ this used to be a constant. And default changed to 50mg. #1172
 - Loading GGIR: Stops interactive calling of `chooseCRANmirror` on `.onAttach` if interactive and CRAN mirror not set #1141.
 
 - Part 4:
-
   - Corrected documentation for parameter relyonguider.
 
   - Ignore empty sleeplog columns, which are sometimes accidentally created the user. GGIR can now handle these. #1138
@@ -491,14 +452,13 @@ this used to be a constant. And default changed to 50mg. #1172
   - Fix bug introduced in 3.0-6 affecting handling of time gaps, #1104
 
 - Part 1-6: GGIR release number now stored in each milestone data file and in each
-report to ease tracing what release was used per recording and per GGIR part, see #1101.
+  report to ease tracing what release was used per recording and per GGIR part, see #1101.
 
 - Part 3: Revert change to HDCZA in 3.0-7, see issue #1102
 
 - Part 4: Fixes issue #1095 introduced in 3.0-7 that causes GGIR part 4 to stop when processing data without non-default sleep algorithms.
 
 - Part 2 and 5:
-
   - qwindow functionality enhanced to also consider fractions of minutes, #1093
 
   - Fix minor bug in activity diary loading when date format is %Y-%m-%d, #1090
@@ -526,7 +486,6 @@ report to ease tracing what release was used per recording and per GGIR part, se
 # CHANGES IN GGIR VERSION 3.0-7
 
 - Part 1:
-
   - Fix bug introduced with release 3.0-6 affecting the use of external function embedding #1065
 
   - Need to specify rmc.firstrow.acc when working with ad-hoc csv file format now better documented and read.myacc.csv now produces an error when used directly and user forgets to specify rmc.firstrow.acc #1034.
@@ -534,13 +493,12 @@ report to ease tracing what release was used per recording and per GGIR part, se
   - Improve g.calibrate to better handle scenario when no non-movement periods are found in the entire recording #1032
 
 - Part 3: Algorithm HDCZA simplified by replacing time series specific threshold in step 6 of the description in the 2018 paper by a constant threshold that can be set by the user. This means that
-we have a new parameter HDCZA_threshold and parameter constrain2range is now deprecated #1062.
+  we have a new parameter HDCZA_threshold and parameter constrain2range is now deprecated #1062.
 
 - Part 3: Added option for HSPT.ignore.invalid = NA, which would consider invalid
-time segments as no movement for the Sleep Period Time definition.
+  time segments as no movement for the Sleep Period Time definition.
 
 - Part 5: Fix bug in MM = timewindow part specific to when first night(s) are not available in part 4 results. #1039.
-
 
 # CHANGES IN GGIR VERSION 3.0-6
 
@@ -549,11 +507,10 @@ time segments as no movement for the Sleep Period Time definition.
 - Part 2, 4, 5: Force language to "C" (UK/US English) to avoid issues on computer configured differently #1047.
 
 - Part 5: Behaviour parameter includedaycrit.part5 changed for values above 1, these
-are now interpreted as minimum number of valid waking hours during waking horus of a day.
-If you prefer to keep old functionality then divide your old value by 24 #1050.
+  are now interpreted as minimum number of valid waking hours during waking horus of a day.
+  If you prefer to keep old functionality then divide your old value by 24 #1050.
 
 - Part 1:
-
   - Improved readability and maintainability of the code #1027
 
   - Improved processing speed for Axivity .cwa, GENEActiv .bin, and Movisens files
@@ -567,7 +524,6 @@ If you prefer to keep old functionality then divide your old value by 24 #1050.
   - Improved g.calibrate to better handle scenario when no non-movement periods are found in the entire recording #1032
 
   - Improved documentation for the need to specify rmc.firstrow.acc when working with ad-hoc csv file format and read.myacc.csv now produces an error when used directly while user forgets to specify rmc.firstrow.acc #1034.
-
 
 # CHANGES IN GGIR VERSION 3.0-5
 
@@ -621,7 +577,6 @@ If you prefer to keep old functionality then divide your old value by 24 #1050.
 
 - Part 1: Fix bug that caused a mismatch between IDs and filenames in part 1 when movisens participant folders did not contain the acc.bin file #994.
 
-
 # CHANGES IN GGIR VERSION 3.0-1
 
 - Part 2: Added parameters study_dates_file and study_dateformat to specify csv file with start and end date when accelerometer is expected to be worn #943
@@ -645,7 +600,7 @@ If you prefer to keep old functionality then divide your old value by 24 #1050.
 - Part2: Expand cosinor analysis with R2
 
 - Part 2: Arguments hrs.del.start and hrs.del.end when combined with strategy = 3 and strategy = 5 now count
-relative to start and end of the most active time window as identified.  #905
+  relative to start and end of the most active time window as identified. #905
 
 - Part 5: Change default for segmentDAYSPTcrit.part5 from c(0,0) to c(0, 0.9) and now prohibiting the use of c(0, 0) as it gives biased estimates. We knew this, but some users started using the default without attempting to understand it, by which it seems necessary to force a sensible default. #940
 
@@ -676,7 +631,7 @@ relative to start and end of the most active time window as identified.  #905
 - Part 1: Fixed minor bug in ismovisens that failed when datadir started with "./" #897
 
 - Part 5: Now able to assess overlap between self-reported naps and nonwear
-with sustained inactivity bouts in order to facilitate research on nap detection. Fixes #687
+  with sustained inactivity bouts in order to facilitate research on nap detection. Fixes #687
 
 - Part 5: Time series now also exported if recording only includes one night, even though this is not sufficient for the main part 5 analyses. #894 Further, the time series now also come with lightpeak (LUX).
 
@@ -700,8 +655,8 @@ with sustained inactivity bouts in order to facilitate research on nap detection
 
 # CHANGES IN GGIR VERSION 2.10-1
 
-- Part 1 + 2: File health log captured by dependency GGIRread::readAxivity 
-and incorporated in data_quality_report #866
+- Part 1 + 2: File health log captured by dependency GGIRread::readAxivity
+  and incorporated in data_quality_report #866
 
 - Part 1: Fix ID extraction for externally generated epoch files #869
 
@@ -1027,7 +982,7 @@ and incorporated in data_quality_report #866
 
 - Renaming function g.shell.GGIR to GGIR and adding new function g.shell.GGIR as a wrapper function around GGIR function to preserve functionality.
 
-- Deprecating functionality to read GENEA bin files (not to be confused with GENEActiv), because dependency matlab is about to be archived.  Once matlab is back online we will reinsert this functionality.
+- Deprecating functionality to read GENEA bin files (not to be confused with GENEActiv), because dependency matlab is about to be archived. Once matlab is back online we will reinsert this functionality.
 
 - Cosinor analysis now accounts for DST (see vignette for details)
 
@@ -1279,7 +1234,7 @@ and incorporated in data_quality_report #866
 
 - Part 3 bug fixed in usage of argument dayborder when not 0. Thanks Ruben Brondeel for spotting this.
 
-- Part 3 bug fixed in recognition fraction night invalid for first night.  Thanks Ruben Brondeel for spotting.
+- Part 3 bug fixed in recognition fraction night invalid for first night. Thanks Ruben Brondeel for spotting.
 
 - Part 1 fixed warning related to closing connection to bin files. Thanks John Muschelli.
 
@@ -1451,7 +1406,7 @@ and incorporated in data_quality_report #866
 
 - Added explanation to vignette on how to use published cut-points.
 
-- Axivity AX6 (acc + gyro) in cwa format now supported for file reading, actually using the gyro data for feature calculation is future work.  In the mean time, gyro signal will be ignored by the rest of GGIR.
+- Axivity AX6 (acc + gyro) in cwa format now supported for file reading, actually using the gyro data for feature calculation is future work. In the mean time, gyro signal will be ignored by the rest of GGIR.
 
 - Axivity AX3 acc data in cwa format can now also be read if dynamic range is not 8g. Previously this was not possible.
 
@@ -1537,7 +1492,7 @@ and incorporated in data_quality_report #866
 
 # CHANGES IN GGIR VERSION 1.9-2
 
-- Added functionality to work with studies where accelerometer is configured in one timezone and used in other timezone. Only functional for AX3 cwa data at the moment.  See argument 'configtz'.
+- Added functionality to work with studies where accelerometer is configured in one timezone and used in other timezone. Only functional for AX3 cwa data at the moment. See argument 'configtz'.
 
 - Sleep estimation is now skipped if a day only has one sustained inactivity bout
 
@@ -1563,7 +1518,7 @@ and incorporated in data_quality_report #866
 
 - sessioninfo storage improved.
 
-- Fixed bug that caused part2 to provide incorrect window specific estimates on first day.  of measurement if day is incomplete (not 23, 24 or 25 hours).
+- Fixed bug that caused part2 to provide incorrect window specific estimates on first day. of measurement if day is incomplete (not 23, 24 or 25 hours).
 
 - Calibrate function now better able to handle files with more than a week of data, where auto-calibration struggles to find enough sphere data in the first week.
 
@@ -1627,7 +1582,7 @@ and incorporated in data_quality_report #866
 
 - Report part 4: NA and NaN values replaced by empty cells like in other reports
 
-- Intensity gradient analysis added to part2 output according to Rowlands et al.  MSSE 2018, doi: 10.1249/MSS.0000000000001561
+- Intensity gradient analysis added to part2 output according to Rowlands et al. MSSE 2018, doi: 10.1249/MSS.0000000000001561
 
 - Documentation on part4 output variables improved.
 
@@ -1847,7 +1802,7 @@ and incorporated in data_quality_report #866
 
 - Part 1 is now able to only process specific days of a measurement via argument selectdaysfile. This is useful when measurement lasts for a week and the participant is instructed to only wear the accelerometer on one or two specific days.
 
-- Argument mvpa.2014 and closedbout added to function g.analyse. The calculation of MVPA (moderate and vigorous physical activity) has been available since 2014.  This calculation has been improved, but the user has the option to continue using the old calculation.
+- Argument mvpa.2014 and closedbout added to function g.analyse. The calculation of MVPA (moderate and vigorous physical activity) has been available since 2014. This calculation has been improved, but the user has the option to continue using the old calculation.
 
 # CHANGES IN GGIR VERSION 1.2-2
 
@@ -1883,7 +1838,7 @@ and incorporated in data_quality_report #866
 
 - g.part1 now comes with the option to provide backup calibration coefficients in case auto-calibration is unsuccessful. This function is primarily designed for studies with short lasting experiments.
 
-- g.part2 now has the option to export epoch values to a csv-file. Note that these same epoch values are also stored in the .RData milestone file from part2.  The export option is mainly to ease access to epoch level data outside the R environment.
+- g.part2 now has the option to export epoch values to a csv-file. Note that these same epoch values are also stored in the .RData milestone file from part2. The export option is mainly to ease access to epoch level data outside the R environment.
 
 - g.shell.GGIR now offers the option to overwrite previously generated milestone data with variable 'overwrite'. The default setting (FALSE) is still to skip previously analysed files, which is intended to avoid having to do the same analyses twice after an interruption. However, overwriting previously generated milestone data could be useful when modifications are being made to the input arguments.
 
@@ -1897,7 +1852,7 @@ and incorporated in data_quality_report #866
 
 # CHANGES IN GGIR VERSION 1.1-3
 
-- Package expanded with functions: g.part1, g.part2, and g.shell.GGIR.  These shell functions should help movement scientists to utilize the package without too much prior knowledge about R
+- Package expanded with functions: g.part1, g.part2, and g.shell.GGIR. These shell functions should help movement scientists to utilize the package without too much prior knowledge about R
 
 - Additional bugs fixs related to recognising data format in Actigraph data
 
@@ -1917,7 +1872,7 @@ and incorporated in data_quality_report #866
 
 # CHANGES IN GGIR VERSION 1.0-4
 
-- Implemented functionality for csv-fromat data from GENEActiv and Actigraph.  It seems to work for the test files I have, more testing may be necessary
+- Implemented functionality for csv-fromat data from GENEActiv and Actigraph. It seems to work for the test files I have, more testing may be necessary
 
 - Cleaned up some of the NaN and NA output to aim for consistent annotation of missing data
 
@@ -1933,7 +1888,7 @@ and incorporated in data_quality_report #866
 
 # CHANGES IN GGIR VERSION 1.0-1
 
-- Fixed Linux-Windows sensitivty in g.getmeta. Certain damaged files can only be read with mmap.load set to FALSE in package GENEAread. Function g.getmeta in GGIR catches this problem and turns mmap.load to FALSE if necessary. This catch worked well under Linux, but not for R in Windows.  I have now fixed this
+- Fixed Linux-Windows sensitivty in g.getmeta. Certain damaged files can only be read with mmap.load set to FALSE in package GENEAread. Function g.getmeta in GGIR catches this problem and turns mmap.load to FALSE if necessary. This catch worked well under Linux, but not for R in Windows. I have now fixed this
 
 # CHANGES IN GGIR VERSION 1.0-00
 
@@ -1945,9 +1900,8 @@ and incorporated in data_quality_report #866
 
 - Fixed bug in extract of temperature in function g.calibrate
 
-- Deleted three explorative variables that were only extracted in g.analyse if argument doangle was set to TRUE in function g.getmeta.  A number of bugs and the lack of referable journal publications made me decide to remove these variables while working on them. I intend on re-releasing these variables during the course of 2014. Please contact me if this causes you problems
+- Deleted three explorative variables that were only extracted in g.analyse if argument doangle was set to TRUE in function g.getmeta. A number of bugs and the lack of referable journal publications made me decide to remove these variables while working on them. I intend on re-releasing these variables during the course of 2014. Please contact me if this causes you problems
 
 # CHANGES IN GGIR VERSION 0.6-17
 
 - This was the first version
-

@@ -92,14 +92,18 @@ test_that("write_dashboard_parquet creates a Parquet file with correct rows and 
     verbose        = FALSE
   )
 
-  parquet_path = file.path(td, "results", "ggir_results.parquet")
+  parquet_dir = file.path(td, "results", "parquet")
 
-  # File must exist and the function must return its path
-  expect_true(file.exists(parquet_path))
-  expect_equal(out, parquet_path)
+  # File must exist and be returned by the function
+  expect_true(file.exists(out))
+  expect_equal(
+    normalizePath(dirname(out), winslash = "/", mustWork = FALSE),
+    normalizePath(parquet_dir, winslash = "/", mustWork = FALSE)
+  )
+  expect_equal(basename(out), "multiple_participants.parquet")
 
   # Read back and verify shape
-  result = arrow::read_parquet(parquet_path)
+  result = arrow::read_parquet(out)
 
   # Should have one row per Part 5 day-summary row (3 rows in our mock)
   expect_equal(nrow(result), 3)
@@ -135,10 +139,15 @@ test_that("write_dashboard_parquet succeeds when optional CSVs are absent", {
     verbose        = FALSE
   )
 
-  parquet_path = file.path(td, "results", "ggir_results.parquet")
-  expect_true(file.exists(parquet_path))
+  parquet_dir = file.path(td, "results", "parquet")
+  expect_true(file.exists(out))
+  expect_equal(
+    normalizePath(dirname(out), winslash = "/", mustWork = FALSE),
+    normalizePath(parquet_dir, winslash = "/", mustWork = FALSE)
+  )
+  expect_equal(basename(out), "multiple_participants.parquet")
 
-  result = arrow::read_parquet(parquet_path)
+  result = arrow::read_parquet(out)
   expect_equal(nrow(result), 3)  # still 3 rows from Part 5
 })
 

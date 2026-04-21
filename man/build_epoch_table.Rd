@@ -18,9 +18,9 @@ build_epoch_table(
 }
 \arguments{
   \item{metadatadir}{
-    Directory that holds a folder 'meta' and inside this a folder 'basic'
-    which contains the milestone data produced by \link{g.part1}. The folder structure
-    is normally created by \link{g.part1} and \link{GGIR} will recognise what
+    Directory that holds a folder 'meta' and inside this a folder 'ms5.outraw'
+    which contains the milestone data produced by \link{g.part5}. The folder structure
+    is normally created by \link{g.part5} and \link{GGIR} will recognise what
     the value of metadatadir is.
   }
   \item{params_general}{
@@ -66,8 +66,8 @@ build_epoch_table(
 \dontrun{
 res <- build_epoch_table(
   metadatadir = "path/to/output_run/output_test_run",
-  params_general = list(desiredtz = "UTC"),
-  params_phyact = list(part6_threshold_combi = "WW_L40M100V400_T5A5"),
+  params_general = list(desiredtz = ""),
+  params_phyact = list(part6_threshold_combi = "40_100_400"),
   verbose = TRUE
 )
 
