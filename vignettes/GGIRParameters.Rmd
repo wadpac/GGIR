@@ -165,6 +165,7 @@ find a description and default value for all the arguments.
 | qM5L5                       | 2                 | params_247               |
 | MX.ig.min.dur               | 2                 | params_247               |
 | qwindow_dateformat          | 2                 | params_247               |
+| part2CR                     | 2                 | params_247               |
 | anglethreshold              | 3                 | params_sleep             |
 | timethreshold               | 3                 | params_sleep             |
 | ignorenonwear               | 3                 | params_sleep             |
@@ -224,7 +225,7 @@ find a description and default value for all the arguments.
 | save_ms5rawlevels           | 5                 | params_output            |
 | part5_agg2_60seconds        | 5                 | params_general           |
 | includedaycrit.part5        | 5                 | params_cleaning          |
-| includenight.part5          | 5                 | params_cleaning          |
+| includenightcrit.part5      | 5                 | params_cleaning          |
 | frag.metrics                | 5                 | params_phyact            |
 | LUXthresholds               | 5                 | params_247               |
 | LUX_cal_constant            | 5                 | params_247               |
