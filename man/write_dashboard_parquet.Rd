@@ -46,7 +46,7 @@ write_dashboard_parquet(
     \item quality-control report
   }
 
-  It then calls \code{\link{build_epoch_lists_by_day}} to construct a nested
+  It then calls \code{build_epoch_lists_by_day} to construct a nested
   \code{epochs} list-column and merges that into the day-level table by
   \code{ID} and \code{calendar_date}.
 
