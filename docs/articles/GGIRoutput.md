@@ -110,10 +110,8 @@ package, the documentation has been copied from ActCR documentation.
 | Variable name | Description |
 |----|----|
 | cosinor_mes | MESOR which is short for midline statistics of rhythm, which is a rhythm adjusted mean. This represents mean activity level. |
-| cosinor_amp | amplitude, a measure of half the extend of predictable variation within a cycle. |
-| This represents the highest activity one can achieve |  |
-| cosinor_acrophase | acrophase, a measure of the time of the overall high values recurring in each |
-| cycle. Here it has a unit of radian. This represents time to reach the peak. |  |
+| cosinor_amp | amplitude, a measure of half the extend of predictable variation within a cycle. This represents the highest activity one can achieve |
+| cosinor_acrophase | acrophase, a measure of the time of the overall high values recurring in each cycle. Here it has a unit of radian. This represents time to reach the peak. |
 | cosinor_acrotime | acrotime represents time to reach the peak. |
 | cosinor_ndays | Number of days modeled |
 | cosinorExt_minimum | Minimum value of the of the function. |

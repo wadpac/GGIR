@@ -151,8 +151,8 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                          visualreport_focus = "day",
                          visualreport_validcrit = 0, require_complete_lastnight_part5 = FALSE,
                          method_research_vars = NULL,
-                         require_good_neighbours_part5 = FALSE)
-
+                         require_good_neighbours_part5 = FALSE,
+                         save_dashboard_parquet = FALSE)
   }
   if ("general" %in% topic) {
     params_general = list(overwrite = FALSE, acc.metric = "ENMO",

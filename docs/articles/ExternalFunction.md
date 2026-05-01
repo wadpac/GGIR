@@ -255,7 +255,7 @@ directly stored in a csv file then set argument
 ## External functions released by GGIR collaborators:
 
 - Wrist-based step detection algorithm:
-  <https://github.com/ShimmerEngineering/Verisense-Toolbox/tree/master/Verisense_step_algorithm>
+  <https://github.com/ShimmerResearch/Verisense-Toolbox/tree/master/Verisense_step_algorithm>
 
 which is not actively maintained, for the latest version of the function
 see:
