@@ -33,7 +33,21 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                         impute_marker_button = FALSE,
                         sib_must_fully_overlap_with_TimeInBed = c(TRUE, TRUE),
                         nap_markerbutton_method = 0,
-                        nap_markerbutton_max_distance = 30)
+                        nap_markerbutton_max_distance = 30,
+                        SRI1_smoothing_wsize_hrs = NULL,
+                        SRI1_smoothing_frac = NULL,
+                        spt_min_block_dur =  30,
+                        spt_max_gap_dur =  60,
+                        spt_max_gap_ratio = 1,
+                        HorAngle_threshold = 60,
+                        guider_cor_maxgap_hrs = 2,
+                        guider_cor_min_frac_sib = 0.5,
+                        guider_cor_min_hrs = 2,
+                        guider_cor_meme_frac_out = 0.9,
+                        guider_cor_meme_frac_in = 0.4,
+                        guider_cor_meme_min_hrs = 1,
+                        guider_cor_do = FALSE,
+                        guider_cor_meme_min_dys = 3)
   }
   if ("metrics" %in% topic) {
     params_metrics = list(do.anglex = FALSE, do.angley = FALSE, do.anglez = TRUE,
@@ -85,7 +99,8 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                       L5M5window = c(0, 24), cosinor = FALSE,
                       part6CR = FALSE, part6HCA = FALSE,
                       part6Window = c("start", "end"),
-                      part6DFA = FALSE, clevels = c(30, 150))
+                      part6DFA = FALSE, clevels = c(30, 150),
+                      SRI2_WASOmin = 30, part2CR = FALSE)
 
   }
   if ("phyact" %in% topic) {
@@ -126,14 +141,15 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                          viewingwindow = 1, dofirstpage = TRUE, visualreport = TRUE,
                          week_weekend_aggregate.part5 = FALSE, do.part3.pdf = FALSE,
                          outliers.only = FALSE, criterror = 3, do.visual = TRUE,
-                         do.sibreport = TRUE, do.part2.pdf = TRUE,
+                         do.sibreport = TRUE, do.part2.pdf = NULL, do.part2.png = NULL,
                          sep_reports = ",", sep_config = ",", 
                          dec_reports = ".", dec_config = ".", 
                          visualreport_without_invalid = TRUE,
-                         old_visualreport = TRUE, visualreport_hrsPerRow = 36,
+                         old_visualreport = FALSE, visualreport_hrsPerRow = 36,
                          visualreport_focus = "day",
                          visualreport_validcrit = 0, require_complete_lastnight_part5 = FALSE,
-                         method_research_vars = NULL)
+                         method_research_vars = NULL,
+                         save_dashboard_parquet = FALSE)
 
   }
   if ("general" %in% topic) {
@@ -149,7 +165,8 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                           recording_split_times = NULL,
                           recording_split_timeformat = "%d/%m/%Y %H:%M",
                           recording_split_overlap = 0,
-                          recording_split_ignore_edges = FALSE)
+                          recording_split_ignore_edges = FALSE,
+                          use_trycatch_serial = FALSE)
   }
   invisible(list(params_sleep = params_sleep,
                  params_metrics = params_metrics,

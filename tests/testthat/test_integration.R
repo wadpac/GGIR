@@ -1,6 +1,6 @@
 library(GGIR)
-context("Chainof5parts")
-test_that("chainof5parts", {
+context("Integration")
+test_that("All GGIR parts work together (integration test)", {
   skip_on_cran()
   Ndays = 2
   create_test_acc_csv(Nmin = Ndays*1440)
@@ -56,8 +56,8 @@ test_that("chainof5parts", {
   expect_equal(rle(IMP$rout$r4)$lengths[3], 13)
   expect_equal(round(mean(IMP$metashort$ENMO), digits = 5), 0.00802, tolerance = 3)
   expect_equal(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 3), 1)
-  expect_equal(SUM$summary$`N valid WEdays`, 1)
-  expect_equal(SUM$summary$`N valid WKdays`, 2)
+  expect_equal(SUM$summary$`N valid weekend days (WE)`, 1)
+  expect_equal(SUM$summary$`N valid weekdays (WD)`, 2)
   # check the ndayswindow included is 24 hours exactly 
   # ndayswindow = 1 with windowsizes = c(15, 3600, 3600)
   first_epoch_in_protocol = rle(IMP$rout$r4)$lengths[1] + 1
@@ -74,8 +74,8 @@ test_that("chainof5parts", {
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_equal(nrow(IMP$metashort), 11280)
-  expect_equal(rle(IMP$rout$r4)$lengths[1], 16) # removed 6 hours from the ndayswindow at the beginning
-  expect_equal(rle(IMP$rout$r4)$lengths[3], 19) # removed 6 hours from the ndayswindow at the end
+  expect_equal(rle(IMP$rout$r4)$lengths[1], 16)
+  expect_equal(rle(IMP$rout$r4)$lengths[3], 19)
   # check the ndayswindow included is 12 hours exactly (24 minus hrs.del.start/end)
   # ndayswindow = 1 with windowsizes = c(15, 3600, 3600)
   first_epoch_in_protocol = rle(IMP$rout$r4)$lengths[1] + 1
@@ -96,8 +96,8 @@ test_that("chainof5parts", {
   expect_equal(rle(IMP$rout$r4)$lengths[3], 8)
   expect_equal(round(mean(IMP$metashort$ENMO), digits = 5), 0.03398, tolerance = 3)
   expect_equal(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 3), 1)
-  expect_equal(SUM$summary$`N valid WEdays`, 1)
-  expect_equal(SUM$summary$`N valid WKdays`, 2)
+  expect_equal(SUM$summary$`N valid weekend days (WE)`, 1)
+  expect_equal(SUM$summary$`N valid weekdays (WD)`, 2)
   # check the ndayswindow included is 24 hours exactly
   # ndayswindow = 1 with windowsizes = c(15, 3600, 3600)
   first_epoch_in_protocol = rle(IMP$rout$r4)$lengths[1] + 1
@@ -114,8 +114,8 @@ test_that("chainof5parts", {
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_equal(nrow(IMP$metashort), 11280)
-  expect_equal(rle(IMP$rout$r4)$lengths[1], 21) # removed 6 hours from the ndayswindow at the beginning
-  expect_equal(rle(IMP$rout$r4)$lengths[3], 14) # removed 6 hours from the ndayswindow at the end
+  expect_equal(rle(IMP$rout$r4)$lengths[1], 21)
+  expect_equal(rle(IMP$rout$r4)$lengths[3], 14)
   # check the ndayswindow included is 12 hours exactly (24 minus hrs.del.start/end)
   # ndayswindow = 1 with windowsizes = c(15, 3600, 3600)
   first_epoch_in_protocol = rle(IMP$rout$r4)$lengths[1] + 1
@@ -146,7 +146,7 @@ test_that("chainof5parts", {
           do.parallel = do.parallel, myfun = c(), qlevels = c(0.5, 0.9),
           cosinor = TRUE, verbose = FALSE)
   params_output = load_params()$params_output
-  g.report.part2(metadatadir = metadatadir, f0 = 1, f1 = 1, maxdur = Ndays, params_output = params_output)
+  g.report.part2(metadatadir = metadatadir, f0 = 1, f1 = 1, params_output = params_output)
   dirname = "output_test/meta/ms2.out/"
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
@@ -206,7 +206,7 @@ test_that("chainof5parts", {
           loglocation = sleeplog_fn,
           overwrite = TRUE, excludefirstlast = FALSE, do.parallel = do.parallel,
           frag.metrics = "all", save_ms5rawlevels = TRUE, save_ms5raw_format = "csv",
-          part5_agg2_60seconds = TRUE, do.sibreport = TRUE, nap_model = "hip3yr",
+          part5_agg2_60seconds = TRUE, do.sibreport = TRUE, 
           iglevels = 1, timewindow = c("MM", "WW", "OO"),
           possible_nap_window = c(0, 24),
           possible_nap_dur = c(0, 240),
@@ -225,7 +225,7 @@ test_that("chainof5parts", {
   expect_true(dir.exists(dirname))
   expect_true(file.exists(rn[1]))
   expect_that(nrow(output),equals(5))
-  expect_that(ncol(output),equals(160))
+  expect_that(ncol(output),equals(158))
   expect_that(round(as.numeric(output$wakeup[2]), digits = 4), equals(36))
   expect_that(as.numeric(output$dur_day_spt_min[4]), equals(1150)) # WW window duration
   expect_that(as.numeric(output$dur_day_spt_min[5]), equals(1680)) # OO window duration
@@ -235,7 +235,7 @@ test_that("chainof5parts", {
   expect_true(file.exists(rn2[rn2_index]))
   TSFILE = read.csv(rn2[rn2_index])
   expect_that(nrow(TSFILE),equals(2820))
-  expect_equal(ncol(TSFILE), 14)
+  expect_equal(ncol(TSFILE), 13)
   expect_equal(length(unique(TSFILE$class_id)), 11)
   #GGIR
   suppressWarnings(GGIR(mode = c(2,3,4,5), datadir = fn, outputdir = getwd(),
@@ -247,7 +247,7 @@ test_that("chainof5parts", {
                         f0 = 1, f1 = 1,
                         do.report = c(), overwrite = FALSE, visualreport = TRUE, viewingwindow = 1,
                         do.parallel = do.parallel, minimumFileSizeMB = minimumFileSizeMB, 
-                        verbose = FALSE))
+                        verbose = FALSE, old_visualreport = TRUE))
   expect_true(file.exists("output_test/results/part2_daysummary.csv"))
   expect_true(file.exists("output_test/results/part2_summary.csv"))
   expect_true(file.exists("output_test/results/part4_nightsummary_sleep_cleaned.csv"))
@@ -258,6 +258,26 @@ test_that("chainof5parts", {
   expect_true(file.exists("output_test/results/part5_daysummary_OO_L40M100V400_T5A5.csv"))
   dn = "output_test"
   
+  # Expect warning when unknown parameters are provided
+  expect_error(GGIR(mode = NULL, datadir = fn, outputdir = getwd(),
+                    studyname = "test", f0 = 1, f1 = 1,
+                    do.report = NULL, overwrite = FALSE,
+                    verbose = FALSE,
+                    iamnewhere = 0),
+               paste0("\nParameter iamnewhere is unknown to GGIR and will not be",
+                      " used, please check for typos or remove."))
+  
+  expect_error(GGIR(mode = NULL, datadir = fn, outputdir = getwd(),
+                    studyname = "test", f0 = 1, f1 = 1,
+                    do.report = NULL, overwrite = FALSE,
+                    verbose = FALSE,
+                    iamnewhere = 0,
+                    iamnewtoo = 1),
+               paste0("\nParameters iamnewhere and iamnewtoo are unknown",
+                      " to GGIR and will not be used, please check for ",
+                      "typos or remove these."))
+  
+
   #=======================
   # Different variations on part 4:
   #--------------------------------------------

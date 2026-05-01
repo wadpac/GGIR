@@ -115,7 +115,7 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
   #----------------------------------
   # Cosinor analysis, (Extended) Cosinor analysis, including IV, IS, and phi
   # based on time series where invalid data points are set to NA
-  if (params_247[["cosinor"]] == TRUE) {
+  if (params_247[["part2CR"]] == TRUE) {
     cosinor_coef = apply_cosinor_IS_IV_Analyses(ts = IMP$metashort[, c("timestamp", acc.metric)],
                                                 qcheck = qcheck,
                                                 midnightsi, epochsizes = c(ws3, ws2),

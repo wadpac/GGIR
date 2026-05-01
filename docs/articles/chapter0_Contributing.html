@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,6 +61,9 @@
     <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
     <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
     <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
+    <li><a class="dropdown-item" href="../articles/SleepRegularityIndex.html">Sleep Regularity Index</a></li>
+    <li><a class="dropdown-item" href="../articles/NapDetection.html">Nap Detection</a></li>
+    <li><a class="dropdown-item" href="../articles/StepCadenceAnalysis.html">Step and Cadence Analysis</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
@@ -69,6 +72,8 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news">
 <li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-3-0/">Version 3.3-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-6/">Version 3.2-6</a></li>
     <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-0/">Version 3.2-0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-5/">Version 3.1-5</a></li>
     <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-0/">Version 3.1-0</a></li>
@@ -116,7 +121,7 @@
 <h2 id="if-you-have-coding-skills">If you have coding skills…<a class="anchor" aria-label="anchor" href="#if-you-have-coding-skills"></a>
 </h2>
 <p>We welcome contributions in the development, maintenance, and
-documentation of GGIR. Please find the GGIR’s contributing guidelines <a href="https://github.com/wadpac/GGIR/blob/master/CONTRIBUTING.md" class="external-link">here</a>.</p>
+documentation of GGIR. Please find the GGIR’s contributing guidelines <a href="https://github.com/wadpac/GGIR/blob/main/CONTRIBUTING.md" class="external-link">here</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="if-you-do-not-have-coding-skills-">If you do not have coding skills….<a class="anchor" aria-label="anchor" href="#if-you-do-not-have-coding-skills-"></a>
@@ -134,8 +139,13 @@ improvement of the existing GGIR software code, or to support
 development of better open-access training materials such as instruction
 videos.</li>
 <li>
-<strong>Report your issues and questions</strong> in the <a href="https://groups.google.com/g/RpackageGGIR" class="external-link">GGIR google
-group</a>.</li>
+<strong>Report your questions and suggestions</strong> in the <a href="https://github.com/wadpac/GGIR/discussions" class="external-link">GGIR discussion
+page</a>.</li>
+<li>
+<strong>If you think you found a bug in GGIR report it as an
+issues</strong> in the <a href="https://github.com/wadpac/GGIR/issues" class="external-link">GGIR issue tracker</a>. If
+unsure whether something is an issue or a discussion item, just post it
+and we can move it to the appropriate location.</li>
 <li>
 <strong>Proofread the GGIR documentation</strong> and inform us if
 you miss something or if you found it difficult to follow.</li>
@@ -144,11 +154,10 @@ you miss something or if you found it difficult to follow.</li>
 efforts</strong>. For example, Prof. Stuart Fairclough created a <a href="https://www.youtube.com/watch?v=AbHgJYTyuiA" class="external-link">series of GGIR video
 tutorials</a>, Wei Guo and colleagues created the R package <a href="https://doi.org/10.32614/CRAN.package.mMARCH.AC" class="external-link">mMARCH.AC</a> to
 post-process GGIR output as described in the supporting <a href="https://doi.org/10.1123/jmpb.2022-0018" class="external-link">journal article</a>, and
-maybe there are other initiatives we are not aware of. Please
-communicate about your initiatives via the <a href="https://groups.google.com/g/rpackageggir/" class="external-link">GGIR google group</a>
-and/or with GGIR maintainer <a href="https://www.accelting.com/" class="external-link">Vincent
-van Hees</a> to avoid duplicated work and to support each other where
-needed.</li>
+maybe there are other initiatives we are not aware of. To avoid
+duplicated work and to support each other where needed, please
+communicate about your initiatives via the <a href="https://github.com/wadpac/GGIR/discussions" class="external-link">GGIR GitHub discussion
+page</a> and/or with GGIR maintainer <a href="https://www.accelting.com/" class="external-link">Vincent van Hees</a>.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -162,7 +171,7 @@ needed.</li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

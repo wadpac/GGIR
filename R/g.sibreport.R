@@ -41,11 +41,16 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
     dateformat = logs_diaries$dateformat
 
     firstDate = as.Date(ts$time[1], tz = desiredtz)
+    # when recording starts after midnight and before 4am we count the previous date as the first night
+    if (as.numeric(format(ts$time[1], "%H")) < 4) firstDate = firstDate - 1
     extract_logs = function(log, ID, logname, firstDate = NULL) {
       logreport = c()
       if (length(log) > 0) {
-        relevant_rows = which(log$ID == ID)
-        
+        idwi = g.part4_extractid(idloc = 1, # idloc is not relevant in place, we can take full ID
+                                 fname = log$ID,
+                                 dolog = TRUE,
+                                 sleeplog = log, accid = ID)
+        relevant_rows = idwi$matching_indices_sleeplog
         if (length(relevant_rows) > 0) {
           log = log[relevant_rows,] # extract ID
           if (!is.null(firstDate)) {

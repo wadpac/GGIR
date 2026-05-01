@@ -11,14 +11,14 @@ test_that("load_params can load parameters", {
   
   # Test length of objects
   expect_equal(length(params), 8)
-  expect_equal(length(params$params_sleep), 29)
+  expect_equal(length(params$params_sleep), 43)
   expect_equal(length(params$params_metrics), 41)
   expect_equal(length(params$params_rawdata), 40)
-  expect_equal(length(params$params_247), 24)
+  expect_equal(length(params$params_247), 26)
   expect_equal(length(params$params_cleaning), 28)
   expect_equal(length(params$params_phyact), 14)
-  expect_equal(length(params$params_output), 27)
-  expect_equal(length(params$params_general), 21)
+  expect_equal(length(params$params_output), 29)
+  expect_equal(length(params$params_general), 22)
 
   params_sleep = params$params_sleep
   params_metrics = params$params_metrics

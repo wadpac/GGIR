@@ -83,7 +83,7 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
           # occasionally we'll get a decimal seperated by comma; if so, replace the comma with a dot
           tmp = sub(",", ".", tmp, fixed = TRUE)
           sf = as.numeric(tmp)
-          
+          if (sf != round(sf)) sf = round(sf) # Round GENEACtiv sampling rate. In g.readaccfile the raw data is resampled to this sampling rate
           #also try to read sf from first page header
           sf_r = sf
           csvr = c()

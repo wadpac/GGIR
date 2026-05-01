@@ -15,7 +15,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
   params_metrics = params$params_metrics
   params_general = params$params_general
   params_output = params$params_output
-
+  
   checkMilestoneFolders(metadatadir, partNumber = 3)
   #------------------------------------------------------
   fnames = dir(paste(metadatadir,"/meta/ms2.out", sep = ""))
@@ -40,7 +40,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                         params_sleep = c(), params_metrics = c(),
                         params_output = c(),
                         params_general = c(), fnames, ffdone, verbose) {
-    tail_expansion_log =  NULL
+    tail_expansion_log = desiredtz_part1 = NULL
     nightsperpage = 7
     FI = file.info(paste(metadatadir, "/meta/ms2.out/", fnames[i], sep = ""))
     if (is.na(FI$size) == TRUE) FI$size = 0
@@ -66,6 +66,11 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
       SUM = IMP = M = c()
       load(paste(metadatadir, "/meta/basic/meta_", fnames[i], sep = ""))
       load(paste(metadatadir, "/meta/ms2.out/", fnames[i], sep = ""))
+      if (!is.null(desiredtz_part1)) {
+        params_general[["desiredtz"]] = desiredtz_part1
+      } else {
+        desiredtz_part1 = params_general[["desiredtz"]]
+      }
       if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
         if (params_general[["sensor.location"]] == "hip") {
           if (is.null(params_sleep[["longitudinal_axis"]])) {
@@ -85,13 +90,26 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                         myfun = myfun,
                         sensor.location = params_general[["sensor.location"]],
                         params_sleep = params_sleep, zc.scale = params_metrics[["zc.scale"]])
-
+        # Optional correction
+        if (params_sleep[["guider_cor_do"]] == TRUE &&
+            length(SLE$SPTE_start) > 0 && any(!is.na(SLE$SPTE_start)) &&
+            length(SLE$SPTE_end) > 0 && any(!is.na(SLE$SPTE_end))) {
+          SLE = g.part3_correct_guider(SLE, desiredtz = params_general[["desiredtz"]],
+                                       epochSize = M$windowsizes[1],
+                                       params_sleep = params_sleep)
+        }
+        
+        if ("spt_crude_estimate" %in% names(SLE$output)) {
+          SLE$output = SLE$output[, -which(names(SLE$output) == "spt_crude_estimate")]
+        }
         # SleepRegulartiyIndex calculation
         if (!is.null(SLE$output)) {
-          if (nrow(SLE$output) > 2*24*(3600/M$windowsizes[1])) { # only calculate SRI if there are at least two days of data
+          if (nrow(SLE$output) > 2 * 24 * (3600/M$windowsizes[1])) { # only calculate SRI if there are at least two days of data
             SleepRegularityIndex = CalcSleepRegularityIndex(data = SLE$output,
                                                             epochsize = M$windowsizes[1],
-                                                            desiredtz = params_general[["desiredtz"]])
+                                                            desiredtz = params_general[["desiredtz"]],
+                                                            SRI1_smoothing_wsize_hrs = params_sleep[["SRI1_smoothing_wsize_hrs"]],
+                                                            SRI1_smoothing_frac = params_sleep[["SRI1_smoothing_frac"]])
           } else {
             SleepRegularityIndex = NA
           }
@@ -101,11 +119,13 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
         L5list = SLE$L5list
         SPTE_end = SLE$SPTE_end
         SPTE_start = SLE$SPTE_start
+        SPTE_corrected = SLE$SPTE_corrected
         tib.threshold = SLE$tib.threshold
         longitudinal_axis = SLE$longitudinal_axis
         part3_guider = SLE$part3_guider
         if (length(SLE$output) > 0 & SLE$detection.failed == FALSE) {
           ID = SUM$summary$ID
+          if (is.list(ID)) ID = unlist(ID)
           datename = as.character(unlist(strsplit(format(as.matrix(M$metashort[1]))," "))[1])
           plottitle = " "
           if (params_output[["do.part3.pdf"]] == TRUE) {
@@ -123,12 +143,13 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
           GGIRversion = utils::packageVersion("GGIR")
           save(sib.cla.sum, L5list, SPTE_end, SPTE_start, tib.threshold, rec_starttime, ID,
                longitudinal_axis, SleepRegularityIndex, tail_expansion_log, GGIRversion,
-               file = ms3out_filename, part3_guider)
+               part3_guider, desiredtz_part1, SPTE_corrected,
+               file = ms3out_filename)
         }
       }
     }
   }
-
+  
   if (params_general[["do.parallel"]] == TRUE) {
     cores = parallel::detectCores()
     Ncores = cores[1]
@@ -165,7 +186,8 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
       # pass on functions
       functions2passon = c("g.sib.det", "g.detecmidnight", "iso8601chartime2POSIX",
                            "g.sib.plot", "g.sib.sum", "HASPT", "HASIB", "CalcSleepRegularityIndex",
-                           "extract_params", "load_params", "check_params")
+                           "extract_params", "load_params", "check_params", 
+                           "g.part3_correct_guider", "g.part3_alignIndexVectors")
       errhand = 'stop'
     }
     i = 0 # declare i because foreach uses it, without declaring it
@@ -180,7 +202,7 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
                                      })
                                      return(tryCatchResult)
                                    }
-
+    
     on.exit(parallel::stopCluster(cl))
     for (oli in 1:length(output_list)) { # logged error and warning messages
       if (is.null(unlist(output_list[oli])) == FALSE) {
@@ -189,12 +211,33 @@ g.part3 = function(metadatadir = c(), f0, f1, myfun = c(),
       }
     }
   } else {
+    errors = list()
     for (i in f0:f1) {
       if (verbose == TRUE) cat(paste0(i, " "))
-      main_part3(i, metadatadir, f0, f1, myfun,
-                 params_sleep, params_metrics,
-                 params_output,
-                 params_general, fnames, ffdone, verbose)
+      function_to_evaluate = expression(
+        main_part3(i, metadatadir, f0, f1, myfun,
+                   params_sleep, params_metrics,
+                   params_output,
+                   params_general, fnames, ffdone, verbose)
+      )
+      if (params_general[["use_trycatch_serial"]] == TRUE) {
+        tryCatch(
+          eval(function_to_evaluate),
+          error = function(e) {
+            err_msg = conditionMessage(e)
+            errors[[as.character(fnames[i])]] <<- err_msg
+          }
+        )
+      } else {
+        eval(function_to_evaluate)
+      }
+    }
+    # show logged errors after the loop:
+    if (params_general[["use_trycatch_serial"]] == TRUE && verbose == TRUE) {
+      if (length(errors) > 0) {
+        cat(paste0("\n\nErrors in part 3... for:"))
+        cat(paste0("\n-", names(errors), ": ", unlist(errors), collapse = ""))
+      }
     }
   }
 }

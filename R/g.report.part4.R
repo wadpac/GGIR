@@ -37,8 +37,8 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                "SleepDurationInSpt", "WASO", "duration_sib_wakinghours", "number_sib_sleepperiod", "number_of_awakenings",
                                "number_sib_wakinghours", "duration_sib_wakinghours_atleast15min", "sleeponset_ts", "wakeup_ts", "guider_onset_ts",
                                "guider_wakeup_ts", "sleeplatency", "sleepefficiency", "page", "daysleeper", "weekday", "calendar_date",
-                               "filename", "cleaningcode", "sleeplog_used", "sleeplog_ID", "acc_available", "guider", "SleepRegularityIndex", "SriFractionValid",
-                               "longitudinal_axis")
+                               "filename", "cleaningcode", "sleeplog_used", "sleeplog_ID", "acc_available", "guider", "SleepRegularityIndex1", "SriFractionValid",
+                               "longitudinal_axis", "guider_corrected")
     nightsummary2 = as.data.frame(matrix(0, 0, length(colnames_nightsummary2)))
 
     sumi = 1
@@ -322,6 +322,7 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
             if (dotwice == 1) {
               nightsummary.tmp = turn_numeric(x = nightsummary.tmp, varnames = gdn)
             }
+            # names of numeric columns
             varnames_tmp = c("SptDuration", "sleeponset",
                              "wakeup", "WASO", "SleepDurationInSpt",
                              "number_sib_sleepperiod", "duration_sib_wakinghours",
@@ -330,8 +331,8 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                              "sleeplatency", "sleepefficiency", "number_of_awakenings",
                              "guider_inbedDuration", "guider_inbedStart",
                              "guider_inbedEnd", "guider_SptDuration", "guider_onset",
-                             "guider_wakeup", "SleepRegularityIndex",
-                             "SriFractionValid")
+                             "guider_wakeup", "SleepRegularityIndex1",
+                             "SriFractionValid", "N_nights_guider_corrected")
             nightsummary.tmp = turn_numeric(x = nightsummary.tmp, 
                                             varnames = varnames_tmp)
             weekday = nightsummary.tmp$weekday[this_sleepparam]
@@ -480,16 +481,22 @@ g.report.part4 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                   personSummary[i, (cnt + 23)] = sd(nightsummary.tmp$wakeup[indexUdef], na.rm = TRUE)
                   personSummarynames = c(personSummarynames, paste("wakeup_", TW, "_", udefn[j], "_mn",
                                                                    sep = ""), paste("wakeup_", TW, "_", udefn[j], "_sd", sep = ""))
-                  personSummary[i, (cnt + 24)] = mean(nightsummary.tmp$SleepRegularityIndex[indexUdef],
+                  personSummary[i, (cnt + 24)] = mean(nightsummary.tmp$SleepRegularityIndex1[indexUdef],
                                                       na.rm = TRUE)
-                  personSummary[i, (cnt + 25)] = sd(nightsummary.tmp$SleepRegularityIndex[indexUdef], na.rm = TRUE)
-                  personSummarynames = c(personSummarynames, paste("SleepRegularityIndex_", TW, "_", udefn[j],
-                                                                   "_mn", sep = ""), paste("SleepRegularityIndex_", TW, "_", udefn[j], "_sd", sep = ""))
+                  personSummary[i, (cnt + 25)] = sd(nightsummary.tmp$SleepRegularityIndex1[indexUdef], na.rm = TRUE)
+                  personSummarynames = c(personSummarynames, paste("SleepRegularityIndex1_", TW, "_", udefn[j],
+                                                                   "_mn", sep = ""), paste("SleepRegularityIndex1_", TW, "_", udefn[j], "_sd", sep = ""))
                   personSummary[i, (cnt + 26)] = mean(nightsummary.tmp$SriFractionValid[indexUdef], na.rm = TRUE)
                   personSummary[i, (cnt + 27)] = sd(nightsummary.tmp$SriFractionValid[indexUdef], na.rm = TRUE)
                   personSummarynames = c(personSummarynames, paste("SriFractionValid_", TW, "_", udefn[j],
                                                                    "_mn", sep = ""), paste("SriFractionValid_", TW, "_", udefn[j], "_sd", sep = ""))
                   cnt = cnt + 27
+                  if ("N_nights_guider_corrected" %in% personSummarynames == FALSE) {
+                    personSummary[i, (cnt + 1)] = sum(as.numeric(nightsummary.tmp$guider_corrected[indexUdef]),
+                                                      na.rm = TRUE)
+                    personSummarynames = c(personSummarynames, "N_nights_guider_corrected")
+                    cnt = cnt + 1
+                  }
                   if (params_sleep[["sleepwindowType"]] == "TimeInBed" || params_sleep[["consider_marker_button"]] == TRUE) {
                     sleepefficiency = nightsummary.tmp$sleepefficiency[indexUdef]
                     latency = nightsummary.tmp$sleeplatency[indexUdef]

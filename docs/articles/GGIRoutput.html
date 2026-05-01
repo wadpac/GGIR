@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,6 +61,9 @@
     <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
     <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
     <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
+    <li><a class="dropdown-item" href="../articles/SleepRegularityIndex.html">Sleep Regularity Index</a></li>
+    <li><a class="dropdown-item" href="../articles/NapDetection.html">Nap Detection</a></li>
+    <li><a class="dropdown-item" href="../articles/StepCadenceAnalysis.html">Step and Cadence Analysis</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
@@ -69,6 +72,8 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news">
 <li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-3-0/">Version 3.3-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-6/">Version 3.2-6</a></li>
     <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-0/">Version 3.2-0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-5/">Version 3.1-5</a></li>
     <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-0/">Version 3.1-0</a></li>
@@ -119,9 +124,9 @@ pages</a>.</strong></p>
 <ul>
 <li>csv-spreadsheets with all the variables you need for physical
 activity, sleep and circadian rhythm research</li>
-<li>Pdfs with on each page a low resolution plot of the data per file
-and quality indicators</li>
-<li>R objects with milestone data</li>
+<li>.png images with on each image a low time resolution plot of the
+data per file and quality indicators</li>
+<li>.RData files with milestone data</li>
 <li>Pdfs with a visual summary of the physical activity and sleep
 patterns as identified (see example below)</li>
 </ul>
@@ -140,7 +145,7 @@ The RData files are not intended for direct use by the GGIR user.</p>
 <li>part2_daysummary.csv: Day level summary (see below)</li>
 <li>QC/data_quality_report.csv: Overview of calibration results and
 whether or not a file was corrupt or too short to be processed,</li>
-<li>QC/plots to check data quality 1.pdf: A pdf with visualisation of
+<li>QC/plots_part2: A folder with .png files holding a visualisation of
 the acceleration time series in 15 minute resolution and with invalid
 data segments highlighted in colours (yellow: non-wear based on standard
 deviation threshold, brown: non-wear after extra filtering step
@@ -268,14 +273,6 @@ part2.R</td>
 <tr class="odd">
 <td>epoch size to which acceleration was averaged (seconds)</td>
 <td>A log of decision made in part1.R</td>
-</tr>
-<tr class="even">
-<td>pdffilenumb</td>
-<td>Indicator of in which pdf-file the plot was stored</td>
-</tr>
-<tr class="odd">
-<td>pdfpagecount</td>
-<td>Indicator of in which pdf-page the plot was stored</td>
 </tr>
 <tr class="even">
 <td>data_masking_strategy</td>
@@ -459,11 +456,11 @@ sleep variables in GGIR part 4 output.</td>
 <td>Average metric value ENMO between 1am and 6am</td>
 </tr>
 <tr class="odd">
-<td>N valid WEdays</td>
+<td>N valid weekdays (WD)</td>
 <td>Number of valid weekend days</td>
 </tr>
 <tr class="even">
-<td>N valid WKdays</td>
+<td>N valid weekend days (WE)</td>
 <td>Number of valid week days</td>
 </tr>
 <tr class="odd">
@@ -521,21 +518,14 @@ rhythm adjusted mean. This represents mean activity level.</td>
 <tr class="even">
 <td>cosinor_amp</td>
 <td>amplitude, a measure of half the extend of predictable variation
-within a cycle.</td>
+within a cycle. This represents the highest activity one can
+achieve</td>
 </tr>
 <tr class="odd">
-<td>This represents the highest activity one can achieve</td>
-<td></td>
-</tr>
-<tr class="even">
 <td>cosinor_acrophase</td>
 <td>acrophase, a measure of the time of the overall high values
-recurring in each</td>
-</tr>
-<tr class="odd">
-<td>cycle. Here it has a unit of radian. This represents time to reach
-the peak.</td>
-<td></td>
+recurring in each cycle. Here it has a unit of radian. This represents
+time to reach the peak.</td>
 </tr>
 <tr class="even">
 <td>cosinor_acrotime</td>
@@ -715,20 +705,20 @@ ENMO</td>
 </tr>
 <tr class="even">
 <td>ig_gradient_ENMO_0-24hr</td>
-<td>Gradient from intensity gradient analysis proposed by <a href="https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx" class="external-link">Rowlands
-et al. 2018</a> based on metric ENMO for the time segment 0 to 24
+<td>Gradient from intensity gradient analysis proposed by <a href="https://doi.org/10.1249/mss.0000000000001561" class="external-link">Rowlands et
+al. 2018</a> based on metric ENMO for the time segment 0 to 24
 hours</td>
 </tr>
 <tr class="odd">
 <td>ig_intercept_ENMO_0-24hr</td>
-<td>Intercept from intensity gradient analysis proposed by <a href="https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx" class="external-link">Rowlands
-et al. 2018</a> based on metric ENMO for the time segment 0 to 24
+<td>Intercept from intensity gradient analysis proposed by <a href="https://doi.org/10.1249/mss.0000000000001561" class="external-link">Rowlands et
+al. 2018</a> based on metric ENMO for the time segment 0 to 24
 hours</td>
 </tr>
 <tr class="even">
 <td>ig_rsquared_ENMO_0-24hr</td>
-<td>r squared from intensity gradient analysis proposed by <a href="https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx" class="external-link">Rowlands
-et al. 2018</a> based on metric ENMO for the time segment 0 to 24
+<td>r squared from intensity gradient analysis proposed by <a href="https://doi.org/10.1249/mss.0000000000001561" class="external-link">Rowlands et
+al. 2018</a> based on metric ENMO for the time segment 0 to 24
 hours</td>
 </tr>
 </tbody>
@@ -1025,72 +1015,70 @@ referring to the time outside the Sleep Period Time window.</td>
 <td>guider_wake formatted as a timestamp</td>
 </tr>
 <tr class="odd">
-<td>page</td>
-<td>pdf page on which the visualisation can be found</td>
-</tr>
-<tr class="even">
 <td>daysleeper</td>
 <td>If 0 then the person is a nightsleeper (sleep period did not overlap
 with noon) if value=1 then the person is a daysleeper (sleep period did
 overlap with noon)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>weekday</td>
 <td>Day of the week on which the night started</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>calendardate</td>
 <td>Calendar date on which the night started in day/month/year
 format.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>filename</td>
 <td>Name of the accelerometer file</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>cleaningcode</td>
 <td>see paragraph <a href="https://wadpac.github.io/GGIR/articles/chapter10_SleepAnalysis.html#cleaningcode">Cleaningcode</a>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>sleeplog_used</td>
 <td>Whether a sleep log was used (TRUE/FALSE)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>acc_available</td>
 <td>Whether accelerometer data was available (TRUE/FALSE).</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>WASO</td>
 <td>Wake After Sleep Onset: SptDuration - SleepDurationInSpt</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>SptDuration</td>
 <td>Sleep Period Time window duration: wakeup - sleeponset</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>error_onset</td>
 <td>Difference between sleeponset and guider_onset (this variable is
 only available in the full report as stored in the QC folder)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>error_wake</td>
 <td>Difference between wakeup and guider_wake (this variable is only
 available in the full report as stored in the QC folder)</td>
 </tr>
-<tr class="odd">
-<td>SleepRegularityIndex</td>
-<td>The Sleep Regularity Index as proposed by <a href="https://www.nature.com/articles/s41598-017-03171-4" class="external-link">Phillips et
-al. 2017</a>, but calculated per day-pair to enable user to study
-patterns across days</td>
-</tr>
 <tr class="even">
+<td>SleepRegularityIndex1</td>
+<td>The Sleep Regularity Index inspired by <a href="https://www.nature.com/articles/s41598-017-03171-4" class="external-link">Phillips et
+al. 2017</a>, but calculated per day-pair to enable user to study
+patterns across days, and calculated based on sustained inactivity
+bouts. See <a href="https://wadpac.github.io/GGIR/articles/chapter10_SleepAnalysis.html#sleep-regularity-index-sri">Chapter
+10</a> for details.</td>
+</tr>
+<tr class="odd">
 <td>SriFractionValid</td>
 <td>Fraction of the 24 hour period that was valid in both current as
 well as in matching timestamps for the next calendar day. See GGIR
 function manual for details</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>nonwear_perc_spt</td>
 <td>Non-wear percentage during the spt hours of this day. This is a copy
 of the nonwear_perc_spt calculated in <code>part 5</code>, only included
@@ -1114,11 +1102,11 @@ data. If either of these applies set argument
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td>guider_guider_inbedStart</td>
+<td>guider_inbedStart</td>
 <td>Time of getting in bed</td>
 </tr>
 <tr class="even">
-<td>guider_guider_inbedEnd</td>
+<td>guider_inbedEnd</td>
 <td>Time of getting out of bed</td>
 </tr>
 <tr class="odd">
@@ -1135,6 +1123,17 @@ latency)</td>
 <tr class="odd">
 <td>sleeplatency</td>
 <td>Sleep latency, calculated as: sleeponset - guider_inbedStart</td>
+</tr>
+<tr class="even">
+<td>guider_corrected</td>
+<td>When using the guider correction algortihm with parameter
+<code>guider_cor_do</code> this output variable can have the following
+values: <strong>0</strong> means that the guider was not correct;
+<strong>1</strong> indicates that only basic expansion with neighboring
+windows was applied as done by step 4 of the algorithm;
+<strong>2</strong> indicates that main guider window was changes as done
+by step 3 of the algorithm, and; <strong>3</strong> indicates that both
+the main guider window was changed and the window was expanded.</td>
 </tr>
 </tbody>
 </table>
@@ -1273,7 +1272,7 @@ Hees et al PLoSONE 2015. We had over 25 thousand nights of data, and
 this visualisation allowed us to quickly zoom in on the most problematic
 nights to investigate possible mistakes in GGIR or mistakes in data
 entry.</p>
-<p><img src="example_dovisual.jpg" alt="Example visualisation GGIR part 4" width="700px"></p>
+<p><img src="example_dovisual.jpg" class="r-plt" alt="Example visualisation GGIR part 4" width="700px"></p>
 </div>
 </div>
 <div class="section level2">
@@ -1463,20 +1462,20 @@ window. The conventional approach is the approach used in part 4.</td>
 </tr>
 <tr class="even">
 <td><code>_gradient</code></td>
-<td>Gradient from intensity gradient analysis proposed by <a href="https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx" class="external-link">Rowlands
-et al. 2018</a> for the waking hours window (<code>_day_</code>) and for
+<td>Gradient from intensity gradient analysis proposed by <a href="https://doi.org/10.1249/mss.0000000000001561" class="external-link">Rowlands et
+al. 2018</a> for the waking hours window (<code>_day_</code>) and for
 the full window (<code>_day_spt_</code>)</td>
 </tr>
 <tr class="odd">
 <td><code>_intercept</code></td>
-<td>Intercept from intensity gradient analysis proposed by <a href="https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx" class="external-link">Rowlands
-et al. 2018</a> for the waking hours window (<code>_day_</code>) and for
+<td>Intercept from intensity gradient analysis proposed by <a href="https://doi.org/10.1249/mss.0000000000001561" class="external-link">Rowlands et
+al. 2018</a> for the waking hours window (<code>_day_</code>) and for
 the full window (<code>_day_spt_</code>)</td>
 </tr>
 <tr class="even">
 <td><code>_rsquared</code></td>
-<td>r squared from intensity gradient analysis proposed by <a href="https://journals.lww.com/acsm-msse/Fulltext/2018/06000/Beyond_Cut_%20Points__Accelerometer_Metrics_that.25.aspx" class="external-link">Rowlands
-et al. 2018</a> for the waking hours window (<code>_day_</code>) and for
+<td>r squared from intensity gradient analysis proposed by <a href="https://doi.org/10.1249/mss.0000000000001561" class="external-link">Rowlands et
+al. 2018</a> for the waking hours window (<code>_day_</code>) and for
 the full window (<code>_day_spt_</code>)</td>
 </tr>
 </tbody>
@@ -1549,89 +1548,6 @@ the full window (<code>_day_spt_</code>)</td>
 <td>Derived from power law exponent alpha, see <a href="https://doi.org/10.1016/j.gaitpost.2009.09.002" class="external-link">Chastin et al. 201
 0</a>
 </td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section level4">
-<h4 id="old-napping-behaviour-variables-to-be-deprecated">Old napping behaviour variables (to be deprecated)<a class="anchor" aria-label="anchor" href="#old-napping-behaviour-variables-to-be-deprecated"></a>
-</h4>
-<p>These variables will be deprecated as napping, if detection is turned
-on, is now a behavioural category just like all other behaviours.</p>
-<table class="table">
-<colgroup>
-<col width="36%">
-<col width="63%">
-</colgroup>
-<thead><tr class="header">
-<th>(Term in) variable name</th>
-<th>Description</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td>nap_count</td>
-<td>Total number of naps, only calculated when argument do.sibreport =
-TRUE, currently optimised for 3.5-year olds. See function documentation
-for function <code>g.part5.classifyNaps</code> in the <a href="https:/CRAN.R-project.org/package=GGIR/GGIR.pdf">GGIR function
-documentation (pdf)</a>.</td>
-</tr>
-<tr class="even">
-<td>nap_totalduration</td>
-<td>Total nap duration, only calculated when argument do.sibreport =
-TRUE, currently optimised for 3.5-year old. See function documentation
-for function <code>g.part5.classifyNaps</code> in the <a href="https:/CRAN.R-project.org/package=GGIR/GGIR.pdf">GGIR function
-documentation (pdf)</a>.</td>
-</tr>
-<tr class="odd">
-<td>sibreport_n_items</td>
-<td>Only created if <code>do.sibreport = TRUE</code>. Number of items in
-the sibreport</td>
-</tr>
-<tr class="even">
-<td>sibreport_n_items_day</td>
-<td>Only created if <code>do.sibreport = TRUE</code>. Number of items in
-the sibreport for this specific day</td>
-</tr>
-<tr class="odd">
-<td>nbouts_X</td>
-<td>Only created if <code>do.sibreport = TRUE</code>. Number of bouts in
-a day of X where X can be a detected nap (denap), srnap (self-reported
-nap) or srnonw (self-reported nonwear)</td>
-</tr>
-<tr class="even">
-<td>noverl_X</td>
-<td>Only created if <code>do.sibreport = TRUE</code>. Number of
-overlapping bouts in a day of X where X can be denap_srnap,
-denap_srnonw, srnap_denap, or srnonw_denap</td>
-</tr>
-<tr class="odd">
-<td>frag_mean_dur_X_day</td>
-<td>Only created if <code>do.sibreport = TRUE</code>. Mean duration of X
-per day, where X can be sib, srnap or srnonw</td>
-</tr>
-<tr class="even">
-<td>dur_X_min</td>
-<td>Only created if <code>do.sibreport = TRUE</code>. Total duration in
-minutes of X per day, where X can be detect nap (denap), srnap or
-srnonw</td>
-</tr>
-<tr class="odd">
-<td>mdur_X_overl_Y</td>
-<td>Only created if <code>do.sibreport = TRUE</code>. Mean duration of
-the overlap between X and Y, which are combinations of denap, srnap or
-srnonw</td>
-</tr>
-<tr class="even">
-<td>tdur_X_overl_Y</td>
-<td>Only created if <code>do.sibreport = TRUE</code>. Total duration in
-minutes of the overlap between X and Y, which are combinations of denap,
-srnap or srnonw</td>
-</tr>
-<tr class="odd">
-<td>perc_X_overl_Y</td>
-<td>Only created if <code>do.sibreport = TRUE</code>. Percentage of
-overlap between X and Y, which are combinations of denap, srnap or
-srnonw</td>
 </tr>
 </tbody>
 </table>
@@ -1823,6 +1739,18 @@ on SSP in chapter 13</a>
 on ABI in chapter 13</a>
 </td>
 </tr>
+<tr class="odd">
+<td>SleepRegularityIndex2</td>
+<td>The Sleep Regularity Index inspired by <a href="https://www.nature.com/articles/s41598-017-03171-4" class="external-link">Phillips et
+al. 2017</a>, but calculated per day-pair to enable user to study
+patterns across days, and calculated based on classified naps and sleep.
+See <a href="https://wadpac.github.io/GGIR/articles/chapter10_SleepAnalysis.html#sleep-regularity-index-sri">Chapter
+10</a> for details.</td>
+</tr>
+<tr class="even">
+<td>SleepRegularityIndex2_Ndaypairs</td>
+<td>Number of day pairs used for calculating SleepRegularityIndex2.</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -1838,7 +1766,7 @@ on ABI in chapter 13</a>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

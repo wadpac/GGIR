@@ -8,7 +8,7 @@
     for direct use by package user
 }
 \usage{
-  g.report.part2(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
+  g.report.part2(metadatadir = c(), f0 = c(), f1 = c(),
                   store.long = FALSE, params_output, myfun = c(), 
                   verbose = TRUE, desiredtz = "")
 }
@@ -25,9 +25,6 @@
   }
   \item{f1}{
     File index to finish with (defaults to number of files available, i.e., f1 = 0)
-  }
-  \item{maxdur}{
-    see \link{g.part2}
   }
   \item{store.long}{
     Booelean to indicate whether output should stored in long

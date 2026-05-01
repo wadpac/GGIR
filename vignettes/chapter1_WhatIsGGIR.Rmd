@@ -49,8 +49,8 @@ The time resolutions of GGIR output are:
 6.  GGIR is designed to be accessible for new users without experience in R or programming. GGIR requires only one function call and comes with elaborate open-access documentation.
 7.  GGIR has had over a [dozen code contributors](https://github.com/wadpac/GGIR/graphs/contributors).
 8.  GGIR has been available on the CRAN archive, meaning that it meets CRAN standards and that each release has gone through a series of automated checks.
-9.  We have public email list ([google group](https://groups.google.com/g/rpackageggir/)) for users to reach out to each other and the maintainers.
-10. Over a hundred [publications](https://github.com/wadpac/GGIR/wiki/Publication-list) have used GGIR, which has been a powerful way to identify problems and improve the code and it has provided us with a wide range of reference values.
+9.  We help users as much as possible publicly to maximise the sharing of knowledge and stimulate community efforts. Between 2014 and 2025 this was done via the ([GGIR google group](https://groups.google.com/g/rpackageggir/)) which attracted nearly 1000 conversations, but to ease moderation we now use the GGIR [GitHub discussion page](https://github.com/wadpac/GGIR/discussions) and [GitHub issues page](https://github.com/wadpac/GGIR/issues).
+10. Hundreds of [publications](https://github.com/wadpac/GGIR/wiki/Publication-list) have used GGIR, which has been a powerful way to test and improve GGIR towards the needs of the research community.
 
 ## History
 
@@ -59,6 +59,8 @@ In short, GGIR evolved from a series of R scripts used in research around 2010-2
 A key factor for the growth of GGIR has been its adoption by the research community and the willingness of a variety of researchers to invest in GGIR either in terms of time investment or financially.
 GGIR would not be what it is without all their efforts.
 
+Another good place to learn about GGIR's history is the article by [Migueles JH, et al. from 2019](https://doi.org/10.1123/jmpb.2018-0063) which summarised GGIR's status at that point in time.
+
 ## Philosophy behind GGIR
 
 ### Flexible and accessible
@@ -66,15 +68,15 @@ GGIR would not be what it is without all their efforts.
 The research field is highly heterogeneous in: the choice of sensor brand, data format, the study protocols used, and the research questions it tries to answer.
 At the same time many within the field lack the time or skills to write their own custom data processing software.
 GGIR aims to be flexible to handle all these different scenarios and at the same time remain accessible to those who lack time or skills to write software.
-Further, we hope GGIR is of use to those without the financial resources for commercial software, although we would like stress that we are not a charity and depend on paid and unpaid contributions from the community.
+Further, we hope GGIR is of use to those without the financial resources for commercial software, although we would like to stress that we are not a charity and depend on paid and unpaid contributions from the community.
 
 ### Algorithm design
 
-The philosophy behind the algorithms as implemented in GGIR is that biomechanical explainable (heuristic or knowledge driven) approaches to measurement in science are preferable over purely data-driven approaches. Please note the specification to the scientific context rather than measurement in general, e.g. consumer wearables. Only when a knowledge driven approach is unrealistic we can consider a data-driven approach. 
+The philosophy behind the algorithms as implemented in GGIR is that biomechanical explainable (heuristic or knowledge driven) approaches to measurement in science are preferable over purely data-driven approaches. Please note the phrasing of the previous sentence specific to the scientific context rather than measurement in general, e.g. consumer wearables. Only when a knowledge driven approach is unrealistic we consider a data-driven approach. 
 
 The idea of a knowledge driven approach is that in order to advance insight, it is essential to have an understanding of the causal relation between the phenomena being observed (e.g. acceleration of one body part), the way the (acceleration) sensor works, what we do with the data produced, and how we interpret the data. For example, we know that body acceleration relates to energy expenditure because of physics and human physiology. The abundance of scientific publications that have reported a positive correlation between accelerometer data and energy expenditure only served to confirm prior knowledge.
 
-In contrast, data-driven methods focus on optimal correlation between sensor data and reference labels or values, and are much less concerned with causal associations that are the focus of knowledge driven approaches, as defined above. Identical to how correlation is not necessarily equal to causation in health research, the process of measurement can also be confounded. Some examples: We may see differences in body acceleration patterns that correlate with different activity types or different levels of energy expenditure, but that does not mean that we actually measure those activity types or energy expenditure levels. Ignoring this distinction can easily lead to overestimating the value of an accelerometer for measuring those constructs (activity type, etc) and to underestimate the value of an accelerometer of capturing acceleration as a useful measure of behaviour, if appropriately used and interpreted.
+In contrast, data-driven methods focus on optimal correlation between sensor data and reference labels or values, and are much less concerned with causal associations that are the focus of knowledge driven approaches, as defined above. Identical to how correlation is not necessarily equal to causation in health research, the process of measurement can also be confounded. Some examples: We may see differences in body acceleration patterns that correlate with different activity types or different levels of energy expenditure, but that does not mean that we actually measure those activity types or energy expenditure levels. Ignoring this distinction can easily lead to overestimating the value of an accelerometer for measuring those constructs (activity type, etc) and to underestimate the value of an accelerometer for capturing acceleration as a useful measure of behaviour, if appropriately used and interpreted.
 
 A second problem with data-driven methods is that they heavily depend on the availability of reliable criterion methods.
 
@@ -99,5 +101,7 @@ Everything you need to type in your R script is `highlighted like this`.
 
 This documentation is not intended as an academic review: We only cite publications to clarify the origin of algorithms and we only discuss what is part of GGIR.
 
-Finally, the first version of this documentation was sponsored by Accelting with the commitment that this will remain available as free open-access documentation.
+All documentation text has been written in the 'we'-form even though many parts have been written by just one person (Vincent). However, switching between 'I' and 'we' for each section depending on whether others have helped seemed unpractical.
+
+Finally, the first version of this documentation was sponsored by [Accelting](https://www.accelting.com/) with the commitment that this will remain available as free open-access documentation.
 However, open documentation is best maintained as a community: We would be grateful for your help to improve the documentation either by giving feedback (e.g. via v.vanhees at accelting dot com), pull requests (for those who know how to do it), or financially to sponsor time investments. For example, it would be great if we had funding for creating high quality complementary info graphics and videos.

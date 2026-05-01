@@ -31,7 +31,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
     tmp_activityDiary_file = paste0(metadatadir, "/meta/activityDiary_", basename(params_247[["qwindow"]]), ".RData")
     
     if (!file.exists(tmp_activityDiary_file) || (file.exists(tmp_activityDiary_file) && 
-        file.info(params_247[["qwindow"]])$mtime >= file.info(tmp_activityDiary_file)$mtime)) {
+                                                 file.info(params_247[["qwindow"]])$mtime >= file.info(tmp_activityDiary_file)$mtime)) {
       if (verbose == TRUE) cat("\nConverting activity diary...")
       # This will be an object with numeric qwindow values for all individuals and days
       params_247[["qwindow"]] = g.conv.actlog(params_247[["qwindow"]],
@@ -44,8 +44,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       params_247[["qwindow"]] = qwindow
     }
     rm(qwindow)
-
   }
+  
   #---------------------------------
   # Specifying directories with meta-data and extracting filenames
   path = paste0(metadatadir,"/meta/basic/")  #values stored per long epoch, e.g. 15 minutes
@@ -65,10 +65,14 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
     }
   }
   ffdone = dir(paste0(metadatadir,ms2.out))
+  if (params_output[["do.part2.png"]] == TRUE) {
+    QC_plotfolder = paste0(metadatadir, "/results/QC/plots_part2")
+    if (!dir.exists(QC_plotfolder)) {
+      dir.create(QC_plotfolder)
+    }
+  }
   #---------------------------------
   # house keeping variables
-  pdfpagecount = 1 # counter to keep track of files being processed (for pdf)
-  pdffilenumb = 1 #counter to keep track of number of pdf-s being generated
   daySUMMARY = c()
   if (length(f0) == 0) f0 = 1
   if (length(f1) == 0) f1 = length(fnames)
@@ -103,8 +107,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                         myfun=c(), params_cleaning = c(), params_247 = c(),
                         params_phyact = c(), params_output = c(), params_general = c(),
                         path, ms2.out, foldername, fullfilenames, folderstructure, referencefnames,
-                        daySUMMARY, pdffilenumb, pdfpagecount, csvfolder, cnt78, verbose, use_qwindow_as_diary) {
-    Nappended = I_list = tail_expansion_log =  NULL
+                        daySUMMARY, csvfolder, cnt78, verbose, use_qwindow_as_diary) {
+    Nappended = I_list = tail_expansion_log = desiredtz_part1 = NULL
     if (length(ffdone) > 0) {
       if (length(which(ffdone == as.character(unlist(strsplit(fnames[i], "eta_"))[2]))) > 0) {
         skip = 1 #skip this file because it was analysed before")
@@ -115,13 +119,18 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       skip = 0
     }
     if (params_general[["overwrite"]] == TRUE) skip = 0
+    M = I = c()
     if (skip == 0) {
-      M = I = c()
+      file2read = paste0(path,fnames[i])
+      try(expr = {load(file2read)}, silent = TRUE) #reading RData-file
+    }
+    if (length(M) == 0) skip = 1
+    if (skip == 0) {
       filename_dir = c()
       filefoldername = c()
-      file2read = paste0(path,fnames[i])
-      
-      load(file2read) #reading RData-file
+      if (!is.null(desiredtz_part1)) {
+        params_general[["desiredtz"]] = desiredtz_part1
+      }
       # convert to character/numeric if stored as factor in metashort and metalong
       M$metashort = correctOlderMilestoneData(M$metashort)
       M$metalong = correctOlderMilestoneData(M$metalong)
@@ -192,7 +201,21 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                        acc.metric = params_general[["acc.metric"]],
                        ID = ID, qwindowImp = qwindowImp)
         
-        if (params_cleaning[["do.imp"]] == FALSE) { #for those interested in sensisitivity analysis
+        if (params_output[["do.part2.png"]] == TRUE & length(IMP) > 0) {
+          Ndays = (nrow(M$metalong) * M$windowsizes[2]) / (3600 * 24)
+          if (params_cleaning[["maxdur"]] != 0) {
+            durplot = params_cleaning[["maxdur"]]
+          } else {
+            durplot = 7 #how many DAYS to plot? (only used if maxdur is not specified as a number above zero)
+          }
+          IDname = gsub(pattern = "meta_|[.]bin|[.]RData|[.]csv|[.]gt3x", replacement = "", x = fnames[i])
+          png(paste0(QC_plotfolder, "/plot_", IDname, ".png"),
+              width = 7, height = 7, units = "in", res = 300)
+          g.plot(IMP, M, I,
+                 durplot = ifelse(test = Ndays > durplot, yes = Ndays, no = durplot))
+          dev.off()
+        }
+        if (params_cleaning[["do.imp"]] == FALSE) { #for those interested in sensitivity analysis
           IMP$metashort = M$metashort
           # IMP$metalong = M$metalong
         }
@@ -349,8 +372,8 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                                   params_phyact, params_output, params_general,
                                                   path, ms2.out, foldername, fullfilenames,
                                                   folderstructure, referencefnames,
-                                                  daySUMMARY, pdffilenumb, pdfpagecount, 
-                                                  csvfolder, cnt78, verbose, use_qwindow_as_diary)
+                                                  daySUMMARY, csvfolder, cnt78,
+                                                  verbose, use_qwindow_as_diary)
                                        
                                      })
                                      return(tryCatchResult)
@@ -363,15 +386,36 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       }
     }
   } else {
+    errors = list()
     for (i in f0:f1) {
       if (verbose == TRUE) cat(paste0(i, " "))
-      main_part2(i, ffdone, fnames, metadatadir,
-                 myfun, params_cleaning, params_247,
-                 params_phyact, params_output, params_general,
-                 path, ms2.out, foldername, fullfilenames,
-                 folderstructure, referencefnames,
-                 daySUMMARY, pdffilenumb, pdfpagecount,
-                 csvfolder, cnt78, verbose, use_qwindow_as_diary)
+      function_to_evaluate = expression(
+        main_part2(i, ffdone, fnames, metadatadir,
+                   myfun, params_cleaning, params_247,
+                   params_phyact, params_output, params_general,
+                   path, ms2.out, foldername, fullfilenames,
+                   folderstructure, referencefnames,
+                   daySUMMARY, csvfolder, 
+                   cnt78, verbose, use_qwindow_as_diary)
+      )
+      if (params_general[["use_trycatch_serial"]] == TRUE) {
+        tryCatch(
+          eval(function_to_evaluate),
+          error = function(e) {
+            err_msg = conditionMessage(e)
+            errors[[as.character(fnames[i])]] <<- err_msg
+          }
+        )
+      } else {
+        eval(function_to_evaluate)
+      }
+    }
+    # show logged errors after the loop:
+    if (params_general[["use_trycatch_serial"]] == TRUE && verbose == TRUE) {
+      if (length(errors) > 0) {
+        cat(paste0("\n\nErrors in part 2... for:"))
+        cat(paste0("\n-", names(errors), ": ", unlist(errors), collapse = ""))
+      }
     }
   }
 }

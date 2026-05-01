@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,12 +43,17 @@
     <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
     <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
     <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
+    <li><a class="dropdown-item" href="../articles/SleepRegularityIndex.html">Sleep Regularity Index</a></li>
+    <li><a class="dropdown-item" href="../articles/NapDetection.html">Nap Detection</a></li>
+    <li><a class="dropdown-item" href="../articles/StepCadenceAnalysis.html">Step and Cadence Analysis</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_GetStarted.html">Get started</a></li>
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-3-0/">Version 3.3-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-6/">Version 3.2-6</a></li>
     <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-0/">Version 3.2-0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-5/">Version 3.1-5</a></li>
     <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-0/">Version 3.1-0</a></li>
@@ -79,13 +84,131 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.3-6" id="changes-in-ggir-version-33-6">CHANGES IN GGIR VERSION 3.3-6<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-33-6"></a></h2>
+<ul><li>
+<p>Documentation:</p>
+<ul><li><p>Remove suggestion that configfile can be used to store annotations inside the configuration file to keep focus on the main purpose of the configfile, which is to facilitate reproducing analysis. <a href="https://github.com/wadpac/GGIR/issues/1473" class="external-link">#1473</a></p></li>
+<li><p>Updated documentation in chapter 13 (Circadian Rhythm Analyses). <a href="https://github.com/wadpac/GGIR/issues/1494" class="external-link">#1494</a></p></li>
+</ul></li>
+<li>
+<p>Part 5:</p>
+<ul><li><p>Remove variables lastHour and lastDate from csv output and dictionary as they were included by accident <a href="https://github.com/wadpac/GGIR/issues/1472" class="external-link">#1472</a></p></li>
+<li><p>Variable dictionary, now also documents ACC_spt_mg, ACC_spt_mg_median, and ACC_spt_mg_stdev. <a href="https://github.com/wadpac/GGIR/issues/1490" class="external-link">#1490</a></p></li>
+</ul></li>
+<li><p>Part 6: Enable extraction of participant ID from filename consistent with the other parts <a href="https://github.com/wadpac/GGIR/issues/1478" class="external-link">#1478</a></p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.3-5" id="changes-in-ggir-version-33-5">CHANGES IN GGIR VERSION 3.3-5<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-33-5"></a></h2>
+<ul><li><p>Part 2: Walking bout detection expanded to allow for multiple cadence and acceleration thresholds. <a href="https://github.com/wadpac/GGIR/issues/1466" class="external-link">#1466</a></p></li>
+<li><p>Part 2: Re-factor and tidy-up code related to data_masking_strategy 3 and 5 and study dates file. The resolution for the rolling window used in data_masking_strategy 3 is now higher (5 seconds by default). <a href="https://github.com/wadpac/GGIR/issues/1458" class="external-link">#1458</a></p></li>
+<li><p>Part 4: Remove duplicated column N_nights_guider_corrected in output file part4_summary_sleep_cleaned.csv when parameter guider_cor_do=TRUE. <a href="https://github.com/wadpac/GGIR/issues/1448" class="external-link">#1448</a></p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.3-4" id="changes-in-ggir-version-33-4">CHANGES IN GGIR VERSION 3.3-4<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-33-4"></a></h2><p class="text-muted">CRAN release: 2026-01-27</p>
+<ul><li><p>Part 2: Improved handling of corrupted RData files in part 1 or 2. <a href="https://github.com/wadpac/GGIR/issues/1447" class="external-link">#1447</a> and <a href="https://github.com/wadpac/GGIR/issues/1449" class="external-link">#1449</a></p></li>
+<li><p>Part 1: Minor tidy up of code related to splitting recordings. <a href="https://github.com/wadpac/GGIR/issues/1446" class="external-link">#1446</a></p></li>
+<li><p>General: Zenodo release generation again has not been triggered since release 3.2-8, this is now fixed by correcting mistake in json file. <a href="https://github.com/wadpac/GGIR/issues/1426" class="external-link">#1426</a></p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.3-3" id="changes-in-ggir-version-33-3">CHANGES IN GGIR VERSION 3.3-3<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-33-3"></a></h2>
+<ul><li><p>Part 2: Step/cadence expanded with a variety of output variables <a href="https://github.com/wadpac/GGIR/issues/1398" class="external-link">#1398</a>. Credits for funding this enhancement: Ben Maylor and Alex Rowlands.</p></li>
+<li><p>Part 1: Fix bug that caused GENEAsleep binary data to no longer to be recognised as such since the introduction of functionality for Parmay binary data. <a href="https://github.com/wadpac/GGIR/issues/1432" class="external-link">#1432</a></p></li>
+<li>
+<p>Part 4:</p>
+<ul><li><p>Now attempts to handle scenario where an integer participant ID is saved by Excel with decimal places, e.g. 123 versus 123.00. <a href="https://github.com/wadpac/GGIR/issues/1256" class="external-link">#1256</a></p></li>
+<li><p>Fix bug causing the error about missing object defaultGuiderCorrected. <a href="https://github.com/wadpac/GGIR/issues/1438" class="external-link">#1438</a></p></li>
+</ul></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.3-2" id="changes-in-ggir-version-33-2">CHANGES IN GGIR VERSION 3.3-2<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-33-2"></a></h2>
+<ul><li><p>Part 1: Fractional sampling rate for GENEActiv now automatically resampled to rounded sampling rate to ease and avoid ambiguity in epoch level aggregation <a href="https://github.com/wadpac/GGIR/issues/1408" class="external-link">#1408</a>.</p></li>
+<li><p>Part 3: Fixed a bug in handling HASPT_ignore_invalid = NA when no guider (SPT) window was detected <a href="https://github.com/wadpac/GGIR/issues/1414" class="external-link">#1414</a></p></li>
+<li><p>Part 3: Fixed bug in the guider correction algorithm where the main SPT window was directly preceded or followed by candidate (discarded) windows. <a href="https://github.com/wadpac/GGIR/issues/1415" class="external-link">#1415</a></p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.3-1" id="changes-in-ggir-version-33-1">CHANGES IN GGIR VERSION 3.3-1<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-33-1"></a></h2>
+<ul><li><p>Part 2: Replaces QC plot as pdf file by QC plots as png file per recording to help speed up report generation <a href="https://github.com/wadpac/GGIR/issues/1402" class="external-link">#1402</a></p></li>
+<li><p>Part 3: Fix bug in calculation of Oakley1994, Galland2012, and ColeKripke1997 <a href="https://github.com/wadpac/GGIR/issues/1404" class="external-link">#1404</a></p></li>
+<li><p>Part 6: Fixed bug triggering an error when running part 6 with do.parallel = TRUE. <a href="https://github.com/wadpac/GGIR/issues/1400" class="external-link">#1400</a></p></li>
+<li><p>Error handling: Added parameter “use_trycatch_serial” to optionally log file-level errors without interrupting GGIR when “do.parallel = FALSE”. <a href="https://github.com/wadpac/GGIR/issues/1308" class="external-link">#1308</a></p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.3-0" id="changes-in-ggir-version-33-0">CHANGES IN GGIR VERSION 3.3-0<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-33-0"></a></h2><p class="text-muted">CRAN release: 2025-09-15</p>
+<ul><li>Part 3: Adding option to auto-correct sleep guider that failed to detect the full main sleep period or incorrectly focused on a daytime nap. The new algorithm comes with new parameters guider_cor_maxgap_hrs, guider_cor_min_frac_sib, guider_cor_min_hrs, guider_cor_meme_frac_out, guider_cor_meme_frac_in, guider_cor_meme_min_hrs <a href="https://github.com/wadpac/GGIR/issues/1307" class="external-link">#1307</a></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.2-12" id="changes-in-ggir-version-32-12">CHANGES IN GGIR VERSION 3.2-12<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-32-12"></a></h2>
+<ul><li><p>Part 5: Deprecate experimental nap-detection functionality that was added in 2.5-2. This has been superseded by a much more simplified nap detection which is now discussed in Annex NapDetection.</p></li>
+<li><p>Part 4: Fix bug <a href="https://github.com/wadpac/GGIR/issues/1376" class="external-link">#1376</a> causing more nights to be included than desirable if sleeplog dates for at least one recording do not overlap with accelerometer recording.</p></li>
+<li><p>Part 2: Always omit spaces from the extracted ID unless the entire filename is used as ID. <a href="https://github.com/wadpac/GGIR/issues/1372" class="external-link">#1372</a></p></li>
+<li><p>Vignette: Clarify definition of acceleration and time ranges in gh-pages chapter 12. <a href="https://github.com/wadpac/GGIR/issues/1370" class="external-link">#1370</a></p></li>
+<li><p>All parts: Value of parameter desiredtz is now passed on via milestone data, which enables jointly processing data from multiple timezones in part 2-6 <a href="https://github.com/wadpac/GGIR/issues/1380" class="external-link">#1380</a></p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.2-11" id="changes-in-ggir-version-32-11">CHANGES IN GGIR VERSION 3.2-11<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-32-11"></a></h2>
+<ul><li><p>Part 2: In day segment analysis N hours and N valid hours per day segment are now correctly averaged over valid days only, previously calculation included invalid days. This affect only the person level summary. <a href="https://github.com/wadpac/GGIR/issues/1350" class="external-link">#1350</a></p></li>
+<li><p>Part 4: Reload sleeplog when part 3 output is newer than the latest sleeplog export, previously sleeplog was only reloaded if sleeplog itself had changed. <a href="https://github.com/wadpac/GGIR/issues/1366" class="external-link">#1366</a></p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.2-10" id="changes-in-ggir-version-32-10">CHANGES IN GGIR VERSION 3.2-10<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-32-10"></a></h2>
+<ul><li><p>Part 1: Correct timestamp extraction from ActivPAL data. <a href="https://github.com/wadpac/GGIR/issues/1287" class="external-link">#1287</a></p></li>
+<li><p>Part 5 and 6: Fix bug for the specific situation where parameters datadir or outputdir are set to a path that has the letters “csv” in one or multiple parent folder names. <a href="https://github.com/wadpac/GGIR/issues/1341" class="external-link">#1341</a></p></li>
+<li><p>Visualreport: Now also processes multiple files in parallel like the rest of GGIR. <a href="https://github.com/wadpac/GGIR/issues/1351" class="external-link">#1351</a></p></li>
+<li><p>Part 4: Fix bug that made it impossible to use basic format sleeplog in combination with sleepwindowType “TimeInBed” <a href="https://github.com/wadpac/GGIR/issues/1359" class="external-link">#1359</a></p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.2-9" id="changes-in-ggir-version-32-9">CHANGES IN GGIR VERSION 3.2-9<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-32-9"></a></h2>
+<ul><li><p>Part 3: For Fitbit data. Fixed bug in storage of ID format was list should be character, by which part5 could not run. <a href="https://github.com/wadpac/GGIR/issues/1330" class="external-link">#1330</a></p></li>
+<li>
+<p>Part 5:</p>
+<ul><li><p>Fix bug in extracting sleep diary when recording starts between midnight and 4am. <a href="https://github.com/wadpac/GGIR/issues/1337" class="external-link">#1337</a></p></li>
+<li><p>Fix bug that caused sibreport to be stored with timestamps in UTC timezone. <a href="https://github.com/wadpac/GGIR/issues/1332" class="external-link">#1332</a></p></li>
+</ul></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.2-8" id="changes-in-ggir-version-32-8">CHANGES IN GGIR VERSION 3.2-8<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-32-8"></a></h2>
+<ul><li><p>Revise guidance on GGIR citation. <a href="https://github.com/wadpac/GGIR/issues/1303" class="external-link">#1303</a></p></li>
+<li><p>Part 2 + 5: Segmentation with activity log is now able to handle non-chronological order of segment definitions in the log. <a href="https://github.com/wadpac/GGIR/issues/1318" class="external-link">#1318</a></p></li>
+<li><p>General: Promote GitHub discussion page as a central place to ask questions. References to Google group have been removed from the documentation. <a href="https://github.com/wadpac/GGIR/issues/1320" class="external-link">#1320</a>.</p></li>
+<li><p>Part 1 + 2: Update code and documentation for using external functions that produce multicolumn output. <a href="https://github.com/wadpac/GGIR/issues/1324" class="external-link">#1324</a></p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.2-7" id="changes-in-ggir-version-32-7">CHANGES IN GGIR VERSION 3.2-7<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-32-7"></a></h2>
+<ul><li><p>Part 5: Fix bug in reinitialisation of window numbers when using multiple timewindow definitions in GGIR part 5. <a href="https://github.com/wadpac/GGIR/issues/1311" class="external-link">#1311</a></p></li>
+<li><p>Now generates error message when user provides parameters with unknown names to GGIR function <a href="https://github.com/wadpac/GGIR/issues/1300" class="external-link">#1300</a>.</p></li>
+<li>
+<p>Part 3:</p>
+<ul><li><p>Add parameters “spt_min_block_dur”, “spt_max_gap_dur”, “spt_max_gap_ratio”, and “HorAngle_threshold” to improve control over algorithms used in part 3 <a href="https://github.com/wadpac/GGIR/issues/1295" class="external-link">#1295</a></p></li>
+<li><p>Re-factor code corresponding to final 3 steps in HDCZA and HorAngle algorithms. As part of this effort a 1 epoch incorrect offset in window-end was fixed <a href="https://github.com/wadpac/GGIR/issues/1295" class="external-link">#1295</a></p></li>
+</ul></li>
+<li><p>Config file: fix minor issue that caused GGIR, GGIRread, and R version to overwrite the last 3 parameters in the config file. <a href="https://github.com/wadpac/GGIR/issues/1298" class="external-link">#1298</a></p></li>
+<li><p>Part 1: Detect time gaps in between data (24 hour) chunks. Handle these if less than 1 hours and generate error when larger. <a href="https://github.com/wadpac/GGIR/issues/1294" class="external-link">#1294</a></p></li>
+<li><p>Part 2: Fix minor bug that added an extra row (day) in “part2_daysummary” when recording duration was less than one day and did not overlap with midnight. <a href="https://github.com/wadpac/GGIR/issues/1313" class="external-link">#1313</a></p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.2-6" id="changes-in-ggir-version-32-6">CHANGES IN GGIR VERSION 3.2-6<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-32-6"></a></h2><p class="text-muted">CRAN release: 2025-04-25</p>
+<ul><li>
+<p>Part 3 and 4:</p>
+<ul><li><p>Sleep regularity index (SRI) expanded with option to smooth data. <a href="https://github.com/wadpac/GGIR/issues/1269" class="external-link">#1269</a></p></li>
+<li><p>SRI renamed to be SRI1 and documentation updated to clarify difference with new SRI2 in part 6. <a href="https://github.com/wadpac/GGIR/issues/1269" class="external-link">#1269</a></p></li>
+<li><p>Added parameters SRI1_smoothing_wsize_hrs and SRI1_smoothing_frac to control optional smoothing for SRI1. <a href="https://github.com/wadpac/GGIR/issues/1269" class="external-link">#1269</a></p></li>
+</ul></li>
+<li>
+<p>Part 6:</p>
+<ul><li><p>Added SRI2 based on sleep and (currently experimental) naps. <a href="https://github.com/wadpac/GGIR/issues/1269" class="external-link">#1269</a></p></li>
+<li><p>Added parameters SRI2_WASOmin to control minimum duration of WASO in SRI2.#1269</p></li>
+</ul></li>
+<li><p>Part 1: Improve recently added functionality to split recordings to handle partial overlap with reference time windows.</p></li>
+<li><p>Part 5: Fix bug in defining MM windows when parameter excludefirstlast is set to non-default TRUE value. <a href="https://github.com/wadpac/GGIR/issues/1292" class="external-link">#1292</a></p></li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.2-5" id="changes-in-ggir-version-32-5">CHANGES IN GGIR VERSION 3.2-5<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-32-5"></a></h2>
 <p>This release primarily includes fixes to minor bugs observed after more elaborate testing of the features add in previous releases 3.2-3 and 3.2-4.</p>
 <ul><li><p>Part 1: Correct estimate of f1 when user specifies f1=0, which failed with the recently added split recordings functionality.</p></li>
 <li><p>Part 1: Recently introduced split records functionality only considered windows timestamps that overlap with recordings. Now changed to include any split time for which the resulting time segment overlaps for at least 12 hours wiht the accelerometer recording.</p></li>
 <li><p>Part 5 and visualreport: Add new guider types such as marker button to time series.</p></li>
 <li><p>Part 4: Add sleep efficiency and latency to recording summary when marker button is used. It was only added to night summary.</p></li>
-<li><p>Part 4: csv report, fix bug introduced in previous release causing columns to be incorrectly named.</p></li>
+<li><p>Part 4: csv report, fix bug introduced in release 3.2-4 earlier this week causing a few columns to be incorrectly named.</p></li>
 <li><p>Part 6: Now uses largest milestone file as reference point for column names.</p></li>
 <li><p>Part 3: HASPT.algo “HLRB” algorithm provided two windows when both are of equal length, now fixed by taking the last window.</p></li>
 </ul></div>
@@ -1097,7 +1220,7 @@
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.5-17" id="changes-in-ggir-version-15-17">CHANGES IN GGIR VERSION 1.5-17<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-15-17"></a></h2><p class="text-muted">CRAN release: 2018-02-19</p>
-<ul><li>SPT-window detection now updated with a constrained threshold to make it more robust against between accelerometer brand differences. This is the approach used for our PSG in <a href="https://www.biorxiv.org/content/10.1101/257972v1" class="external-link uri">https://www.biorxiv.org/content/10.1101/257972v1</a>
+<ul><li>SPT-window detection now updated with a constrained threshold to make it more robust against between accelerometer brand differences. This is the approach used for our PSG in <a href="http://dx.doi.org/10.1038/s41598-018-31266-z" class="external-link uri">http://dx.doi.org/10.1038/s41598-018-31266-z</a>
 </li>
 </ul></div>
     <div class="section level2">
@@ -1290,7 +1413,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

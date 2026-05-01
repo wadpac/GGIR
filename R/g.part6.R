@@ -96,7 +96,9 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   # Declare recording level functionality, which at the end of this g.part6 is either
   # applied to the file in parallel with foreach or serially with a loop
   main_part6_recordlevel = function(i, metadatadir = c(), f0 = c(), f1 = c(),
-                                    fnames.ms5raw, ffdone, EXT, verbose) {
+                                    fnames.ms5raw, ffdone, EXT, verbose,
+                                    params_general = c(), params_phyact = c(), params_247 = c(),
+                                    params_cleaning = c()) {
     if (length(ffdone) > 0) {
       if (length(which(ffdone == fnames.ms5raw[i])) > 0) {
         skip = 1 #skip this file because it was analysed before")
@@ -107,12 +109,15 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       skip = 0
     }
     if (params_general[["overwrite"]] == TRUE) skip = 0
-    Lnames = cosinor_coef = mdat = NULL
+    Lnames = cosinor_coef = mdat = desiredtz_part1 = NULL
     if (skip == 0) {
       # Load time series:
       if (EXT == "RData") {
         load(file = paste0(metadatadir, "/meta/ms5.outraw/",
                            params_phyact[["part6_threshold_combi"]], "/", fnames.ms5raw[i]))
+        if (!is.null(desiredtz_part1)) {
+          params_general[["desiredtz"]] = desiredtz_part1
+        }
         if (is.null(Lnames)) stop("Part 5 was processed with an older version of GGIR, reprocess part 5")
         mdat$time = mdat$timestamp # duplicate column because cosinor function expect columntime
       } else {
@@ -237,7 +242,9 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         ts$invalidepoch[invalidWindows] = 1
       }
       # Include basic information in the summary
-      summary[fi] = unlist(strsplit(fnames.ms5raw[i], "_"))[1]
+      summary[fi] = extractID(hvars = list(ID = "NA", iID = "NA", IDd = "NA"),
+                              idloc = params_general[["idloc"]],
+                              fname = fnames.ms5raw[i])
       s_names[fi] = "ID"
       fi = fi + 1
       starttime = as.POSIXlt(ts$time[1], tz = params_general[["desiredtz"]],
@@ -505,6 +512,40 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           s_names[fi:(fi + 1)] = c("SSP", "ABI")
           fi = fi + 2
         }
+        #------------------------------------------------------------
+        # Sleep Regularity Index
+        if (!is.null(params_247[["SRI2_WASOmin"]])) {
+          sleepnap_classid = grep(pattern = "spt_sleep|_nap", x = Lnames) - 1
+          ts$sleepnap = 0
+          ts$sleepnap[which(ts$class_id %in% sleepnap_classid)] = 1
+          # remove short lasting 'WASO' based on WASOmin parameters
+          waso_classid = grep(pattern = "spt_wake", x = Lnames) - 1
+          waso = rep(0, nrow(ts))
+          waso[which(ts$class_id %in% waso_classid)] = 1
+          rlew = rle(waso)
+          shortwaso = which(rlew$values == 1 & (rlew$lengths / (60/epochSize)) <= params_247[["SRI2_WASOmin"]])
+          if (length(shortwaso) > 0) {
+            rlew$values[shortwaso] = 2
+            waso = rep(rlew$values, rlew$lengths)
+            if (2 %in% rlew$values) {
+              ts$sleepnap[which(waso == 2)] = 1
+            }
+          }
+          SRI = CalcSleepRegularityIndex(data = ts,
+                                         epochsize = epochSize,
+                                         desiredtz = params_general[["desiredtz"]])
+          
+          SRI = SRI[which(SRI$frac_valid > params_cleaning[["includecrit.part6"]][1]), ]
+          if (nrow(SRI) > 0) {
+            summary[fi] = weighted.mean(x = SRI$SleepRegularityIndex, w = SRI$frac_valid)
+            summary[fi + 1] = nrow(SRI)
+          } else {
+            summary[fi:(fi + 1)] = NA
+          }
+          s_names[fi:(fi + 1)] = c("SleepRegularityIndex2", "SleepRegularityIndex2_Ndaypairs")
+          fi = fi + 2
+          rm(rlew, shortwaso, waso)
+        }
       }
       #=============================================
       # Store results in milestone data
@@ -588,7 +629,9 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                      .export = functions2passon, .errorhandling = errhand) %myinfix% {
                                        tryCatchResult = tryCatch({
                                          main_part6_recordlevel(i, metadatadir, f0, f1,
-                                                                fnames.ms5raw, ffdone, EXT, verbose)
+                                                                fnames.ms5raw, ffdone, EXT, verbose,
+                                                                params_general, params_phyact, params_247,
+                                                                params_cleaning)
                                        })
                                        return(tryCatchResult)
                                      }
@@ -600,10 +643,33 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         }
       }
     } else {
+      errors = list()
       for (i in f0:f1) {
         if (verbose == TRUE) cat(paste0(i, " "))
-        main_part6_recordlevel(i, metadatadir, f0, f1,
-                               fnames.ms5raw, ffdone, EXT, verbose)
+        function_to_evaluate = expression(
+          main_part6_recordlevel(i, metadatadir, f0, f1,
+                                 fnames.ms5raw, ffdone, EXT, verbose,
+                                 params_general, params_phyact, params_247,
+                                 params_cleaning)
+        )
+        if (params_general[["use_trycatch_serial"]] == TRUE) {
+          tryCatch(
+            eval(function_to_evaluate),
+            error = function(e) {
+              err_msg = conditionMessage(e)
+              errors[[as.character(fnames.ms5raw[i])]] <<- err_msg
+            }
+          )
+        } else {
+          eval(function_to_evaluate)
+        }
+      }
+      # show logged errors after the loop:
+      if (params_general[["use_trycatch_serial"]] == TRUE && verbose == TRUE) {
+        if (length(errors) > 0) {
+          cat(paste0("\n\nErrors in part 6... for:"))
+          cat(paste0("\n-", names(errors), ": ", unlist(errors), collapse = ""))
+        }
       }
     }
   }

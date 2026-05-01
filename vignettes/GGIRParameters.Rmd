@@ -38,6 +38,7 @@ find a description and default value for all the arguments.
 | overwrite                   | 1, 2, 3, 4, 5     | params_general           |
 | do.parallel                 | 1, 2, 3, 5        | params_general           |
 | maxNcores                   | 1, 2, 3, 5        | params_general           |
+| use_trycatch_serial         | 1, 2, 3, 5, 6     | params_general           |
 | myfun                       | 1, 2, 3           | not in parameter objects |
 | outputdir                   | 1                 | not in parameter objects |
 | studyname                   | 1                 | not in parameter objects |
@@ -94,7 +95,7 @@ find a description and default value for all the arguments.
 | rmc.unit.temp               | 1                 | params_rawdata           |
 | rmc.origin                  | 1                 | params_rawdata           |
 | rmc.header.length           | 1                 | params_rawdata           |
-| rmc.format.time              | 1                 | params_rawdata           |
+| rmc.format.time              | 1                | params_rawdata           |
 | rmc.bitrate                 | 1                 | params_rawdata           |
 | rmc.dynamic_range           | 1                 | params_rawdata           |
 | rmc.unsignedbit             | 1                 | params_rawdata           |
@@ -164,6 +165,7 @@ find a description and default value for all the arguments.
 | qM5L5                       | 2                 | params_247               |
 | MX.ig.min.dur               | 2                 | params_247               |
 | qwindow_dateformat          | 2                 | params_247               |
+| part2CR                     | 2                 | params_247               |
 | anglethreshold              | 3                 | params_sleep             |
 | timethreshold               | 3                 | params_sleep             |
 | ignorenonwear               | 3                 | params_sleep             |
@@ -179,6 +181,20 @@ find a description and default value for all the arguments.
 | oakley_threshold            | 3                 | params_sleep             |
 | consider_marker_button      | 3                 | params_sleep             |
 | impute_marker_button        | 3                 | params_sleep             |
+| SRI1_smoothing_wsize_hrs    | 3                 | params_sleep             |
+| SRI1_smoothing_frac         | 3                 | params_sleep             |
+| spt_min_block_dur           | 3                 | params_sleep             |
+| spt_max_gap_dur             | 3                 | params_sleep             |
+| spt_max_gap_ratio           | 3                 | params_sleep             |
+| HorAngle_threshold          | 3                 | params_sleep             |
+| guider_cor_maxgap_hrs       | 3                 | params_sleep             |
+| guider_cor_min_frac_sib     | 3                 | params_sleep             |
+| guider_cor_min_hrs          | 3                 | params_sleep             |
+| guider_cor_meme_frac_out    | 3                 | params_sleep             |
+| guider_cor_meme_frac_in     | 3                 | params_sleep             |
+| guider_cor_meme_min_hrs     | 3                 | params_sleep             |
+| guider_cor_do               | 3                 | params_sleep             |
+| guider_cor_meme_min_dys     | 3                 | params_sleep             |
 | loglocation                 | 4, 5              | params_sleep             |
 | colid                       | 4                 | params_sleep             |
 | coln1                       | 4                 | params_sleep             |
@@ -209,12 +225,13 @@ find a description and default value for all the arguments.
 | save_ms5rawlevels           | 5                 | params_output            |
 | part5_agg2_60seconds        | 5                 | params_general           |
 | includedaycrit.part5        | 5                 | params_cleaning          |
-| includenight.part5          | 5                 | params_cleaning          |
+| includenightcrit.part5      | 5                 | params_cleaning          |
 | frag.metrics                | 5                 | params_phyact            |
 | LUXthresholds               | 5                 | params_247               |
 | LUX_cal_constant            | 5                 | params_247               |
 | LUX_cal_exponent            | 5                 | params_247               |
 | LUX_day_segments            | 5                 | params_247               |
+| SRI2_WASOmin                | 5                 | params_247               |
 | timewindow                  | 5                 | params_output            |
 | save_ms5raw_format          | 5                 | params_output            |
 | save_ms5raw_without_invalid | 5                 | params_output            |
@@ -224,17 +241,22 @@ find a description and default value for all the arguments.
 | possible_nap_gap            | 5                 | params_sleep             |
 | nap_markerbutton_method     | 5                 | params_sleep             |
 | nap_markerbutton_max_distance | 5               | params_sleep             |
+| method_research_vars        | 5                 | params_sleep             |
 | includecrit.part6           | 6                 | params_cleaning          |
 | part6_threshold_combi       | 6                 | params_phyact            |
 | part6CR                     | 6                 | params_247               |
 | part6HCA                    | 6                 | params_247               |
 | part6Window                 | 6                 | params_247               |
 | part6DFA                    | 6                 | params_247               |
-| require_complete_lastnight_part5 | 5                | params_output            |
+| require_complete_lastnight_part5 | 5            | params_output            |
 | visualreport_without_invalid| visualreport      | params_output            |
+| visualreport_hrsPerRow      | visualreport      | params_output            |
+| visualreport_focus          | visualreport      | params_output            |
+| visualreport_validcrit      | visualreport      | params_output            |
 | dofirstpage                 | visualreport      | params_output            |
 | visualreport                | visualreport      | params_output            |
 | viewingwindow               | visualreport      | params_output            |
+| save_dashboard_parquet      | end of GGIR run   | params_output            |
 
 
 # Arguments/parameters description {#default-argument-values}

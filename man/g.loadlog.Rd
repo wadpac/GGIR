@@ -10,7 +10,7 @@
 \usage{
   g.loadlog(loglocation = c(), coln1 = c(), colid = c(),
             sleeplogsep = ",", meta.sleep.folder = c(),
-            desiredtz = "")
+            desiredtz = "", sleepwindowType = c())
 }
 \arguments{
   \item{loglocation}{
@@ -34,7 +34,10 @@
     Path to part3 milestone data, only specify if sleeplog is in advanced format.
   }
   \item{desiredtz}{
-    See \link{g.part4}
+    See \link{GGIR}
+  }
+  \item{sleepwindowType}{
+    See \link{GGIR}
   }
 }
 \value{

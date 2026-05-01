@@ -18,7 +18,7 @@ As explained in chapter 1, GGIR offers a vast amount of functionality. If you ar
 
 ## The GGIR function
 
-As brief introduction for those unfamiliar with R or software, R packages are constructed of sub-components, named functions. A single function typically allows for doing a specific task. For example, we may have the `sum` function that sums the numbers we provide to it. A function can have one or multiple parameters to control the functions behaviour. In R these parameters are called function arguments. For example, `sum` has the argument `na.rm` to control what needs to be done with missing values. In GGIR we refer to these arguments as parameters.
+As a brief introduction for those unfamiliar with R or software, R packages are constructed of sub-components, named functions. A single function typically allows for doing a specific task. For example, we may have the `sum` function that sums the numbers we provide to it. A function can have one or multiple parameters to control the functions behaviour. In R these parameters are called function arguments. For example, `sum` has the argument `na.rm` to control what needs to be done with missing values. In GGIR we refer to these arguments as parameters.
 
 GGIR comes with a large number of functions and parameters that together form a processing pipeline. To ease interacting with GGIR, GGIR has one central function to act as interface to all functionality. This function is also named `GGIR` and in its basic form it is used as shown below:
 
@@ -26,6 +26,8 @@ GGIR comes with a large number of functions and parameters that together form a 
 GGIR(datadir = "C:/mystudy/mydata",
      outputdir = "D:/myresults")
 ```
+
+Here, parameter `datadir` specifies the location of the data and parameter `outputdir` specifies the location where the output should be saved.
 
 You only need to learn how to work with the function `GGIR`, but it is important to understand that in the background this function interacts with all other functions in GGIR and even functions outside GGIR.
 
@@ -39,19 +41,19 @@ Further, it is important to understand that the `GGIR package` is structured in 
 GGIR, has a computational structure of six parts which are applied sequentially to the data:
 
 -   **Part 1:** Loads the data, works on data quality, and stores derived summary measures per time interval, also known as signal features (referred to as metrics), as needed for the following parts. 
--   **Part 2:** Basic data quality assessment based on the extract metrics and description of the data per day, per file, and optionally per day segment.
--   **Part 3:** Estimation rest periods, needed for input to Part 4.
+-   **Part 2:** Basic data quality assessment based on the extracted metrics and description of the data per day, per file, and optionally per day segment.
+-   **Part 3:** Estimation of rest periods, needed for input to Part 4.
 -   **Part 4:** Labels the rest periods derived in Part 3 as sleep per night and per file.
--   **Part 5:** Compiles time series with classification of sleep and physical behaviour categories by re-using information derived in part 2, 3, and 4. This includes the detection of behavioural bouts, which are time segments where the same behaviour is sustained for duration as specified by the user. Next, Part 5 generates a descriptive summary such as time spent in and average acceleration per behavioural category, but also behavioural fragmentation.
+-   **Part 5:** Compiles time series with classification of sleep and physical behaviour categories by re-using information derived in part 2, 3, and 4. This includes the detection of behavioural bouts, which are time segments where the same behaviour is sustained for a duration range as specified by the user. Next, Part 5 generates a descriptive summary such as time spent in and average acceleration per behavioural category, but also behavioural fragmentation.
 -   **Part 6:** Facilitates analyses that span the full recording such as household co-analysis and circadian rhythm analysis.
 
 The specific order and content of the parts is a result of how GGIR evolved over time, with Part 1 and 2 created in 2011-2013, Part 3 and 4 created in 2013-2015, Part 5 created in 2017-2020, and Part 6 created in 2023-2024. As such, the parts also reflect the historical expansion of GGIR.
 
 #### Milestone data
 
-Each part, when run, stores its output in an R-data file that has `.RData` as its extension, which we refer to as the milestone data. As user, you are unlikely to ever need to interact directly with the milestone data files because all relevant output for you is stored in csv and pdf files in the output folder `results`.
+Each part, when run, stores its output in an R-data file that has `.RData` as its extension, which we refer to as the milestone data. As user, you are unlikely to ever need to interact directly with the milestone data files because all relevant output for you is stored in csv, png and pdf files in the output folder `results`.
 
-The milestone files are read by the next GGIR part. The advantage of this design is that it offers internal modularity. For example, we can run part 1 now and continue with part 2 another time without having to repeat part 1 again. So, this design eases re-processing and is also helpful for us when developing and testing the GGIR code.
+The milestone files are read by the next GGIR part. The advantage of this design is that it offers internal modularity. For example, we can run part 1 now and continue with part 2 another time without having to repeat part 1 again. So, this design eases re-processing and is also helpful when developing and testing the GGIR code.
 
 The milestone data files are stored in sub-folders of the output folder as show below. Note that the output folder is named `output_mystudy` as example but exact name may differ for you.
 
@@ -79,7 +81,7 @@ The parameters of all GGIR package functions can be used as parameter to the GGI
 -   **params_output:** parameters relating to how and whether output is stored.
 -   **params_general:** general parameters not covered by any of the above categories
 
-As GGIR user you do not need to remember which theme a parameter belongs to. However, you may notice that the documentation is structure by parameter theme to ease navigating the parameters.
+As GGIR user you do not need to remember which theme a parameter belongs to. However, you may notice that the documentation is structured by parameter theme to ease navigating the parameters.
 
 There are a couple of ways to inspect the parameters in each parameter category and their default values:
 
@@ -107,7 +109,7 @@ library(GGIR)
 print(load_params()$params_sleep)
 ```
 
-If you are only interested in e.g. parameter `HASIB.algo` from the
+If you are only interested in one parameter, e.g. parameter `HASIB.algo`, from the
 
 `sleep_params` object:
 
@@ -116,11 +118,13 @@ library(GGIR)
 print(load_params()$params_sleep[["HASIB.algo"]])
 ```
 
-All of these parameters are accepted as parameter to function `GGIR`, because `GGIR` is like a shell around all GGIR functionality. However, the `params_` objects themselves cannot be provided as input to `GGIR`.
+All parameters are accepted as parameter to function `GGIR`, because `GGIR` is like a shell around all GGIR functionality. However, the `params_` objects themselves cannot be provided as input to `GGIR`. In other words: you can provide `HASIB.algo` as parameter to GGIR, but not `params_sleep`.
 
 #### Configuration file.
 
-GGIR stores all the parameter values in a csv-file named config.csv. The file is stored after each run of GGIR in the root of the output folder, overwriting any existing config.csv file. So, if you would like to add annotations in the file, e.g. in the fourth column, then you will need to store it somewhere outside the output folder and specify the path to that file with parameter `configfile`. Note that parameters `datadir` and `outputdir`discussed below always need to be specified directly and are not part of the configfile.
+GGIR automatically stores all its parameter settings in a csv-file named config.csv. The file is stored after each run of GGIR in the root of the output folder, overwriting any existing config.csv file. So, it acts as log of how GGIR was configured during the most recent run.
+
+One practical value of the configuration file is that you can share it with others such that they can replicate your analyses via GGIR parameter `configfile`. The code below shows an example where `"D:/myconfigfiles/config.csv"` is used as configuration file. Note that parameters `datadir` and `outputdir` discussed below are stored in the configuration file but always need to be specified directly in R code as they are never extracted from the configuration file.
 
 ```{R,eval=FALSE}
 library(GGIR)
@@ -129,11 +133,11 @@ GGIR(datadir = "C:/mystudy/mydata",
      configfile = "D:/myconfigfiles/config.csv")
 ```
 
-The practical value of this is that it eases the replication of the analysis, because instead of having to share you R script with colleagues, sharing your config.csv file will be sufficient. Please make sure you have the same GGIR and R version installed when using this for reproducibility. See [here](https://wadpac.github.io/GGIR/articles/chapter0_Installation.html) for guidance on how to install older package versions.
+Be aware that, to replicate GGIR analysis, one should also make sure that consistent GGIR and R versions are used. See [here](https://wadpac.github.io/GGIR/articles/chapter0_Installation.html) for guidance on how to install older package versions.
 
 #### Parameter extraction order
 
-If parameters are provided in the GGIR call, then GGIR always uses those. If parameters are not provided in GGIR call, GGIR checks whether there is a config.csv file either in the output folder or specified via parameter `configfile` and loads those values. If a parameter is neither specified in the GGIR function call nor available in the config.csv file, then GGIR will use its default value's which can be inspected as discussed in the section above. Here, it is important to realise that a consequence of this logic is that GGIR will not revert to its default parameter values in a repeated run of GGIR unless you remove the parameter from the function call and delete the config.csv file or you specify the original (default) value of the parameter explicitly in you GGIR call.
+If parameters are provided in the GGIR call, then GGIR always uses those. If parameters are not provided in the GGIR call, GGIR checks whether there is a config.csv file either in the output folder or specified via parameter `configfile` and loads those values. If a parameter is neither specified in the GGIR function call nor available in the config.csv file, then GGIR will use its default value's which can be inspected as discussed in the section above. Here, it is important to realise that a consequence of this logic is that GGIR will not revert to its default parameter values in a repeated run of GGIR unless you remove the parameter from the function call and delete the config.csv file or you specify the original (default) value of the parameter explicitly in you GGIR call.
 
 To ensure this is clear here are some example:
 
@@ -156,23 +160,46 @@ GGIR currently works with the following accelerometer brands and formats:
 -   [Axivity](https://axivity.com/) AX3 and AX6 .cwa
 -   [ActiGraph](https://theactigraph.com) .csv and .gt3x (.gt3x only the newer format generated with firmware versions above 2.5.0. Serial numbers that start with “NEO” or “MRA” and have firmware version of 2.5.0 or earlier use an older format of the .gt3x file). If you want to work with .csv exports via the commercial ActiLife software, then note that you have the option to export data with timestamps, which should be turned off. To cope with the absence of timestamps GGIR will calculate timestamps from the sample frequency, the start time, and start date as presented in the file header.
 -   [Movisens](https://www.movisens.com/en/) with data stored in folders.
--   [Parmay Matrix](https://www.parmaytech.com/) .bin and .BIN
+-   [Parmay Matrix](https://www.matrixwearable.net/) .bin and .BIN
 -   Any other accelerometer brand that generates csv output, see documentation for functions `read.myacc.csv` and parameter `rmc.noise` in the vignette [Reading csv files with raw data in GGIR](https://cran.r-project.org/package=GGIR/vignettes/readmyacccsv.html).
 
 ### Externally derived epoch-level data
 
 By default GGIR assumes that the data is raw as discussed in chapter 1. However, for some studies raw data is not available and all we have is an epoch level aggregate. For example, done by external software or done inside the accelerometer device. Although this can introduce some severe limitations to the transparency and flexibility of our analysis, GGIR makes an attempt to facilitate the analysis of these externally performed aggregations of the raw data. Please find below an overview of the file formats currently facilitated:
 
-| Sensor brand / Device name  | Data format           | Parameters              |
-|------------------------|-----------------------|-------------------------|
-| Actiwatch            | .csv                  | `dataFormat = "actiwatch_csv"`  |
-| Actical             | .csv                  | `dataFormat = "actical_csv"`  |
-| Actiwatch | .awd      | `dataFormat = "actiwatch_awd"`  |
-| ActiGraph    | .csv (count files, not be confused with csv raw data files) | `dataFormat = "actigraph_csv"`, `do.neishabouricounts = TRUE`, `acc.metric = "NeishabouriCount_x"`  |
-| Axivity             | UKBiobank csv export of epoch level data      | `dataFormat = "ukbiobank_csv"`  (sleep detection not facilitated)   |
-| SenseWear    | .xls or .xlsx      | `dataFormat = "sensewear_xls"`   |
-| Fitbit      | folder with multiple .json files |  `dataFormat = "fitbit_json"` |
-| Philips Health Band | .xlsx file pairs | `dataFormat = "phb_xlsx"` |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| Manufacturer             | Product Name       | Still for sale? | File extension |  `dataFormat` parameter |
++:=========================+:===================+:================+:===============+:========================+
+| Philips Respironics\     | Actiwatch\         | NO              | .csv           | `"actiwatch_csv"`       |
+| (previously Mini Mitter) | Spectrum Plus      |                 |                |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| Philips Respironics\     | Actiwatch\         | NO              | .awd           | `"actiwatch_awd"`       |
+| (previously Mini Mitter) | Spectrum Plus      |                 |                |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| Philips Respironics\     | Actiwatch 2 (AW2)  | NO              | .csv           | `"actiwatch_csv"`       |
+| (previously Mini Mitter) |                    |                 |                |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| Philips Respironics\     | Actical            | NO              | .csv           | `"actical_csv"`         |
+| (previously Mini Mitter) |                    |                 |                |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| Philips Respironics\     | Philips Health\    | NO              | two .xlsx      | `"phb_xlsx"`            |
+| (previously Mini Mitter) | Band               |                 |                |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| CamNTech                 | Motionwatch 8      | YES             | .awd           | `"actiwatch_awd"`       |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| CamNTech                 | Motionwatch 7      | NO              | .awd           | `"actiwatch_awd"`       |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| FitBit                   | Inspire 3          | YES             | several .json  | `"fitbit_json"`         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| SenseWear                | SenseWear pro\     | NO              | .xls or .xlsx  | `"sensewear_xls"`       |
+|                          | Armband            |                 |                |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| ActiGraph                | many product names | SOME            | .csv \*        | `"actigraph_csv"`       |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| Axivity                  | AX3                | YES             | UK Biobank \   | `"ukbiobank_csv"`       |
+|                          |                    |                 | .csv export    |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+\*These are the files with count data, not to be confused with ActiGraph raw acceleration data which can also be exported to .csv format.
 
 See [GGIR CookBook](https://wadpac.github.io/GGIR/articles/Cookbook.html) for example recipes for working with these externally derived epoch-level data.
 
@@ -183,9 +210,26 @@ To process these files, GGIR loads their content and saves it as GGIR part 1 mil
 
 For all above approaches using a one hour window, the actual window length can be modified with the last value of parameter `windowsizes`.
 
+Please find below examples of file formats that are not facilitated yet, but can be facilitated with financial support from you. If you are interested, please contact v.vanhees at accelting.com. If there are other data formats you like to work with then do not hesitate to reach out.
+
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| Manufacturer             | Product Name       | Still for sale? | File extension |  `dataFormat` parameter |
++:=========================+:===================+:================+:===============+:========================+
+| Philips Respironics \    | Actiwatch \        | NO              | .csv           | Not facilitated yet     |
+| (previously Mini Mitter) | Spectrum PRO       |                 |                |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| CamNTech                 | Motionwatch 8      | YES             | .xlsx          | Not facilitated yet     |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| AMI Ambulatory \         | Motionlogger       | YES             | .csv           | Not facilitated yet     |
+| Monitoring               |                    |                 |                |                         |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+| Condor Instruments       | ActTrust 2         | YES             | .txt           | Not facilitated yet     |
++--------------------------+--------------------+-----------------+----------------+-------------------------+
+
+
 ## How to run your analysis?
 
-The bare minimum input needed for `GGIR` is:
+As mentioned above, the bare minimum input needed for `GGIR` is:
 
 ```{R,eval=FALSE}
 library(GGIR)
@@ -193,9 +237,9 @@ GGIR(datadir = "C:/mystudy/study_XYZ_data",
      outputdir = "C:/myresults")
 ```
 
-Parameter `datadir` allows you to specify where you have stored your accelerometer data and `outputdir` allows you to specify where you would like the output of the analyses to be stored. This cannot be equal to `datadir`. If you copy and paste the above code to a new R script (file ending with .R) and Source it in R(Studio), then the dataset will be processed and the output will be stored in the specified output directory. GGIR refers to file directories and not to folders. For those unfamiliar with the term directory: It is the same as a folder.
+Parameter `datadir` allows you to specify where you have stored your accelerometer data and `outputdir` allows you to specify where you would like the output of the analyses to be stored. This cannot be equal to `datadir`. If you copy and paste the above code to a new R script (file ending with .R) and Source it in R(Studio), then the dataset will be processed and the output will be stored in the specified output directory. For those unfamiliar with the term directory: It is the same as a folder, but in GGIR we refer to them as (file) directories. 
 
-Next, we can add parameter `mode` to tell GGIR which part(s) to run, e.g. `mode = 1:5` tells GGIR to run all five parts and is the default. With parameter `overwrite`, we can tell GGIR whether to overwrite previously produced milestone data or not.
+Next, we can add parameter `mode` to tell GGIR which part(s) to run, e.g. `mode = 1:5` tells GGIR to run the first five parts and is the default. With parameter `overwrite`, we can tell GGIR whether to overwrite previously produced milestone data or not.
 
 Further, parameter `idloc` tells GGIR where to find the participant ID. The default setting most likely does not work for most data formats, by which it is important that you tailor the value of this parameter to your study setting. For example, if you files start with a participant ID followed by an underscore then set `idloc=2`. See documentation for parameter `idloc` for other examples.
 
@@ -352,13 +396,13 @@ GGIR generates reports in the parts 2, 4, 5, and 6 of the pipeline. With paramet
 
 ***Output files in results/QC subfolder:***
 
-| File path                                                | Resolution                                                       | GGIR part |
-|--------------------------------------|-----------------|-----------------|
-| data_quality_report.csv                       | one row per recording                                            | 5         |
-| part4_summary_sleep_full.csv                  | one row per recording                                            | 4         |
-| part4_nightsummary_sleep_full.csv             | one row per night                                                | 4         |
-| part5_daysummary_full_WW_L40M100V400_T5A5.csv | one row per day                                                  | 5         |
-| plots_to_check_data_quality_1.pdf             | one recording per page                                           | 2         |
+| File path                                     | Resolution             | GGIR part |
+|-----------------------------------------------|------------------------|-----------|
+| data_quality_report.csv                       | one row per recording  | 5         |
+| part4_summary_sleep_full.csv                  | one row per recording  | 4         |
+| part4_nightsummary_sleep_full.csv             | one row per night      | 4         |
+| part5_daysummary_full_WW_L40M100V400_T5A5.csv | one row per day        | 5         |
+| plots_part2 folder with .png files            | one recording per png  | 2         |
 
 : A detailed discussion of each output can be found in the other chapters.
 

@@ -33,7 +33,7 @@ export(g.analyse, g.calibrate,
        HASIB, g.part4_extractid,
        CalcSleepRegularityIndex, load_params,
        check_params, extract_params,
-       g.imputeTimegaps, g.part5.classifyNaps,
+       g.imputeTimegaps,
        tidyup_df, cosinor_IS_IV_Analyses,
        detect_nonwear_clipping, apply_cosinor_IS_IV_Analyses,
        ShellDoc2Vignette, parametersVignette,
@@ -44,10 +44,12 @@ export(g.analyse, g.calibrate,
        part6PairwiseAggregation, g.part6, g.report.part6, 
        check_log, g.report.part5_dictionary, DFA, ABI, SSP, visualReport,
        splitRecords, getSplitNames, addSplitNames, getPart1BasicInfo,
-       markerButtonForRest, aggregateEvent, inspect_binFile_brand)
+       markerButtonForRest, aggregateEvent, inspect_binFile_brand,
+       g.part3_correct_guider, g.part3_alignIndexVectors, filterNonwearNight,
+       write_dashboard_parquet, write_epoch_parquet, build_epoch_table)
 
 importFrom("grDevices", "colors", "dev.off", "pdf",
-           "rgb", "rainbow", "palette", "adjustcolor", "gray.colors")
+           "rgb", "rainbow", "palette", "adjustcolor", "gray.colors", "dev.list", "png")
 importFrom("graphics", "abline", "axis", "par", "plot", "plot.new",
            "rect","axis.POSIXct", "barplot", "box", "legend",
            "lines", "mtext", "text", "arrows", "segments", "layout")

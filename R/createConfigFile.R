@@ -85,15 +85,16 @@ createConfigFile = function(config.parameters = c(), GGIRversion = "") {
     GGIRread_version = as.character(utils::packageVersion("GGIRread"))
     if (length(GGIRread_version) != 1) GGIRread_version = sessionInfo()$otherPkgs$GGIRread$Version
   }
-
-  out[nrow(out) - 2,] = c("GGIRread_version", GGIRread_version, "not applicable")
-  out[nrow(out) - 1,] = c("GGIRversion", GGIRversion, "not applicable")
-  out[nrow(out),] = c("R_version", SI$R.version$version.string, "not applicable")
+  out = rbind(out, matrix(c("GGIRread_version", GGIRread_version, "not applicable"), nrow = 1))
+  out = rbind(out, matrix(c("GGIRversion", GGIRversion, "not applicable"), nrow = 1))
+  out = rbind(out, matrix(c("R_version", SI$R.version$version.string, "not applicable"), nrow = 1)) 
   out = out[which(!is.na(out[,1])),]
   out = as.data.frame(out, stringsAsFactors = TRUE)
   row.names(out) <- NULL
   colnames(out) = c("argument","value","context")
   out$value = as.character(out$value)
+  out$argument = as.character(out$argument)
+  out$context = factor(as.character(out$context))
   out = out[which(out$argument %in% c("", possible_params_objectnames) == FALSE),]
   out = out[order(out$context),]
   return(out)

@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,6 +61,9 @@
     <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
     <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
     <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
+    <li><a class="dropdown-item" href="../articles/SleepRegularityIndex.html">Sleep Regularity Index</a></li>
+    <li><a class="dropdown-item" href="../articles/NapDetection.html">Nap Detection</a></li>
+    <li><a class="dropdown-item" href="../articles/StepCadenceAnalysis.html">Step and Cadence Analysis</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
@@ -69,6 +72,8 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news">
 <li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-3-0/">Version 3.3-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-6/">Version 3.2-6</a></li>
     <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-0/">Version 3.2-0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-5/">Version 3.1-5</a></li>
     <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-0/">Version 3.1-0</a></li>
@@ -181,632 +186,642 @@ arguments.</p>
 <td>params_general</td>
 </tr>
 <tr class="odd">
+<td>use_trycatch_serial</td>
+<td>1, 2, 3, 5, 6</td>
+<td>params_general</td>
+</tr>
+<tr class="even">
 <td>myfun</td>
 <td>1, 2, 3</td>
 <td>not in parameter objects</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>outputdir</td>
 <td>1</td>
 <td>not in parameter objects</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>studyname</td>
 <td>1</td>
 <td>not in parameter objects</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>chunksize</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>do.enmo</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.lfenmo</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>do.en</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.bfen</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>do.hfen</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.hfenplus</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>do.mad</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.anglex</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>do.angley</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.angle</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>do.enmoa</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.roll_med_acc_x</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>do.roll_med_acc_y</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.roll_med_acc_z</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>do.dev_roll_med_acc_x</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.dev_roll_med_acc_y</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>do.dev_roll_med_acc_z</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.lfen</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>do.lfx</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.lfy</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>do.lfz</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.hfx</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>do.hfy</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.hfz</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>do.bfx</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.bfy</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>do.bfz</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.zcx</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>do.zcy</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.zcz</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>do.neishabouricounts</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>actilife_LFE</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>lb</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>hb</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>n</td>
 <td>1</td>
 <td>params_metrics</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.cal</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>spherecrit</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>minloadcrit</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>printsummary</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>print.filename</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>backup.cal.coef</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>rmc.noise</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>rmc.dec</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>rmc.firstrow.acc</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>rmc.firstrow.header</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>rmc.col.acc</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>rmc.col.temp</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>rmc.col.time</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>rmc.unit.acc</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>rmc.unit.temp</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>rmc.origin</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>rmc.header.length</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>rmc.format.time</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>rmc.bitrate</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>rmc.dynamic_range</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>rmc.unsignedbit</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>rmc.desiredtz</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>rmc.sf</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>rmc.headername.sf</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>rmc.headername.sn</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>rmc.headername.recordingid</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>rmc.header.structure</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>rmc.check4timegaps</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>rmc.col.wear</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>rmc.doresample</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>imputeTimegaps</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>dayborder</td>
 <td>1, 2, 5</td>
 <td>params_general</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>dynrange</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>nonwear_range_threshold</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>configtz</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>minimumFileSizeMB</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>interpolationType</td>
 <td>1</td>
 <td>params_rawdata</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>expand_tail_max_hours</td>
 <td>deprecated</td>
 <td>params_general</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>recordingEndSleepHour</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>maxRecordingInterval</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>recording_split_times</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>recording_split_overlap</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>recording_split_ignore_edges</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>recording_split_timeformat</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>nonwear_approach</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>dataFormat</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>extEpochData_timeformat</td>
 <td>1</td>
 <td>params_general</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>metadatadir</td>
 <td>2, 3, 4, 5</td>
 <td>not in parameter objects</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>minimum_MM_length.part5</td>
 <td>5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>strategy</td>
 <td>2, 5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>hrs.del.start</td>
 <td>2, 5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>hrs.del.end</td>
 <td>2, 5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>maxdur</td>
 <td>2, 5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>max_calendar_days</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>includedaycrit</td>
 <td>2, 5</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>nonWearEdgeCorrection</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>nonwearFiltermaxHours</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>nonwearFilterWindow</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>L5M5window</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>M5L5res</td>
 <td>2, 5</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>winhr</td>
 <td>2, 5</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>qwindow</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>qlevels</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>ilevels</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>mvpathreshold</td>
 <td>2</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>boutcriter</td>
 <td>2</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>ndayswindow</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>idloc</td>
 <td>2, 4</td>
 <td>params_general</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>do.imp</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>storefolderstructure</td>
 <td>2, 4, 5</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>epochvalues2csv</td>
 <td>2</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>do.part2.pdf</td>
 <td>2</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>sep_reports</td>
 <td>2, 4, 5</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>dec_reports</td>
 <td>2, 4, 5</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>sep_config</td>
 <td>1, 2, 3, 4, 5</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>dec_config</td>
 <td>1, 2, 3, 4, 5</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>mvpadur</td>
 <td>2</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>bout.metric</td>
 <td>2, 5</td>
 <td>params_phyact</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>closedbout</td>
 <td>2</td>
 <td>params_phyact</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>IVIS_windowsize_minutes</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>IVIS_epochsize_seconds</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>IVIS.activity.metric</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>iglevels</td>
 <td>2, 5</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>TimeSegments2ZeroFile</td>
 <td>2</td>
 <td>params_cleaning</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>qM5L5</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>MX.ig.min.dur</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>qwindow_dateformat</td>
+<td>2</td>
+<td>params_247</td>
+</tr>
+<tr class="even">
+<td>part2CR</td>
 <td>2</td>
 <td>params_247</td>
 </tr>
@@ -882,6 +897,76 @@ arguments.</p>
 </tr>
 <tr class="odd">
 <td>impute_marker_button</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="even">
+<td>SRI1_smoothing_wsize_hrs</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="odd">
+<td>SRI1_smoothing_frac</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="even">
+<td>spt_min_block_dur</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="odd">
+<td>spt_max_gap_dur</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="even">
+<td>spt_max_gap_ratio</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="odd">
+<td>HorAngle_threshold</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="even">
+<td>guider_cor_maxgap_hrs</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="odd">
+<td>guider_cor_min_frac_sib</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="even">
+<td>guider_cor_min_hrs</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="odd">
+<td>guider_cor_meme_frac_out</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="even">
+<td>guider_cor_meme_frac_in</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="odd">
+<td>guider_cor_meme_min_hrs</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="even">
+<td>guider_cor_do</td>
+<td>3</td>
+<td>params_sleep</td>
+</tr>
+<tr class="odd">
+<td>guider_cor_meme_min_dys</td>
 <td>3</td>
 <td>params_sleep</td>
 </tr>
@@ -1036,7 +1121,7 @@ arguments.</p>
 <td>params_cleaning</td>
 </tr>
 <tr class="even">
-<td>includenight.part5</td>
+<td>includenightcrit.part5</td>
 <td>5</td>
 <td>params_cleaning</td>
 </tr>
@@ -1066,47 +1151,57 @@ arguments.</p>
 <td>params_247</td>
 </tr>
 <tr class="even">
+<td>SRI2_WASOmin</td>
+<td>5</td>
+<td>params_247</td>
+</tr>
+<tr class="odd">
 <td>timewindow</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>save_ms5raw_format</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>save_ms5raw_without_invalid</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>do.sibreport</td>
 <td>5</td>
 <td>params_output</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>possible_nap_window</td>
 <td>5</td>
 <td>params_sleep</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>possible_nap_dur</td>
 <td>5</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>possible_nap_gap</td>
 <td>5</td>
 <td>params_sleep</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>nap_markerbutton_method</td>
 <td>5</td>
 <td>params_sleep</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>nap_markerbutton_max_distance</td>
+<td>5</td>
+<td>params_sleep</td>
+</tr>
+<tr class="even">
+<td>method_research_vars</td>
 <td>5</td>
 <td>params_sleep</td>
 </tr>
@@ -1151,16 +1246,31 @@ arguments.</p>
 <td>params_output</td>
 </tr>
 <tr class="odd">
-<td>dofirstpage</td>
+<td>visualreport_hrsPerRow</td>
 <td>visualreport</td>
 <td>params_output</td>
 </tr>
 <tr class="even">
-<td>visualreport</td>
+<td>visualreport_focus</td>
 <td>visualreport</td>
 <td>params_output</td>
 </tr>
 <tr class="odd">
+<td>visualreport_validcrit</td>
+<td>visualreport</td>
+<td>params_output</td>
+</tr>
+<tr class="even">
+<td>dofirstpage</td>
+<td>visualreport</td>
+<td>params_output</td>
+</tr>
+<tr class="odd">
+<td>visualreport</td>
+<td>visualreport</td>
+<td>params_output</td>
+</tr>
+<tr class="even">
 <td>viewingwindow</td>
 <td>visualreport</td>
 <td>params_output</td>
@@ -1236,7 +1346,7 @@ back on while setting overwrite to FALSE.</p>
 <h4 class="unnumbered" id="configfile">configfile<a class="anchor" aria-label="anchor" href="#configfile"></a>
 </h4>
 <p>Character (default = c()). Configuration file previously generated by
-function GGIR. See details.</p>
+function GGIR. See also <a href="https://wadpac.github.io/GGIR/articles/chapter2_Pipeline.html#configuration-file-" class="uri">https://wadpac.github.io/GGIR/articles/chapter2_Pipeline.html#configuration-file-</a></p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="myfun">myfun<a class="anchor" aria-label="anchor" href="#myfun"></a>
@@ -1314,7 +1424,16 @@ place in a different timezone, then use this argument for the timezone
 in which the experiments took place and argument configtz to specify
 where the device was configured. Use the "TZ identifier" as specified at
 <a href="https://en.wikipedia.org/wiki/Zone.tab" class="external-link uri">https://en.wikipedia.org/wiki/Zone.tab</a> to set desiredtz,
-e.g., "Europe/London".</p>
+e.g., "Europe/London". As of GGIR 3.2-12, desiredtz is only configurable
+in GGIR part 1 and passed on to the following parts via de milestone
+data files stored by each part. This means that if you would run
+GGIR(mode = 2, desiredtz = “Europe/Berlin”) GGIR would ignore the
+timezone specification and rely on the timezone specified when part 1
+was processed specific to each recording. As a result, it is now
+possible to process part 1 separately with different timezones, then
+pool the milestone data into one output folder, and finally process all
+files jointly with the subsequent GGIR parts (2-6) which will
+automatically accounts for each individual’s file timezone.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="configtz">configtz<a class="anchor" aria-label="anchor" href="#configtz"></a>
@@ -1481,6 +1600,35 @@ overlap, a nevative number indicates a gap.</p>
 <p>Boolean (default = FALSE) To indicate whether the recording time
 before and after the time range defined by recording_split_times should
 be considered as segments.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="use_trycatch_serial">use_trycatch_serial<a class="anchor" aria-label="anchor" href="#use_trycatch_serial"></a>
+</h4>
+<p>Boolean (default = FALSE). If set to TRUE and when using the
+non-default do.parallel = FALSE, the core processing function in each
+GGIR part is wrapped for each file in a tryCatch block. This allows GGIR
+to continue processing remaining files even if one or more files cause
+an error (e.g., due to file corruption). The error messages for failed
+files are logged and printed in the console at the end of the
+processing. Note: these error messages are less detailed compared to
+when processing data with use_trycatch_serial == FALSE. So, to
+investigate an error message it may be advisable to set
+use_trycatch_serial == FALSE. Further, it should be noted that tryCatch
+blocks are always used when processing do.parallel = TRUE. The
+functionally described here is envisioned to be primarily useful when it
+not possible to process accelerometer files in parallel and there are
+many files. For example, when GGIR is expected to run only on a single
+thread in a computing cluster. In that scenario it would actually be
+better to investigate whether GGIR can be given more computing threads
+as GGIR is designed to coordinate the processing of files across
+processing threads. A second scenario where use_trycatch_serial == TRUE
+is useful is when processing files that are too large to be processed
+even if parameter chunksize is set to a minimal value. In that scenario
+you may want to set use_trycatch_serial == TRUE and do.parallel = FALSE.
+Note that under normal conditions we expect GGIR to not generate errors.
+If an error occurs, always investigate and report the error to the
+community to help make GGIR better. GGIR is free software and depends on
+you as community.</p>
 </div>
 </div>
 <div class="section level3">
@@ -2624,6 +2772,120 @@ and 12:00:00 will be considered valid for the start of the nap and any
 marker button between 12:00:00 and 13:30:00 will be considered valid for
 the end of the nap.</p>
 </div>
+<div class="section level4">
+<h4 class="unnumbered" id="sri1_smoothing_wsize_hrs">SRI1_smoothing_wsize_hrs<a class="anchor" aria-label="anchor" href="#sri1_smoothing_wsize_hrs"></a>
+</h4>
+<p>Numeric (default = NULL) As used for Sleep Regularity Calculation in
+g.part3. If SRI1_smoothing_wsize_hrs and SRI1_smoothing_frac are both
+specified, this is the windowsize for smoothing of detected sustained
+inactivity bouts before calculating SRI1. For example, if set to 1 and
+0.8, we apply a rolling 1 hour window where each window with 80% or more
+sleep is classificed as sleep.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="sri1_smoothing_frac">SRI1_smoothing_frac<a class="anchor" aria-label="anchor" href="#sri1_smoothing_frac"></a>
+</h4>
+<p>Numeric (default = NULL) As used for Sleep Regularity Calculation in
+g.part3. If SRI1_smoothing_wsize_hrs and SRI1_smoothing_frac are both
+specified, this is the fraction used to smooth detected sustained
+inactivity bouts before calculating SRI1. For example, if set to 1 and
+0.8, we apply a rolling 1 hour window where each window with 80% or more
+sleep is classificed as sleep.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="spt_min_block_dur">spt_min_block_dur<a class="anchor" aria-label="anchor" href="#spt_min_block_dur"></a>
+</h4>
+<p>Numeric (default = 30). Minimum size in minutes of a resting block to
+be considered part of SPT in the estimation of the guider window
+(relevant for HASPT.algo settings: HDCZA, HorAngle and NotWorn).</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="spt_max_gap_dur">spt_max_gap_dur<a class="anchor" aria-label="anchor" href="#spt_max_gap_dur"></a>
+</h4>
+<p>Numeric (default = 60). Maximum size in minutes of a gap between
+resting blocks to be considered part of SPT in the estimation of the
+guider window (relevant for HASPT.algo settings: HDCZA, HorAngle and
+NotWorn).</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="spt_max_gap_ratio">spt_max_gap_ratio<a class="anchor" aria-label="anchor" href="#spt_max_gap_ratio"></a>
+</h4>
+<p>Numeric (default = 1). Only considered when set to a value less than
+1 Maximum ratio between gap duration and either rest block next to it.
+If the ratio for both is less than spt_max_gap_ratio the gap is merged
+with the neighbouring rest blocks and together they are considered as
+estimation of the SPT guider window (relevant for HASPT.algo settings:
+HDCZA, HorAngle and NotWorn).</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="horangle_threshold">HorAngle_threshold<a class="anchor" aria-label="anchor" href="#horangle_threshold"></a>
+</h4>
+<p>Numeric (default = 60). Angle threshold used for the HorAngle
+algorithm.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="guider_cor_maxgap_hrs">guider_cor_maxgap_hrs<a class="anchor" aria-label="anchor" href="#guider_cor_maxgap_hrs"></a>
+</h4>
+<p>Numeric (default = 2). Maximum gap duration in hours as used for the
+correction method.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="guider_cor_min_frac_sib">guider_cor_min_frac_sib<a class="anchor" aria-label="anchor" href="#guider_cor_min_frac_sib"></a>
+</h4>
+<p>Numeric (default = 0.5) Required fraction of guider-based rest period
+with sustained inactivity bouts (sib) to be considered as possible
+extension of guider.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="guider_cor_min_hrs">guider_cor_min_hrs<a class="anchor" aria-label="anchor" href="#guider_cor_min_hrs"></a>
+</h4>
+<p>Numeric (default = 2) Minimum guider-based rest duration (hours) to
+be considered as possible extension of guider.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="guider_cor_meme_frac_out">guider_cor_meme_frac_out<a class="anchor" aria-label="anchor" href="#guider_cor_meme_frac_out"></a>
+</h4>
+<p>Numeric (default = 0.9) Minimum required fraction of initial guider
+classification outside the median start to median end (abbreviated as
+meme) of the guider across days to initiate search for secondary that
+falls within this window.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="guider_cor_meme_frac_in">guider_cor_meme_frac_in<a class="anchor" aria-label="anchor" href="#guider_cor_meme_frac_in"></a>
+</h4>
+<p>Numeric (default = 0.4) Minimum required fraction of alternative
+guider classification inside the median start to median end (abbreviated
+as meme) of the guider across days to be considered the new guider
+window.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="guider_cor_meme_min_hrs">guider_cor_meme_min_hrs<a class="anchor" aria-label="anchor" href="#guider_cor_meme_min_hrs"></a>
+</h4>
+<p>Numeric (default = 1) Minimum required duration of the alternative
+guider classification inside the median start to median end (abbreviated
+as meme) of the guider across days to be considered the new guider
+window.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="guider_cor_do">guider_cor_do<a class="anchor" aria-label="anchor" href="#guider_cor_do"></a>
+</h4>
+<p>Boolean (default = FALSE) Whether to apply the guider correction
+algorithm as discussed in Chapter 9 of the online documentation: <a href="https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html" class="uri">https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html</a>.
+In short, when sleep is fragmented, algorithms to guide the detection of
+SPT such as HDCZA may occassionally miss a part of the night or
+incorrectly consider a day time nap as the main sleep window in a day.
+This optional algorithm aims to correct for such misclassifications.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="guider_cor_meme_min_dys">guider_cor_meme_min_dys<a class="anchor" aria-label="anchor" href="#guider_cor_meme_min_dys"></a>
+</h4>
+<p>Numeric (default = 3) Minimum number of days required to consider
+median-median based step in the guider correction algorithm as
+controlled by parameter guider_cor_meme_frac_out,
+guider_cor_meme_frac_in, and guider_cor_meme_min_hrs. This parameter is
+set to 3 by default as a median becomes only meaningful with at least
+three values.</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="physical-activity-parameters">Physical activity Parameters<a class="anchor" aria-label="anchor" href="#physical-activity-parameters"></a>
@@ -2918,9 +3180,11 @@ needs to be calculated. Now this is done with parameter qwindow.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="cosinor">cosinor<a class="anchor" aria-label="anchor" href="#cosinor"></a>
 </h4>
-<p>Boolean (default = FALSE). Whether to apply the cosinor analysis from
-the ActCR package in part 2. In part 6 cosinor analysis is applied by
-default and cannot be turned off.</p>
+<p>Boolean (default = FALSE). Whether to apply the circadian rhythm
+analysis in part 2. This parameter will be superseded by new parameter
+part2CR to better reflect that this controls all circadian rhythm
+parameters. If part2CR is specified then that setting overwrites
+cosinor.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="part6cr">part6CR<a class="anchor" aria-label="anchor" href="#part6cr"></a>
@@ -2965,6 +3229,19 @@ consuming.</p>
 (default = c(30, 150)) with length 2 to indicate cadence ranges used
 when summarising step counts, if available. When set to NULL, step
 counts will not be summarised in part 5 output.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="sri2_wasomin">SRI2_WASOmin<a class="anchor" aria-label="anchor" href="#sri2_wasomin"></a>
+</h4>
+<p>Numeric (default = 30) Minimum WASO duration in minutes as used for
+Sleep Regularity Calculation in g.part6.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="part2cr">part2CR<a class="anchor" aria-label="anchor" href="#part2cr"></a>
+</h4>
+<p>Boolean (default = FALSE). Whether circadian rhythm analysis should
+be run in part 2, including: cosinor analysis, extended cosinor
+analysis, IS, IV, and phi.</p>
 </div>
 </div>
 <div class="section level3">
@@ -3036,19 +3313,15 @@ TRUE.</p>
 <div class="section level4">
 <h4 class="unnumbered" id="visualreport">visualreport<a class="anchor" aria-label="anchor" href="#visualreport"></a>
 </h4>
-<p>Boolean (default = TRUE). If TRUE, store two visualreports in
-outputfolder ‘results/file summary reports’ with names starting with
-"old_report_…" and "report…". The report "old_report_…" has been in GGIR
-for years and is based on combined output from GGIR part 2 and 4. It was
-initially only a quick development attempt to have something to show to
-study participants back in 2015. This report is not designed for data
-quality checking purposes as it makes no attempt to exactly visualise
-the classifications made in GGIR part 5. Given the number of
-inaccuracies, this report will eventually be deprecated from GGIR. To
-turn off the old report use old_visualreport = FALSE. "report_…", is a
-new report as of GGIR 3.1-8 and is specifically aimed at supporting data
-quality checks as it shows the time series data as generated and used in
-GGIR part 5. .</p>
+<p>Boolean (default = TRUE). If TRUE, store a visualreport in
+outputfolder ‘results/file summary reports’ for each recording. Note
+that this report was introduced in release 3.1-8 and replaced an older
+visual report that had been in GGIR for many years. The older report was
+only intended as a quick attempt to have something visual to show to
+study participants back in 2015. It was not designed for data quality
+checking purposes. The new visual report is specifically aimed at
+supporting data quality checks as it shows the time series data as
+generated and used in GGIR part 5. .</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="week_weekend_aggregate-part5">week_weekend_aggregate.part5<a class="anchor" aria-label="anchor" href="#week_weekend_aggregate-part5"></a>
@@ -3103,8 +3376,16 @@ possible_nap_edge_acc and the first value of possible_nap_dur</p>
 <div class="section level4">
 <h4 class="unnumbered" id="do-part2-pdf">do.part2.pdf<a class="anchor" aria-label="anchor" href="#do-part2-pdf"></a>
 </h4>
-<p>Boolean (default = TRUE). In g.part2: Whether to generate a pdf for
-g.part2.</p>
+<p>Boolean (default = TRUE). Now replaced by do.part2.png. If specified
+and do.part2.png is not specified then value will be assigned to
+do.part2.png. Used in g.part2 to indicate whether to generate a pdf
+before, but this is now a png file.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="do-part2-png">do.part2.png<a class="anchor" aria-label="anchor" href="#do-part2-png"></a>
+</h4>
+<p>Boolean (default = TRUE). Used in g.part2 to indicate whether to
+generate a png file for each recording.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="sep_reports">sep_reports<a class="anchor" aria-label="anchor" href="#sep_reports"></a>
@@ -3141,9 +3422,10 @@ sufficiently valid data according to includedaycrit when viewingwindow =
 <div class="section level4">
 <h4 class="unnumbered" id="old_visualreport">old_visualreport<a class="anchor" aria-label="anchor" href="#old_visualreport"></a>
 </h4>
-<p>Boolean (default = TRUE). If TRUE, then generate old visual report in
-addition to new visualreport. The old visualreport will eventually be
-deprecated</p>
+<p>Boolean (default = FALSE). If TRUE, then generate old visual report
+in addition to new visualreport. The old visualreport will eventually be
+deprecated and is not suitable for data quality assessment, see
+documentation for visualreport above for details.</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="visualreport_hrsperrow">visualreport_hrsPerRow<a class="anchor" aria-label="anchor" href="#visualreport_hrsperrow"></a>
@@ -3186,7 +3468,7 @@ for the last night.</p>
 variable categories to store in the csv output files. Currently on "nap"
 is available which affects the part5 output. The variables are intended
 for methodological research only and are by default turned off.</p>
-<p><img src="GGIR-MASTERLOGO-RGB.png" alt="GGIR logo" width="60%" style="border: 0; padding:20px"></p>
+<p><img src="GGIR-MASTERLOGO-RGB.png" class="r-plt" alt="GGIR logo" width="60%" style="border: 0; padding:20px"></p>
 </div>
 </div>
 </div>
@@ -3201,7 +3483,7 @@ for methodological research only and are by default turned off.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

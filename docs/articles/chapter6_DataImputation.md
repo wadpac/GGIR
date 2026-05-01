@@ -1,0 +1,68 @@
+# 6. How GGIR Deals with Invalid Data
+
+## Imputation of invalid epoch data
+
+All time segments classified as non-wear or clipping (see Chapter 3) and
+those masked by the study protocol (see Chapter 5) are treated as
+invalid data. In GGIR part 2, the epoch level metric values are imputed,
+while a log is kept of which epochs were imputed. For most of the
+subsequent analysis done by GGIR, the imputed time series is used. The
+time series without invalid segments are used only for a few analyses:
+
+- Weighted average of full recording
+
+- Cosinor analysis (see Chapter 10)
+
+- A very specific non-default configuration of sleep analysis (see
+  Chapter 8)
+
+The imputation of epoch data is done based on the mean metric value
+corresponding to the valid values from the same time in the day on other
+days in the recording. However, if the same time interval is marked as
+invalid across all recorded days, the value is imputed by zero, except
+for metric EN which is imputed by 1.
+
+For example, imagine a 5-day recording with the following ENMO metric
+data for two specific epochs in the day across five days:
+
+| Time              | Mon     | Tue     | Wed     | Thu     | Fri     |
+|-------------------|---------|---------|---------|---------|---------|
+| 8:59:55 – 9:00:00 | 3       | 4       | 3       | invalid | 3       |
+| 9:00:00 – 9:00:05 | invalid | invalid | invalid | invalid | invalid |
+
+The above would be imputed as shown below because the average of 3, 4, 3
+and 3 is 3.25:
+
+| Time              | Mon | Tue | Wed | Thu  | Fri |
+|-------------------|-----|-----|-----|------|-----|
+| 8:59:55 – 9:00:00 | 3   | 4   | 3   | 3.25 | 3   |
+| 9:00:00 – 9:00:05 | 0   | 0   | 0   | 0    | 0   |
+
+## Controlling the imputation
+
+It is worth noting that you have the option to disable the imputation by
+setting parameter `do.imp = FALSE`. This means that values are kept as
+they are and not imputed or omitted. Disabling the imputation is not
+recommended for most use-cases, but can be relevant for studies in a
+controlled sleep or exercise laboratories where the sensor is known to
+be worn throughout the experiment.
+
+An alternative way to control the imputation is to specify time segments
+in which the invalid epochs are to be imputed by zeros (or ones for the
+metric EN) instead of following the standard GGIR imputation method. To
+do this, you should use the parameter `TimeSegments2ZeroFile`.
+
+## Key parameters
+
+- `do.imp`,
+- `TimeSegments2ZeroFile`
+
+## Related output
+
+- In GGIR part 2, plots to check the data quality highlight the segments
+  of the file that were considered invalid and imputed. These plots can
+  be found in the folder “results/QC/”.
+- In GGIR part 5, time series are produced and optionally stored within
+  the folder “meta/ms5out.raw/” in either csv or RData format. These
+  time series contain an indicator of the epochs that were considered
+  invalid and imputed.

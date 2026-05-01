@@ -33,15 +33,18 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   }
   if (dolog == TRUE) {
     sleeplogRDataFile = paste0(metadatadir,"/meta/sleeplog_", basename(params_sleep[["loglocation"]]), ".RData")
-    # only re-process sleeplog if sleeplog.RData does not exist or if sleeplog
-    # is from a date equal to or after sleeplog.RData
+    # only re-process sleeplog if sleeplog.RData does not exist 
+    # or if sleeplog is from a date equal to or after sleeplog.RData
+    # or if sleeplog.Rdata file is older than the news files in milestone 3.
     if (!file.exists(sleeplogRDataFile) || 
-        file.info(params_sleep[["loglocation"]])$mtime >= file.info(sleeplogRDataFile)$mtime) {
+        file.info(params_sleep[["loglocation"]])$mtime >= file.info(sleeplogRDataFile)$mtime ||
+        max(file.info(dir(meta.sleep.folder, full.names = TRUE))$mtime) >= file.info(sleeplogRDataFile)$mtime) {
       logs_diaries = g.loadlog(params_sleep[["loglocation"]], 
                                coln1 = params_sleep[["coln1"]],
                                colid = params_sleep[["colid"]],
                                meta.sleep.folder = meta.sleep.folder,
-                               desiredtz = params_general[["desiredtz"]])
+                               desiredtz = params_general[["desiredtz"]],
+                               sleepwindowType = params_sleep[["sleepwindowType"]])
       
       if (params_sleep[["sleepwindowType"]] == "SPT" && length(logs_diaries$bedlog) > 0 &&
           length(logs_diaries$sleeplog) == 0) {
@@ -96,8 +99,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                            "number_sib_wakinghours", "duration_sib_wakinghours_atleast15min",
                            "sleeponset_ts", "wakeup_ts", "guider_onset_ts",  "guider_wakeup_ts",
                            "sleeplatency", "sleepefficiency", "page", "daysleeper", "weekday", "calendar_date",
-                           "filename", "cleaningcode", "sleeplog_used", "sleeplog_ID", "acc_available", "guider", "SleepRegularityIndex", "SriFractionValid",
-                           "longitudinal_axis") #
+                           "filename", "cleaningcode", "sleeplog_used", "sleeplog_ID", "acc_available", "guider", "SleepRegularityIndex1", "SriFractionValid",
+                           "longitudinal_axis", "guider_corrected")
   
   
   if (params_output[["storefolderstructure"]] == TRUE) {
@@ -217,9 +220,13 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                                       x = colnames(nightsummary))
       }
       sumi = 1  # counter to keep track of where we are in filling the output matrix 'nightsummary'
-      ID  = SPTE_end = SPTE_start = L5list = sib.cla.sum = longitudinal_axis = part3_guider = c()
+      ID  = SPTE_end = SPTE_start = L5list = sib.cla.sum = SPTE_corrected = NULL
+      desiredtz_part1 = longitudinal_axis = part3_guider = NULL
       # load milestone 3 data (RData files), check whether there is data, identify id numbers...
       load(paste0(meta.sleep.folder, "/", fnames[i]))
+      if (!is.null(desiredtz_part1)) {
+        params_general[["desiredtz"]] = desiredtz_part1
+      }
       accid = c()
       logid = NA  # keep track of what log id matched to accid
       if (length(ID) > 0) {
@@ -230,6 +237,12 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
         # if ID not available, function part4_extractid will attempt to extract it from the file name
       }
       if (exists("SRI") == FALSE) SRI = NA
+      
+      # Ignore night zero being the night before the recording or partially 
+      # overlapping with the start of the recording
+      # but for which some timestamps are in the sib-report
+      sib.cla.sum = sib.cla.sum[which(sib.cla.sum$night != 0),]
+      
       if (nrow(sib.cla.sum) != 0) {
         # there needs to be some information
         sib.cla.sum$sib.onset.time = iso8601chartime2POSIX(sib.cla.sum$sib.onset.time, tz = params_general[["desiredtz"]])
@@ -244,10 +257,32 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
         # create overview of night numbers in the data file: nnightlist
         if (dolog == TRUE) {
           logid = sleeplog$ID[wi][1]
+          sleeplog_matching_ID = which(sleeplog$ID == accid)
+          if (length(sleeplog_matching_ID) == 0) {
+            # try without letters
+            sleeplog_matching_ID = which(sleeplog$ID == gsub("[^0-9.-]", "", accid))
+            if (length(sleeplog_matching_ID) == 0) {
+              # try without leading zeros
+              sleeplog_matching_ID = which(sleeplog$ID == gsub("^0+", "", accid))
+              if (length(sleeplog_matching_ID) == 0) {
+                # try interpret as integer that was accidentally stored as decimal 
+                # number, e.g. 123.00
+                split_by_dot = unlist(strsplit(accid, "[.]"))
+                if (length(split_by_dot) == 2) {
+                  sleeplog_matching_ID = which(sleeplog$ID == split_by_dot[1])
+                }
+                if (length(sleeplog_matching_ID) == 0) {
+                  # Consider all sleeplog entries
+                  sleeplog_matching_ID = 1:length(sleeplog$night)
+                  warning(paste0("No matching sleeplog entry found for acceleromete recording ", accid))
+                }
+              }
+            }
+          }
           first_night = min(min(sib.cla.sum$night), 
-                            min(as.numeric(sleeplog$night)))
+                            min(as.numeric(sleeplog$night[sleeplog_matching_ID])))
           last_night = max(max(sib.cla.sum$night), 
-                           max(as.numeric(sleeplog$night)))
+                           max(as.numeric(sleeplog$night[sleeplog_matching_ID])))
         } else {
           first_night = min(sib.cla.sum$night)
           last_night = max(sib.cla.sum$night)
@@ -319,6 +354,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
               defaultGuiderWake = 31
             }
             defaultGuider = guider
+            defaultGuiderCorrected = NULL
           } else if ((length(params_sleep[["def.noc.sleep"]]) == 1 ||
                       length(params_sleep[["loglocation"]]) != 0) &&
                      length(SPTE_start) != 0) {
@@ -326,6 +362,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             # explicitely asks for it
             defaultGuiderOnset = SPTE_start[j]
             defaultGuiderWake = SPTE_end[j]
+            defaultGuiderCorrected = SPTE_corrected[j]
             defaultGuider = part3_guider[j] # HDCZA, NotWorn, HorAngle (or plus invalid)
             if (is.null(defaultGuider)) {
               # this ensures compatibility with previous versions in which part3_guider was not stored
@@ -335,7 +372,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             } else {
               if (is.na(defaultGuider)) { 
                 # No default guider available, for example when sleeplog is 
-                # available but not accelerometer
+                # available but no accelerometer
                 # In that case guider will be set to "sleeplog" later on
               } else {
                 guider = defaultGuider
@@ -370,6 +407,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
             defaultGuiderOnset = params_sleep[["def.noc.sleep"]][1]  #onset
             defaultGuiderWake = params_sleep[["def.noc.sleep"]][2]  #wake
             defaultGuider = guider = "setwindow"
+            defaultGuiderCorrected = NULL
           }
           if (defaultGuiderOnset >= 24) {
             defaultGuiderOnset = defaultGuiderOnset - 24
@@ -410,11 +448,11 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           # is a nightworker onset
           tmp1 = format(guider.df2$sleeponset[1])
           tmp2 = unlist(strsplit(tmp1, ":"))
-          GuiderOnset = as.numeric(tmp2[1]) + (as.numeric(tmp2[2])/60) + (as.numeric(tmp2[3])/3600)
+          GuiderOnset = sum(as.numeric(tmp2) / c(1, 60, 3600))
           # wake
           tmp4 = format(guider.df2$sleepwake[1])
           tmp5 = unlist(strsplit(tmp4, ":"))
-          GuiderWake = as.numeric(tmp5[1]) + (as.numeric(tmp5[2])/60) + (as.numeric(tmp5[3])/3600)
+          GuiderWake = sum(as.numeric(tmp5) / c(1, 60, 3600))
           # Assess whether it is a daysleeper or a nightsleeper
           daysleeper[j] = FALSE  # default
           if (is.na(GuiderOnset) == FALSE & is.na(GuiderWake) == FALSE & tmp1 != "" & tmp4 != "") {
@@ -1106,9 +1144,14 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   } else {
                     nightsummary[sumi, 39] = longitudinal_axis
                   }
+                  if (length(defaultGuiderCorrected) == 0 | guider == "sleeplog") {
+                    nightsummary[sumi, 40] = NA
+                  } else {
+                    nightsummary[sumi, 40] = defaultGuiderCorrected
+                  }
                   if (params_output[["storefolderstructure"]] == TRUE) {
-                    nightsummary[sumi, 40] = ffd[i]  #full filename structure
-                    nightsummary[sumi, 41] = ffp[i]  #use the lowest foldername as foldername name
+                    nightsummary[sumi, 41] = ffd[i]  #full filename structure
+                    nightsummary[sumi, 42] = ffp[i]  #use the lowest foldername as foldername name
                   }
                   sumi = sumi + 1
                 }  #run through definitions
@@ -1146,7 +1189,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           nightsummary[sumi, 32] = 4  #cleaningcode = 4 (no nights of accelerometer available)
           nightsummary[sumi, c(33, 35)] = c(FALSE, TRUE)  #sleeplog_used acc_available
           if (params_output[["storefolderstructure"]] == TRUE) {
-            nightsummary[sumi, 40:41] = c(ffd[i], ffp[i])  #full filename structure and use the lowest foldername as foldername name
+            nightsummary[sumi, 41:42] = c(ffd[i], ffp[i])  #full filename structure and use the lowest foldername as foldername name
           }
           sumi = sumi + 1
         }
