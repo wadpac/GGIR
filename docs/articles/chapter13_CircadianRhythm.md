@@ -26,6 +26,14 @@ as DFA (discussed below), and when fragmentation analysis is turned on
 chapter](https://wadpac.github.io/GGIR/articles/chapter14_BehaviouralFragmentation.html))
 activity and sleep fragmentation are also estimated.
 
+## Controlling which circadian rhythm estimates are derived
+
+Cosinor, IV, IS, and phi as discussed below are not derived by default.
+To activate them set parameters `part2CR = TRUE` and `part6CR = TRUE`,
+for part 2 and part 6 respectively. MXLX as discussed below is run by
+default in part 2 irrespective of how `part2CR` is set. However, in part
+6 MXLX is only run when `part6CR = TRUE`.
+
 ## MXLX
 
 MXLX looks for the continuous least (LX) and most (MX) active X hour
@@ -57,8 +65,7 @@ series, while the extended cosinor analysis refers to fitting a
 non-linear transformation of the traditional cosinor curve to after
 Marler et al. Statist. Med. 2006 (doi: 10.1002/sim.2466).
 
-Corinos analyssis are not run by default, to tell GGIR to perform these
-analyse specify parameter `cosinor = TRUE`. The implementation is as
+The implementation of Cosinor and Extended Cosinor in GGIR is as
 follows:
 
 1.  The acceleration metric as specified with parameter `acc.metric` is
@@ -107,7 +114,8 @@ EJ, et al. 1996](https://doi.org/10.1016/0006-3223(95)00370-3).
 
 - IV measures the variability in activity hour by hour throughout the
   days. It ranges from 0 to +$`\infty`$, value close to 2 indicates more
-  fragmented rhythm, and \>2 indicates ultradian rhythm (very uncommon).
+  fragmented rhythm, and \>2 indicates ultradian rhythm (cycles
+  occurring more frequently than once a day, very uncommon).
 
 The GGIR implementation of IV and IS since GGIR release 3.1-6 has been
 described in [Danilevicz et
@@ -121,7 +129,10 @@ missing data. However, these issues were both resolved in release 3.1-6:
 
 - Being active is now defined as a mean acceleration metric value above
   the light physical activity threshold as specified with parameter
-  `threshold.lig`.
+  `threshold.lig`. In the case that more than a `threshold.lig` is
+  defined (e.g., `threshold.lig = c(40, 60)`), GGIR will use the first
+  value provided in Part 2, and the specific threshold indicated by
+  parameter `part6_threshold_combi` in Part 6.
 - Missing values are left missing and not imputed, the algorithm now
   accounts for this.
 
@@ -132,18 +143,10 @@ with the older experimental implementation. Parameters
 `IVIS_epochsize_seconds`, and `IVIS_acc_threshold` that were used before
 is no longer needed and have been deprecated.
 
-**Cosinor analysis compatible IV and IS**
-
 IS is sometimes used as a measure of behavioural robustness when
 conducting Cosinor analysis. However, to work with the combination of
-the two outcomes it seems important that IS is calculated from the same
-time series. Therefore, when `cosinor = TRUE,` IV and IS are calculated
-twice: Once as part of the default IV and IS analysis as discussed
-above, and once as part of the Cosinor analysis using the same log
-transformed time series.
-
-The Cosinor-compatible IV and IS estimates are stored as output
-variables `cosinorIV` and `cosinorIS`.
+the two outcomes it is important that IS is calculated from the same
+time series.
 
 ## phi
 
@@ -158,16 +161,16 @@ et al. 2024](https://doi.org/10.1186/s12874-024-02255-w). Phi is
 calculated by default in GGIR part 2 and in part 6 only when parameter
 `part6CR` is set to TRUE.
 
-## Detrended fluctionation analysis (DFA)
+## Detrended fluctuation analysis (DFA)
 
-### Self-similarity paramerter (SSP)
+### Self-Similarity Parameter (SSP)
 
-The self-similarity paramter (SSP) is also known as scaling exponent or
+The self-similarity parameter (SSP) is also known as scaling exponent or
 alpha. SSP is a real number between zero and two. Values in the range
-(0, 1) indicate stationary motion behaviour. Values int he range (1, 2
-indicate nonstationary motion behaviour. For details see [Mesquita et al
-2020](https://doi.org/10.1093/bioinformatics/btaa955) and [Danilevicz et
-al. 2024](https://doi.org/10.1186/s12874-024-02255-w).
+(0, 1) indicate stationary motion behaviour. Values in the range (1, 2)
+indicate non-stationary motion behaviour. For details see [Mesquita et
+al 2020](https://doi.org/10.1093/bioinformatics/btaa955) and [Danilevicz
+et al. 2024](https://doi.org/10.1186/s12874-024-02255-w).
 
 ### Activity Balance Index (ABI)
 
@@ -177,7 +180,7 @@ transformation of SSP. ABI measures how the activity over the observed
 period is balanced, higher values reflect a more balanced pattern of
 activity. ABI is a real number between zero and one and calculated from
 the acceleration metric time series directly without the need for
-cut-points.
+cut-points. A higher ABI reflects a more balanced pattern of activity.
 
 ### Sleep Regularity Index (SRI)
 

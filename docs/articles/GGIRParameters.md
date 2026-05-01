@@ -155,6 +155,7 @@ will find a description and default value for all the arguments.
 | qM5L5 | 2 | params_247 |
 | MX.ig.min.dur | 2 | params_247 |
 | qwindow_dateformat | 2 | params_247 |
+| part2CR | 2 | params_247 |
 | anglethreshold | 3 | params_sleep |
 | timethreshold | 3 | params_sleep |
 | ignorenonwear | 3 | params_sleep |
@@ -214,7 +215,7 @@ will find a description and default value for all the arguments.
 | save_ms5rawlevels | 5 | params_output |
 | part5_agg2_60seconds | 5 | params_general |
 | includedaycrit.part5 | 5 | params_cleaning |
-| includenight.part5 | 5 | params_cleaning |
+| includenightcrit.part5 | 5 | params_cleaning |
 | frag.metrics | 5 | params_phyact |
 | LUXthresholds | 5 | params_247 |
 | LUX_cal_constant | 5 | params_247 |
@@ -1912,9 +1913,11 @@ be calculated. Now this is done with parameter qwindow.
 
 #### cosinor
 
-Boolean (default = FALSE). Whether to apply the cosinor analysis from
-the ActCR package in part 2. In part 6 cosinor analysis is applied by
-default and cannot be turned off.
+Boolean (default = FALSE). Whether to apply the circadian rhythm
+analysis in part 2. This parameter will be superseded by new parameter
+part2CR to better reflect that this controls all circadian rhythm
+parameters. If part2CR is specified then that setting overwrites
+cosinor.
 
 #### part6CR
 
@@ -1959,6 +1962,12 @@ counts will not be summarised in part 5 output.
 
 Numeric (default = 30) Minimum WASO duration in minutes as used for
 Sleep Regularity Calculation in g.part6.
+
+#### part2CR
+
+Boolean (default = FALSE). Whether circadian rhythm analysis should be
+run in part 2, including: cosinor analysis, extended cosinor analysis,
+IS, IV, and phi.
 
 ### Output Parameters
 
