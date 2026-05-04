@@ -166,11 +166,42 @@ calculated by default in GGIR part 2 and in part 6 only when parameter
 ### Self-Similarity Parameter (SSP)
 
 The self-similarity parameter (SSP) is also known as scaling exponent or
-alpha. SSP is a real number between zero and two. Values in the range
-(0, 1) indicate stationary motion behaviour. Values in the range (1, 2)
-indicate non-stationary motion behaviour. For details see [Mesquita et
-al 2020](https://doi.org/10.1093/bioinformatics/btaa955) and [Danilevicz
-et al. 2024](https://doi.org/10.1186/s12874-024-02255-w).
+alpha. The overall SSP is a real number between zero and two. Values in
+the range (0, 1) indicate stationary motion behaviour. Values int he
+range (1, 2 indicate non-stationary motion behaviour. For details see
+[Mesquita et al 2020](https://doi.org/10.1093/bioinformatics/btaa955)
+and [Danilevicz et
+al. 2024](https://doi.org/10.1186/s12874-024-02255-w).
+
+In human motor activity, researchers often observe that the scaling
+behaviour is not uniform across all time scales but exhibits a
+“crossover point” around 1.5 to 2 hours. To capture distinct biological
+mechanisms, GGIR splits the DFA into two distinct time-scale regions:
+
+- **Short-term scaling exponent (**α1**or SSP_short):** Measures the
+  fractal temporal correlations at time scales smaller than or equal to
+  90 minutes. Fluctuations at this scale are regulated by multiple
+  physiological controls, including general mobility, mood, and
+  cognition.
+
+- **Long-term scaling exponent (**α2**or SSP_long):** Measures the
+  temporal correlations at time scales between 120 and 600 minutes (2 to
+  10 hours). Fluctuations at these larger time scales are heavily
+  reliant on the central circadian pattern.
+
+Evaluating these regions separately allows researchers to disentangle
+physical frailty from central circadian degradation. For example, the
+difference between the two regions (Δα=α1−α2) quantifies the specific
+breakdown of multi-scale fractal patterns and can serve as a biomarker
+for SCN neurodegeneration and dementia severity. For more details on the
+clinical application of these piecewise metrics, see [Li et
+al. 2019](https://www.google.com/url?sa=E&q=https%3A%2F%2Fdoi.org%2F10.1126%2Fscitranslmed.aax1977).
+
+Additionally, the output includes the difference between the short-term
+and long-term scaling exponents (Δα=α1 − α2) as SSP_diff in the part 6
+report. In healthy individuals, fractal regulation is uniform across all
+time scales, yielding a difference close to zero. A larger difference
+indicates a disruption in multiscale fractal regulation
 
 ### Activity Balance Index (ABI)
 
@@ -181,6 +212,12 @@ period is balanced, higher values reflect a more balanced pattern of
 activity. ABI is a real number between zero and one and calculated from
 the acceleration metric time series directly without the need for
 cut-points. A higher ABI reflects a more balanced pattern of activity.
+
+In addition to the overall ABI (**ABI_overall**), GGIR calculates
+**ABI_short** and **ABI_long**, which are the Activity Balance Indices
+transformed from the short-term (SSP_short) and long-term (SSP2) scaling
+exponents, respectively. This allows for a direct evaluation of
+behavioural balance at both the general mobility and circadian levels.
 
 ### Sleep Regularity Index (SRI)
 

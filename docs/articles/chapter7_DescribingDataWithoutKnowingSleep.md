@@ -182,4 +182,4 @@ organised in different columns.
 | ig_rsquared_ENMO_0-24hr | R-squared for the intensity gradient | `b` |
 
 To clarify that `b` refers to both part2_summary.csv and
-part2_daysummary.csv, `r` refers to part2_summary.csv only.
+part2_daysummary.csv, `r` refers to part2_summary.csv only. {.table}

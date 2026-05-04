@@ -1,12 +1,13 @@
 # Estimated self-similarity parameter
 
-This function estimates the self-similarity parameter (SSP), also known
-as scaling exponent or alpha.
+This function estimates the overall self-similarity parameter (SSP),
+also known as the scaling exponent or alpha, as well as the piecewise
+short-term (alpha_1) and long-term (alpha_2) scaling exponents.
 
 ## Usage
 
 ``` r
-SSP(data,scale = 2^(1/8),box_size = 4,m=1)
+SSP(data, scale = 2^(1/8), box_size = 4, m = 1, epochSize)
 ```
 
 ## Arguments
@@ -26,16 +27,41 @@ SSP(data,scale = 2^(1/8),box_size = 4,m=1)
 
 - m:
 
-  An integer of the polynomial order for the detrending (by default m=1)
+  An integer of the polynomial order for the detrending (by default m =
+  1)
+
+- epochSize:
+
+  The epoch size of the data in seconds. Used to convert box sizes to
+  minutes to apply time boundaries for alpha_1 and alpha_2.
 
 ## Value
 
-Estimated alpha is a real number between zero and two.
+A list containing three real numbers (all of them between 0 and 2):
+
+- alpha_overall:
+
+  The overall estimated scaling exponent across all box sizes.
+
+- alpha_1:
+
+  The short-term scaling exponent, calculated for time scales smaller
+  than or equal to 90 minutes.
+
+- alpha_2:
+
+  The long-term scaling exponent, calculated for time scales between 120
+  and 600 minutes.
 
 ## Details
 
 The DFA fluctuation can be computed in a geometric scale or for
-different choices of boxes sizes.
+different choices of boxes sizes. In human motor activity, the scaling
+behavior exhibits a crossover point around 1.5 to 2 hours. Therefore,
+alpha_1 captures the short-term temporal correlations regulated by
+multiple physiological controls, while alpha_2 captures long-term
+fluctuations that are heavily reliant on the central circadian
+pacemaker.
 
 ## Note
 
@@ -52,7 +78,8 @@ patients with epilepsy. Bioinformatics. 10.1093/bioinformatics/btaa955.
 ## Author
 
 Ian Meneghel Danilevicz \<ian.meneghel-danilevicz@inserm.fr\> Victor
-Barreto Mesquita \<victormesquita40@hotmail.com\>
+Barreto Mesquita \<victormesquita40@hotmail.com\> Jairo H Migueles
+\<jairo@jhmigueles.com\>
 
 ## Examples
 
@@ -60,6 +87,9 @@ Barreto Mesquita \<victormesquita40@hotmail.com\>
   # Estimate self-similarity of a very known time series available on R base: the sunspot.year.
   # Then the spend time with each method is compared.
   if (FALSE) { # \dontrun{
-    ssp = SSP(sunspot.year)
+    ssp_results = SSP(sunspot.year)
+    ssp_results$alpha_overall
+    ssp_results$alpha_1
+    ssp_results$alpha_2
   } # }
 ```

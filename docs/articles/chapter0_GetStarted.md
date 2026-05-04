@@ -41,6 +41,7 @@ log.
       output.
 
 ``` r
+
 library(GGIR) 
 GGIR(datadir="C:/mystudy/mydata", outputdir="D:/myresults")
 ```

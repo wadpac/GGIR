@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,7 +84,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="3.3-6" id="changes-in-ggir-version-33-6">CHANGES IN GGIR VERSION 3.3-6<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-33-6"></a></h2>
+<h2 class="pkg-version" data-toc-text="3.3-7" id="changes-in-ggir-version-33-7">CHANGES IN GGIR VERSION 3.3-7<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-33-7"></a></h2>
+<ul><li><p>Functionality added to save all key output to one parquet file per person. <a href="https://github.com/wadpac/GGIR/issues/1460" class="external-link">#1460</a></p></li>
+<li>
+<p>Part 6:</p>
+<ul><li><p>Improve speed of DFA analysis by using a vectorized approach <a href="https://github.com/wadpac/GGIR/issues/1499" class="external-link">#1499</a></p></li>
+<li><p>Included piece wise DFA analysis: short-term (box sizes &lt; 90 min) and long-term (box-sizes 2-to-10 hours) <a href="https://github.com/wadpac/GGIR/issues/1501" class="external-link">#1501</a></p></li>
+</ul></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.3-6" id="changes-in-ggir-version-33-6">CHANGES IN GGIR VERSION 3.3-6<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-33-6"></a></h2><p class="text-muted">CRAN release: 2026-04-21</p>
 <ul><li>
 <p>Documentation:</p>
 <ul><li><p>Remove suggestion that configfile can be used to store annotations inside the configuration file to keep focus on the main purpose of the configfile, which is to facilitate reproducing analysis. <a href="https://github.com/wadpac/GGIR/issues/1473" class="external-link">#1473</a></p></li>
@@ -95,7 +104,10 @@
 <ul><li><p>Remove variables lastHour and lastDate from csv output and dictionary as they were included by accident <a href="https://github.com/wadpac/GGIR/issues/1472" class="external-link">#1472</a></p></li>
 <li><p>Variable dictionary, now also documents ACC_spt_mg, ACC_spt_mg_median, and ACC_spt_mg_stdev. <a href="https://github.com/wadpac/GGIR/issues/1490" class="external-link">#1490</a></p></li>
 </ul></li>
-<li><p>Part 6: Enable extraction of participant ID from filename consistent with the other parts <a href="https://github.com/wadpac/GGIR/issues/1478" class="external-link">#1478</a></p></li>
+<li>
+<p>Part 6:</p>
+<ul><li>Enable extraction of participant ID from filename consistent with the other parts <a href="https://github.com/wadpac/GGIR/issues/1478" class="external-link">#1478</a></li>
+</ul></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.3-5" id="changes-in-ggir-version-33-5">CHANGES IN GGIR VERSION 3.3-5<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-33-5"></a></h2>
@@ -189,14 +201,14 @@
 <h2 class="pkg-version" data-toc-text="3.2-6" id="changes-in-ggir-version-32-6">CHANGES IN GGIR VERSION 3.2-6<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-32-6"></a></h2><p class="text-muted">CRAN release: 2025-04-25</p>
 <ul><li>
 <p>Part 3 and 4:</p>
-<ul><li><p>Sleep regularity index (SRI) expanded with option to smooth data. <a href="https://github.com/wadpac/GGIR/issues/1269" class="external-link">#1269</a></p></li>
-<li><p>SRI renamed to be SRI1 and documentation updated to clarify difference with new SRI2 in part 6. <a href="https://github.com/wadpac/GGIR/issues/1269" class="external-link">#1269</a></p></li>
-<li><p>Added parameters SRI1_smoothing_wsize_hrs and SRI1_smoothing_frac to control optional smoothing for SRI1. <a href="https://github.com/wadpac/GGIR/issues/1269" class="external-link">#1269</a></p></li>
+<ul><li>Sleep regularity index (SRI) expanded with option to smooth data. <a href="https://github.com/wadpac/GGIR/issues/1269" class="external-link">#1269</a></li>
+<li>SRI renamed to be SRI1 and documentation updated to clarify difference with new SRI2 in part 6. <a href="https://github.com/wadpac/GGIR/issues/1269" class="external-link">#1269</a></li>
+<li>Added parameters SRI1_smoothing_wsize_hrs and SRI1_smoothing_frac to control optional smoothing for SRI1. <a href="https://github.com/wadpac/GGIR/issues/1269" class="external-link">#1269</a></li>
 </ul></li>
 <li>
 <p>Part 6:</p>
-<ul><li><p>Added SRI2 based on sleep and (currently experimental) naps. <a href="https://github.com/wadpac/GGIR/issues/1269" class="external-link">#1269</a></p></li>
-<li><p>Added parameters SRI2_WASOmin to control minimum duration of WASO in SRI2.#1269</p></li>
+<ul><li>Added SRI2 based on sleep and (currently experimental) naps. <a href="https://github.com/wadpac/GGIR/issues/1269" class="external-link">#1269</a></li>
+<li>Added parameters SRI2_WASOmin to control minimum duration of WASO in SRI2.#1269</li>
 </ul></li>
 <li><p>Part 1: Improve recently added functionality to split recordings to handle partial overlap with reference time windows.</p></li>
 <li><p>Part 5: Fix bug in defining MM windows when parameter excludefirstlast is set to non-default TRUE value. <a href="https://github.com/wadpac/GGIR/issues/1292" class="external-link">#1292</a></p></li>
@@ -264,8 +276,8 @@
 <p>Visualisations:</p>
 <ul><li><p>Bug fixed in handling recordings that start at midnight <a href="https://github.com/wadpac/GGIR/issues/1257" class="external-link">#1257</a></p></li>
 <li><p>The new and old general pdf report have been renamed to clarify which one is old (eventually to be deprecated) and which one is new.</p></li>
-<li><p>Report_…pdf has been renamed to old_report_…pdf.</p></li>
-<li><p>Time_report…pdf has been renamed to report_…pdf</p></li>
+<li><p>Report<em>…pdf has been renamed to old_report</em>…pdf.</p></li>
+<li><p>Time<em>report…pdf has been renamed to report</em>…pdf</p></li>
 </ul></li>
 <li><p>Part 3: Default for parameter do.part3.pdf changed from TRUE to FALSE because this visualisation has become redundant with the addition of the new general visual report.</p></li>
 </ul></div>
@@ -291,18 +303,17 @@
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.1-10" id="changes-in-ggir-version-31-10">CHANGES IN GGIR VERSION 3.1-10<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-31-10"></a></h2>
-<ul><li>
-<p>Part 4:</p>
-<ul><li><p>Speed up the loading of advanced format sleeplog</p></li>
-<li><p>Improve automated recognition of date format in sleeplog</p></li>
+<ul><li>Part 4:
+<ul><li>Speed up the loading of advanced format sleeplog</li>
+<li>Improve automated recognition of date format in sleeplog</li>
 </ul></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.1-9" id="changes-in-ggir-version-31-9">CHANGES IN GGIR VERSION 3.1-9<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-31-9"></a></h2>
 <ul><li>
 <p>Part 3:</p>
-<ul><li><p>Identification of daylight saving time days in the detection of the spt is improved as it had the risk to misclassify partial last days as daylight saving time.</p></li>
-<li><p>In days classified as daysleeper, the window over which the fraction_night_invalid is calculated now also shifts to 6pm-6pm, as it used to report the nonwear within 12pm-12pm.</p></li>
+<ul><li>Identification of daylight saving time days in the detection of the spt is improved as it had the risk to misclassify partial last days as daylight saving time.</li>
+<li>In days classified as daysleeper, the window over which the fraction_night_invalid is calculated now also shifts to 6pm-6pm, as it used to report the nonwear within 12pm-12pm.</li>
 </ul></li>
 <li><p>Vignette: Now documented that missing dates can be skipped in advanced format sleeplog.</p></li>
 <li><p>Step detection: I have included the Verisense step detection R script inside GitHub repository folder ‘user-scripts’ to ease future maintenance. Verisense does not seem to be interested in maintaining their code, causing confusion about the latest version and people reaching out to me with questions.</p></li>
@@ -403,8 +414,8 @@
 </ul></li>
 <li>
 <p>Report part 5:</p>
-<ul><li><p>fix bug that was introduced on 2024-Feb-19 in the calculation of wear percentage <a href="https://github.com/wadpac/GGIR/issues/1148" class="external-link">#1148</a></p></li>
-<li><p>Rename variable sleep_efficiency to sleep_efficiency_after_onset, <a href="https://github.com/wadpac/GGIR/issues/1157" class="external-link">#1157</a></p></li>
+<ul><li>fix bug that was introduced on 2024-Feb-19 in the calculation of wear percentage <a href="https://github.com/wadpac/GGIR/issues/1148" class="external-link">#1148</a></li>
+<li>Rename variable sleep_efficiency to sleep_efficiency_after_onset, <a href="https://github.com/wadpac/GGIR/issues/1157" class="external-link">#1157</a></li>
 </ul></li>
 <li><p>Vignette: Migrated many sections from main CRAN vignette to wadpac.github.io/GGIR/</p></li>
 <li><p>Visualreport: Improve handling of recordings where the accelerometer was not worn.</p></li>

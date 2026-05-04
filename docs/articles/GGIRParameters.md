@@ -246,6 +246,7 @@ will find a description and default value for all the arguments.
 | dofirstpage | visualreport | params_output |
 | visualreport | visualreport | params_output |
 | viewingwindow | visualreport | params_output |
+| save_dashboard_parquet | end of GGIR run | params_output |
 
 ## Arguments/parameters description
 
@@ -831,19 +832,19 @@ this to 1/9.81 we would derive gravitational units.
 #### do.anglex
 
 Boolean (default = FALSE). If TRUE, calculates the angle of the X axis
-relative to the horizontal: = (^-1_rollmedian(x)(acc_rollmedian(y))^2 +
+relative to the horizontal: = (^(-1_rollmedian(x)(acc_rollmedian(y)))2 +
 (acc_rollmedian(z))^2) \* 180/
 
 #### do.angley
 
 Boolean (default = FALSE). If TRUE, calculates the angle of the Y axis
-relative to the horizontal: = (^-1_rollmedian(y)(acc_rollmedian(x))^2 +
+relative to the horizontal: = (^(-1_rollmedian(y)(acc_rollmedian(x)))2 +
 (acc_rollmedian(z))^2) \* 180/
 
 #### do.anglez
 
 Boolean (default = TRUE). If TRUE, calculates the angle of the Z axis
-relative to the horizontal: = (^-1_rollmedian(z)(acc_rollmedian(x))^2 +
+relative to the horizontal: = (^(-1_rollmedian(z)(acc_rollmedian(x)))2 +
 (acc_rollmedian(y))^2) \* 180/
 
 #### do.zcx
@@ -2161,5 +2162,18 @@ Character (default = NULL). Vector with names of methodological variable
 categories to store in the csv output files. Currently on "nap" is
 available which affects the part5 output. The variables are intended for
 methodological research only and are by default turned off.
+
+#### save_dashboard_parquet
+
+Boolean (default = FALSE). If TRUE, GGIR will export a consolidated
+Parquet file named \_results.parquet to the / subfolder of the output
+directory after all requested GGIR parts have completed. The file merges
+the Part 5 day summary, Part 4 night summary, Part 2 day and person
+summaries, and the data quality report into a single row-per-day table,
+and embeds per-day epoch-level time series as a nested list-column
+(epochs). Key-value Parquet metadata is attached to record the variable
+dictionary, activity threshold configuration, and accelerometer metric
+used. This output is intended for use with DuckDB-WASM powered
+dashboards. Requires the package to be installed.
 
 ![GGIR logo](GGIR-MASTERLOGO-RGB.png)
