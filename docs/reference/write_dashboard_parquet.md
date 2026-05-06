@@ -5,7 +5,7 @@ outputs and attaching nested epoch-level time series by day.
 
 ## Usage
 
-``` r
+```r
 write_dashboard_parquet(
   metadatadir = c(),
   params_output = c(),
@@ -73,7 +73,7 @@ Output filename is ID-based for single-participant exports and falls
 back to a multi-participant name otherwise.
 
 The generated Parquet file can be opened directly in the GGIR Web
-Dashboard (<https://samuelafolabi.github.io/ggir-web-dashboard/>), where
+Dashboard (<https://wadpac.github.io/ggir-web-dashboard/>), where
 processing happens entirely in the browser.
 
 ## Value
@@ -81,7 +81,7 @@ processing happens entirely in the browser.
 Invisibly returns the written Parquet file path, or `NULL` (invisibly)
 if export is skipped because required data are missing. The generated
 Parquet file can be opened directly in the GGIR Web Dashboard:
-<https://samuelafolabi.github.io/ggir-web-dashboard/>
+<https://wadpac.github.io/ggir-web-dashboard/>
 
 ## See also
 
@@ -95,7 +95,7 @@ Samuel Timileyin Afolabi \<samuelafolabimails@gmail.com\>
 
 ## Examples
 
-``` r
+```r
 if (FALSE) { # \dontrun{
 write_dashboard_parquet(
   metadatadir = "path/to/output_run/output_test_run",
