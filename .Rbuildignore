@@ -26,3 +26,5 @@ index.md
 ^vignettes/DateTimeFormatsInR.Rmd
 .nojekyll
 docs/.nojekyll
+^\.positai$
+^\.claude$

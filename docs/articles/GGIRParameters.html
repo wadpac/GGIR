@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,6 +72,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news">
 <li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-3-6/">Version 3.3-6</a></li>
     <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-3-0/">Version 3.3-0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-6/">Version 3.2-6</a></li>
     <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-0/">Version 3.2-0</a></li>
@@ -1275,6 +1276,11 @@ arguments.</p>
 <td>visualreport</td>
 <td>params_output</td>
 </tr>
+<tr class="odd">
+<td>save_dashboard_parquet</td>
+<td>end of GGIR run</td>
+<td>params_output</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -1943,22 +1949,23 @@ this to 1/9.81 we would derive gravitational units.</p>
 </h4>
 <p>Boolean (default = FALSE). If TRUE, calculates the angle of the X
 axis relative to the horizontal: =
-(^-1_rollmedian(x)(acc_rollmedian(y))^2 + (acc_rollmedian(z))^2) *
-180/</p>
+(<sup>-1_rollmedian(x)(acc_rollmedian(y))</sup>2 +
+(acc_rollmedian(z))^2) * 180/</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="do-angley">do.angley<a class="anchor" aria-label="anchor" href="#do-angley"></a>
 </h4>
 <p>Boolean (default = FALSE). If TRUE, calculates the angle of the Y
 axis relative to the horizontal: =
-(^-1_rollmedian(y)(acc_rollmedian(x))^2 + (acc_rollmedian(z))^2) *
-180/</p>
+(<sup>-1_rollmedian(y)(acc_rollmedian(x))</sup>2 +
+(acc_rollmedian(z))^2) * 180/</p>
 </div>
 <div class="section level4">
 <h4 class="unnumbered" id="do-anglez">do.anglez<a class="anchor" aria-label="anchor" href="#do-anglez"></a>
 </h4>
 <p>Boolean (default = TRUE). If TRUE, calculates the angle of the Z axis
-relative to the horizontal: = (^-1_rollmedian(z)(acc_rollmedian(x))^2 +
+relative to the horizontal: =
+(<sup>-1_rollmedian(z)(acc_rollmedian(x))</sup>2 +
 (acc_rollmedian(y))^2) * 180/</p>
 </div>
 <div class="section level4">
@@ -3468,6 +3475,20 @@ for the last night.</p>
 variable categories to store in the csv output files. Currently on "nap"
 is available which affects the part5 output. The variables are intended
 for methodological research only and are by default turned off.</p>
+</div>
+<div class="section level4">
+<h4 class="unnumbered" id="save_dashboard_parquet">save_dashboard_parquet<a class="anchor" aria-label="anchor" href="#save_dashboard_parquet"></a>
+</h4>
+<p>Boolean (default = FALSE). If TRUE, GGIR will export a consolidated
+Parquet file named _results.parquet to the / subfolder of the output
+directory after all requested GGIR parts have completed. The file merges
+the Part 5 day summary, Part 4 night summary, Part 2 day and person
+summaries, and the data quality report into a single row-per-day table,
+and embeds per-day epoch-level time series as a nested list-column
+(epochs). Key-value Parquet metadata is attached to record the variable
+dictionary, activity threshold configuration, and accelerometer metric
+used. This output is intended for use with DuckDB-WASM powered
+dashboards. Requires the package to be installed.</p>
 <p><img src="GGIR-MASTERLOGO-RGB.png" class="r-plt" alt="GGIR logo" width="60%" style="border: 0; padding:20px"></p>
 </div>
 </div>

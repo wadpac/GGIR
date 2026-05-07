@@ -1,6 +1,22 @@
 # Changelog
 
+## CHANGES IN GGIR VERSION 3.3-7
+
+- Functionality added to save all key output to one parquet file per
+  person. [\#1460](https://github.com/wadpac/GGIR/issues/1460)
+
+- Part 6:
+
+  - Improve speed of DFA analysis by using a vectorized approach
+    [\#1499](https://github.com/wadpac/GGIR/issues/1499)
+
+  - Included piece wise DFA analysis: short-term (box sizes \< 90 min)
+    and long-term (box-sizes 2-to-10 hours)
+    [\#1501](https://github.com/wadpac/GGIR/issues/1501)
+
 ## CHANGES IN GGIR VERSION 3.3-6
+
+CRAN release: 2026-04-21
 
 - Documentation:
 
@@ -22,9 +38,10 @@
     ACC_spt_mg_median, and ACC_spt_mg_stdev.
     [\#1490](https://github.com/wadpac/GGIR/issues/1490)
 
-- Part 6: Enable extraction of participant ID from filename consistent
-  with the other parts
-  [\#1478](https://github.com/wadpac/GGIR/issues/1478)
+- Part 6:
+
+  - Enable extraction of participant ID from filename consistent with
+    the other parts [\#1478](https://github.com/wadpac/GGIR/issues/1478)
 
 ## CHANGES IN GGIR VERSION 3.3-5
 
@@ -248,11 +265,9 @@ CRAN release: 2025-04-25
 
   - Sleep regularity index (SRI) expanded with option to smooth data.
     [\#1269](https://github.com/wadpac/GGIR/issues/1269)
-
   - SRI renamed to be SRI1 and documentation updated to clarify
     difference with new SRI2 in part 6.
     [\#1269](https://github.com/wadpac/GGIR/issues/1269)
-
   - Added parameters SRI1_smoothing_wsize_hrs and SRI1_smoothing_frac to
     control optional smoothing for SRI1.
     [\#1269](https://github.com/wadpac/GGIR/issues/1269)
@@ -261,7 +276,6 @@ CRAN release: 2025-04-25
 
   - Added SRI2 based on sleep and (currently experimental) naps.
     [\#1269](https://github.com/wadpac/GGIR/issues/1269)
-
   - Added parameters SRI2_WASOmin to control minimum duration of WASO in
     SRI2.#1269
 
@@ -430,9 +444,9 @@ CRAN release: 2025-02-20
   - The new and old general pdf report have been renamed to clarify
     which one is old (eventually to be deprecated) and which one is new.
 
-  - Report\_…pdf has been renamed to old_report\_…pdf.
+  - Report*…pdf has been renamed to old_report*…pdf.
 
-  - Time_report…pdf has been renamed to report\_…pdf
+  - Time*report…pdf has been renamed to report*…pdf
 
 - Part 3: Default for parameter do.part3.pdf changed from TRUE to FALSE
   because this visualisation has become redundant with the addition of
@@ -496,9 +510,7 @@ CRAN release: 2025-02-20
 ## CHANGES IN GGIR VERSION 3.1-10
 
 - Part 4:
-
   - Speed up the loading of advanced format sleeplog
-
   - Improve automated recognition of date format in sleeplog
 
 ## CHANGES IN GGIR VERSION 3.1-9
@@ -508,7 +520,6 @@ CRAN release: 2025-02-20
   - Identification of daylight saving time days in the detection of the
     spt is improved as it had the risk to misclassify partial last days
     as daylight saving time.
-
   - In days classified as daysleeper, the window over which the
     fraction_night_invalid is calculated now also shifts to 6pm-6pm, as
     it used to report the nonwear within 12pm-12pm.
@@ -765,7 +776,6 @@ CRAN release: 2024-07-02
 
   - fix bug that was introduced on 2024-Feb-19 in the calculation of
     wear percentage [\#1148](https://github.com/wadpac/GGIR/issues/1148)
-
   - Rename variable sleep_efficiency to sleep_efficiency_after_onset,
     [\#1157](https://github.com/wadpac/GGIR/issues/1157)
 

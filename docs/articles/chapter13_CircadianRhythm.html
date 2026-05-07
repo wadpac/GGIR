@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,6 +72,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news">
 <li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-3-6/">Version 3.3-6</a></li>
     <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-3-0/">Version 3.3-0</a></li>
     <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-6/">Version 3.2-6</a></li>
     <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-0/">Version 3.2-0</a></li>
@@ -284,11 +285,40 @@ only when parameter <code>part6CR</code> is set to TRUE.</p>
 <h3 id="self-similarity-parameter-ssp">Self-Similarity Parameter (SSP)<a class="anchor" aria-label="anchor" href="#self-similarity-parameter-ssp"></a>
 </h3>
 <p>The self-similarity parameter (SSP) is also known as scaling exponent
-or alpha. SSP is a real number between zero and two. Values in the range
-(0, 1) indicate stationary motion behaviour. Values in the range (1, 2)
-indicate non-stationary motion behaviour. For details see <a href="https://doi.org/10.1093/bioinformatics/btaa955" class="external-link">Mesquita et al
+or alpha. The overall SSP is a real number between zero and two. Values
+in the range (0, 1) indicate stationary motion behaviour. Values int he
+range (1, 2 indicate non-stationary motion behaviour. For details see <a href="https://doi.org/10.1093/bioinformatics/btaa955" class="external-link">Mesquita et al
 2020</a> and <a href="https://doi.org/10.1186/s12874-024-02255-w" class="external-link">Danilevicz et
 al. 2024</a>.</p>
+<p>In human motor activity, researchers often observe that the scaling
+behaviour is not uniform across all time scales but exhibits a
+“crossover point” around 1.5 to 2 hours. To capture distinct biological
+mechanisms, GGIR splits the DFA into two distinct time-scale
+regions:</p>
+<ul>
+<li><p><strong>Short-term scaling exponent (</strong>α1<strong>or
+SSP_short):</strong> Measures the fractal temporal correlations at time
+scales smaller than or equal to 90 minutes. Fluctuations at this scale
+are regulated by multiple physiological controls, including general
+mobility, mood, and cognition.</p></li>
+<li><p><strong>Long-term scaling exponent (</strong>α2<strong>or
+SSP_long):</strong> Measures the temporal correlations at time scales
+between 120 and 600 minutes (2 to 10 hours). Fluctuations at these
+larger time scales are heavily reliant on the central circadian
+pattern.</p></li>
+</ul>
+<p>Evaluating these regions separately allows researchers to disentangle
+physical frailty from central circadian degradation. For example, the
+difference between the two regions (Δα=α1−α2) quantifies the specific
+breakdown of multi-scale fractal patterns and can serve as a biomarker
+for SCN neurodegeneration and dementia severity. For more details on the
+clinical application of these piecewise metrics, see <a href="https://www.google.com/url?sa=E&amp;q=https%3A%2F%2Fdoi.org%2F10.1126%2Fscitranslmed.aax1977" class="external-link">Li
+et al. 2019</a>.</p>
+<p>Additionally, the output includes the difference between the
+short-term and long-term scaling exponents (Δα=α1 − α2) as SSP_diff in
+the part 6 report. In healthy individuals, fractal regulation is uniform
+across all time scales, yielding a difference close to zero. A larger
+difference indicates a disruption in multiscale fractal regulation</p>
 </div>
 <div class="section level3">
 <h3 id="activity-balance-index-abi">Activity Balance Index (ABI)<a class="anchor" aria-label="anchor" href="#activity-balance-index-abi"></a>
@@ -300,6 +330,12 @@ more balanced pattern of activity. ABI is a real number between zero and
 one and calculated from the acceleration metric time series directly
 without the need for cut-points. A higher ABI reflects a more balanced
 pattern of activity.</p>
+<p>In addition to the overall ABI (<strong>ABI_overall</strong>), GGIR
+calculates <strong>ABI_short</strong> and <strong>ABI_long</strong>,
+which are the Activity Balance Indices transformed from the short-term
+(SSP_short) and long-term (SSP2) scaling exponents, respectively. This
+allows for a direct evaluation of behavioural balance at both the
+general mobility and circadian levels.</p>
 </div>
 <div class="section level3">
 <h3 id="sleep-regularity-index-sri">Sleep Regularity Index (SRI)<a class="anchor" aria-label="anchor" href="#sleep-regularity-index-sri"></a>

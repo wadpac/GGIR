@@ -24,7 +24,15 @@
 
 # CHANGES IN GGIR VERSION 3.3-
 
+- Updated documentation to point to the new web dashboard URL (#1509)
+
+# CHANGES IN GGIR VERSION 3.3-7
+
 - Functionality added to save all key output to one parquet file per person. #1460
+
+- Part 6:
+  - Improve speed of DFA analysis by using a vectorized approach #1499
+  - Included piece wise DFA analysis: short-term (box sizes < 90 min) and long-term (box-sizes 2-to-10 hours) #1501
 
 # CHANGES IN GGIR VERSION 3.3-6
 
@@ -38,7 +46,8 @@
 
   - Variable dictionary, now also documents ACC_spt_mg, ACC_spt_mg_median, and ACC_spt_mg_stdev. #1490
 
-- Part 6: Enable extraction of participant ID from filename consistent with the other parts #1478
+- Part 6:
+  - Enable extraction of participant ID from filename consistent with the other parts #1478
 
 # CHANGES IN GGIR VERSION 3.3-5
 

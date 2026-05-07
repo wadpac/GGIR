@@ -141,6 +141,7 @@ vignette](https://CRAN.R-project.org/package=GGIR/vignettes/GGIR.html).
 ### Clock-hour based segmentation:
 
 ``` r
+
 library("GGIR")
 GGIR(datadir = "/your/data/directory",
              outputdir = "/your/output/directory",
@@ -153,6 +154,7 @@ GGIR(datadir = "/your/data/directory",
 ### Activity log based segmentation:
 
 ``` r
+
 library("GGIR")
 GGIR(datadir = "/your/data/directory",
              outputdir = "/your/output/directory",
