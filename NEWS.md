@@ -2,13 +2,13 @@
 
 - Part 5: Updates related to nap detection.
 
-  - Add filter to excluded naps that have high accelerations or for which the surrounded hour has less than 1/6 naps or sleep.
+  - Add filter to excluded naps that have high accelerations or for which the surrounded hour has less than 25% naps or sleep.
 
   - Add option to distinguish multiple nap duration categories similar to physical activity bout duration categories. #967
 
   - Re-factor nap detection such that classifications are done on full time series prior to segment specific rest analysis #967.
 
-  - Add boolean parameter nap_overwrite_behaviourclass to control whether behaviour class or overwritten by naps #967.
+  - Add boolean parameter nap_overwrite_behaviourclass to control whether behaviour class is overwritten by naps #967.
 
   - Add parameter threshold.nap as threshold for the 95th percentile in acceleration during a sib.
   

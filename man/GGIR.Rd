@@ -1543,10 +1543,11 @@ GGIR(mode = 1:5,
 
       \item{nap_overwrite_behaviourclass}{
         Boolean (default = TRUE).
-        The behavioural class related to physical activity are first assigned to 
-        each epoch. By default these will overwrite nap classification. When set to
+        By default detected naps will overwrite the classification of behavioural
+        classes such as inactivity. In that way naps are treated as one of the
+        many behaviours in a day. When \code{nap_overwrite_behaviourclass} is set to
         FALSE the nap classification is treated as a separate level of analysis and
-        by that leaves the classification of physical activity intensity as it was.
+        by that leaves the classification of physical activity intensity untouched.
       }
 
       \item{guider_cor_maxgap_hrs}{

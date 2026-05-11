@@ -105,14 +105,13 @@ g.part5.addNaps = function(sibreport = NULL, ts = NULL, params_general = NULL,
           if (length(sibnap) > 0) {
             # Only consider nap if:
             if (params_sleep[["nap_invalid_crit"]] < 1) {
-              # - It does not overlap for more than 10% with known nonwear.
               fractionInvalid = length(which(ts$nonwear[sibnap] == 1)) / length(sibnap)
             } else {
               fractionInvalid = 0
             }
             # - The 95th percentile acceleration is less than the threshold of light physical activity
             ACCp95 = as.numeric(quantile(ts$ACC[sibnap], probs = 0.95))
-            # - Surrounding hour has more than 15% sib
+            # - Surrounding hour has more than 25% sib
             sib_mid_point = sibnap[ceiling(length(sibnap)/2)]
             sib_window = c(sib_mid_point - (30 / epochSize_min), (sib_mid_point + (30 / epochSize_min)))
             if (sib_window[1] < 1) sib_window[1] = 1
@@ -125,6 +124,7 @@ g.part5.addNaps = function(sibreport = NULL, ts = NULL, params_general = NULL,
               nap_dur_class = which(c(params_sleep[["possible_nap_dur"]], Inf) > nap_dur_min)[1]
               # expected class number is 2 or higher, e.g.
               # possible_nap_dur c(0, 10, 30) with nap_dur_min = 5, will result in 2
+              # possible_nap_dur c(0, 10, 30) with nap_dur_min = 15, will result in 3
               # possible_nap_dur c(10, 30) with nap_dur_min = 12, will result in 2
               # possible_nap_dur c(10, 30) with nap_dur_min = 10, will result in 2
               ts$sibdetection[sibnap] = nap_dur_class
