@@ -13,6 +13,7 @@ Install the latest released version of GGIR with its dependencies from
 CRAN. You can do this with one command from the R command line:
 
 ``` r
+
 install.packages("GGIR", dependencies = TRUE)
 library(GGIR)
 ```
@@ -22,6 +23,7 @@ might include additional bug fixes and functionalities. To get the
 development version, please use:
 
 ``` r
+
 install.packages("remotes", dependencies = TRUE)
 remotes::install_github("wadpac/GGIR", dependencies = TRUE)
 library(GGIR)

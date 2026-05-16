@@ -99,3 +99,5 @@
   self-similarity parameter
 - [`visualReport()`](https://wadpac.github.io/GGIR/reference/visualReport.md)
   : Generate visualisation of time series produced by part 5.
+- [`write_dashboard_parquet()`](https://wadpac.github.io/GGIR/reference/write_dashboard_parquet.md)
+  : Write consolidated dashboard Parquet output

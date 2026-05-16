@@ -50,6 +50,7 @@ how to find the default value of each parameter.
 The bare minimum input needed for `GGIR` is:
 
 ``` r
+
 library(GGIR)
 GGIR(datadir="C:/mystudy/mydata",
  outputdir="D:/myresults")

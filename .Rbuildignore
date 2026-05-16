@@ -25,3 +25,5 @@ index.md
 ^vignettes/SleepRegularityIndex.Rmd
 ^vignettes/DateTimeFormatsInR.Rmd
 .nojekyll
+^\.positai$
+^\.claude$

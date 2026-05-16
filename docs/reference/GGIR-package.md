@@ -21,8 +21,8 @@ publications.
 |-------------------|------------------------------------------------------|
 | Package:          | GGIR                                                 |
 | Type:             | Package                                              |
-| Version:          | 3.3-6                                                |
-| Date:             | 2026-04-21                                           |
+| Version:          | 3.3-7                                                |
+| Date:             | 2026-05-04                                           |
 | License:          | Apache License (== 2.0)                              |
 | Discussion group: | https://groups.google.com/forum/#!forum/rpackageggir |
 

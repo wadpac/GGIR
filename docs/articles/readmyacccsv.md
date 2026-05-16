@@ -187,6 +187,7 @@ Before we can use this with GGIR, we first test read this file using the
 `read.myacc.csv` function directly.
 
 ``` r
+
 library(GGIR)
 data = read.myacc.csv(rmc.file = "C:/mystudy/mydata/datafile.csv",
                rmc.nrow = Inf,
@@ -221,6 +222,7 @@ defined by `datadir`, `strategy`, and [header](#header) arguments,
 respectively).
 
 ``` r
+
 library(GGIR)
 GGIR(
              mode=c(1,2,3,4,5),
