@@ -4,6 +4,8 @@
 
 - Part 1: Fixed an issue in g.calibrate() where large data chunks caused out-of-bounds errors (#1513)
 
+- Part 2: Fixed bug where activity log (qwindow) segments could be assigned to the day before, because g.analyse.perday() derived the recording-day dates with as.Date() defaulting to UTC instead of desiredtz (#1518)
+
 # CHANGES IN GGIR VERSION 3.3-7
 
 - Functionality added to save all key output to one parquet file per person. #1460
