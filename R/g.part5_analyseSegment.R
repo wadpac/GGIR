@@ -262,6 +262,24 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     for (levelsc in 0:(length(Lnames) - 1)) {
       dsummary[si,fi] = (length(which(LEVELS[sse] == levelsc)) * ws3new) / 60
       ds_names[fi] = paste0("dur_", Lnames[levelsc + 1],"_min");      fi = fi + 1
+      if (length(grep(pattern = "nap", x = Lnames[levelsc + 1])) > 0) {
+        # calculate mean dur if nap occurs in filename
+        if (levelsc %in% LEVELS[sse]) {
+          nap_state = c(F, LEVELS[sse] == levelsc, F)
+        } else {
+          nap_state = FALSE
+        }
+        if (any(nap_state)) {
+          rle_ns = rle(nap_state)
+          dsummary[si, fi] = (
+            mean(rle_ns$lengths[which(rle_ns$values == TRUE)])
+            * ws3new) / 60
+        } else {
+          dsummary[si,fi] = 0
+        }
+        ds_names[fi] = paste0("meandur_", Lnames[levelsc + 1],"_min");      fi = fi + 1
+      }
+      
     }
     for (g in 1:4) {
       dsummary[si, (fi + (g - 1))] = (length(which(OLEVELS[sse] == g)) * ws3new) / 60
@@ -285,6 +303,26 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
           ds_names[fi] = paste0("dur_", nap_class_names[levelsc + 1],"_min");      fi = fi + 1
         }
       }
+      # AVERAGE TIME SPENT IN NAP WINDOWS
+      if (length(nap_class_names) > 0) {
+        for (levelsc in 0:(length(nap_class_names) - 1)) {
+          if (levelsc %in% nap_LEVELS[sse]) {
+            nap_state = c(F, nap_LEVELS[sse] == levelsc, F)
+          } else {
+            nap_state = FALSE
+          }
+          if (any(nap_state)) {
+            rle_ns = rle(nap_state)
+            dsummary[si, fi] = (
+              mean(rle_ns$lengths[which(rle_ns$values == TRUE)])
+              * ws3new) / 60
+          } else {
+            dsummary[si,fi] = 0
+          }
+          ds_names[fi] = paste0("meandur_", nap_class_names[levelsc + 1],"_min");      fi = fi + 1
+        }
+      }
+      
       # TIME SPENT IN SLEEP WINDOWS
       if (length(sleep_class_names) > 0) {
         for (levelsc in 1:length(sleep_class_names)) {
