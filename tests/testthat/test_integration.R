@@ -227,7 +227,7 @@ test_that("All GGIR parts work together (integration test)", {
   expect_true(dir.exists(dirname))
   expect_true(file.exists(rn[1]))
   expect_equal(nrow(output), 5)
-  expect_equal(ncol(output), 164)
+  expect_equal(ncol(output), 167)
   expect_equal(round(as.numeric(output$wakeup[2]), digits = 4), 36)
   expect_equal(as.numeric(output$dur_day_spt_min[4]), 1150) # WW window duration
   expect_equal(as.numeric(output$dur_day_spt_min[5]), 1680) # OO window duration
