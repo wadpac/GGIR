@@ -1,6 +1,10 @@
 check_log = function(log, dateformat, colid = 1, datecols = c(), 
                      logPath, logtype) {
-  
+
+  # data.table::fread() may auto-parse date columns as IDate, which breaks the
+  # text-based date checks below; force all columns to character first
+  log[] = lapply(log, as.character)
+
   # at the moment this is used only for activity log and study dates log
   dateformat_param = ifelse(logtype == "activity log", "qwindow_dateformat", "study_dates_dateformat")
   
