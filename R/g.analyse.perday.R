@@ -59,7 +59,8 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
   }
   unique_dates_recording = unique(as.Date(iso8601chartime2POSIX(time[c(seq(1, length(time),
                                                                            by = (3600/ws2) * 12),
-                                                                       length(time))], tz = params_general[["desiredtz"]])))
+                                                                       length(time))], tz = params_general[["desiredtz"]]),
+                                          tz = params_general[["desiredtz"]]))
   ExtFunColsi = ExtFunColsi - 1 # subtract 1 because code ignores timestamp
   ExtFunColsi_backup = ExtFunColsi
   for (di in 1:ndays) { #run through days
