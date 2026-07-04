@@ -26,6 +26,14 @@
 
 - Updated documentation to point to the new web dashboard URL (#1509)
 
+- Part 1: Fixed an issue in g.calibrate() where large data chunks caused out-of-bounds errors (#1513)
+
+- Part 2: Fixed bug where activity log (qwindow) segments could be assigned to the day before, because g.analyse.perday() derived the recording-day dates with as.Date() defaulting to UTC instead of desiredtz (#1518)
+
+- Part 2: Fixed regression in g.impute() where using a study_dates_file raised "NA/NaN argument" for participants whose listed start or end date is not a midnight present in the recording (e.g. an evening start, or a device that stopped recording before the listed end date). #1508
+
+- Fixed check_log() to coerce study dates log columns to character, so that dates auto-parsed as IDate by data.table::fread() are handled correctly. #1521
+
 # CHANGES IN GGIR VERSION 3.3-7
 
 - Functionality added to save all key output to one parquet file per person. #1460
