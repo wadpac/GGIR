@@ -33,9 +33,22 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "possible_nap_window", "possible_nap_dur",
                        "colid", "coln1", "def.noc.sleep", "nnights", 
                        "sleepefficiency.metric", "possible_nap_edge_acc", "HDCZA_threshold",
-                       "possible_nap_gap")
+                       "possible_nap_gap", "oakley_threshold",
+                       "nap_markerbutton_method",
+                       "nap_markerbutton_max_distance",
+                       "SRI1_smoothing_wsize_hrs",
+                       "SRI1_smoothing_frac",
+                       "spt_min_block_dur",
+                       "spt_max_gap_dur", "spt_max_gap_ratio", "HorAngle_threshold",
+                       "guider_cor_maxgap_hrs",
+                       "guider_cor_min_frac_sib", "guider_cor_min_hrs",
+                       "guider_cor_meme_frac_out",
+                       "guider_cor_meme_frac_in", "guider_cor_meme_min_hrs",
+                       "guider_cor_meme_min_dys")
     boolean_params = c("ignorenonwear", "HASPT.ignore.invalid",
-                       "relyonguider", "sleeplogidnum", "sib_must_fully_overlap_with_TimeInBed")
+                       "relyonguider", "sleeplogidnum",
+                       "impute_marker_button", "consider_marker_button",
+                       "sib_must_fully_overlap_with_TimeInBed", "guider_cor_do")
     character_params = c("HASPT.algo", "HASIB.algo", "Sadeh_axis", "nap_model",
                          "sleeplogsep", "sleepwindowType", "loglocation")
     check_class("Sleep", params = params_sleep, parnames = numeric_params, parclass = "numeric")
@@ -84,8 +97,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     numeric_params = c("qlevels", "ilevels", "IVIS_windowsize_minutes", "IVIS_epochsize_seconds",
                        "IVIS.activity.metric", "IVIS_acc_threshold",
                        "qM5L5", "MX.ig.min.dur", "M5L5res", "winhr", "LUXthresholds", "LUX_cal_constant",
-                       "LUX_cal_exponent", "LUX_day_segments", "L5M5window", "clevels")
-    boolean_params = c("cosinor", "part6CR", "part6HCA", "part6DFA")
+                       "LUX_cal_exponent", "LUX_day_segments", "L5M5window", "clevels", "SRI2_WASOmin")
+    boolean_params = c("cosinor", "part6CR", "part6HCA", "part6DFA", "part2CR")
     character_params = c("qwindow_dateformat", "part6Window")
     check_class("247", params = params_247, parnames = numeric_params, parclass = "numeric")
     check_class("247", params = params_247, parnames = boolean_params, parclass = "boolean")
@@ -121,7 +134,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     boolean_params = c("epochvalues2csv", "save_ms5rawlevels", "save_ms5raw_without_invalid",
                        "storefolderstructure", "dofirstpage", "visualreport", "week_weekend_aggregate.part5",
                        "do.part3.pdf", "outliers.only", "do.visual", "do.sibreport", "visualreport_without_invalid",
-                       "do.part2.pdf", "old_visualreport", "require_complete_lastnight_part5")
+                       "do.part2.pdf", "do.part2.png", "old_visualreport", "require_complete_lastnight_part5",
+                       "save_dashboard_parquet")
 
     character_params = c("save_ms5raw_format", "timewindow", "sep_reports", "sep_config",
                          "dec_reports", "dec_config", "visualreport_focus", "method_research_vars")
@@ -131,10 +145,13 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   }
   if (length(params_general) > 0) {
     numeric_params = c("maxNcores", "windowsizes", "idloc", "dayborder",
-                       "expand_tail_max_hours", "maxRecordingInterval")
-    boolean_params = c("overwrite", "print.filename", "do.parallel", "part5_agg2_60seconds")
+                       "expand_tail_max_hours", "maxRecordingInterval",
+                       "recording_split_overlap")
+    boolean_params = c("overwrite", "print.filename", "do.parallel", "part5_agg2_60seconds",
+                       "recording_split_ignore_edges", "use_trycatch_serial")
     character_params = c("acc.metric", "desiredtz", "configtz", "sensor.location", 
-                         "dataFormat", "extEpochData_timeformat")
+                         "dataFormat", "extEpochData_timeformat", "recording_split_times",
+                         "recording_split_timeformat")
     check_class("general", params = params_general, parnames = numeric_params, parclass = "numeric")
     check_class("general", params = params_general, parnames = boolean_params, parclass = "boolean")
     check_class("general", params = params_general, parnames = character_params, parclass = "character")
@@ -182,7 +199,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   
   if (length(params_sleep) > 0) {
     if (length(params_sleep[["def.noc.sleep"]]) != 2) {
-      if (params_sleep[["HASPT.algo"]][1] %in% c("HorAngle", "NotWorn") == FALSE) {
+      if (params_sleep[["HASPT.algo"]][1] %in% c("HorAngle", "NotWorn", "MotionWare", "HLRB") == FALSE) {
         params_sleep[["HASPT.algo"]] = "HDCZA"
       }
       if (length(params_sleep[["HASPT.algo"]]) == 2 && params_sleep[["HASPT.algo"]][2] == "NotWorn") {
@@ -216,7 +233,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   
   if (length(params_metrics) > 0 & length(params_sleep) > 0) {
     
-    if (params_sleep[["HASIB.algo"]] %in% c("Sadeh1994", "Galland2012", "ColeKripke1992") == TRUE) {
+    sib_90s_algo_names = c("Sadeh1994", "Galland2012", "ColeKripke1992", "Oakley1997")
+    if (any(params_sleep[["HASIB.algo"]] %in% sib_90s_algo_names == TRUE)) {
       if (params_sleep[["Sadeh_axis"]] %in% c("X","Y","Z") == FALSE) {
         warning("Parameter Sadeh_axis does not have meaningful value, it needs to be X, Y or Z (capital)", call. = FALSE)
       }
@@ -376,7 +394,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       if (length(formats2keep) > 0) {
         params_output[["save_ms5raw_format"]] = params_output[["save_ms5raw_format"]][formats2keep]
       } else {
-        params_output[["save_ms5raw_format"]] = "csv"# specify as csv if user does not clearly specify format
+        stop("Parameter save_ms5raw_format incorrectly specified, please fix.", call. = FALSE)
       }
     }
     if (params_output[["sep_reports"]] == params_output[["dec_reports"]]) {
@@ -391,6 +409,14 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         params_output[["visualreport_hrsPerRow"]] > 48) {
       stop("Parameter visualreport_hrsPerRow is expected to be set in the range 24-48")
     }
+    
+    if (!is.null(params_output[["do.part2.pdf"]]) && is.null(params_output[["do.part2.png"]])) {
+      params_output[["do.part2.png"]] = params_output[["do.part2.pdf"]]
+    }
+    if (is.null(params_output[["do.part2.png"]])) {
+      params_output[["do.part2.png"]] = TRUE
+    }
+    
   }
   # params 247
   if (length(params_247) > 0) {
@@ -414,15 +440,28 @@ check_params = function(params_sleep = c(), params_metrics = c(),
         params_247[["LUX_day_segments"]] = c(params_247[["LUX_day_segments"]], 24)
       }
     }
+    if (params_247[["cosinor"]] == TRUE && params_247[["part2CR"]] == FALSE) {
+      params_247[["part2CR"]] = TRUE
+    }
     # params 247 & params output
-    if (params_247[["part6HCA"]] == TRUE || params_247[["part6CR"]] == TRUE) {
-      # Add RData because part 6 will need it
+    if (length(params_output[["save_ms5raw_format"]]) == 1 && 
+        params_output[["save_ms5raw_format"]] == "csv") {
+      # always add RData if only csv is specified, because otherwise visualreport cannot be generated
+      params_output[["save_ms5raw_format"]] = c(params_output[["save_ms5raw_format"]], "RData")
+    }
+
+    if (length(params_247[["clevels"]]) == 1) {
+      warning("\nParameter clevels expects a number vector of at least 2 values, current length is 1", call. = FALSE)
+    }
+  }
+  
+  if (length(params_output) > 0 && length(params_247) > 0) {
+    if (params_247[["part6HCA"]] == TRUE || params_247[["part6CR"]] == TRUE || 
+        params_output[["visualreport"]] == TRUE) {
+      # Add RData because part 6 / visualreport will need it
       params_output[["save_ms5raw_format"]] = unique(c(params_output[["save_ms5raw_format"]], "RData"))
       params_output[["save_ms5rawlevels"]] = TRUE
       params_output[["save_ms5raw_without_invalid"]] = FALSE
-    }
-    if (length(params_247[["clevels"]]) == 1) {
-      warning("\nParameter clevels expects a number vector of at least 2 values, current length is 1", call. = FALSE)
     }
   }
   if (!is.null(params_general[["expand_tail_max_hours"]])) {
@@ -454,83 +493,40 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       # when using count data from the hip the user may prefer the HASPT.algo=NotWorn.
       params_general[["sensor.location"]] = "hip"
     }
+    
+    if (params_general[["dataFormat"]] %in% c("sensewear_xls", "fitbit_json")) {
+      if (params_sleep[["HASIB.algo"]][1] != "data") {
+        params_sleep[["HASIB.algo"]] = "data"
+        warning(paste0("HASIB.algo has been set to \"data\", because dataFormat is",
+                       " ", params_general[["dataFormat"]], " for which the sleep ",
+                       " classification inside the data is the only route."), call. = FALSE)
+      }
+    }
+    
   }
   
   if (length(params_metrics) > 0 & length(params_general) > 0) {
-    if (params_general[["dataFormat"]] %in% c("actiwatch_awd", "actiwatch_csv")) {
-      if (params_metrics[["do.zcy"]] == FALSE | params_general[["acc.metric"]] != "ZCY") {
-        params_metrics[["do.zcy"]] = TRUE
-        params_general[["acc.metric"]] = "ZCY"
-        warning(paste0("\nWhen dataFormat is set to ", params_general[["dataFormat"]],
-                       " we assume that metric is ZCY, this is now used"), call. = FALSE)
-      }
-      if (params_metrics[["do.anglex"]] == TRUE |
-          params_metrics[["do.angley"]] == TRUE |
-          params_metrics[["do.anglez"]] == TRUE |
-          params_metrics[["do.enmoa"]] == TRUE |
-          params_metrics[["do.enmo"]] == TRUE |
-          params_metrics[["do.lfenmo"]] == TRUE |
-          params_metrics[["do.bfen"]] == TRUE |
-          params_metrics[["do.mad"]] == TRUE) {
-        metricsNotFalse = NULL
-        for (metricName in c("do.anglex", "do.angley", "do.anglez", "do.enmoa",
-                             "do.enmo", "do.bfen", "do.mad", "do.lfenmo")) {
-          if (params_metrics[[metricName]] == TRUE) {
-            metricsNotFalse = c(metricsNotFalse, metricName)
-          }
-        }
-        warning(paste0("\nWhen dataFormat is set to ", params_general[["dataFormat"]],
-                       " we assume that only metric ZCY is extracted and",
-                       " GGIR ignores all other metric requests. So, you should set parameters ",
-                       paste0(metricsNotFalse, collapse = " & "), " to FALSE"), call. = FALSE)
-        # Turn all commonly used metrics to FALSE
-        params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = FALSE
-        params_metrics[["do.anglez"]] = params_metrics[["do.enmoa"]] = FALSE
-        params_metrics[["do.enmo"]] = params_metrics[["do.bfen"]] = FALSE
-        params_metrics[["do.mad"]] = params_metrics[["do.lfenmo"]] = FALSE
-        # Force acc.metric to be ZCY
-        params_general[["acc.metric"]] = "ZCY"
-      }
+    if (params_general[["dataFormat"]] %in% c("actiwatch_awd", "actiwatch_csv", "phb_xlsx")) {
+      params_metrics[["do.enmo"]] = params_metrics[["do.anglez"]] = FALSE
+      params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = FALSE
+      params_metrics[["do.anglez"]] = params_metrics[["do.enmoa"]] = FALSE
+      params_metrics[["do.enmo"]] = params_metrics[["do.bfen"]] = FALSE
+      params_metrics[["do.mad"]] = params_metrics[["do.lfenmo"]] = FALSE
+      params_general[["acc.metric"]] = "ExtAct"
       if (length(params_sleep) > 0) {
-        if (params_sleep[["Sadeh_axis"]] != "Y") {
-          params_sleep[["Sadeh_axis"]] = TRUE
-          warning(paste0("\nWhen dataFormat is set to ", params_general[["dataFormat"]],
-                         " we assume that Sadeh_axis Y, this is now overwritten"), call. = FALSE)
-        }
-        if (params_sleep[["HASIB.algo"]] == "vanHees2015") {
+        if (any(params_sleep[["HASIB.algo"]] == "vanHees2015")) {
           stop(paste0("\nSleep algorithm ", params_sleep[["HASIB.algo"]], " is not a valid",
                       " setting in combination with dataFormat set to ",
                       params_general[["dataFormat"]], " Please fix"), call. = FALSE)
         }
       }
     } else if (params_general[["dataFormat"]] == "ukbiobank") {
-      if (params_metrics[["do.anglex"]] == TRUE |
-          params_metrics[["do.angley"]] == TRUE |
-          params_metrics[["do.anglez"]] == TRUE |
-          params_metrics[["do.enmoa"]] == TRUE |
-          params_metrics[["do.enmo"]] == TRUE |
-          params_metrics[["do.bfen"]] == TRUE |
-          params_metrics[["do.mad"]] == TRUE |
-          params_general[["acc.metric"]] != "LFENMO") {
-        metricsNotFalse = NULL
-        for (metricName in c("do.anglex", "do.angley", "do.anglez", "do.enmoa",
-                             "do.enmo", "do.bfen", "do.mad")) {
-          if (params_metrics[[metricName]] == TRUE) {
-            metricsNotFalse = c(metricsNotFalse, metricName)
-          }
-        }
-        warning(paste0("\nWhen dataFormat is set to ukbiobank",
-                       " we assume that only metric LFENMO is extracted and",
-                       " GGIR ignores all other metric requests. So, you should set parameters ",
-                       paste0(metricsNotFalse, collapse = " & "), " to FALSE"), call. = FALSE)
-        # Turn all commonly used metrics to FALSE
-        params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = FALSE
-        params_metrics[["do.anglez"]] = params_metrics[["do.enmoa"]] = FALSE
-        params_metrics[["do.enmo"]] = params_metrics[["do.bfen"]] = FALSE
-        params_metrics[["do.mad"]] = FALSE
-        # Force acc.metric to be LFENMO
-        params_general[["acc.metric"]] = "LFENMO"
-      }
+      # Turn all commonly used metrics to FALSE
+      params_metrics[["do.anglex"]] = params_metrics[["do.angley"]] = FALSE
+      params_metrics[["do.anglez"]] = params_metrics[["do.enmoa"]] = FALSE
+      params_metrics[["do.enmo"]] = params_metrics[["do.bfen"]] = FALSE
+      params_metrics[["do.mad"]] = FALSE
+      params_general[["acc.metric"]] = "LFENMO"
     } else if (params_general[["dataFormat"]] == "sensewear_xls") {
       params_general[["acc.metric"]] = "ExtAct"
     }
@@ -547,10 +543,20 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     }
   }
   
-  if (!is.null(params_general[["maxRecordingInterval"]])) {
-    if (params_general[["maxRecordingInterval"]] > 24 * 21) {
-      stop(paste0("A maxRecordingInterval value higher than 21 days (504 hours) is permitted,",
-                  " please specify a lower value."), call. = FALSE)
+  if (length(params_general) > 0) {
+    if (!is.null(params_general[["maxRecordingInterval"]])) {
+      if (params_general[["maxRecordingInterval"]] > 24 * 21) {
+        stop(paste0("A maxRecordingInterval value higher than 21 days (504 hours) is not permitted,",
+                    " please specify a lower value."), call. = FALSE)
+      }
+    }
+    if (!is.null(params_general[["recording_split_times"]])) {
+      if (!file.exists(params_general[["recording_split_times"]])) {
+        stop(paste0("File .../", basename(params_general[["recording_split_times"]]),
+                    " as specified with parameter recording_split_times does not exist, ",
+                    " please fix."), call. = FALSE)
+        
+      }
     }
   }
   

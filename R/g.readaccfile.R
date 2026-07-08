@@ -41,8 +41,9 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
   # endpage and the blocksize.
 
   if ((mon == MONITOR$GENEACTIV && dformat == FORMAT$BIN) || dformat == FORMAT$GT3X ||
-      (mon == MONITOR$MOVISENS && dformat == FORMAT$BIN)) {
-    # for GENEActiv binary data, gt3x format data, and Movisens data,
+      (mon == MONITOR$MOVISENS && dformat == FORMAT$BIN) || 
+      (mon == MONITOR$PARMAY_MTX && dformat == FORMAT$BIN)) {
+    # for GENEActiv binary data, gt3x format data, Movisens data, and Parmay Matrix data, 
     # page selection is defined from start to end **including end**
     if (blocknumber > 1 && length(PreviousEndPage) != 0) {
       startpage = PreviousEndPage + 1
@@ -77,7 +78,24 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                             configtz = configtz)}, silent = TRUE)
     if (length(P) > 0 && ("data.out" %in% names(P))) {
       names(P)[names(P) == "data.out"] = "data"
-
+      
+      # If sampling rate is fractional which is possible for GENEActiv, 
+      # resample to integer sampling rate to ensure downstream GGIR code
+      # can derive non-ambiguous epoch level aggregates.
+      if (P$header$SampleRate != round(P$header$SampleRate)) {
+        coln_original = colnames(P$data)
+        rawData = P$data[, 2:ncol(P$data)]
+        rawTime = P$data$time
+        P$header$SampleRate = round(P$header$SampleRate)
+        if (sf != P$header$SampleRate) stop("sampling rate inconsistency, please contact maintainer")
+        rawAccel = as.matrix(rawData)
+        step = 1/sf
+        timeRes = seq(rawTime[1], rawTime[length(rawTime)], step)
+        timeRes = timeRes[1 : (length(timeRes) - 1)]
+        accelRes = GGIRread::resample(rawAccel, rawTime, timeRes, nrow(rawAccel), params_rawdata[["interpolationType"]]) # this is now the resampled acceleration data
+        P$data = data.frame(timeRes, accelRes)
+        colnames(P$data) = coln_original
+      }
       if (nrow(P$data) < (blocksize*300)) {
         isLastBlock = TRUE
       }
@@ -335,7 +353,18 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                    header = header)
     }, silent = TRUE)
     if (length(sf) == 0) sf = params_rawdata[["rmc.sf"]]
-  }
+  } else if (mon == MONITOR$PARMAY_MTX && dformat == FORMAT$BIN) {
+    try(expr = {P = GGIRread::readParmayMatrix(filename = filename, output = "all",
+                                               start = startpage, end = endpage, 
+                                               desiredtz = desiredtz, configtz = configtz,
+                                               interpolationType = params_rawdata[["interpolationType"]])}, silent = TRUE)
+    # fix colnames to match expectations of GGIR
+    colnames(P$data) = gsub("acc_", "", colnames(P$data))
+    colnames(P$data) = gsub("ambient_temp", "temperature", colnames(P$data))
+    if (P$lastchunk) {
+      isLastBlock = TRUE
+    }
+  } 
 
   # if first block isn't read then the file is probably corrupt
   if (length(P$data) <= 1 || nrow(P$data) == 0) {

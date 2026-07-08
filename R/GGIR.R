@@ -19,12 +19,28 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       for (dupi in unique(argNames[dupArgNames])) {
         dupArgValues = input[which(argNames %in% dupi)]
         if (all(dupArgValues == dupArgValues[[1]])) { # duplicated arguments, but no confusion about what value should be
-          warning(paste0("\nArgument ", dupi, " has been provided more than once. Try to avoid this."))
+          warning(paste0("\nParameter ", dupi, " has been provided more than once. Try to avoid this."))
         } else {# duplicated arguments, and confusion about what value should be,
-          warning(paste0("\nArgument ", dupi, " has been provided more than once and with inconsistent values. Please fix."))
+          warning(paste0("\nParameter ", dupi, " has been provided more than once and with inconsistent values. Please fix."))
         }
       }
     }
+    default_params = load_params()
+    known_param_names =  unlist(lapply(names(default_params), function(n) names(default_params[[n]])))
+    if (any(argNames %in% known_param_names == FALSE)) {
+      unknown_param_names = argNames[argNames %in% known_param_names == FALSE]
+      if (length(unknown_param_names) == 1) {
+        stop(paste0("\nParameter ", unknown_param_names,
+                       " is unknown to GGIR and will not be used, ",
+                    "please check for typos or remove."), call. = FALSE)
+      } else {
+        stop(paste0("\nParameters ", paste0(unknown_param_names, collapse = " and "),
+                       " are unknown to GGIR and will not be used, ",
+                    "please check for typos or remove these."), call. = FALSE)
+      }
+      rm(unknown_param_names)
+    }
+    rm(default_params, known_param_names)
   }
   
   if (length(datadir) == 0) {
@@ -39,59 +55,13 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   outputdir = gsub(pattern = "\\\\", replacement = "/", x = outputdir)
   datadir = gsub(pattern = "\\\\", replacement = "/", x = datadir)
   
-  #===========================
-  # Establish default start / end file index to process
-  filelist = isfilelist(datadir)
   
-  if (filelist == FALSE) {
-    if (dir.exists(datadir) == FALSE && 1 %in% mode) {
-      # Note: The check whether datadir exists is only relevant when running part 1
-      # For other scenarios it can be convenient to keep specifying datadir
-      # even if the actual path is no longer available, because GGIR uses the most
-      # distal folder name to identify the output directory. For example,
-      # if part 2-5 are processed on a different system then part 1.
-      
-      stop("\nDirectory specified by argument datadir does not exist")
-    }
-    if (datadir == outputdir || grepl(paste(datadir, '/', sep = ''), outputdir)) {
-      stop(paste0('\nError: The file path specified by argument outputdir should ',
-                  'NOT equal or be a subdirectory of the path specified by argument datadir'))
-    }
-  }
-  if (dir.exists(outputdir) == FALSE) {
-    stop("\nDirectory specified by argument outputdir does not exist")
-  }
-  if (file.access(outputdir, mode = 2) == 0) {
-    if (verbose == TRUE) cat("\nChecking that user has write access permission for directory specified by argument outputdir: Yes\n")
-  } else {
-    stop("\nUser does not seem to have write access permissions for the directory specified by argument outputdir.\n")
-  }
-  if (filelist == TRUE) {
-    if (length(studyname) == 0) {
-      stop('\nError: studyname must be specified if datadir is a list of files')
-    }
-  }
-  if (is.null(f0) || f0 < 1) { # What file to start with?
-    f0 = 1
-  }
-  if ((is.null(f1) || f1 < 1) && 1 %in% mode) {  # What file to end with?
-    # Do not modify f1 here when not attempting to process GGIR part 1
-    # we only expect datadir to exist when running part 1
-    if (filelist == FALSE) {
-      f1 <- length(dir(datadir, recursive = TRUE, ignore.case = TRUE, pattern = "[.](csv|bin|Rda|wa|cw|gt3)")) # modified by JH
-    } else {
-      f1 = length(datadir) #modified
-    }
-  }
-  if (is.null(f1)) {
-    f1 = 0
-  }
+  
   # Establish which parts need to be processed:
   dopart1 = dopart2 = dopart3 = dopart4 = dopart5 = dopart6 = FALSE
   if (length(which(mode == 0)) > 0) {
     dopart1 = dopart2 = dopart3 = dopart4 = dopart5 = TRUE # intentionally not including dopart6
   } else {
-    # if (length(which(mode == 0)) > 0) dopart0 = TRUE
     if (length(which(mode == 1)) > 0) dopart1 = TRUE
     if (length(which(mode == 2)) > 0) dopart2 = TRUE
     if (length(which(mode == 3)) > 0) dopart3 = TRUE
@@ -99,7 +69,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     if (length(which(mode == 5)) > 0) dopart5 = TRUE
     if (length(which(mode == 6)) > 0) dopart6 = TRUE
   }
-  
+  # identify output folder names
+  filelist = isfilelist(datadir)
   if (filelist == TRUE) {
     metadatadir = paste0(outputdir, "/output_", studyname)
   } else {
@@ -162,10 +133,10 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     check_myfun(myfun, params_general[["windowsizes"]])
   }
   
-  if (params_output[["visualreport"]] == TRUE & params_general[["dataFormat"]] != "raw") {
+  if (params_output[["visualreport"]] == TRUE &
+      params_output[["old_visualreport"]] == TRUE &
+      params_general[["dataFormat"]] != "raw") {
     params_output[["visualreport"]] == FALSE
-    warning(paste0("Turning off visualreport generation because",
-                   " dataFormat is not raw."), call. = FALSE)
   }
   
   # check package dependencies
@@ -203,6 +174,60 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     }
   }
   
+  # This check cannot be part of check_params because it needs to know mode:
+  if (6 %in% mode && params_247[["part6CR"]] == FALSE && params_247[["part6HCA"]]) {
+    warning(paste0("Both part6CR and part6HCA are set to FALSE by which there is ",
+                   "not analysis to be run in part 6."), call. = FALSE)
+  }
+  #===========================
+  # Establish default start / end file index to process
+  if (filelist == FALSE) {
+    if (dir.exists(datadir) == FALSE && 1 %in% mode) {
+      # Note: The check whether datadir exists is only relevant when running part 1
+      # For other scenarios it can be convenient to keep specifying datadir
+      # even if the actual path is no longer available, because GGIR uses the most
+      # distal folder name to identify the output directory. For example,
+      # if part 2-5 are processed on a different system then part 1.
+      
+      stop("\nDirectory specified by argument datadir does not exist")
+    }
+    if (datadir == outputdir || grepl(paste(datadir, '/', sep = ''), outputdir)) {
+      stop(paste0('\nError: The file path specified by argument outputdir should ',
+                  'NOT equal or be a subdirectory of the path specified by argument datadir'))
+    }
+  }
+  if (dir.exists(outputdir) == FALSE) {
+    stop("\nDirectory specified by argument outputdir does not exist")
+  }
+  if (file.access(outputdir, mode = 2) != 0) {
+    stop("\nUser does not seem to have write access permissions for the directory specified by argument outputdir.\n")
+  }
+  if (filelist == TRUE) {
+    if (length(studyname) == 0) {
+      stop('\nError: studyname must be specified if datadir is a list of files')
+    }
+  }
+  # Correct f1 
+  if (is.null(f0) || f0 < 1) { # What file to start with?
+    f0 = 1
+  }
+  f1_orinally_null = ifelse(!is.null(f1) && f1 == 0, yes = TRUE, no = FALSE)
+  if ((is.null(f1) || f1 < 1) && 1 %in% mode) {  # What file to end with?
+    # Do not modify f1 here when not attempting to process GGIR part 1
+    # we only expect datadir to exist when running part 1
+    if (filelist == FALSE && params_general[["dataFormat"]] %in% c("phb_xlsx", "fitbit_json") == FALSE) {
+      f1 <- length(dir(datadir, recursive = TRUE, ignore.case = TRUE, pattern = "[.](csv|bin|Rda|wa|cw|gt3|AW)")) # modified by JH
+    } else if (params_general[["dataFormat"]] %in% c("phb_xlsx", "fitbit_json")) {
+      # use number of directories as indicator for number of recordings
+      f1 = length(dir(datadir, recursive = FALSE))
+    } else {
+      f1 = length(datadir) #modified
+    }
+  }
+  if (is.null(f1)) {
+    f1 = 0
+  }
+  
   #-----------------------------------------------------------
   # Print GGIR header to console
   GGIRversion = "could not extract version"
@@ -212,18 +237,31 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   }
   if (verbose == TRUE) {
     cat(paste0("\n   GGIR version: ",GGIRversion,"\n"))
-    cat("\n   Do not forget to cite GGIR in your publications via a version number and\n")
-    cat("   Migueles et al. 2019 JMPB. doi: 10.1123/jmpb.2018-0063. \n")
-    cat("   See also: https://cran.r-project.org/package=GGIR/vignettes/GGIR.html#citing-ggir")
+    cat("\n   << Please cite GGIR in your publications with doi: 10.5281/zenodo.1051064 >>\n")
+    random_message = sample(x = 1:3, size = 1)
+    cat(paste0("\n   [Note #", random_message, "]"))
+    if (random_message == 1) {
+      cat("\n   To help us track where GGIR was in the literature, post a link to your publication ")
+      cat("\n   in https://github.com/wadpac/GGIR/discussions/categories/show-and-tell")
+      cat("\n   or email it to v.vanhees@accelting.com")
+    } else if (random_message == 2) {
+      cat("\n   To make your research reproducible and interpretable always report:")
+      cat("\n     (1) GGIR version")
+      cat("\n     (2) Accelerometer brand and product name")
+      cat("\n     (3) How you configured the accelerometer")
+      cat("\n     (4) Study protocol and wear instructions given to the participants")
+      cat("\n     (5) How GGIR was used: Share the config.csv file or your R script.")
+      cat("\n     (6) How you post-processed / cleaned GGIR output")
+      cat("\n     (7) How reported outcomes relate to the specific variable names in GGIR")
+    } else if (random_message == 3) {
+      cat("\n   The sustainability of GGIR depends on YOU as user, please consider:")
+      cat("\n     (1) Helping other users on https://github.com/wadpac/GGIR/discussions")
+      cat("\n     (2) Providing feedback on or help improve GGIR documentation")
+      cat("\n     (3) Providing feedback on or help improve GGIR source code")
+      cat("\n     (4) Finding funding for work on GGIR")
+      cat("\n   For questions about contributing contact v.vanhees@accelting.com.")
+    }
     cat("\n")
-    cat("\n   To make your research reproducible and interpretable always report:")
-    cat("\n     (1) Accelerometer brand and product name")
-    cat("\n     (2) How you configured the accelerometer")
-    cat("\n     (3) Study protocol and wear instructions given to the participants")
-    cat("\n     (4) GGIR version")
-    cat("\n     (5) How GGIR was used: Share the config.csv file or your R script.")
-    cat("\n     (6) How you post-processed / cleaned GGIR output")
-    cat("\n     (7) How reported outcomes relate to the specific variable names in GGIR")
   }
   #-----------------------------------------------------------
   # Now run GGIR parts 1-5
@@ -258,9 +296,16 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     } else {
       # Skip g.part1, but instead convert epoch data to a format that
       # looks as if it came out of g.part1
+      if (utils::packageVersion("GGIRread") <= "1.0.1") {
+        stop(paste0("To work with external epoch ",
+                    "data GGIRread version 1.0.2 or above is now required. ",
+                    "Please update R package GGIRread. "), call. = FALSE)
+      }
       convertEpochData(datadir = datadir,
                        metadatadir = metadatadir,
                        params_general = params_general,
+                       f0 = f0,
+                       f1 = f1,
                        verbose = verbose)
     }
     if (!is.null(params_general[["maxRecordingInterval"]])) {
@@ -272,6 +317,17 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                     desiredtz = params_general[["desiredtz"]],
                     idloc = params_general[["idloc"]],
                     maxRecordingInterval = params_general[["maxRecordingInterval"]])
+      if (f1_orinally_null == TRUE) {
+        f1 = length(dir(paste0(metadatadir, "/meta/basic/")))
+      }
+    }
+    if (!is.null(params_general[["recording_split_times"]])) {
+      # Split recordings based on user specified time points
+      splitRecords(metadatadir = metadatadir,
+                   params_general = params_general)
+      if (f1_orinally_null == TRUE) {
+        f1 = length(dir(paste0(metadatadir, "/meta/basic/")))
+      }
     }
   }
   if (dopart2 == TRUE) {
@@ -335,7 +391,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                           "GGIRversion",  "dupArgValues", "verbose", "is_GGIRread_installed", 
                           "is_read.gt3x_installed", "is_ActCR_installed", 
                           "is_actilifecounts_installed", "rawaccfiles", "is_readxl_installed", 
-                          "checkFormat", "getExt", "rawaccfiles_formats") == FALSE)]
+                          "checkFormat", "getExt", "rawaccfiles_formats",
+                          "f1_orinally_null", "random_message") == FALSE)]
   
   config.parameters = mget(LS)
   config.matrix = as.data.frame(createConfigFile(config.parameters, GGIRversion))
@@ -365,7 +422,6 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
         store.long = FALSE
       }
       g.report.part2(metadatadir = metadatadir, f0 = f0, f1 = f1,
-                     maxdur = params_cleaning[["maxdur"]],
                      store.long = store.long, params_output,
                      verbose = verbose, desiredtz = params_general[["desiredtz"]])
     }
@@ -423,13 +479,12 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       # The new visual report
       visualReport(metadatadir = metadatadir,
                    f0 = f0, f1 = f1,
-                   overwrite = params_general[["overwrite"]],
-                   desiredtz = params_general[["desiredtz"]],
-                   verbose = TRUE,
+                   verbose = verbose,
                    part6_threshold_combi = params_phyact[["part6_threshold_combi"]],
                    GGIRversion = GGIRversion,
                    params_sleep = params_sleep,
-                   params_output = params_output)
+                   params_output = params_output,
+                   params_general = params_general)
       if (params_output[["old_visualreport"]] == TRUE) {
         g.plot5(metadatadir = metadatadir,
                 dofirstpage = params_output[["dofirstpage"]],
@@ -447,5 +502,13 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                 verbose = TRUE)
       }
     }
+  }
+  if (isTRUE(params_output[["save_dashboard_parquet"]])) {
+    if (verbose == TRUE) print_console_header("Dashboard Parquet export")
+    write_dashboard_parquet(metadatadir = metadatadir,
+                            params_output = params_output,
+                            params_general = params_general,
+                            params_phyact = params_phyact,
+                            verbose = verbose)
   }
 }

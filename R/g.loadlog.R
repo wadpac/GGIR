@@ -1,5 +1,5 @@
 g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), 
-                     sleeplogsep = ",", meta.sleep.folder = c(), desiredtz="") {
+                     sleeplogsep = ",", meta.sleep.folder = c(), desiredtz="", sleepwindowType = c()) {
   # declare local functions:
   getIDstartdate = function(x) {
     rec_starttime = ID = c()
@@ -49,7 +49,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
     if (ncol(x) == 1) x = NULL
     return(x)
   }
-  adjustLogFormat = function(S, nnights, mode = "sleeplog") {
+  adjustLogFormat = function(S, nnights, mode = "sleeplog", coln1) {
     # function to adjust the sleeplog or bedlog format
     log = matrix(0,(nrow(S)*nnights),3)
     log_times = matrix(" ", (nrow(S) * nnights), 2)
@@ -131,6 +131,20 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
   # Load sleep log data...
   S = data.table::fread(file = loglocation, stringsAsFactors = FALSE, data.table = FALSE,
                         check.names = TRUE, colClasses = "character")
+  # Check for duplicated ID
+  if (any(duplicated(S[, colid]))) {
+    duplicatedIDs = paste0(S[duplicated(S[, colid]), colid], collapse = " ")
+    duplicatedIDs = gsub(pattern = " ", replacement = "", x = duplicatedIDs)
+    if (duplicatedIDs != "") {
+      stop(paste0("Sleeplog has duplicated entries (rows) for ID(s) ",
+                  duplicatedIDs, 
+                  ", please fix. GGIR expects one sleeplog row per unique ID. "), call. = FALSE)
+    } else {
+      # Duplicated rows without an ID, ignore these
+      S = S[!duplicated(S[, colid]),]
+    }
+  }
+  
   if (colnames(S)[1] == "V1" && any(S[1, ] == "")) {
     stop(paste0("Sleeplog column found with empty header, please fix. This can also happen if ",
                 "there are empty columns at the end, delete those columns if applicable."), call. = FALSE)
@@ -252,7 +266,10 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
           if (is.null(Sdates_correct)) {
             # skip this row because it is empty
             warning(paste0("\nSkipping sleeplog row for ID ", ID,
-                           " because it has no date(s)"), call. = FALSE)
+                           " because it has no date(s) or",
+                           " date range sleeplog does not overlap with",
+                           " date range accelerometer. Please check",
+                           " diary dates are correct."), call. = FALSE)
             next
           }
           if (deltadate > 300) {
@@ -474,14 +491,20 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
     nnights = floor(nnights)
   }
   nnights = nnights + deltadate + 1 # to account for the possibility of extra night at the beginning of recording
+  if (!is.null(sleepwindowType) && advanced_sleeplog == FALSE) {
+    if (sleepwindowType == "TimeInBed") {
+      B = S
+      rm(S)
+    }
+  }
   # # From here we continue with original code focused on sleeplog only
   if (exists("S") && ncol(S) > 0 && nnights > 0) {
-    sleeplog = adjustLogFormat(S, nnights, mode = "sleeplog")
+    sleeplog = adjustLogFormat(S, nnights, mode = "sleeplog", coln1)
   } else {
     sleeplog = NULL
   }
-  if (exists("B") && nnights > 0) {
-    bedlog = adjustLogFormat(B, nnights, mode = "bedlog")
+  if (exists("B") && ncol(B) > 0 && nnights > 0) {
+    bedlog = adjustLogFormat(B, nnights, mode = "bedlog", coln1)
   } else {
     bedlog = NULL
   }

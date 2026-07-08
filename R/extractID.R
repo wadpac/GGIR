@@ -46,6 +46,8 @@ extractID = function(hvars, idloc, fname) {
     ID = basename(fname)
     warning(paste0("\nUnable to extract ID from, ", fname, ". Using filname instead. ",
                    " You may want to check argument idloc, which is currently set to ", idloc))
+  } else {
+    ID = gsub(pattern = " ", replacement = "", ID)
   }
   return(ID)
 }

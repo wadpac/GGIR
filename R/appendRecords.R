@@ -1,20 +1,6 @@
 appendRecords = function(metadatadir, desiredtz = "", idloc = 1, maxRecordingInterval = NULL) {
   
   # Declare local functions:
-  getInfo = function(fn, idloc, tz) {
-    load(fn)
-    if (is.null(M$metashort)) return()
-    hvars = g.extractheadervars(I)
-    if (exists("Clist")) {
-      ID = NA # If Clist exists then ignore this file as it was previously appended
-    } else {
-      ID = extractID(hvars, idloc, fname = I$filename)
-    }
-    start = as.POSIXct(x = M$metashort$timestamp[1], format = "%Y-%m-%dT%H:%M:%S%z", tz = tz)
-    end = as.POSIXct(x = M$metashort$timestamp[nrow(M$metashort)], format = "%Y-%m-%dT%H:%M:%S%z", tz = tz)
-    info = data.frame(ID = ID, start = start, end = end, filename = fn, brand = I$monn)
-    return(info)
-  }
   mergePair = function(M1, M2, overlap, tz) {
     # overlap in epochs
     if (overlap < 0) { 
@@ -77,7 +63,7 @@ appendRecords = function(metadatadir, desiredtz = "", idloc = 1, maxRecordingInt
   # Create overview of all recordings ID, start time, end time, and filename
   fns = dir(paste0(metadatadir, "/meta/basic"), full.names = TRUE)
   
-  S = do.call("rbind", lapply(X = fns, FUN = getInfo, idloc = idloc, tz = desiredtz)) 
+  S = do.call("rbind", lapply(X = fns, FUN = getPart1BasicInfo, idloc = idloc, tz = desiredtz)) 
   if (length(S) > 0 & !is.null(maxRecordingInterval)) {
     S = S[!is.na(S$ID),]
     S = S[order(S$ID, S$start), ]

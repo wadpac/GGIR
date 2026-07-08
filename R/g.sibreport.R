@@ -41,11 +41,16 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
     dateformat = logs_diaries$dateformat
 
     firstDate = as.Date(ts$time[1], tz = desiredtz)
+    # when recording starts after midnight and before 4am we count the previous date as the first night
+    if (as.numeric(format(ts$time[1], "%H")) < 4) firstDate = firstDate - 1
     extract_logs = function(log, ID, logname, firstDate = NULL) {
       logreport = c()
       if (length(log) > 0) {
-        relevant_rows = which(log$ID == ID)
-        
+        idwi = g.part4_extractid(idloc = 1, # idloc is not relevant in place, we can take full ID
+                                 fname = log$ID,
+                                 dolog = TRUE,
+                                 sleeplog = log, accid = ID)
+        relevant_rows = idwi$matching_indices_sleeplog
         if (length(relevant_rows) > 0) {
           log = log[relevant_rows,] # extract ID
           if (!is.null(firstDate)) {
@@ -82,8 +87,23 @@ g.sibreport = function(ts, ID, epochlength, logs_diaries=c(), desiredtz="") {
                 timestamps = as.POSIXlt(paste0(date, " ", times), tz = desiredtz)
                 hour = as.numeric(format(timestamps, "%H"))
                 if (!is.null(firstDate)) {
-                  # sleeplog start and/or ending after midnight
+                  # date on which night start is default
+                  # time before noon are likely to occur on the next day
                   AM = which(hour <= 12)
+                  
+                  # When wake is after noon and before 6pm
+                  # then it is a daysleeper and the wake up time
+                  # is also likely to be on the next day
+                  if (hour[2] > 12 & hour[2] <= 18) { # daysleeper
+                    AM = c(AM, 2)
+                  }
+                  # however, wake can never be after onset when wake is at AM
+                  # 11am - 9am, simply means that person apparently reported to
+                  # sleep from 11am to 9am next day. Most likely a mistake in the
+                  # diary, but not to be interpretted as 9am-11am
+                  if (hour[1] > hour[2] && 1 %in% AM) {
+                    AM = AM[which(AM != 1)]
+                  }
                   if (length(AM) > 0) {
                     timestamps[AM] = as.POSIXlt(paste0(date + 1, " ", times[AM]), tz = desiredtz)
                   }

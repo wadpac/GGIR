@@ -8,11 +8,11 @@
   whether the accelerometer was worn
 }
 \usage{
-  g.weardec(M, wearthreshold, ws2, params_cleaning = NULL,
+  g.weardec(metalong, wearthreshold, ws2, params_cleaning = NULL,
             desiredtz = "", qwindowImp = c())
 }
 \arguments{
-  \item{M}{
+  \item{metalong}{
     Object produced by \link{g.getmeta}
   }
   \item{wearthreshold}{
@@ -48,7 +48,7 @@
   data(data.getmeta)
   params_cleaning = load_params()$params_cleaning
   params_cleaning[["nonwearFilterWindow"]] = c(22, 7)
-  output = g.weardec(M = data.getmeta, wearthreshold = 2, ws2 = 900,  
+  output = g.weardec(metalong = data.getmeta$metalong, wearthreshold = 2, ws2 = 900,  
                       params_cleaning = params_cleaning,
                       desiredtz = "", qwindowImp = NULL)
 }

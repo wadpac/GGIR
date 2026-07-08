@@ -11,8 +11,10 @@ check_myfun = function(myfun, windowsizes) { # Function to check myfun object
                                               "minlength", "outputres",
                                               "outputtype", "aggfunction",
                                               "timestamp","reporttype",
-                                              "ilevels", "name",
-                                              "tbout.dur", "tbout.th.cad", "tbout.th.acc",
+                                              "clevels", "ilevels", "qlevels",
+                                              "ebout.dur", "ebout.th.cad", "ebout.th.acc",
+                                              "ebout.criter", "ebout.condition", "name",
+                                              "tbout.dur", "tbout.th.acc",
                                               "tbout.criter", "tbout.condition") == FALSE)
   if (length(foreignElements) != 0) {
     status = 1

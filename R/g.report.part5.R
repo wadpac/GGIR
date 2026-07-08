@@ -299,6 +299,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 #-------------------------------------------------------------
                 # store all summaries in csv files without cleaning criteria
                 OF3_clean = tidyup_df(OF3)
+                OF3_clean = addSplitNames(OF3_clean) # If recording was split
                 data.table::fwrite(
                   OF3_clean,
                   paste(
@@ -312,7 +313,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 validdaysi = getValidDayIndices(x = OF3_clean, window = uwi[j],
                                                 params_cleaning = params_cleaning)
                 if ("lastHour" %in% colnames(OF3_clean)) {
-                  OF3_clean = OF3_clean[, -which(colnames(OF3_clean) %in% c("lastHour", "lasteDate"))]
+                  OF3_clean = OF3_clean[, -which(colnames(OF3_clean) %in% c("lastHour", "lastDate"))]
                 }
                 if (length(validdaysi) > 0) {
                   data.table::fwrite(
@@ -673,6 +674,17 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                     cval = 1,
                     window = uwi[j]
                   )
+                  if ("markerbutton" %in% OF3$guider) {
+                    OF3tmp$markerbutton_guider = 0
+                    OF3tmp$markerbutton_guider[which(OF3tmp$guider[validdaysi] == "markerbutton")] = 1
+                    OF4 = foo34(
+                      df = OF3tmp[validdaysi, ],
+                      aggPerIndividual = OF4,
+                      nameold = "markerbutton_guider",
+                      namenew = "Nmarkerbutton_used",
+                      cval = 1,
+                      window = uwi[j])
+                  }
                   # Move valid day count variables to beginning of dataframe
                   OF4 = cbind(OF4[, 1:5],
                               OF4[, (ncol(OF4) - 10):ncol(OF4)],
@@ -707,6 +719,12 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   #-------------------------------------------------------------
                   # store all summaries in csv files
                   OF4_clean = tidyup_df(OF4)
+                  OF4_clean = addSplitNames(OF4_clean)  # If recording was split
+                  # remove helper variables lastHour and lastdate, these are not relevant for end-user
+                  lastHour_lastdate = grep(pattern = "lastHour|lastDate", x = colnames(OF4_clean))
+                  if (length(lastHour_lastdate) > 0) {
+                    OF4_clean = OF4_clean[, -lastHour_lastdate]
+                  }
                   data.table::fwrite(OF4_clean,paste(metadatadir,"/results/part5_personsummary_",
                                                      uwi[j],"_L",uTRLi[h1],"M",
                                                      uTRMi[h2], "V", uTRVi[h3], "_",
