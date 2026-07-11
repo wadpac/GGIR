@@ -19,8 +19,14 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
   qqq = indexlog$winStartEnd
   si = indexlog$segIndex1
   current_segment_i = indexlog$segIndex2
-  segStart = indexlog$segStartEnd[1]
-  segEnd = indexlog$segStartEnd[2]
+  Nsegments = length(indexlog$segStartEnd) / 2
+  if (Nsegments == 1) {
+    segStart = indexlog$segStartEnd[1]
+    segEnd = indexlog$segStartEnd[2]
+  } else {
+    segStart = indexlog$segStartEnd[1:2]
+    segEnd = indexlog$segStartEnd[3:4]
+  }
   fi = indexlog$columnIndex
   
   # timeList
@@ -114,9 +120,11 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
                                  sumSleep$acc_available[dayofinterest])
     ds_names[fi:(fi + 5)] = c("night_number", "daysleeper", "cleaningcode",
                               "guider", "sleeplog_used", "acc_available");      fi = fi + 6
-    if (!is.na(segStart) & !is.na(segEnd)) {
-      # segment available in time series
-      ts$guider[segStart:segEnd] = sumSleep$guider[dayofinterest] # add guider also to timeseries
+    for (gi in 1:Nsegments) {
+      if (!is.na(segStart[gi]) & !is.na(segEnd[gi])) {
+        # segment available in time series
+        ts$guider[segStart[gi]:segEnd[gi]] = sumSleep$guider[dayofinterest] # add guider also to timeseries
+      }
     }
   } else {
     dsummary[si,fi:(fi + 5)] = rep(NA, 6)
@@ -139,12 +147,17 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
   dsummary[si, fi:(fi + 2)] = c(TRLi, TRMi, TRVi)
   ds_names[fi:(fi + 2)] = c("TRLi", "TRMi", "TRVi")
   fi = fi + 3
-  wlih = ((qqq2 - qqq1) + 1)/((60/ws3new) * 60)
-  if (!is.na(qqq1)) {
-    if (qqq1 > length(LEVELS)) qqq1 = length(LEVELS)
-    sse = qqq1:qqq2
-  } else {
-    sse = NULL
+  for (gi in 1:Nsegments) {
+    if (!is.na(qqq1[gi])) {
+      if (qqq1[gi] > length(LEVELS)) qqq1[gi] = length(LEVELS)
+      if (gi == 1) {
+        sse = qqq1[gi]:qqq2[gi]
+      } else {
+        sse = c(sse, qqq1[gi]:qqq2[gi])
+      }
+    } else {
+      sse = NULL
+    }
   }
   doNext = FALSE
   if (length(sse) >= 1) { #next
@@ -288,11 +301,19 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     # }
     #===============================================
     # QUANTILES...
-    WLH = ((qqq2 - qqq1) + 1)/((60/ws3new) * 60)
-    if (WLH <= 1) WLH = 1.001
-    dsummary[si, fi] = quantile(ts$ACC[sse],probs = ((WLH - 1)/WLH), na.rm = TRUE)
+    if (Nsegments == 1) {
+      WLH = ((qqq2 - qqq1) + 1) / ((60 / ws3new) * 60)
+      if (WLH <= 1) WLH = 1.001
+    } else {
+      WLH = ((sum(qqq2 - qqq1)) + 1) / ((60 / ws3new) * 60)
+    }
+    if (segments_names[si] %in% c("WW", "OO", "MM")) {
+      dsummary[si, fi] = quantile(ts$ACC[sse], probs = ((WLH - 1)/WLH), na.rm = TRUE)
+    }
     ds_names[fi] = paste("quantile_mostactive60min_mg", sep = "");      fi = fi + 1
-    dsummary[si, fi] = quantile(ts$ACC[sse],probs = ((WLH - 0.5)/WLH), na.rm = TRUE)
+    if (segments_names[si] %in% c("WW", "OO", "MM")) {
+      dsummary[si, fi] = quantile(ts$ACC[sse],probs = ((WLH - 0.5)/WLH), na.rm = TRUE)
+    }
     ds_names[fi] = paste("quantile_mostactive30min_mg", sep = "");      fi = fi + 1
     #===============================================
     NANS = which(is.nan(dsummary[si,]) == TRUE) #average of no values will results in NaN
@@ -429,13 +450,18 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
       }
       fi = fi + Nluxt
       # LUX per segment of the day
-      luxperseg = g.part5.lux_persegment(ts, sse,
-                                         LUX_day_segments = params_247[["LUX_day_segments"]],
-                                         epochSize = ws3new,
-                                         desiredtz = params_general[["desiredtz"]])
-      dsummary[si, fi:(fi + (length(luxperseg$values) - 1))] = luxperseg$values
-      ds_names[fi:(fi + (length(luxperseg$values) - 1))] = luxperseg$names
-      fi = fi + length(luxperseg$values)
+      if (timewindowi %in% c("WW", "OO", "MM")) {
+        # LUX per segment of the day
+        luxperseg = g.part5.lux_persegment(ts, sse,
+                                           LUX_day_segments = params_247[["LUX_day_segments"]],
+                                           epochSize = ws3new,
+                                           desiredtz = params_general[["desiredtz"]])
+        if (!is.null(unlist(luxperseg$values))) {
+          dsummary[si, fi:(fi + (length(luxperseg$values) - 1))] = luxperseg$values
+          ds_names[fi:(fi + (length(luxperseg$values) - 1))] = luxperseg$names
+        }
+        fi = fi + length(luxperseg$values)
+      }
     }
 
     #===============================================

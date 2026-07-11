@@ -96,9 +96,7 @@ ID | date | A | B | C
 
 Both approaches are implemented in GGIR part 2 and part 5. Therefore the specific
 output variables that are calculated both in part 2 and 5 are available per day,
-per person, and per segment of the day based on the argument `qwindow` Note that 
-`qwindow` is only used in **part 5** when `timewindow` includes `"MM"` (see specific
-documentation for `timewindow`} in the [parameters vignette](https://CRAN.R-project.org/package=GGIR/vignettes/GGIRParameters.html))
+per person, and per segment of the day based on the argument `qwindow`.
 
 At the moment, specifying the argument `qwindow` triggers the calculation of the
 `qwindow` segments both in part 2 and part 5, which may result in a longer time
