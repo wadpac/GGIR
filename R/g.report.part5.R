@@ -283,7 +283,6 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
     outputfinal = as.data.frame(do.call(rbind,
                                         lapply(fnames.ms5[f0:f1], myfun, expectedCols)),
                                 stringsAsFactors = FALSE)
-    
     # Find columns filled with missing values
     cut = which(sapply(outputfinal, function(x) all(x == "")) == TRUE)
     if (length(cut) > 0) {
@@ -305,7 +304,6 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
       uwi[grep(pattern = "WWseg", x = uwi)] = "WWsegment"
       uwi[grep(pattern = "OOseg", x = uwi)] = "OOsegment"
       uwi = unique(uwi)
-      # uwi = c(uwi[uwi %in% c("MM", "WW", "OO")], "Segments")
     }
     uTRLi = as.character(unique(outputfinal$TRLi))
     uTRMi = as.character(unique(outputfinal$TRMi))
@@ -494,15 +492,16 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                     dt <- data.table::as.data.table(AggregateWDWE[,which(lapply(AggregateWDWE, class) == "numeric" | 
                                                                            names(AggregateWDWE) == filename)])
                   }
-                  
-                  options(warn = -1)
+
+                  # options(warn = -1)
                   .SD <- .N <- count <- a <- NULL
                   if (window_is_segment) {
-                    WeightedAggregate <- dt[, lapply(.SD, weighted.mean, w = len, na.rm = TRUE), by = list(filename, window)]
+                    WeightedAggregate <- dt[, lapply(.SD, weighted.mean, w = len, na.rm = TRUE),
+                                            by = list(filename, window)]
                   } else {
                     WeightedAggregate <- dt[, lapply(.SD, weighted.mean, w = len, na.rm = TRUE), by = list(filename)]
                   }
-                  options(warn = 0)
+                  # options(warn = 0)
                   LUXmetrics = c("above1000", "timeawake", "mean", "imputed", "ignored")
                   add_missing_LUX = function(x, LUX_day_segments, weeksegment = c(), LUXmetrics) {
                     # missing columns, add these:

@@ -20,7 +20,7 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
   qqq = indexlog$winStartEnd
   si = indexlog$segIndex1
   current_segment_i = indexlog$segIndex2
-  
+
   Nsegments = length(indexlog$segStartEnd) / 2
   if (Nsegments == 1) {
     segStart = indexlog$segStartEnd[1]
@@ -123,7 +123,7 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
                                  sumSleep$acc_available[dayofinterest])
     ds_names[fi:(fi + 5)] = c("night_number", "daysleeper", "cleaningcode",
                               "guider", "sleeplog_used", "acc_available");      fi = fi + 6
-    
+
     for (gi in 1:Nsegments) {
       if (!is.na(segStart[gi]) & !is.na(segEnd[gi])) {
         # segment available in time series
@@ -639,8 +639,8 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
         }
       }
       fi = fi + Nluxt
+      # LUX per segment of the day
       if (timewindowi %in% c("WW", "OO", "MM")) {
-        # LUX per segment of the day
         luxperseg = g.part5.lux_persegment(ts, sse,
                                            LUX_day_segments = params_247[["LUX_day_segments"]],
                                            epochSize = ws3new,

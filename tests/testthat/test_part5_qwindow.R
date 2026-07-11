@@ -30,8 +30,6 @@ test_that("g.part5.definedays considers qwindow to generate segments", {
   expect_equal(definedays$segments[[4]], c(1081, 1440))
   expect_equal(definedays$segments_names, c("MM", "MMsegment1", "MMsegment2", "MMsegment3"))
   
-  
-  
   # set windows + WW
   ts$diur = 0
   ts$hour = as.numeric(format(ts$timestamp, "%H"))
