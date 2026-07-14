@@ -36,7 +36,7 @@ aggregateType = function(metric_name, epochsize,
       varnametype = paste0("ExtFunType_tot_", metric_name, "_", levels(vari[, metric_name]), "_acc", acc_level_name, anwi_nameindices[anwi_index])
       fi2 = fi + length(varnametype) - 1
       if (length(whereAccLevel) > 0)  {
-        daysummary[di, fi:fi2] = table(vari[whereAccLevel, metric_name])
+        daysummary[di, fi:fi2] = table(vari[whereAccLevel, metric_name]) * epochsize / 60
       } else {
         daysummary[di, fi:fi2] = 0
       }
