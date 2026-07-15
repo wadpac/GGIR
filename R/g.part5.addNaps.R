@@ -52,11 +52,12 @@ g.part5.addNaps = function(sibreport = NULL, ts = NULL, params_general = NULL,
     sibreport$startHour = as.numeric(format(sibreport$start, "%H"))
     sibreport$endHour = as.numeric(format(sibreport$end, "%H"))
     
-    # overlapMidnight = which(sibreport$endHour < sibreport$startHour)
-    # if (length(overlapMidnight) > 0) {
-    #   sibreport$endHour[overlapMidnight] = sibreport$endHour[overlapMidnight] + 24
-    # }
-    
+    # When possible_nap_window has 24 as its second value then we expect
+    # any nap ending after midnight to be recognised as such
+    overlapMidnight = which(sibreport$endHour < sibreport$startHour)
+    if (length(overlapMidnight) > 0) {
+      sibreport$endHour[overlapMidnight] = sibreport$endHour[overlapMidnight] + 24
+    }
     long_nap_boutsi = which((sibreport$type == "sib" &
                           sibreport$duration >= params_sleep[["possible_nap_dur"]][1] &
                           sibreport$duration < tail(params_sleep[["possible_nap_dur"]], n = 1) &

@@ -232,6 +232,12 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       params_output[["save_ms5raw_format"]] = unique(c(params_output[["save_ms5raw_format"]], "RData"))
       params_output[["save_ms5rawlevels"]] = TRUE
       params_output[["save_ms5raw_without_invalid"]] = FALSE
+      if (params_sleep[["possible_nap_window"]][1] > params_sleep[["possible_nap_window"]][2]) {
+        params_sleep[["possible_nap_window"]] = sort(params_sleep[["possible_nap_window"]])
+        warning(paste0("Parameter possible_nap_window should be ",
+                       "specified as vector of length two with the ",
+                       "lowest value first, this has been auto-corrected"), call. = FALSE)
+      }
     }
   }
   
