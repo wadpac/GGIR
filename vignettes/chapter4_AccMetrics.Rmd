@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-<div style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px">
+::: {style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px"}
 
 **⏱ Reading time:** ~20 min &nbsp;|&nbsp; **Chapter:** 4 of 14
 
@@ -33,7 +33,7 @@ knitr::opts_chunk$set(
 **Key terms:** <abbr title="Euclidean Norm Minus One – the default acceleration metric in GGIR, computed as vector magnitude minus 1g with negatives rounded to 0">ENMO</abbr>, <abbr title="Same as ENMO but with a low-pass filter applied before computation, suppressing high-frequency components">LFENMO</abbr>, <abbr title="A fixed-length time window (default 5 s) over which raw acceleration is summarised into a metric value">epoch</abbr>, <abbr title="An acceleration metric counting how many times the band-pass filtered signal crosses zero per epoch, used in 1990s sleep algorithms">zero-crossing count</abbr>, <abbr title="Absolute difference between the Euclidean norm and its epoch-level average; a frequency-based alternative to ENMO">MAD</abbr>, <abbr title="The number of data points recorded per second by the sensor (Hz)">sampling rate</abbr>, <abbr title="A parameter vector controlling epoch length, non-wear step size, and non-wear window length">windowsizes</abbr>
 – see the [full Glossary](Glossary.html) for all definitions.
 
-</div>
+:::
 
 ## Why do we need to extract metrics
 
@@ -226,7 +226,7 @@ GGIR(
 
 ---
 
-<div style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px">
+::: {style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px"}
 
 ### Summary
 
@@ -242,7 +242,7 @@ GGIR aggregates raw acceleration into epoch-level metrics to enable comparison a
 - 📄 [Published cut-points for ENMO](https://wadpac.github.io/GGIR/articles/CutPoints.html)
 
 
-</div>
+:::
 
 <style>
 abbr[data-custom-tooltip] {

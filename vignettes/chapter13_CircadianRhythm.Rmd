@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-<div style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px">
+::: {style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px"}
 
 **⏱ Reading time:** ~20 min &nbsp;|&nbsp; **Chapter:** 13 of 14
 
@@ -33,7 +33,7 @@ knitr::opts_chunk$set(
 **Key terms:** <abbr title="24-hour biological rhythms governing physical, mental, and behavioural changes">circadian rhythm</abbr>, <abbr title="Family of metrics identifying the most (MX) and least (LX) active continuous X-hour windows in a day">MXLX</abbr>, <abbr title="L5 and M10 are classic MXLX examples: least active 5 hours (L5) and most active 10 hours (M10)">L5 / M10</abbr>, <abbr title="Measures how constant an individual’s daily routine is across days (0–1; higher = more stable)">IS (Interdaily Stability)</abbr>, <abbr title="Measures hour-by-hour variability in activity throughout a day; values ~2 indicate fragmented rhythm">IV (Intradaily Variability)</abbr>, <abbr title="First-order autocorrelation of the 1-hour shifted time series; higher = stronger rhythm">phi</abbr>, <abbr title="Method to quantify fractal temporal correlations in a time series; produces SSP and ABI">DFA (Detrended Fluctuation Analysis)</abbr>, <abbr title="Scaling exponent from DFA; split into SSP_short (≤90 min) and SSP_long (120–600 min)">SSP (Self-Similarity Parameter)</abbr>, <abbr title="Transformation of SSP measuring how balanced the activity pattern is (0–1; higher = more balanced)">ABI (Activity Balance Index)</abbr>, <abbr title="Peak of the fitted cosine curve expressed as a clock time (hours from midnight)">acrophase / acrotime</abbr>
 – see the [full Glossary](Glossary.html) for all definitions.
 
-</div>
+:::
 
 <abbr title="24-hour biological rhythms governing physical, mental, and behavioural changes">Circadian rhythm</abbr> are the physical, mental, and behavioral changes an organism experiences over a 24-hour cycle. GGIR facilitates a number of techniques to quantify the movement-component of circadian rhythms as discussed in this chapter.
 
@@ -146,7 +146,7 @@ GGIR(
 
 ---
 
-<div style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px">
+::: {style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px"}
 
 ### Summary
 
@@ -162,7 +162,7 @@ GGIR offers a rich set of circadian rhythm metrics: MXLX (run by default), and o
 - 📄 [GGIR Output reference](GGIRoutput.html)
 
 
-</div>
+:::
 
 <style>
 abbr[data-custom-tooltip] {

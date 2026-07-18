@@ -1,4 +1,4 @@
-﻿---
+---
 title: "2. The GGIR pipeline"
 output: rmarkdown::html_vignette
 vignette: >
@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-<div style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px">
+::: {style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px"}
 
 **⏱ Reading time:** ~25 min &nbsp;|&nbsp; **Chapter:** 2 of 14
 
@@ -33,7 +33,7 @@ knitr::opts_chunk$set(
 **Key terms:** <abbr title="Intermediate RData files saved between GGIR pipeline parts to allow resuming without re-running earlier steps">milestone data</abbr>, <abbr title="A fixed-length time window (default 5 s) over which raw acceleration is summarised into a metric value">epoch</abbr>, <abbr title="Acceleration data stored in gravitational units at the native sampling rate of the sensor">raw accelerometer data</abbr>, <abbr title="The six sequential computational stages of the GGIR pipeline (parts 1–6)">Parts (GGIR pipeline)</abbr>, <abbr title="Time periods when the accelerometer was not worn, detected via standard deviation and range of the raw signal over 60-minute windows">non-wear</abbr>
 – see the [full Glossary](Glossary.html) for all definitions.
 
-</div>
+:::
 
 As explained in chapter 1, GGIR offers a vast amount of functionality. If you arrive here with the expectation to find a quick instruction to run and use GGIR then we have to disappoint you. Learning to use GGIR requires some time investment. In this chapter we start with explaining the GGIR pipeline, which you could see as the high level structure of GGIR. Understanding this structure will help you navigate the following chapters.
 
@@ -463,7 +463,7 @@ This single call runs all six pipeline parts in sequence and saves milestone dat
 
 ---
 
-<div style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px">
+::: {style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px"}
 
 ### Summary
 
@@ -484,7 +484,7 @@ The GGIR pipeline consists of six sequential parts. A single `GGIR()` call with 
 </div>
 - 📹 [GGIR tutorial playlist by Prof. Stuart Fairclough](https://www.youtube.com/watch?v=AbHgJYTyuiA)
 
-</div>
+:::
 
 <style>
 abbr[data-custom-tooltip] {

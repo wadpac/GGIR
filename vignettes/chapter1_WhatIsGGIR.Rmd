@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-<div style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px">
+::: {style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px"}
 
 **⏱ Reading time:** ~15 min &nbsp;|&nbsp; **Chapter:** 1 of 14
 
@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 **Key terms:** <abbr title="Euclidean Norm Minus One – the default acceleration metric in GGIR, computed as vector magnitude minus 1g with negatives rounded to 0">ENMO</abbr>, <abbr title="A fixed-length time window (default 5 s) over which raw acceleration is summarised into a metric value">epoch</abbr>, <abbr title="Acceleration data stored in gravitational units at the native sampling rate of the sensor, as opposed to proprietary count units">raw accelerometer data</abbr>, <abbr title="Intermediate RData files saved between GGIR pipeline parts to allow resuming without re-running earlier steps">milestone data</abbr>, <abbr title="The six sequential computational stages of the GGIR pipeline (parts 1–6)">Parts (GGIR pipeline)</abbr>
 – see the [full Glossary](Glossary.html) for all definitions.
 
-</div>
+:::
 
 ## A brief overview
 
@@ -125,7 +125,7 @@ However, open documentation is best maintained as a community: We would be grate
 
 ---
 
-<div style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px">
+::: {style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px"}
 
 ### Summary
 
@@ -146,7 +146,7 @@ GGIR is an open-source R package for processing multi-day raw accelerometer data
 </div>
 - 📹 [GGIR tutorial playlist by Prof. Stuart Fairclough](https://www.youtube.com/watch?v=AbHgJYTyuiA)
 
-</div>
+:::
 
 <style>
 abbr[data-custom-tooltip] {

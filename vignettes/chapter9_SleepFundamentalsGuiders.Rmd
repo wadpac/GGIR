@@ -1,4 +1,4 @@
-﻿---
+---
 title: "9. Sleep Fundamentals: Guiding sleep detection"
 output: rmarkdown::html_vignette
 vignette: >
@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-<div style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px">
+::: {style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px"}
 
 **⏱ Reading time:** ~20 min &nbsp;|&nbsp; **Chapter:** 9 of 14
 
@@ -36,7 +36,7 @@ knitr::opts_chunk$set(
 **Key terms:** <abbr title="A method used by GGIR to estimate the candidate main sleep window each night">guider</abbr>, <abbr title="A guider that identifies the longest period of limited postural change per day as the candidate sleep window; default for wrist-worn data">HDCZA</abbr>, <abbr title="The time window from sleep onset to the end of the last SIB within the guider window">SPT (Sleep Period Time window)</abbr>, <abbr title="The period from going to bed to getting out of bed; used when a sleep log records time in bed rather than SPT">TimeInBed</abbr>, <abbr title="A self-reported diary recording sleep onset and wake-up times; the preferred guider when available">sleep log</abbr>, <abbr title="The GGIR parameter selecting the guider algorithm">HASPT.algo</abbr>, <abbr title="A participant whose main sleep period starts before and ends after noon (e.g., shift worker)">daysleeper</abbr>, <abbr title="An experimental guider for hip-worn devices that detects the longest period with horizontal trunk orientation">HorAngle</abbr>, <abbr title="An experimental guider that detects the longest rest bout; for count data">HLRB</abbr>, <abbr title="A continuous period of limited body movement used as a proxy for sleep">SIB (Sustained Inactivity Bout)</abbr>
 – see the [full Glossary](Glossary.html) for all definitions.
 
-</div>
+:::
 
 Sleep analysis in GGIR comes at three stages:
 
@@ -315,7 +315,7 @@ GGIR(
 
 ---
 
-<div style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px">
+::: {style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px"}
 
 ### Summary
 
@@ -332,7 +332,7 @@ GGIR uses a “guider” to identify the candidate main sleep window each night 
 
 - 📹 [GGIR tutorial playlist by Prof. Stuart Fairclough](https://www.youtube.com/watch?v=AbHgJYTyuiA)
 
-</div>
+:::
 
 <style>
 abbr[data-custom-tooltip] {

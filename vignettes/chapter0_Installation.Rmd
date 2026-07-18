@@ -20,7 +20,7 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-<div style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px">
+::: {style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px"}
 
 **⏱ Reading time:** ~5 min
 
@@ -97,7 +97,7 @@ To see which releases are available on CRAN check out: https://github.com/wadpac
 
 ---
 
-<div style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px">
+::: {style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px"}
 
 ### Summary
 
@@ -112,7 +112,7 @@ You have installed R, RStudio, and GGIR (and any optional packages you need). Yo
 - 📄 [Get support](chapter0_Support.html)
 - 📄 [GGIR release history on GitHub](https://github.com/wadpac/GGIR/releases)
 
-</div>
+:::
 
 <style>
 abbr[data-custom-tooltip] {

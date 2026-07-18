@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-<div style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px">
+::: {style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px"}
 
 **⏱ Reading time:** ~15 min &nbsp;|&nbsp; **Chapter:** 7 of 14
 
@@ -32,7 +32,7 @@ knitr::opts_chunk$set(
 **Key terms:** <abbr title="Euclidean Norm Minus One – the default acceleration metric in GGIR">ENMO</abbr>, <abbr title="A calendar day that contains at least the minimum valid hours specified by includedaycrit">valid day</abbr>, <abbr title="Acceleration values corresponding to user-specified quantiles, representing the minimum acceleration in the most active accumulated X minutes (proposed by Rowlands et al.)">MX metrics</abbr>, <abbr title="The slope of the log-log linear regression of time spent per acceleration bin; proposed by Rowlands et al. to summarise the intensity distribution">intensity gradient</abbr>, <abbr title="A fixed-length time window (default 5 s) over which raw acceleration is summarised into a metric value">epoch</abbr>
 – see the [full Glossary](Glossary.html) for all definitions.
 
-</div>
+:::
 
 With the metric values imputed in the previous chapter, GGIR part 2 offers a first descriptive analysis of the data.
 Although we will have to wait till later GGIR parts (chapters) to see the segmentation of days in waking and sleep hours, there is already enough that can be quantified at this point.
@@ -167,7 +167,7 @@ GGIR(
 
 ---
 
-<div style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px">
+::: {style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px"}
 
 ### Summary
 
@@ -187,7 +187,7 @@ GGIR part 2 provides average acceleration, acceleration distribution metrics (pe
   <iframe data-external="1" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://www.youtube.com/embed/tuyRMFYLDWM?si=sm9mR_gQohrj90t7" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </div>
 
-</div>
+:::
 
 <style>
 abbr[data-custom-tooltip] {

@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-<div style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px">
+::: {style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px"}
 
 **⏱ Reading time:** ~10 min &nbsp;|&nbsp; **Chapter:** 5 of 14
 
@@ -35,7 +35,7 @@ knitr::opts_chunk$set(
 **Key terms:** <abbr title="The process of excluding recording segments outside the intended wear period based on study protocol knowledge">data masking</abbr>, <abbr title="An accelerometer recording for one participant across the study wear period">recording</abbr>
 – see the [full Glossary](Glossary.html) for all definitions.
 
-</div>
+:::
 
 When you use an accelerometer in a study, you are likely to give your
 study participants specific instructions on when they should start
@@ -113,7 +113,7 @@ Additionally, you can set the maximum duration the accelerometer is to be worn a
 
 ---
 
-<div style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px">
+::: {style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px"}
 
 ### Summary
 
@@ -128,7 +128,7 @@ Use `data_masking_strategy` (values 1–5) to match GGIR’s analysis window to 
 - 📄 [GGIR Parameters reference](GGIRParameters.html)
 
 
-</div>
+:::
 
 <style>
 abbr[data-custom-tooltip] {

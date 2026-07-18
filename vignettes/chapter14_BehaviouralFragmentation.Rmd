@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-<div style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px">
+::: {style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px"}
 
 **⏱ Reading time:** ~15 min &nbsp;|&nbsp; **Chapter:** 14 of 14
 
@@ -32,7 +32,7 @@ knitr::opts_chunk$set(
 **Key terms:** <abbr title="A sequence of consecutive epochs belonging to the same behavioural class (e.g. inactive, active)">fragment</abbr>, <abbr title="Coefficient of Variance, calculated as standard deviation divided by mean of log-transformed fragment lengths">CoV</abbr>, <abbr title="Transition probability from one state to another (e.g., IN2PA, PA2IN)">TP</abbr>, <abbr title="Number of Fragments">NFrag</abbr>, <abbr title="Number of Fragments Per Minute (Fragmentation Index)">NFragPM</abbr>, <abbr title="Measure of inequality in the distribution of fragment durations">Gini index</abbr>, <abbr title="Sleep Period Time">SPT</abbr>
 – see the [full Glossary](Glossary.html) for all definitions.
 
-</div>
+:::
 
 In chapters 8, 9, and 10 we discussed the classification of sleep and in chapter 11 we discussed the classification of daytime physical behavioural classes.  These are typically reported as time spent per behavioural class. An complementary way of describing the data is by looking at the fragmentation of these behaviours of time.
 
@@ -122,7 +122,7 @@ GGIR(
 
 ---
 
-<div style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px">
+::: {style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px"}
 
 ### Summary
 
@@ -140,7 +140,7 @@ Congratulations! You have completed the core GGIR guide.
 - 📄 [Danilevicz et al. 2024: TP fragmentation metric](https://doi.org/10.1186/s12874-024-02255-w)
 
 
-</div>
+:::
 
 <style>
 abbr[data-custom-tooltip] {

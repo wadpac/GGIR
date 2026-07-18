@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-<div style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px">
+::: {style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px"}
 
 **⏱ Reading time:** ~20 min &nbsp;|&nbsp; **Chapter:** 3 of 14
 
@@ -32,7 +32,7 @@ knitr::opts_chunk$set(
 **Key terms:** <abbr title="An algorithm that uses non-movement periods in free-living data to estimate and correct sensor calibration errors without requiring a lab experiment">auto-calibration</abbr>, <abbr title="Time periods when the accelerometer was not worn, detected via standard deviation and range of the raw signal over 60-minute windows">non-wear</abbr>, <abbr title="A quality flag applied when acceleration values near or exceed the sensor dynamic range, indicating likely sensor misuse or malfunction">clipping</abbr>, <abbr title="The maximum absolute acceleration a sensor can record; values exceeding 150% trigger a clipping flag">dynamic range</abbr>, <abbr title="A missing or unreadable segment in raw data caused by corrupted blocks or idle sleep mode">time gap</abbr>, <abbr title="The number of data points recorded per second by the sensor (Hz)">sampling rate</abbr>, <abbr title="Calibration performed by the manufacturer prior to shipping, using gravitational acceleration as reference">factory calibration</abbr>, <abbr title="A parameter vector controlling epoch length, non-wear step size, and non-wear window length">windowsizes</abbr>
 – see the [full Glossary](Glossary.html) for all definitions.
 
-</div>
+:::
 
 Data quality assurance is an important part of GGIR. GGIR undertakes several key tasks aimed at evaluating, and, where possible, enhancing the quality of the data, as well as documenting what was done. These tasks are explained in this chapter.
 
@@ -228,7 +228,7 @@ GGIR(
 
 ---
 
-<div style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px">
+::: {style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px"}
 
 ### Summary
 
@@ -248,7 +248,7 @@ GGIR performs four data quality steps automatically: time gap detection and impu
   <iframe data-external="1" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://www.youtube.com/embed/2yb3GI-3sQ8?si=k1kO6KgNlYkYV5Ew" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </div>
 
-</div>
+:::
 
 <style>
 abbr[data-custom-tooltip] {

@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-<div style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px">
+::: {style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px"}
 
 **⏱ Reading time:** ~5 min &nbsp;|&nbsp; **Chapter:** 6 of 14
 
@@ -32,7 +32,7 @@ knitr::opts_chunk$set(
 **Key terms:** <abbr title="Replacement of invalid epoch values (non-wear, clipping) with estimates from the same time of day on other valid days in the recording">imputation (epoch-level)</abbr>, <abbr title="Time periods when the accelerometer was not worn, detected via standard deviation and range of the raw signal over 60-minute windows">non-wear</abbr>, <abbr title="A quality flag applied when acceleration values near or exceed the sensor dynamic range">clipping</abbr>, <abbr title="A fixed-length time window (default 5 s) over which raw acceleration is summarised into a metric value">epoch</abbr>
 – see the [full Glossary](Glossary.html) for all definitions.
 
-</div>
+:::
 
 ## Imputation of invalid epoch data
 
@@ -83,7 +83,7 @@ To do this, you should use the parameter `TimeSegments2ZeroFile`.
 
 ---
 
-<div style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px">
+::: {style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px"}
 
 ### Summary
 
@@ -98,7 +98,7 @@ Invalid epochs (non-wear, clipping, and masked data from the study protocol) are
 - 📄 [GGIR Parameters reference](GGIRParameters.html)
 
 
-</div>
+:::
 
 <style>
 abbr[data-custom-tooltip] {

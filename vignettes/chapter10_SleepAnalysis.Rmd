@@ -1,4 +1,4 @@
-﻿---
+---
 title: "10. Sleep Analysis"
 output: rmarkdown::html_vignette
 vignette: >
@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-<div style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px">
+::: {style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px"}
 
 **⏱ Reading time:** ~15 min &nbsp;|&nbsp; **Chapter:** 10 of 14
 
@@ -33,7 +33,7 @@ knitr::opts_chunk$set(
 **Key terms:** <abbr title="The time window from sleep onset to the end of the last SIB within the guider window, representing the main daily sleep episode">SPT (Sleep Period Time window)</abbr>, <abbr title="The period from going to bed to getting out of bed; used when a sleep log records time in bed">TimeInBed</abbr>, <abbr title="A per-night integer code (0–6) recording the outcome of the sleep detection process">cleaningcode</abbr>, <abbr title="Time spent awake within the SPT after initial sleep onset">WASO</abbr>, <abbr title="A metric quantifying day-to-day consistency of sleep timing; see SleepRegularityIndex article">SRI (Sleep Regularity Index)</abbr>, <abbr title="A method used by GGIR to estimate the candidate main sleep window each night">guider</abbr>, <abbr title="A continuous period of limited body movement used as a proxy for sleep">SIB</abbr>
 – see the [full Glossary](Glossary.html) for all definitions.
 
-</div>
+:::
 
 Sleep analysis in GGIR comes at three stages:
 
@@ -158,7 +158,7 @@ GGIR(
 
 ---
 
-<div style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px">
+::: {style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px"}
 
 ### Summary
 
@@ -175,7 +175,7 @@ GGIR part 4 combines the SIB and guider estimates to define the Sleep Period Tim
 
 - 📹 [GGIR tutorial playlist by Prof. Stuart Fairclough](https://www.youtube.com/watch?v=AbHgJYTyuiA)
 
-</div>
+:::
 
 <style>
 abbr[data-custom-tooltip] {

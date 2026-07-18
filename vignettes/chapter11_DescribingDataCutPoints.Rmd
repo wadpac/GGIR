@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-<div style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px">
+::: {style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px"}
 
 **⏱ Reading time:** ~15 min &nbsp;|&nbsp; **Chapter:** 11 of 14
 
@@ -32,7 +32,7 @@ knitr::opts_chunk$set(
 **Key terms:** <abbr title="Acceleration thresholds used to classify epochs into intensity categories (inactivity, LIPA, MVPA)">cut-point</abbr>, <abbr title="Moderate-to-Vigorous Physical Activity, defined by acceleration at or above the moderate threshold">MVPA</abbr>, <abbr title="Light Physical Activity, defined as acceleration between the light and moderate thresholds">LIPA</abbr>, <abbr title="A sustained period of time in a given behavioural class satisfying user-specified duration and intensity criteria">behavioural bout</abbr>, <abbr title="A fixed-length time window (default 5 s) over which raw acceleration is summarised">epoch</abbr>, <abbr title="The time window from sleep onset to the end of the last SIB, representing the main daily sleep episode">SPT</abbr>
 – see the [full Glossary](Glossary.html) for all definitions.
 
-</div>
+:::
 
 ## Why behavioural classes?
 
@@ -173,7 +173,7 @@ GGIR(
 
 ---
 
-<div style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px">
+::: {style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px"}
 
 ### Summary
 
@@ -189,7 +189,7 @@ GGIR classifies waking epochs into inactivity, LIPA, and MVPA using user-specifi
 - 📄 [GGIR Output reference](GGIRoutput.html)
 
 
-</div>
+:::
 
 <style>
 abbr[data-custom-tooltip] {
