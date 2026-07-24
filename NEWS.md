@@ -10,6 +10,8 @@
 
 - Fixed check_log() to coerce study dates log columns to character, so that dates auto-parsed as IDate by data.table::fread() are handled correctly. #1521
 
+- Add vignette on Personal light exposure analysis. #1516
+
 # CHANGES IN GGIR VERSION 3.3-7
 
 - Functionality added to save all key output to one parquet file per person. #1460
