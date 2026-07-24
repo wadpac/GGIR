@@ -184,7 +184,9 @@ dataset %>%
     ) 
 ```
 
-![](doubleplot.png)
+![A line graph comparing two ids over time](doubleplot.png)
+
+A line graph comparing two ids over time
 
 Also, we can calculate light metrics. In the example below we derive
 Time above 250 lx threshold for each participant.
@@ -227,4 +229,5 @@ data**](https://tscnlab.github.io/LightLogR_webinar/) provides a quick
 and low-effort entrypoint to LightLogR, as it has tutorials that run
 completely in the browser, no installation or setup required.
 
-[![](LLR_Tutorial_Banner.png)](https://tscnlab.github.io/LightLogR_webinar/)
+[![LightLogR Tutorial
+Banner](LLR_Tutorial_Banner.png)](https://tscnlab.github.io/LightLogR_webinar/)
