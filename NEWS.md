@@ -1,4 +1,4 @@
-# CHANGES IN GGIR VERSION 3.3-
+# CHANGES IN GGIR VERSION 3.3-8
 
 - Updated documentation to point to the new web dashboard URL (#1509)
 
