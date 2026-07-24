@@ -1,5 +1,5 @@
 ---
-title: "Luminous (light) exposure analysis"
+title: "Personal light exposure analysis"
 output:
    html_document:
     toc : true
@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction
 
-Light exposure, scientifically referred to as luminous exposure, is gaining importance. Many accelerometers as used in research have a light sensor. In this vignette we discuss what GGIR complemented by LightLogR can do with these data.
+Personal light exposure, assessed with wearable dosimeters and light loggers, is gaining importance. Many accelerometers as used in research have a light sensor. In this vignette we discuss what GGIR complemented by LightLogR can do with these data.
 
 ## Basic light exposure analysis with GGIR
 
@@ -34,7 +34,7 @@ Further, in GGIR part 5 we derive some summary statistics per recording day:
 
 ## Advanced light exposure analysis with LightLogR
 
-R package [LightLogR](https://tscnlab.github.io/LightLogR/index.html) offers a much more in-dept analysis of lumnious exposure and has been developed by experts on luminuous exposure. In this vignette we will document how GGIR epoch level output can be used as input for LightLogR.
+R package [LightLogR](https://tscnlab.github.io/LightLogR/index.html) offers a much more in-dept analysis of personal light exposure and has been developed by a community of experts in the field. In this vignette we will document how GGIR epoch level output can be used as input for LightLogR.
 
 Practical notes before we start:
 
@@ -48,6 +48,7 @@ You can install LightLogR from [CRAN](https://cran.r-project.org/package=LightLo
 ```{r, eval=FALSE}
 install.packages("LightLogR")
 ```
+
 For further details on installation see original [LightLogR documentation](https://tscnlab.github.io/LightLogR/#installation).
 
 # Prepare GGIR data
@@ -56,7 +57,7 @@ LightLogR can use the light sensor data extracted with GGIR part 1 and stored in
 
 ## Folder with exclusively accelerometer file(s)
 
-If the folder contains one or multiple GENEActiv files in its root or in any of its subfolders and no other file type you can use GGIR as: 
+If the folder contains one or multiple GENEActiv files in its root or in any of its subfolders and no other file type you can use GGIR as:
 
 ```{r, eval=FALSE}
 my_GENEActiv_datafolder = "D:/studyX"
@@ -119,33 +120,51 @@ If there are multiple recordings of one week in dataset, you can create a double
 library(lubridate)
 library(dplyr)
 
-data %>% 
-  LightLogR::filter_Date(length = "1 week", full.day = TRUE) %>% #restrict data length
+dataset %>% 
+  LightLogR::filter_Date(length = "5 days", full.day = TRUE) %>% #restrict data length
   dplyr::ungroup() %>% #remove Id-grouping, so they both are plotted over another
   LightLogR::gg_doubleplot(y.axis = lightmean, #y-value
                 aes_fill = Id, #coloring by Id
                 jco_color = TRUE, #choosing the jco color palette
-                alpha = 0.5 #transparency
-                )
+                alpha = 0.5, #transparency
+                y.axis.label = "Illuminance (lx)" #y-axis label
+                ) %>%
+  LightLogR::gg_photoperiod( #adding photoperiod indicators (grey for nighttime)
+    c(48.5, 9) #coordinates of the measurement
+    ) 
 ```
+
+![](doubleplot.png)
 
 Also, we can calculate light metrics. In the example below we derive Time above 250 lx threshold for each participant.
 
 ```{r, eval=FALSE}
-data %>% 
+dataset %>% 
   dplyr::group_by(Day = lubridate::date(Datetime), .add = TRUE) %>% #calculating metrics by day
   #calculating metrics
   dplyr::summarize(
-  TAT250 = duration_above_threshold(lightmean, Datetime, threshold = 250),
+  duration_above_threshold(lightmean, Datetime, threshold = 250, as.df = TRUE),
+  bright_dark_period(MEDI, Datetime, as.df = TRUE),
   .groups = "drop_last"
   ) %>% 
   #calculating the average and standard deviation of the TAT250
-  dplyr::summarize(TAT250_average = mean(TAT250) %>% 
+  dplyr::summarize(TAT250_average = mean(duration_above_250) %>% 
                      round() %>%  lubridate::as.duration(),
-                   TAT250_sd = sd(TAT250) %>% 
-                     round() %>% lubridate::as.duration()
+                   TAT250_sd = sd(duration_above_250) %>% 
+                     round() %>% lubridate::as.duration(),
+                   M10_mean = mean(brightest_10h_mean)
                    )
 ```
 
+| **Id** | **TAT250_average**    | **TAT250_sd**           | M10_mean |
+|:-------|:----------------------|:------------------------|----------|
+| 205    | 17100s (\~4.75 hours) | 9310s (\~2.59 hours)    | 1307.316 |
+| 206    | 1080s (\~18 minutes)  | 2415s (\~40.25 minutes) | 83.013   |
 
+# Working with LightLogR
 
+For more information on visualizations, metrics, processing options, see the [**LightLogR vignettes**](<https://tscnlab.github.io/LightLogR/articles/>), or [**LightLogR documentation page**](<https://tscnlab.github.io/LightLogR/>).
+
+The interactive online course on the [**Open and reproducible analysis of light exposure and visual experience data**](https://tscnlab.github.io/LightLogR_webinar/) provides a quick and low-effort entrypoint to LightLogR, as it has tutorials that run completely in the browser, no installation or setup required.
+
+[![](LLR_Tutorial_Banner.png)](https://tscnlab.github.io/LightLogR_webinar/)
