@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,6 +64,7 @@
     <li><a class="dropdown-item" href="../articles/SleepRegularityIndex.html">Sleep Regularity Index</a></li>
     <li><a class="dropdown-item" href="../articles/NapDetection.html">Nap Detection</a></li>
     <li><a class="dropdown-item" href="../articles/StepCadenceAnalysis.html">Step and Cadence Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/LightLogR.html">Personal light exposure analysis</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
@@ -313,8 +314,8 @@ dependencies for the external function, here we will only need
 <code>numpy</code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://rstudio.github.io/reticulate/" class="external-link">"reticulate"</a></span><span class="op">)</span></span>
-<span>  <span class="fu">use_virtualenv</span><span class="op">(</span><span class="st">"~/myvenv"</span>, required <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># Local Python environment</span></span>
-<span>  <span class="fu">py_install</span><span class="op">(</span><span class="st">"numpy"</span>, pip <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">use_virtualenv</a></span><span class="op">(</span><span class="st">"~/myvenv"</span>, required <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># Local Python environment</span></span>
+<span>  <span class="fu"><a href="https://rstudio.github.io/reticulate/reference/py_install.html" class="external-link">py_install</a></span><span class="op">(</span><span class="st">"numpy"</span>, pip <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Specify a <code>myfun</code> object as explained in the R example. Do
 not forget to update the filepath to the
 <code>"~/dominant_frequency.R"</code> file.</p>
