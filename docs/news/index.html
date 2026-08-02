@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,6 +46,7 @@
     <li><a class="dropdown-item" href="../articles/SleepRegularityIndex.html">Sleep Regularity Index</a></li>
     <li><a class="dropdown-item" href="../articles/NapDetection.html">Nap Detection</a></li>
     <li><a class="dropdown-item" href="../articles/StepCadenceAnalysis.html">Step and Cadence Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/LightLogR.html">Personal light exposure analysis</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_GetStarted.html">Get started</a></li>
@@ -85,28 +86,34 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.3-8" id="changes-in-ggir-version-33-8">CHANGES IN GGIR VERSION 3.3-8<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-33-8"></a></h2>
+<ul><li><p>Updated documentation to point to the new web dashboard URL (<a href="https://github.com/wadpac/GGIR/issues/1509" class="external-link">#1509</a>)</p></li>
+<li><p>Part 1: Fixed an issue in g.calibrate() where large data chunks caused out-of-bounds errors (<a href="https://github.com/wadpac/GGIR/issues/1513" class="external-link">#1513</a>)</p></li>
+<li><p>Part 2: Fixed bug where activity log (qwindow) segments could be assigned to the day before, because g.analyse.perday() derived the recording-day dates with as.Date() defaulting to UTC instead of desiredtz (<a href="https://github.com/wadpac/GGIR/issues/1518" class="external-link">#1518</a>)</p></li>
+<li><p>Part 2: Fixed regression in g.impute() where using a study_dates_file raised “NA/NaN argument” for participants whose listed start or end date is not a midnight present in the recording (e.g. an evening start, or a device that stopped recording before the listed end date). <a href="https://github.com/wadpac/GGIR/issues/1508" class="external-link">#1508</a></p></li>
+<li><p>Fixed check_log() to coerce study dates log columns to character, so that dates auto-parsed as IDate by data.table::fread() are handled correctly. <a href="https://github.com/wadpac/GGIR/issues/1521" class="external-link">#1521</a></p></li>
+<li><p>Add vignette on Personal light exposure analysis. <a href="https://github.com/wadpac/GGIR/issues/1516" class="external-link">#1516</a></p></li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.3-7" id="changes-in-ggir-version-33-7">CHANGES IN GGIR VERSION 3.3-7<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-33-7"></a></h2>
 <ul><li><p>Functionality added to save all key output to one parquet file per person. <a href="https://github.com/wadpac/GGIR/issues/1460" class="external-link">#1460</a></p></li>
 <li>
 <p>Part 6:</p>
-<ul><li><p>Improve speed of DFA analysis by using a vectorized approach <a href="https://github.com/wadpac/GGIR/issues/1499" class="external-link">#1499</a></p></li>
-<li><p>Included piece wise DFA analysis: short-term (box sizes &lt; 90 min) and long-term (box-sizes 2-to-10 hours) <a href="https://github.com/wadpac/GGIR/issues/1501" class="external-link">#1501</a></p></li>
+<ul><li>Improve speed of DFA analysis by using a vectorized approach <a href="https://github.com/wadpac/GGIR/issues/1499" class="external-link">#1499</a></li>
+<li>Included piece wise DFA analysis: short-term (box sizes &lt; 90 min) and long-term (box-sizes 2-to-10 hours) <a href="https://github.com/wadpac/GGIR/issues/1501" class="external-link">#1501</a></li>
 </ul></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.3-6" id="changes-in-ggir-version-33-6">CHANGES IN GGIR VERSION 3.3-6<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-33-6"></a></h2><p class="text-muted">CRAN release: 2026-04-21</p>
-<ul><li>
-<p>Documentation:</p>
+<ul><li>Documentation:
 <ul><li><p>Remove suggestion that configfile can be used to store annotations inside the configuration file to keep focus on the main purpose of the configfile, which is to facilitate reproducing analysis. <a href="https://github.com/wadpac/GGIR/issues/1473" class="external-link">#1473</a></p></li>
 <li><p>Updated documentation in chapter 13 (Circadian Rhythm Analyses). <a href="https://github.com/wadpac/GGIR/issues/1494" class="external-link">#1494</a></p></li>
 </ul></li>
-<li>
-<p>Part 5:</p>
+<li>Part 5:
 <ul><li><p>Remove variables lastHour and lastDate from csv output and dictionary as they were included by accident <a href="https://github.com/wadpac/GGIR/issues/1472" class="external-link">#1472</a></p></li>
 <li><p>Variable dictionary, now also documents ACC_spt_mg, ACC_spt_mg_median, and ACC_spt_mg_stdev. <a href="https://github.com/wadpac/GGIR/issues/1490" class="external-link">#1490</a></p></li>
 </ul></li>
-<li>
-<p>Part 6:</p>
+<li>Part 6:
 <ul><li>Enable extraction of participant ID from filename consistent with the other parts <a href="https://github.com/wadpac/GGIR/issues/1478" class="external-link">#1478</a></li>
 </ul></li>
 </ul></div>

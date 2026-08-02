@@ -1,4 +1,8 @@
-# CHANGES IN GGIR VERSION 3.3-
+# CHANGES IN GGIR VERSION 3.3-?
+
+- Part 5: Allow for day segment analysis for the WW and OO window definition. #1407
+
+# CHANGES IN GGIR VERSION 3.3-8
 
 - Updated documentation to point to the new web dashboard URL (#1509)
 
@@ -10,7 +14,7 @@
 
 - Fixed check_log() to coerce study dates log columns to character, so that dates auto-parsed as IDate by data.table::fread() are handled correctly. #1521
 
-- Part 5: Allow for day segment analysis for the WW and OO window definition. #1407
+- Add vignette on Personal light exposure analysis. #1516
 
 # CHANGES IN GGIR VERSION 3.3-7
 

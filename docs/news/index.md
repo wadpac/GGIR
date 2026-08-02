@@ -1,5 +1,32 @@
 # Changelog
 
+## CHANGES IN GGIR VERSION 3.3-8
+
+- Updated documentation to point to the new web dashboard URL
+  ([\#1509](https://github.com/wadpac/GGIR/issues/1509))
+
+- Part 1: Fixed an issue in g.calibrate() where large data chunks caused
+  out-of-bounds errors
+  ([\#1513](https://github.com/wadpac/GGIR/issues/1513))
+
+- Part 2: Fixed bug where activity log (qwindow) segments could be
+  assigned to the day before, because g.analyse.perday() derived the
+  recording-day dates with as.Date() defaulting to UTC instead of
+  desiredtz ([\#1518](https://github.com/wadpac/GGIR/issues/1518))
+
+- Part 2: Fixed regression in g.impute() where using a study_dates_file
+  raised “NA/NaN argument” for participants whose listed start or end
+  date is not a midnight present in the recording (e.g. an evening
+  start, or a device that stopped recording before the listed end date).
+  [\#1508](https://github.com/wadpac/GGIR/issues/1508)
+
+- Fixed check_log() to coerce study dates log columns to character, so
+  that dates auto-parsed as IDate by data.table::fread() are handled
+  correctly. [\#1521](https://github.com/wadpac/GGIR/issues/1521)
+
+- Add vignette on Personal light exposure analysis.
+  [\#1516](https://github.com/wadpac/GGIR/issues/1516)
+
 ## CHANGES IN GGIR VERSION 3.3-7
 
 - Functionality added to save all key output to one parquet file per
@@ -9,7 +36,6 @@
 
   - Improve speed of DFA analysis by using a vectorized approach
     [\#1499](https://github.com/wadpac/GGIR/issues/1499)
-
   - Included piece wise DFA analysis: short-term (box sizes \< 90 min)
     and long-term (box-sizes 2-to-10 hours)
     [\#1501](https://github.com/wadpac/GGIR/issues/1501)
@@ -19,7 +45,6 @@
 CRAN release: 2026-04-21
 
 - Documentation:
-
   - Remove suggestion that configfile can be used to store annotations
     inside the configuration file to keep focus on the main purpose of
     the configfile, which is to facilitate reproducing analysis.
@@ -27,9 +52,7 @@ CRAN release: 2026-04-21
 
   - Updated documentation in chapter 13 (Circadian Rhythm Analyses).
     [\#1494](https://github.com/wadpac/GGIR/issues/1494)
-
 - Part 5:
-
   - Remove variables lastHour and lastDate from csv output and
     dictionary as they were included by accident
     [\#1472](https://github.com/wadpac/GGIR/issues/1472)
@@ -37,9 +60,7 @@ CRAN release: 2026-04-21
   - Variable dictionary, now also documents ACC_spt_mg,
     ACC_spt_mg_median, and ACC_spt_mg_stdev.
     [\#1490](https://github.com/wadpac/GGIR/issues/1490)
-
 - Part 6:
-
   - Enable extraction of participant ID from filename consistent with
     the other parts [\#1478](https://github.com/wadpac/GGIR/issues/1478)
 
