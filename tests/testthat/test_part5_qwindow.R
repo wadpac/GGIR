@@ -90,9 +90,10 @@ test_that("g.part5.definedays considers qwindow to generate segments", {
   expect_equal(definedays$segments[[4]], c(1021, 1050))
   expect_equal(names(definedays$segments)[5], "17:30:00-23:59:00")
   expect_equal(definedays$segments[[5]], c(1051, 1440))
-  expect_equal(definedays$segments_names, c("MM", "daystart-work", 
-                                            "work-travelhome", 
-                                            "travelhome-home", "home-dayend"))
+  expect_equal(definedays$segments_names, c("MM", "MMsegment-daystart-work", 
+                                            "MMsegment-work-travelhome", 
+                                            "MMsegment-travelhome-home",
+                                            "MMsegment-home-dayend"))
   
   # With times not multiple of epoch size and date format %Y-%m-%d
   actlog = data.frame(id = c("1RAW"),
@@ -123,9 +124,10 @@ test_that("g.part5.definedays considers qwindow to generate segments", {
   expect_equal(definedays$segments[[4]], c(992, 1050))
   expect_equal(names(definedays$segments)[5], "17:30:00-23:59:00")
   expect_equal(definedays$segments[[5]], c(1051, 1440))
-  expect_equal(definedays$segments_names, c("MM", "daystart-work", 
-                                            "work-travelhome", 
-                                            "travelhome-home", "home-dayend"))
+  expect_equal(definedays$segments_names, c("MM", "MMsegment-daystart-work", 
+                                            "MMsegment-work-travelhome", 
+                                            "MMsegment-travelhome-home",
+                                            "MMsegment-home-dayend"))
   
   expect_true(file.exists(fn))
   if (file.exists(fn)) file.remove(fn)
@@ -161,9 +163,10 @@ test_that("g.part5.definedays considers qwindow to generate segments", {
   expect_equal(definedays$segments[[4]], c(992, 1050))
   expect_equal(names(definedays$segments)[5], "17:30:00-23:59:00")
   expect_equal(definedays$segments[[5]], c(1051, 1440))
-  expect_equal(definedays$segments_names, c("MM", "daystart-work", 
-                                            "work-travelhome", 
-                                            "travelhome-home", "home-dayend"))
+  expect_equal(definedays$segments_names, c("MM", "MMsegment-daystart-work", 
+                                            "MMsegment-work-travelhome", 
+                                            "MMsegment-travelhome-home",
+                                            "MMsegment-home-dayend"))
   
   expect_true(file.exists(fn))
   if (file.exists(fn)) file.remove(fn)

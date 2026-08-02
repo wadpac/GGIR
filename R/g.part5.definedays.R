@@ -125,7 +125,8 @@ g.part5.definedays = function(nightsi, wi, indjump, epochSize, qqq_backup = c(),
       segments_names = paste0(paste0(timewindowi, "segment"), 0:(length(segments_timing) - 1))
       segments_names = gsub(paste0(timewindowi, "segment0"), timewindowi, segments_names)
     } else {
-      segments_names = c(timewindowi, paste(qnames[-length(qnames)], qnames[-1], sep = "-"))
+      segments_names = c(timewindowi, paste(paste0(timewindowi, "segment"), 
+                                            qnames[-length(qnames)], qnames[-1], sep = "-"))
     }
     # Get indices in ts for segments start and end limits
     hms = format(ts$time[fullQqq], format = "%H:%M:%S")
