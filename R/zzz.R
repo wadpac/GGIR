@@ -11,6 +11,9 @@
       "No CRAN mirror set, so using ", repos,
       " to check GGIR package version")
   }
+  old_options <- options(timeout = min(getOption("timeout", 60), 5))
+  on.exit(options(old_options), add = TRUE)
+
   pkgs <- available.packages(repos = repos)
   cran_version <- package_version(pkgs[which(pkgs[,1] == "GGIR"),"Version"])
   if (length(cran_version) == 0) return() # handle no internet connection
