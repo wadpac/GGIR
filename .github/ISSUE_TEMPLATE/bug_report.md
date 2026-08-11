@@ -36,4 +36,4 @@ Add any other context about the problem here.
 
 **Before submitting**
 - [ ] Have you tried the steps to reproduce? Do they include all relevant data and configuration? Does the issue you report still appear there?
-- [ ] Have you tried this on the latest `master` branch from GitHub?
+- [ ] Have you tried this on the latest `main` branch from GitHub?

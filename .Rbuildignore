@@ -22,3 +22,9 @@ index.md
 ^inst/doc/*.html
 ^vignettes/HouseHoldCoanalysis.Rmd
 ^vignettes/Cookbook.Rmd
+^vignettes/SleepRegularityIndex.Rmd
+^vignettes/DateTimeFormatsInR.Rmd
+^vignettes/LightLogR.Rmd
+.nojekyll
+^\.positai$
+^\.claude$

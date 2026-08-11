@@ -8,8 +8,8 @@
 <title>Published cut-points and how to use them in GGIR • GGIR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Published cut-points and how to use them in GGIR">
 <script defer data-domain="pkgdown.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
 </head>
@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1-7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,6 +60,11 @@
     <li><a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a></li>
     <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
     <li><a class="dropdown-item" href="../articles/Cookbook.html">Cookbook</a></li>
+    <li><a class="dropdown-item" href="../articles/DateTimeFormatsInR.html">Date and Time formats in R</a></li>
+    <li><a class="dropdown-item" href="../articles/SleepRegularityIndex.html">Sleep Regularity Index</a></li>
+    <li><a class="dropdown-item" href="../articles/NapDetection.html">Nap Detection</a></li>
+    <li><a class="dropdown-item" href="../articles/StepCadenceAnalysis.html">Step and Cadence Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/LightLogR.html">Personal light exposure analysis</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../articles/chapter0_Installation.html">Installation</a></li>
@@ -68,14 +73,18 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news">
 <li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-1-5/">Version 3.1-5</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-1-0/">Version 3.1-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-3-0-0/">Version 3.0-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-9-0/">Version 2.9-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-8-0/">Version 2.8-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-7-1/">Version 2.7-1</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-6-0/">Version 2.6-0</a></li>
-    <li><a class="external-link dropdown-item" href="https://www.accelting.com/updates/ggir-release-2-5-0/">Version 2.5-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-3-6/">Version 3.3-6</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-3-0/">Version 3.3-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-6/">Version 3.2-6</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-2-0/">Version 3.2-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-5/">Version 3.1-5</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-1-0/">Version 3.1-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-3-0-0/">Version 3.0-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-9-0/">Version 2.9-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-8-0/">Version 2.8-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-7-1/">Version 2.7-1</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-6-0/">Version 2.6-0</a></li>
+    <li><a class="external-link dropdown-item" href="https://www.accelting.com/ggir-release-2-5-0/">Version 2.5-0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
   </ul>
@@ -170,6 +179,24 @@ like this:</p>
      acc.metric = "NeishabouriCount_y",
      threshold.in = 100 * (5/60),
      [...])</code></pre>
+<p>As a side note - Although counts are epoch length specific it is
+possible to convert them into gravitational units by dividing the count
+value by the sampling rate as used by the count algorithm (30 Hertz for
+ActiGraph counts) multiplied by the number of seconds in the time window
+for which the count value was derived. For example, 100 counts per
+minute equates to an average acceleration per minute of 100 / (30 x 60)
+= 0.055 <em>g</em>, and 1950 counts per minute equals 1.0833 <em>g</em>.
+Note that the absolute acceleration values from different acceleration
+metrics are not comparable. However, expressing data in <em>g</em>-units
+can at least ease evaluating the validity of metrics relative to
+criterion acceleration and removes the non-informative connection to
+sampling rate (van Hees et al. 2013 <a href="https://doi.org/10.1371/journal.pone.0061691" class="external-link uri">https://doi.org/10.1371/journal.pone.0061691</a>). As this
+calculation shows, count-units and <em>g</em>-unit metrics only differ
+by a constant, by which there is no practical difference in their
+ability to explain variance in human behaviour. Similarly, if you would
+like to convert an average daily acceleration of 0.05 <em>g</em> back to
+counts per day then you would have to multiply by (30 Hertz x 60 seconds
+x 1440 minutes), which gives 129600 counts per day.</p>
 </div>
 </div>
 <div class="section level2">
@@ -187,48 +214,51 @@ extracted in part 1 with the arguments <em>do.metric</em> (e.g.,
 indicate the thresholds to separate inactivity from light, light from
 moderate, and moderate from vigorous, respectively.These thresholds are
 applied over the metric defined with <code>acc.metric</code> (default =
-“ENMO”). Here a summary table for the parameters definition to calculate
+"ENMO"). Here a summary table for the parameters definition to calculate
 some of the acceleration metrics that has been previously used for the
 calibration of cut-points and how to define them to be used in the
 physical activity intensity classification with cut-points.</p>
 <table style="width:99%;" class="table">
 <colgroup>
 <col width="17%">
-<col width="36%">
-<col width="45%">
+<col width="37%">
+<col width="44%">
 </colgroup>
 <thead><tr class="header">
 <th>Metric</th>
-<th align="left">To derive metric</th>
-<th align="left">Define metric for cut-points</th>
+<th>To derive metric</th>
+<th>Define metric for cut-points</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td>ENMO</td>
-<td align="left"><code>do.enmo = TRUE</code></td>
-<td align="left"><code>acc.metric = "ENMO"</code></td>
+<td><code>do.enmo = TRUE</code></td>
+<td><code>acc.metric = "ENMO"</code></td>
 </tr>
 <tr class="even">
 <td>ENMOa</td>
-<td align="left"><code>do.enmoa = TRUE</code></td>
-<td align="left"><code>acc.metric = "ENMOa"</code></td>
+<td><code>do.enmoa = TRUE</code></td>
+<td><code>acc.metric = "ENMOa"</code></td>
 </tr>
 <tr class="odd">
 <td>LFENMO</td>
-<td align="left"><code>do.lfenmo = TRUE</code></td>
-<td align="left"><code>acc.metric = "LFENMO"</code></td>
+<td><code>do.lfenmo = TRUE</code></td>
+<td><code>acc.metric = "LFENMO"</code></td>
 </tr>
 <tr class="even">
 <td>MAD</td>
-<td align="left"><code>do.mad = TRUE</code></td>
-<td align="left"><code>acc.metric = "MAD"</code></td>
+<td><code>do.mad = TRUE</code></td>
+<td><code>acc.metric = "MAD"</code></td>
 </tr>
 <tr class="odd">
 <td>Neishabouri<br>
 counts</td>
-<td align="left"><code>do.neishabouricounts = TRUE</code></td>
-<td align="left">
-<code>acc.metric = "NeishabouriCount_x"</code><br><code>acc.metric = "NeishabouriCount_y"</code><br><code>acc.metric = "NeishabouriCount_z"</code><br><code>acc.metric = "NeishabouriCount_vm"</code>
+<td><code>do.neishabouricounts = TRUE</code></td>
+<td>
+<code>acc.metric = "NeishabouriCount_x"</code>
+<code>acc.metric = "NeishabouriCount_y"</code>
+<code>acc.metric = "NeishabouriCount_z"</code>
+<code>acc.metric = "NeishabouriCount_vm"</code>
 </td>
 </tr>
 </tbody>
@@ -299,7 +329,7 @@ on correspondence with authors we replaced this by 85.7.</p>
 <col width="17%">
 <col width="19%">
 <col width="10%">
-<col width="33%">
+<col width="31%">
 <col width="17%">
 </colgroup>
 <thead><tr class="header">
@@ -451,11 +481,11 @@ provide a cut-point multiplied by 1000.</p>
 </h3>
 <table style="width:97%;" class="table">
 <colgroup>
-<col width="17%">
+<col width="19%">
+<col width="20%">
+<col width="15%">
+<col width="24%">
 <col width="18%">
-<col width="13%">
-<col width="31%">
-<col width="16%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">Cut-points</th>
@@ -550,6 +580,54 @@ Hip</td>
 <td align="left">Light: 46.9<br>
 Moderate: 68.7<br>
 Vigorous: 266.8</td>
+</tr>
+<tr class="even">
+<td align="left">Mielke 2023</td>
+<td align="left">GENEActiv<br>
+Non-dominant wrist</td>
+<td align="left">35 (SD=11) yr</td>
+<td align="left">
+<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
+</td>
+<td align="left">Light: 36<br>
+Moderate: 92<br>
+Vigorous: 283</td>
+</tr>
+<tr class="odd">
+<td align="left">Mielke 2023</td>
+<td align="left">ActiGraph<br>
+Non-dominant wrist</td>
+<td align="left">35 (SD=11) yr</td>
+<td align="left">
+<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
+</td>
+<td align="left">Light: 25<br>
+Moderate: 78<br>
+Vigorous: 249</td>
+</tr>
+<tr class="even">
+<td align="left">Mielke 2023</td>
+<td align="left">GENEActiv<br>
+Dominant wrist</td>
+<td align="left">35 (SD=11) yr</td>
+<td align="left">
+<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
+</td>
+<td align="left">Light: 30<br>
+Moderate: 85<br>
+Vigorous: 270</td>
+</tr>
+<tr class="odd">
+<td align="left">Mielke 2023</td>
+<td align="left">ActiGraph<br>
+Dominant waist</td>
+<td align="left">35 (SD=11) yr</td>
+<td align="left">
+<strong>Default values<br></strong><code>do.enmo = TRUE</code><br><code>acc.metric = "ENMO"</code>
+</td>
+<td align="left">Light: 40<br>
+Moderate: 65<br>
+Vigorous: 190</td>
 </tr>
 <tr class="even">
 <td align="left">Vähä-Ypyä 2015</td>
@@ -904,7 +982,7 @@ to use their cut-point in GGIR, we provide a scaled version of the
 cut-points presented in the paper as:
 <code>(CutPointFromPaper_in_gmins/(sampleRateFromPaper * EpochLengthInSecondsPaper)) * 1000</code>
 <sup>‡</sup> More cut-points excluding data on aided walking and washing
-up activities can be found in the <a href="https://bmcsportsscimedrehabil.biomedcentral.com/articles/10.1186/s13102-020-00196-7" class="external-link">publication</a>.</p>
+up activities can be found in the <a href="https://doi.org/10.1186/s13102-020-00196-7" class="external-link">publication</a>.</p>
 </div>
 </div>
 <div class="section level2">
@@ -928,7 +1006,7 @@ for in the data processing.</p>
 <p><strong>How about all the criticism towards cut-point
 methods?</strong></p>
 <p>For a more elaborate reflection on the limitations of cut-points and
-a motivation why cut-points still have value in GGIR see: <a href="https://www.accelting.com/updates/why-does-ggir-facilitate-cut-points/" class="external-link uri">https://www.accelting.com/updates/why-does-ggir-facilitate-cut-points/</a></p>
+a motivation why cut-points still have value in GGIR see: <a href="https://www.accelting.com/why-does-ggir-facilitate-cut-points/" class="external-link uri">https://www.accelting.com/why-does-ggir-facilitate-cut-points/</a></p>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
@@ -949,6 +1027,8 @@ a motivation why cut-points still have value in GGIR see: <a href="https://www.a
 <li>Hildebrand 2014: <a href="https://doi.org/10.1249/mss.0000000000000289" class="external-link uri">https://doi.org/10.1249/mss.0000000000000289</a>
 </li>
 <li>Hildebrand 2016: <a href="https://doi.org/10.1111/sms.12795" class="external-link uri">https://doi.org/10.1111/sms.12795</a>
+</li>
+<li>Mielke 2023: <a href="https://doi.org/10.1111/sms.14416" class="external-link uri">https://doi.org/10.1111/sms.14416</a>
 </li>
 <li>Migueles 2021: <a href="https://doi.org/10.3390%2Fs21103326" class="external-link uri">https://doi.org/10.3390%2Fs21103326</a>
 </li>
@@ -975,7 +1055,7 @@ a motivation why cut-points still have value in GGIR see: <a href="https://www.a
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

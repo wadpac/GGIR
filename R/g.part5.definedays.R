@@ -1,5 +1,4 @@
-g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
-                              epochSize, qqq_backup = c(), ts, timewindowi, 
+g.part5.definedays = function(nightsi, wi, indjump, epochSize, qqq_backup = c(), ts, timewindowi, 
                               Nwindows, qwindow, ID = NULL,
                               dayborder = 0) {
   Nts = nrow(ts)
@@ -42,12 +41,25 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
   # in the data for this day.
   if (timewindowi == "MM") {
     # include first and last partial days in MM
-    if (nightsi[1] > 1) nightsi = c(1, nightsi)
-    if (nightsi[length(nightsi)] < nrow(ts)) nightsi = c(nightsi, nrow(ts))
+    if (nightsi[1] > 1 && nightsi[1] < 25 * 3600 / epochSize) {
+      nightsi = c(1, nightsi)
+    }
+    if (nightsi[length(nightsi)] < nrow(ts) && 
+        nrow(ts) - nightsi[length(nightsi)] < 25 * 3600 / epochSize) {
+      nightsi = c(nightsi, nrow(ts))
+    }
     # define window
     qqq[1] = nightsi[wi]
-    qqq[2] = nightsi[wi + 1] - 1
+    if (length(nightsi) >= wi + 1) {
+      qqq[2] = nightsi[wi + 1] - 1
+    } else {
+      qqq[2] = Nts
+      lastDay = TRUE
+    }
     # is this the last day?
+    if (wi == length(nightsi) - 1) {
+      lastDay = TRUE
+    }
     if (qqq[2] >= Nts - 1) {
       qqq[2] = Nts
       lastDay = TRUE
@@ -67,6 +79,9 @@ g.part5.definedays = function(nightsi, wi, indjump, nightsi_bu,
         if (length(qdate) == 1) { # if ID/date matched with activity log
           qnames = unlist(qwindow$qwindow_names[qdate])
           qwindow = unlist(qwindow$qwindow_values[qdate])
+          qwindow_order = order(qwindow)
+          qwindow = qwindow[qwindow_order]
+          qnames = qnames[qwindow_order]
         } else { # if ID/date not correctly matched with activity log
           qwindow = c(0, 24)
         }

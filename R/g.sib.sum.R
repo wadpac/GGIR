@@ -50,10 +50,10 @@ g.sib.sum = function(SLE,M,ignorenonwear=TRUE,desiredtz="") {
           colnames(sleep.t) = colnames(sleep)
           invalid.t = invalid[qqq1:qqq2]
           for (j in 1:ncol(sleep.t)) { #sleep definitions
-            nsleepperiods = length(which(diff(sleep.t[,j]) == 1))
+            nsleepperiods = length(which(diff(c(0, sleep.t[,j])) == 1))
             if (nsleepperiods > 0) {
-              start_sp = which(diff(sleep.t[,j]) == 1)
-              end_sp = which(diff(sleep.t[,j]) == -1)
+              start_sp = which(diff(c(0, sleep.t[,j])) == 1)
+              end_sp = which(diff(c(sleep.t[,j], 0)) == -1)
               if(length(end_sp) == 0) end_sp = nrow(sleep.t) #if sleep period ends the next 'nightday'
               if (start_sp[1] > end_sp[1]) { #if period starts with sleep
                 start_sp = c(1,start_sp)

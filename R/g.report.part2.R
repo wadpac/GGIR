@@ -1,4 +1,4 @@
-g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
+g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), 
                           store.long = FALSE, params_output, myfun = c(), verbose = TRUE,
                           desiredtz = "") {
   ms2.out = "/meta/ms2.out"
@@ -12,21 +12,12 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     try.generate.report = FALSE
   }
   if (try.generate.report == TRUE) {
-    if (maxdur != 0) {
-      durplot = maxdur
-    } else {
-      durplot = 7 #how many DAYS to plot? (only used if maxdur is not specified as a number above zero)
-    }
     #---------------------------------
     # Specifying directories with meta-data and extracting filenames
     path = paste0(metadatadir, "/meta/basic/")  #values stored per long epoch, e.g. 15 minutes
     fnames = dir(path) # part 1
-    # ms2.out = "/meta/ms2.out"
     fnames.ms2 = dir(paste0(metadatadir,ms2.out))  #part 2
     #---------------------------------
-    # house keeping variables
-    pdfpagecount = 1 # counter to keep track of files being processed (for pdf)
-    pdffilenumb = 1 #counter to keep track of number of pdf-s being generated
     SUMMARY = daySUMMARY = c()
     
     if (length(f0) ==  0) f0 = 1
@@ -38,51 +29,40 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
     # Loop through all the files
     for (i in f0:f1) {
       if (verbose == TRUE) cat(paste0(" ",i))
-      if (pdfpagecount == 301) { # generate new pdf for every 300 plots
-        pdfpagecount = 1
-        pdffilenumb = pdffilenumb + 1
-        if (params_output[["do.part2.pdf"]] == TRUE) dev.off()
-      }
-      if (pdfpagecount == 1 & params_output[["do.part2.pdf"]] == TRUE) {
-        pdf(paste0(metadatadir, "/results/QC/plots_to_check_data_quality_", pdffilenumb, ".pdf"),
-            width = 7, height = 7)
-      }
       # First load part 1 data
       M = c()
-      fname2read = paste0(path, fnames[i])
-      try(expr = {load(fname2read)}, silent = TRUE) #reading RData-file
+      part1_fname2read = paste0(path, fnames[i])
+      try(expr = {load(part1_fname2read)}, silent = TRUE) #reading RData-file
+      # Checks for availability of file and data
       if (length(M) == 0) {
-        warning(paste0("g.report2: Struggling to read: ",fname2read)) #fnames[i]
+        tmp = unlist(strsplit(part1_fname2read, "/"))
+        part1_fname2read_display = paste0(tmp[length(tmp) - 1], "/", tmp[length(tmp)])
+        warning(paste0("Struggling to read: ", part1_fname2read_display))
+        next
       }
       fname = as.character(unlist(strsplit(fnames[i],"eta_"))[2])
       selp = which(fnames.ms2 == fname)
       if (length(selp) == 0 ) {
-        if (verbose == TRUE) cat(paste0("File ",fname," not available in part 2"))
+        if (verbose == TRUE) cat(paste0("File ", fname, " not available in part 2"))
       }
-      if (M$filecorrupt == FALSE & M$filetooshort == FALSE & length(selp) > 0) { #If part 1 milestone data indicates that file was useful
+      # If part 1 milestone data indicates that file was useful
+      # try loading part 2
+      if (M$filecorrupt == FALSE & M$filetooshort == FALSE & length(selp) > 0) { 
         # Load part 2 data
-        IMP = c()
-        fname2read = paste0(metadatadir, ms2.out, "/", fnames.ms2[selp])
-        try(expr = {load(file = fname2read)}, silent = TRUE)
+        SUM = IMP = c()
+        part2_fname2read = paste0(metadatadir, ms2.out, "/", fnames.ms2[selp])
+        try(expr = {load(file = part2_fname2read)}, silent = TRUE)
+        # Checks for availability of file and data
         if (length(IMP) == 0) {
-          warning(paste0("g.report2: Struggling to read: ",fname2read))
-        }
-        if (params_output[["do.part2.pdf"]] == TRUE & length(IMP) > 0) {
-          Ndays = (nrow(M$metalong) * M$windowsizes[2]) / (3600 * 24)
-          g.plot(IMP, M, I, durplot = ifelse(test = Ndays > durplot, yes = Ndays, no = durplot))
+          warning(paste0("Struggling to read: ", part2_fname2read))
         }
         if (M$filecorrupt == FALSE & M$filetooshort == FALSE) {
           if (i == 1 | i == f0) {
             SUMMARY = SUM$summary
-            SUMMARY$pdffilenumb = pdffilenumb
-            SUMMARY$pdfpagecount = pdfpagecount
-            SUM$summary = SUMMARY
             daySUMMARY = SUM$daysummary
           } else {
-            SUM$summary$pdffilenumb = pdffilenumb
-            SUM$summary$pdfpagecount = pdfpagecount
             bind_with_prev_data = function(df1, df2) {
-              df1 = data.table::rbindlist(list(df1, df2), fill=TRUE)
+              df1 = data.table::rbindlist(list(df1, df2), fill = TRUE)
               df1 = as.data.frame(df1)
               return(df1)
             }
@@ -91,7 +71,6 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
           }
         }
       }
-      
       if (length(SUMMARY) == 0 | length(daySUMMARY) == 0) {
         warning("No summary data available to be stored in csv-reports", call. = FALSE)
       }
@@ -131,7 +110,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
         }
       } else if (mon == "actigraph" | mon == "axivity" | mon == "verisense") {
         deviceSerialNumber = "not extracted"
-      } else if (I$monc %in% c(5, 98, 99)) { #movisense 5, Actiwatch 98, Sensewear 99
+      } else if (I$monc %in% c(5, 7, 94, 96, 97, 98, 99)) { #movisense 5, parmay matrix 7, Actiwatch 98, Sensewear 99
         deviceSerialNumber = "not extracted"
       } else if (I$monc == 0) {
         if (header != "no header") {
@@ -142,9 +121,6 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
         } else {
           deviceSerialNumber = "not extracted"
         }
-      }
-      if (length(C$offset) == 0) {
-        C$offset = C$translate
       }
       if (length(C$cal.error.start) == 0) {
         C$cal.error.start = " "
@@ -181,7 +157,7 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
           QC[setdiff(names(QCout), names(QC))] <- NA
           QCout = rbind(QCout, QC)
         }
-        next()
+        next
       }
       
       filehealth_cols = grep(pattern = "filehealth", x = names(SUMMARY), value = FALSE)
@@ -209,33 +185,11 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
         }
         QCout = rbind(QCout, QC)
       }
-      if (length(SUMMARY) > 0 & length(daySUMMARY) > 0) {
-        #---------------------------------------------------------------
-        if (pdfpagecount == 100 | pdfpagecount == 200 | pdfpagecount == 300) {
-          SUMMARY_clean = tidyup_df(SUMMARY)
-          daySUMMARY_clean = tidyup_df(daySUMMARY)
-          #store matrix temporarily to keep track of process
-          data.table::fwrite(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"),
-                             row.names = F, na = "",
-                             sep = params_output[["sep_reports"]],
-                             dec = params_output[["dec_reports"]])
-          data.table::fwrite(x = daySUMMARY_clean, file = paste0(metadatadir, "/results/part2_daysummary.csv"),
-                             row.names = F, na = "",
-                             sep = params_output[["sep_reports"]],
-                             dec = params_output[["dec_reports"]])
-          data.table::fwrite(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"),
-                             row.names = F, na = "",
-                             sep = params_output[["sep_reports"]],
-                             dec = params_output[["dec_reports"]])
-        }
-        pdfpagecount = pdfpagecount + 1
-      }
     }
     # tidy up memory
-    if (M$filecorrupt == FALSE & M$filetooshort == FALSE & exists("IMP")) rm(IMP)
+    if (exists("IMP")) rm(IMP)
     rm(M); rm(I)
-    if (params_output[["do.part2.pdf"]] == TRUE) dev.off()
-    
+
     #--------------------------------------
     # Store Event reports
     # split daySUMMARY in two files and reoder EventVariable names if they exist
@@ -255,18 +209,11 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       names(dayEVENTSUMMARY) = gsub(pattern = "ExtFunEvent_", replacement = "", x = names(dayEVENTSUMMARY))
       daySUMMARY = daySUMMARY[,NotEventVars]
       dayEVENTSUMMARY_clean = tidyup_df(dayEVENTSUMMARY)
-      #-----------------------------------------------------------------------
-      # November 2024:
-      # TEMPORARILY REMOVE ALL NEW STEP VARIABLES TO FACILITATE
-      # MERGE OF MOST WORK RELATED TO EVENT DETECTION WITH MASTER BRANCH 
-      # WITHOUT RELEASING NEW VARIABLES YET
-      dayEVENTSUMMARY_clean = dayEVENTSUMMARY_clean[, grep(pattern = "cad_|_cad|Bout_|accatleast|count_acc",
-                                                           x = colnames(dayEVENTSUMMARY_clean),
-                                                           invert = TRUE)]
-      #-----------------------------------------------------------------------
+      dayEVENTSUMMARY_clean = addSplitNames(dayEVENTSUMMARY_clean)  # If recording was split
       data.table::fwrite(x = dayEVENTSUMMARY_clean,
                          file = paste0(metadatadir, "/results/part2_day", eventName, "summary.csv"),
-                         row.names = F, na = "")
+                         row.names = F, na = "", sep = params_output[["sep_reports"]],
+                         dec = params_output[["dec_reports"]])
     }
     # split SUMMARY in two files and reoder EventVariable names if they exist
     s_names = names(SUMMARY)
@@ -279,9 +226,11 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       names(EVENTSUMMARY) = gsub(pattern = "ExtFunEvent_", replacement = "", x = names(EVENTSUMMARY))
       SUMMARY = SUMMARY[,NotEventVars]
       EVENTSUMMARY_clean = tidyup_df(EVENTSUMMARY)
+      EVENTSUMMARY_clean = addSplitNames(EVENTSUMMARY_clean)  # If recording was split
       data.table::fwrite(x = EVENTSUMMARY_clean,
                          file =  paste0(metadatadir, "/results/part2_", eventName, "summary.csv"),
-                         row.names = F, na = "")
+                         row.names = F, na = "", sep = params_output[["sep_reports"]],
+                         dec = params_output[["dec_reports"]])
     }
     #-----------------------------
     # tidy up data.frames
@@ -292,12 +241,14 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       # reorder to have starttime next to calendar_date
       old_vars = which(colnames(daySUMMARY_clean) != "start_time")
       new_var = which(colnames(daySUMMARY_clean) == "start_time")
-      daySUMMARY_clean = daySUMMARY_clean[, c(old_vars[1:3], new_var, old_vars[4:length(old_vars)])]
+      daySUMMARY_clean = daySUMMARY_clean[, c(old_vars[1:2], new_var, old_vars[3:length(old_vars)])]
       # format calendar dates
       dd = iso8601chartime2POSIX(daySUMMARY_clean$calendar_date, tz = desiredtz) 
       daySUMMARY_clean$calendar_date = format(dd, format = "%Y-%m-%d")
       #===============================================================================
       # store final matrices again
+      SUMMARY_clean = addSplitNames(SUMMARY_clean)  # If recording was split
+      daySUMMARY_clean = addSplitNames(daySUMMARY_clean)  # If recording was split
       data.table::fwrite(x = SUMMARY_clean, file = paste0(metadatadir, "/results/part2_summary.csv"),
                          row.names = F, na = "", sep = params_output[["sep_reports"]],
                          dec = params_output[["dec_reports"]])
@@ -307,10 +258,12 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(), maxdur = 0,
       if (store.long == TRUE) { # Convert daySUMMARY to long format if there are multiple segments per day
         df = g.convert.part2.long(daySUMMARY)
         df_clean = tidyup_df(df)
+        df_clean = addSplitNames(df_clean)  # If recording was split
         data.table::fwrite(x = df_clean, file = paste0(metadatadir, "/results/part2_daysummary_longformat.csv"),
                            row.names = F, na = "", sep = params_output[["sep_reports"]],
                            dec = params_output[["dec_reports"]])
       }
+      QCout = addSplitNames(QCout)  # If recording was split
       data.table::fwrite(x = QCout, file = paste0(metadatadir, "/results/QC/data_quality_report.csv"),
                          row.names = F, na = "",
                          sep = params_output[["sep_reports"]],

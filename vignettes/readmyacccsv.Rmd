@@ -25,7 +25,7 @@ GGIR can automatically read data from the most-frequently used accelerometer bra
 
 - [GENEActiv](https://activinsights.com/) .bin
 - [Axivity](https://axivity.com/) AX3 and AX6 .wav, .csv and .cwa
-- [ActiGraph](https://theactigraph.com) .csv and .gt3x (.gt3x only the newer format generated with firmware versions  above 2.5.0). Note for Actigraph users: If you want to work with .csv exports via the ActiLife then note that you have the option to export data with timestamps. Please do not do this as this causes memory issues for GGIR. To cope with the absence of timestamps GGIR will re-caculate timestamps from the sample frequency and the start time and date as presented in the file header
+- [ActiGraph](https://ametris.com/) .csv and .gt3x (.gt3x only the newer format generated with firmware versions  above 2.5.0). Note for Actigraph users: If you want to work with .csv exports via the ActiLife then note that you have the option to export data with timestamps. Please do not do this as this causes memory issues for GGIR. To cope with the absence of timestamps GGIR will re-caculate timestamps from the sample frequency and the start time and date as presented in the file header
 - [Movisens](https://www.movisens.com/en/) with data stored in folders
 - Genea (an accelerometer that is not commercially available anymore, but which was used for some studies between 2007 and 2012) .bin and .csv
 
@@ -33,7 +33,7 @@ However, the accelerometer manufacturers are proliferating with an increasing nu
 
 **How it works:**
 
-Internally GGIR loads csv files with accelerometer data and standardises the output format to make the data compatible with other GGIR functions. Data format standardisation includes unit of measurement, timestamp, header format, and column locations.
+Internally GGIR loads csv files with accelerometer data and standardises the output format to make the data compatible with other GGIR functions. Data format standardisation includes unit of measurement, timestamp, file header format, and column locations.
 
 # The read.myacc.csv function
 
@@ -59,12 +59,12 @@ Below we present a summary of the available input arguments. Please see the [par
 
 ### Arguments for files containing a header {#header}
 
-- `rmc.firstrow.header` - First row (number) of the header. Leave blank (default) if the file does not have a header.
+- `rmc.firstrow.header` - First row (number) of the file header. Leave blank (default) if the file does not have a file header. Not to be confused with a one row column header, a file header typically takes up several rows and has one or two columns. If the header has two columns, the first column is assumed to be the header item names and the second column is assumed to have the header item values. If the header has one column then it is assumed that each value contains both the name and the value of the item.
 - `rmc.header.length` - If file has header, specify header length (numeric).
-- `rmc.headername.sf` - If file has a header, row name (character) under which the sample frequency can be found.
-- `rmc.headername.sn` - If file has a header, row name (character) under which the serial number can be found.
-- `rmc.headername.recordingid` -  If file has a header, row name (character) under which the recording ID can be found.
-- `rmc.header.structure` - Character used to split the header name from the header value, e.g. ":" or " ".
+- `rmc.headername.sf` - If file has a header, row name (character) under which the sample frequency can be found, e.g. "sample_rate".
+- `rmc.headername.sn` - If file has a header, row name (character) under which the serial number can be found, e.g. "serial_number".
+- `rmc.headername.recordingid` -  If file has a header, row name (character) under which the recording ID can be found, e.g. "ID".
+- `rmc.header.structure` - Character used to split the header name from the header value, e.g. ":" if a header value would look like "ID: 123" or " " if the ehader value would be like "ID 123".
 
 ### Arguments for files including timestamps
 
@@ -90,7 +90,7 @@ Below we present a summary of the available input arguments. Please see the [par
 
 ### Arguments to find time gaps and resampling
 
-- `rmc.check4timegaps` - Boolean to indicate whether gaps in time should be imputed with zeros.
+- `rmc.check4timegaps` - Boolean to indicate whether gaps in time should be imputed with most recent value normalised to 1 _g_.
 - `rmc.doresample` - Boolean to indicate whether to resample the data based on the available timestamps and extracted sample rate from the file header
 - `interpolationType` - Integer to indicate type of interpolation to be used when resampling time series (mainly relevant for Axivity sensors), 1=linear, 2=nearest neighbour.
 
@@ -110,13 +110,13 @@ dateTime | acc_x | acc_y | acc_z | ambient_temp
 1/1/2022 16:48:26.069|-0.42431641|0.4189581|-0.76171875|24
 1/1/2022 16:48:26.079|-0.42138672|0.41993469|-0.76513672|24
 
-This file contains timestamps in the column 1 (formatted as "%d/%m/%Y %H:%M:%OS"), the acceleration signals (in _g_'s) for the x, y, and z axis in the columns 2, 3, and 4, respectively, and temperature information in Celsius in the column 5. Also, this file has no header.
+This file contains timestamps in the column 1 (formatted as "%d/%m/%Y %H:%M:%OS"), the acceleration signals (in _g_'s) for the x, y, and z axis in the columns 2, 3, and 4, respectively, and temperature information in Celsius in the column 5. Also, this file has no file header.
 
 Before we can use this with GGIR, we first test read this file using the `read.myacc.csv` function directly.
 
 ```{R,eval=FALSE}
 library(GGIR)
-read.myacc.csv(rmc.file = "C:/mystudy/mydata/datafile.csv",
+data = read.myacc.csv(rmc.file = "C:/mystudy/mydata/datafile.csv",
                rmc.nrow = Inf,
                rmc.skip = 0,
                rmc.dec = ".",
@@ -131,6 +131,9 @@ read.myacc.csv(rmc.file = "C:/mystudy/mydata/datafile.csv",
                desiredtz = "Europe/London",
                rmc.sf = 100)
 ```
+
+The object data is a list with a data.frame name data and a header.
+The time column in the data.frame represents timestamps expressed in seconds since 1-1-1970.
 
 ## Example using the shell function
 
