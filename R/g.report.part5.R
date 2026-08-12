@@ -425,7 +425,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                                                                            names(AggregateWDWE) == filename)])
                   }
 
-                  # options(warn = -1)
+                  options(warn = -1)
                   .SD <- .N <- count <- a <- NULL
                   if (window_is_segment) {
                     WeightedAggregate <- dt[, lapply(.SD, weighted.mean, w = len, na.rm = TRUE),
@@ -433,7 +433,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   } else {
                     WeightedAggregate <- dt[, lapply(.SD, weighted.mean, w = len, na.rm = TRUE), by = list(filename)]
                   }
-                  # options(warn = 0)
+                  options(warn = 0)
                   LUXmetrics = c("above1000", "timeawake", "mean", "imputed", "ignored")
                   add_missing_LUX = function(x, LUX_day_segments, weeksegment = c(), LUXmetrics) {
                     # missing columns, add these:

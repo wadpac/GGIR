@@ -39,7 +39,6 @@ g.part5.definedays = function(nightsi, wi, indjump, epochSize, qqq_backup = c(),
   qqq = rep(0,2); segments = segments_names = c()
   # Check that it is possible to find both windows (WW and MM)
   # in the data for this day.
-  
   if (timewindowi == "MM") {
     # include first and last partial days in MM
     if (nightsi[1] > 1 && nightsi[1] < 25 * 3600 / epochSize) {
