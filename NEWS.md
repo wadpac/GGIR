@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.3-?
+
+- Part 3: Add new guider named LowAcc. #1287
+
 # CHANGES IN GGIR VERSION 3.3-8
 
 - Updated documentation to point to the new web dashboard URL (#1509)

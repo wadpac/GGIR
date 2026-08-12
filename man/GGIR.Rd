@@ -1589,7 +1589,8 @@ GGIR(mode = 1:5,
       
       \item{LowAcc_threshold}{
         Numeric (default = 0.014)
-        Acceleration threshold in _g_-units use by the LowAcc guider.
+        Acceleration threshold in _g_-units use by the LowAcc guider applied to acceleration
+        derived with metric as specified by parameter \code{acc_metric}.
       }
     }
   }

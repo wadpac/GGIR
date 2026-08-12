@@ -217,6 +217,12 @@ Relying on marker button presses (marker events) comes with the challenge that p
 7. Define a performance score as: 1 + time spend outside the window duration range 7-9 multiplied by the average activity inside the window.
 8. The window with the lowest score is selected as guider.
 
+### Guider: LowAcc (EXPERIMENTAL)
+
+This algorithm was developed for ActivPAL data where night/sleep behaviour is represented by an accelerometer that falls asleep. As a result, the sleep periods are characterised by the zero acceleration as imputed whereas the acceleration during waking hours is represented by sensor noise.
+
+The guider detects this by first deriving a 5 minute rolling average of the acceleration values and then detecting when the resulting acceleration is less than a threshold as specified with parameter \code{LowAcc_threshold}.
+
 ## Dealing with expected or detected invalid time segments
 
 Detected non-wear or study protocol led to parts of the recording to be labelled as invalid and corresponding values [were imputed](https://wadpac.github.io/GGIR/articles/chapter6_DataImputation.html): 
