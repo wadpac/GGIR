@@ -1,6 +1,6 @@
 # CHANGES IN GGIR VERSION 3.3-?
 
-- Part 3: Add new guider named LowAcc. #1287
+- Part 3: Add new guider named LowAcc, with new parameter LowAcc_threshold. Further, parameter HDCZA_roll_windowsize was added related to guider HDCZA. #1287
 
 # CHANGES IN GGIR VERSION 3.3-8
 
