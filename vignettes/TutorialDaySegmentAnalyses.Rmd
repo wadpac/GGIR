@@ -163,7 +163,7 @@ aggregated per day and per person:
 - `part5_personsummary_Segments[...].csv` the recording level summary in long format, such that each row represents the average for each 
 outcome in one specific segments across all days in which that segment is available per participant.
 
-If you use an activity diary to segment the day then column `window_name` clarifies the name of the day segment.
+If you use an activity diary to segment the day then column `window` clarifies the name of the day segment.
 
 
 # Cleaning parameters for day segments (in part 5):

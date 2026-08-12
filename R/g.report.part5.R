@@ -232,11 +232,6 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
     # filesize and to ease organising dataset
     uwi = as.character(unique(outputfinal$window))
     if (!all(uwi %in% c("MM", "WW", "OO"))) {
-      if (length(grep(pattern = "-", x = outputfinal$window)) > 0) {
-        # add column window_name if windows are derived from an activity
-        # diary with real segment names
-        outputfinal$window_name = gsub(pattern = "MMsegment-|WWsegment-|OOsegment-", replacement = "", x = outputfinal$window)
-      }
       uwi[grep(pattern = "MMseg", x = uwi)] = "MMsegment"
       uwi[grep(pattern = "WWseg", x = uwi)] = "WWsegment"
       uwi[grep(pattern = "OOseg", x = uwi)] = "OOsegment"
@@ -350,7 +345,7 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   # df: input data.frame (OF3 outside this function)
                   
                   ignorevar = c("daysleeper", "cleaningcode", "night_number", "sleeplog_used",
-                                "ID", "acc_available", "window_number", "window_name",
+                                "ID", "acc_available", "window_number",
                                 "boutcriter.mvpa", "boutcriter.lig", "boutcriter.in", "bout.metric") # skip cosinor variables
                   for (ee in 1:ncol(df)) { # make sure that numeric columns have class numeric
                     nr = nrow(df)
