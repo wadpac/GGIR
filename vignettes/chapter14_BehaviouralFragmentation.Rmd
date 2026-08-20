@@ -14,20 +14,40 @@ knitr::opts_chunk$set(
 )
 ```
 
+::: {style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px"}
+
+**⏱ Reading time:** ~15 min &nbsp;|&nbsp; **Chapter:** 14 of 14
+
+**What you will learn**
+
+- How GGIR defines behavioural fragments during the day and night
+- The suite of fragmentation metrics available (CoV, TP, Gini, NFrag, etc.)
+- Under what data conditions fragmentation metrics are calculated
+
+**Prerequisites**
+
+- Read the previous chapters: [Chapter 11: Physical Activity Cut-points](chapter11_DescribingDataCutPoints.html) and [Chapter 12: Time Use Analysis](chapter12_TimeUseAnalysis.html)
+
+
+**Key terms:** <abbr title="A sequence of consecutive epochs belonging to the same behavioural class (e.g. inactive, active)">fragment</abbr>, <abbr title="Coefficient of Variance, calculated as standard deviation divided by mean of log-transformed fragment lengths">CoV</abbr>, <abbr title="Transition probability from one state to another (e.g., IN2PA, PA2IN)">TP</abbr>, <abbr title="Number of Fragments">NFrag</abbr>, <abbr title="Number of Fragments Per Minute (Fragmentation Index)">NFragPM</abbr>, <abbr title="Measure of inequality in the distribution of fragment durations">Gini index</abbr>, <abbr title="Sleep Period Time">SPT</abbr>
+– see the [full Glossary](Glossary.html) for all definitions.
+
+:::
+
 In chapters 8, 9, and 10 we discussed the classification of sleep and in chapter 11 we discussed the classification of daytime physical behavioural classes.  These are typically reported as time spent per behavioural class. An complementary way of describing the data is by looking at the fragmentation of these behaviours of time.
 
 ## Defining fragments
 
-In GGIR, a fragment for daytime is a defined as a sequence of epochs that belong to one of the four categories:
+In GGIR, a <abbr title="A sequence of consecutive epochs belonging to the same behavioural class (e.g. inactive, active)">fragment</abbr> for daytime is a defined as a sequence of epochs that belong to one of the four categories:
 
 1.  Inactivity
 2.  Light Physical Activity (LIPA)
 3.  Moderate or Vigorous Physical Acitivty (MVPA)
 4.  Physical activity (can be either LIPA or MVPA)
 
-Each of these categories represents the combination of bouted and unbouted time in the respective categories. Inactivity and physical activity add up to a full day (outside SPT), as well as inactivity, LIPA and MVPA.
+Each of these categories represents the combination of bouted and unbouted time in the respective categories. Inactivity and physical activity add up to a full day (outside <abbr title="Sleep Period Time">SPT</abbr>), as well as inactivity, LIPA and MVPA.
 
-A fragment of SPT is defined as a sequence of epochs that belong to one of the four categories:
+A fragment of <abbr title="Sleep Period Time">SPT</abbr> is defined as a sequence of epochs that belong to one of the four categories:
 
 1.  Estimated sleep
 2.  Estimated wakefulness
@@ -47,17 +67,17 @@ The in internal function `g.fragmentation` for fragmentation metric calculation 
 
 ## Fragmentation metrics
 
-Note that from the fragmentation metrics discussed below only fragmentation metrics `TP` and `NFrag` are calculated for the SPT fragments.
+Note that from the fragmentation metrics discussed below only fragmentation metrics `TP` and <abbr title="Number of Fragments">`NFrag`</abbr> are calculated for the SPT fragments.
 
--   Coefficient of Variance (`CoV`) is calculated according to [Blikman et al. 2014](https://doi.org/10.1016/j.apmr.2014.08.023), which entails dividing the standard deviation by the mean lognormal transformed fragment length (minutes).
+-   Coefficient of Variance (<abbr title="Coefficient of Variance, calculated as standard deviation divided by mean of log-transformed fragment lengths">`CoV`</abbr>) is calculated according to [Blikman et al. 2014](https://doi.org/10.1016/j.apmr.2014.08.023), which entails dividing the standard deviation by the mean lognormal transformed fragment length (minutes).
 
--   Transition probability (`TP`) from Inactivity (IN) to Physical activity (IN2PA), from Physical activity to inactivity (PA2IN), and from IN to LIPA or MVPA are all calculated according to [Danilevicz et al. 2024](https://doi.org/10.1186/s12874-024-02255-w).
+-   Transition probability (<abbr title="Transition probability from one state to another (e.g., IN2PA, PA2IN)">`TP`</abbr>) from Inactivity (IN) to Physical activity (IN2PA), from Physical activity to inactivity (PA2IN), and from IN to LIPA or MVPA are all calculated according to [Danilevicz et al. 2024](https://doi.org/10.1186/s12874-024-02255-w).
 
--   Gini index is calculated with function `Gini` from the `ineq` R package, and with `ineq` argument `corr` set to TRUE.
+-   <abbr title="Measure of inequality in the distribution of fragment durations">Gini index</abbr> is calculated with function `Gini` from the `ineq` R package, and with `ineq` argument `corr` set to TRUE.
 
 -   Power law exponent metrics: Alpha, x0.5, and W0.5 are calculated according to [Chastin et al. 2010](https://doi.org/10.1016/j.gaitpost.2009.09.002). Note that compared with R package ActFrag as described in [Junrui Di et al. 2017](https://www.biorxiv.org/content/10.1101/182337v1) we we use the theoretical minimum fragment duration instead of the observed minimum fragment duration.
 
--   Number of fragment per minutes (`NFragPM`) is calculated identical to metric `fragmentation index` in [Chastin et al. 2012](https://academic.oup.com/ageing/article/41/1/111/46538), but it is renamed here to be a more specific reflection of the calculation. The term `fragmentation index` appears too generic given that all fragmentation metrics inform us about fragmentation. Please note that this is close to the metrics for transition probability, because total number divided by total sum in duration equals 1 divided by average duration. Although the exact math is slightly different.
+-   Number of fragment per minutes (<abbr title="Number of Fragments Per Minute (Fragmentation Index)">`NFragPM`</abbr>) is calculated identical to metric `fragmentation index` in [Chastin et al. 2012](https://academic.oup.com/ageing/article/41/1/111/46538), but it is renamed here to be a more specific reflection of the calculation. The term `fragmentation index` appears too generic given that all fragmentation metrics inform us about fragmentation. Please note that this is close to the metrics for transition probability, because total number divided by total sum in duration equals 1 divided by average duration. Although the exact math is slightly different.
 
 ## Conditions for calculation
 
@@ -86,3 +106,124 @@ In GGIR part 6 csv report you will find:
 -   Fragmentation metrics
 
 For an overview of output variables see the [GGIR output annex](https://wadpac.github.io/GGIR/articles/GGIRoutput.html).
+
+## Minimal example
+
+```r
+library(GGIR)
+GGIR(
+  datadir              = "C:/mydata",
+  outputdir            = "C:/myresults",
+  frag.metrics         = "all",   # enable all fragmentation metrics in part 5
+  part6CR              = TRUE,    # enable fragmentation metrics in part 6
+  part5_agg2_60seconds = TRUE     # aggregate to 1-minute resolution (recommended for fragmentation)
+)
+```
+
+---
+
+::: {style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px"}
+
+### Summary
+
+GGIR part 5 and part 6 can compute a wide array of fragmentation metrics (CoV, Gini, Transition Probabilities, Power law parameters) to describe the accumulation pattern of behaviour. Using a 1-minute epoch (`part5_agg2_60seconds = TRUE`) is common practice when generating these metrics.
+
+### What to read next
+
+Congratulations! You have completed the core GGIR guide.
+➡ [Browse the Cookbook for common recipes](Cookbook.html)
+➡ [Check the full Parameters list](GGIRParameters.html)
+
+### Related materials
+
+- 📄 [Blikman et al. 2014: CoV fragmentation metric](https://doi.org/10.1016/j.apmr.2014.08.023)
+- 📄 [Danilevicz et al. 2024: TP fragmentation metric](https://doi.org/10.1186/s12874-024-02255-w)
+
+
+:::
+
+<style>
+abbr[data-custom-tooltip] {
+  cursor: pointer;
+  position: relative;
+  text-decoration: underline dotted #0054AD;
+}
+abbr[data-custom-tooltip]:hover::after {
+  content: attr(data-custom-tooltip);
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #2c3e50;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  white-space: normal;
+  width: max-content;
+  max-width: 250px;
+  font-size: 13px;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  text-align: center;
+  line-height: 1.4;
+}
+abbr[data-custom-tooltip]:hover::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #2c3e50;
+}
+pre {
+  position: relative;
+}
+pre .copy-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 2px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+pre:hover .copy-btn {
+  opacity: 1;
+}
+pre .copy-btn.copied {
+  background: #2c3e50;
+  color: #fff;
+  border-color: #2c3e50;
+}
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll('abbr[title]').forEach(function(abbr) {
+    abbr.setAttribute('data-custom-tooltip', abbr.getAttribute('title'));
+    abbr.removeAttribute('title');
+  });
+  document.querySelectorAll('pre').forEach(function(pre) {
+    var btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '\ud83d\udccb Copy';
+    btn.addEventListener('click', function() {
+      var code = pre.querySelector('code');
+      var text = code ? code.textContent : pre.textContent;
+      navigator.clipboard.writeText(text).then(function() {
+        btn.textContent = '\u2705 Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = '\ud83d\udccb Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    });
+    pre.appendChild(btn);
+  });
+});
+</script>

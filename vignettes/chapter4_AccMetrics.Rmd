@@ -14,6 +14,27 @@ knitr::opts_chunk$set(
 )
 ```
 
+::: {style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px"}
+
+**⏱ Reading time:** ~20 min &nbsp;|&nbsp; **Chapter:** 4 of 14
+
+**What you will learn**
+
+- Why summarising raw data into epoch-level metrics is necessary
+- The full list of acceleration metrics available in GGIR and their characteristics
+- Why GGIR uses ENMO as its default metric
+- How to embed your own custom metrics into the GGIR pipeline
+
+**Prerequisites**
+
+- Read the previous chapter: [Chapter 3: Data Quality Assurance](chapter3_QualityAssessment.html)
+
+
+**Key terms:** <abbr title="Euclidean Norm Minus One – the default acceleration metric in GGIR, computed as vector magnitude minus 1g with negatives rounded to 0">ENMO</abbr>, <abbr title="Same as ENMO but with a low-pass filter applied before computation, suppressing high-frequency components">LFENMO</abbr>, <abbr title="A fixed-length time window (default 5 s) over which raw acceleration is summarised into a metric value">epoch</abbr>, <abbr title="An acceleration metric counting how many times the band-pass filtered signal crosses zero per epoch, used in 1990s sleep algorithms">zero-crossing count</abbr>, <abbr title="Absolute difference between the Euclidean norm and its epoch-level average; a frequency-based alternative to ENMO">MAD</abbr>, <abbr title="The number of data points recorded per second by the sensor (Hz)">sampling rate</abbr>, <abbr title="A parameter vector controlling epoch length, non-wear step size, and non-wear window length">windowsizes</abbr>
+– see the [full Glossary](Glossary.html) for all definitions.
+
+:::
+
 ## Why do we need to extract metrics
 
 Wearable accelerometers are widely used in health research to study physical activity, sleep, and other behaviours. Most modern accelerometers can collect and store at least 30 values per second expressed in units of gravitational acceleration (*g*). Once the data is collected, it is important to extract kinematically meaningful information from it. In data processing, summary measures to describe a signal are referred to as metrics or signal features. 
@@ -29,7 +50,7 @@ Finding a metric able to separate these three components will provide informativ
 
 ## Metric aggregation per epoch
 
-Most metrics are at first calculated at the same resolution as the raw data, which reflects a tiny fraction of a second. The exact number of data points per second also known as the sampling rate can vary between studies. With a different sampling rate values are not directly comparable. However, by aggregating metric values per larger time window, known as an epoch, we can make the values more comparable. So, GGIR aggregates these values per epoch (e.g. 5 seconds). Aside from harmonising the data across studies, aggregation per epoch also has other advantages:
+Most metrics are at first calculated at the same resolution as the raw data, which reflects a tiny fraction of a second. The exact number of data points per second also known as the <abbr title="The number of data points recorded per second by the accelerometer">sampling rate</abbr> can vary between studies. With a different sampling rate values are not directly comparable. However, by aggregating metric values per larger time window, known as an <abbr title="A fixed-length time window (default 5 s) over which raw acceleration is summarised">epoch</abbr>, we can make the values more comparable. So, GGIR aggregates these values per epoch (e.g. 5 seconds). Aside from harmonising the data across studies, aggregation per epoch also has other advantages:
 
 - Evidence on the value of accelerometer data is based on epoch-level aggregates, because reference values like Oxygen consumption or sleep cannot reliably be derived at sub-second resolution.
 -	Aggregating leads to less data points which makes it a lot more practical to work with.
@@ -99,7 +120,7 @@ All metrics, listed above, that have the letters LF or BF in their name attempt 
 
 ### Why GGIR uses ENMO as a default.
 
-Only one metric can be the default. Acceleration metric ENMO (Euclidean Norm Minus One with negative values rounded to zero) has been the default metric since GGIR was created. In 2013, we investigated different ways of summarising the raw acceleration data ([van Hees et al. PLoS ONE 2013](https://doi.org/10.1371/journal.pone.0061691)).
+Only one metric can be the default. Acceleration metric <abbr title="Euclidean Norm Minus One – the default acceleration metric in GGIR, computed as vector magnitude minus 1g with negatives rounded to 0">ENMO</abbr> (Euclidean Norm Minus One with negative values rounded to zero) has been the default metric since GGIR was created. In 2013, we investigated different ways of summarising the raw acceleration data ([van Hees et al. PLoS ONE 2013](https://doi.org/10.1371/journal.pone.0061691)).
 In short, different metrics exist and there is very little literature to support the superiority of any metric at the time. As long as different studies use different metrics, their findings will not be comparable. Therefore, the choice for metric ENMO has been merely pragmatic. GGIR uses ENMO as default because:
 
 1\.
@@ -112,7 +133,7 @@ ENMO is easy to describe mathematically and, therefore, improves reproducibility
 ENMO attempts to quantify the acceleration in universal units and does not collapse the signal to an abstract scale.
 
 4\.
-The 2013 paper showed that when ENMO is used in combination with auto-calibration, it has similar validity to filter-based metrics like HFEN and BFEN, which are conceptually similar to metrics proposed later such as [MIMSunit](https://doi.org/10.1123/jmpb.2018-0068), [MAD](https://doi.org/10.1186/s13102-015-0010-0), [AI0](https://doi.org/10.1371/journal.pone.0160644).
+The 2013 paper showed that when ENMO is used in combination with auto-calibration, it has similar validity to filter-based metrics like HFEN and BFEN, which are conceptually similar to metrics proposed later such as [MIMSunit](https://doi.org/10.1123/jmpb.2018-0068), [<abbr title="Absolute difference between the Euclidean norm and its epoch-level average; a frequency-based alternative to ENMO">MAD</abbr>](https://doi.org/10.1186/s13102-015-0010-0), [AI0](https://doi.org/10.1371/journal.pone.0160644).
 
 5\.
 Studies who have criticised ENMO consistently failed to apply auto-calibration, or attempted to apply auto-calibration in a lab setting, ignoring the fact that auto-calibration is not designed for short lab settings. It needs free-living data to work properly. Further, studies are often not clear about how the problematic zero imputation during the idle sleep mode in ActiGraph devices is dealt with.
@@ -120,7 +141,7 @@ Studies who have criticised ENMO consistently failed to apply auto-calibration, 
 
 ### Notes on implementation of zero crossing counts
 
-The implementation of the zero-crossing count in GGIR is an attempt to imitate the zero-crossed counts previously described by Sadeh, Cole, Kripke and colleagues in the late 1980s and 1990s. However, it cannot be guaranteed to be an exact copy of the original approach, which used the AMA-32 Motionlogger Actigraph by Ambulatory-monitoring Inc. ("AMI"). 
+The implementation of the <abbr title="An acceleration metric counting how many times the band-pass filtered signal crosses zero per epoch">zero-crossing count</abbr> in GGIR is an attempt to imitate the zero-crossed counts previously described by Sadeh, Cole, Kripke and colleagues in the late 1980s and 1990s. However, it cannot be guaranteed to be an exact copy of the original approach, which used the AMA-32 Motionlogger Actigraph by Ambulatory-monitoring Inc. ("AMI"). 
 
 No complete publicly accessible description of that approach exists.
 
@@ -189,3 +210,122 @@ We have compiled a list of related articles you may find useful:
 -   [Karas et al. 2022](https://mhealth.jmir.org/2022/7/e38077/) Comparison of accelerometry-based measures of physical activity: retrospective observational data analysis study.
 
 -   [van Hees 2019](https://medium.com/@vincentvanhees/ten-misunderstandings-surrounding-information-extraction-from-wearable-accelerometer-data-a4f767a865b6) Ten Misunderstandings surrounding Information Extraction from Wearable Accelerometer data.
+
+## Minimal example
+
+```r
+library(GGIR)
+GGIR(
+  datadir   = "C:/mydata",
+  outputdir = "C:/myresults",
+  do.enmo   = TRUE,   # ENMO (default, already TRUE by default)
+  do.mad    = TRUE,   # also compute MAD metric
+  do.anglez = TRUE    # z-angle (used in sleep detection)
+)
+```
+
+---
+
+::: {style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px"}
+
+### Summary
+
+GGIR aggregates raw acceleration into epoch-level metrics to enable comparison across studies and sampling rates. The default metric is ENMO. Multiple metrics can be computed in parallel by setting their `do.*` parameter to `TRUE`.
+
+### What to read next
+
+➡ [Chapter 5: Accounting for Study Protocol](chapter5_StudyProtocol.html)
+
+### Related materials
+
+- 📄 [van Hees et al. 2013: ENMO validation paper](https://doi.org/10.1371/journal.pone.0061691)
+- 📄 [Published cut-points for ENMO](https://wadpac.github.io/GGIR/articles/CutPoints.html)
+
+
+:::
+
+<style>
+abbr[data-custom-tooltip] {
+  cursor: pointer;
+  position: relative;
+  text-decoration: underline dotted #0054AD;
+}
+abbr[data-custom-tooltip]:hover::after {
+  content: attr(data-custom-tooltip);
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #2c3e50;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  white-space: normal;
+  width: max-content;
+  max-width: 250px;
+  font-size: 13px;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  text-align: center;
+  line-height: 1.4;
+}
+abbr[data-custom-tooltip]:hover::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #2c3e50;
+}
+pre {
+  position: relative;
+}
+pre .copy-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 2px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+pre:hover .copy-btn {
+  opacity: 1;
+}
+pre .copy-btn.copied {
+  background: #2c3e50;
+  color: #fff;
+  border-color: #2c3e50;
+}
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll('abbr[title]').forEach(function(abbr) {
+    abbr.setAttribute('data-custom-tooltip', abbr.getAttribute('title'));
+    abbr.removeAttribute('title');
+  });
+  document.querySelectorAll('pre').forEach(function(pre) {
+    var btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '\ud83d\udccb Copy';
+    btn.addEventListener('click', function() {
+      var code = pre.querySelector('code');
+      var text = code ? code.textContent : pre.textContent;
+      navigator.clipboard.writeText(text).then(function() {
+        btn.textContent = '\u2705 Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = '\ud83d\udccb Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    });
+    pre.appendChild(btn);
+  });
+});
+</script>

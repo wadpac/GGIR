@@ -1,8 +1,10 @@
 # CHANGES IN GGIR VERSION 3.3-8
 
-- Updated documentation to point to the new web dashboard URL (#1509)
-
 - Part 1: Fixed an issue in g.calibrate() where large data chunks caused out-of-bounds errors (#1513)
+
+- Documentation:
+ - Made each chapter more readable as a stand-alone tutorial (#1517)
+ - Updated documentation to point to the new web dashboard URL (#1509)
 
 - Part 2: Fixed bug where activity log (qwindow) segments could be assigned to the day before, because g.analyse.perday() derived the recording-day dates with as.Date() defaulting to UTC instead of desiredtz (#1518)
 

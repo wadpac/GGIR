@@ -64,6 +64,8 @@ navbar:
     annexes:
       text: Annexes
       menu:
+        - text: Glossary
+          href: articles/Glossary.html
         - text: GGIR Parameters
           href: articles/GGIRParameters.html
         - text: GGIR Output

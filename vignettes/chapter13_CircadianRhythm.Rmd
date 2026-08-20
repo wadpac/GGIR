@@ -14,7 +14,28 @@ knitr::opts_chunk$set(
 )
 ```
 
-Circadian rhythm are the physical, mental, and behavioral changes an organism experiences over a 24-hour cycle. GGIR facilitates a number of techniques to quantify the movement-component of circadian rhythms as discussed in this chapter.
+::: {style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px"}
+
+**⏱ Reading time:** ~20 min &nbsp;|&nbsp; **Chapter:** 13 of 14
+
+**What you will learn**
+
+- The circadian rhythm metrics available in GGIR (MXLX, Cosinor, IS, IV, phi, DFA/SSP, ABI)
+- The difference between part 2 and part 6 implementations
+- How to enable and interpret circadian rhythm outputs
+
+**Prerequisites**
+
+- Read the previous chapter: [Chapter 12: Time-use Analysis](chapter12_TimeUseAnalysis.html)
+- 📄 [Danilevicz et al. 2024: IS/IV/phi/DFA paper](https://doi.org/10.1186/s12874-024-02255-w)
+
+
+**Key terms:** <abbr title="24-hour biological rhythms governing physical, mental, and behavioural changes">circadian rhythm</abbr>, <abbr title="Family of metrics identifying the most (MX) and least (LX) active continuous X-hour windows in a day">MXLX</abbr>, <abbr title="L5 and M10 are classic MXLX examples: least active 5 hours (L5) and most active 10 hours (M10)">L5 / M10</abbr>, <abbr title="Measures how constant an individual’s daily routine is across days (0–1; higher = more stable)">IS (Interdaily Stability)</abbr>, <abbr title="Measures hour-by-hour variability in activity throughout a day; values ~2 indicate fragmented rhythm">IV (Intradaily Variability)</abbr>, <abbr title="First-order autocorrelation of the 1-hour shifted time series; higher = stronger rhythm">phi</abbr>, <abbr title="Method to quantify fractal temporal correlations in a time series; produces SSP and ABI">DFA (Detrended Fluctuation Analysis)</abbr>, <abbr title="Scaling exponent from DFA; split into SSP_short (≤90 min) and SSP_long (120–600 min)">SSP (Self-Similarity Parameter)</abbr>, <abbr title="Transformation of SSP measuring how balanced the activity pattern is (0–1; higher = more balanced)">ABI (Activity Balance Index)</abbr>, <abbr title="Peak of the fitted cosine curve expressed as a clock time (hours from midnight)">acrophase / acrotime</abbr>
+– see the [full Glossary](Glossary.html) for all definitions.
+
+:::
+
+<abbr title="24-hour biological rhythms governing physical, mental, and behavioural changes">Circadian rhythm</abbr> are the physical, mental, and behavioral changes an organism experiences over a 24-hour cycle. GGIR facilitates a number of techniques to quantify the movement-component of circadian rhythms as discussed in this chapter.
 
 Most of the techniques are applied in both GGIR part 2 and 6. The main differences between these implementations are:
 
@@ -23,7 +44,7 @@ Most of the techniques are applied in both GGIR part 2 and 6. The main differenc
 
 As a result, when your intention is to compare physical activity or sleep estimates derived in GGIR, part 6 estimates ensure that the same days and time points are used as in the other parts of GGIR. Whereas, part 2 does not attempt to do so.
 
-Further, part 6 offers a few additional circadian rhythm estimates such as DFA (discussed below), and when fragmentation analysis is turned on (see parameter `frag.metrics` as discussed in the [next chapter](https://wadpac.github.io/GGIR/articles/chapter14_BehaviouralFragmentation.html)) activity and sleep fragmentation are also estimated.
+Further, part 6 offers a few additional circadian rhythm estimates such as <abbr title="Method to quantify fractal temporal correlations in a time series; produces SSP and ABI">DFA</abbr> (discussed below), and when fragmentation analysis is turned on (see parameter `frag.metrics` as discussed in the [next chapter](https://wadpac.github.io/GGIR/articles/chapter14_BehaviouralFragmentation.html)) activity and sleep fragmentation are also estimated.
 
 ## Controlling which circadian rhythm estimates are derived
 
@@ -31,7 +52,7 @@ Cosinor, IV, IS, and phi as discussed below are not derived by default. To activ
 
 ## MXLX
 
-MXLX looks for the continuous least (LX) and most (MX) active X hour window in a day, where X is defined by parameter `winhr`. For both LX and MX, GGIR calculates the average acceleration, the start time, and if argument `iglevels` is specified also the intensity gradient. If parameter `winhr` is a vector then MX and LX are derived for each value in the vector.
+<abbr title="Family of metrics identifying the most (MX) and least (LX) active continuous X-hour windows in a day">MXLX</abbr> looks for the continuous least (LX) and most (MX) active X hour window in a day, where X is defined by parameter `winhr`. For both LX and MX, GGIR calculates the average acceleration, the start time, and if argument `iglevels` is specified also the intensity gradient. If parameter `winhr` is a vector then MX and LX are derived for each value in the vector.
 
 Within GGIR part 2 MXLX is calculated per calendar day and, if argument `qwindow` is specified, per segment of the day. Within GGIR part 6 MXLX is calculated per [window](https://wadpac.github.io/GGIR/articles/chapter12_TimeUseAnalysis.html#defining-the-time-windows). If used in combination with the GENEActiv or Axivity accelerometer brands, LUX estimates per LX and MX are also included in GGIR part 6 csv reports.
 
@@ -50,12 +71,12 @@ The implementation of Cosinor and Extended Cosinor in GGIR is as follows:
 5.  GGIR looks for the first valid data point in the time series and then selects the maximum integer number of recording days following this data point.
 6.  If Day Saving Time occurs in the time series then duplicated timestamps when clock moves backward are ignored and missing timestamps when clock moves forward are inserted as missing values.
 7.  Cosinor models are fitted using functions `ActCosinor` and `ActExtendCosinor` from R package [ActCR](https://CRAN.R-project.org/package=ActCR). Here, `ActExtendCosinor` uses an anti-logistic function for the transformation.
-8.  The time offset between the start of the time series as used and the following midnight is used to reverse offset the ActCR results, to ensure that acrophase and acrotime can be interpreted relative to midnight.
+8.  The time offset between the start of the time series as used and the following midnight is used to reverse offset the ActCR results, to ensure that <abbr title="Peak of the fitted cosine curve expressed as a clock time (hours from midnight)">acrophase and acrotime</abbr> can be interpreted relative to midnight.
 9.  Time series corresponding to the fitted models are stored inside the part 2 milestone data as stored in output subfolder `meta/ms2.out` to facilitate visual inspection. For the moment they are not used in any GGIR visualisation, but you may want to look them up and try to plot them yourself. They are stored in object `SUM$cosinor_ts`.
 
 ## Intradaily Variability (IV) and Interdaily Stability (IS)
 
-IV and IS were first proposed by [Witting W et al. 1990](https://doi.org/10.1016/0006-3223(90)90523-5) and [van Someren EJ, et al. 1996](https://doi.org/10.1016/0006-3223(95)00370-3).
+<abbr title="Measures hour-by-hour variability in activity throughout a day; values ~2 indicate fragmented rhythm">IV</abbr> and <abbr title="Measures how constant an individual’s daily routine is across days (0–1; higher = more stable)">IS</abbr> were first proposed by [Witting W et al. 1990](https://doi.org/10.1016/0006-3223(90)90523-5) and [van Someren EJ, et al. 1996](https://doi.org/10.1016/0006-3223(95)00370-3).
 
 -   IS measures how constant is the routine of activity over several days and ranges from 0 to 1, values close to 1 indicate more constant routine.
 
@@ -72,13 +93,13 @@ IS is sometimes used as a measure of behavioural robustness when conducting Cosi
 
 ## phi
 
-Phi indicates how correlated the multi-day acceleration time series is with itself when there is an hour shift, also known as first-order auto-correlation from the first-order autoregressive model AR(1). A higher phi value indicates a higher autocorrelation, while a phi close to zero or even negative indicates more fragmented behavior. For a detailed discussion of phi see [Dickey and Fuller (1979)](https://doi.org/10.1080/01621459.1979.10482531) and [Danilevicz et al. 2024](https://doi.org/10.1186/s12874-024-02255-w). Phi is calculated by default in GGIR part 2 and in part 6 only when parameter `part6CR` is set to TRUE.
+<abbr title="First-order autocorrelation of the 1-hour shifted time series; higher = stronger rhythm">Phi</abbr> indicates how correlated the multi-day acceleration time series is with itself when there is an hour shift, also known as first-order auto-correlation from the first-order autoregressive model AR(1). A higher phi value indicates a higher autocorrelation, while a phi close to zero or even negative indicates more fragmented behavior. For a detailed discussion of phi see [Dickey and Fuller (1979)](https://doi.org/10.1080/01621459.1979.10482531) and [Danilevicz et al. 2024](https://doi.org/10.1186/s12874-024-02255-w). Phi is calculated by default in GGIR part 2 and in part 6 only when parameter `part6CR` is set to TRUE.
 
 ## Detrended fluctuation analysis (DFA)
 
 ### Self-Similarity Parameter (SSP)
 
-The self-similarity parameter (SSP) is also known as scaling exponent or alpha. The overall SSP is a real number between zero and two. Values in the range (0, 1) indicate stationary motion behaviour. Values int he range (1, 2 indicate non-stationary motion behaviour. For details see [Mesquita et al 2020](https://doi.org/10.1093/bioinformatics/btaa955) and [Danilevicz et al. 2024](https://doi.org/10.1186/s12874-024-02255-w).
+The self-similarity parameter (<abbr title="Scaling exponent from DFA; split into SSP_short (≤90 min) and SSP_long (120–600 min)">SSP</abbr>) is also known as scaling exponent or alpha. The overall SSP is a real number between zero and two. Values in the range (0, 1) indicate stationary motion behaviour. Values int he range (1, 2 indicate non-stationary motion behaviour. For details see [Mesquita et al 2020](https://doi.org/10.1093/bioinformatics/btaa955) and [Danilevicz et al. 2024](https://doi.org/10.1186/s12874-024-02255-w).
 
 In human motor activity, researchers often observe that the scaling behaviour is not uniform across all time scales but exhibits a "crossover point" around 1.5 to 2 hours. To capture distinct biological mechanisms, GGIR splits the DFA into two distinct time-scale regions:
 
@@ -92,7 +113,7 @@ Additionally, the output includes the difference between the short-term and long
 
 ### Activity Balance Index (ABI)
 
-The Activity Balance Index (ABI) was introduced by [Danilevicz et al. 2024](https://doi.org/10.1186/s12874-024-02255-w) and is a transformation of SSP. ABI measures how the activity over the observed period is balanced, higher values reflect a more balanced pattern of activity. ABI is a real number between zero and one and calculated from the acceleration metric time series directly without the need for cut-points. A higher ABI reflects a more balanced pattern of activity.
+The Activity Balance Index (<abbr title="Transformation of SSP measuring how balanced the activity pattern is (0–1; higher = more balanced)">ABI</abbr>) was introduced by [Danilevicz et al. 2024](https://doi.org/10.1186/s12874-024-02255-w) and is a transformation of SSP. ABI measures how the activity over the observed period is balanced, higher values reflect a more balanced pattern of activity. ABI is a real number between zero and one and calculated from the acceleration metric time series directly without the need for cut-points. A higher ABI reflects a more balanced pattern of activity.
 
 In addition to the overall ABI (**ABI_overall**), GGIR calculates **ABI_short** and **ABI_long**, which are the Activity Balance Indices transformed from the short-term (SSP_short) and long-term (SSP2) scaling exponents, respectively. This allows for a direct evaluation of behavioural balance at both the general mobility and circadian levels.
 
@@ -109,3 +130,122 @@ A discussion of the Sleep Regularity Index can be found in <https://wadpac.githu
 -   All other circadian rhythm variables are only derived at recording level. IV, IS, phi, and cosinor analysis variables and stored in part2_summary.csv and part6_summary.csv, while SSP and ABI are only stored in part6_summary.csv.
 
 -   For a more detailed variable dictionary see annex on [GGIR output](https://wadpac.github.io/GGIR/articles/GGIRoutput.html).
+
+## Minimal example
+
+```r
+library(GGIR)
+GGIR(
+  datadir    = "C:/mydata",
+  outputdir  = "C:/myresults",
+  part2CR    = TRUE,    # compute circadian rhythm metrics in part 2
+  part6CR    = TRUE,    # compute circadian rhythm metrics in part 6 (DFA, SRI, etc.)
+  winhr      = c(5, 10) # L5/M5 and L10/M10 MXLX metrics
+)
+```
+
+---
+
+::: {style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px"}
+
+### Summary
+
+GGIR offers a rich set of circadian rhythm metrics: MXLX (run by default), and optional Cosinor, IS, IV, phi, DFA/SSP, and ABI. Part 2 uses all valid data in the recording; part 6 uses a user-defined time window and omits invalid days.
+
+### What to read next
+
+➡ [Chapter 14: Behavioural Fragmentation](chapter14_BehaviouralFragmentation.html)
+
+### Related materials
+
+- 📄 [Danilevicz et al. 2024: IS/IV/phi/DFA paper](https://doi.org/10.1186/s12874-024-02255-w)
+- 📄 [GGIR Output reference](GGIRoutput.html)
+
+
+:::
+
+<style>
+abbr[data-custom-tooltip] {
+  cursor: pointer;
+  position: relative;
+  text-decoration: underline dotted #0054AD;
+}
+abbr[data-custom-tooltip]:hover::after {
+  content: attr(data-custom-tooltip);
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #2c3e50;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  white-space: normal;
+  width: max-content;
+  max-width: 250px;
+  font-size: 13px;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  text-align: center;
+  line-height: 1.4;
+}
+abbr[data-custom-tooltip]:hover::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #2c3e50;
+}
+pre {
+  position: relative;
+}
+pre .copy-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 2px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+pre:hover .copy-btn {
+  opacity: 1;
+}
+pre .copy-btn.copied {
+  background: #2c3e50;
+  color: #fff;
+  border-color: #2c3e50;
+}
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll('abbr[title]').forEach(function(abbr) {
+    abbr.setAttribute('data-custom-tooltip', abbr.getAttribute('title'));
+    abbr.removeAttribute('title');
+  });
+  document.querySelectorAll('pre').forEach(function(pre) {
+    var btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '\ud83d\udccb Copy';
+    btn.addEventListener('click', function() {
+      var code = pre.querySelector('code');
+      var text = code ? code.textContent : pre.textContent;
+      navigator.clipboard.writeText(text).then(function() {
+        btn.textContent = '\u2705 Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = '\ud83d\udccb Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    });
+    pre.appendChild(btn);
+  });
+});
+</script>

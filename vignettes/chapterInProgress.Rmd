@@ -22,3 +22,89 @@ knitr::include_graphics("GGIR-MASTERLOGO-RGB.png")
 ```
 
 
+
+<style>
+abbr[data-custom-tooltip] {
+  cursor: pointer;
+  position: relative;
+  text-decoration: underline dotted #0054AD;
+}
+abbr[data-custom-tooltip]:hover::after {
+  content: attr(data-custom-tooltip);
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #2c3e50;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  white-space: normal;
+  width: max-content;
+  max-width: 250px;
+  font-size: 13px;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  text-align: center;
+  line-height: 1.4;
+}
+abbr[data-custom-tooltip]:hover::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #2c3e50;
+}
+pre {
+  position: relative;
+}
+pre .copy-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 2px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+pre:hover .copy-btn {
+  opacity: 1;
+}
+pre .copy-btn.copied {
+  background: #2c3e50;
+  color: #fff;
+  border-color: #2c3e50;
+}
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll('abbr[title]').forEach(function(abbr) {
+    abbr.setAttribute('data-custom-tooltip', abbr.getAttribute('title'));
+    abbr.removeAttribute('title');
+  });
+  document.querySelectorAll('pre').forEach(function(pre) {
+    var btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '\ud83d\udccb Copy';
+    btn.addEventListener('click', function() {
+      var code = pre.querySelector('code');
+      var text = code ? code.textContent : pre.textContent;
+      navigator.clipboard.writeText(text).then(function() {
+        btn.textContent = '\u2705 Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = '\ud83d\udccb Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    });
+    pre.appendChild(btn);
+  });
+});
+</script>

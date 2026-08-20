@@ -14,13 +14,33 @@ knitr::opts_chunk$set(
 )
 ```
 
+::: {style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px"}
+
+**⏱ Reading time:** ~20 min &nbsp;|&nbsp; **Chapter:** 3 of 14
+
+**What you will learn**
+
+- How GGIR detects and imputes time gaps in raw data files
+- How auto-calibration corrects sensor errors using free-living data
+- How GGIR detects non-wear and clipping, and what happens to those periods
+
+**Prerequisites**
+
+- Read the previous chapter: [Chapter 2: The GGIR pipeline](chapter2_Pipeline.html)
+
+
+**Key terms:** <abbr title="An algorithm that uses non-movement periods in free-living data to estimate and correct sensor calibration errors without requiring a lab experiment">auto-calibration</abbr>, <abbr title="Time periods when the accelerometer was not worn, detected via standard deviation and range of the raw signal over 60-minute windows">non-wear</abbr>, <abbr title="A quality flag applied when acceleration values near or exceed the sensor dynamic range, indicating likely sensor misuse or malfunction">clipping</abbr>, <abbr title="The maximum absolute acceleration a sensor can record; values exceeding 150% trigger a clipping flag">dynamic range</abbr>, <abbr title="A missing or unreadable segment in raw data caused by corrupted blocks or idle sleep mode">time gap</abbr>, <abbr title="The number of data points recorded per second by the sensor (Hz)">sampling rate</abbr>, <abbr title="Calibration performed by the manufacturer prior to shipping, using gravitational acceleration as reference">factory calibration</abbr>, <abbr title="A parameter vector controlling epoch length, non-wear step size, and non-wear window length">windowsizes</abbr>
+– see the [full Glossary](Glossary.html) for all definitions.
+
+:::
+
 Data quality assurance is an important part of GGIR. GGIR undertakes several key tasks aimed at evaluating, and, where possible, enhancing the quality of the data, as well as documenting what was done. These tasks are explained in this chapter.
 
 ## Time gaps identification and imputation
 
 Accelerometer data stored in binary format (e.g. .bin or .cwa) is typically structured in data blocks. Each data block has a header at the top and a constant number of data points per block, usually the equivalent of a few seconds of data. For the Axivity accelerometer with data stored in '.cwa' file format and for the Parmay Matrix sensor with data stored in '.bin' or '.BIN' format those blocks can, on rare occasions, be corrupted and unreadable, therefore creating a gap in the information recorded.
 
-For the ActiGraph accelerometer, but also some other sensor brands that export data in ‘csv’ file format, it is possible that the recording stops at certain time when it is not moved for a while and starts recording after some time, therefore creating a time gap.
+For the ActiGraph accelerometer, but also some other sensor brands that export data in ‘csv’ file format, it is possible that the recording stops at certain time when it is not moved for a while and starts recording after some time, therefore creating a <abbr title="A missing or unreadable segment in the raw accelerometer data">time gap</abbr>.
 
 GGIR has been developed to efficiently identify and manage these time gaps.
 
@@ -28,7 +48,7 @@ GGIR has been developed to efficiently identify and manage these time gaps.
 
 Although this is not expected to occur often, Axivity cwa and Parmay Matrix bin/BIN data can come with faulty data blocks. By 'faulty' we mean that the data in the block is not interpretable. For example, faulty blocks may occur when the device in recording mode is connected to a computer with a USB cable. To address this, the R package `GGIRread`, as used by GGIR, identifies these faulty blocks and imputes them by the last recorded non-faulty acceleration value normalised to 1 *g* (*g* is the unit for gravitational acceleration). In the case that no previous non-faulty value is found, then acceleration is imputed by 0, 0, and 1 for x, y, and z axis, respectively.
 
-The sampling rate of an accelerometer refers to the number of data points recorded and stored per second. Axivity and Parmay Matrix devices are expected by design to have a slightly variable sampling rate over time, which is accounted for by interpolating the data after it is loaded into R. For example, the data may have been collected at 99.7 Hertz for one block, and the interpolation technique will then interpolate the data such that it is 100 Hertz. The interpolation happens inside the R package `GGIRread`. The exact technique used for the interpolation is set by parameter `interpolationType` and uses linear interpolation by default (`interpolationType = 1`), but you can also set it to nearest neighbour interpolation (`interpolationType = 2`). As a quality assurance, `GGIRread` keeps track of the variation in sampling rate per data block and automatically imputes blocks (smallest segment of data in a cwa file, typically a few seconds long) where the sampling rate deviates by more than 10% from the expected sampling rate. The imputation technique is the same as for the time gaps as detailed earlier in this section. If you are unhappy with the 10% threshold then you have the possibility of changing this percentage with the parameter `frequency_tol`. Biased sampling rates of this kind are expected to be extremely rare and are not expected to affect normal research conditions, but we nonetheless like to be able to account for them.
+The <abbr title="The number of data points recorded per second by the accelerometer">sampling rate</abbr> of an accelerometer refers to the number of data points recorded and stored per second. Axivity and Parmay Matrix devices are expected by design to have a slightly variable sampling rate over time, which is accounted for by interpolating the data after it is loaded into R. For example, the data may have been collected at 99.7 Hertz for one block, and the interpolation technique will then interpolate the data such that it is 100 Hertz. The interpolation happens inside the R package `GGIRread`. The exact technique used for the interpolation is set by parameter `interpolationType` and uses linear interpolation by default (`interpolationType = 1`), but you can also set it to nearest neighbour interpolation (`interpolationType = 2`). As a quality assurance, `GGIRread` keeps track of the variation in sampling rate per data block and automatically imputes blocks (smallest segment of data in a cwa file, typically a few seconds long) where the sampling rate deviates by more than 10% from the expected sampling rate. The imputation technique is the same as for the time gaps as detailed earlier in this section. If you are unhappy with the 10% threshold then you have the possibility of changing this percentage with the parameter `frequency_tol`. Biased sampling rates of this kind are expected to be extremely rare and are not expected to affect normal research conditions, but we nonetheless like to be able to account for them.
 
 Additionally, to monitor this process of handling faulty blocks and outliers in sampling rate, `GGIRread` logs a series of file health statistics which are stored by GGIR in the 'data_quality_report.csv' file located within the 'QC' folder of the output directory 'results' (see previous chapter for discussion on GGIR output). The data quality report, comes with variable names prefixed with 'filehealth', detailing the number and duration of time gaps detected during the recording(s), as well as number of epochs that have 5-10% or more than 10% bias in sampling rate.
 
@@ -38,7 +58,7 @@ Some manufacturers incorporate functionalities in their devices to let them stop
 
 For example, ActiGraph has the option called 'idle sleep mode' in their devices, which pauses data collection when no movement is detected for a sustained period of time. The ActiGraph’s idle sleep mode is [explained](https://actigraphcorp.my.site.com/support/s/article/Idle-Sleep-Mode-Explained) on the manufacturer’s website.
 
-The time gaps in the data are considered non-wear time in GGIR. GGIR imputes gaps shorter than 90 minutes at raw data level, using the last recorded value (meaning before the gap) normalised to 1 *g*. This approach assumes that accelerometer was kept in the same orientation as it was last observed. On the contrary, gaps longer than 90 minutes are imputed at epoch level to make the data processing more memory efficient and faster. The epoch level imputation is discussed in [chapter 6](https://wadpac.github.io/GGIR/articles/chapter6_DataImputation.html). The number and duration of the time gaps found are logged by GGIR in the 'data_quality_report.csv' file located within the 'QC' folder of the output directory 'results' (see previous chapter for discussion on GGIR output).
+The time gaps in the data are considered <abbr title="Time periods during which the accelerometer is not worn">non-wear</abbr> time in GGIR. GGIR imputes gaps shorter than 90 minutes at raw data level, using the last recorded value (meaning before the gap) normalised to 1 *g*. This approach assumes that accelerometer was kept in the same orientation as it was last observed. On the contrary, gaps longer than 90 minutes are imputed at <abbr title="A fixed-length time window (default 5 s) over which raw acceleration is summarised">epoch</abbr> level to make the data processing more memory efficient and faster. The epoch level imputation is discussed in [chapter 6](https://wadpac.github.io/GGIR/articles/chapter6_DataImputation.html). The number and duration of the time gaps found are logged by GGIR in the 'data_quality_report.csv' file located within the 'QC' folder of the output directory 'results' (see previous chapter for discussion on GGIR output).
 
 Studies often forget to clarify whether the accelerometers were configured to pause data collection during periods of no movement and, if so, how the resulting time gaps were accounted for in the data processing. Especially, if the device firmware or manufacturer software already imputes the time gaps that can cause significant bias to the GGIR estimates. More generally speaking, we advise to:
 
@@ -51,7 +71,7 @@ Studies often forget to clarify whether the accelerometers were configured to pa
 
 ### Specific note on ActiGraph idle sleep mode
 
-ActiGraph files might be exported in gt3x or csv formats. When idle sleep mode is used, data in these files are different. In gt3x files, time gaps can be found in the signal, with no imputation made by the ActiLife software. However, csv files exported in ActiLife will have imputed values in all three axes during periods of no movement. Note that this imputation by the ActiLife software has changed at some point in time. Initially the imputation was zeros but with more recent versions of ActiLife the imputation uses the last recorded value for each axis. Therefore, you need to be aware that GGIR will take care of the time gap imputation relative to the idle sleep mode when using gt3x files, but not when using ActiGraph csv files (because the latter come with the time gaps already imputed). 
+ActiGraph files might be exported in gt3x or csv formats. When <abbr title="An ActiGraph feature that pauses data collection during non-movement">idle sleep mode</abbr> is used, data in these files are different. In gt3x files, time gaps can be found in the signal, with no imputation made by the ActiLife software. However, csv files exported in ActiLife will have imputed values in all three axes during periods of no movement. Note that this imputation by the ActiLife software has changed at some point in time. Initially the imputation was zeros but with more recent versions of ActiLife the imputation uses the last recorded value for each axis. Therefore, you need to be aware that GGIR will take care of the time gap imputation relative to the idle sleep mode when using gt3x files, but not when using ActiGraph csv files (because the latter come with the time gaps already imputed). 
 
 ### Resampling for GENEActiv with 85.7 Hertz
 
@@ -120,7 +140,7 @@ Finally, if the recording starts or ends with a period of less than three hours 
 
 ## Clipping detection
 
-GGIR part 1 also screens the acceleration signal for "clipping", i.e., sustained unusual high (raw) acceleration values non compatible with human movement. If more than 30% of the data points in a  15-minute window (same as used for non-wear) are close to the maximal values (technical term for this is dynamic range) of this sensor, the corresponding time period is considered as potentially unreliable, which may be explained by the sensor getting stuck at its extreme value or accelerometers being used inappropriately (attached to some heavily accelerating object). For example, for a dynamic range of 8*g*, accelerations over 7.5*g* would be marked as "clipping". The window is also classified as clipping if any value in the window is larger than 150% the dynamic range of the sensor. Given that clipping rarely happens it is reported by GGIR as part of non-wear time. Both clipping and non-wear are treated the same and by merging them we arrive at a single indicator for the amount of invalid data. However, to keep track of the occurrence of clipping time, GGIR does report the fraction of 15-minute windows in a recording during which clipping occurs, see section on output below.
+GGIR part 1 also screens the acceleration signal for "<abbr title="A quality flag when acceleration values exceed the sensor's dynamic range">clipping</abbr>", i.e., sustained unusual high (raw) acceleration values non compatible with human movement. If more than 30% of the data points in a  15-minute window (same as used for non-wear) are close to the maximal values (technical term for this is <abbr title="The maximum absolute acceleration value a sensor can record">dynamic range</abbr>) of this sensor, the corresponding time period is considered as potentially unreliable, which may be explained by the sensor getting stuck at its extreme value or accelerometers being used inappropriately (attached to some heavily accelerating object). For example, for a dynamic range of 8*g*, accelerations over 7.5*g* would be marked as "clipping". The window is also classified as clipping if any value in the window is larger than 150% the dynamic range of the sensor. Given that clipping rarely happens it is reported by GGIR as part of non-wear time. Both clipping and non-wear are treated the same and by merging them we arrive at a single indicator for the amount of invalid data. However, to keep track of the occurrence of clipping time, GGIR does report the fraction of 15-minute windows in a recording during which clipping occurs, see section on output below.
 
 ## Key parameters
 
@@ -193,3 +213,125 @@ GGIR part 1 also screens the acceleration signal for "clipping", i.e., sustained
 -   van Hees VT, Fang Z, Langford J, Assah F, Mohammad A, da Silva IC, Trenell MI, White T, Wareham NJ, Brage S. Autocalibration of accelerometer data for free-living physical activity assessment using local gravity and temperature: an evaluation on four continents. J Appl Physiol (1985). 2014 Oct 1;117(7):738-44. PMID: 25103964 [link](https://doi.org/10.1152/japplphysiol.00421.2014)
 
 -   van Hees VT, Gorzelniak L, Dean León EC, Eder M, Pias M, Taherian S, Ekelund U, Renström F, Franks PW, Horsch A, Brage S. Separating movement and gravity components in an acceleration signal and implications for the assessment of human daily physical activity. [PLoS One. 2013 Apr 23](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0061691)
+
+## Minimal example
+
+```r
+library(GGIR)
+GGIR(
+  datadir    = "C:/mydata",
+  outputdir  = "C:/myresults",
+  do.cal     = TRUE,           # run auto-calibration (default, recommended)
+  windowsizes = c(5, 900, 3600) # epoch=5s, non-wear step=15min, window=60min (defaults)
+)
+```
+
+---
+
+::: {style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px"}
+
+### Summary
+
+GGIR performs four data quality steps automatically: time gap detection and imputation, <abbr title="An algorithm correcting sensor calibration error using non-movement periods">auto-calibration</abbr> using non-movement periods, non-wear detection using signal standard deviation and range, and clipping detection. All quality indicators are logged in `data_quality_report.csv`.
+
+### What to read next
+
+➡ [Chapter 4: From Raw Data to Acceleration Metrics](chapter4_AccMetrics.html)
+
+### Related materials
+
+- 📄 [van Hees et al. 2014: auto-calibration paper](https://doi.org/10.1152/japplphysiol.00421.2014)
+- 📄 [GGIR Parameters reference](GGIRParameters.html)
+<br>
+<p><em>Video tutorial by Prof. Stuart Fairclough</em></p>
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 4px; margin-bottom: 1.5rem;">
+  <iframe data-external="1" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://www.youtube.com/embed/2yb3GI-3sQ8?si=k1kO6KgNlYkYV5Ew" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</div>
+
+:::
+
+<style>
+abbr[data-custom-tooltip] {
+  cursor: pointer;
+  position: relative;
+  text-decoration: underline dotted #0054AD;
+}
+abbr[data-custom-tooltip]:hover::after {
+  content: attr(data-custom-tooltip);
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #2c3e50;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  white-space: normal;
+  width: max-content;
+  max-width: 250px;
+  font-size: 13px;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  text-align: center;
+  line-height: 1.4;
+}
+abbr[data-custom-tooltip]:hover::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #2c3e50;
+}
+pre {
+  position: relative;
+}
+pre .copy-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 2px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+pre:hover .copy-btn {
+  opacity: 1;
+}
+pre .copy-btn.copied {
+  background: #2c3e50;
+  color: #fff;
+  border-color: #2c3e50;
+}
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll('abbr[title]').forEach(function(abbr) {
+    abbr.setAttribute('data-custom-tooltip', abbr.getAttribute('title'));
+    abbr.removeAttribute('title');
+  });
+  document.querySelectorAll('pre').forEach(function(pre) {
+    var btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '\ud83d\udccb Copy';
+    btn.addEventListener('click', function() {
+      var code = pre.querySelector('code');
+      var text = code ? code.textContent : pre.textContent;
+      navigator.clipboard.writeText(text).then(function() {
+        btn.textContent = '\u2705 Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = '\ud83d\udccb Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    });
+    pre.appendChild(btn);
+  });
+});
+</script>

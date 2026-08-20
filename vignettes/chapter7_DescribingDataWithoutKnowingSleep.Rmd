@@ -14,6 +14,26 @@ knitr::opts_chunk$set(
 )
 ```
 
+::: {style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px"}
+
+**⏱ Reading time:** ~15 min &nbsp;|&nbsp; **Chapter:** 7 of 14
+
+**What you will learn**
+
+- How GGIR summarises average acceleration and its distribution per valid day
+- What the MX metrics and intensity gradient are and how to compute them
+- How GGIR structures its part 2 output CSV reports
+
+**Prerequisites**
+
+- Read the previous chapter: [Chapter 6: How GGIR Deals with Invalid Data](chapter6_DataImputation.html)
+
+
+**Key terms:** <abbr title="Euclidean Norm Minus One – the default acceleration metric in GGIR">ENMO</abbr>, <abbr title="A calendar day that contains at least the minimum valid hours specified by includedaycrit">valid day</abbr>, <abbr title="Acceleration values corresponding to user-specified quantiles, representing the minimum acceleration in the most active accumulated X minutes (proposed by Rowlands et al.)">MX metrics</abbr>, <abbr title="The slope of the log-log linear regression of time spent per acceleration bin; proposed by Rowlands et al. to summarise the intensity distribution">intensity gradient</abbr>, <abbr title="A fixed-length time window (default 5 s) over which raw acceleration is summarised into a metric value">epoch</abbr>
+– see the [full Glossary](Glossary.html) for all definitions.
+
+:::
+
 With the metric values imputed in the previous chapter, GGIR part 2 offers a first descriptive analysis of the data.
 Although we will have to wait till later GGIR parts (chapters) to see the segmentation of days in waking and sleep hours, there is already enough that can be quantified at this point.
 In this chapter we focus on descriptive analysis of the data that are informative even without the knowledge on when the participant was sleeping or awake.
@@ -25,7 +45,7 @@ In this way, GGIR part 2 is an ideal place to start for data quality assurance.
 
 ## Basic descriptives
 
-Descriptive variables are calculated and reported for valid days only, where the criteria for valid day is defined by parameter `includedaycrit`.
+Descriptive variables are calculated and reported for valid days only, where the criteria for <abbr title="A calendar day that contains at least the minimum valid hours specified by includedaycrit">valid day</abbr> is defined by parameter `includedaycrit`.
 
 ### Average acceleration
 
@@ -35,7 +55,7 @@ GGIR part 2 provide two types of average acceleration:
 -   Average per day, only stored when the day was considered valid.
     Note that this descriptive and most other descriptives are also stored by GGIR as averages across all days, weekend days, or weekdays, which we will discuss in more detail later on.
 
--   Weighted average of all valid data points in the recording, weighted by timing in the day of all valid epochs, regardless of whether they come from days that as a whole are classified as valid or not.
+-   Weighted average of all valid data points in the recording, weighted by timing in the day of all valid <abbr title="A fixed-length time window (default 5 s) over which raw acceleration is summarised">epochs</abbr>, regardless of whether they come from days that as a whole are classified as valid or not.
 
 ### Acceleration distribution
 
@@ -52,7 +72,7 @@ The distribution of acceleration values is often referred to as intensity distri
 ### Sets of quantiles (MX metrics by [Rowlands et al.](https://pubmed.ncbi.nlm.nih.gov/29360664/))
 
 The quantiles, as discussed above, can be used to describe the accelerations that participants exceed in their most active “X” accumulated minutes in a day.
-In the specific approach, as proposed by [Rowlands et al.](https://pubmed.ncbi.nlm.nih.gov/31808014/), these quantiles are referred to as the **MX metrics**.
+In the specific approach, as proposed by [Rowlands et al.](https://pubmed.ncbi.nlm.nih.gov/31808014/), these quantiles are referred to as the **<abbr title="Acceleration values corresponding to user-specified quantiles, representing the minimum acceleration in the most active accumulated X minutes">MX metrics</abbr>**.
 The MX metrics should not be confused with the most active continuous X hours, e.g.
 M10, as used in circadian rhythm research that also can be derived with GGIR (see parameter `winhr`).
 
@@ -69,14 +89,14 @@ Note: If time segments shorter than 24 hours are specified in parameter `qwindow
 At the moment, this only works for one segment length and GGIR does not facilitate the generation of MX metrics for multiple unequal time segments within the same GGIR function call. 
 
 The output in the part 2 summary report file will refer to this as a percentile of the day.
-Thus, for a 24-h day, M30 will appear as “p97.91666_ENMO_mg_0.24hr”.
+Thus, for a 24-h day, M30 will appear as “p97.91666_<abbr title="Euclidean Norm Minus One – the default acceleration metric in GGIR">ENMO</abbr>_mg_0.24hr”.
 To create the radar plots of these MX metrics as first described by [Rowlands et al.](https://pubmed.ncbi.nlm.nih.gov/31808014/), this [GitHub repository](https://github.com/Maylor8/RadarPlotGenerator) provides the R code and detailed instructions on how to make the radar plots using your own data.
 
 ### Intensity gradient
 
 If we plot the time spent in equally spaced acceleration ranges, we would end up with an asymptotic-shaped curve, indicating little time spent at high intensities (acceleration levels) and much time spent at low intensities.
 The shape of the distribution may be informative but is hard to quantify with a single number in its standard form.
-Therefore, a new concept called the intensity gradient was proposed by [Rowlands and colleagues](https://pubmed.ncbi.nlm.nih.gov/29360664/).
+Therefore, a new concept called the <abbr title="The slope of the log-log linear regression of time spent per acceleration bin; proposed by Rowlands et al. to summarise the intensity distribution">intensity gradient</abbr> was proposed by [Rowlands and colleagues](https://pubmed.ncbi.nlm.nih.gov/29360664/).
 
 The intensity gradient defines the slope of the log-transformed axes of this intensity distribution.
 More specifically, we calculate the time accumulated in incremental acceleration bins (bin size = 25 m*g*) but also keep track of the mid-point of each intensity bin, e.g. 62.5 m*g* for the bin ranging from 50 to 75 m*g*.
@@ -131,3 +151,126 @@ In part2_daysummary_longformat.csv, each row represents one segment from one day
 | ig_rsquared_ENMO_0-24hr         | R-squared for the intensity gradient                                                                                                                                                                                 | `b`       |
 
 : To clarify that `b` refers to both part2_summary.csv and part2_daysummary.csv, `r` refers to part2_summary.csv only.
+
+## Minimal example
+
+```r
+library(GGIR)
+GGIR(
+  datadir       = "C:/mydata",
+  outputdir     = "C:/myresults",
+  includedaycrit = 16,           # minimum valid hours to count a day as valid
+  qlevels       = c(1380/1440, 1410/1440, 1430/1440), # M60, M30, M10
+  iglevels      = TRUE           # compute intensity gradient
+)
+```
+
+---
+
+::: {style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px"}
+
+### Summary
+
+GGIR part 2 provides average acceleration, acceleration distribution metrics (percentiles, ilevels), MX metrics, and the intensity gradient for each valid day and as recording-level summaries. Results are stored in `part2_daysummary.csv` and `part2_summary.csv`.
+
+### What to read next
+
+➡ [Chapter 8: Sleep Fundamentals: SIB Detection](chapter8_SleepFundamentalsSibs.html)
+
+### Related materials
+
+- 📄 [Rowlands et al. 2019: MX metrics paper](https://pubmed.ncbi.nlm.nih.gov/31808014/)
+- 📄 [GGIR Output reference](GGIRoutput.html)
+<br>
+<p><em>Video tutorial by Prof. Stuart Fairclough</em></p>
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 4px; margin-bottom: 1.5rem;">
+  <iframe data-external="1" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://www.youtube.com/embed/tuyRMFYLDWM?si=sm9mR_gQohrj90t7" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</div>
+
+:::
+
+<style>
+abbr[data-custom-tooltip] {
+  cursor: pointer;
+  position: relative;
+  text-decoration: underline dotted #0054AD;
+}
+abbr[data-custom-tooltip]:hover::after {
+  content: attr(data-custom-tooltip);
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #2c3e50;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  white-space: normal;
+  width: max-content;
+  max-width: 250px;
+  font-size: 13px;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  text-align: center;
+  line-height: 1.4;
+}
+abbr[data-custom-tooltip]:hover::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #2c3e50;
+}
+pre {
+  position: relative;
+}
+pre .copy-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 2px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+pre:hover .copy-btn {
+  opacity: 1;
+}
+pre .copy-btn.copied {
+  background: #2c3e50;
+  color: #fff;
+  border-color: #2c3e50;
+}
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll('abbr[title]').forEach(function(abbr) {
+    abbr.setAttribute('data-custom-tooltip', abbr.getAttribute('title'));
+    abbr.removeAttribute('title');
+  });
+  document.querySelectorAll('pre').forEach(function(pre) {
+    var btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '\ud83d\udccb Copy';
+    btn.addEventListener('click', function() {
+      var code = pre.querySelector('code');
+      var text = code ? code.textContent : pre.textContent;
+      navigator.clipboard.writeText(text).then(function() {
+        btn.textContent = '\u2705 Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = '\ud83d\udccb Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    });
+    pre.appendChild(btn);
+  });
+});
+</script>

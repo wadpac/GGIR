@@ -17,6 +17,26 @@ knitr::opts_chunk$set(
 )
 ```
 
+::: {style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px"}
+
+**⏱ Reading time:** ~10 min &nbsp;|&nbsp; **Chapter:** 5 of 14
+
+**What you will learn**
+
+- How to inform GGIR about the timing of your study protocol so it can mask irrelevant data
+- The five data masking strategies and when to use each
+- How to set maximum recording duration
+
+**Prerequisites**
+
+- Read the previous chapter: [Chapter 4: From Raw Data to Acceleration Metrics](chapter4_AccMetrics.html)
+
+
+**Key terms:** <abbr title="The process of excluding recording segments outside the intended wear period based on study protocol knowledge">data masking</abbr>, <abbr title="An accelerometer recording for one participant across the study wear period">recording</abbr>
+– see the [full Glossary](Glossary.html) for all definitions.
+
+:::
+
 When you use an accelerometer in a study, you are likely to give your
 study participants specific instructions on when they should start
 wearing the accelerometer, for how many days, and whether or not they
@@ -25,7 +45,7 @@ types or parts of the day. Further, it may be that you turned on the
 accelerometers hours or even days before you gave it to the participant
 or stopped it hours or days after you received it back. Your knowledge
 about all these aspects of your study protocol can be used by GGIR to
-mask certain periods of time in the recording. This is important because
+mask certain periods of time in the <abbr title="An accelerometer recording for one participant across the study wear period">recording</abbr>. This is important because
 this information is not necessarily obvious from the recorded data. For
 instance, when a recording is started and dispatched to the participant
 via mail, the time during which the devices are in transit and not worn
@@ -90,3 +110,108 @@ Additionally, you can set the maximum duration the accelerometer is to be worn a
 | n hours ignored at start of meas                      | Number of hours ignored at the end of the measurement (if data_masking_strategy = 1) or at the end of the ndayswindow (if data_masking_strategy = 3 or 5). A log of decision made in part2.R    | part2_summary.csv |
 | n hours ignored at end of meas                        | Number of hours ignored at the start of the measurement (if data_masking_strategy = 1) or at the start of the ndayswindow (if data_masking_strategy = 3 or 5) A log of decision made in part2.R | part2_summary.csv |
 | n days of measurement after which all data is ignored | Number of days of measurement after which all data is ignored (if data_masking_strategy = 1, 3 or 5) A log of decision made in part2.R                                                          | part2_summary.csv |
+
+---
+
+::: {style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px"}
+
+### Summary
+
+Use `data_masking_strategy` (values 1–5) to match GGIR’s analysis window to your actual data collection protocol. Always mask out data from before the device was given to the participant and after it was returned, to avoid contaminating results with transit movements.
+
+### What to read next
+
+➡ [Chapter 6: How GGIR Deals with Invalid Data](chapter6_DataImputation.html)
+
+### Related materials
+
+- 📄 [GGIR Parameters reference](GGIRParameters.html)
+
+
+:::
+
+<style>
+abbr[data-custom-tooltip] {
+  cursor: pointer;
+  position: relative;
+  text-decoration: underline dotted #0054AD;
+}
+abbr[data-custom-tooltip]:hover::after {
+  content: attr(data-custom-tooltip);
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #2c3e50;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  white-space: normal;
+  width: max-content;
+  max-width: 250px;
+  font-size: 13px;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  text-align: center;
+  line-height: 1.4;
+}
+abbr[data-custom-tooltip]:hover::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #2c3e50;
+}
+pre {
+  position: relative;
+}
+pre .copy-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 2px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+pre:hover .copy-btn {
+  opacity: 1;
+}
+pre .copy-btn.copied {
+  background: #2c3e50;
+  color: #fff;
+  border-color: #2c3e50;
+}
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll('abbr[title]').forEach(function(abbr) {
+    abbr.setAttribute('data-custom-tooltip', abbr.getAttribute('title'));
+    abbr.removeAttribute('title');
+  });
+  document.querySelectorAll('pre').forEach(function(pre) {
+    var btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '\ud83d\udccb Copy';
+    btn.addEventListener('click', function() {
+      var code = pre.querySelector('code');
+      var text = code ? code.textContent : pre.textContent;
+      navigator.clipboard.writeText(text).then(function() {
+        btn.textContent = '\u2705 Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = '\ud83d\udccb Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    });
+    pre.appendChild(btn);
+  });
+});
+</script>

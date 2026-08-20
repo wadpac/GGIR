@@ -14,13 +14,30 @@ knitr::opts_chunk$set(
 )
 ```
 
+::: {style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px"}
+
+**⏱ Reading time:** ~15 min &nbsp;|&nbsp; **Chapter:** 1 of 14
+
+**What you will learn**
+
+- What GGIR is and what types of research it supports
+- The design philosophy behind GGIR’s algorithms
+- The structure of the documentation and how to navigate it
+
+
+
+**Key terms:** <abbr title="Euclidean Norm Minus One – the default acceleration metric in GGIR, computed as vector magnitude minus 1g with negatives rounded to 0">ENMO</abbr>, <abbr title="A fixed-length time window (default 5 s) over which raw acceleration is summarised into a metric value">epoch</abbr>, <abbr title="Acceleration data stored in gravitational units at the native sampling rate of the sensor, as opposed to proprietary count units">raw accelerometer data</abbr>, <abbr title="Intermediate RData files saved between GGIR pipeline parts to allow resuming without re-running earlier steps">milestone data</abbr>, <abbr title="The six sequential computational stages of the GGIR pipeline (parts 1–6)">Parts (GGIR pipeline)</abbr>
+– see the [full Glossary](Glossary.html) for all definitions.
+
+:::
+
 ## A brief overview
 
-[GGIR](https://CRAN.R-project.org/package=GGIR) is an R-package primarily designed to process multi-day ***raw*** accelerometer data for physical activity, sleep, and circadian rhythm research.
-The term ***raw*** refers to data being expressed in gravitational units (1 _g_ equal gravitational acceleration, which on average is 9.81 m/s<sup>2</sup>) as opposed to the previous generation of accelerometers which stored data in accelerometer brand-specific units at epoch level, typically 5, 30, or 60 seconds in length.
+[GGIR](https://CRAN.R-project.org/package=GGIR) is an R-package primarily designed to process multi-day <abbr title="Acceleration data stored in gravitational units at the native sampling rate of the sensor, as opposed to proprietary count units">***raw*** accelerometer data</abbr> for physical activity, sleep, and circadian rhythm research.
+The term ***raw*** refers to data being expressed in gravitational units (1 _g_ equal gravitational acceleration, which on average is 9.81 m/s<sup>2</sup>) as opposed to the previous generation of accelerometers which stored data in accelerometer brand-specific units at <abbr title="A fixed-length time window (default 5 s) over which raw acceleration is summarised">epoch</abbr> level, typically 5, 30, or 60 seconds in length.
 Despite the focus on the raw data, GGIR also offers functionality to process previous-generation accelerometer data.
 The signal processing for raw data includes many steps that are explained in these pages. For example, automatic calibration to gravity, detection of abnormally high values, imputation of raw-level time gaps (only for specific sensor brands), and calculation of orientation angle and average magnitude acceleration based on a variety of metrics.
-Next, the signal processing for both raw and previous-generation data continue with the detection of non-wear and epoch-level imputation.
+Next, the signal processing for both raw and previous-generation data continue with the detection of <abbr title="Time periods during which the accelerometer is not worn by the participant">non-wear</abbr> and epoch-level imputation.
 Finally, GGIR uses all this information to describe the data on data quality and data summary metrics that could be interpreted as estimates of physical activity, inactivity, sleep, and circadian rhythm.
 
 The time resolutions of GGIR output are:
@@ -45,7 +62,7 @@ The time resolutions of GGIR output are:
 2.  GGIR is applicable to data from multiple sensor brands and file formats.
 3.  GGIR facilitates sleep, physical activity, and circadian rhythm research.
 4.  GGIR has extensive quantitative output designed for use in quantitative research.
-5.  GGIR is designed to be computationally efficient such as the option to store and re-use intermediate milestone data and the option to process multiple files in parallel on the same computer as discussed in Chapter 2.
+5.  GGIR is designed to be computationally efficient such as the option to store and re-use intermediate <abbr title="Intermediate RData files saved by each GGIR part allowing pipeline resumption">milestone data</abbr> and the option to process multiple files in parallel on the same computer as discussed in Chapter 2.
 6.  GGIR is designed to be accessible for new users without experience in R or programming. GGIR requires only one function call and comes with elaborate open-access documentation.
 7.  GGIR has had over a [dozen code contributors](https://github.com/wadpac/GGIR/graphs/contributors).
 8.  GGIR has been available on the CRAN archive, meaning that it meets CRAN standards and that each release has gone through a series of automated checks.
@@ -105,3 +122,114 @@ All documentation text has been written in the 'we'-form even though many parts 
 
 Finally, the first version of this documentation was sponsored by [Accelting](https://www.accelting.com/) with the commitment that this will remain available as free open-access documentation.
 However, open documentation is best maintained as a community: We would be grateful for your help to improve the documentation either by giving feedback (e.g. via v.vanhees at accelting dot com), pull requests (for those who know how to do it), or financially to sponsor time investments. For example, it would be great if we had funding for creating high quality complementary info graphics and videos.
+
+---
+
+::: {style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px"}
+
+### Summary
+
+GGIR is an open-source R package for processing multi-day raw accelerometer data. Its design favours biomechanically interpretable (heuristic) algorithms over purely data-driven approaches, and it is structured as a six-part pipeline to allow efficient, resumable processing.
+
+### What to read next
+
+➡ [Chapter 2: The GGIR pipeline](chapter2_Pipeline.html)
+
+### Related materials
+
+- 📄 [Migueles et al. 2019: GGIR overview paper](https://doi.org/10.1123/jmpb.2018-0063)
+- 📄 [GGIR Parameters reference](GGIRParameters.html)
+<br>
+<p><em>Video tutorial by Prof. Stuart Fairclough</em></p>
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 4px; margin-bottom: 1.5rem;">
+  <iframe data-external="1" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://www.youtube.com/embed/E8degMJFc9Y?si=XUcc20JTPIvYTf7D" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</div>
+- 📹 [GGIR tutorial playlist by Prof. Stuart Fairclough](https://www.youtube.com/watch?v=AbHgJYTyuiA)
+
+:::
+
+<style>
+abbr[data-custom-tooltip] {
+  cursor: pointer;
+  position: relative;
+  text-decoration: underline dotted #0054AD;
+}
+abbr[data-custom-tooltip]:hover::after {
+  content: attr(data-custom-tooltip);
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #2c3e50;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  white-space: normal;
+  width: max-content;
+  max-width: 250px;
+  font-size: 13px;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  text-align: center;
+  line-height: 1.4;
+}
+abbr[data-custom-tooltip]:hover::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #2c3e50;
+}
+pre {
+  position: relative;
+}
+pre .copy-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 2px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+pre:hover .copy-btn {
+  opacity: 1;
+}
+pre .copy-btn.copied {
+  background: #2c3e50;
+  color: #fff;
+  border-color: #2c3e50;
+}
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll('abbr[title]').forEach(function(abbr) {
+    abbr.setAttribute('data-custom-tooltip', abbr.getAttribute('title'));
+    abbr.removeAttribute('title');
+  });
+  document.querySelectorAll('pre').forEach(function(pre) {
+    var btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '\ud83d\udccb Copy';
+    btn.addEventListener('click', function() {
+      var code = pre.querySelector('code');
+      var text = code ? code.textContent : pre.textContent;
+      navigator.clipboard.writeText(text).then(function() {
+        btn.textContent = '\u2705 Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = '\ud83d\udccb Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    });
+    pre.appendChild(btn);
+  });
+});
+</script>

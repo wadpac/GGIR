@@ -14,13 +14,33 @@ knitr::opts_chunk$set(
 )
 ```
 
+::: {style="background:#f0f4ff;border-left:4px solid #0054AD;padding:1rem 1.2rem;margin-bottom:1.5rem;border-radius:4px"}
+
+**⏱ Reading time:** ~15 min &nbsp;|&nbsp; **Chapter:** 11 of 14
+
+**What you will learn**
+
+- Why physical activity research uses cut-point-based intensity classes
+- How GGIR defines and detects behavioural bouts
+- The difference between part 2 and part 5 cut-point parameters
+
+**Prerequisites**
+
+- Read the previous chapter: [Chapter 10: Sleep Analysis](chapter10_SleepAnalysis.html)
+
+
+**Key terms:** <abbr title="Acceleration thresholds used to classify epochs into intensity categories (inactivity, LIPA, MVPA)">cut-point</abbr>, <abbr title="Moderate-to-Vigorous Physical Activity, defined by acceleration at or above the moderate threshold">MVPA</abbr>, <abbr title="Light Physical Activity, defined as acceleration between the light and moderate thresholds">LIPA</abbr>, <abbr title="A sustained period of time in a given behavioural class satisfying user-specified duration and intensity criteria">behavioural bout</abbr>, <abbr title="A fixed-length time window (default 5 s) over which raw acceleration is summarised">epoch</abbr>, <abbr title="The time window from sleep onset to the end of the last SIB, representing the main daily sleep episode">SPT</abbr>
+– see the [full Glossary](Glossary.html) for all definitions.
+
+:::
+
 ## Why behavioural classes?
 
 Descriptive variables such as average acceleration per day or recording as discussed in the previous chapter are powerful indicators of physical activity. Extensive evidence exists on their association with physical activity related energy expenditure as measured by indirect calorimetry. Similarly, the scientific value of MX metrics and intensity gradient as discussed in chapter 7 has been shown in several studies (for example: [Rowlands, 2019a](https://pubmed.ncbi.nlm.nih.gov/31318713/); [Rowlands 2019b](https://pubmed.ncbi.nlm.nih.gov/31808014/)). However, the physical activity research community has historically expressed a strong interest in measures of physical activity that can be expressed as time per behavioural class per day. In this chapter we will discuss how GGIR facilitates this.
 
 ## Construct definition
 
-A popular approach to define behavioural classes in physical activity research is to distinguish so called intensity levels. Here, it is common to distinguish sedentary behaviour (SB), light physical activity (LIPA), moderate, and vigorous physical activity. The latter two categories are often combined into moderate or vigorous physical activity (MVPA). Inside GGIR we refer to sedentary behaviour as inactivity to emphasize that our methods quantify mainly a lack of activity rather than being in sitting or reclying posture.
+A popular approach to define behavioural classes in physical activity research is to distinguish so called intensity levels. Here, it is common to distinguish sedentary behaviour (SB), light physical activity (<abbr title="Light Physical Activity, defined as acceleration between the light and moderate thresholds">LIPA</abbr>), moderate, and vigorous physical activity. The latter two categories are often combined into moderate or vigorous physical activity (<abbr title="Moderate-to-Vigorous Physical Activity, defined by acceleration at or above the moderate threshold">MVPA</abbr>). Inside GGIR we refer to sedentary behaviour as inactivity to emphasize that our methods quantify mainly a lack of activity rather than being in sitting or reclying posture.
 
 However, intensity levels as behavioural classes lack a feasible operational construct definition which has caused methodological discrepancies for decades. An elaborate reflection on this can be found in [this blog post](https://www.accelting.com/why-does-ggir-facilitate-cut-points/).
 
@@ -28,7 +48,7 @@ This situation has forced us to be pragmatic and use a operational construct def
 
 ## Classification based on cut-points
 
-It is common to classify intensity levels from accelerometer data by evaluating whether the acceleration is below, above, or between certain acceleration level(s). The acceleration magnitude(s) to use as threshold(s), are also known as cut-points.
+It is common to classify intensity levels from accelerometer data by evaluating whether the acceleration is below, above, or between certain acceleration level(s). The acceleration magnitude(s) to use as threshold(s), are also known as <abbr title="Acceleration thresholds used to classify epochs into intensity categories (inactivity, LIPA, MVPA)">cut-points</abbr>.
 
 The use of thresholds (cut-points) is intended to be a crude indicator of time spent in intensity levels and sufficient to rank individuals on their amount of time spent in these behaviours. The cut-point approach has indisputably been the most powerful method so far to drive physical activity research.
 
@@ -39,7 +59,7 @@ As discussed in more detail further down, the acceleration (intensity) level cla
 
 ## Epoch length
 
-Although accelerometers collect data at much higher sampling frequency, we only work with aggregated values (e.g. 1 or 5 second epochs) for the following reasons:
+Although accelerometers collect data at much higher sampling frequency, we only work with aggregated values (e.g. 1 or 5 second <abbr title="A fixed-length time window (default 5 s) over which raw acceleration is summarised">epochs</abbr>) for the following reasons:
 
 1.  Accelerometers are often used to describe patterns in metabolic energy expenditure. Metabolic energy expenditure is typically defined per breath or per minute (indirect calorimetry), per day (room calorimeter), or per multiple days (doubly labelled water method). In order to evaluate our methods against these reference standards, we need to work with a similar time resolution.
 
@@ -55,7 +75,7 @@ The epoch length in GGIR is by default 5 seconds, and can be set as the first va
 
 ## Bout detection
 
-Behavioural bouts have been used frequently and are defined as sustained time spent ina behavioural class while adhering to specific temporal criteria. GGIR facilitates processing data both with and without accounting for bouts. The motivation to look for bouts can be one of the following:
+<abbr title="A sustained period of time in a given behavioural class satisfying user-specified duration and intensity criteria">Behavioural bouts</abbr> have been used frequently and are defined as sustained time spent ina behavioural class while adhering to specific temporal criteria. GGIR facilitates processing data both with and without accounting for bouts. The motivation to look for bouts can be one of the following:
 
 -   With the idea that only behaviour with a certain minimum duration contributes to certain physiological benefits.
 
@@ -136,3 +156,123 @@ In GGIR part 5 csv reports you will find:
 -   Time spent in inactivity (abbreviated as IN)
 
 In [chapter 7](https://wadpac.github.io/GGIR/articles/chapter7_DescribingDataWithoutKnowingSleep.html) we discussed the structure of the part 2 output. The next chapter ([chapter 12](https://wadpac.github.io/GGIR/articles/chapter12_TimeUseAnalysis.html)) will provide a more detailed discussion of all the part 5 output. For an overview of output variables see the [GGIR output annex](https://wadpac.github.io/GGIR/articles/GGIRoutput.html).
+
+## Minimal example
+
+```r
+library(GGIR)
+GGIR(
+  datadir        = "C:/mydata",
+  outputdir      = "C:/myresults",
+  mvpathreshold  = c(100, 120),    # MVPA thresholds for ENMO in mg (part 2)
+  threshold.lig  = 40,             # LIPA lower threshold for ENMO in mg (part 5)
+  threshold.mod  = 100,            # moderate threshold (part 5)
+  threshold.vig  = 400             # vigorous threshold (part 5)
+)
+```
+
+---
+
+::: {style="background:#f8f9fa;border-top:2px solid #dee2e6;padding:1rem 1.2rem;margin-top:2rem;border-radius:4px"}
+
+### Summary
+
+GGIR classifies waking epochs into inactivity, LIPA, and MVPA using user-specified cut-points. Bout detection further filters these classes by requiring a minimum sustained duration. Part 2 estimates MVPA only; part 5 estimates all three classes during waking hours.
+
+### What to read next
+
+➡ [Chapter 12: Time-use Analysis](chapter12_TimeUseAnalysis.html)
+
+### Related materials
+
+- 📄 [Published cut-points for ENMO](https://wadpac.github.io/GGIR/articles/CutPoints.html)
+- 📄 [GGIR Output reference](GGIRoutput.html)
+
+
+:::
+
+<style>
+abbr[data-custom-tooltip] {
+  cursor: pointer;
+  position: relative;
+  text-decoration: underline dotted #0054AD;
+}
+abbr[data-custom-tooltip]:hover::after {
+  content: attr(data-custom-tooltip);
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #2c3e50;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  white-space: normal;
+  width: max-content;
+  max-width: 250px;
+  font-size: 13px;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  text-align: center;
+  line-height: 1.4;
+}
+abbr[data-custom-tooltip]:hover::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #2c3e50;
+}
+pre {
+  position: relative;
+}
+pre .copy-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 2px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+pre:hover .copy-btn {
+  opacity: 1;
+}
+pre .copy-btn.copied {
+  background: #2c3e50;
+  color: #fff;
+  border-color: #2c3e50;
+}
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll('abbr[title]').forEach(function(abbr) {
+    abbr.setAttribute('data-custom-tooltip', abbr.getAttribute('title'));
+    abbr.removeAttribute('title');
+  });
+  document.querySelectorAll('pre').forEach(function(pre) {
+    var btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '\ud83d\udccb Copy';
+    btn.addEventListener('click', function() {
+      var code = pre.querySelector('code');
+      var text = code ? code.textContent : pre.textContent;
+      navigator.clipboard.writeText(text).then(function() {
+        btn.textContent = '\u2705 Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = '\ud83d\udccb Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    });
+    pre.appendChild(btn);
+  });
+});
+</script>

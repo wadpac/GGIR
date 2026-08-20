@@ -1,0 +1,277 @@
+---
+title: "Glossary of GGIR Terms"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Glossary of GGIR Terms}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This page is a single reference for all GGIR-specific terms used across the documentation chapters.
+Each chapter links to the relevant entries here via its **Key terms** callout.
+If you spot a missing or incorrect definition, please open an issue on the [GGIR GitHub discussion page](https://github.com/wadpac/GGIR/discussions).
+
+---
+
+## A
+
+### ABI (Activity Balance Index) {#glossary-abi}
+A transformation of the Self-Similarity Parameter (SSP) from Detrended Fluctuation Analysis. ABI measures how balanced the pattern of activity is over the observed period; values closer to 1 reflect a more balanced pattern. See [Chapter 13](chapter13_CircadianRhythm.html).
+
+### Acrophase / Acrotime {#glossary-acrophase}
+Output of Cosinor analysis. Acrophase is the peak of the fitted cosine curve expressed in radians; acrotime is the same peak expressed as a clock time (hours from midnight). See [Chapter 13](chapter13_CircadianRhythm.html).
+
+### Auto-calibration {#glossary-auto-calibration}
+An algorithm that uses non-movement periods in a free-living recording to estimate and correct sensor calibration error, without requiring a separate laboratory experiment. The calibration uses gravitational acceleration as a reference. See [Chapter 3](chapter3_QualityAssessment.html).
+
+---
+
+## B
+
+### Behavioural bout {#glossary-bout}
+A sustained period of time in a given behavioural class (e.g., MVPA, inactivity) that satisfies user-specified duration and intensity criteria. Bouts are detected in GGIR parts 2 and 5. See [Chapter 11](chapter11_DescribingDataCutPoints.html).
+
+### Behavioural fragmentation {#glossary-fragmentation}
+A set of metrics that quantify how frequently the pattern of behaviour alternates between activity and inactivity (or sleep and wakefulness) over a recording. See [Chapter 14](chapter14_BehaviouralFragmentation.html).
+
+---
+
+## C
+
+### Circadian rhythm {#glossary-circadian-rhythm}
+Physical, mental, and behavioural changes an organism experiences over a 24-hour cycle. GGIR quantifies the movement component of circadian rhythms using metrics such as MXLX, Cosinor, IV, IS, phi, and DFA. See [Chapter 13](chapter13_CircadianRhythm.html).
+
+### Cleaningcode {#glossary-cleaningcode}
+A per-night integer value in the GGIR part 4 output that records the outcome of the sleep detection process: 0 = sleep log used; 1 = alternative guider used; 2 = insufficient valid data; 3 = no data; 4 = no nights to analyse; 5 = SPT estimated from guider only; 6 = fallback estimates used. See [Chapter 10](chapter10_SleepAnalysis.html).
+
+### Clipping {#glossary-clipping}
+A data quality flag applied when a sustained proportion of acceleration values in a 15-minute window are close to or exceed the dynamic range of the sensor, indicating the sensor may have been used inappropriately or was stuck at an extreme value. Clipping time is treated as invalid (non-wear) by GGIR. See [Chapter 3](chapter3_QualityAssessment.html).
+
+### CoV (Coefficient of Variance) {#glossary-cov}
+A fragmentation metric calculated as the standard deviation divided by the mean of log-transformed fragment lengths. Requires at least 10 fragments. See [Chapter 14](chapter14_BehaviouralFragmentation.html).
+
+### Cut-point {#glossary-cut-point}
+An acceleration threshold used to classify epochs into behavioural intensity categories (e.g., inactivity, LIPA, MVPA). See [Chapter 11](chapter11_DescribingDataCutPoints.html).
+
+---
+
+## D
+
+### Data masking {#glossary-data-masking}
+The process of excluding parts of a recording that fall outside the intended wear period, based on prior knowledge of the study protocol (e.g., hours before the participant first put on the device). Controlled with parameter `data_masking_strategy`. See [Chapter 5](chapter5_StudyProtocol.html).
+
+### Daysleeper {#glossary-daysleeper}
+A participant whose main sleep period starts before noon but ends after noon (e.g., a shift worker sleeping in the morning). GGIR detects this and shifts its analysis window from noon–noon to 6pm–6pm for that night. See [Chapter 9](chapter9_SleepFundamentalsGuiders.html).
+
+### DFA (Detrended Fluctuation Analysis) {#glossary-dfa}
+A method to quantify fractal temporal correlations in a time series. GGIR uses DFA in part 6 to derive the Self-Similarity Parameter (SSP) and Activity Balance Index (ABI). See [Chapter 13](chapter13_CircadianRhythm.html).
+
+### Dynamic range {#glossary-dynamic-range}
+The maximum absolute acceleration value a sensor can record. Used in clipping detection: values exceeding 150% of the dynamic range trigger a clipping flag. See [Chapter 3](chapter3_QualityAssessment.html).
+
+---
+
+## E
+
+### ENMO (Euclidean Norm Minus One) {#glossary-enmo}
+The default acceleration metric in GGIR. Computed as the vector magnitude of the three acceleration axes minus 1 *g*, with resulting negative values rounded to zero. Expressed in m*g* (milli-gravitational units). See [Chapter 4](chapter4_AccMetrics.html).
+
+### Epoch {#glossary-epoch}
+A fixed-length time window (default 5 seconds in GGIR) over which raw acceleration data are aggregated into summary metrics. All GGIR parts use the same epoch length for consistency. See [Chapter 4](chapter4_AccMetrics.html).
+
+---
+
+## F
+
+### Factory calibration {#glossary-factory-calibration}
+Sensor calibration performed by the manufacturer prior to shipping, using local gravitational acceleration as a reference. GGIR's auto-calibration refines (but does not replace) factory calibration. See [Chapter 3](chapter3_QualityAssessment.html).
+
+### Fragment {#glossary-fragment}
+In the context of behavioural fragmentation: a sequence of consecutive epochs belonging to the same behavioural class (e.g., a stretch of inactivity, or a stretch of physical activity). See [Chapter 14](chapter14_BehaviouralFragmentation.html).
+
+---
+
+## G
+
+### g (gravitational unit) {#glossary-g}
+The unit of acceleration used throughout GGIR. One *g* equals the mean gravitational acceleration at Earth's surface (~9.81 m/s²). Metric values are often expressed in m*g* (milli-*g*, i.e., 1/1000 of *g*).
+
+### Guider {#glossary-guider}
+A method used by GGIR to estimate the main sleep window each night. The guider defines a candidate time window within which sustained inactivity bouts are then assessed to determine the Sleep Period Time (SPT). Available guiders include sleeplog, HDCZA, HorAngle, L5+/−12, HLRB, NotWorn, MotionWare, and markerbutton. See [Chapter 9](chapter9_SleepFundamentalsGuiders.html).
+
+### Gini index {#glossary-gini}
+A fragmentation metric measuring inequality in the distribution of fragment durations. Calculated using the `ineq` R package. Requires at least 10 fragments. See [Chapter 14](chapter14_BehaviouralFragmentation.html).
+
+---
+
+## H
+
+### HASIB.algo {#glossary-hasib-algo}
+GGIR parameter that selects the Sustained Inactivity Bout (SIB) detection algorithm. Options include `"vanHees2015"` (default), `"Sadeh1994"`, `"ColeKripke1992"`, `"Galland2012"`, `"Oakley1997"`, `"NotWorn"`, and `"data"`. See [Chapter 8](chapter8_SleepFundamentalsSibs.html).
+
+### HASPT.algo {#glossary-haspt-algo}
+GGIR parameter that selects the guider algorithm for sleep window estimation. Options include `"HDCZA"` (default), `"HorAngle"`, `"L5+/-12"`, `"setwindow"`, `"HLRB"`, `"NotWorn"`, `"MotionWare"`, and `"markerbutton"`. See [Chapter 9](chapter9_SleepFundamentalsGuiders.html).
+
+### HDCZA {#glossary-hdcza}
+A guider algorithm for wrist-worn accelerometer data that identifies the longest period of limited postural change in a day as the candidate sleep window. First described by [van Hees et al. 2018](https://dx.doi.org/10.1038/s41598-018-31266-z). See [Chapter 9](chapter9_SleepFundamentalsGuiders.html).
+
+### HLRB (Heuristic Longest Rest Bout) {#glossary-hlrb}
+An experimental guider designed for devices that store count data, detecting the longest rest bout in the day as the candidate sleep window. See [Chapter 9](chapter9_SleepFundamentalsGuiders.html).
+
+### HorAngle {#glossary-horangle}
+An experimental guider for hip-worn accelerometers that identifies the candidate sleep window by looking for the longest period with a horizontal trunk orientation. See [Chapter 9](chapter9_SleepFundamentalsGuiders.html).
+
+---
+
+## I
+
+### Idle sleep mode {#glossary-idle-sleep-mode}
+An ActiGraph device feature that pauses data collection during sustained non-movement periods to conserve battery, creating time gaps in the recording. These gaps are treated as non-wear by GGIR. See [Chapter 3](chapter3_QualityAssessment.html).
+
+### Intensity gradient {#glossary-intensity-gradient}
+The slope of the log-log linear regression fitted to time spent in successive acceleration bins. Proposed by [Rowlands et al.](https://pubmed.ncbi.nlm.nih.gov/29360664/) as a summary of the physical activity intensity distribution. Enabled with parameter `iglevels`. See [Chapter 7](chapter7_DescribingDataWithoutKnowingSleep.html).
+
+### Interdaily Stability (IS) {#glossary-is}
+A circadian rhythm metric ranging from 0 to 1 measuring how constant an individual's daily activity routine is across days. Values close to 1 indicate a more stable routine. See [Chapter 13](chapter13_CircadianRhythm.html).
+
+### Intradaily Variability (IV) {#glossary-iv}
+A circadian rhythm metric measuring the hour-by-hour variability in activity throughout a day. Values close to 2 indicate a fragmented rhythm. See [Chapter 13](chapter13_CircadianRhythm.html).
+
+### Imputation (epoch-level) {#glossary-imputation}
+The replacement of invalid epoch values (e.g., from non-wear or clipping) with estimates based on the mean metric value from the same time of day on other valid days in the recording. See [Chapter 6](chapter6_DataImputation.html).
+
+---
+
+## L
+
+### LFENMO {#glossary-lfenmo}
+A low-pass filtered version of ENMO. The raw signal is filtered before computing the Euclidean Norm Minus One, suppressing high-frequency components. See [Chapter 4](chapter4_AccMetrics.html).
+
+### LIPA (Light Physical Activity) {#glossary-lipa}
+An intensity category for waking behaviour, defined as acceleration at or above the light threshold (`threshold.lig`) but below the moderate threshold (`threshold.mod`). See [Chapter 11](chapter11_DescribingDataCutPoints.html) and [Chapter 12](chapter12_TimeUseAnalysis.html).
+
+### L5 / M10 {#glossary-l5-m10}
+**L5**: the least active continuous 5-hour window in a day (average acceleration and timing). **M10**: the most active continuous 10-hour window in a day. Both are MXLX metrics controlled by parameter `winhr`. See [Chapter 13](chapter13_CircadianRhythm.html).
+
+---
+
+## M
+
+### MAD (Mean Amplitude Deviation) {#glossary-mad}
+An acceleration metric computed as the absolute difference between the Euclidean norm and its epoch-level average. An alternative to ENMO that uses frequency-based gravity separation. See [Chapter 4](chapter4_AccMetrics.html).
+
+### Milestone data {#glossary-milestone-data}
+Intermediate RData files saved by each GGIR part (e.g., `meta/basic` for part 1, `meta/ms2.out` for part 2). They allow subsequent parts to resume without re-running earlier parts. See [Chapter 2](chapter2_Pipeline.html).
+
+### MVPA (Moderate-to-Vigorous Physical Activity) {#glossary-mvpa}
+The combination of moderate and vigorous physical activity intensity categories, defined by acceleration at or above the moderate threshold (`threshold.mod`). See [Chapter 11](chapter11_DescribingDataCutPoints.html).
+
+### MX metrics {#glossary-mx-metrics}
+Acceleration values corresponding to user-specified quantiles of the daily activity distribution, representing the minimum acceleration in the most active accumulated X minutes. Proposed by [Rowlands et al.](https://pubmed.ncbi.nlm.nih.gov/31808014/) Enabled with parameter `qlevels`. See [Chapter 7](chapter7_DescribingDataWithoutKnowingSleep.html).
+
+### MXLX {#glossary-mxlx}
+A family of circadian rhythm metrics that identify the most (MX) and least (LX) active continuous X-hour windows in a day. The window length is controlled by parameter `winhr`. See [Chapter 13](chapter13_CircadianRhythm.html).
+
+---
+
+## N
+
+### Non-wear {#glossary-non-wear}
+Time periods during which the accelerometer is not worn by the participant. GGIR detects non-wear using the standard deviation and value range of the raw signal over 60-minute windows. Non-wear time is treated as invalid data. See [Chapter 3](chapter3_QualityAssessment.html).
+
+### NFrag / NFragPM {#glossary-nfrag}
+Fragmentation metrics. **NFrag** is the total number of fragments per behavioural class. **NFragPM** (Number of Fragments Per Minute) is the fragmentation index: total fragments divided by total duration. See [Chapter 14](chapter14_BehaviouralFragmentation.html).
+
+---
+
+## P
+
+### Parts (GGIR pipeline parts) {#glossary-parts}
+GGIR's computational pipeline is divided into six sequential parts (1–6): Part 1 loads raw data and computes metrics; Part 2 does quality assessment and basic description; Part 3 estimates rest periods; Part 4 labels sleep; Part 5 creates time-use summaries; Part 6 handles recording-spanning analyses. See [Chapter 2](chapter2_Pipeline.html).
+
+### phi {#glossary-phi}
+First-order autocorrelation from the AR(1) model applied to the acceleration time series shifted by one hour. A higher phi indicates a stronger day-to-day rhythm; phi near zero or negative indicates more fragmented behaviour. See [Chapter 13](chapter13_CircadianRhythm.html).
+
+---
+
+## R
+
+### Raw accelerometer data {#glossary-raw-data}
+Acceleration data stored in gravitational units (*g*) at the native sampling rate of the sensor (e.g., 30–100 Hz), as opposed to pre-aggregated epoch-level data (counts). GGIR is primarily designed for raw data. See [Chapter 1](chapter1_WhatIsGGIR.html).
+
+### Recording {#glossary-recording}
+A continuous period of accelerometer data collection for one participant (or a set of appended periods treated as one). GGIR processes one recording per file (or per set of files when appending). See [Chapter 1](chapter1_WhatIsGGIR.html) and [Chapter 2](chapter2_Pipeline.html).
+
+---
+
+## S
+
+### Sampling rate {#glossary-sampling-rate}
+The number of data points recorded per second by the accelerometer (unit: Hertz, Hz). Common rates are 25, 30, 50, 80, 100 Hz. GGIR accounts for minor variations in sampling rate through interpolation. See [Chapter 3](chapter3_QualityAssessment.html).
+
+### SIB (Sustained Inactivity Bout) {#glossary-sib}
+A continuous period of limited body movement detected from the acceleration signal, used as a proxy for sleep. The term is preferred over "sleep" because accelerometers cannot directly measure sleep physiology. See [Chapter 8](chapter8_SleepFundamentalsSibs.html).
+
+### Sleep log (sleeplog) {#glossary-sleeplog}
+A self-reported diary in which participants record their sleep onset and wake-up times each day. When available, GGIR uses the sleep log as the preferred guider. Two formats are supported: basic and advanced. See [Chapter 9](chapter9_SleepFundamentalsGuiders.html).
+
+### Sleep Period Time window (SPT) {#glossary-spt}
+The time window from the start of the first SIB to the end of the last SIB within the guider window, representing the main daily sleep episode. See [Chapter 10](chapter10_SleepAnalysis.html).
+
+### Sleep Regularity Index (SRI) {#glossary-sri}
+A metric quantifying the day-to-day consistency of sleep timing. Documented separately at [SleepRegularityIndex](SleepRegularityIndex.html). See [Chapter 10](chapter10_SleepAnalysis.html).
+
+### SPT window – see [SPT](#glossary-spt)
+
+### SSP (Self-Similarity Parameter) {#glossary-ssp}
+The scaling exponent derived from Detrended Fluctuation Analysis. GGIR splits SSP into short-term (SSP_short, time scales ≤ 90 min) and long-term (SSP_long, 120–600 min) components to separate general mobility from circadian patterning. See [Chapter 13](chapter13_CircadianRhythm.html).
+
+---
+
+## T
+
+### Time gap {#glossary-time-gap}
+A missing or unreadable segment in the raw accelerometer data, caused by corrupted data blocks (Axivity, Parmay Matrix) or idle sleep mode (ActiGraph). GGIR detects and imputes time gaps. See [Chapter 3](chapter3_QualityAssessment.html).
+
+### Time in Bed (TimeInBed) {#glossary-timeinbed}
+The period from going to bed (lights out / in-bed time) to getting out of bed. When a sleep log specifies time in bed rather than SPT, set `sleepwindowType = "TimeInBed"` to enable estimation of sleep latency and sleep efficiency. See [Chapter 10](chapter10_SleepAnalysis.html).
+
+### Transition probability (TP) {#glossary-tp}
+A fragmentation metric expressing the probability of switching from one behavioural class to another (e.g., from inactivity to physical activity: IN2PA, or from physical activity to inactivity: PA2IN). See [Chapter 14](chapter14_BehaviouralFragmentation.html).
+
+---
+
+## V
+
+### vanHees2015 {#glossary-vanhees2015}
+The default SIB detection algorithm in GGIR. It identifies periods where the z-angle of the sensor does not change by more than 5 degrees for at least 5 consecutive minutes. First described in a [2015 article](https://doi.org/10.1371/journal.pone.0142533). See [Chapter 8](chapter8_SleepFundamentalsSibs.html).
+
+### Valid day {#glossary-valid-day}
+A calendar day that contains at least a minimum number of valid hours as specified with parameter `includedaycrit`. Only valid days are included in GGIR part 2 summary statistics. See [Chapter 7](chapter7_DescribingDataWithoutKnowingSleep.html).
+
+---
+
+## W
+
+### WASO (Wake After Sleep Onset) {#glossary-waso}
+Time spent awake (not classified as SIB) within the Sleep Period Time window, after the initial sleep onset. See [Chapter 10](chapter10_SleepAnalysis.html).
+
+### windowsizes {#glossary-windowsizes}
+A GGIR parameter vector with three values controlling time resolution: (1) epoch length (default 5 s), (2) non-wear detection window step size (default 900 s = 15 min), (3) non-wear detection window length (default 3600 s = 60 min). See [Chapter 3](chapter3_QualityAssessment.html) and [Chapter 4](chapter4_AccMetrics.html).
+
+---
+
+## Z
+
+### z-angle {#glossary-z-angle}
+The angle of the sensor's z-axis relative to the vertical, derived from the raw acceleration signal. Used by the `vanHees2015` SIB algorithm: limited change in z-angle over time indicates sustained inactivity. See [Chapter 8](chapter8_SleepFundamentalsSibs.html).
+
+### Zero-crossing count {#glossary-zero-crossing}
+An acceleration metric (zcx, zcy, zcz) that counts the number of times the band-pass filtered signal crosses zero per epoch. An attempt to replicate the Motionlogger Actigraph count used in 1990s sleep algorithms (e.g., Sadeh1994, ColeKripke1992). See [Chapter 4](chapter4_AccMetrics.html).
