@@ -503,9 +503,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                           for (si in next_si:(next_si + length(segments) - 1)) {
                             fi = 1
                             current_segment_i = si - next_si + 1
-                            Nsegments = length(segments[[current_segment_i]])
-                            segStart = segments[[current_segment_i]][seq(1, Nsegments, by = 2)]
-                            segEnd = segments[[current_segment_i]][seq(2, Nsegments, by = 2)]
+                            Nindices = length(segments[[current_segment_i]])
+                            segStart = segments[[current_segment_i]][seq(1, Nindices, by = 2)]
+                            segEnd = segments[[current_segment_i]][seq(2, Nindices, by = 2)]
+                            Nsegments = pmin(length(segStart), length(segEnd))
                             extraRowsNeeded = max(c(si, di)) - nrow(dsummary)
                             if (extraRowsNeeded > 0) {
                               dsummary = rbind(dsummary, matrix(data = "", nrow = extraRowsNeeded, ncol = ncol(dsummary)))
