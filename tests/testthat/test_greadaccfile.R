@@ -162,23 +162,8 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   output_dir = "output_unisensExample"
   on.exit({if (file.exists(output_dir)) unlink(output_dir, recursive = TRUE)}, add = TRUE)
   if (file.exists(output_dir)) unlink(output_dir, recursive = TRUE)
-  
-  zip_file = "0.3.4.zip"
-  on.exit({if (file.exists(zip_file)) unlink(zip_file)}, add = TRUE)
-  if (!file.exists(zip_file)) {
-    # link to a tagged release of Unisens/unisensR github repo
-    movisens_url = "https://github.com/Unisens/unisensR/archive/refs/tags/0.3.4.zip"
-    download.file(url = movisens_url, destfile = zip_file, quiet = TRUE)
-  }
-  
-  movisens_dir = "unisensR-0.3.4"
-  on.exit({if (file.exists(movisens_dir)) unlink(movisens_dir, recursive = TRUE)}, add = TRUE)
-  if (file.exists(movisens_dir)) {
-    unlink(movisens_dir, recursive = TRUE)
-  }
-  unzip(zipfile = zip_file, exdir = ".")
-  movisensFile = file.path(getwd(), "unisensR-0.3.4/tests/unisensExample/acc.bin")
-  
+ 
+  movisensFile  = system.file("testfiles/unisensExample.bin", package = "GGIR")[1]
   Mcsv = g.inspectfile(movisensFile, desiredtz = desiredtz)
   expect_equal(Mcsv$monc, MONITOR$MOVISENS)
   expect_equal(Mcsv$dformc, FORMAT$BIN)
