@@ -2,6 +2,8 @@
 
 - Part 3: Add new guider named LowAcc, with new parameter LowAcc_threshold. Further, parameter HDCZA_roll_windowsize was added related to guider HDCZA. #1287
 
+- Part 3: Added new parameter HDCZA_roll_windowsize to control the size of the rolling window used by the HDCZA guider algorithm.
+
 # CHANGES IN GGIR VERSION 3.3-8
 
 - Updated documentation to point to the new web dashboard URL (#1509)
