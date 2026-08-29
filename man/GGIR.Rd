@@ -1591,6 +1591,10 @@ GGIR(mode = 1:5,
         Numeric (default = 0.014)
         Acceleration threshold in _g_-units use by the LowAcc guider applied to acceleration
         derived with metric as specified by parameter \code{acc_metric}.
+        The default is based on \code{acc_metric = "MAD"}, which was consired 
+        most suitable for ActivPAL data that come with timegaps that complicate
+        auto-calibration of the acceleration signals rendering default metric 
+        ENMO unsuitable.
       }
     }
   }
