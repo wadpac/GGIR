@@ -8,7 +8,7 @@ direct use by user
 ``` r
 g.applymetrics(data, sf, ws3, metrics2do,
                           n = 4, lb = 0.2, hb = 15,
-                          zc.lb = 0.25, zc.hb = 3, 
+                          zc.lb = 0.25, zc.hb = 3,
                           zc.sb = 0.01, zc.order = 2,
                           actilife_LFE = FALSE)
 ```
@@ -40,12 +40,12 @@ g.applymetrics(data, sf, ws3, metrics2do,
 
 - lb:
 
-  Lower boundery of cut-off frequencies, see
+  Lower boundary of cut-off frequencies, see
   [GGIR](https://wadpac.github.io/GGIR/reference/GGIR.md).
 
 - hb:
 
-  Higher boundery of cut-off frequencies, see
+  Higher boundary of cut-off frequencies, see
   [GGIR](https://wadpac.github.io/GGIR/reference/GGIR.md).
 
 - zc.lb:
@@ -90,11 +90,11 @@ Vincent T van Hees \<v.vanhees@accelting.com\>
   do.roll_med_acc_y=FALSE,do.roll_med_acc_z=FALSE,
   do.dev_roll_med_acc_x=FALSE,do.dev_roll_med_acc_y=FALSE,
   do.dev_roll_med_acc_z=FALSE,do.enmoa=FALSE,
-  do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE, 
-  do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE, 
+  do.lfx=FALSE, do.lfy=FALSE, do.lfz=FALSE,
+  do.hfx=FALSE, do.hfy=FALSE, do.hfz=FALSE,
   do.bfx=FALSE, do.bfy=FALSE, do.bfz=FALSE,
-  do.zcx=FALSE, do.zcy=FALSE, do.zcz=FALSE, 
+  do.zcx=FALSE, do.zcy=FALSE, do.zcz=FALSE,
   do.brondcounts=FALSE, do.neishabouricounts=FALSE)
-  
+
   extractedmetrics = g.applymetrics(data,n=4,sf=40,ws3=5,metrics2do)
 ```

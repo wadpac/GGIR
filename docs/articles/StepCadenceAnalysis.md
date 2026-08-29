@@ -17,10 +17,10 @@ the wrist. The algorithm has been described and evaluated in studies by
 [Maylor 2022](https://doi.org/10.3390/s22249984) and [Rowlands
 2022](https://doi.org/10.1080/02640414.2022.2147134).
 
-The original [Verisense algortihm
+The original [Verisense algorithm
 code](https://github.com/ShimmerResearch/Verisense-Toolbox/tree/master/Verisense_step_algorithm)
 is not actively maintained at the time of writing this documentation. An
-[improved copy of the Verisense algortihms
+[improved copy of the Verisense algorithms
 code](https://github.com/wadpac/GGIR/blob/master/user-scripts/verisense_count_steps.R)
 with minor bug fixes is part of the GGIR GitHub repository.
 
@@ -51,7 +51,7 @@ further down.
                  ebout.th.acc = 50, # event bout threshold for acceleration
                  ebout.criter = 0.8, # event bout criteria (same as boutcriter)
                  ebout.condition = "AND") # event bout logic (see below)
-       
+
 
 Note the that `parameters = c(4, 4, 20, -1.0, 4, 4, 0.01, 1.25)` is
 based on Rowlands et al. “Stepping up with GGIR” from 2022.

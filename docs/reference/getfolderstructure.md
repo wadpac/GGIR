@@ -30,7 +30,7 @@ List with items:
   name of the file itself
 
 - foldername: vector with only the names of the folder in which each
-  file is stroed (so only the most distal folder in the folder tree).
+  file is stored (so only the most distal folder in the folder tree).
 
 ## Examples
 

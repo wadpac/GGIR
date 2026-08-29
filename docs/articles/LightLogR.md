@@ -163,14 +163,14 @@ actual accelerometer name processed by GGIR is not GENEActiv.
 ## Exploring the data with LightLogR
 
 If there are multiple recordings of one week in dataset, you can create
-a doubleplot for a week of data with the folowing code:
+a doubleplot for a week of data with the following code:
 
 ``` r
 
 library(lubridate)
 library(dplyr)
 
-dataset %>% 
+dataset %>%
   LightLogR::filter_Date(length = "5 days", full.day = TRUE) %>% #restrict data length
   dplyr::ungroup() %>% #remove Id-grouping, so they both are plotted over another
   LightLogR::gg_doubleplot(y.axis = lightmean, #y-value
@@ -181,7 +181,7 @@ dataset %>%
                 ) %>%
   LightLogR::gg_photoperiod( #adding photoperiod indicators (grey for nighttime)
     c(48.5, 9) #coordinates of the measurement
-    ) 
+    )
 ```
 
 ![A line graph comparing two ids over time](doubleplot.png)
@@ -193,18 +193,18 @@ Time above 250 lx threshold for each participant.
 
 ``` r
 
-dataset %>% 
+dataset %>%
   dplyr::group_by(Day = lubridate::date(Datetime), .add = TRUE) %>% #calculating metrics by day
   #calculating metrics
   dplyr::summarize(
   duration_above_threshold(lightmean, Datetime, threshold = 250, as.df = TRUE),
   bright_dark_period(MEDI, Datetime, as.df = TRUE),
   .groups = "drop_last"
-  ) %>% 
+  ) %>%
   #calculating the average and standard deviation of the TAT250
-  dplyr::summarize(TAT250_average = mean(duration_above_250) %>% 
+  dplyr::summarize(TAT250_average = mean(duration_above_250) %>%
                      round() %>%  lubridate::as.duration(),
-                   TAT250_sd = sd(duration_above_250) %>% 
+                   TAT250_sd = sd(duration_above_250) %>%
                      round() %>% lubridate::as.duration(),
                    M10_mean = mean(brightest_10h_mean)
                    )

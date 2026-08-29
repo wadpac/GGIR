@@ -42,7 +42,7 @@ If you have multiple unrelated things to report then please post them separately
 
 ### GitHub issue tracker
 
-For clearly defined problems with the use of GGIR, please report them as an issue in the [**GGIR issue tracker**](https://github.com/wadpac/GGIR/issues). 
+For clearly defined problems with the use of GGIR, please report them as an issue in the [**GGIR issue tracker**](https://github.com/wadpac/GGIR/issues).
 
 Use the message template as displayed as that makes it easier for others to respond and help you.
 
@@ -57,7 +57,7 @@ When you report a problem always try to provide a minimal reproducible example o
 
 ## Other documentation sources
 
-Additionally, technical function documentation can be found in the [package refence manual on CRAN](https://cran.r-project.org/package=GGIR/GGIR.pdf) or via the R(Studio) console as in `?GGIR`. Although, we do not recommend these resources for new users.
+Additionally, technical function documentation can be found in the [package reference manual on CRAN](https://cran.r-project.org/package=GGIR/GGIR.pdf) or via the R(Studio) console as in `?GGIR`. Although, we do not recommend these resources for new users.
 
 ## Commercial training services
 

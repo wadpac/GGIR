@@ -1,6 +1,6 @@
 # Load default parameters
 
-Loads default paramter values Not intended for direct use by GGIR users.
+Loads default parameter values Not intended for direct use by GGIR users.
 
 ## Usage
 

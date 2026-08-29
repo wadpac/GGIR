@@ -102,7 +102,7 @@ manufacturer.
 
 If you use GGIR with not raw but externally derived epoch data we can
 only assume that the count calculation is consistent with how counts
-were calculated when the sleep detection algortihm was proposed.
+were calculated when the sleep detection algorithm was proposed.
 
 **Raw data**
 
@@ -165,10 +165,10 @@ that the algorithm should use the Y-axis.
 
 The algorithm proposed by Cole et
 al. [link](https://doi.org/10.1093/sleep/15.5.461), more specifically
-GGIR uses the algortihm proposed in the paper for 10-second
+GGIR uses the algorithm proposed in the paper for 10-second
 non-overlapping epochs with counts expressed average per minute. We skip
 the re-scoring steps as the paper showed marginal added value of this
-added complexity. To use the GGIR implementation of this algortihm,
+added complexity. To use the GGIR implementation of this algorithm,
 specify parameters `HASIB.algo = "ColeKripke1992"` and
 `Sadeh_axis = "Y"` to indicate that the algorithm should use the Y-axis
 of the sensor.

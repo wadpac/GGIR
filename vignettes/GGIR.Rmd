@@ -118,18 +118,18 @@ for that.
     the visual report to also be useful for QC-ing the data. however, some of
     the scorings as shown in the visual report are created for the visual report only and
     may not reflect the scorings in the main GGIR analyses as reported in the
-    quantitative csv-reports. Most of our effort in the past 10 years has gone 
+    quantitative csv-reports. Most of our effort in the past 10 years has gone
     into making sure that the csv-report are correct, while the visualreport has
     mostly been a side project. This is unfortunate and we hope to find funding
     in the future to design a new report specifically for the purpose of
-    QC-ing the anlayses done by GGIR.
+    QC-ing the analyses done by GGIR.
 -   `maxRecordingInterval` - if specified controls whether neighboring or
     overlapping recordings with the same participant ID and brand are appended
     at epoch level. This can be useful when the intention is to monitor behaviour
-    over larger periods of time but accelerometers only allow for a few weeks of 
+    over larger periods of time but accelerometers only allow for a few weeks of
     data collection. GGIR will never append or alter the raw input file, this operation
-    is preformed on the derived data.
--   `study_dates_file` - if specified trims the recorded data to the first and 
+    is performed on the derived data.
+-   `study_dates_file` - if specified trims the recorded data to the first and
     last date in which the study took place. This is relevant for studies that started
     the recording several days before the accelerometers were actually worn by
     participants. This is used on the top of data_masking_strategy, so that it may be combined
@@ -213,7 +213,7 @@ This section has been migrated to this [section](https://wadpac.github.io/GGIR/a
 
 # Inspecting the results
 
-GGIR generates the following types of output. 
+GGIR generates the following types of output.
 
 - csv-spreadsheets with all the variables you need for physical activity, sleep and circadian
 rhythm research
@@ -335,7 +335,7 @@ aggregated values (e.g. 1 or 5 second epochs) for the following reasons:
 4.  Collapsing the data to epoch summary measures may help to average
     out different noise levels and make sensor brands more comparable.
 
-### Why does the first epoch not allign with the original start of the recording
+### Why does the first epoch not align with the original start of the recording
 
 GGIR uses short (default 5 seconds) and long epochs (default 15
 minutes). The epochs are aligned to the hour in the day, and to each
@@ -449,7 +449,7 @@ every behavioural class, which includes the subcategories such as bouted
 and unbouted behaviour. This means that variables `Nblock_day_total_IN`
 and `Nblock_day_total_LIG` are identical to `Nfrag_IN_day` and
 `Nfrag_LIPA_day`, respectively. In contrast, for fragments we may group LIPA and MVPA
-together when refering to the fragmentation of PA.
+together when referring to the fragmentation of PA.
 
 **Differences with R package ActFrag:**
 
@@ -496,20 +496,20 @@ This section has been migrated to this [section](https://wadpac.github.io/GGIR/a
 Although GGIR focuses on accelerometer data a few brands come with LUX data.
 
 In part 1 GGIR calculates the peak lux per long epoch at a default resolution of 15 minutes,
-which can be modified with argument windowsizes. Peak light offers a more reliable 
+which can be modified with argument windowsizes. Peak light offers a more reliable
 estimate of light exposure per time window compared with taking the average. Further,
 LUX is used in the auto-calibration.
 
-In GGIR part 2 we visualise the LUX values in the qc plot. In part 3 and 4 LUX is 
+In GGIR part 2 we visualise the LUX values in the qc plot. In part 3 and 4 LUX is
 not used for sleep classification because relation between light exposure and sleep is weak.
 
 In part 5 we calculate the mean and maximum of the peak LUX per epoch across all
 waking hours of the day. Here, the mean (peak per epoch) LUX would then indicate
 average light exposure per time segment, while max peak would indicate the maximum
-light exposure per day. Further, we calculate the max and mean peak LUX per most 
+light exposure per day. Further, we calculate the max and mean peak LUX per most
 active consecutive X hour of the day. This is intended to offer an alternative to LUX
 exposure during waking hours which relies on correct sleep classification. LUX
-exposure during M10 may be seen as an alternative if you are unsure whether you 
+exposure during M10 may be seen as an alternative if you are unsure whether you
 can trust the sleep classification in your data set.
 
 # Other Resources

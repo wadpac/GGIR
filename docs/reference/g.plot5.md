@@ -9,7 +9,7 @@ report. Not intended for direct use by user
 ``` r
 g.plot5(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
   f0 = c(), f1 = c(), overwrite = FALSE, metric="ENMO",desiredtz = "",
-  threshold.lig = 30, threshold.mod = 100, threshold.vig = 400, 
+  threshold.lig = 30, threshold.mod = 100, threshold.vig = 400,
   visualreport_without_invalid = TRUE, includedaycrit = 0.66, includenightcrit = 0.66,
   verbose = TRUE)
 ```
@@ -28,7 +28,7 @@ g.plot5(metadatadir = c(), dofirstpage = FALSE, viewingwindow = 1,
 
 - dofirstpage:
 
-  Boolean to indicate whether a first page with historgrams summarizing
+  Boolean to indicate whether a first page with histograms summarizing
   the whole measurement should be added
 
 - viewingwindow:

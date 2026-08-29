@@ -24,7 +24,7 @@ check_myfun(myfun, windowsizes)
 
 ## Value
 
-0 if all checkes passed, 1 if one or more checks did not pass. Error
+0 if all checks passed, 1 if one or more checks did not pass. Error
 message are printed to the console with feedback on which checks did not
 pass.
 

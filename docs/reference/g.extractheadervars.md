@@ -23,7 +23,7 @@ g.extractheadervars(I)
 
 - HN = handedness
 
-- BodyLocation = Attachement location of the sensor
+- BodyLocation = Attachment location of the sensor
 
 - SX = sex
 

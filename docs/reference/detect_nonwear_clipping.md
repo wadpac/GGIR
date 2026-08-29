@@ -30,7 +30,7 @@ detect_nonwear_clipping(data = c(), windowsizes = c(5, 900, 3600), sf = 100,
 
 - clipthres:
 
-  Threschold to detect clipping in \_g\_ units. Usually 0.5 \_g\_ below
+  Threshold to detect clipping in \_g\_ units. Usually 0.5 \_g\_ below
   the dynamic range of the accelerometer.
 
 - sdcriter:
@@ -72,7 +72,7 @@ List containing the next numeric vectors:
 - CWav (clipping score), binary, 0-1 indicating non-clipping and
   clipping, respectively.
 
-- nmin is the minimum numebr of windows in this block of data.
+- nmin is the minimum number of windows in this block of data.
 
 Each number in these vectors represent a long epoch duration (i.e., ws2,
 900 seconds by default).
@@ -94,7 +94,7 @@ Vincent T van Hees \<v.vanhees@accelting.com\> Jairo Hidalgo Migueles
 ``` r
 if (FALSE) { # \dontrun{
     detect_nonwear_clipping(data = data, windowsizes = c(900, 3600), sf = sf,
-                            clipthres = clipthres, sdcriter = sdcriter, 
+                            clipthres = clipthres, sdcriter = sdcriter,
                             racriter = racriter, nonwear_approach = "old")
   } # }
 ```

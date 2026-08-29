@@ -12,7 +12,7 @@ non-bouted periods.
 ``` r
 g.part5(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                    params_sleep = c(), params_metrics = c(),
-                   params_247 = c(), params_phyact = c(), 
+                   params_247 = c(), params_phyact = c(),
                    params_cleaning = c(), params_output = c(),
                    params_general = c(), verbose = TRUE, ...)
 ```
@@ -94,7 +94,7 @@ g.part5(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
 ## Value
 
 The function does not produce values but generates an RData file in the
-milestone subfolder ms5.out which incudes a dataframe named `output`.
+milestone subfolder ms5.out which includes a dataframe named `output`.
 This dataframe is used in g.report.part5 to create two reports one per
 day and one per person. See package vignette paragraph "Output part 5"
 for description of all the variables.

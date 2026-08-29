@@ -16,7 +16,7 @@ g.fragmentation(frag.metrics = c("mean", "TP", "Gini", "power",
 
 - frag.metrics:
 
-  Character with fragmentation metric to exract. Can be "mean", "TP",
+  Character with fragmentation metric to extract. Can be "mean", "TP",
   "Gini", "power", or "CoV", "NFragPM", or all the above metrics with
   "all". See details.
 

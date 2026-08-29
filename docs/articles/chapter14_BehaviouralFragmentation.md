@@ -43,7 +43,7 @@ GGIR derives fragmentation metrics in two ways:
 - In part 5 fragmentation is quantified per waking hours of the day and
   reported per day and as recording average of the daily estimates.
 - In part 6 fragmentation is quantified based on all data in the
-  recording within the window as specifed by parameter `part6Window`.
+  recording within the window as specified by parameter `part6Window`.
 
 Calculation per day allows us to explore and possibly account for
 behavioural differences between days of the week. However, a day level

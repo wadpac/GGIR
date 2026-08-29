@@ -107,7 +107,7 @@ Practically this means:
 - When the quotes are surrounded by \` \` in .Rmd files, you can simply
   use " ".
 - In all .Rd files and when quotes are not surrounded by \` \` in .Rmd
-  files preceed each quote with a forward slash as in \\ \\.
+  files precede each quote with a forward slash as in \\ \\.
 - Only use " " in documentation syntax when the quotes do not relate to
   R code, in the final documentation build this will then appear as ” “.
 
@@ -242,7 +242,7 @@ welcome voluntary efforts to peer-review [open pull requests
 (PR)](https://github.com/wadpac/GGIR/pulls).
 
 For example, you may be able to provide feedback on or all of the
-follwoing: - Code functionality - Code clarity - Documentation clarity
+following: - Code functionality - Code clarity - Documentation clarity
 
 To peer-review a PR, please: - Leave a comment in a PR to express your
 interest in peer-reviewing it. - Vincent will then add you as a

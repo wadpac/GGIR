@@ -73,7 +73,7 @@ g.part6(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
 ## Value
 
 The function does not produce values but generates an RData file in the
-milestone subfolder ms6.out which incudes ... (TO BE COMPLETED). This
+milestone subfolder ms6.out which includes ... (TO BE COMPLETED). This
 dataframe is used in g.report.part6 to create reports. See package
 vignette paragraph (TO BE COMPLETED) for description of all the
 variables.

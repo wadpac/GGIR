@@ -1,7 +1,7 @@
 # Check lux values for extremes and imputes or removes them
 
-Extreme values are imputed by mean of neightbours if they occur isolated
-or in a sequence of two, and removed if they occure in a sequence of 3
+Extreme values are imputed by mean of neighbours if they occur isolated
+or in a sequence of two, and removed if they occur in a sequence of 3
 or longer.
 
 ## Usage

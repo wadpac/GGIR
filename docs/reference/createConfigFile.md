@@ -19,7 +19,7 @@ createConfigFile(config.parameters = c(), GGIRversion = "")
 
 - GGIRversion:
 
-  GGIR version mumber to be incorported in the ConfigFile.
+  GGIR version number to be incorporated in the ConfigFile.
 
 ## Author
 

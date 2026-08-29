@@ -29,7 +29,7 @@ g.weardec(metalong, wearthreshold, ws2, params_cleaning = NULL,
 
 - params_cleaning:
 
-  Parameters object with cleaning paramete, see
+  Parameters object with cleaning parameter, see
   [GGIR](https://wadpac.github.io/GGIR/reference/GGIR.md).
 
 - desiredtz:
@@ -63,7 +63,7 @@ Vincent T van Hees \<v.vanhees@accelting.com\>
   data(data.getmeta)
   params_cleaning = load_params()$params_cleaning
   params_cleaning[["nonwearFilterWindow"]] = c(22, 7)
-  output = g.weardec(metalong = data.getmeta$metalong, wearthreshold = 2, ws2 = 900,  
+  output = g.weardec(metalong = data.getmeta$metalong, wearthreshold = 2, ws2 = 900,
                       params_cleaning = params_cleaning,
                       desiredtz = "", qwindowImp = NULL)
 ```

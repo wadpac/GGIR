@@ -15,7 +15,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
   params_rawdata = params$params_rawdata
   params_cleaning = params$params_cleaning
   params_general = params$params_general
-  
+
   if (f1 == 0) warning("\nWarning: f1 = 0 is not a meaningful value")
   filelist = isfilelist(datadir)
   if (ismovisens(datadir)) filelist = TRUE
@@ -27,18 +27,18 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
   filesizes = file.size(fnamesfull) # in bytes
   bigEnough = which(filesizes/1e6 > params_rawdata[["minimumFileSizeMB"]])
   fnamesfull = fnamesfull[bigEnough]
-  
+
   if (length(bigEnough) > 0) {
     fnames_toosmall = fnames[-bigEnough]
   } else {
     fnames_toosmall = fnames
   }
-  
+
   fnames = fnames[bigEnough]
 
   if (verbose && length(fnames_toosmall) > 0) {
     warning(paste0("\nSkipping files that are too small for analysis: ", toString(fnames_toosmall),
-                   " (configurable with parameter minimumFileSizeMB)."), call. = FALSE) 
+                   " (configurable with parameter minimumFileSizeMB)."), call. = FALSE)
   }
 
   if (length(fnamesfull) == 0) {
@@ -119,7 +119,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
 
       if (length(which(ffdone_without == fname_without)) > 0) {
         return() # skip this file because it was analysed before
-      } 
+      }
     }
     #=============================================================
     # Inspect file (and store output later on)
@@ -237,7 +237,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
         C$use.temp = bcc.data[bcc.i[1], bcc.use.tempi]
         if (verbose == TRUE) {
           cat(paste0("\nRetrieved Calibration error (g) before: ",as.numeric(bcc.data[bcc.i[1],bcc.cal.error.start])))
-          cat(paste0("\nRetrieved Callibration error (g) after: ",as.numeric(bcc.data[bcc.i[1],bcc.cal.error.end])))
+          cat(paste0("\nRetrieved Calibration error (g) after: ",as.numeric(bcc.data[bcc.i[1],bcc.cal.error.end])))
           cat(paste0("\nRetrieved offset correction ",c("x","y","z"),": ",C$offset))
           cat(paste0("\nRetrieved scale correction ",c("x","y","z"),": ",C$scale))
           cat(paste0("\nRetrieved tempoffset correction ",c("x","y","z"),": ",C$tempoffset))
@@ -368,7 +368,7 @@ g.part1 = function(datadir = c(), metadatadir = c(), f0 = 1, f1 = c(), myfun = c
       Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]], (f1 - f0) + 1))
       if (Ncores2use > 1) {
         cl <- parallel::makeCluster(Ncores2use) # not to overload your computer
-        parallel::clusterExport(cl = cl, 
+        parallel::clusterExport(cl = cl,
                                 varlist = c(unclass(lsf.str(envir = asNamespace("GGIR"), all = T)),
                                             "MONITOR", "FORMAT"),
                                 envir = as.environment(asNamespace("GGIR"))

@@ -4,7 +4,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                      meantempcal = c(), myfun = c(),
                      inspectfileobject = c(),
                      verbose = TRUE, ...) {
-  
+
   #get input variables
   input = list(...)
   if (length(input) > 0 ||
@@ -25,7 +25,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     params_general = params$params_general
     params_cleaning = params$params_cleaning
   }
-  
+
   metrics2do = data.frame(do.bfen = params_metrics[["do.bfen"]],
                           do.enmo = params_metrics[["do.enmo"]],
                           do.lfenmo = params_metrics[["do.lfenmo"]],
@@ -59,7 +59,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
                           do.brondcounts = params_metrics[["do.brondcounts"]],
                           do.neishabouricounts = params_metrics[["do.neishabouricounts"]],
                           stringsAsFactors = FALSE)
-  
+
   nmetrics = sum(c(params_metrics[["do.bfen"]], params_metrics[["do.enmo"]],
                    params_metrics[["do.lfenmo"]], params_metrics[["do.en"]],
                    params_metrics[["do.hfen"]], params_metrics[["do.hfenplus"]],
@@ -84,7 +84,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     # bugs after waiting for the data to load
     check_myfun(myfun, params_general[["windowsizes"]])
   }
-  
+
   if (length(nmetrics) == 0) {
     warning("No metrics selected.", call. = FALSE)
   }
@@ -92,26 +92,26 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   ws3 = params_general[["windowsizes"]][1]; ws2 = params_general[["windowsizes"]][2]; ws = params_general[["windowsizes"]][3]
 
   PreviousEndPage = c()
-  
+
   filequality = data.frame(filetooshort = FALSE, filecorrupt = FALSE,
                            filedoesnotholdday = FALSE, NFilePagesSkipped = 0)
   filetooshort = FALSE
   filecorrupt = FALSE
   filedoesnotholdday = FALSE
   NFilePagesSkipped = 0
-  
+
   i = 1 #counter to keep track of which binary block is being read
   count = 1 #counter to keep track of the number of seconds that have been read
   count2 = 1 #count number of blocks read with length "ws2" (long epoch, 15 minutes by default)
   LD = 2 #dummy variable used to identify end of file and to make the process stop
   bsc_qc = data.frame(time = c(), size = c(), stringsAsFactors = FALSE)
-  
+
   if (length(inspectfileobject) > 0) {
     INFI = inspectfileobject
   } else {
     stop("argument inspectfileobject not specified")
   }
-  
+
   mon = INFI$monc
   dformat = INFI$dformc
   sf = INFI$sf
@@ -159,22 +159,22 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         cat(paste0(" ", i))
       }
     }
-    
+
     accread = g.readaccfile(filename = datafile, blocksize = blocksize, blocknumber = i,
                             filequality = filequality,
                             ws = ws, PreviousEndPage = PreviousEndPage,
                             inspectfileobject = INFI,
                             PreviousLastValue = PreviousLastValue,
                             PreviousLastTime = PreviousLastTime,
-                            params_rawdata = params_rawdata, params_general = params_general, 
+                            params_rawdata = params_rawdata, params_general = params_general,
                             header = header)
     header = accread$header
 
     if ("PreviousLastValue" %in% names(accread$P)) { # output when reading ad-hoc csv
       PreviousLastValue = accread$P$PreviousLastValue
       PreviousLastTime = accread$P$PreviousLastTime
-    } 
-        
+    }
+
     filequality = accread$filequality
     filetooshort = filequality$filetooshort
     filecorrupt = filequality$filecorrupt
@@ -182,7 +182,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     NFilePagesSkipped = filequality$NFilePagesSkipped
     isLastBlock = accread$isLastBlock
     PreviousEndPage = accread$endpage
-    
+
     #============
     #process data as read from binary file
     if (length(accread$P) > 0) { # would have been set to zero if file was corrupt or empty
@@ -196,7 +196,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         use.temp = ("temperature" %in% colnames(data))
         if (use.temp) {
           if (mean(data$temperature[1:10], na.rm = TRUE) > 50) {
-            warning("temperature value is unreaslistically high (> 50 Celcius) and will not be used.", call. = FALSE)
+            warning("temperature value is unreaslistically high (> 50 Celsius) and will not be used.", call. = FALSE)
             use.temp = FALSE
           }
         }
@@ -288,7 +288,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         starttime = SWMT$starttime
         wday = SWMT$wday; wdayname = SWMT$wdayname
         data = SWMT$data
-        
+
         rm(SWMT)
       }
 
@@ -298,10 +298,10 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         isLastBlock = TRUE
         LD = 0 #ignore rest of the data and store what has been loaded so far.
       }
-      
+
       #store data that could not be used for this block, but will be added to next block
       if (LD >= (ws*sf)) {
-        
+
         use = (floor(LD / (ws2*sf))) * (ws2*sf) #number of datapoint to use # changes from ws to ws2 Vvh 23/4/2017
         if (length(myfun) != 0) { # if using external function, then check that use is a multitude of the expected windowlength
           Nminlength = use / myfun$minlength
@@ -424,7 +424,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
           NcolEF = ncol(OutputExternalFunction) - 1 # number of extra columns needed
           metashort[count:(count - 1 + nrow(OutputExternalFunction)), col_msi:(col_msi + NcolEF)] = as.matrix(OutputExternalFunction); col_msi = col_msi + NcolEF + 1
         }
-        
+
         length_acc_metrics =  length(accmetrics[[1]]) # changing indicator to whatever metric is calculated, EN produces incompatibility when deriving both ENMO and ENMOa
         rm(accmetrics)
         # update blocksize depending on available memory
@@ -566,8 +566,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     if (length(cut) > 1) {
       metashort = metashort[-cut,]
       # for a very small file, there could be just one row in metashort[-cut,], so it gets coerced to a vector.
-      # But what we actually need is a 1-row matrix. So we need to transpose it. 
-      if(is.vector(metashort)) { 
+      # But what we actually need is a 1-row matrix. So we need to transpose it.
+      if(is.vector(metashort)) {
         metashort = as.matrix(t(metashort))
       }
     }
@@ -582,8 +582,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     if (length(cut2) > 1) {
       metalong = metalong[-cut2,]
       # for a very small file, there could be just one row in metalong[-cut2,], so it gets coerced to a vector.
-      # But what we actually need is a 1-row matrix. So we need to transpose it. 
-      if(is.vector(metalong)) { 
+      # But what we actually need is a 1-row matrix. So we need to transpose it.
+      if(is.vector(metalong)) {
         metalong = as.matrix(t(metalong))
       }
     }
@@ -599,7 +599,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
       metalong[, 1] = as.character(time2)
     }
     metricnames_short = c("timestamp", metnames)
-    
+
     # Following code is needed to make sure that algorithms that produce character value
     # output are not assumed to be numeric
     NbasicMetrics = length(metricnames_short)
@@ -612,7 +612,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     for (ncolms in 2:NbasicMetrics) {
       metashort[,ncolms] = as.numeric(metashort[,ncolms])
     }
-    
+
     metalong = data.frame(A = metalong, stringsAsFactors = FALSE)
     names(metalong) = metricnames_long
     for (ncolml in 2:ncol(metalong)) {

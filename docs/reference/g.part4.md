@@ -9,7 +9,7 @@ sleep detection.
 ## Usage
 
 ``` r
-g.part4(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1, params_sleep = c(), 
+g.part4(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1, params_sleep = c(),
     params_metrics = c(),  params_cleaning = c(), params_output = c(),
                    params_general = c(), verbose = TRUE, ...)
 ```
@@ -83,7 +83,7 @@ g.part4(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1, params_sleep = c(),
 ## Value
 
 The function does not produce values but generates an RData file in the
-milestone subfolder ms4.out which incudes a dataframe named
+milestone subfolder ms4.out which includes a dataframe named
 `nightsummary`. This dataframe is used in g.report.part4 to create two
 reports one per night and one per person. See package vignette paragraph
 "Output part 4" for description of all the variables.

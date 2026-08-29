@@ -1,16 +1,16 @@
 g.analyse.perfile = function(I, C, metrics_nav,
-                             AveAccAve24hr, doquan, doiglevels, tooshort, 
+                             AveAccAve24hr, doquan, doiglevels, tooshort,
                              params_247, params_cleaning, params_general,
                              output_avday, output_perday,
                              dataqual_summary, file_summary) {
-  
+
   # extract objects from lists in input:
   cosinor_coef = output_avday$cosinor_coef
   daysummary = output_perday$daysummary
   ds_names = output_perday$ds_names
   lookat = metrics_nav$lookat
   colnames_to_lookat = metrics_nav$colnames_to_lookat
-  
+
   filesummary = matrix(" ", 1, 150) #matrix to be stored with summary per participant
   s_names = rep(" ", ncol(filesummary))
   vi = 1
@@ -21,8 +21,8 @@ g.analyse.perfile = function(I, C, metrics_nav,
     daysummary = daysummary[,-cut]
   }
   # for a very small file, there could be just one row in daysummary[-cut,], so it gets coerced to a vector.
-  # But what we actually need is a 1-row matrix. So we need to transpose it. 
-  if(is.vector(daysummary)) { 
+  # But what we actually need is a 1-row matrix. So we need to transpose it.
+  if(is.vector(daysummary)) {
     daysummary = t(daysummary)
   }
 
@@ -30,7 +30,7 @@ g.analyse.perfile = function(I, C, metrics_nav,
   filesummary[vi] = file_summary$ID
   # Identify which of the metrics are in g-units to aid deciding whether to multiply by 1000
   g_variables_lookat = lookat[grep(x = colnames_to_lookat, pattern = "BrondCount|ZCX|ZCY|ZCZ|NeishabouriCount|ExtAct|ExtHeartRate", invert = TRUE)]
-  
+
   # Serial number
   filesummary[(vi + 1)] = file_summary$deviceSerialNumber
   s_names[vi:(vi + 1)] = c("ID","device_sn")
@@ -50,7 +50,7 @@ g.analyse.perfile = function(I, C, metrics_nav,
   filesummary[(vi + 2)] = file_summary$startt # starttime of measurement
   s_names[vi:(vi + 2)] = c("bodylocation","filename","start_time")
   vi = vi + 3
-  
+
   if (!is.null(params_general[["recording_split_times"]]) && !is.null(segment_names)) {
     filesummary[vi] = segment_names[2]
     filesummary[vi + 1] = segment_names[3]
@@ -70,7 +70,7 @@ g.analyse.perfile = function(I, C, metrics_nav,
   filesummary[vi + 2] = dataqual_summary$dcomplscore #completeness of the day
   filesummary[vi + 3] = dataqual_summary$meas_dur_def_proto_day #measurement duration according to protocol
   filesummary[vi + 4] = dataqual_summary$wear_dur_def_proto_day #wear duration in days (out of measurement protocol)
-  s_names[vi:(vi + 4)] = c("clipping_score", "meas_dur_dys", "complete_24hcycle", 
+  s_names[vi:(vi + 4)] = c("clipping_score", "meas_dur_dys", "complete_24hcycle",
                            "meas_dur_def_proto_day", "wear_dur_def_proto_day")
   vi = vi + 5
   if (!is.null(params_cleaning[["nonwearFiltermaxHours"]])) {
@@ -100,7 +100,7 @@ g.analyse.perfile = function(I, C, metrics_nav,
   if ("Dur_chsum_failed" %in% names(file_summary)) {
     # readAxivity QClog
     # These are summaries of the file health check by the GGIRread::readAxivity
-    # the function handles data blocks (1-3 seconds) with faulty data by imputing 
+    # the function handles data blocks (1-3 seconds) with faulty data by imputing
     # them and logging the information.
     # Normally we do not expect issue with cwa files, but by logging the information
     # we will facilitate better insight into when this happens.
@@ -115,7 +115,7 @@ g.analyse.perfile = function(I, C, metrics_nav,
                              "filehealth_checksumfail_min",
                              "filehealth_niblockid_min", # non incremental block id
                              "filehealth_fbias0510_min", # frequency bias
-                             "filehealth_fbias1020_min", 
+                             "filehealth_fbias1020_min",
                              "filehealth_fbias2030_min",
                              "filehealth_fbias30_min")
     vi = vi + 7
@@ -240,12 +240,12 @@ g.analyse.perfile = function(I, C, metrics_nav,
     } else {
       vi = vi + 21
     }
-    
+
     # Variables per metric - summarise with stratification to weekdays and weekend days
     daytoweekvar = c(5:length(ds_names))
     md = which(ds_names[daytoweekvar] %in% c("measurementday", "weekday", "qwindow_timestamps", "qwindow_names"))
     if (length(md) > 0) daytoweekvar = daytoweekvar[-md]
-    
+
     dtwtel = 0
     if (length(daytoweekvar) >= 1) {
       sp = length(daytoweekvar) + 1
@@ -326,7 +326,7 @@ g.analyse.perfile = function(I, C, metrics_nav,
       if (length(GGIRversion) != 1) GGIRversion = sessionInfo()$otherPkgs$GGIR$Version
     }
     filesummary[(vi + 6)] = GGIRversion #"2014-03-14 12:14:00 GMT"
-    s_names[vi:(vi + 6)] = as.character(c(paste0("data exclusion stategy (value=1, ignore specific hours;",
+    s_names[vi:(vi + 6)] = as.character(c(paste0("data exclusion strategy (value=1, ignore specific hours;",
                                                  " value=2, ignore all data before the first midnight and",
                                                  " after the last midnight)"),
                                           "n hours ignored at start of meas (if data_masking_strategy=1)",
@@ -342,7 +342,7 @@ g.analyse.perfile = function(I, C, metrics_nav,
   if (length(mw) > 0) {
     daysummary[mw] = " "
   }
-  
+
   if (min(dim(as.matrix(daysummary))) == 1) {
     if (nrow(as.matrix(daysummary)) != 1) {
       daysummary = t(daysummary) #if there is only one day of data
@@ -371,7 +371,7 @@ g.analyse.perfile = function(I, C, metrics_nav,
   }
   filesummary = data.frame(value = t(filesummary), stringsAsFactors = FALSE) #needs to be t() because it will be a column otherwise
   names(filesummary) = s_names
-  
+
   columns2order = c()
   if (ncol(filesummary) > 37) {
     columns2order = grep(pattern = "AD_|WE_|WD_|WWD_|WWE_", x = names(filesummary))

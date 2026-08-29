@@ -44,7 +44,7 @@ calculateCounts = function(data=c(), parameters=c()) {
   # parameters: the sample rate of data
   library("activityCounts")
   if (ncol(data) == 4) data = data[,2:4]
-  mycounts = counts(data = data, hertz = parameters, 
+  mycounts = counts(data = data, hertz = parameters,
                     x_axis = 1, y_axis = 2, z_axis = 3,
                     start_time = Sys.time())
   mycounts = mycounts[,2:4] #Note: do not provide timestamps to GGIR
@@ -105,7 +105,7 @@ to come with the following elements:
   specifies what function should be used for the aggregation, e.g. mean,
   sum, median.
 - `timestamp` Boolean to indicated whether timestamps (seconds since
-  1-1-1970) should be passed on to the external function as first columm
+  1-1-1970) should be passed on to the external function as first column
   of the data matrix..
 - `reporttype` Character to indicate the type of reporting by GGIR:
   “scalar” if it should be averaged per day, “event” if it should be
@@ -174,7 +174,7 @@ dominant_frequency = function(data=c(), parameters=c()) {
   if (ncol(data) == 4) data= data[,2:4]
   data = data.frame(t = floor(seq(0,(N - 1)/sf, by = 1/sf)/ws),
                     x = data[,1], y = data[,2], z = data[,3])
-  df = aggregate(data, by = list(data$t), 
+  df = aggregate(data, by = list(data$t),
                  FUN=function(x) {return(dominant_frequency(x, sf))})
   df = df[, -c(1:2)]
   return(df)
@@ -245,7 +245,7 @@ function GGIR function g.part1 and stored in an RData-file in
 is set by GGIR argument `windowsizes`, which is `c(5,900,3600)` by
 default. Here, the first element `5` specifies the short epoch size in
 seconds. If the output of the external function is less then this
-resolution it will be aggregated with the function as specificied by
+resolution it will be aggregated with the function as specificity by
 aggfunction in the `myfun` object. In the count example we used the sum
 for this and for the dominant frequency example we used the median.
 

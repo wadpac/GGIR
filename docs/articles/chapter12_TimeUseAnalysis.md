@@ -105,7 +105,7 @@ the day segments that might have been provided via the parameter
 - Number of bouts: Number of bouts per behavioural class.
 - Fragmentation: The fragmentation metrics as discussed in the previous
   chapter. Here no distinction is made between bouted or unbouted
-  behavour. Note that fragmentation classes sometimes group multiple
+  behaviour. Note that fragmentation classes sometimes group multiple
   intensity levels, e.g. the fragmentation of physical activity reflects
   the fragmentation of LIPA and MVPA combined relative to Inactive time.
 
@@ -219,7 +219,7 @@ The exported time series table comes with the following columns:
 | lightpeak | If lux sensor data is available in the data file then it was summarised at an epoch length defined by the second value of parameter `windowsizes` (defaults to 900 seconds = 15 minutes), to add this value to the time series it is interpolated, so the original time resolution is not necessarily reflected in this column. |
 | selfreported | Factor to indicator what behaviour was reported via sleep diary, if no behaviour was reported value is NA |
 | angle | anglez by default. If `sensor.location = "hip"` or `HASPT.algo = "HorAngle"` then angle represents the angle for the longitudinal axis as provided by argument longitudinal_axis or estimated if no angle was provided. If more angles were extracted in part 1 then these will be add with their letter appended. |
-| step_count | Only stored when external algortihm for step detection is used. |
+| step_count | Only stored when external algorithm for step detection is used. |
 | diaryImputationCode | Code stored in the advanced format sleeplog that will be shown in the visualisation. |
 | temperature | If temperature was available in the data file then it was summarised at an epoch length defined by the second value of parameter `windowsizes` (defaults to 900 seconds = 15 minutes), to add this value to the time series it is interpolated, so the original time resolution is not necessarily reflected in this column. |
 | invalid_fullwindow | Percentage of the window (see above) that represents invalid data, included to ease filtering the timeseries based on whether windows are valid or not. |

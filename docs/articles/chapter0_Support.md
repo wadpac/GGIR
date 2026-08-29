@@ -61,7 +61,7 @@ voluntary efforts.**
 ## Other documentation sources
 
 Additionally, technical function documentation can be found in the
-[package refence manual on
+[package reference manual on
 CRAN](https://cran.r-project.org/package=GGIR/GGIR.pdf) or via the
 R(Studio) console as in
 [`?GGIR`](https://wadpac.github.io/GGIR/reference/GGIR.md). Although, we

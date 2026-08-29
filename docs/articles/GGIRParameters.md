@@ -402,7 +402,7 @@ Numeric (default = 1). If idloc = 1 the code assumes that ID number is
 stored in the obvious header field. Note that for ActiGraph data the ID
 is never stored in the file header. For value set to 2, 5, 6, and 7,
 GGIR looks at the filename and extracts the character string preceding
-the first occurance of a "\_" (idloc = 2), " " (space, idloc = 5), "."
+the first occurrence of a "\_" (idloc = 2), " " (space, idloc = 5), "."
 (dot, idloc = 6), and "-" (idloc = 7), respectively. You may have
 noticed that idloc 3 and 4 are skipped, they were used for one study in
 2012, and not actively maintained anymore, but because it is legacy code
@@ -416,7 +416,7 @@ would mean 4 am).
 #### part5_agg2_60seconds
 
 Boolean (default = FALSE). Whether to use aggregate epochs to 60 seconds
-as part of the GGIR g.part5 analysis. Aggregation is doen by averaging.
+as part of the GGIR g.part5 analysis. Aggregation is done by averaging.
 Note that when working with count metrics such as Neishabouri counts
 this means that the threshold can stay the same as in part 2, because
 again the threshold is expressed relative to the original epoch size,
@@ -530,7 +530,7 @@ how to specify time formats in R see:
 #### recording_split_overlap
 
 Numeric (default = 0). Number of hours to use as buffer when splitting
-recording. A possitive number means that the split recordings overlap, a
+recording. A positive number means that the split recordings overlap, a
 nevative number indicates a gap.
 
 #### recording_split_ignore_edges
@@ -1367,7 +1367,7 @@ Options: "vanHees2015", "Sadeh1994", "Galland2012", "NotWorn",
 #### Sadeh_axis
 
 Character (default = "Y"). To indicate which axis to use for the
-Sadeh1994 algorithm, and other algortihms that relied on count-based
+Sadeh1994 algorithm, and other algorithms that relied on count-based
 Actigraphy such as Galland2012.
 
 #### longitudinal_axis
@@ -1645,7 +1645,7 @@ Boolean (default = FALSE) Whether to apply the guider correction
 algorithm as discussed in Chapter 9 of the online documentation:
 <https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html>.
 In short, when sleep is fragmented, algorithms to guide the detection of
-SPT such as HDCZA may occassionally miss a part of the night or
+SPT such as HDCZA may occasionally miss a part of the night or
 incorrectly consider a day time nap as the main sleep window in a day.
 This optional algorithm aims to correct for such misclassifications.
 
@@ -1939,7 +1939,7 @@ Character vector with length two (default = c("start", "end")) to
 indicate the start and the end of the time series to be used for
 circadian rhythm analysis in part 6. In other words, this parameters is
 not used for Household co-analysis. Alternative values are: "Wx", "Ox",
-"Hx", where "x" is a number to indicat the xth wakeup, onset or hour of
+"Hx", where "x" is a number to indicate the xth wakeup, onset or hour of
 the recording. Negative values for "x" are also possible and will count
 relative to the end of the recording. For example, c("W1", "W-1") goes
 from the first till the last wakeup, c("H5", "H-5") ignores the first
@@ -1954,7 +1954,7 @@ consuming.
 
 #### clevels
 
-Not fully operational yet, to be actived in 2025. Numeric vector
+Not fully operational yet, to be activated in 2025. Numeric vector
 (default = c(30, 150)) with length 2 to indicate cadence ranges used
 when summarising step counts, if available. When set to NULL, step
 counts will not be summarised in part 5 output.
@@ -2136,7 +2136,7 @@ of the next plot.
 #### visualreport_focus
 
 Character (default = "day") Whether new visual report (names start with
-"report…") focuss on day or night. If set ot "night" the focus will be
+"report…") focus on day or night. If set ot "night" the focus will be
 on the night.
 
 #### visualreport_validcrit

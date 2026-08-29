@@ -33,7 +33,7 @@ filterNonwearNight(r1, metalong, qwindowImp, desiredtz, params_cleaning, ws2)
 
 - params_cleaning:
 
-  Parameters object with cleaning paramete, see
+  Parameters object with cleaning parameter, see
   [GGIR](https://wadpac.github.io/GGIR/reference/GGIR.md).
 
 - ws2:

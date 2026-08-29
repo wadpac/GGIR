@@ -90,7 +90,7 @@ g.part5.savetimeseries(ts, LEVELS, desiredtz, rawlevels_fname,
 ## Value
 
 Function does not provide output, it only prepare data for saving and
-saves it to a file. For documention on columns see main vignette.
+saves it to a file. For documentation on columns see main vignette.
 
 ## Author
 

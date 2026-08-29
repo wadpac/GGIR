@@ -15,7 +15,7 @@ identify_levels(ts, TRLi,TRMi,TRVi,
 
 - ts:
 
-  Data.frame with time series genrated in .gpart5
+  Data.frame with time series generated in .gpart5
 
 - TRLi:
 

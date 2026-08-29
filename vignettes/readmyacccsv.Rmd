@@ -5,7 +5,7 @@ output:
     toc : true
     number_sections: true
     toc_depth: 3
-    toc_float: true 
+    toc_float: true
 urlcolor: blue
 vignette: >
   %\VignetteIndexEntry{Reading csv files with raw data in GGIR}
@@ -43,7 +43,7 @@ As for the rest of GGIR functions, `read.myacc.csv` is intended to be used withi
 
 As the `read.myacc.csv` function tries to read csv files with a wide variety of formats, the key arguments to specify depend on the characteristics of the csv file to process. Overall, if an argument is not relevant, it should be left in default setting (e.g., if the csv file does not contain temperature data, the arguments related to temperature settings should be left in default values).
 
-Below we present a summary of the available input arguments. Please see the [parameters vignette](https://cran.r-project.org/package=GGIR/vignettes/GGIRParameters.html) for a more elaborate description of these input arguments. Further, the arguments are also covered by the function documentation for the `read.myacc.csv` function. 
+Below we present a summary of the available input arguments. Please see the [parameters vignette](https://cran.r-project.org/package=GGIR/vignettes/GGIRParameters.html) for a more elaborate description of these input arguments. Further, the arguments are also covered by the function documentation for the `read.myacc.csv` function.
 
 ### General arguments
 
@@ -81,7 +81,7 @@ Below we present a summary of the available input arguments. Please see the [par
 
 ### Arguments for files including temperature
 
-- `rmc.col.temp` - Scalar with column (number) in which the temperature is stored. Leave in default setting if no temperature is avaible. The temperature will be used by \link{g.calibrate}.
+- `rmc.col.temp` - Scalar with column (number) in which the temperature is stored. Leave in default setting if no temperature is available. The temperature will be used by \link{g.calibrate}.
 - `rmc.unit.temp` - Character with unit of temperature values: (K)elvin, (C)elsius, or (F)ahrenheit.
 
 ### Arguments for files including wear time information
@@ -149,14 +149,14 @@ GGIR(
              #=====================
              # read.myacc.csv arguments
              #=====================
-             rmc.nrow = Inf, 
+             rmc.nrow = Inf,
              rmc.dec = ".",
-             rmc.firstrow.acc = 2, 
-             rmc.col.acc = 2:4, 
-             rmc.col.temp = 5, 
+             rmc.firstrow.acc = 2,
+             rmc.col.acc = 2:4,
+             rmc.col.temp = 5,
              rmc.col.time=1,
-             rmc.unit.acc = "g", 
-             rmc.unit.temp = "C", 
+             rmc.unit.acc = "g",
+             rmc.unit.temp = "C",
              rmc.unit.time = "POSIX",
              rmc.format.time = "%d/%m/%Y %H:%M:%OS",
              desiredtz = "Europe/London",

@@ -89,7 +89,7 @@ check_myfun = function(myfun, windowsizes) { # Function to check myfun object
     if (is.character(myfun$outputtype) == F) {
       status = 1
       stop(paste0("Error in check_myfun.R: Element outputtype is expected to be a",
-                  " character specifying the ouput type"), call. = FALSE)
+                  " character specifying the output type"), call. = FALSE)
     }
   }
   if ("aggfunction" %in% names(myfun)) { # If aggfunction is available:

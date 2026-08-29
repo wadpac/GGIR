@@ -10,12 +10,12 @@ column locations) to make the data compatible with other GGIR functions.
 read.myacc.csv(rmc.file=c(), rmc.nrow=Inf, rmc.skip = c(), rmc.dec=".",
                           rmc.firstrow.acc = c(), rmc.firstrow.header=c(),
                           rmc.header.length = c(),
-                          rmc.col.acc = 1:3, rmc.col.temp = c(), 
+                          rmc.col.acc = 1:3, rmc.col.temp = c(),
                           rmc.col.time=c(),
-                          rmc.unit.acc = "g", rmc.unit.temp = "C", 
+                          rmc.unit.acc = "g", rmc.unit.temp = "C",
                           rmc.unit.time = "POSIX",
                           rmc.format.time = "%Y-%m-%d %H:%M:%OS",
-                          rmc.bitrate = c(), rmc.dynamic_range = c(), 
+                          rmc.bitrate = c(), rmc.dynamic_range = c(),
                           rmc.unsignedbit = TRUE,
                           rmc.origin = "1970-01-01",
                           rmc.desiredtz = NULL,
@@ -29,7 +29,7 @@ read.myacc.csv(rmc.file=c(), rmc.nrow=Inf, rmc.skip = c(), rmc.dec=".",
                           rmc.col.wear = c(),
                           rmc.doresample = FALSE,
                           rmc.scalefactor.acc = 1,
-                          interpolationType=1, 
+                          interpolationType=1,
                           PreviousLastValue = c(0, 0, 1),
                           PreviousLastTime = NULL,
                           desiredtz = NULL,
@@ -84,7 +84,7 @@ read.myacc.csv(rmc.file=c(), rmc.nrow=Inf, rmc.skip = c(), rmc.dec=".",
 - rmc.col.temp:
 
   Scalar with column (number) in which the temperature is stored. Leave
-  in default setting if no temperature is avaible. The temperature will
+  in default setting if no temperature is available. The temperature will
   be used by
   [g.calibrate](https://wadpac.github.io/GGIR/reference/g.calibrate.md).
 
@@ -265,5 +265,5 @@ Vincent T van Hees \<v.vanhees@accelting.com\>
                       rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.origin = "1970-01-01")
   if (file.exists(testfile)) file.remove(testfile)
 #> [1] TRUE
-  
+
 ```

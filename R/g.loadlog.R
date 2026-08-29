@@ -1,4 +1,4 @@
-g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(), 
+g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
                      sleeplogsep = ",", meta.sleep.folder = c(), desiredtz="", sleepwindowType = c()) {
   # declare local functions:
   getIDstartdate = function(x) {
@@ -121,7 +121,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
     log = log[which(is.na(log$duration) == FALSE),]
     return(log)
   }
-  
+
   #==========================================================================
   # Main code starts here
   #==========================================================================
@@ -137,14 +137,14 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
     duplicatedIDs = gsub(pattern = " ", replacement = "", x = duplicatedIDs)
     if (duplicatedIDs != "") {
       stop(paste0("Sleeplog has duplicated entries (rows) for ID(s) ",
-                  duplicatedIDs, 
+                  duplicatedIDs,
                   ", please fix. GGIR expects one sleeplog row per unique ID. "), call. = FALSE)
     } else {
       # Duplicated rows without an ID, ignore these
       S = S[!duplicated(S[, colid]),]
     }
   }
-  
+
   if (colnames(S)[1] == "V1" && any(S[1, ] == "")) {
     stop(paste0("Sleeplog column found with empty header, please fix. This can also happen if ",
                 "there are empty columns at the end, delete those columns if applicable."), call. = FALSE)
@@ -153,10 +153,10 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
   advanced_sleeplog = length(grep(pattern = "date", x = colnames(S), ignore.case = TRUE)) > 0
   if (advanced_sleeplog ==  TRUE) {
     if (length(meta.sleep.folder) > 0) {
-      
+
       startdates = lapply(X = dir(meta.sleep.folder, full.names = T), FUN = getIDstartdate)
       startdates = as.data.frame(data.table::rbindlist(startdates, fill = TRUE))
-      
+
       startdates$startAtMidnight = FALSE
       # If recording starts at midnight or before 4am that first half night
       # is still counted in part 3, which means that the start date of the recording
@@ -172,13 +172,13 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
   }
   if (length(S) == 0) {
     warning(paste0("Could not read sleeplog file, check that file path is correct.",
-                   "Tip: Try to aply function g.loadlog to your sleeplog file first",
+                   "Tip: Try to apply function g.loadlog to your sleeplog file first",
                    " to verify that sleeplog is correctly processed."), call. = FALSE)
   } else {
     if (nrow(S) == 0 | ncol(S) <= 2) {
       warning(paste0("Could not read sleeplog file. Does it have at least 3 columns",
-                     " and comma seperated values?",
-                     " Tip: Try to aply function g.loadlog to your sleeplog file ",
+                     " and comma separated values?",
+                     " Tip: Try to apply function g.loadlog to your sleeplog file ",
                      "first to verify that sleeplog is correctly processed."), call. = FALSE)
     }
   }
@@ -278,17 +278,17 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
                            "problem with date formats or their recognition, please check."), call. = FALSE)
           }
           if (startdates$startAtMidnight[matchingID] == TRUE) {
-            # If the first day in the advanced sleeplog is 28/11 
+            # If the first day in the advanced sleeplog is 28/11
             # and the recording starts at midnight 27/11 00:00:00
             # then that means that we miss the first 2 nights.
             # However, the code above only sees a
             # difference of 1 day (deltadate) between 27/11 and 28/11.
-            # If the recording starts at 27/11 00:00:05 this is correct 
+            # If the recording starts at 27/11 00:00:05 this is correct
             # because 27/11 is not counted as a night in g.part3 and g.part4.
             # This is why we need to do + 1 if the recording starts at midnight.
             deltadate = deltadate + 1
           }
-          
+
           if (length(Sdates_correct) == 0 | is.na(startdate_sleeplog) == TRUE) {
             warning(paste0("\nSleeplog for ID: ",ID," not used because first date",
                            " not within 30 days of first date in accerometer recording"), call. = FALSE)
@@ -313,7 +313,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
                              ID, " does not overlap with sleeplog date",
                              " range"), call. = FALSE)
               next
-            } 
+            }
             # only attempt to use sleeplog if start date could be recognised
             # Add row to newsleeplog if somehow there are not enough rows
             if (count > nrow(newsleeplog)) {
@@ -429,14 +429,14 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
               newsleeplog = cbind(newsleeplog, matrix(NA, nrow(newsleeplog), extracols))
             }
             newsleeplog[count, 2:(length(newsleeplog_times) + 1)] = newsleeplog_times
-            
+
             # add columns to bedlog
             extracols = (length(newbedlog_times) + 2) - ncol(newbedlog)
             if (extracols > 0) {
               newbedlog = cbind(newbedlog, matrix(NA, nrow(newbedlog), extracols))
             }
             newbedlog[count, 2:(length(newbedlog_times) + 1)] = newbedlog_times
-            
+
             count  = count + 1
           }
         }
@@ -448,7 +448,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
                        " and that argument coldid is correctly set."), call. = FALSE)
       }
       # remove empty rows and columns:
-      
+
       if (length(naplog) > 0) {
         naplog = remove_empty_rows_cols(naplog, name = "nap")
       }
@@ -460,7 +460,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
         colnames(imputecodelog)[3] = "imputecode"
         imputecodelog$date = as.Date(imputecodelog$date, dateformat_correct)
       }
-      
+
       if (length(newsleeplog) > 0) {
         newsleeplog = removeEmptyCells(newsleeplog)
         if (!is.null(newsleeplog)) {
@@ -483,7 +483,7 @@ g.loadlog = function(loglocation = c(), coln1 = c(), colid = c(),
   }
   # test whether number of columns with night information in sleeplog is odd
   # this would provide nnights %% 2 == 0.5
-  if (nnights %% 2 == 0.5) { 
+  if (nnights %% 2 == 0.5) {
     warning(paste0("\nWe see an odd number of timestamp columns",
                    " in the sleeplog. The last column will be ignored. If this is incorrect,",
                    " please check that argument coln1 is correctly specified if you use a basic sleeplog format and",

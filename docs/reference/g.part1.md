@@ -99,7 +99,7 @@ GGIR comes with many processing parameters, which have been thematically
 grouped in parameter objects (R list). By running print(load_params())
 you can see the default values of all the parameter objects. When g.part
 1 is used via [GGIR](https://wadpac.github.io/GGIR/reference/GGIR.md)
-you have the option to specifiy a configuration file, which will
+you have the option to specify a configuration file, which will
 overrule the default parameter values. Further, as user you can set
 parameter values as input argument to both g.part1 and
 [GGIR](https://wadpac.github.io/GGIR/reference/GGIR.md). Directly

@@ -45,7 +45,7 @@ the next day, and; date.
 
 ## Details
 
-Calculates Sleep Regularity Index per day pair. Absense of missing data
+Calculates Sleep Regularity Index per day pair. Absence of missing data
 is not used as a criteria for calculation. Instead the code asses the
 fraction of the time for which matching valid data points were found in
 both days. Later in g.part4 this fraction is used to include or exclude

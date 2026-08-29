@@ -137,7 +137,7 @@ arguments are also covered by the function documentation for the
 #### Arguments for files including temperature
 
 - `rmc.col.temp` - Scalar with column (number) in which the temperature
-  is stored. Leave in default setting if no temperature is avaible. The
+  is stored. Leave in default setting if no temperature is available. The
   temperature will be used by .
 - `rmc.unit.temp` - Character with unit of temperature values: (K)elvin,
   (C)elsius, or (F)ahrenheit.
@@ -232,14 +232,14 @@ GGIR(
              #=====================
              # read.myacc.csv arguments
              #=====================
-             rmc.nrow = Inf, 
+             rmc.nrow = Inf,
              rmc.dec = ".",
-             rmc.firstrow.acc = 2, 
-             rmc.col.acc = 2:4, 
-             rmc.col.temp = 5, 
+             rmc.firstrow.acc = 2,
+             rmc.col.acc = 2:4,
+             rmc.col.temp = 5,
              rmc.col.time=1,
-             rmc.unit.acc = "g", 
-             rmc.unit.temp = "C", 
+             rmc.unit.acc = "g",
+             rmc.unit.temp = "C",
              rmc.unit.time = "POSIX",
              rmc.format.time = "%d/%m/%Y %H:%M:%OS",
              desiredtz = "Europe/London",

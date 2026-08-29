@@ -1,9 +1,9 @@
 extractID = function(hvars, idloc, fname) {
-  
+
   ID = hvars$ID
   iID = hvars$iID
   IDd = hvars$IDd
-  
+
   # This part is specific to how data Pelotas cohort was stored.
   # It is legacy code from 2012, for later projects I tried to avoid
   # ending up with dataset specific solutions
@@ -44,7 +44,7 @@ extractID = function(hvars, idloc, fname) {
   }
   if (length(ID) == 0) { # If ID could not be extracted
     ID = basename(fname)
-    warning(paste0("\nUnable to extract ID from, ", fname, ". Using filname instead. ",
+    warning(paste0("\nUnable to extract ID from, ", fname, ". Using filename instead. ",
                    " You may want to check argument idloc, which is currently set to ", idloc))
   } else {
     ID = gsub(pattern = " ", replacement = "", ID)

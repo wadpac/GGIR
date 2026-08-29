@@ -14,7 +14,7 @@ GGIR does not have a build-in step detection algorithm, but does facilitate the 
 
 The only external algorithm for step detection currently available for GGIR is the Verisense algorithm, which was design for data collected on the wrist. The algorithm has been described and evaluated in studies by [Maylor 2022](https://doi.org/10.3390/s22249984) and [Rowlands 2022](https://doi.org/10.1080/02640414.2022.2147134).
 
-The original [Verisense algortihm code](https://github.com/ShimmerResearch/Verisense-Toolbox/tree/master/Verisense_step_algorithm) is not actively maintained at the time of writing this documentation. An [improved copy of the Verisense algortihms code](https://github.com/wadpac/GGIR/blob/master/user-scripts/verisense_count_steps.R) with minor bug fixes is part of the GGIR GitHub repository.
+The original [Verisense algorithm code](https://github.com/ShimmerResearch/Verisense-Toolbox/tree/master/Verisense_step_algorithm) is not actively maintained at the time of writing this documentation. An [improved copy of the Verisense algorithms code](https://github.com/wadpac/GGIR/blob/master/user-scripts/verisense_count_steps.R) with minor bug fixes is part of the GGIR GitHub repository.
 
 
 ### How to use the Verisense algorithm?
@@ -42,7 +42,7 @@ myfun = list(FUN = verisense_count_steps,
              ebout.th.acc = 50, # event bout threshold for acceleration
              ebout.criter = 0.8, # event bout criteria (same as boutcriter)
              ebout.condition = "AND") # event bout logic (see below)
-   
+
 ```
 
 Note the that `parameters = c(4, 4, 20, -1.0, 4, 4, 0.01, 1.25)` is based on Rowlands et al. "Stepping up with GGIR" from 2022.
@@ -92,7 +92,7 @@ Output:
 
 #### Per cadence level with absolute thresholds
 
-Similarly, we can also describe the data based on cadence level and use absolute cadence thresholds. 
+Similarly, we can also describe the data based on cadence level and use absolute cadence thresholds.
 
 To control this aspect, include in your `myfun` object item `clevels` as a numeric vector with the cadence values that define the cadence levels, e.g. `clevels = c(0, 30, 120)`.
 
@@ -153,6 +153,5 @@ Columns names related to detected bouts start with the word **Bout_**, e.g. "Bou
 - Underlying epoch size is indicated with **E5S** in the column name where **5S** refers to a 5sec epochs.
 - Minimum bout duration is indicated with **B10M** in the column name where **10M** would refer to a 10 minutes.
 - The minimum fraction for which the bout conditions need to be met is indicated as a percentage  in the column name, e.g. **80%**.
-- The minimum cadence and acceleration values are presented in the column name as **cadT30** and **accT50_ENMO** when using a 30 and 50 thresholds, respectively. 
+- The minimum cadence and acceleration values are presented in the column name as **cadT30** and **accT50_ENMO** when using a 30 and 50 thresholds, respectively.
 - The setting of parameter **ebout.condition** is directly copied into the variable name as **AND** or **OR**.
-

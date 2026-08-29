@@ -68,7 +68,7 @@ createConfigFile = function(config.parameters = c(), GGIRversion = "") {
       } else if (NM %in% c("colid", "coln1", "nnights", "outliers.only",
                            "excludefirstlast", "criterror", "includenightcrit", "loglocation",
                            "relyonsleeplog", "sleeplogidnum", "def.noc.sleep", "do.visual") ==  TRUE) {
-        out[i,3] = "Parameters sleep period time detection with or wihout sleeplog"
+        out[i,3] = "Parameters sleep period time detection with or without sleeplog"
       } else if (NM %in% c("excludefirstlast.part5", "windowsizes", "boutcriter.in",
                            "boutcriter.lig", "boutcriter.mvpa", "threshold.lig", "threshold.mod",
                            "threshold.vig", "timewindow", "boutdur.mvpa",
@@ -87,7 +87,7 @@ createConfigFile = function(config.parameters = c(), GGIRversion = "") {
   }
   out = rbind(out, matrix(c("GGIRread_version", GGIRread_version, "not applicable"), nrow = 1))
   out = rbind(out, matrix(c("GGIRversion", GGIRversion, "not applicable"), nrow = 1))
-  out = rbind(out, matrix(c("R_version", SI$R.version$version.string, "not applicable"), nrow = 1)) 
+  out = rbind(out, matrix(c("R_version", SI$R.version$version.string, "not applicable"), nrow = 1))
   out = out[which(!is.na(out[,1])),]
   out = as.data.frame(out, stringsAsFactors = TRUE)
   row.names(out) <- NULL

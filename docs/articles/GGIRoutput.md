@@ -90,14 +90,14 @@ Part 2 generates the following output:
 |----|----|
 | L5_A_mg_0-24 | Average of metric A during the least active five\* hours in the day that is the lowest rolling average value of metric A. (\* window size is modifiable by argument `winhr`) |
 | M5_A_mg_0-24 | Average of metric A during the most active five\* hours in the day that is the lowest rolling average value of metric A. (\* window size is modifiable by argument `winhr`) |
-| L5hr_A_mg_0-24 | Starting time in hours and fractions of hours of L5_A_mg_0-24, where hours below 12 are incremented with 24 to create a continuous scale throughout the night (e.g. 36 = 6am) in line with numeric timeing of sleep variables in GGIR part 4 output. |
+| L5hr_A_mg_0-24 | Starting time in hours and fractions of hours of L5_A_mg_0-24, where hours below 12 are incremented with 24 to create a continuous scale throughout the night (e.g. 36 = 6am) in line with numeric timing of sleep variables in GGIR part 4 output. |
 | M5hr_A_mg_0-24 | Starting time in hours and fractions of hours of M5_A_mg_0-24 |
 | ig_gradient_ENMO_0 -24hr_fullRecording | Intensity gradient calculated over the full recording. |
 | 1to6am_ENMO_mg | Average metric value ENMO between 1am and 6am |
 | N valid weekdays (WD) | Number of valid weekend days |
 | N valid weekend days (WE) | Number of valid week days |
-| IS | Interdaily stability as dicussed in [chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) |
-| IV | Intradaily variability as dicussed in [chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) |
+| IS | Interdaily stability as discussed in [chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) |
+| IV | Intradaily variability as discussed in [chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) |
 | phi | Indicator of auto-correlation in acceleration time series over multiple days, see [chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) for details. |
 | SSP | Method for describing time series, see [chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) for details. |
 | ABI | ABI measures how the activity over the observed period is balanced, see [chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html) for details. |
@@ -269,7 +269,7 @@ data. If either of these applies set argument `sleepwindowType` to
 | guider_inbedDuration | Time in Bed: guider_inbedEnd - guider_inbedStart |
 | sleepefficiency | Sleep efficiency, calculated by one of two metrics as controlled by argument `sleepefficiency.metric`: SleepDurationInSpt / guider_inbedDuration (default) or SleepDurationInSpt / (SptDuration + latency) |
 | sleeplatency | Sleep latency, calculated as: sleeponset - guider_inbedStart |
-| guider_corrected | When using the guider correction algortihm with parameter `guider_cor_do` this output variable can have the following values: **0** means that the guider was not correct; **1** indicates that only basic expansion with neighboring windows was applied as done by step 4 of the algorithm; **2** indicates that main guider window was changes as done by step 3 of the algorithm, and; **3** indicates that both the main guider window was changed and the window was expanded. |
+| guider_corrected | When using the guider correction algorithm with parameter `guider_cor_do` this output variable can have the following values: **0** means that the guider was not correct; **1** indicates that only basic expansion with neighboring windows was applied as done by step 4 of the algorithm; **2** indicates that main guider window was changes as done by step 3 of the algorithm, and; **3** indicates that both the main guider window was changed and the window was expanded. |
 
 ### Person level summaries (csv)
 

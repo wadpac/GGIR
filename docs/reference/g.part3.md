@@ -8,8 +8,8 @@ Typical users should work with function GGIR only.
 ## Usage
 
 ``` r
-g.part3(metadatadir = c(), f0, f1, myfun = c(), 
-  params_sleep = c(), params_metrics = c(), params_output = c(), 
+g.part3(metadatadir = c(), f0, f1, myfun = c(),
+  params_sleep = c(), params_metrics = c(), params_output = c(),
   params_general = c(), verbose = TRUE,
   ...)
 ```
@@ -78,7 +78,7 @@ GGIR comes with many processing parameters, which have been thematically
 grouped in parameter objects (R list). By running print(load_params())
 you can see the default values of all the parameter objects. When g.part
 3 is used via [GGIR](https://wadpac.github.io/GGIR/reference/GGIR.md)
-you have the option to specifiy a configuration file, which will
+you have the option to specify a configuration file, which will
 overrule the default parameter values. Further, as user you can set
 parameter values as input argument to both g.part3 and
 [GGIR](https://wadpac.github.io/GGIR/reference/GGIR.md). Directly
@@ -91,13 +91,13 @@ elaborate overview of parameter objects and their usage across GGIR.
 ## Value
 
 The function provides no values, it only ensures that other functions
-are called and that their output is stored in .RData files.  
+are called and that their output is stored in .RData files.
 
 - `night` nightnumber
 
 - `definition` definition of sustained inactivity. For example, T10A5
   refers to 10 minute window and a 5 degree angle (see paper for further
-  explaination).
+  explanation).
 
 - `start.time.day` timestamp when the day started
 

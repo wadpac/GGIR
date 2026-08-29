@@ -2,7 +2,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                           rmc.firstrow.acc = c(), rmc.firstrow.header=c(),
                           rmc.header.length = c(),
                           rmc.col.acc = 1:3, rmc.col.temp = c(), rmc.col.time=c(),
-                          rmc.unit.acc = "g", rmc.unit.temp = "C", 
+                          rmc.unit.acc = "g", rmc.unit.temp = "C",
                           rmc.unit.time = "POSIX",
                           rmc.format.time = "%Y-%m-%d %H:%M:%OS",
                           rmc.bitrate = c(), rmc.dynamic_range = c(),
@@ -42,7 +42,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
              "rmc.desiredtz to NULL to ensure it is no longer used."))
       }
     }
-    if (!is.null(configtz) && !is.null(rmc.configtz)) { # then both provided 
+    if (!is.null(configtz) && !is.null(rmc.configtz)) { # then both provided
       if (rmc.configtz != configtz) { # if different --> error (don't know which one to use)
         stop(paste0("\n", generalWarning, "Please, specify only configtz and set ",
              "rmc.configtz to NULL to ensure it is no longer used."))
@@ -50,19 +50,19 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     }
     warning(paste0("\n", generalWarning))
 
-    # Until deprecation still allow rmc. to be used, 
+    # Until deprecation still allow rmc. to be used,
     # so use it to overwrite normal tz in this function:
-    if (is.null(desiredtz)) desiredtz = rmc.desiredtz 
+    if (is.null(desiredtz)) desiredtz = rmc.desiredtz
     if (desiredtz == "" && !is.null(rmc.desiredtz)) desiredtz = rmc.desiredtz
     if (is.null(configtz)) configtz = rmc.configtz
-   
+
   }
   # check if none of desiredtz and rmc.desiredtz are provided
   if (is.null(desiredtz) && is.null(rmc.desiredtz)) {
     stop(paste0("Timezone not specified, please provide at least desiredtz",
                 " and consider specifying configtz."))
   }
-  
+
   if (is.null(rmc.firstrow.acc) || rmc.firstrow.acc < 1) {
     stop(paste0("\nParameter rmc.firstrow.acc always need to be specified ",
                 "when working with ad-hoc csv format data"))
@@ -85,17 +85,17 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
       if (length(rmc.header.length) == 0) {
         rmc.header.length = rmc.firstrow.acc - 1
       }
-      
+
       options(warn = -1) # fread complains about quote in first row for some file types
       header_tmp = data.table::fread(file = rmc.file,
-                                     nrows = rmc.header.length, 
+                                     nrows = rmc.header.length,
                                      skip = rmc.firstrow.header - 1,
                                      dec = rmc.dec, showProgress = FALSE, header = FALSE,
                                      blank.lines.skip = TRUE,
                                      data.table=FALSE, stringsAsFactors=FALSE)
       validrows = which(is.na(header_tmp[,1]) == FALSE & header_tmp[,1] != "")
       header_tmp = header_tmp[validrows,1:2]
-      
+
       options(warn = 0)
       if (length(rmc.header.structure) != 0) { # header is stored in 1 column, with strings that need to be split
         if (length(header_tmp) == 1) { # one header item
@@ -118,7 +118,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
         }
         if (ncol(header_tmp) == 1) header_tmp = t(header_tmp)
         header_tmp2 = as.data.frame(as.character(unlist(header_tmp[,2])), stringsAsFactors = FALSE)
-        row.names(header_tmp2) = header_tmp[,1] 
+        row.names(header_tmp2) = header_tmp[,1]
         colnames(header_tmp2) = NULL
         header = header_tmp2
       } else { # column 1 is header name, column 2 is header value
@@ -135,11 +135,11 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
         }
         if (is.character(rmc.dynamic_range[1]) ==  TRUE) { # extract dynamic range if it is in the header
           rmc.dynamic_range = as.numeric(header[which(row.names(header) == rmc.dynamic_range[1]),1])
-        } 
+        }
       }
       # extract sample frequency:
       sf = as.numeric(header[which(row.names(header) == rmc.headername.sf[1]),1])
-      
+
       if (is.na(sf)) { # sf not retrieved from header
         # first see if maybe sf *is* in the header, just not under the rmc.headername.sf name
         sf = as.numeric(header[which(row.names(header) == "sample_rate"),1])
@@ -169,7 +169,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   P = data.table::fread(rmc.file, nrows = rmc.nrow, skip = skip,
                         dec = rmc.dec, showProgress = FALSE, header = "auto",
                         data.table=FALSE, stringsAsFactors=FALSE)
-  
+
   if (length(configtz) == 0) {
     configtz = desiredtz
   }
@@ -191,7 +191,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
   P$x = as.numeric(P$x)
   P$y = as.numeric(P$y)
   P$z = as.numeric(P$z)
-  if (length(rmc.col.temp) > 0) P$temperature = as.numeric(P$temperature) 
+  if (length(rmc.col.temp) > 0) P$temperature = as.numeric(P$temperature)
   # Convert timestamps
   if (length(rmc.col.time) > 0) {
     if (rmc.unit.time == "POSIX") {
@@ -216,7 +216,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
         trans = unique(c(1, which(diff(P$time) > 0), nrow(P)))
         sf_tmp = diff(trans)
         timeIncrement = seq(from = 0, length.out = sf, by = 1/sf) # expected time increment per second
-        
+
         # All seconds with exactly the sample frequency
         trans_1 = trans[which(sf_tmp == sf)]
         indices_1 = sort(unlist(lapply(trans_1, FUN = function(x){x + (1:sf)})))
@@ -270,13 +270,13 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
       P$time = lubridate::force_tz(as.POSIXct(P$time * 86400, origin = "1899-12-30", tz = "UTC"), tz = desiredtz)
     }
     if (length(which(is.na(P$time) == FALSE)) == 0) {
-      stop("\nExtraction of timestamps unsuccesful, check timestamp format arguments")
+      stop("\nExtraction of timestamps unsuccessful, check timestamp format arguments")
     }
     if (!is.numeric(P$time)) { # we'll return Unix timestamps
       P$time = as.numeric(P$time)
     }
   }
-  
+
   # If acceleration is stored in mg units then convert to gravitational units
   if (rmc.unit.acc == "mg") {
     P$x = P$x / 1000
@@ -317,7 +317,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
       gapsi = which(deltatime > 0.25)
       sf = (P$time[gapsi[1]] - P$time[1]) / (gapsi[1] - 1)
     }
-    P = g.imputeTimegaps(P, sf = sf, k = 0.25, 
+    P = g.imputeTimegaps(P, sf = sf, k = 0.25,
                          PreviousLastValue = PreviousLastValue,
                          PreviousLastTime = PreviousLastTime, epochsize = NULL)
     sf = sfBackup
@@ -335,7 +335,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
     colnames(P) = colnamesP
     P$time = timeRes
   }
-  return(list(data = P, header = header, 
+  return(list(data = P, header = header,
               PreviousLastValue = PreviousLastValue,
               PreviousLastTime = PreviousLastTime))
 }

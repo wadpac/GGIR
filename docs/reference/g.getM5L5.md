@@ -9,7 +9,7 @@ further clarification on functionalities
 ## Usage
 
 ``` r
-g.getM5L5(varnum, epochSize, t0_LFMF, t1_LFMF, M5L5res, winhr, qM5L5 = c(), 
+g.getM5L5(varnum, epochSize, t0_LFMF, t1_LFMF, M5L5res, winhr, qM5L5 = c(),
             iglevels = c(), MX.ig.min.dur = 10, UnitReScale = 1000)
 ```
 
@@ -33,7 +33,7 @@ g.getM5L5(varnum, epochSize, t0_LFMF, t1_LFMF, M5L5res, winhr, qM5L5 = c(),
 
 - M5L5res:
 
-  Resolution of hte M5L5 analyses in minutes
+  Resolution of the M5L5 analyses in minutes
 
 - winhr:
 

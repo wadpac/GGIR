@@ -115,8 +115,8 @@ reproducibility.
 
 Once you have used function GGIR and the output directory (outputdir)
 will be filled with milestone data and results. Function GGIR stores all
-the explicitely entered argument values and default values for the
-argument that are not explicitely provided in a csv-file named
+the explicitly entered argument values and default values for the
+argument that are not explicitly provided in a csv-file named
 config.csv stored in the root of the output folder. The config.csv file
 is accepted as input to GGIR with argument `configfile` to replace the
 specification of all the arguments, except `datadir` and `outputdir`.
@@ -126,11 +126,11 @@ analysis, because instead of having to share you R script, sharing your
 config.csv file will be sufficient. Further, the config.csv file
 contribute to the reproducibility of your data analysis.
 
-Note: When combining a configuration file with explicitely provided
-argument values, the explicitely provided argument values will overrule
+Note: When combining a configuration file with explicitly provided
+argument values, the explicitly provided argument values will overrule
 the argument values in the configuration file. If a parameter is neither
 provided via the configuration file nor as input then GGIR uses its
-default paramter values which can be inspected with command
+default parameter values which can be inspected with command
 `print(load_params())`, and if you are specifically interested in a
 certain subgroup of parameters, e.g., physical activity, then you can do
 `print(load_params()$params_phyact)`. These defaults are part of the
@@ -183,7 +183,7 @@ of the other categories.
   Boolean (default = FALSE). Whether to use aggregate epochs to 60
   seconds as part of the GGIR
   [g.part5](https://wadpac.github.io/GGIR/reference/g.part5.md)
-  analysis. Aggregation is doen by averaging. Note that when working
+  analysis. Aggregation is done by averaging. Note that when working
   with count metrics such as Neishabouri counts this means that the
   threshold can stay the same as in part 2, because again the threshold
   is expressed relative to the original epoch size, even if averaged per
@@ -254,7 +254,7 @@ of the other categories.
   stored in the obvious header field. Note that for ActiGraph data the
   ID is never stored in the file header. For value set to 2, 5, 6, and
   7, GGIR looks at the filename and extracts the character string
-  preceding the first occurance of a \\\_\\ (idloc = 2), \\ \\ (space,
+  preceding the first occurrence of a \\\_\\ (idloc = 2), \\ \\ (space,
   idloc = 5), \\.\\ (dot, idloc = 6), and \\-\\ (idloc = 7),
   respectively. You may have noticed that idloc 3 and 4 are skipped,
   they were used for one study in 2012, and not actively maintained
@@ -366,7 +366,7 @@ of the other categories.
 - recording_split_overlap:
 
   Numeric (default = 0). Number of hours to use as buffer when splitting
-  recording. A possitive number means that the split recordings overlap,
+  recording. A positive number means that the split recordings overlap,
   a nevative number indicates a gap.
 
 - extEpochData_timeformat:
@@ -973,7 +973,7 @@ extract in GGIR
 
 ### params_cleaning
 
-A list of parameters used across all GGIR parts releated to masking or
+A list of parameters used across all GGIR parts related to masking or
 imputing data, abbreviated as \\cleaning\\.
 
 - do.imp:
@@ -1247,7 +1247,7 @@ imputing data, abbreviated as \\cleaning\\.
 
 ### params_phyact
 
-A list of parameters releated to physical activity as used in GGIR
+A list of parameters related to physical activity as used in GGIR
 [g.part2](https://wadpac.github.io/GGIR/reference/g.part2.md) and GGIR
 [g.part5](https://wadpac.github.io/GGIR/reference/g.part5.md).
 
@@ -1515,7 +1515,7 @@ and [g.part4](https://wadpac.github.io/GGIR/reference/g.part4.md).
 - Sadeh_axis:
 
   Character (default = \\Y\\). To indicate which axis to use for the
-  Sadeh1994 algorithm, and other algortihms that relied on count-based
+  Sadeh1994 algorithm, and other algorithms that relied on count-based
   Actigraphy such as Galland2012.
 
 - sleeplogsep:
@@ -1741,7 +1741,7 @@ and [g.part4](https://wadpac.github.io/GGIR/reference/g.part4.md).
   algorithm as discussed in Chapter 9 of the online documentation:
   https://wadpac.github.io/GGIR/articles/chapter9_SleepFundamentalsGuiders.html.
   In short, when sleep is fragmented, algorithms to guide the detection
-  of SPT such as HDCZA may occassionally miss a part of the night or
+  of SPT such as HDCZA may occasionally miss a part of the night or
   incorrectly consider a day time nap as the main sleep window in a day.
   This optional algorithm aims to correct for such misclassifications.
 
@@ -1756,7 +1756,7 @@ and [g.part4](https://wadpac.github.io/GGIR/reference/g.part4.md).
 
 ### params_247
 
-A list of parameters releated to description of 24/7 behaviours that do
+A list of parameters related to description of 24/7 behaviours that do
 not fall under conventional physical activity or sleep outcomes, these
 parameters are used in GGIR
 [g.part2](https://wadpac.github.io/GGIR/reference/g.part2.md) and GGIR
@@ -1935,7 +1935,7 @@ parameters are used in GGIR
   indicate the start and the end of the time series to be used for
   circadian rhythm analysis in part 6. In other words, this parameters
   is not used for Household co-analysis. Alternative values are: \\Wx\\,
-  \\Ox\\, \\Hx\\, where \\x\\ is a number to indicat the xth wakeup,
+  \\Ox\\, \\Hx\\, where \\x\\ is a number to indicate the xth wakeup,
   onset or hour of the recording. Negative values for \\x\\ are also
   possible and will count relative to the end of the recording. For
   example, c(\\W1\\, \\W-1\\) goes from the first till the last wakeup,
@@ -1950,7 +1950,7 @@ parameters are used in GGIR
 
 - clevels:
 
-  Not fully operational yet, to be actived in 2025. Numeric vector
+  Not fully operational yet, to be activated in 2025. Numeric vector
   (default = c(30, 150)) with length 2 to indicate cadence ranges used
   when summarising step counts, if available. When set to NULL, step
   counts will not be summarised in part 5 output.
@@ -2164,7 +2164,7 @@ output at various stages of the process.
 - visualreport_focus:
 
   Character (default = \\day\\) Whether new visual report (names start
-  with \\report...\\) focuss on day or night. If set ot \\night\\ the
+  with \\report...\\) focus on day or night. If set ot \\night\\ the
   focus will be on the night.
 
 - visualreport_validcrit:

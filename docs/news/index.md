@@ -319,7 +319,7 @@ elaborate testing of the features add in previous releases 3.2-3 and
 - Part 1: Recently introduced split records functionality only
   considered windows timestamps that overlap with recordings. Now
   changed to include any split time for which the resulting time segment
-  overlaps for at least 12 hours wiht the accelerometer recording.
+  overlaps for at least 12 hours with the accelerometer recording.
 
 - Part 5 and visualreport: Add new guider types such as marker button to
   time series.
@@ -1181,7 +1181,7 @@ CRAN release: 2023-10-16
   relating to specifying timezone for processing ad-hoc csv format raw
   data.
 
-- Part 1: Improved recognition of ActiGraph csv that occassionally
+- Part 1: Improved recognition of ActiGraph csv that occasionally
   confused for Axivity csv
   [\#918](https://github.com/wadpac/GGIR/issues/918)
 
@@ -1692,7 +1692,7 @@ CRAN release: 2022-09-19
   g.imputeTimegaps)
 
 - Part 1: g.imputeTimegaps extended so that now it can handle time gaps
-  at the begining, at the end of the file, and time gaps from one chunk
+  at the beginning, at the end of the file, and time gaps from one chunk
   to the next one.
 
 - Part 2: QC plot now with legend and minor updates to layout.
@@ -1844,7 +1844,7 @@ CRAN release: 2022-05-23
 ## CHANGES IN GGIR VERSION 2.6-2
 
 - Part 1: Can now handle .gt3x produced by CentrePoint but for now user
-  needs to change upercase file extension to lowercase
+  needs to change uppercase file extension to lowercase
 
 - Part 1: Fixed issue [\#520](https://github.com/wadpac/GGIR/issues/520)
   with handling Movisens data
@@ -1860,7 +1860,7 @@ CRAN release: 2022-05-23
 
 ## CHANGES IN GGIR VERSION 2.6-1
 
-- Part 1: Fixed bug that prohibitted processing files in subfolders.
+- Part 1: Fixed bug that prohibited processing files in subfolders.
 
 - Part 1: Dynamic range can now be extracted from Axivity .cwa files
   when not equal to 8g.
@@ -1871,7 +1871,7 @@ CRAN release: 2022-05-23
   regarding passing on of dateformat.
 
 - Part 4: Fixed bug introduced in 2.6-0 relating to sleeplog guider
-  being assined even when no sleeplog used.
+  being assigned even when no sleeplog used.
 
 - Part 5: Improved handling of missing sleep estimate for first night.
 
@@ -1903,7 +1903,7 @@ CRAN release: 2022-02-02
 
 - Fixed issues introduced in 2.5-6 release: maxNcores was not defined in
   part 1, params_output and not passed on to part 3, and params objects
-  were unneccesarily repeatedly checked.
+  were unnecessarily repeatedly checked.
 
 ## CHANGES IN GGIR VERSION 2.5-6
 
@@ -1957,7 +1957,7 @@ CRAN release: 2022-02-02
 ## CHANGES IN GGIR VERSION 2.5-2
 
 - Part 3: Now makes sure that HASPT is skipped when user configures
-  def.noc.sleep as a set time window. This feature that probaly few
+  def.noc.sleep as a set time window. This feature that probably few
   people use nowadays broke with the 2.5-0 release.
 
 - g.shell.GGIR: Now gives warning when user supplies double arguments.
@@ -2436,7 +2436,7 @@ CRAN release: 2019-08-23
   Further, option added (qM5L5) to extract percentiles (quantiles) from
   the value distribution corresponding to these windows.
 
-- Moved IVIS calculation to seperate function, and split up function
+- Moved IVIS calculation to separate function, and split up function
   g.analyse.
 
 - Now possible to specify time windows that need to be ignored for
@@ -2544,7 +2544,7 @@ CRAN release: 2019-01-11
 - Fixed bug re. storefolderstructure=TRUE causing 2 variables to drop in
   g.report.part4 if storefolderstructure=TRUE.
 
-- g.intensitygradient enabled to handle absense of data.
+- g.intensitygradient enabled to handle absence of data.
 
 - tidied up some of the redundant or even confusiong information printer
   to the console
@@ -2677,7 +2677,7 @@ CRAN release: 2018-07-04
 
 CRAN release: 2018-04-22
 
-- g.part5 is now able to generate summary from all measurment days
+- g.part5 is now able to generate summary from all measurement days
   (thanks Jairo).
 
 - MM results in g.part5 now correctly stores onset and waking for single
@@ -2839,7 +2839,7 @@ CRAN release: 2017-04-23
 
 CRAN release: 2017-01-22
 
-- bug fixed in functionlity to process only specific days in measurement
+- bug fixed in functionality to process only specific days in measurement
   (credits to J Heywood)
 
 - bug fixed in midnight recognition in g.part5
@@ -2879,7 +2879,7 @@ CRAN release: 2016-08-31
 CRAN release: 2016-08-28
 
 - Changed function argument ‘mvpa.2014’ into ‘bout.metric’ across the
-  package in preparation for a central defintion of bouts for future
+  package in preparation for a central definition of bouts for future
   GGIR version which will not only provide bout calculations for MVPA
   but also for inactivity. Further, I added function g.getbout to
   improve transparency about the bout calculations
@@ -2923,7 +2923,7 @@ CRAN release: 2016-05-14
 CRAN release: 2016-05-11
 
 - Modified warning message in relation to the change in MVPA bout
-  defintion
+  definition
 
 ## CHANGES IN GGIR VERSION 1.2-5
 
@@ -2989,7 +2989,7 @@ CRAN release: 2015-05-11
   g.part1. This to facilitate parallel processing of large amounts of
   data files on clusters.
 
-- The orginal report generation functionality in g.part2 has now been
+- The original report generation functionality in g.part2 has now been
   moved to shell function g.shell.GGIR because part3, 4 and 5 which are
   scheduled for later this year will combine milestone data from
   multiple analysis parts. It therefore, is more logical to control all
@@ -3089,7 +3089,7 @@ CRAN release: 2014-03-14
 
 CRAN release: 2014-01-29
 
-- Fixed Linux-Windows sensitivty in g.getmeta. Certain damaged files can
+- Fixed Linux-Windows sensitivity in g.getmeta. Certain damaged files can
   only be read with mmap.load set to FALSE in package GENEAread.
   Function g.getmeta in GGIR catches this problem and turns mmap.load to
   FALSE if necessary. This catch worked well under Linux, but not for R

@@ -4,7 +4,7 @@ Function starts by identifying ten second windows of non-movement. Next,
 the average acceleration per axis per window is used to estimate
 calibration error (offset and scaling) per axis. The function provides
 recommended correction factors to address the calibration error and a
-summary of the callibration procedure.
+summary of the calibration procedure.
 
 ## Usage
 
@@ -111,7 +111,7 @@ Vincent T van Hees \<v.vanhees@accelting.com\> Zhou Fang
 ``` r
   if (FALSE) { # \dontrun{
     datafile = "C:/myfolder/testfile.bin"
-    
+
     #Apply autocalibration:
     C = g.calibrate(datafile)
     print(C$scale)

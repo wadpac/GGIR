@@ -37,7 +37,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
   }
   #-----------------
   use.temp = temp.available = TRUE
-  
+
   filequality = data.frame(filetooshort = FALSE, filecorrupt = FALSE,
                            filedoesnotholdday = FALSE, stringsAsFactors = FALSE)
   calibEpochSize = 10 # epoch for recalibration as used in the 2014 paper
@@ -62,14 +62,14 @@ g.calibrate = function(datafile, params_rawdata = c(),
   if (mon == MONITOR$VERISENSE) mon = MONITOR$ACTIGRAPH
   dformat = INFI$dformc
   sf = INFI$sf
-  
+
   if (is.null(sf)) {
     # If function g.inspectfile which produces the inspectfileobject
     # identifies a corrupt GT3X file then it sets the sf value to NULL
     # this is then used here to skip the calibration procedure
     return()
   }
-  
+
   #creating matrices for storing output
   S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
   NR = ceiling((90*10^6) / (sf*calibEpochSize)) + 1000 #NR = number of rows to initialise features matrix with
@@ -181,7 +181,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
           if (expected_endCount > nrow(features)) {
             # Calculate the number of rows to add (+ 1 day for safety)
             rows_needed = expected_endCount - nrow(features)
-            rows_to_add = rows_needed + (3600/calibEpochSize) * 24 
+            rows_to_add = rows_needed + (3600/calibEpochSize) * 24
             extension = matrix(99999, rows_to_add, ncol(features))
             features = rbind(features, extension)
           }
@@ -252,9 +252,9 @@ g.calibrate = function(datafile, params_rawdata = c(),
                            abs(as.numeric(features_temp[,2])) < 2 & abs(as.numeric(features_temp[,3])) < 2 &
                            abs(as.numeric(features_temp[,4])) < 2) #the latter three are to reduce chance of including clipping periods
       if (length(nomovement) < 10) {
-        # take only one row to trigger that autocalibration is skipped 
+        # take only one row to trigger that autocalibration is skipped
         # with the QCmessage that there is not enough data
-        features_temp = features_temp[1, ] 
+        features_temp = features_temp[1, ]
       } else {
         features_temp = features_temp[nomovement,]
       }
@@ -375,7 +375,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
             cat(paste0("\nnpoints around sphere: ", npoints))
           }
         }
-        QC = "recalibration attempted with all available data, but possibly not good enough: Check calibration error variable to varify this"
+        QC = "recalibration attempted with all available data, but possibly not good enough: Check calibration error variable to verify this"
       }
     }
     i = i + 1 #go to next block (12 hours-isch)

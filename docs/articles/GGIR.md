@@ -114,13 +114,13 @@ for that.
   making sure that the csv-report are correct, while the visualreport
   has mostly been a side project. This is unfortunate and we hope to
   find funding in the future to design a new report specifically for the
-  purpose of QC-ing the anlayses done by GGIR.
+  purpose of QC-ing the analyses done by GGIR.
 - `maxRecordingInterval` - if specified controls whether neighboring or
   overlapping recordings with the same participant ID and brand are
   appended at epoch level. This can be useful when the intention is to
   monitor behaviour over larger periods of time but accelerometers only
   allow for a few weeks of data collection. GGIR will never append or
-  alter the raw input file, this operation is preformed on the derived
+  alter the raw input file, this operation is performed on the derived
   data.
 - `study_dates_file` - if specified trims the recorded data to the first
   and last date in which the study took place. This is relevant for
@@ -392,7 +392,7 @@ aggregated values (e.g. 1 or 5 second epochs) for the following reasons:
 4.  Collapsing the data to epoch summary measures may help to average
     out different noise levels and make sensor brands more comparable.
 
-#### Why does the first epoch not allign with the original start of the recording
+#### Why does the first epoch not align with the original start of the recording
 
 GGIR uses short (default 5 seconds) and long epochs (default 15
 minutes). The epochs are aligned to the hour in the day, and to each
@@ -538,7 +538,7 @@ every behavioural class, which includes the subcategories such as bouted
 and unbouted behaviour. This means that variables `Nblock_day_total_IN`
 and `Nblock_day_total_LIG` are identical to `Nfrag_IN_day` and
 `Nfrag_LIPA_day`, respectively. In contrast, for fragments we may group
-LIPA and MVPA together when refering to the fragmentation of PA.
+LIPA and MVPA together when referring to the fragmentation of PA.
 
 **Differences with R package ActFrag:**
 

@@ -33,19 +33,19 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
   }
   if (dolog == TRUE) {
     sleeplogRDataFile = paste0(metadatadir,"/meta/sleeplog_", basename(params_sleep[["loglocation"]]), ".RData")
-    # only re-process sleeplog if sleeplog.RData does not exist 
+    # only re-process sleeplog if sleeplog.RData does not exist
     # or if sleeplog is from a date equal to or after sleeplog.RData
     # or if sleeplog.Rdata file is older than the news files in milestone 3.
-    if (!file.exists(sleeplogRDataFile) || 
+    if (!file.exists(sleeplogRDataFile) ||
         file.info(params_sleep[["loglocation"]])$mtime >= file.info(sleeplogRDataFile)$mtime ||
         max(file.info(dir(meta.sleep.folder, full.names = TRUE))$mtime) >= file.info(sleeplogRDataFile)$mtime) {
-      logs_diaries = g.loadlog(params_sleep[["loglocation"]], 
+      logs_diaries = g.loadlog(params_sleep[["loglocation"]],
                                coln1 = params_sleep[["coln1"]],
                                colid = params_sleep[["colid"]],
                                meta.sleep.folder = meta.sleep.folder,
                                desiredtz = params_general[["desiredtz"]],
                                sleepwindowType = params_sleep[["sleepwindowType"]])
-      
+
       if (params_sleep[["sleepwindowType"]] == "SPT" && length(logs_diaries$bedlog) > 0 &&
           length(logs_diaries$sleeplog) == 0) {
         stop(paste0("The sleep diary as provided only appears to have time indicators",
@@ -101,8 +101,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                            "sleeplatency", "sleepefficiency", "page", "daysleeper", "weekday", "calendar_date",
                            "filename", "cleaningcode", "sleeplog_used", "sleeplog_ID", "acc_available", "guider", "SleepRegularityIndex1", "SriFractionValid",
                            "longitudinal_axis", "guider_corrected")
-  
-  
+
+
   if (params_output[["storefolderstructure"]] == TRUE) {
     colnamesnightsummary = c(colnamesnightsummary, "filename_dir", "foldername")
   }
@@ -237,12 +237,12 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
         # if ID not available, function part4_extractid will attempt to extract it from the file name
       }
       if (exists("SRI") == FALSE) SRI = NA
-      
-      # Ignore night zero being the night before the recording or partially 
+
+      # Ignore night zero being the night before the recording or partially
       # overlapping with the start of the recording
       # but for which some timestamps are in the sib-report
       sib.cla.sum = sib.cla.sum[which(sib.cla.sum$night != 0),]
-      
+
       if (nrow(sib.cla.sum) != 0) {
         # there needs to be some information
         sib.cla.sum$sib.onset.time = iso8601chartime2POSIX(sib.cla.sum$sib.onset.time, tz = params_general[["desiredtz"]])
@@ -265,7 +265,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
               # try without leading zeros
               sleeplog_matching_ID = which(sleeplog$ID == gsub("^0+", "", accid))
               if (length(sleeplog_matching_ID) == 0) {
-                # try interpret as integer that was accidentally stored as decimal 
+                # try interpret as integer that was accidentally stored as decimal
                 # number, e.g. 123.00
                 split_by_dot = unlist(strsplit(accid, "[.]"))
                 if (length(split_by_dot) == 2) {
@@ -279,16 +279,16 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
               }
             }
           }
-          first_night = min(min(sib.cla.sum$night), 
+          first_night = min(min(sib.cla.sum$night),
                             min(as.numeric(sleeplog$night[sleeplog_matching_ID])))
-          last_night = max(max(sib.cla.sum$night), 
+          last_night = max(max(sib.cla.sum$night),
                            max(as.numeric(sleeplog$night[sleeplog_matching_ID])))
         } else {
           first_night = min(sib.cla.sum$night)
           last_night = max(sib.cla.sum$night)
         }
         nnightlist = first_night:last_night
-        
+
         if (length(nnightlist) < length(wi)) {
           nnightlist = nnightlist[1:length(wi)]
         }
@@ -336,7 +336,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
         for (j in nnights.list) {
           # go through the nights get default onset and wake (based on sleeplog or on heuristic
           # algorithms) def.noc.sleep is an input argument the GGIR user can use to specify what
-          # detection strategy is used in the absense of a sleep diary
+          # detection strategy is used in the absence of a sleep diary
           if ((length(params_sleep[["def.noc.sleep"]]) == 0 ||
                length(SPTE_start) == 0 ||
                length(SPTE_start[which(is.na(SPTE_start) == FALSE)]) == 0) &&
@@ -370,8 +370,8 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
               guider = params_sleep[["HASPT.algo"]][1]
               defaultGuider = guider
             } else {
-              if (is.na(defaultGuider)) { 
-                # No default guider available, for example when sleeplog is 
+              if (is.na(defaultGuider)) {
+                # No default guider available, for example when sleeplog is
                 # available but no accelerometer
                 # In that case guider will be set to "sleeplog" later on
               } else {
@@ -438,10 +438,10 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
           # initialize dataframe to hold sleep period overview:
           spocum = data.frame(nb = numeric(0), start = numeric(0),  end = numeric(0),
                               overlapGuider = numeric(0), def = character(0))
-          
+
           spocumi = 1  # counter for sleep periods
           # continue now with the specific data of the night
-          
+
           guider.df2 = guider.df[which(guider.df$night == j), ]
           # ================================================================================ get
           # sleeplog (or HDCZA or L5+/-6hr algorithm) onset and waking time and assess whether it
@@ -551,7 +551,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
               } else {
                 acc_available = TRUE
               }
-              
+
               if (nrow(sleepdet) == 0) next
               ki = which(sleepdet$definition == k)
               if (length(ki) == 0) next
@@ -661,7 +661,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                 if (length(which(spo$start < GuiderWake &
                                  spo$end > GuiderOnset)) == 0) {
                   relyonguider_thisnight = TRUE
-                  cleaningcode = 5 
+                  cleaningcode = 5
                 }
                 # if invalid time was used in part3 with HASPT.ignore.invalid,
                 # then rely on guider, but cleaningcode should not be 5
@@ -707,7 +707,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                     }
                     if (params_sleep[["relyonguider"]] == TRUE | relyonguider_thisnight == TRUE) {
                       # Redefine sib start and end if it overlaps with guider
-                      # to match guider 
+                      # to match guider
                       if ((spo$start[evi] < GuiderWake && spo$end[evi] > GuiderWake) |
                           (spo$start[evi] < GuiderWake && spo$end[evi] < spo$start[evi])) {
                         spo$end[evi] = GuiderWake
@@ -817,7 +817,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                   nightsummary[sumi, 2] = j  #night
                   # remove double rows
                   spocum.t = spocum.t[!duplicated(spocum.t), ]
-                  
+
                   #------------------------------------
                   # ACCELEROMETER
                   if (length(which(as.numeric(spocum.t$overlapGuider) == 1)) > 0) {
@@ -999,7 +999,7 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                     spocum.t.dur_sibd = 0
                     spocum.t.dur_sibd_atleast15min = 0
                   }
-                  
+
                   nightsummary[sumi, 14] = spocum.t.dur.noc  #SleepDurationInSpt
                   nightsummary[sumi, 15] = nightsummary[sumi, 5] - spocum.t.dur.noc  #WASO
                   nightsummary[sumi, 16] = spocum.t.dur_sibd  #total sib (sustained inactivty bout) duration during wakinghours
@@ -1098,12 +1098,12 @@ g.part4 = function(datadir = c(), metadatadir = c(), f0 = f0, f1 = f1,
                       }
                       GuiderWaken = GuiderWake
                       GuiderOnsetn = GuiderOnset
-                      
+
                       if (GuiderWake > 36) GuiderWaken = GuiderWake - 24
                       if (GuiderOnset > 36) GuiderOnsetn = GuiderOnset - 24
                       if (defi == undef[length(undef)]) {
                         # only plot log for last definition night sleeper
-                        
+
                         if (GuiderOnsetn > GuiderWaken) {
                           # day sleeper
                           rect(xleft = GuiderOnsetn, ybottom = (cnt - 0.3), xright = 36, ytop = (cnt + 0.3),

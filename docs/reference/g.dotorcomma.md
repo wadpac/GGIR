@@ -2,7 +2,7 @@
 
 The function is used by
 [g.readaccfile](https://wadpac.github.io/GGIR/reference/g.readaccfile.md)
-to assess how numeric data should be interpretted
+to assess how numeric data should be interpreted
 
 ## Usage
 

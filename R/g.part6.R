@@ -2,7 +2,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                    params_general = c(), params_phyact = c(), params_247 = c(),
                    params_cleaning = c(),
                    verbose = TRUE, ...) {
-  
+
   # This function called by function GGIR
   # and aims to facilitate time-pattern analysis building on the labelled time
   # series derived in GGIR part 5
@@ -16,17 +16,17 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   params_general = params$params_general
   params_phyact = params$params_phyact
   params_247 = params$params_247
-  
+
   #======================================================================
   # create new folder (if not existent) for storing milestone data
   ms6.out = "/meta/ms6.out"
   if (!file.exists(paste(metadatadir, ms6.out, sep = ""))) {
     dir.create(file.path(metadatadir, ms6.out))
   }
-  
+
   #======================================================================
   # compile lists of milestone data filenames
-  
+
   # Identify correct subfolder
   expected_ts_path = paste0(metadatadir, "/meta/ms5.outraw/", params_phyact[["part6_threshold_combi"]])
   expected_ms5raw_path = paste0(metadatadir, "/meta/ms5.outraw")
@@ -38,7 +38,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       if (length(subDirs) > 0) {
         expected_ts_path = paste0(expected_ms5raw_path, "/", subDirs[1])
         warning(paste0("\nThreshold combi ", params_phyact[["part6_threshold_combi"]],
-                       " in time series ouput. Instead now using", subDirs[1]), call. = FALSE)
+                       " in time series output. Instead now using", subDirs[1]), call. = FALSE)
       } else {
         stop(paste0("\nNo subfolders found inside ", expected_ms5raw_path), call. = FALSE)
       }
@@ -66,17 +66,17 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   N5 = length(fnames.ms5raw)
   if (length(f0) == 0) f0 = 1
   if (length(f1) == 0) f1 = N5
-  
+
   if (f0 > N5) {
     stop("Argument f0 is larger than the number of files in meta/ms5.outraw.", call. = FALSE)
   }
   if (f1 > N5 | f1 == 0) f1 = N5
   if (f0 == 0) f0 = 1
-  
-  
+
+
   resultsdir = paste0(metadatadir , "/results")
   if (!dir.exists(resultsdir)) dir.create(resultsdir)
-  
+
   #=========================================================
   # Recording-group (e.g. household members) level co-analysis,
   # which at the end of this g.part6 is either
@@ -86,12 +86,12 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                           path_ggirms = paste0(metadatadir , "/meta"),
                           desiredtz = params_general[["desiredtz"]],
                           verbose = verbose)
-    
+
     part6PairwiseAggregation(outputdir = paste0(metadatadir, "/results"),
                              desiredtz = params_general[["desiredtz"]],
                              verbose = verbose)
   }
-  
+
   #=========================================================
   # Declare recording level functionality, which at the end of this g.part6 is either
   # applied to the file in parallel with foreach or serially with a loop
@@ -131,7 +131,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                       paste0(metadatadir, "/meta/ms5.outraw")))
         }
         Lnames = data.table::fread(file = legendfile)$class_name
-        mdat = data.table::fread(file = paste0(metadatadir, "/meta/ms5.outraw/", 
+        mdat = data.table::fread(file = paste0(metadatadir, "/meta/ms5.outraw/",
                                                params_phyact[["part6_threshold_combi"]],  "/", fnames.ms5raw[i]), data.table = FALSE)
         filename = fnames.ms5raw[i]
       }
@@ -183,7 +183,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       }
       # Select relevant section of the time series
       wakeuptimes = which(diff(c(1, mdat$SleepPeriodTime, 0)) == -1)
-      onsettimes = which(diff(c(0, mdat$SleepPeriodTime, 1)) == 1) 
+      onsettimes = which(diff(c(0, mdat$SleepPeriodTime, 1)) == 1)
       Nmdat = nrow(mdat)
       if (wakeuptimes[length(wakeuptimes)] > Nmdat) wakeuptimes[length(wakeuptimes)] = Nmdat
       if (onsettimes[length(onsettimes)] > Nmdat) onsettimes[length(onsettimes)] = Nmdat
@@ -223,7 +223,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       } else {
         do.cr = FALSE
       }
-      
+
       if (do.cr == TRUE) {
         ts = mdat[t0:t1, ]
         rm(mdat)
@@ -231,11 +231,11 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
       } else {
         ts = mdat[1,]
       }
-      
+
       # Set windows to missing that do not have enough valid data in either spt or day.
       # Note that columns invalid_wakinghours and invalid_sleepperiod here
       # are constants per window, we use this to identify the entire window as valid/invalid
-      invalidWindows = which(ts$invalid_wakinghours > (1 - params_cleaning[["includecrit.part6"]][1]) * 100 | 
+      invalidWindows = which(ts$invalid_wakinghours > (1 - params_cleaning[["includecrit.part6"]][1]) * 100 |
                                ts$invalid_sleepperiod > (1 - params_cleaning[["includecrit.part6"]][2]) * 100)
       if (length(invalidWindows) > 0) {
         ts[invalidWindows,c("class_id", "ACC")] = NA
@@ -299,7 +299,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         }
 
         threshold = as.numeric(unlist(strsplit( params_phyact[["part6_threshold_combi"]], "_"))[1])
-        
+
         # extract nightsi again
         tempp = unclass(as.POSIXlt(acc4cos$time, tz = params_general[["desiredtz"]], origin = "1970-01-01"))
         sec = tempp$sec
@@ -324,7 +324,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                                              cosinor_coef$coef$params$ndays,
                                              cosinor_coef$coef$params$R2)},
             silent = TRUE)
-        
+
         s_names[fi:(fi + 6)] = c("cosinor_timeOffsetHours", "cosinor_mes", "cosinor_amp", "cosinor_acrophase",
                                  "cosinor_acrotime", "cosinor_ndays", "cosinor_R2")
         fi = fi + 7
@@ -365,7 +365,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           s_names[fi:(fi + (length(frag.out) - 1))] = paste0("FRAG_", names(frag.out), "_", fragmode)
           fi = fi + length(frag.out)
         }
-        
+
         #===============================================
         # LXMX: code copied from g.part 5
         # To be refactored as a central generic function once
@@ -499,7 +499,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
             } else {
               clock_time = NA
             }
-            summary[fi] = clock_time 
+            summary[fi] = clock_time
             fi = fi + 1
           }
         }
@@ -511,9 +511,9 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           abi = ABI(ssp); abi_short = ABI(ssp_short); abi_long = ABI(ssp_long)
           ssp_diff = ssp_short - ssp_long
           summary[fi:(fi + 6)] = c(ssp, abi, ssp_short, abi_short, ssp_long, abi_long, ssp_diff)
-          s_names[fi:(fi + 6)] = c("SSP", "ABI", 
-                                   "SSP_short", "ABI_short", 
-                                   "SSP_long", "ABI_long", 
+          s_names[fi:(fi + 6)] = c("SSP", "ABI",
+                                   "SSP_short", "ABI_short",
+                                   "SSP_long", "ABI_long",
                                    "SSP_diff")
           fi = fi + 7
         }
@@ -539,7 +539,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           SRI = CalcSleepRegularityIndex(data = ts,
                                          epochsize = epochSize,
                                          desiredtz = params_general[["desiredtz"]])
-          
+
           SRI = SRI[which(SRI$frac_valid > params_cleaning[["includecrit.part6"]][1]), ]
           if (nrow(SRI) > 0) {
             summary[fi] = weighted.mean(x = SRI$SleepRegularityIndex, w = SRI$frac_valid)
@@ -585,7 +585,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
     # Function has no output_part6 because ideally all relevant output_part6
     # is stored in milestone data by now
   }
-  
+
   if (params_247[["part6CR"]] == TRUE) {
     #======================================================================
     # loop through milestone data-files or filenames stored in output of g.part5
@@ -598,7 +598,7 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         Ncores2use = min(c(Ncores - 1, params_general[["maxNcores"]], (f1 - f0) + 1))
         if (Ncores2use > 1) {
           cl <- parallel::makeCluster(Ncores2use) # not to overload your computer
-          parallel::clusterExport(cl = cl, 
+          parallel::clusterExport(cl = cl,
                                   varlist = c(unclass(lsf.str(envir = asNamespace("GGIR"), all = T)),
                                               "MONITOR", "FORMAT"),
                                   envir = as.environment(asNamespace("GGIR"))
