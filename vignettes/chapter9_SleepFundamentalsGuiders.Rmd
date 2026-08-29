@@ -223,7 +223,7 @@ This algorithm was developed for ActivPAL data where night/sleep behaviour is re
 
 The guider detects this by first deriving a 5 minute rolling average of the acceleration values and then detecting when the resulting acceleration is less than a threshold as specified with parameter \code{LowAcc_threshold}.
 
-The reason we consider LowAcc instead of NonWorn for thigh-worn ActivPAL data is that non-wear is more difficult to detect in this setting: The high moves less while being awake compare with the wrist and ActivPAL sensors we found to come with a higher level of noise, complicating an accurate distinction between non-wear and inactivity.
+The reason we consider LowAcc instead of NonWorn for thigh-worn ActivPAL data is that non-wear is more difficult to detect when sensor is worn on the thigh and we observed that the  ActivPAL emits much more noise than other sensor brands, complicating an accurate distinction between non-wear and inactivity.
 
 A more elaborate motivation and justification for this experimental guider will hopefully follow in a journal article.
 
