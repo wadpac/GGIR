@@ -165,6 +165,8 @@ outcome in one specific segments across all days in which that segment is availa
 
 If you use an activity diary to segment the day then column `window` clarifies the name of the day segment.
 
+When running day segment analysis with the parameters `timewindow="WW"` or `timewindow="OO"`, be aware that time segments are still defined based on a 24-hour clock and never cross midnight. However, the data is extracted from the same sleep-wake cycle. For example, when `timewindow="WW"` and `qwindow=c(0, 8, 24)` for a person who sleeps from 1:00 to 7:00, this means that behaviour between midnight and 1:00 is counted towards the 0:00-8:00 segment in the present WW cycle, while behaviour between 7:00 and 8:00 is counted towards the 0:00-8:00 segment in the next WW cycle. The advantage of this approach is that you can study the role of behaviour per day segment on sleep the following night, or vice versa. However, be aware that a segment such as 0:00-8:00 can reflect time points from both the beginning and the end of the waking hours of a day. For example, if a person wakes up on day 1 at 7:00 and goes to bed at 1:00, then the 0:00-8:00 segment reflects the combination of 7:00-8:00 and 0:00-1:00 at the end of the waking hours that day.
+
 
 # Cleaning parameters for day segments (in part 5):
 
