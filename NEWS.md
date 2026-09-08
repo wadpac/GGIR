@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.3-?
+
+- Made the Movisens test independent of internet access by including the test data in inst/testfiles (#1540)
+
 # CHANGES IN GGIR VERSION 3.3-8
 
 - Updated documentation to point to the new web dashboard URL (#1509)
