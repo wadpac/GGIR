@@ -237,14 +237,12 @@ g.calibrate = function(datafile, params_rawdata = c(),
       #select parts with no movement
       if (mon == MONITOR$AD_HOC) {
         if (length(params_rawdata[["rmc.noise"]]) == 0) {
-          warning("Argument rmc.noise not specified, please specify expected noise level in g-units")
-        }
-        sdcriter = params_rawdata[["rmc.noise"]] * 1.2
-        if (length(params_rawdata[["rmc.noise"]]) == 0) {
           stop(paste0("Please provide noise level for the acceleration sensors",
-                      " in g-units with argument rmc.noise to aid non-wear detection"),
+                      " in mg-units with argument rmc.noise to aid non-wear detection"),
                call. = FALSE)
         }
+        # rmc.noise is documented in mg, sdcriter is compared against SD in g
+        sdcriter = (params_rawdata[["rmc.noise"]] / 1000) * 1.2
       } else {
         sdcriter = 0.013
       }

@@ -161,7 +161,7 @@ GGIR(
              rmc.format.time = "%d/%m/%Y %H:%M:%OS",
              desiredtz = "Europe/London",
              rmc.sf = 100,
-             rmc.noise = 0.013
+             rmc.noise = 13
 )
 ```
 

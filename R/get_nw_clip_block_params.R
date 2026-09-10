@@ -50,9 +50,10 @@ get_nw_clip_block_params = function(monc, dformat, deviceSerialNumber = "", sf,
     racriter = 0.20
   } else if (monc == MONITOR$AD_HOC) {
     if (length(params_rawdata[["rmc.noise"]]) == 0) {
-      stop("Argument rmc.noise not specified, please specify expected noise level in g-units")
+      stop("Argument rmc.noise not specified, please specify expected noise level in mg-units")
     }
-    sdcriter = params_rawdata[["rmc.noise"]] * 1.2
+    # rmc.noise is documented in mg, sdcriter is compared against SD in g
+    sdcriter = (params_rawdata[["rmc.noise"]] / 1000) * 1.2
   }
   invisible(list(clipthres=clipthres, blocksize=blocksize, sdcriter=sdcriter, racriter=racriter))
 }

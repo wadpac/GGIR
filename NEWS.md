@@ -10,6 +10,8 @@
 
 # CHANGES IN GGIR VERSION 3.3-8
 
+- Part 1: `rmc.noise` is documented in mg but was used as g by both consumers, so the default 13 produced `sdcriter = 15.6` g instead of 0.0156 g and the SD criterion never bound for ad-hoc csv data, in non-wear detection and in autocalibration. Both call sites now convert mg to g. If you were passing `rmc.noise` in g, for example `rmc.noise = 0.013` as the readmyacccsv vignette previously showed, multiply your value by 1000. #1537
+
 - Updated documentation to point to the new web dashboard URL (#1509)
 
 - Part 1: Fixed an issue in g.calibrate() where large data chunks caused out-of-bounds errors (#1513)
