@@ -60,13 +60,13 @@ Zhao C, Meneghel Danilevicz I, Barreto Mesquita V, Segantin G, Afolabi
 S, Medical Research Council UK, Accelting, French National Research
 Agency (2026). *GGIR: Raw Accelerometer Data Analysis*.
 [doi:10.5281/zenodo.1051064](https://doi.org/10.5281/zenodo.1051064), R
-package version 3.3-7, <https://zenodo.org/records/1051064>.
+package version 3.3-8, <https://zenodo.org/records/1051064>.
 
     @Manual{,
       title = {{GGIR}: Raw Accelerometer Data Analysis},
       author = {Vincent T {van Hees} and Jairo H Migueles and Severine Sabia and Matthew R Patterson and Zhou Fang and Joe Heywood and Joan {Capdevila Pujol} and Lena Kushleyeva and Mathilde Chen and Manasa Yerramalla and Patrick Bos and Taren Sanders and Chenxuan Zhao and Ian {Meneghel Danilevicz} and Victor {Barreto Mesquita} and Gaia Segantin and Samuel Timileyin Afolabi and {Medical Research Council UK} and {Accelting} and {French National Research Agency}},
       year = {2026},
-      note = {R package version 3.3-7},
+      note = {R package version 3.3-8},
       doi = {10.5281/zenodo.1051064},
       url = {https://zenodo.org/records/1051064},
     }

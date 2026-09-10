@@ -503,16 +503,20 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                           for (si in next_si:(next_si + length(segments) - 1)) {
                             fi = 1
                             current_segment_i = si - next_si + 1
-                            segStart = segments[[current_segment_i]][1]
-                            segEnd = segments[[current_segment_i]][2]
+                            Nindices = length(segments[[current_segment_i]])
+                            segStart = segments[[current_segment_i]][seq(1, Nindices, by = 2)]
+                            segEnd = segments[[current_segment_i]][seq(2, Nindices, by = 2)]
+                            Nsegments = pmin(length(segStart), length(segEnd))
                             extraRowsNeeded = max(c(si, di)) - nrow(dsummary)
                             if (extraRowsNeeded > 0) {
                               dsummary = rbind(dsummary, matrix(data = "", nrow = extraRowsNeeded, ncol = ncol(dsummary)))
                             }
-                            if (timewindowi == "MM" & si > 1) { # because first segment is always full window
+                            if (timewindowi %in% c("MM", "WW") & si > 1) { # because first segment is always full window
                               if (("segment" %in% colnames(ts)) == FALSE) ts$segment = NA
-                              if (!is.na(segStart) && !is.na(segEnd)) {
-                                ts$segment[segStart:segEnd] = si
+                              for (gi in 1:Nsegments) {
+                                if (!is.na(segStart[gi]) && !is.na(segEnd[gi])) {
+                                  ts$segment[segStart[gi]:segEnd[gi]] = si
+                                }
                               }
                             }
                             # Already store basic information about the file
@@ -788,7 +792,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                            "g.part5.savetimeseries", "g.part5.wakesleepwindows",
                            "g.part5.onsetwaketiming", "g.part5_analyseSegment",
                            "g.part5_initialise_ts", "g.part5.analyseRest",
-                           "g.fragmentation", "g.intensitygradient")
+                           "g.fragmentation", "g.intensitygradient",
+                           "g.part4_extractid", "markerButtonForRest")
       errhand = 'stop'
     }
     i = 0 # declare i because foreach uses it, without declaring it

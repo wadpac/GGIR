@@ -1,4 +1,14 @@
-# CHANGES IN GGIR VERSION 3.3-
+# CHANGES IN GGIR VERSION 3.3-?
+
+- Part 3: Add new guider named LowAcc, with new parameter LowAcc_threshold. Further, parameter HDCZA_roll_windowsize was added related to guider HDCZA. #1287
+
+- Part 3: Added new parameter HDCZA_roll_windowsize to control the size of the rolling window used by the HDCZA guider algorithm.
+
+- Part 1: Skip movisens tests on both CRAN and GitHub Actions. These tests are now only run locally as they depend on the downloading of test data.
+
+- Part 5: Allow for day segment analysis for the WW and OO window definition. #1407
+
+# CHANGES IN GGIR VERSION 3.3-8
 
 - Updated documentation to point to the new web dashboard URL (#1509)
 
@@ -9,6 +19,8 @@
 - Part 2: Fixed regression in g.impute() where using a study_dates_file raised "NA/NaN argument" for participants whose listed start or end date is not a midnight present in the recording (e.g. an evening start, or a device that stopped recording before the listed end date). #1508
 
 - Fixed check_log() to coerce study dates log columns to character, so that dates auto-parsed as IDate by data.table::fread() are handled correctly. #1521
+
+- Add vignette on Personal light exposure analysis. #1516
 
 # CHANGES IN GGIR VERSION 3.3-7
 
