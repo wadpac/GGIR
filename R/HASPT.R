@@ -107,8 +107,7 @@ HASPT = function(angle, params_sleep = NULL, ws3 = 5,
         angvar = stats::median(abs(diff(angle)))
         return(angvar)
       }
-      k1 = 5 * (60/ws3)
-      
+      k1 = params_sleep[["HDCZA_roll_windowsize"]] * (60/ws3)
       x = zoo::rollapply(angle, width = k1, FUN = medabsdi, fill = 0) # 5 minute rolling median of the absolute difference
       if (is.null(params_sleep[["HDCZA_threshold"]])) {
         params_sleep[["HDCZA_threshold"]] = c(10, 15)
@@ -128,6 +127,16 @@ HASPT = function(angle, params_sleep = NULL, ws3 = 5,
       # threshold = 45 degrees
       x = abs(angle)
       threshold = params_sleep[["HorAngle_threshold"]]
+      
+    } else if (HASPT.algo == "LowAcc") {
+      # First attempt:
+      # However, we need to take into account that there may be some
+      # noise in the data, so threshold needs to be above zero
+      x = activity
+      # smooth x to 5 minute rolling average to reduce sensitivity to sudden peaks
+      ma <- function(x, n = 300 / ws3){stats::filter(x, rep(1 / n, n), sides = 2, circular = TRUE)}
+      x = ma(x)
+      threshold = params_sleep[["LowAcc_threshold"]]
     } else if (HASPT.algo == "NotWorn") {
       # When protocol is to not wear sensor during the night,
       # and data is collected in count units we do not know angle
