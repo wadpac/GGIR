@@ -6,6 +6,8 @@
 
 - Part 1: Skip movisens tests on both CRAN and GitHub Actions. These tests are now only run locally as they depend on the downloading of test data.
 
+- Part 5: Allow for day segment analysis for the WW and OO window definition. #1407
+
 # CHANGES IN GGIR VERSION 3.3-8
 
 - Updated documentation to point to the new web dashboard URL (#1509)
