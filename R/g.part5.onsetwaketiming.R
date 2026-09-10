@@ -16,6 +16,7 @@ g.part5.onsetwaketiming = function(qqq, ts, min, sec, hour, timewindowi) {
   if (timewindowi == "WW") {
     # For WW wake is by definition the start and end of the window
     wakei = qqq[2] + 1
+    if (wakei > length(hour)) wakei = length(hour) # in the case if MM use first wake-up time
   } else {
     # For OO and MM wake needs to be search in the window
     wakei = c(qqq[1]:qqq[2])[which(diff(ts$diur[qqq[1]:(qqq[2] - 1)]) == -1) + 1]
