@@ -467,7 +467,6 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   expect_equal(length(fnames$fnames), 8)
   expect_equal(length(fnames$fnamesfull), 8)
   
-  if (dir.exists("unisensR-0.3.4/")) unlink("unisensR-0.3.4/", recursive = TRUE)
   if (file.exists(testfile_one_col)) file.remove(testfile_one_col)
   if (file.exists(testfile_two_col)) file.remove(testfile_two_col)
   if (file.exists(testfile)) file.remove(testfile)

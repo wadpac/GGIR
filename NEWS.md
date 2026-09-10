@@ -1,6 +1,12 @@
 # CHANGES IN GGIR VERSION 3.3-?
 
-- Made the Movisens test independent of internet access by including the test data in inst/testfiles (#1540)
+- Tests: Made the Movisens test independent of internet access by including the test data in inst/testfiles (#1540)
+
+- Part 3: Add new guider named LowAcc, with new parameter LowAcc_threshold. Further, parameter HDCZA_roll_windowsize was added related to guider HDCZA. #1287
+
+- Part 3: Added new parameter HDCZA_roll_windowsize to control the size of the rolling window used by the HDCZA guider algorithm.
+
+- Part 1: Skip movisens tests on both CRAN and GitHub Actions. These tests are now only run locally as they depend on the downloading of test data.>>>>>>> main
 
 - Part 5: Allow for day segment analysis for the WW and OO window definition. #1407
 
