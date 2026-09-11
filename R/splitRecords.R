@@ -69,7 +69,7 @@ splitRecords = function(metadatadir, params_general = NULL) {
           
           # minutes between last split that overlaps and end recording
           mins_lastoverlap_end = as.numeric(difftime(S$end[j], splitTime_tmp[within_time_range[length(within_time_range)]], units = "mins"))
-          if (within_time_range[length(within_time_range)] < splitTime_tmp[length(splitTime_tmp)] &
+          if (splitTime_tmp[max(within_time_range)] < splitTime_tmp[length(splitTime_tmp)] &
               mins_lastoverlap_end > 12 * 3600) {
             within_time_range = c(within_time_range, within_time_range[length(within_time_range)] + 1)
           }

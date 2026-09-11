@@ -242,7 +242,9 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         ts$invalidepoch[invalidWindows] = 1
       }
       # Include basic information in the summary
-      summary[fi] = unlist(strsplit(fnames.ms5raw[i], "_"))[1]
+      summary[fi] = extractID(hvars = list(ID = "NA", iID = "NA", IDd = "NA"),
+                              idloc = params_general[["idloc"]],
+                              fname = fnames.ms5raw[i])
       s_names[fi] = "ID"
       fi = fi + 1
       starttime = as.POSIXlt(ts$time[1], tz = params_general[["desiredtz"]],
@@ -504,11 +506,16 @@ g.part6 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         #=======================================================================
         # DFA analyses is used independent of do.cr because it is time consuming
         if (params_247[["part6DFA"]] == TRUE) {
-          ssp = SSP(ts$ACC[!is.na(ts$ACC)])
-          abi = ABI(ssp)
-          summary[fi:(fi + 1)] = c(ssp, abi)
-          s_names[fi:(fi + 1)] = c("SSP", "ABI")
-          fi = fi + 2
+          SSP = SSP(ts$ACC[!is.na(ts$ACC)], epochSize = epochSize)
+          ssp = SSP$alpha_overall; ssp_short = SSP$alpha_1; ssp_long = SSP$alpha_2
+          abi = ABI(ssp); abi_short = ABI(ssp_short); abi_long = ABI(ssp_long)
+          ssp_diff = ssp_short - ssp_long
+          summary[fi:(fi + 6)] = c(ssp, abi, ssp_short, abi_short, ssp_long, abi_long, ssp_diff)
+          s_names[fi:(fi + 6)] = c("SSP", "ABI", 
+                                   "SSP_short", "ABI_short", 
+                                   "SSP_long", "ABI_long", 
+                                   "SSP_diff")
+          fi = fi + 7
         }
         #------------------------------------------------------------
         # Sleep Regularity Index

@@ -210,7 +210,7 @@ Next, in part2 GGIR aims to detect non-wear periods and imputes those. The imput
 
 # External functions released by GGIR collaborators:
 
-- Wrist-based step detection algorithm: https://github.com/ShimmerEngineering/Verisense-Toolbox/tree/master/Verisense_step_algorithm
+- Wrist-based step detection algorithm: https://github.com/ShimmerResearch/Verisense-Toolbox/tree/master/Verisense_step_algorithm
 
 which is not actively maintained, for the latest version of the function see:
 https://github.com/wadpac/GGIR/blob/master/user-scripts/verisense_count_steps.R

@@ -114,8 +114,8 @@ g.part5.savetimeseries = function(ts, LEVELS, desiredtz, rawlevels_fname,
                                                  no = ifelse(mdat$guider == 'NotWorn' | mdat$guider == 'NotWorn+invalid', yes = 6,
                                                              no = 0))))
     # use loop for other guiders:
-    guidernames = c('setwindow', 'L512', 'markerbutton', 'HLRB', 'MotionWare')
-    guidernumbers = c(3, 4, 7, 8, 9)
+    guidernames = c('setwindow', 'L512', 'markerbutton', 'HLRB', 'MotionWare', 'LowAcc')
+    guidernumbers = c(3, 4, 7, 8, 9, 10)
     for (gi in 1:length(guidernames)) {
       guidername_instance = which(mdat$guider == guidernames[gi])
       if (length(guidername_instance) > 0) {

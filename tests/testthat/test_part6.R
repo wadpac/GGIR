@@ -95,7 +95,7 @@ test_that("Part 6 with household co-analysis", {
   params_247[["part6HCA"]] = FALSE
   params_general[["do.parallel"]] = FALSE
   params_general[["overwrite"]] = TRUE
-  params_247[["cosinor"]] = TRUE
+  params_247[["part2CR"]] = TRUE
   params_247[["part6CR"]] = TRUE
   params_247[["part6Window"]] = c("start", "end")
   params_cleaning = load_params(topic = "cleaning")$params_cleaning

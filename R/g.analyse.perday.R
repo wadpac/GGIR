@@ -59,7 +59,8 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
   }
   unique_dates_recording = unique(as.Date(iso8601chartime2POSIX(time[c(seq(1, length(time),
                                                                            by = (3600/ws2) * 12),
-                                                                       length(time))], tz = params_general[["desiredtz"]])))
+                                                                       length(time))], tz = params_general[["desiredtz"]]),
+                                          tz = params_general[["desiredtz"]]))
   ExtFunColsi = ExtFunColsi - 1 # subtract 1 because code ignores timestamp
   ExtFunColsi_backup = ExtFunColsi
   for (di in 1:ndays) { #run through days
@@ -683,9 +684,12 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   }
                 }
                 
-                if (length(ExtFunColsi) > 0) { # If events are detected with external function
-                  if (mi %in% ExtFunColsi == TRUE) { # INSERT HERE VARIABLES DERIVED WITH EXTERNAL FUNCTION
-                    if (length(rti) == 1 && myfun$reporttype[rti] == "event") {
+                if (length(ExtFunColsi_backup) > 0) { # If events are detected with external function
+                  # bout detection depends on access to non-wear bout variables
+                  # so, skip detection of event bouts when working with external function output
+                  if (mi %in% ExtFunColsi == FALSE) { # INSERT HERE VARIABLES DERIVED WITH EXTERNAL FUNCTION
+                    # if (length(rti) == 1 && myfun$reporttype[rti] == "event") {
+                    if (length(varnum_event) > 0) {
                       # Step bout detection
                       eventBouts = detectEventBouts(myfun, varnum_event = varnum_event,
                                                     varnum = varnum,

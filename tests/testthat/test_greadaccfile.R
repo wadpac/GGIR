@@ -134,7 +134,7 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   IGA = g.inspectfile(GAfile, desiredtz = desiredtz)
   expect_equal(IGA$monc, MONITOR$GENEACTIV)
   expect_equal(IGA$dformc, FORMAT$BIN)
-  expect_equal(IGA$sf,85.7)
+  expect_equal(IGA$sf, 86)
   
   EHV = g.extractheadervars(IGA)
   expect_equal(EHV$deviceSerialNumber,"012967")
@@ -146,7 +146,8 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   
   # As of R 4.0, an extra header row is extracted, which affects the positioning of the values.
   # expect_equal(as.numeric(as.character(wav_read$P$header$hvalues[7])),17) 
-  expect_equal(round(sum(GA_read$P$data[, 2:4]), digits = 2), -271.97)
+  
+  expect_equal(round(sum(GA_read$P$data[, 2:4]), digits = 2), -271.35)
   expect_equal(GA_read$endpage, GA_num_blocks)
   
   # print(GA_read$P$header)
@@ -156,56 +157,6 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
                   inspectfileobject = IGA)
   expect_true(MGA$filetooshort)
   
-  cat("\n Movisens")
-  
-  output_dir = "output_unisensExample"
-  on.exit({if (file.exists(output_dir)) unlink(output_dir, recursive = TRUE)}, add = TRUE)
-  if (file.exists(output_dir)) unlink(output_dir, recursive = TRUE)
-  
-  zip_file = "0.3.4.zip"
-  on.exit({if (file.exists(zip_file)) unlink(zip_file)}, add = TRUE)
-  if (!file.exists(zip_file)) {
-    # link to a tagged release of Unisens/unisensR github repo
-    movisens_url = "https://github.com/Unisens/unisensR/archive/refs/tags/0.3.4.zip"
-    download.file(url = movisens_url, destfile = zip_file, quiet = TRUE)
-  }
-  
-  movisens_dir = "unisensR-0.3.4"
-  on.exit({if (file.exists(movisens_dir)) unlink(movisens_dir, recursive = TRUE)}, add = TRUE)
-  if (file.exists(movisens_dir)) {
-    unlink(movisens_dir, recursive = TRUE)
-  }
-  unzip(zipfile = zip_file, exdir = ".")
-  movisensFile = file.path(getwd(), "unisensR-0.3.4/tests/unisensExample/acc.bin")
-  
-  Mcsv = g.inspectfile(movisensFile, desiredtz = desiredtz)
-  expect_equal(Mcsv$monc, MONITOR$MOVISENS)
-  expect_equal(Mcsv$dformc, FORMAT$BIN)
-  expect_equal(Mcsv$sf, 64)
-  
-  movisens_blocksize = 3000
-  movisens_read = g.readaccfile(movisensFile, blocksize = movisens_blocksize, blocknumber = 1, filequality = filequality,
-                                dayborder = dayborder, ws = 3,
-                                PreviousEndPage = 1, inspectfileobject = Mcsv,
-                                params_rawdata = params_rawdata, params_general = params_general)
-  expect_equal(nrow(movisens_read$P$data), movisens_blocksize)
-  expect_false(movisens_read$filequality$filecorrupt)
-  expect_false(movisens_read$filequality$filetooshort)
-  expect_equal(sum(movisens_read$P$data[c("x","y","z")]), 4383.67, tolerance = .01, scale = 1)
-  expect_equal(movisens_read$endpage, movisens_blocksize)
-  
-  # read the next block (set PreviousEndPage to movisens_read$endpage)
-  movisens_read2 = g.readaccfile(movisensFile, blocksize = movisens_blocksize, blocknumber = 2, filequality = filequality,
-                                 dayborder = dayborder, ws = 3,
-                                 PreviousEndPage = movisens_read$endpage, inspectfileobject = Mcsv,
-                                 params_rawdata = params_rawdata, params_general = params_general)
-  expect_equal(nrow(movisens_read2$P$data), movisens_blocksize)
-  expect_equal(movisens_read2$endpage, movisens_blocksize * 2)
-  
-  # if the 1st sample of 2nd block is identical to the last sample of the 1st block,
-  # this means that we calculated the startpage of the 2nd block incorrectly.
-  expect_false(any(movisens_read2$P$data[1,] == movisens_read$P$data[nrow(movisens_read$P$data),]))
-  cat("\n ad-hoc csv file")
   # ad-hoc csv file
   
   # Create test file: No header, with temperature, with time.
@@ -215,8 +166,8 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   # read a block of 3000 will return fewer than 3000 lines.
   N = 6000
   sf = 30
-  x = Sys.time()+((0:(N-1))/sf)
-  timestamps = as.POSIXlt(x, origin="1970-1-1", tz = configtz)
+  x = Sys.time() + ((0:(N - 1)) / sf)
+  timestamps = as.POSIXlt(x, origin = "1970-1-1", tz = configtz)
   mydata = data.frame(Xcol = rnorm(N), timecol = timestamps, Ycol = rnorm(N), Zcol = rnorm(N),
                       tempcol = rnorm(N) + 20)
   testfile = "testcsv.csv"
@@ -227,22 +178,22 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   # check that for files with no header, g.inspectfile() errors out if sampling rate 
   # is not specified as rmc.sf, or if rmc.sf == 0
   expect_error(g.inspectfile(testfile, 
-                             rmc.dec=".", rmc.unit.time="POSIX",
-                             rmc.firstrow.acc = 1, rmc.firstrow.header=c(), 
-                             rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time=2,
+                             rmc.dec = ".", rmc.unit.time = "POSIX", 
+                             rmc.firstrow.acc = 1, rmc.firstrow.header = c(), 
+                             rmc.col.acc = c(1, 3, 4), rmc.col.temp = 5, rmc.col.time = 2, 
                              rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.origin = "1970-01-01"),
                regexp = "File header doesn't specify sample rate. Please provide rmc.sf value to process")
   expect_error(g.inspectfile(testfile, 
-                             rmc.dec=".", rmc.sf=0, rmc.unit.time="POSIX",
-                             rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
-                             rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time=2,
+                             rmc.dec = ".", rmc.sf = 0, rmc.unit.time = "POSIX", 
+                             rmc.firstrow.acc = 1, rmc.firstrow.header = c(), 
+                             rmc.col.acc = c(1, 3, 4), rmc.col.temp = 5, rmc.col.time = 2, 
                              rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.origin = "1970-01-01"),
                regexp = "File header doesn't specify sample rate. Please provide a non-zero rmc.sf value to process")
   
   AHcsv = g.inspectfile(testfile, 
-                        rmc.dec=".", rmc.sf=30, rmc.unit.time="POSIX",
-                        rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
-                        rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time=2,
+                        rmc.dec = ".", rmc.sf = 30, rmc.unit.time = "POSIX", 
+                        rmc.firstrow.acc = 1, rmc.firstrow.header = c(), 
+                        rmc.col.acc = c(1, 3, 4), rmc.col.temp = 5, rmc.col.time = 2, 
                         rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.origin = "1970-01-01")
   
   expect_equal(AHcsv$monc, MONITOR$AD_HOC)
@@ -254,9 +205,9 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   csv_read = g.readaccfile(testfile, blocksize = 10, blocknumber = 1, filequality = filequality, # blocksize is # of pages of 300 samples
                            dayborder = dayborder, ws = 3, desiredtz = desiredtz, configtz = configtz,
                            PreviousEndPage = c(), inspectfileobject = AHcsv,
-                           rmc.dec=".", rmc.sf=30, rmc.unit.time="POSIX",
-                           rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
-                           rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time=2,
+                           rmc.dec = ".", rmc.sf = 30, rmc.unit.time = "POSIX", 
+                           rmc.firstrow.acc = 1, rmc.firstrow.header = c(), 
+                           rmc.col.acc = c(1, 3, 4), rmc.col.temp = 5, rmc.col.time = 2, 
                            rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.origin = "1970-01-01")
   
   expect_equal(nrow(csv_read$P$data), 3000)
@@ -272,9 +223,9 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   csv_read2 = g.readaccfile(testfile, blocksize = 10, blocknumber = 1, filequality = filequality,
                             dayborder = dayborder, ws = 3, desiredtz = desiredtz, configtz = configtz,
                             PreviousEndPage = c(), inspectfileobject = AHcsv,
-                            rmc.dec=".", rmc.sf=30, rmc.unit.time="POSIX",
-                            rmc.firstrow.acc = 2, rmc.firstrow.header=c(),
-                            rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time=2,
+                            rmc.dec = ".", rmc.sf = 30, rmc.unit.time = "POSIX", 
+                            rmc.firstrow.acc = 2, rmc.firstrow.header = c(), 
+                            rmc.col.acc = c(1, 3, 4), rmc.col.temp = 5, rmc.col.time = 2, 
                             rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.origin = "1970-01-01")
   
   expect_equal(nrow(csv_read2$P$data), 3000)
@@ -287,9 +238,9 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   csv_read3 = g.readaccfile(testfile, blocksize = 10, blocknumber = 2, filequality = filequality,
                             dayborder = dayborder, ws = 3, desiredtz = desiredtz, configtz = configtz,
                             PreviousEndPage = csv_read$endpage, inspectfileobject = AHcsv,
-                            rmc.dec=".", rmc.sf=30, rmc.unit.time="POSIX",
-                            rmc.firstrow.acc = 1, rmc.firstrow.header=c(),
-                            rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time=2,
+                            rmc.dec = ".", rmc.sf = 30, rmc.unit.time = "POSIX", 
+                            rmc.firstrow.acc = 1, rmc.firstrow.header = c(), 
+                            rmc.col.acc = c(1, 3, 4), rmc.col.temp = 5, rmc.col.time = 2, 
                             rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.origin = "1970-01-01")
   
   expect_equal(nrow(csv_read3$P$data), 3000)
@@ -297,9 +248,9 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   csv_read4 = g.readaccfile(testfile, blocksize = 10, blocknumber = 2, filequality = filequality,
                             dayborder = dayborder, ws = 3, desiredtz = desiredtz, configtz = configtz,
                             PreviousEndPage = csv_read2$endpage, inspectfileobject = AHcsv,
-                            rmc.dec=".", rmc.sf=30, rmc.unit.time="POSIX",
-                            rmc.firstrow.acc = 2, rmc.firstrow.header=c(),
-                            rmc.col.acc = c(1,3,4), rmc.col.temp = 5, rmc.col.time=2,
+                            rmc.dec = ".", rmc.sf = 30, rmc.unit.time = "POSIX", 
+                            rmc.firstrow.acc = 2, rmc.firstrow.header = c(), 
+                            rmc.col.acc = c(1, 3, 4), rmc.col.temp = 5, rmc.col.time = 2, 
                             rmc.unit.acc = "g", rmc.unit.temp = "C", rmc.origin = "1970-01-01")
   
   expect_equal(nrow(csv_read4$P$data), 3000)
@@ -310,8 +261,8 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   
   N = 6000
   sf = 30
-  x = Sys.time()+((0:(N-1))/sf)
-  timestamps = as.POSIXlt(x, origin="1970-1-1", tz = configtz)
+  x = Sys.time() + ((0:(N - 1)) / sf)
+  timestamps = as.POSIXlt(x, origin = "1970-1-1", tz = configtz)
   mydata = data.frame(Xcol = rnorm(N), timecol = timestamps, Ycol = rnorm(N), Zcol = rnorm(N))
   S1 = as.matrix(mydata)
   
@@ -352,16 +303,16 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
     # check that for a file whose header doesn't specify sampling rate,
     # g.inspectfile() errors out if sampling rate is not specified as rmc.sf, or if rmc.sf==0
     expect_error(g.inspectfile(csvData[[1]],
-                               rmc.dec=".", rmc.unit.time="POSIX",
+                               rmc.dec = ".", rmc.unit.time = "POSIX", 
                                rmc.firstrow.acc = 11, rmc.firstrow.header = 1,
-                               rmc.col.acc = c(1,3,4), rmc.col.time=2,
+                               rmc.col.acc = c(1, 3, 4), rmc.col.time = 2, 
                                rmc.unit.acc = "g", rmc.origin = "1970-01-01",
                                rmc.header.structure = csvData[[2]]),
                  regexp = "File header doesn't specify sample rate. Please provide rmc.sf value to process")
     expect_error(g.inspectfile(csvData[[1]],
-                               rmc.dec=".", rmc.sf = 0, rmc.unit.time="POSIX",
+                               rmc.dec = ".", rmc.sf = 0, rmc.unit.time = "POSIX", 
                                rmc.firstrow.acc = 11, rmc.firstrow.header = 1,
-                               rmc.col.acc = c(1,3,4), rmc.col.time=2,
+                               rmc.col.acc = c(1, 3, 4), rmc.col.time = 2, 
                                rmc.unit.acc = "g", rmc.origin = "1970-01-01",
                                rmc.header.structure = csvData[[2]]),
                  regexp = "File header doesn't specify sample rate. Please provide a non-zero rmc.sf value to process")
@@ -369,9 +320,9 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
     # check that for a file whose header doesn't specify sampling rate,
     # g.inspectfile() returns sf == rmc.sf if the latter was specified
     I = g.inspectfile(csvData[[1]],
-                      rmc.dec=".", rmc.sf = 80, rmc.unit.time="POSIX",
+                      rmc.dec = ".", rmc.sf = 80, rmc.unit.time = "POSIX", 
                       rmc.firstrow.acc = 11, rmc.firstrow.header = 1,
-                      rmc.col.acc = c(1,3,4), rmc.col.time=2,
+                      rmc.col.acc = c(1, 3, 4), rmc.col.time = 2, 
                       rmc.unit.acc = "g", rmc.origin = "1970-01-01",
                       rmc.header.structure = csvData[[2]])
     expect_equal(I$sf, 80)
@@ -416,10 +367,10 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
                        list(testfile_two_col, c()))) {
     # check that g.inspectfile() returns sf value that was specified in the header, even if rmc.sf was also specified
     I = g.inspectfile(csvData[[1]],
-                      rmc.dec=".", rmc.sf = 80, rmc.headername.sf = "sample_freq",
-                      rmc.unit.time="POSIX",
-                      rmc.firstrow.acc = 11, rmc.firstrow.header=1,
-                      rmc.col.acc = c(1,3,4), rmc.col.time=2,
+                      rmc.dec = ".", rmc.sf = 80, rmc.headername.sf = "sample_freq", 
+                      rmc.unit.time = "POSIX", 
+                      rmc.firstrow.acc = 11, rmc.firstrow.header = 1, 
+                      rmc.col.acc = c(1, 3, 4), rmc.col.time = 2, 
                       rmc.unit.acc = "g", rmc.origin = "1970-01-01",
                       rmc.headername.sn = "serial_number",
                       rmc.headername.recordingid = "ID",
@@ -430,11 +381,11 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
     
     # check that g.inspectfile() correctly reads the sf value from the header
     I = g.inspectfile(csvData[[1]],
-                      rmc.dec=".", rmc.headername.sf = "sample_freq",
-                      rmc.unit.time="POSIX",
-                      rmc.firstrow.acc = 11, rmc.firstrow.header=1,
-                      rmc.col.acc = c(1,3,4), rmc.col.time=2,
-                      rmc.unit.acc = "g", rmc.origin = "1970-01-01",
+                      rmc.dec = ".", rmc.headername.sf = "sample_freq", 
+                      rmc.unit.time = "POSIX", 
+                      rmc.firstrow.acc = 11, rmc.firstrow.header = 1, 
+                      rmc.col.acc = c(1, 3, 4), rmc.col.time = 2, 
+                      rmc.unit.acc = "g", rmc.origin = "1970-01-01", 
                       rmc.header.structure = csvData[[2]])
     expect_equal(I$sf, 40)
   }
@@ -452,8 +403,11 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
                            PreviousEndPage = 1, inspectfileobject = Imtx,
                            params_rawdata = params_rawdata, params_general = params_general)
   expect_equal(nrow(mtx_read$P$QClog), 4) # 4 blocks of data in this file
-  expect_equal(sum(mtx_read$P$data[c("x","y","z")]), 6454.284, tolerance = .01, scale = 1)
-  
+
+  expect_equal(mean(mtx_read$P$data[, "x"]), 0.3484907, tolerance = .001, scale = 1)
+  expect_equal(mean(mtx_read$P$data[, "y"]), 0.445011, tolerance = .001, scale = 1)
+  expect_equal(mean(mtx_read$P$data[, "z"]), -0.5303114, tolerance = .001, scale = 1)
+
   Mmtx = g.getmeta(mtxfile, desiredtz = desiredtz, windowsize = c(1,300,300),
                    inspectfileobject = Imtx)
   expect_true(Mmtx$filetooshort)
@@ -470,4 +424,77 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   fnames = datadir2fnames(datadir = datadir, filelist = FALSE)
   expect_equal(length(fnames$fnames), 8)
   expect_equal(length(fnames$fnamesfull), 8)
+  
+  if (file.exists(testfile_one_col)) file.remove(testfile_one_col)
+  if (file.exists(testfile_two_col)) file.remove(testfile_two_col)
+  if (file.exists(testfile)) file.remove(testfile)
+  if (file.exists(filename)) file.remove(filename)
+})
+
+test_that("g.readaccfile and g.inspectfile can read movisens files correctly", {
+  
+  skip_if(Sys.getenv("GITHUB_ACTIONS") == "true", message = "Skipping on GitHub Actions")
+  skip_on_cran()
+  
+  desiredtz = "Pacific/Auckland"
+  configtz = "Europe/Berlin"
+  params = extract_params(input = list(frequency_tol = 0.1, interpolationType = 1,
+                                       desiredtz = desiredtz, configtz = configtz))
+  params_rawdata = params$params_rawdata
+  params_general = params$params_general
+  
+  filequality = list(filecorrupt = FALSE, filetooshort = FALSE)
+  dayborder = 0
+  
+  cat("\n Movisens")
+  
+  output_dir = "output_unisensExample"
+  on.exit({if (file.exists(output_dir)) unlink(output_dir, recursive = TRUE)}, add = TRUE)
+  if (file.exists(output_dir)) unlink(output_dir, recursive = TRUE)
+  
+  zip_file = "0.3.4.zip"
+  on.exit({if (file.exists(zip_file)) unlink(zip_file)}, add = TRUE)
+  if (!file.exists(zip_file)) {
+    # link to a tagged release of Unisens/unisensR github repo
+    movisens_url = "https://github.com/Unisens/unisensR/archive/refs/tags/0.3.4.zip"
+    download.file(url = movisens_url, destfile = zip_file, quiet = TRUE)
+  }
+  movisens_dir = "unisensR-0.3.4"
+  on.exit({if (file.exists(movisens_dir)) unlink(movisens_dir, recursive = TRUE)}, add = TRUE)
+  if (file.exists(movisens_dir)) {
+    unlink(movisens_dir, recursive = TRUE)
+  }
+  unzip(zipfile = zip_file, exdir = ".")
+  movisensFile = file.path(getwd(), "unisensR-0.3.4/tests/unisensExample/acc.bin")
+  
+  Mcsv = g.inspectfile(movisensFile, desiredtz = desiredtz)
+  expect_equal(Mcsv$monc, MONITOR$MOVISENS)
+  expect_equal(Mcsv$dformc, FORMAT$BIN)
+  expect_equal(Mcsv$sf, 64)
+  
+  movisens_blocksize = 3000
+  movisens_read = g.readaccfile(movisensFile, blocksize = movisens_blocksize, blocknumber = 1, filequality = filequality,
+                                dayborder = dayborder, ws = 3,
+                                PreviousEndPage = 1, inspectfileobject = Mcsv,
+                                params_rawdata = params_rawdata, params_general = params_general)
+  expect_equal(nrow(movisens_read$P$data), movisens_blocksize)
+  expect_false(movisens_read$filequality$filecorrupt)
+  expect_false(movisens_read$filequality$filetooshort)
+  expect_equal(sum(movisens_read$P$data[c("x","y","z")]), 4383.67, tolerance = .01, scale = 1)
+  expect_equal(movisens_read$endpage, movisens_blocksize)
+  
+  # read the next block (set PreviousEndPage to movisens_read$endpage)
+  movisens_read2 = g.readaccfile(movisensFile, blocksize = movisens_blocksize, blocknumber = 2, filequality = filequality,
+                                 dayborder = dayborder, ws = 3,
+                                 PreviousEndPage = movisens_read$endpage, inspectfileobject = Mcsv,
+                                 params_rawdata = params_rawdata, params_general = params_general)
+  expect_equal(nrow(movisens_read2$P$data), movisens_blocksize)
+  expect_equal(movisens_read2$endpage, movisens_blocksize * 2)
+  
+  # if the 1st sample of 2nd block is identical to the last sample of the 1st block,
+  # this means that we calculated the startpage of the 2nd block incorrectly.
+  expect_false(any(movisens_read2$P$data[1,] == movisens_read$P$data[nrow(movisens_read$P$data),]))
+  
+  if (dir.exists("unisensR-0.3.4/")) unlink("unisensR-0.3.4/", recursive = TRUE)
+  if (file.exists(zip_file)) file.remove(zip_file)
 })

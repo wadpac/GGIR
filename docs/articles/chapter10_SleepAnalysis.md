@@ -1,0 +1,181 @@
+# 10. Sleep Analysis
+
+Sleep analysis in GGIR comes at three stages:
+
+1.  The discrimination of sustained inactivity and wakefulness periods,
+    discussed in chapter 8.
+
+2.  Identification of time windows that guide the eventual sleep
+    detection, as discussed chapter 9.
+
+3.  Assess overlap between the windows identified in step 1 and 2, which
+    we use to define the Sleep Period Time window (SPT) or the time in
+    bed window (TimeInBed) as discussed in this chapter.
+
+In the previous two chapters you learnt about the first two steps in
+this chapter we will discuss the last step.
+
+## Sleep Period Time (SPT) window or Time in Bed
+
+Here we have two scenarios:
+
+1.  If the guider reflects an approximation of the Sleep Period Time
+    window, which is the window between sleep onset and waking up at the
+    end of the night, then any SIB that fully or partially overlaps with
+    the guider is considered sleep.
+
+2.  If a guider reflects the Time in Bed then any SIB that fully
+    overlaps with the guider is considered sleep. In this scenario sleep
+    latency and sleep efficiency can be estimated and are included in
+    the GGIR part 4 report.
+
+In both cases the start of the first SIB is then considered sleep onset
+and the end of the last SIB is considered waking up. When the edge of
+SIB partially overlaps with the guider it is the edge of SIB that
+defines the timing of sleep. This can be altered with parameter
+[relyonguider](https://wadpac.github.io/GGIR/articles/GGIRParameters.html?q=relyonguider#relyonguider),
+but we recommend not changing the default `relyonguider=FALSE`.
+
+For all guiders, other than “HorAngle”, parameter `sleepwindowType` is
+automatically set to “SPT” corresponding to scenario 1, such that no
+attempt is made to estimate sleep latency or sleep efficiency.
+
+If you use as guider a sleeplog that reflects the Time in Bed you will
+need to set parameter `sleepwindowType = "TimeInBed"` to tell GGIR to
+follow scenario 2.
+
+However, there is parameter `sib_must_fully_overlap_with_TimeInBed` to
+suprres the requirement of `sleepwindowType = "TimeInBed"` that any SIB
+fully overlaps with “TimeInBed”. For example, if you want SIB to only be
+counted as sleep if they fully overlap with TimeInBed but prefer to rely
+on SIB to define the end of the night regardless of overlap with
+TimeInBed set `sib_must_fully_overlap_with_TimeInBed = c(TRUE, FALSE)`.
+
+## Quality assurance
+
+### Cleaningcode
+
+To monitor possible problems with the sleep detection, the output
+variable **cleaningcode** is stored per night. Cleaningcode per night
+(noon-noon or 6pm-6pm as described above) can have one of the following
+values:
+
+- 0: sleep log available and SPT is identified.
+
+- 1: sleep log not available, and alternative guider used (HDCZA by
+  default) and SPT is identified with that.
+
+- 2: not enough valid accelerometer data in the present night, where
+  parameter `includenightcrit` is used to define how many valid hours
+  are need.
+
+- 3: no accelerometer data available.
+
+- 4: there are no nights to be analysed for this person.
+
+- 5: SPT estimated based on guider only, because either no SIB was found
+  during the entire guider window which complicates defining the start
+  and end of the SPT, or the user specified the ID number of the
+  recording and the night number in the data_cleaning_file, more about
+  this further down, to tell GGIR to rely on the guider and not rely on
+  the accelerometer data for this particular night.
+
+- 6: no sleep log available and also alternative guider (HDCZA/HorAngle)
+  failed for this specific night then use average guider estimates from
+  other nights in the recording as guider for this night. If
+  HDCZA/HorAngle estimates are also not available during the entire
+  recording then use L5+/-12 estimate for this night.
+
+### Visual inspection of classifications
+
+As overlap between sib and guiders is difficult to review in a
+quantitative way, GGIR offers the option to export a visualisation, with
+parameter `do.visual = TRUE`. To manage the number of visualisations
+generated it is possible to tell GGIR to only show outliers. Here,
+outliers are defined as a difference between guider edge and the final
+classification of sleep onset and wakeup time larger than parameter
+`criterror`. When you set parameter `outliers.only = TRUE` only nights
+considered to be an outlier will be displayed.
+
+This functionality is useful when reviewing classifications in large
+data sets that use sleep logs. Visual inspection of outliers in this way
+can for example help to identify data entry errors for sleep logs.
+
+### Data cleaning file
+
+After data quality check you may observe that some adjustments are
+needed. Parameter `data_cleaning_file` (path to a csv file you create)
+allows you to specify individuals and nights for whom part4 should
+entirely rely on the guider. The first column of this csv file should
+have column name `ID` and there should be a column `relyonguider_part4`
+to specify the night. The `night_part4` allows you to tell GGIR which
+night(s) should be omitted in part 4.
+
+## Sleep metrics available in GGIR
+
+For a full overview of all sleep variables in part 4 see:
+<https://cran.r-project.org/web/packages/GGIR/vignettes/GGIR.html#42_Output_part_4>
+
+Among these we assume that most are intuitive:
+
+- sleep onset and wakeup
+
+- Sleep duration during SPT, which is the accumulate sleep time
+  (sustained inactivity bouts classified as sleep)
+
+- WASO, the time spent in wakefulness after sleep onset. However, there
+  are possible a few concepts that need clarifications:
+
+### Sleep Regularity Index (SRI)
+
+A discussion of the Sleep Regularity Index has been moved to
+<https://wadpac.github.io/GGIR/articles/SleepRegularityIndex.html>
+
+## Key parameters
+
+All parameters that are part of the params_sleep category as discussed
+in section “Sleep parameters” in
+<https://cran.r-project.org/web/packages/GGIR/vignettes/GGIRParameters.html>
+
+and
+
+- `do.visual`, `outliers.only`, and `criterror`.
+- `excludefirstlast`.
+- `def.noc.sleep`
+- `includenightcrit`
+- `data_cleaning_file`
+
+## Related output
+
+GGIR stores two type of output: The cleaned and the full output. In the
+cleaned output invalid nights have been removed, while in the full
+output these nights are included.
+
+More specifically, a night is excluded from the ‘cleaned’ results based
+on the following criteria:
+
+- If the study proposed a sleep log to the individuals, then nights are
+  excluded for which the sleep log was not used as a guider. In other
+  words: nights with cleaningcode not equal to 0 or variable sleep log
+  used equals FALSE).
+
+- If the study did not propose a sleep log to the individuals, then all
+  nights are removed with cleaningcode higher than 1.
+
+| Filename                       | Folder  | Content                      |
+|--------------------------------|---------|------------------------------|
+| part4_nightsummary_cleaned.csv | results | cleaned night level results  |
+| part4_summary_cleaned.csv      | results | cleaned person level results |
+| part4_nigthsummary_full.csv    | results | full night level results     |
+
+Be aware that if using the full output and working with wrist
+accelerometer data, missing entries in a sleep log that asks for Time in
+Bed will be replaced by HDCZA estimates of SPT. Therefore, extra caution
+should be taken when working with the full output.
+
+Notice that part 4 is focused on sleep research. In the chapters we will
+discuss the analysis done by part 5. There, the choice of guider may be
+considered less important, by which any estimate of the time in bed is
+considered useful. So, you may see that a night that is excluded from
+the cleaned results in part 4 still appears in the cleaned results for
+part 5.

@@ -78,7 +78,24 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                             configtz = configtz)}, silent = TRUE)
     if (length(P) > 0 && ("data.out" %in% names(P))) {
       names(P)[names(P) == "data.out"] = "data"
-
+      
+      # If sampling rate is fractional which is possible for GENEActiv, 
+      # resample to integer sampling rate to ensure downstream GGIR code
+      # can derive non-ambiguous epoch level aggregates.
+      if (P$header$SampleRate != round(P$header$SampleRate)) {
+        coln_original = colnames(P$data)
+        rawData = P$data[, 2:ncol(P$data)]
+        rawTime = P$data$time
+        P$header$SampleRate = round(P$header$SampleRate)
+        if (sf != P$header$SampleRate) stop("sampling rate inconsistency, please contact maintainer")
+        rawAccel = as.matrix(rawData)
+        step = 1/sf
+        timeRes = seq(rawTime[1], rawTime[length(rawTime)], step)
+        timeRes = timeRes[1 : (length(timeRes) - 1)]
+        accelRes = GGIRread::resample(rawAccel, rawTime, timeRes, nrow(rawAccel), params_rawdata[["interpolationType"]]) # this is now the resampled acceleration data
+        P$data = data.frame(timeRes, accelRes)
+        colnames(P$data) = coln_original
+      }
       if (nrow(P$data) < (blocksize*300)) {
         isLastBlock = TRUE
       }

@@ -1,6 +1,6 @@
 library(GGIR)
-context("Chainof5parts")
-test_that("chainof5parts", {
+context("Integration")
+test_that("All GGIR parts work together (integration test)", {
   skip_on_cran()
   Ndays = 2
   create_test_acc_csv(Nmin = Ndays*1440)
@@ -56,8 +56,8 @@ test_that("chainof5parts", {
   expect_equal(rle(IMP$rout$r4)$lengths[3], 13)
   expect_equal(round(mean(IMP$metashort$ENMO), digits = 5), 0.00802, tolerance = 3)
   expect_equal(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 3), 1)
-  expect_equal(SUM$summary$`N valid WEdays`, 1)
-  expect_equal(SUM$summary$`N valid WKdays`, 2)
+  expect_equal(SUM$summary$`N valid weekend days (WE)`, 1)
+  expect_equal(SUM$summary$`N valid weekdays (WD)`, 2)
   # check the ndayswindow included is 24 hours exactly 
   # ndayswindow = 1 with windowsizes = c(15, 3600, 3600)
   first_epoch_in_protocol = rle(IMP$rout$r4)$lengths[1] + 1
@@ -74,8 +74,8 @@ test_that("chainof5parts", {
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_equal(nrow(IMP$metashort), 11280)
-  expect_equal(rle(IMP$rout$r4)$lengths[1], 16) # removed 6 hours from the ndayswindow at the beginning
-  expect_equal(rle(IMP$rout$r4)$lengths[3], 19) # removed 6 hours from the ndayswindow at the end
+  expect_equal(rle(IMP$rout$r4)$lengths[1], 16)
+  expect_equal(rle(IMP$rout$r4)$lengths[3], 19)
   # check the ndayswindow included is 12 hours exactly (24 minus hrs.del.start/end)
   # ndayswindow = 1 with windowsizes = c(15, 3600, 3600)
   first_epoch_in_protocol = rle(IMP$rout$r4)$lengths[1] + 1
@@ -96,8 +96,8 @@ test_that("chainof5parts", {
   expect_equal(rle(IMP$rout$r4)$lengths[3], 8)
   expect_equal(round(mean(IMP$metashort$ENMO), digits = 5), 0.03398, tolerance = 3)
   expect_equal(round(as.numeric(SUM$summary$meas_dur_def_proto_day), digits = 3), 1)
-  expect_equal(SUM$summary$`N valid WEdays`, 1)
-  expect_equal(SUM$summary$`N valid WKdays`, 2)
+  expect_equal(SUM$summary$`N valid weekend days (WE)`, 1)
+  expect_equal(SUM$summary$`N valid weekdays (WD)`, 2)
   # check the ndayswindow included is 24 hours exactly
   # ndayswindow = 1 with windowsizes = c(15, 3600, 3600)
   first_epoch_in_protocol = rle(IMP$rout$r4)$lengths[1] + 1
@@ -114,8 +114,8 @@ test_that("chainof5parts", {
   rn = dir(dirname,full.names = TRUE)
   load(rn[1])
   expect_equal(nrow(IMP$metashort), 11280)
-  expect_equal(rle(IMP$rout$r4)$lengths[1], 21) # removed 6 hours from the ndayswindow at the beginning
-  expect_equal(rle(IMP$rout$r4)$lengths[3], 14) # removed 6 hours from the ndayswindow at the end
+  expect_equal(rle(IMP$rout$r4)$lengths[1], 21)
+  expect_equal(rle(IMP$rout$r4)$lengths[3], 14)
   # check the ndayswindow included is 12 hours exactly (24 minus hrs.del.start/end)
   # ndayswindow = 1 with windowsizes = c(15, 3600, 3600)
   first_epoch_in_protocol = rle(IMP$rout$r4)$lengths[1] + 1

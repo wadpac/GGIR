@@ -200,7 +200,7 @@ g.analyse.perfile = function(I, C, metrics_nav,
     filesummary[vi:(vi + 1)] = c(length(wkend),  length(wkday)) # number of weekend days & weekdays
     iNA = which(is.na(filesummary[vi:(vi + 1)]) == TRUE)
     if (length(iNA) > 0) filesummary[(vi:(vi + 1))[iNA]] = 0
-    s_names[vi:(vi + 1)] = c("N valid WEdays","N valid WKdays")
+    s_names[vi:(vi + 1)] = c("N valid weekend days (WE)","N valid weekdays (WD)")
     vi = vi + 2
     # Cosinor analysis + IV + IS + phi
     if (length(cosinor_coef) > 0) {
