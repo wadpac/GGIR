@@ -24,7 +24,7 @@ aggregateType = function(metric_name, epochsize,
   for (ami in 1:length(acc.metrics)) {
     vari[, acc.metrics[ami]] = as.numeric(vari[, acc.metrics[ami]])
     for (ti in 1:length(acc.thresholds)) {
-      # step_count per acceleration level
+      # activity types per acceleration level
       if (ti < length(acc.thresholds)) {
         acc_level_name = paste0(acc.thresholds[ti], "-", acc.thresholds[ti + 1], "mg",  "_",  acc.metrics[ami])
         whereAccLevel = which(vari[, acc.metrics[ami]] >= (acc.thresholds[ti]/1000) &
