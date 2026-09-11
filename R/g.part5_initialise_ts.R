@@ -54,6 +54,7 @@ g.part5_initialise_ts = function(IMP, M, params_247, params_general,
       type_col = myfun$colnames
       type_levels = unique(IMP$metashort[,type_col])
       type_levels = type_levels[!is.na(type_levels)]
+      type_levels = tolower(type_levels) # to lower to being case insensitive in subsequent calculations
       
       # seconds in each row
       epoch_s = IMP$windowsizes[1]

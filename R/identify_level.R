@@ -1,6 +1,7 @@
 identify_levels = function(ts, TRLi, TRMi, TRVi, ws3, params_phyact = c(), ...) {
   #get input variables
   input = list(...)
+  myfun = NULL # not needed inside GGIR, but useful is using identify levels externally and not providing myfun in the function call
   if (length(input) > 0 || length(params_phyact) == 0) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments,
     # or if params_[...] aren't specified (so need to be filled with defaults).
@@ -9,6 +10,7 @@ identify_levels = function(ts, TRLi, TRMi, TRVi, ws3, params_phyact = c(), ...) 
     params = extract_params(params_phyact = params_phyact,
                             input = input) # load default parameters
     params_phyact = params$params_phyact
+    myfun = input$myfun
   }
   
   #=======================================================
@@ -106,7 +108,79 @@ identify_levels = function(ts, TRLi, TRMi, TRVi, ws3, params_phyact = c(), ...) 
     }
     CL = CL + 1
   }
+  #-------------------------------------
+  # TYPE BOUTS
+  bc.type = list()
+  
+  if (!is.null(myfun) &&
+      length(myfun) > 0 &&
+      "reporttype" %in% names(myfun) &&
+      myfun$reporttype == "type") {
+    
+    # Identify external function type columns
+    type_columns = grep("^ExtFunType_", names(ts), value = TRUE)
+    
+    if (length(type_columns) > 0) {
+      
+      # Get type levels from the ExtFunType columns
+      type_levels = sub(
+        pattern = paste0("^ExtFunType_", myfun$colnames, "_"),
+        replacement = "",
+        x = type_columns
+      )
+      type_levels = sub("_s$", "", type_levels)
+      
+      # set defaults when user has not defined bout parameters for types
+      if ("tbout.dur" %in% names(myfun) == FALSE) myfun$tbout.dur = c(1, 5, 10)
+      if ("tbout.criter" %in% names(myfun) == FALSE) myfun$tbout.criter = 0.8
+      if ("tbout.order" %in% names(myfun) == FALSE) myfun$tbout.order = sort(type_levels)
+      
+      # Keep only types that are actually available
+      type_order = tolower(myfun[["tbout.order"]])
+      type_order = c(
+        type_order,
+        setdiff(tolower(type_levels), type_order) # just in case tbout.order does not contain all categories 
+      )
+      
+      # Bout duration in number of epochs
+      boutduration = myfun[["tbout.dur"]] * (60 / ws3)
+      NBL = length(boutduration)
+      
+      # Keep track of epochs already assigned to a type bout
+      refe.type = rep(0, LN)
+      
+      for (type_level in type_order) {
+        
+        # Find column corresponding to this type
+        type_col = type_columns[type_levels == type_level]
+        
+        # Store bout results for this type
+        bc.type[[type_level]] = c()
+        
+        for (BL in 1:NBL) {
+          # construct type candidate for bouts
+          rr1 = rep(0, LN)
+          p = which(ts[, type_col] > 0 & refe.type == 0 & ts$diur == 0)
+          rr1[p] = 1
+          
+          # run bout detection
+          out1 = g.getbout(
+            x = rr1,
+            boutduration = boutduration[BL],
+            boutcriter = myfun[["tbout.criter"]],
+            ws3 = ws3
+          )
+          
+          # store result
+          bc.type[[type_level]] = rbind(bc.type[[type_level]], out1)
+          
+          # make epochs in this bout unavailable to subsequent types
+          refe.type = refe.type + out1
+        }
+      }
+    }
+  }
   invisible(list(LEVELS = LEVELS, OLEVELS = OLEVELS, Lnames = Lnames, 
-                 bc.mvpa = bc.mvpa, bc.lig = bc.lig, bc.in = bc.in, ts = ts,
-                 threshold = c(TRLi, TRMi, TRVi)))
+                 bc.mvpa = bc.mvpa, bc.lig = bc.lig, bc.in = bc.in,  bc.type = bc.type,
+                 ts = ts, threshold = c(TRLi, TRMi, TRVi)))
 }

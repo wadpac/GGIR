@@ -445,7 +445,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                 for (TRVi in params_phyact[["threshold.vig"]]) {
                   # derive behavioral levels (class), e.g. MVPA, inactivity bouts, etc.
                   levelList = identify_levels(ts = ts, TRLi = TRLi, TRMi = TRMi, TRVi = TRVi,
-                                              ws3 = ws3new, params_phyact = params_phyact)
+                                              ws3 = ws3new, params_phyact = params_phyact,
+                                              myfun)
                   LEVELS = levelList$LEVELS
                   OLEVELS = levelList$OLEVELS
                   Lnames = levelList$Lnames
