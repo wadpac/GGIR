@@ -15,7 +15,8 @@ check_myfun = function(myfun, windowsizes) { # Function to check myfun object
                                               "ebout.dur", "ebout.th.cad", "ebout.th.acc",
                                               "ebout.criter", "ebout.condition", "name",
                                               "tbout.dur", "tbout.th.acc",
-                                              "tbout.criter", "tbout.condition") == FALSE)
+                                              "tbout.criter", "tbout.condition",
+                                              "tbout.order") == FALSE)
   if (length(foreignElements) != 0) {
     status = 1
     stop("Object myfun has unexpected elements.", call. = FALSE)
