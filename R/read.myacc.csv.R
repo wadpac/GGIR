@@ -14,6 +14,7 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
                           rmc.headername.sf = c(),
                           rmc.headername.sn = c(),
                           rmc.headername.recordingid = c(),
+                          rmc.headername.brand = c(),
                           rmc.header.structure = c(),
                           rmc.check4timegaps = FALSE,
                           rmc.col.wear = c(),
@@ -162,6 +163,9 @@ read.myacc.csv = function(rmc.file=c(), rmc.nrow=Inf, rmc.skip=c(), rmc.dec=".",
       }
       if (length(rmc.headername.recordingid) > 0) {
         row.names(header)[which(row.names(header) == rmc.headername.recordingid[1])] = "recordingID"
+      }
+      if (length(rmc.headername.brand) > 0) {
+        row.names(header)[which(row.names(header) == rmc.headername.brand[1])] = "device_brand"
       }
     }
   }

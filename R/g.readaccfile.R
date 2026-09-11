@@ -304,7 +304,7 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
       # while keeping the same hh:mm:ss time.
       P$data$time = lubridate::force_tz(P$data$time, configtz)
     }
-  } else if (mon == MONITOR$AD_HOC && dformat == FORMAT$AD_HOC_CSV) { # user-specified csv format
+  } else if (dformat == FORMAT$AD_HOC_CSV) { # user-specified csv format (including rmc for known devices)
     # skip 1 more row only if rmc.firstrow.acc points at a row containing column names.
     # This is only relevant for the first chunk of data.
     if (blocknumber == 1) {
@@ -339,7 +339,8 @@ g.readaccfile = function(filename, blocksize, blocknumber, filequality,
                                    rmc.sf = params_rawdata[["rmc.sf"]],
                                    rmc.headername.sf = params_rawdata[["rmc.headername.sf"]],
                                    rmc.headername.sn = params_rawdata[["rmc.headername.sn"]],
-                                   rmc.headername.recordingid = params_rawdata[["rmc.headername.sn"]],
+                                   rmc.headername.recordingid = params_rawdata[["rmc.headername.recordingid"]],
+                                   rmc.headername.brand = params_rawdata[["rmc.headername.brand"]],
                                    rmc.header.structure = params_rawdata[["rmc.header.structure"]],
                                    rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]],
                                    rmc.col.wear = params_rawdata[["rmc.col.wear"]],

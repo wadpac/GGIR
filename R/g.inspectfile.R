@@ -201,7 +201,8 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
                                     rmc.sf = params_rawdata[["rmc.sf"]],
                                     rmc.headername.sf = params_rawdata[["rmc.headername.sf"]],
                                     rmc.headername.sn = params_rawdata[["rmc.headername.sn"]],
-                                    rmc.headername.recordingid = params_rawdata[["rmc.headername.sn"]],
+                                    rmc.headername.recordingid = params_rawdata[["rmc.headername.recordingid"]],
+                                    rmc.headername.brand = params_rawdata[["rmc.headername.brand"]],
                                     rmc.header.structure = params_rawdata[["rmc.header.structure"]],
                                     rmc.check4timegaps = params_rawdata[["rmc.check4timegaps"]],
                                     rmc.scalefactor.acc = params_rawdata[["rmc.scalefactor.acc"]],
@@ -217,8 +218,26 @@ g.inspectfile = function(datafile, desiredtz = "", params_rawdata = c(),
     } else if (sf == 0) {
       stop("\nFile header doesn't specify sample rate. Please provide a non-zero rmc.sf value to process ", datafile)
     }
+    # Reclassify monitor type if device brand is available in the header.
+    # This allows CSV files from known devices (ActiGraph, GENEActiv) to use
+    # the correct processing parameters (calibration, non-wear, clipping)
+    # while still being read through the AD_HOC_CSV format pathway.
+    if (inherits(Pusercsvformat$header, "data.frame")) {
+      hdr_names = rownames(Pusercsvformat$header)
+      brand_idx = which(hdr_names == "device_brand")
+      if (length(brand_idx) > 0) {
+        device_brand = tolower(trimws(as.character(Pusercsvformat$header[brand_idx, 1])))
+        if (device_brand %in% c("actigraph", "actigraph_csv")) {
+          mon = MONITOR$ACTIGRAPH
+        } else if (device_brand %in% c("geneactiv", "geneactive", "genea")) {
+          mon = MONITOR$GENEACTIV
+        } else if (device_brand %in% c("axivity")) {
+          mon = MONITOR$AXIVITY
+        }
+      }
+    }
   }
-  
+
   if (mon == MONITOR$GENEACTIV && dformat == FORMAT$CSV) {
     stop(paste0("The GENEActiv csv reading functionality is deprecated in",
                 " GGIR from version 2.6-4 onwards. Please, use either",

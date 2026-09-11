@@ -12,17 +12,32 @@ g.extractheadervars = function(I) {
   HN = "not extracted" #handedness
   sensor.location = "not extracted" #body location
   deviceSerialNumber = "not extracted"
+  # Check if data was read via the rmc (AD_HOC_CSV) pathway.
+  # When rmc is used, the header has standardized names (device_serial_number,
+  # recordingID) regardless of the original device brand, so we use those
+  # standardized names instead of the native format-specific header names.
+  is_rmc = (I$dformc == FORMAT$AD_HOC_CSV)
+
   # attempt to extract from hvalues and hnames
-  if (mon == "genea") {
-    IDd = hvalues[which(hnames == "Volunteer_Number")]    	
+  if (is_rmc) {
+    # For rmc-pathway data (AD_HOC_CSV format), the header uses standardized
+    # names set by read.myacc.csv regardless of the original device brand.
+    if (length(which(hnames == "recordingID")) > 0) {
+      ID = hvalues[which(hnames == "recordingID")]
+    }
+    if (length(which(hnames == "device_serial_number")) > 0) {
+      deviceSerialNumber = hvalues[which(hnames == "device_serial_number")]
+    }
+  } else if (mon == "genea") {
+    IDd = hvalues[which(hnames == "Volunteer_Number")]
     ID = as.character(unlist(IDd))
-    iIDd = hvalues[which(hnames == "Investigator_Id")]			
+    iIDd = hvalues[which(hnames == "Investigator_Id")]
     iID = as.character(unlist(iIDd))
     sensor.location = hvalues[which(hnames == "Body_Location")]
     deviceSerialNumber = hvalues[which(hnames == "Serial_Number")] #serial number
   } else if (mon == "geneactive") {
     check_GENEAread = which(hnames == "Subject_Code")
-    if (length(check_GENEAread) > 0) { 
+    if (length(check_GENEAread) > 0) {
       # This if-statement can be deprecated once GENEAread is deprecated as a dependency
       ID = hvalues[which(hnames == "Subject_Code")] #; temp2 = unlist(strsplit(as.character(temp)," "))
       iID = hvalues[which(hnames == "Investigator_ID")] #investigator ID
@@ -55,7 +70,7 @@ g.extractheadervars = function(I) {
     }
     if (mon == "axivity") {
       seriali = which(hnames %in% c("uniqueSerialCode", "IART2Id"))
-      if (length(seriali) > 0) deviceSerialNumber = hvalues[seriali[1]] #serial number			
+      if (length(seriali) > 0) deviceSerialNumber = hvalues[seriali[1]] #serial number
     }
     if (mon == "movisens") {
       deviceSerialNumber = as.character(I$header$value[which(row.names(I$header) == "serialnumber")])
