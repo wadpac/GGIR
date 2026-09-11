@@ -101,6 +101,16 @@ check_myfun = function(myfun, windowsizes) { # Function to check myfun object
       stop("Error in check_myfun.R: Element aggfunction is not a function object.", call. = FALSE)
     }
   }
+  
+  if ("reporttype" %in% names(myfun) && myfun$reporttype == "type") {
+    if (length(myfun$colnames) != 1) {
+      status = 1
+      stop(
+        "Error in check_myfun.R: External functions with reporttype = 'type' currently support only one output column.",
+        call. = FALSE
+      )
+    }
+  }
 
   # if ("timestamp" %in% names(myfun)) { # If timestamp is available:
   #   if (is.logical(myfun$timestamp) == F) {
