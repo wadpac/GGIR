@@ -49,8 +49,30 @@ g.part5_initialise_ts = function(IMP, M, params_247, params_general,
       "reporttype" %in% names(myfun)) {
     
     if (myfun$reporttype == "type") {
-      # reuse user-defined myfun$colnames to generate columns in ts
-      ts[myfun$colnames] = IMP$metashort[myfun$colnames]
+      
+      # Identify "type" column and its levels
+      type_col = myfun$colnames
+      type_levels = unique(IMP$metashort[,type_col])
+      type_levels = type_levels[!is.na(type_levels)]
+      
+      # seconds in each row
+      epoch_s = IMP$windowsizes[1]
+      
+      # identify the type of each epoch
+      type_index = match(IMP$metashort[, type_col], type_levels)
+      
+      # create output matrix: 
+      # each row represents seconds in epoch classified in each type_levels
+      type_mat = matrix(0,
+                        nrow = nrow(IMP$metashort),
+                        ncol = length(type_levels))
+      valid = !is.na(type_index) # safe-guard for implausible NA values
+      type_mat[cbind(which(valid), type_index[valid])] = epoch_s
+      
+      # add columns to ts 
+      type_colnames = paste0("ExtFunType_", type_col, "_", type_levels, "_s")
+      colnames(type_mat) = type_colnames
+      ts[type_colnames] = type_mat
     } 
   }
   
