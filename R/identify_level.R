@@ -38,7 +38,7 @@ identify_levels = function(ts, TRLi, TRMi, TRVi, ws3, params_phyact = c(), ...) 
   OLEVELS[LEVELS == 7] = 3 #MOD
   OLEVELS[LEVELS == 8] = 4 #VIG
   
-
+  
   #-------------------------------------
   # MVPA BOUTS
   LN = length(ts$time)
@@ -111,6 +111,7 @@ identify_levels = function(ts, TRLi, TRMi, TRVi, ws3, params_phyact = c(), ...) 
   #-------------------------------------
   # TYPE BOUTS
   bc.type = list()
+  Tnames = c()
   
   if (!is.null(myfun) &&
       length(myfun) > 0 &&
@@ -123,19 +124,19 @@ identify_levels = function(ts, TRLi, TRMi, TRVi, ws3, params_phyact = c(), ...) 
     if (length(type_columns) > 0) {
       
       # Get type levels from the ExtFunType columns
-      type_levels = sub(
+      type_levels  = sub(
         pattern = paste0("^ExtFunType_", myfun$colnames, "_"),
         replacement = "",
         x = type_columns
       )
-      type_levels = sub("_s$", "", type_levels)
+      type_levels  = sub("_s$", "", type_levels)
       
       # set defaults when user has not defined bout parameters for types
       if ("tbout.dur" %in% names(myfun) == FALSE) myfun$tbout.dur = c(1, 5, 10)
       if ("tbout.criter" %in% names(myfun) == FALSE) myfun$tbout.criter = 0.8
       if ("tbout.order" %in% names(myfun) == FALSE) myfun$tbout.order = sort(type_levels)
       
-      # Keep only types that are actually available
+      # Bout detection priority
       type_order = tolower(myfun[["tbout.order"]])
       type_order = c(
         type_order,
@@ -152,7 +153,7 @@ identify_levels = function(ts, TRLi, TRMi, TRVi, ws3, params_phyact = c(), ...) 
       for (type_level in type_order) {
         
         # Find column corresponding to this type
-        type_col = type_columns[type_levels == type_level]
+        type_col = type_columns[tolower(type_levels) == type_level]
         
         # Store bout results for this type
         bc.type[[type_level]] = c()
@@ -176,11 +177,23 @@ identify_levels = function(ts, TRLi, TRMi, TRVi, ws3, params_phyact = c(), ...) 
           
           # make epochs in this bout unavailable to subsequent types
           refe.type = refe.type + out1
+          
+          # names for type bout levels
+          if (BL == 1) {
+            Tnames = c(Tnames, paste0("day_", type_level, "_bts_", myfun[["tbout.dur"]][BL]))
+          } else {
+            Tnames = c(Tnames, paste0("day_", type_level, "_bts_", 
+                                      myfun[["tbout.dur"]][BL], "_",
+                                      myfun[["tbout.dur"]][BL - 1]
+            )
+            )
+          }
         }
       }
     }
   }
-  invisible(list(LEVELS = LEVELS, OLEVELS = OLEVELS, Lnames = Lnames, 
+  invisible(list(LEVELS = LEVELS, OLEVELS = OLEVELS,
+                 Lnames = Lnames, Tnames = Tnames,
                  bc.mvpa = bc.mvpa, bc.lig = bc.lig, bc.in = bc.in,  bc.type = bc.type,
                  ts = ts, threshold = c(TRLi, TRMi, TRVi)))
 }
