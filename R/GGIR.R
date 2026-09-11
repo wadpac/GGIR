@@ -365,7 +365,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
             params_sleep = params_sleep, params_metrics = params_metrics,
             params_general = params_general, params_output = params_output,
             params_cleaning = params_cleaning, params_247 = params_247,
-            params_phyact = params_phyact,
+            params_phyact = params_phyact, myfun = myfun,
             verbose = verbose)
   }
   if (dopart6 == TRUE) {

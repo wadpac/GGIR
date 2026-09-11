@@ -2,7 +2,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                    params_sleep = c(), params_metrics = c(),
                    params_247 = c(), params_phyact = c(),
                    params_cleaning = c(), params_output = c(),
-                   params_general = c(), verbose = TRUE, ...) {
+                   params_general = c(), myfun = c(), verbose = TRUE, ...) {
   options(encoding = "UTF-8")
   filename_dir = NULL
   # This function called by function GGIR
@@ -223,7 +223,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         # note longitudinal_axis comes from loaded part 3 milestone data and not from params_sleep
         
         ts = g.part5_initialise_ts(IMP, M, params_247, params_general,
-                                   longitudinal_axis = longitudinal_axis)
+                                   longitudinal_axis = longitudinal_axis,
+                                   myfun = myfun)
         Nts = nrow(ts)
         lightpeak_available = "lightpeak" %in% names(ts)
         

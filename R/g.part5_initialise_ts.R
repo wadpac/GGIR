@@ -1,4 +1,5 @@
-g.part5_initialise_ts = function(IMP, M, params_247, params_general, longitudinal_axis = c()) {
+g.part5_initialise_ts = function(IMP, M, params_247, params_general, 
+                                 longitudinal_axis = c(), myfun = c()) {
   # extract key variables from the mile-stone data: time, acceleration and elevation angle
   # note that this is imputed ACCELERATION because we use this for describing behaviour:
   scale = ifelse(test = grepl("^Brond|^Neishabouri|^ZC|^ExtAct|^ExtHeartRate", params_general[["acc.metric"]]), yes = 1, no = 1000)
