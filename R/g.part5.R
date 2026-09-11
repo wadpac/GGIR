@@ -334,6 +334,15 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                 step_count_tmp = aggregate(ts$step_count, by = list(ts$time_num), FUN = function(x) sum(x))
                 colnames(step_count_tmp)[2] = "step_count"
               }
+              # aggregate type durations by taking the sum
+              typecolumns_available = any(grepl("^ExtFunType_", names(ts)))
+              if (typecolumns_available) {
+                type_columns = grep("^ExtFunType_", names(ts))
+                types_tmp = aggregate(ts[,type_columns, drop = FALSE], 
+                                      by = list(ts$time_num), 
+                                      FUN = function(x) sum(x))
+                colnames(types_tmp)[2:ncol(types_tmp)] = names(ts)[type_columns]
+              }
               # aggregate guider names as the first value per time segment
               agg_guider = aggregate(ts$guider,
                                      by = list(ts$time_num), FUN = function(x) x[1])
@@ -344,6 +353,9 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
               ts = merge(x = ts, y = agg_guider, by = "Group.1")
               if (stepcount_available) {
                 ts = merge(x = ts, y = step_count_tmp, by = "Group.1")
+              }
+              if (typecolumns_available) {
+                ts = merge(x = ts, y = types_tmp, by = "Group.1")
               }
               ts$sibdetection = round(ts$sibdetection)
               ts$diur = round(ts$diur)
