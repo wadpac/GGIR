@@ -44,6 +44,15 @@ g.part5_initialise_ts = function(IMP, M, params_247, params_general,
     ts$step_count = 0
     ts$step_count = IMP$metashort$step_count
   }
+
+  if (length(myfun) > 0 &&
+      "reporttype" %in% names(myfun)) {
+    
+    if (myfun$reporttype == "type") {
+      # reuse user-defined myfun$colnames to generate columns in ts
+      ts[myfun$colnames] = IMP$metashort[myfun$colnames]
+    } 
+  }
   
   Nts = nrow(ts)
   # add non-wear column
