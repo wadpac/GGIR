@@ -134,7 +134,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                         params_general = c(), ms5.out, ms5.outraw,
                         fnames.ms3, sleeplog, logs_diaries,
                         referencefnames, folderstructure,
-                        fullfilenames, foldername, ffdone, verbose) {
+                        fullfilenames, foldername, ffdone, myfun, verbose) {
     tail_expansion_log =  desiredtz_part1 = NULL
     filename_dir = NULL # to be loaded
     fnames.ms1 = dir(paste(metadatadir, "/meta/basic", sep = ""))
@@ -809,7 +809,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                   params_general, ms5.out, ms5.outraw,
                                                   fnames.ms3, sleeplog, logs_diaries,
                                                   referencefnames, folderstructure,
-                                                  fullfilenames, foldername, ffdone, verbose)
+                                                  fullfilenames, foldername, ffdone, myfun, verbose)
                                      })
                                      return(tryCatchResult)
                                    }
@@ -832,7 +832,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                    params_general, ms5.out, ms5.outraw,
                    fnames.ms3, sleeplog, logs_diaries,
                    referencefnames, folderstructure,
-                   fullfilenames, foldername, ffdone, verbose)
+                   fullfilenames, foldername, ffdone, myfun, verbose)
       )
       if (params_general[["use_trycatch_serial"]] == TRUE) {
         tryCatch(
