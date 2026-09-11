@@ -450,8 +450,14 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                   LEVELS = levelList$LEVELS
                   OLEVELS = levelList$OLEVELS
                   Lnames = levelList$Lnames
-                  Tnames = levelList$Tnames
                   ts = levelList$ts
+                  
+                  # derive external function type levels
+                  typeLevelList = NULL
+                  if (typecolumns_available) {
+                    typeLevelList = identify_levels_ExtFunType(
+                      ts = ts, ws3 = ws3new, myfun = myfun)
+                  }
                   
                   #=============================================
                   # NOW LOOP TROUGH DAYS AND GENERATE DAY SPECIFIC SUMMARY VARIABLES
@@ -559,6 +565,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                             time_POSIX = time_POSIX,
                                             epochSize = ws3new)
                             gas = g.part5_analyseSegment(indexlog, timeList, levelList,
+                                                         typeLevelList,
                                                          segments,
                                                          segments_names,
                                                          dsummary, ds_names,
@@ -573,7 +580,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                          add_one_day_to_next_date,
                                                          lightpeak_available, tail_expansion_log,
                                                          foldernamei = foldername[i],
-                                                         sibreport = sibreport)
+                                                         sibreport = sibreport,
+                                                         myfun = myfun)
                             # Extract essential object to be used as input for the next 
                             # segment
                             indexlog = gas$indexlog
@@ -655,7 +663,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                     if (length(step_count_col) == 0) {
                       step_count_col = NULL
                     }
-                    
+                    extfuntype_col = grep(pattern = "^ExtFun", x = names(ts), value = TRUE)
+                    if (length(extfuntype_col) == 0) {
+                      extfuntype_col = NULL
+                    }
                     diaryImputationCode_col = grep(pattern = "diaryImputationCode", 
                                                    x = names(ts), value = TRUE)
                     if (length(diaryImputationCode_col) == 0) {
@@ -670,6 +681,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                                        "guider", "window", "sibdetection", napNonwear_col,
                                                        lightpeak_col, selfreported_col,
                                                        angle_col, temperature_col, step_count_col,
+                                                       extfuntype_col,
                                                        diaryImputationCode_col, marker_col)],
                                            LEVELS = LEVELS,
                                            desiredtz = params_general[["desiredtz"]],
@@ -808,7 +820,8 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                            "g.part5.onsetwaketiming", "g.part5_analyseSegment",
                            "g.part5_initialise_ts", "g.part5.analyseRest",
                            "g.fragmentation", "g.intensitygradient",
-                           "g.part4_extractid", "markerButtonForRest")
+                           "g.part4_extractid", "markerButtonForRest",
+                           "identify_levels_ExtFunType", "g.part5_analyseSegment_ExtFunType")
       errhand = 'stop'
     }
     i = 0 # declare i because foreach uses it, without declaring it

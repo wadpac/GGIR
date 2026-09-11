@@ -1,4 +1,5 @@
 g.part5_analyseSegment = function(indexlog, timeList, levelList,
+                                  typeLevelList,
                                   segments,
                                   segments_names,
                                   dsummary, ds_names,
@@ -10,7 +11,8 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
                                   add_one_day_to_next_date,
                                   lightpeak_available,
                                   tail_expansion_log,
-                                  foldernamei, sibreport = NULL) {
+                                  foldernamei, sibreport = NULL,
+                                  myfun = c()) {
   # unpack list objects:
   # indexlog
   fileIndex = indexlog$fileIndex
@@ -47,6 +49,11 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
   bc.mvpa = levelList$bc.mvpa
   bc.in = levelList$bc.in
   bc.lig = levelList$bc.lig
+  
+  # typeLevelList
+  TLEVELS = typeLevelList$TLEVELS
+  TOLEVELS = typeLevelList$TOLEVELS
+  Tnames = typeLevelList$Tnames
   
   skiponset = skipwake = TRUE
   
@@ -226,6 +233,27 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     ds_names[fi] = "dur_spt_min";      fi = fi + 1
     dsummary[si, fi] = (length(c(sse)) * ws3new) / 60
     ds_names[fi] = "dur_day_spt_min";      fi = fi + 1
+    #===============================================
+    # EXTERNAL FUNCTION TYPES
+    if (!is.null(TOLEVELS) && length(TOLEVELS) > 0) {
+      extFunType = g.part5_analyseSegment_ExtFunType(
+        ts = ts,
+        sse = sse,
+        TOLEVELS = TOLEVELS,
+        TLEVELS = TLEVELS,
+        Tnames = Tnames,
+        myfun = myfun,
+        ws3new = ws3new,
+        dsummary = dsummary,
+        ds_names = ds_names,
+        si = si,
+        fi = fi
+      )
+      
+      dsummary = extFunType$dsummary
+      ds_names = extFunType$ds_names
+      fi = extFunType$fi
+    }
     #============================================
     # Number of long wake periods (defined as > 5 minutes) during the night
     Nawake = length(which(abs(diff(which(LEVELS[sse] == 0))) > (300 / ws3new))) - 2
