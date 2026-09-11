@@ -220,18 +220,6 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
                               "dur_day_total_MOD_min",
                               "dur_day_total_VIG_min")
     fi = fi + 4
-    
-    # durations of types if available
-    type_columns = grep("^ExtFunType_.*_s$", names(ts), value = TRUE)
-    if (length(type_columns) > 0) {
-      for (type_col in type_columns) {
-        dsummary[si, fi] = sum(ts[sse, type_col], na.rm = TRUE) / 60
-        ds_names[fi] = sub("_s$", "_min", type_col)
-        fi = fi + 1
-      }
-    }
-    
-    # total window (or segment) lengths
     dsummary[si, fi] = (length(which(ts$diur[sse] == 0)) * ws3new) / 60
     ds_names[fi] = "dur_day_min";      fi = fi + 1
     dsummary[si, fi] = (length(which(ts$diur[sse] == 1)) * ws3new) / 60
@@ -475,7 +463,7 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
         fi = fi + length(luxperseg$values)
       }
     }
-
+    
     #===============================================
     # FOLDER STRUCTURE
     if (params_output[["storefolderstructure"]] == TRUE) {

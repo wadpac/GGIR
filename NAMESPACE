@@ -46,7 +46,8 @@ export(g.analyse, g.calibrate,
        splitRecords, getSplitNames, addSplitNames, getPart1BasicInfo,
        markerButtonForRest, aggregateEvent, inspect_binFile_brand,
        g.part3_correct_guider, g.part3_alignIndexVectors, filterNonwearNight,
-       write_dashboard_parquet, write_epoch_parquet, build_epoch_table)
+       write_dashboard_parquet, write_epoch_parquet, build_epoch_table,
+       g.part5_analyseSegment_ExtFunType, identify_levels_ExtFunType)
 
 importFrom("grDevices", "colors", "dev.off", "pdf",
            "rgb", "rainbow", "palette", "adjustcolor", "gray.colors", "dev.list", "png")
