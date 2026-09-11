@@ -1,7 +1,6 @@
-identify_levels = function(ts, TRLi, TRMi, TRVi, ws3, params_phyact = c(), ...) {
+identify_levels = function(ts, TRLi, TRMi, TRVi, ws3, params_phyact = c(), myfun = c(),...) {
   #get input variables
   input = list(...)
-  myfun = NULL # not needed inside GGIR, but useful is using identify levels externally and not providing myfun in the function call
   if (length(input) > 0 || length(params_phyact) == 0) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments,
     # or if params_[...] aren't specified (so need to be filled with defaults).
@@ -10,7 +9,6 @@ identify_levels = function(ts, TRLi, TRMi, TRVi, ws3, params_phyact = c(), ...) 
     params = extract_params(params_phyact = params_phyact,
                             input = input) # load default parameters
     params_phyact = params$params_phyact
-    myfun = input$myfun
   }
   
   #=======================================================
@@ -132,9 +130,12 @@ identify_levels = function(ts, TRLi, TRMi, TRVi, ws3, params_phyact = c(), ...) 
       type_levels  = sub("_s$", "", type_levels)
       
       # set defaults when user has not defined bout parameters for types
-      if ("tbout.dur" %in% names(myfun) == FALSE) myfun$tbout.dur = c(1, 5, 10)
-      if ("tbout.criter" %in% names(myfun) == FALSE) myfun$tbout.criter = 0.8
-      if ("tbout.order" %in% names(myfun) == FALSE) myfun$tbout.order = sort(type_levels)
+      if ("tbout.dur" %in% names(myfun) == FALSE) myfun[["tbout.dur"]]  = c(1, 5, 10)
+      if ("tbout.criter" %in% names(myfun) == FALSE) myfun[["tbout.criter"]] = 0.8
+      if ("tbout.order" %in% names(myfun) == FALSE) myfun[["tbout.order"]] = sort(type_levels)
+      
+      # Bout duration priority (longer to shorter)
+      myfun[["tbout.dur"]] = sort(myfun[["tbout.dur"]], decreasing = TRUE)
       
       # Bout detection priority
       type_order = tolower(myfun[["tbout.order"]])
