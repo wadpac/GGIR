@@ -1,16 +1,42 @@
 # CHANGES IN GGIR VERSION 3.3-??
 
-
 - Part 2: Step/cadence analysis expanded with percentiles in the cadence distribution during stepping bouts. Controlled via new parameter ebout.cad.perc. #1396.
 
 - Part 5: Remove variables lastHour and lastDate from csv output and dictionary as they were included by accident #1472
 
-- Documentation: 
+- Functionality added to save all key output to one parquet file per person. #1460
 
-# CHANGES IN GGIR VERSION 3.3-?
+# CHANGES IN GGIR VERSION 3.3-9
+
+- Tests: Made the Movisens test independent of internet access by including the test data in inst/testfiles (#1540)
+
+- Part 3: Add new guider named LowAcc, with new parameter LowAcc_threshold. Further, parameter HDCZA_roll_windowsize was added related to guider HDCZA. #1287
+
+- Part 3: Added new parameter HDCZA_roll_windowsize to control the size of the rolling window used by the HDCZA guider algorithm.
+
+- Part 5: Allow for day segment analysis for the WW and OO window definition. #1407
+
+# CHANGES IN GGIR VERSION 3.3-8
+
+- Updated documentation to point to the new web dashboard URL (#1509)
+
+- Part 1: Fixed an issue in g.calibrate() where large data chunks caused out-of-bounds errors (#1513)
+
+- Part 2: Fixed bug where activity log (qwindow) segments could be assigned to the day before, because g.analyse.perday() derived the recording-day dates with as.Date() defaulting to UTC instead of desiredtz (#1518)
+
+- Part 2: Fixed regression in g.impute() where using a study_dates_file raised "NA/NaN argument" for participants whose listed start or end date is not a midnight present in the recording (e.g. an evening start, or a device that stopped recording before the listed end date). #1508
+
+- Fixed check_log() to coerce study dates log columns to character, so that dates auto-parsed as IDate by data.table::fread() are handled correctly. #1521
+
+- Add vignette on Personal light exposure analysis. #1516
+
+# CHANGES IN GGIR VERSION 3.3-7
 
 - Functionality added to save all key output to one parquet file per person. #1460
 
+- Part 6:
+  - Improve speed of DFA analysis by using a vectorized approach #1499
+  - Included piece wise DFA analysis: short-term (box sizes < 90 min) and long-term (box-sizes 2-to-10 hours) #1501
 
 # CHANGES IN GGIR VERSION 3.3-6
 
@@ -24,7 +50,8 @@
 
   - Variable dictionary, now also documents ACC_spt_mg, ACC_spt_mg_median, and ACC_spt_mg_stdev. #1490
 
-- Part 6: Enable extraction of participant ID from filename consistent with the other parts #1478
+- Part 6:
+  - Enable extraction of participant ID from filename consistent with the other parts #1478
 
 # CHANGES IN GGIR VERSION 3.3-5
 

@@ -88,6 +88,8 @@ navbar:
           href: articles/NapDetection.html
         - text: Step and Cadence Analysis
           href: articles/StepCadenceAnalysis.html
+        - text: Personal light exposure analysis
+          href: articles/LightLogR.html
           
   structure:
     left:  [chapters, annexes, installation, intro, news, contributing, help]
@@ -96,6 +98,8 @@ navbar:
 news:
   cran_dates: TRUE
   releases:
+  - text: "Version 3.3-6"
+    href: https://www.accelting.com/ggir-release-3-3-6/
   - text: "Version 3.3-0"
     href: https://www.accelting.com/ggir-release-3-3-0/
   - text: "Version 3.2-6"

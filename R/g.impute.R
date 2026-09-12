@@ -150,19 +150,19 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
         lastmidnighti = NULL
       }
       # trim start
-      if (length(firstmidnighti) > 0) {
+      if (length(firstmidnighti) > 0 && !is.na(firstmidnighti)) {
         r4[1:(firstmidnighti - 1)] = 1
         study_dates_log_used[1] = TRUE
       } else {
-        # if midnight timestamp for the date is not available, 
+        # if midnight timestamp for the date is not available,
         # do not trim the data and recover the firstmidnight value
-        list2env(dmidn[c("lastmidnighti", "lastmidnight")], envir = environment())
+        list2env(dmidn[c("firstmidnighti", "firstmidnight")], envir = environment())
         # warning(paste0("The start date provided in the study dates file for ID = ", 
         #                ID, "is not within the dates available in the recording. ",
         #                "The data was not trimmed at the beginning of the recording."), call. = FALSE)
       }
       # trim end
-      if (length(lastmidnighti) > 0) {
+      if (length(lastmidnighti) > 0 && !is.na(lastmidnighti)) {
         r4[lastmidnighti:nrow(r4)] = 1
         study_dates_log_used[2] = TRUE
       } else {

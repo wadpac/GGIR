@@ -146,11 +146,11 @@ the same (the ones presented in this table).
 
 [TABLE]
 
-\*Cut-points derived from applying the Youden index on ROC curves.  
+\*Cut-points derived from applying the Youden index on ROC curves.\
 \*\* Cut-points derived from increasing Sensitivity over Specificity for
 light and vice versa for moderate on ROC curves (see
 [paper](https://doi.org/10.1080/02640414.2018.1555904) for more
-details).  
+details).\
 ^(†) These publications used acceleration metrics that sum their values
 per epoch rather than average them per epoch like GGIR does. So, to use
 their cut-point in GGIR, we provide a scaled version of the cut-points

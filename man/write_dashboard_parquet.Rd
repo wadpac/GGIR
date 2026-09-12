@@ -58,14 +58,14 @@ write_dashboard_parquet(
   multi-participant name otherwise.
 
   The generated Parquet file can be opened directly in the GGIR Web Dashboard
-  (\url{https://samuelafolabi.github.io/ggir-web-dashboard/}), where processing
+  (\url{https://wadpac.github.io/ggir-web-dashboard/}), where processing
   happens entirely in the browser.
 }
 \value{
   Invisibly returns the written Parquet file path, or \code{NULL} (invisibly) if
   export is skipped because required data are missing. The generated Parquet file
   can be opened directly in the GGIR Web Dashboard:
-  \url{https://samuelafolabi.github.io/ggir-web-dashboard/}
+  \url{https://wadpac.github.io/ggir-web-dashboard/}
 }
 \seealso{
   \code{\link{GGIR}},

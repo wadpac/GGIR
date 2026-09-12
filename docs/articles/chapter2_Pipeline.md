@@ -25,6 +25,7 @@ central function to act as interface to all functionality. This function
 is also named `GGIR` and in its basic form it is used as shown below:
 
 ``` r
+
 GGIR(datadir = "C:/mystudy/mydata",
      outputdir = "D:/myresults")
 ```
@@ -149,6 +150,7 @@ category and their default values:
 #### GGIR function documentation:
 
 ``` r
+
 ?GGIR
 ```
 
@@ -161,6 +163,7 @@ parameters](https://wadpac.github.io/GGIR/articles/GGIRParameters.html).
 #### From R command line:
 
 ``` r
+
 library(GGIR)
 print(load_params())
 ```
@@ -168,6 +171,7 @@ print(load_params())
 If you are only interested in one specific category like sleep:
 
 ``` r
+
 library(GGIR)
 print(load_params()$params_sleep)
 ```
@@ -178,6 +182,7 @@ If you are only interested in one parameter, e.g. parameter
 `sleep_params` object:
 
 ``` r
+
 library(GGIR)
 print(load_params()$params_sleep[["HASIB.algo"]])
 ```
@@ -204,6 +209,7 @@ configuration file but always need to be specified directly in R code as
 they are never extracted from the configuration file.
 
 ``` r
+
 library(GGIR)
 GGIR(datadir = "C:/mystudy/mydata",
      outputdir = "D:/myresults", 
@@ -329,6 +335,7 @@ out.
 As mentioned above, the bare minimum input needed for `GGIR` is:
 
 ``` r
+
 library(GGIR)
 GGIR(datadir = "C:/mystudy/study_XYZ_data",
      outputdir = "C:/myresults")
@@ -367,6 +374,7 @@ GGIR part 1 to 4 and store csv files with default column and decimal
 separator.
 
 ``` r
+
 library(GGIR)
 GGIR(mode = 1:4,
       datadir = "C:/mystudy/study_XYZ_data",
@@ -478,6 +486,7 @@ done
 **myshellscript.R**
 
 ``` r
+
 options(echo=TRUE)
 args = commandArgs(TRUE)
 if(length(args) > 0) {
@@ -578,6 +587,7 @@ expect at least the following output files:
 | part5_personsummary_WW_L40M100V400_T5A5.csv | one row per recording | 5 |
 
 A detailed discussion of each output can be found in the other chapters.
+{.table}
 
 ***Output files in results/QC subfolder:***
 
@@ -590,6 +600,7 @@ A detailed discussion of each output can be found in the other chapters.
 | plots_part2 folder with .png files | one recording per png | 2 |
 
 A detailed discussion of each output can be found in the other chapters.
+{.table style="width:100%;"}
 
 ***Output files in meta/ms5.outraw subfolder:***
 
@@ -599,6 +610,7 @@ A detailed discussion of each output can be found in the other chapters.
 | behavioralcodes2023-11-06.csv | dictionary for behavioural codes as used in the time series file |  |
 
 A detailed discussion of each output can be found in the other chapters.
+{.table}
 
 ***Output files in results/file summary reports subfolder:***
 
@@ -612,3 +624,4 @@ for details on these pdf reports.
 | report… .pdf | Time series of one recording | 5 |
 
 A detailed discussion of each output can be found in the other chapters.
+{.table}
