@@ -79,14 +79,13 @@ onset time was reliably estimated. To handle this and ignore the final
 window in the data, set parameter
 `require_complete_lastnight_part5 = TRUE` (not default).
 
-### Defining segments within the MM window
+### Defining segments within the window
 
 By default GGIR segments a window in waking hours of the day (referred
 to as `day`) and the sleep period time window (referred to as `spt`).
-Additionally, when timewindow is set to “MM”, day segment specific
-analysis are performed based on the segments as defined by parameters
-`qwindow` . Please see the annex on day segmentation for more
-information.
+Additionally, day segment specific analysis are performed based on the
+segments as defined by parameters `qwindow` . Please see the annex on
+day segmentation for more information.
 
 ## Metrics calculated per window and per segment
 

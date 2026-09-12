@@ -1,6 +1,25 @@
 # Changelog
 
+## CHANGES IN GGIR VERSION 3.3-9
+
+- Tests: Made the Movisens test independent of internet access by
+  including the test data in inst/testfiles
+  ([\#1540](https://github.com/wadpac/GGIR/issues/1540))
+
+- Part 3: Add new guider named LowAcc, with new parameter
+  LowAcc_threshold. Further, parameter HDCZA_roll_windowsize was added
+  related to guider HDCZA.
+  [\#1287](https://github.com/wadpac/GGIR/issues/1287)
+
+- Part 3: Added new parameter HDCZA_roll_windowsize to control the size
+  of the rolling window used by the HDCZA guider algorithm.
+
+- Part 5: Allow for day segment analysis for the WW and OO window
+  definition. [\#1407](https://github.com/wadpac/GGIR/issues/1407)
+
 ## CHANGES IN GGIR VERSION 3.3-8
+
+CRAN release: 2026-07-24
 
 - Updated documentation to point to the new web dashboard URL
   ([\#1509](https://github.com/wadpac/GGIR/issues/1509))

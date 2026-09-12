@@ -96,6 +96,11 @@ The time resolutions of GGIR output are:
     [publications](https://github.com/wadpac/GGIR/wiki/Publication-list)
     have used GGIR, which has been a powerful way to test and improve
     GGIR towards the needs of the research community.
+11. Interoperability with light and circadian tools: GGIR seamlessly
+    integrates with R package
+    [LightLogR](https://wadpac.github.io/GGIR/articles/LightLogR.html)
+    for analyzing concurrent light exposure and circadian data alongside
+    physical activity and sleep.
 
 ## History
 
