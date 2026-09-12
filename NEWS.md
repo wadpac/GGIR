@@ -1,4 +1,4 @@
-# CHANGES IN GGIR VERSION 3.3-?
+# CHANGES IN GGIR VERSION 3.3-9
 
 - Tests: Made the Movisens test independent of internet access by including the test data in inst/testfiles (#1540)
 
