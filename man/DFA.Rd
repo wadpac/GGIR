@@ -22,7 +22,9 @@
   }
 }
 \value{
-  Estimated alpha is a real number between zero and two.
+A matrix with two columns:
+  \item{box}{The box sizes (time scales) used for the analysis.}
+  \item{DFA}{The corresponding detrended fluctuation amplitudes (Root Mean Square).}
 }
 \details{
   The DFA fluctuation can be computed in a geometric scale or for different choices of boxes sizes.
@@ -45,4 +47,5 @@
 \author{
   Ian Meneghel Danilevicz <ian.meneghel-danilevicz@inserm.fr>
   Victor Barreto Mesquita <victormesquita40@hotmail.com>
+  Jairo H Migueles <jairo@jhmigueles.com>
 }

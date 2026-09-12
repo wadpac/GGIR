@@ -53,6 +53,8 @@
   parameters](https://wadpac.github.io/GGIR/articles/GGIRParameters.md):
 - [Household
   Co-Analysis](https://wadpac.github.io/GGIR/articles/HouseHoldCoanalysis.md):
+- [Personal light exposure
+  analysis](https://wadpac.github.io/GGIR/articles/LightLogR.md):
 - [Nap
   Detection](https://wadpac.github.io/GGIR/articles/NapDetection.md):
 - [Reading csv files with raw data in

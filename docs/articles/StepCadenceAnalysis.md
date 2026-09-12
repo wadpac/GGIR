@@ -18,7 +18,7 @@ the wrist. The algorithm has been described and evaluated in studies by
 2022](https://doi.org/10.1080/02640414.2022.2147134).
 
 The original [Verisense algortihm
-code](https://github.com/ShimmerEngineering/Verisense-Toolbox/tree/master/Verisense_step_algorithm)
+code](https://github.com/ShimmerResearch/Verisense-Toolbox/tree/master/Verisense_step_algorithm)
 is not actively maintained at the time of writing this documentation. An
 [improved copy of the Verisense algortihms
 code](https://github.com/wadpac/GGIR/blob/master/user-scripts/verisense_count_steps.R)

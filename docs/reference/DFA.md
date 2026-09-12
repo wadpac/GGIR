@@ -29,7 +29,15 @@ DFA(data, scale = 2^(1/8), box_size = 4, m = 1)
 
 ## Value
 
-Estimated alpha is a real number between zero and two.
+A matrix with two columns:
+
+- box:
+
+  The box sizes (time scales) used for the analysis.
+
+- DFA:
+
+  The corresponding detrended fluctuation amplitudes (Root Mean Square).
 
 ## Details
 
@@ -51,7 +59,8 @@ patients with epilepsy. Bioinformatics. 10.1093/bioinformatics/btaa955.
 ## Author
 
 Ian Meneghel Danilevicz \<ian.meneghel-danilevicz@inserm.fr\> Victor
-Barreto Mesquita \<victormesquita40@hotmail.com\>
+Barreto Mesquita \<victormesquita40@hotmail.com\> Jairo H Migueles
+\<jairo@jhmigueles.com\>
 
 ## Examples
 

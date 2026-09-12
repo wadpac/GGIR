@@ -155,6 +155,7 @@ will find a description and default value for all the arguments.
 | qM5L5 | 2 | params_247 |
 | MX.ig.min.dur | 2 | params_247 |
 | qwindow_dateformat | 2 | params_247 |
+| part2CR | 2 | params_247 |
 | anglethreshold | 3 | params_sleep |
 | timethreshold | 3 | params_sleep |
 | ignorenonwear | 3 | params_sleep |
@@ -184,6 +185,8 @@ will find a description and default value for all the arguments.
 | guider_cor_meme_min_hrs | 3 | params_sleep |
 | guider_cor_do | 3 | params_sleep |
 | guider_cor_meme_min_dys | 3 | params_sleep |
+| HDCZA_roll_windowsize | 3 | params_sleep |
+| LowAcc_threshold | 3 | params_sleep |
 | loglocation | 4, 5 | params_sleep |
 | colid | 4 | params_sleep |
 | coln1 | 4 | params_sleep |
@@ -214,7 +217,7 @@ will find a description and default value for all the arguments.
 | save_ms5rawlevels | 5 | params_output |
 | part5_agg2_60seconds | 5 | params_general |
 | includedaycrit.part5 | 5 | params_cleaning |
-| includenight.part5 | 5 | params_cleaning |
+| includenightcrit.part5 | 5 | params_cleaning |
 | frag.metrics | 5 | params_phyact |
 | LUXthresholds | 5 | params_247 |
 | LUX_cal_constant | 5 | params_247 |
@@ -245,6 +248,7 @@ will find a description and default value for all the arguments.
 | dofirstpage | visualreport | params_output |
 | visualreport | visualreport | params_output |
 | viewingwindow | visualreport | params_output |
+| save_dashboard_parquet | end of GGIR run | params_output |
 
 ## Arguments/parameters description
 
@@ -830,19 +834,19 @@ this to 1/9.81 we would derive gravitational units.
 #### do.anglex
 
 Boolean (default = FALSE). If TRUE, calculates the angle of the X axis
-relative to the horizontal: = (^-1_rollmedian(x)(acc_rollmedian(y))^2 +
+relative to the horizontal: = (^(-1_rollmedian(x)(acc_rollmedian(y)))2 +
 (acc_rollmedian(z))^2) \* 180/
 
 #### do.angley
 
 Boolean (default = FALSE). If TRUE, calculates the angle of the Y axis
-relative to the horizontal: = (^-1_rollmedian(y)(acc_rollmedian(x))^2 +
+relative to the horizontal: = (^(-1_rollmedian(y)(acc_rollmedian(x)))2 +
 (acc_rollmedian(z))^2) \* 180/
 
 #### do.anglez
 
 Boolean (default = TRUE). If TRUE, calculates the angle of the Z axis
-relative to the horizontal: = (^-1_rollmedian(z)(acc_rollmedian(x))^2 +
+relative to the horizontal: = (^(-1_rollmedian(z)(acc_rollmedian(x)))2 +
 (acc_rollmedian(y))^2) \* 180/
 
 #### do.zcx
@@ -1656,6 +1660,21 @@ guider_cor_meme_frac_in, and guider_cor_meme_min_hrs. This parameter is
 set to 3 by default as a median becomes only meaningful with at least
 three values.
 
+#### HDCZA_roll_windowsize
+
+Numeric (default = 5) Size in minutes of the rolling window used by the
+HDCZA guider algorithm to calculate the median absolute difference in
+angle for each window position.
+
+#### LowAcc_threshold
+
+Numeric (default = 0.014) Acceleration threshold in *g*-units use by the
+LowAcc guider applied to acceleration derived with metric as specified
+by parameter acc_metric. The default is based on acc_metric = “MAD”,
+which was consired most suitable for ActivPAL data that come with
+timegaps that complicate auto-calibration of the acceleration signals
+rendering default metric ENMO unsuitable.
+
 ### Physical activity Parameters
 
 #### mvpathreshold
@@ -1912,9 +1931,11 @@ be calculated. Now this is done with parameter qwindow.
 
 #### cosinor
 
-Boolean (default = FALSE). Whether to apply the cosinor analysis from
-the ActCR package in part 2. In part 6 cosinor analysis is applied by
-default and cannot be turned off.
+Boolean (default = FALSE). Whether to apply the circadian rhythm
+analysis in part 2. This parameter will be superseded by new parameter
+part2CR to better reflect that this controls all circadian rhythm
+parameters. If part2CR is specified then that setting overwrites
+cosinor.
 
 #### part6CR
 
@@ -1959,6 +1980,12 @@ counts will not be summarised in part 5 output.
 
 Numeric (default = 30) Minimum WASO duration in minutes as used for
 Sleep Regularity Calculation in g.part6.
+
+#### part2CR
+
+Boolean (default = FALSE). Whether circadian rhythm analysis should be
+run in part 2, including: cosinor analysis, extended cosinor analysis,
+IS, IV, and phi.
 
 ### Output Parameters
 
@@ -2152,5 +2179,18 @@ Character (default = NULL). Vector with names of methodological variable
 categories to store in the csv output files. Currently on "nap" is
 available which affects the part5 output. The variables are intended for
 methodological research only and are by default turned off.
+
+#### save_dashboard_parquet
+
+Boolean (default = FALSE). If TRUE, GGIR will export a consolidated
+Parquet file named \_results.parquet to the / subfolder of the output
+directory after all requested GGIR parts have completed. The file merges
+the Part 5 day summary, Part 4 night summary, Part 2 day and person
+summaries, and the data quality report into a single row-per-day table,
+and embeds per-day epoch-level time series as a nested list-column
+(epochs). Key-value Parquet metadata is attached to record the variable
+dictionary, activity threshold configuration, and accelerometer metric
+used. This output is intended for use with DuckDB-WASM powered
+dashboards. Requires the package to be installed.
 
 ![GGIR logo](GGIR-MASTERLOGO-RGB.png)

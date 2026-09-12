@@ -214,7 +214,7 @@ g.report.part5_dictionary = function(metadatadir, params_output) {
         if (is.null(what)) {
           if ("sleeponset" %in% elements | "wakeup" %in% elements) {
             if ("sleeponset" %in% elements) what = "Sleep onset time"
-            if ("wakeup" %in% elements) what = "Sleep onset time"
+            if ("wakeup" %in% elements) what = "Wake up time"
             if ("ts" %in% elements) {
               unit = "(hh:mm:ss)"
             } else {

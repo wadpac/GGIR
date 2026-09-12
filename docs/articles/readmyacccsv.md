@@ -11,8 +11,8 @@ accelerometer brands in the field:
 
 - [GENEActiv](https://activinsights.com/) .bin
 - [Axivity](https://axivity.com/) AX3 and AX6 .wav, .csv and .cwa
-- [ActiGraph](https://theactigraph.com) .csv and .gt3x (.gt3x only the
-  newer format generated with firmware versions above 2.5.0). Note for
+- [ActiGraph](https://ametris.com/) .csv and .gt3x (.gt3x only the newer
+  format generated with firmware versions above 2.5.0). Note for
   Actigraph users: If you want to work with .csv exports via the
   ActiLife then note that you have the option to export data with
   timestamps. Please do not do this as this causes memory issues for
@@ -187,6 +187,7 @@ Before we can use this with GGIR, we first test read this file using the
 `read.myacc.csv` function directly.
 
 ``` r
+
 library(GGIR)
 data = read.myacc.csv(rmc.file = "C:/mystudy/mydata/datafile.csv",
                rmc.nrow = Inf,
@@ -221,6 +222,7 @@ defined by `datadir`, `strategy`, and [header](#header) arguments,
 respectively).
 
 ``` r
+
 library(GGIR)
 GGIR(
              mode=c(1,2,3,4,5),

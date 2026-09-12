@@ -65,9 +65,9 @@ For \"WW\" and \"OO\", the onset and waking times are guided by the estimates fr
 
 When recordings end in the night or early morning the sleep estimates for the night are likely affected. For example, if a recording ends at 10am we cannot be sure that the participant did not sleep until after 10am, and if a recording ends at 2am we cannot be sure that the sleep onset time was reliably estimated. To handle this and ignore the final window in the data, set parameter `require_complete_lastnight_part5 = TRUE` (not default).
 
-### Defining segments within the MM window
+### Defining segments within the window
 
-By default GGIR segments a window in waking hours of the day (referred to as `day`) and the sleep period time window (referred to as `spt`). Additionally, when timewindow is set to “MM”, day segment specific analysis are performed based on the segments as defined by parameters `qwindow` . Please see the annex on day segmentation for more information.
+By default GGIR segments a window in waking hours of the day (referred to as `day`) and the sleep period time window (referred to as `spt`). Additionally, day segment specific analysis are performed based on the segments as defined by parameters `qwindow` . Please see the annex on day segmentation for more information.
 
 ## Metrics calculated per window and per segment
 

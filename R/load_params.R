@@ -47,7 +47,9 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                         guider_cor_meme_frac_in = 0.4,
                         guider_cor_meme_min_hrs = 1,
                         guider_cor_do = FALSE,
-                        guider_cor_meme_min_dys = 3)
+                        guider_cor_meme_min_dys = 3,
+                        HDCZA_roll_windowsize = 5,
+                        LowAcc_threshold = 0.014)
   }
   if ("metrics" %in% topic) {
     params_metrics = list(do.anglex = FALSE, do.angley = FALSE, do.anglez = TRUE,
@@ -99,7 +101,7 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                       part6CR = FALSE, part6HCA = FALSE,
                       part6Window = c("start", "end"),
                       part6DFA = FALSE, clevels = c(30, 150),
-                      SRI2_WASOmin = 30)
+                      SRI2_WASOmin = 30, part2CR = FALSE)
 
   }
   if ("phyact" %in% topic) {
@@ -147,7 +149,8 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                          old_visualreport = FALSE, visualreport_hrsPerRow = 36,
                          visualreport_focus = "day",
                          visualreport_validcrit = 0, require_complete_lastnight_part5 = FALSE,
-                         method_research_vars = NULL)
+                         method_research_vars = NULL,
+                         save_dashboard_parquet = FALSE)
 
   }
   if ("general" %in% topic) {

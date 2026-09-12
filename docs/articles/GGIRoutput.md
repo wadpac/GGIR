@@ -110,10 +110,8 @@ package, the documentation has been copied from ActCR documentation.
 | Variable name | Description |
 |----|----|
 | cosinor_mes | MESOR which is short for midline statistics of rhythm, which is a rhythm adjusted mean. This represents mean activity level. |
-| cosinor_amp | amplitude, a measure of half the extend of predictable variation within a cycle. |
-| This represents the highest activity one can achieve |  |
-| cosinor_acrophase | acrophase, a measure of the time of the overall high values recurring in each |
-| cycle. Here it has a unit of radian. This represents time to reach the peak. |  |
+| cosinor_amp | amplitude, a measure of half the extend of predictable variation within a cycle. This represents the highest activity one can achieve |
+| cosinor_acrophase | acrophase, a measure of the time of the overall high values recurring in each cycle. Here it has a unit of radian. This represents time to reach the peak. |
 | cosinor_acrotime | acrotime represents time to reach the peak. |
 | cosinor_ndays | Number of days modeled |
 | cosinorExt_minimum | Minimum value of the of the function. |
@@ -480,5 +478,10 @@ output](https://wadpac.github.io/GGIR/articles/GGIRoutput.html#circadian-rhythm-
 | `FRAG_` | Fragmentation variables, as also [discussed for part 5 output](https://wadpac.github.io/GGIR/articles/GGIRoutput.html#fragmentation). Only difference now is that fragmentation variables name ending with `_day` are specific to the waking hours of a day, while variable names ending iwht `_spt` are specific to the SPT window. |
 | SSP | See [section on SSP in chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html#self-similarity-paramerter-ssp) |
 | ABI | See [section on ABI in chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html#activity-balance-index-abi) |
+| SSP_short | See [section on SSP in chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html#self-similarity-paramerter-ssp) |
+| ABI_short | See [section on ABI in chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html#activity-balance-index-abi) |
+| SSP_long | See [section on SSP in chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html#self-similarity-paramerter-ssp) |
+| ABI_long | See [section on ABI in chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html#activity-balance-index-abi) |
+| SSP_diff | See [section on SSP in chapter 13](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html#self-similarity-paramerter-ssp) |
 | SleepRegularityIndex2 | The Sleep Regularity Index inspired by [Phillips et al. 2017](https://www.nature.com/articles/s41598-017-03171-4), but calculated per day-pair to enable user to study patterns across days, and calculated based on classified naps and sleep. See [Chapter 10](https://wadpac.github.io/GGIR/articles/chapter10_SleepAnalysis.html#sleep-regularity-index-sri) for details. |
 | SleepRegularityIndex2_Ndaypairs | Number of day pairs used for calculating SleepRegularityIndex2. |

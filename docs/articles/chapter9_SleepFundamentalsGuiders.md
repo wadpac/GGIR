@@ -178,7 +178,7 @@ accelerometer (raw) data where no sleep log is available. The algorithm
 was first described in a [2018
 article](https://dx.doi.org/10.1038/s41598-018-31266-z), and has been
 modified slightly: Step 6 in Figure 1 has been replaced by a single
-threshold (0.2 by default).  
+threshold (0.2 by default).\
 
 In short, step 1-6 attempt to classify time periods with limited change
 in posture. Next, step 7 extracts time blocks longer than 30 minutes,
@@ -376,6 +376,27 @@ following algorithm.
     duration range 7-9 multiplied by the average activity inside the
     window.
 8.  The window with the lowest score is selected as guider.
+
+### Guider: LowAcc (EXPERIMENTAL)
+
+This algorithm was developed for ActivPAL data where night/sleep
+behaviour is represented by an accelerometer that falls asleep. As a
+result, the sleep periods are characterised by the zero acceleration as
+imputed whereas the acceleration during waking hours is represented by
+sensor noise.
+
+The guider detects this by first deriving a 5 minute rolling average of
+the acceleration values and then detecting when the resulting
+acceleration is less than a threshold as specified with parameter .
+
+The reason we consider LowAcc instead of NonWorn for thigh-worn ActivPAL
+data is that non-wear is more difficult to detect when sensor is worn on
+the thigh and we observed that the ActivPAL emits much more noise than
+other sensor brands, complicating an accurate distinction between
+non-wear and inactivity.
+
+A more elaborate motivation and justification for this experimental
+guider will hopefully follow in a journal article.
 
 ## Dealing with expected or detected invalid time segments
 

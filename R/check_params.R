@@ -44,7 +44,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "guider_cor_min_frac_sib", "guider_cor_min_hrs",
                        "guider_cor_meme_frac_out",
                        "guider_cor_meme_frac_in", "guider_cor_meme_min_hrs",
-                       "guider_cor_meme_min_dys")
+                       "guider_cor_meme_min_dys", "HDCZA_roll_windowsize", "LowAcc_threshold")
     boolean_params = c("ignorenonwear", "HASPT.ignore.invalid",
                        "relyonguider", "sleeplogidnum",
                        "impute_marker_button", "consider_marker_button",
@@ -98,7 +98,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
                        "IVIS.activity.metric", "IVIS_acc_threshold",
                        "qM5L5", "MX.ig.min.dur", "M5L5res", "winhr", "LUXthresholds", "LUX_cal_constant",
                        "LUX_cal_exponent", "LUX_day_segments", "L5M5window", "clevels", "SRI2_WASOmin")
-    boolean_params = c("cosinor", "part6CR", "part6HCA", "part6DFA")
+    boolean_params = c("cosinor", "part6CR", "part6HCA", "part6DFA", "part2CR")
     character_params = c("qwindow_dateformat", "part6Window")
     check_class("247", params = params_247, parnames = numeric_params, parclass = "numeric")
     check_class("247", params = params_247, parnames = boolean_params, parclass = "boolean")
@@ -134,7 +134,8 @@ check_params = function(params_sleep = c(), params_metrics = c(),
     boolean_params = c("epochvalues2csv", "save_ms5rawlevels", "save_ms5raw_without_invalid",
                        "storefolderstructure", "dofirstpage", "visualreport", "week_weekend_aggregate.part5",
                        "do.part3.pdf", "outliers.only", "do.visual", "do.sibreport", "visualreport_without_invalid",
-                       "do.part2.pdf", "do.part2.png", "old_visualreport", "require_complete_lastnight_part5")
+                       "do.part2.pdf", "do.part2.png", "old_visualreport", "require_complete_lastnight_part5",
+                       "save_dashboard_parquet")
 
     character_params = c("save_ms5raw_format", "timewindow", "sep_reports", "sep_config",
                          "dec_reports", "dec_config", "visualreport_focus", "method_research_vars")
@@ -198,7 +199,7 @@ check_params = function(params_sleep = c(), params_metrics = c(),
   
   if (length(params_sleep) > 0) {
     if (length(params_sleep[["def.noc.sleep"]]) != 2) {
-      if (params_sleep[["HASPT.algo"]][1] %in% c("HorAngle", "NotWorn", "MotionWare", "HLRB") == FALSE) {
+      if (params_sleep[["HASPT.algo"]][1] %in% c("HorAngle", "NotWorn", "MotionWare", "HLRB", "LowAcc") == FALSE) {
         params_sleep[["HASPT.algo"]] = "HDCZA"
       }
       if (length(params_sleep[["HASPT.algo"]]) == 2 && params_sleep[["HASPT.algo"]][2] == "NotWorn") {
@@ -438,6 +439,9 @@ check_params = function(params_sleep = c(), params_metrics = c(),
       if (params_247[["LUX_day_segments"]][length(params_247[["LUX_day_segments"]])] != 24) {
         params_247[["LUX_day_segments"]] = c(params_247[["LUX_day_segments"]], 24)
       }
+    }
+    if (params_247[["cosinor"]] == TRUE && params_247[["part2CR"]] == FALSE) {
+      params_247[["part2CR"]] = TRUE
     }
     # params 247 & params output
     if (length(params_output[["save_ms5raw_format"]]) == 1 && 
