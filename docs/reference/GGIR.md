@@ -902,7 +902,7 @@ extract in GGIR
   activityCounts. We called them BrondCounts because there are large
   number of activity counts in the physical activity and sleep research
   field. By calling them \_brondcounts\_ we clarify that these are the
-  counts proposed by Jan Br&#248;nd and implemented in R by Ruben
+  counts proposed by Jan Br\&#248;nd and implemented in R by Ruben
   Brondeel. The \_brondcounts\_ are intended to be an imitation of the
   counts produced by one of the closed source ActiLife software by
   ActiGraph.
@@ -1754,6 +1754,21 @@ and [g.part4](https://wadpac.github.io/GGIR/reference/g.part4.md).
   parameter is set to 3 by default as a median becomes only meaningful
   with at least three values.
 
+- HDCZA_roll_windowsize:
+
+  Numeric (default = 5) Size in minutes of the rolling window used by
+  the HDCZA guider algorithm to calculate the median absolute difference
+  in angle for each window position.
+
+- LowAcc_threshold:
+
+  Numeric (default = 0.014) Acceleration threshold in \_g\_-units use by
+  the LowAcc guider applied to acceleration derived with metric as
+  specified by parameter `acc_metric`. The default is based on
+  `acc_metric = "MAD"`, which was consired most suitable for ActivPAL
+  data that come with timegaps that complicate auto-calibration of the
+  acceleration signals rendering default metric ENMO unsuitable.
+
 ### params_247
 
 A list of parameters releated to description of 24/7 behaviours that do
@@ -2181,6 +2196,20 @@ output at various stages of the process.
   \\nap\\ is available which affects the part5 output. The variables are
   intended for methodological research only and are by default turned
   off.
+
+- save_dashboard_parquet:
+
+  Boolean (default = FALSE). If TRUE, GGIR will export a consolidated
+  Parquet file named `ggir_results.parquet` to the `results/` subfolder
+  of the output directory after all requested GGIR parts have completed.
+  The file merges the Part 5 day summary, Part 4 night summary, Part 2
+  day and person summaries, and the data quality report into a single
+  row-per-day table, and embeds per-day epoch-level time series as a
+  nested list-column (`epochs`). Key-value Parquet metadata is attached
+  to record the variable dictionary, activity threshold configuration,
+  and accelerometer metric used. This output is intended for use with
+  DuckDB-WASM powered dashboards. Requires the arrow package to be
+  installed.
 
 ## Author
 

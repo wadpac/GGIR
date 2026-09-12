@@ -1583,6 +1583,22 @@ GGIR(mode = 1:5,
         This parameter is set to 3 by default as a median becomes only meaningful with
         at least three values.
       }
+      
+      \item{HDCZA_roll_windowsize}{
+        Numeric (default = 5)
+        Size in minutes of the rolling window used by the HDCZA guider algorithm to calculate
+        the median absolute difference in angle for each window position.
+      }
+      
+      \item{LowAcc_threshold}{
+        Numeric (default = 0.014)
+        Acceleration threshold in _g_-units use by the LowAcc guider applied to acceleration
+        derived with metric as specified by parameter \code{acc_metric}.
+        The default is based on \code{acc_metric = "MAD"}, which was consired 
+        most suitable for ActivPAL data that come with timegaps that complicate
+        auto-calibration of the acceleration signals rendering default metric 
+        ENMO unsuitable.
+      }
     }
   }
 

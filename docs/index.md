@@ -1,8 +1,8 @@
-  
+\
 
 ![GGIR](articles/GGIR-MASTERLOGO-RGB.png)
 
-  
+\
 
 [**GGIR**](https://CRAN.R-project.org/package=GGIR) is a widely used
 R-package designed for processing multi-day **accelerometer data**,

@@ -38,6 +38,7 @@ the raw data, which produces an estimate of Actigraph counts per second.
 Create file **calculateCounts.R** and insert the following code:
 
 ``` r
+
 calculateCounts = function(data=c(), parameters=c()) {
   # data: 3 column matrix with acc data
   # parameters: the sample rate of data
@@ -58,6 +59,7 @@ Create a new .R file for running the GGIR analysis, e.g. named
 filepath on the first line to point to your `calculateCounts.R` file.
 
 ``` r
+
 source("~/calculateCounts.R")
 myfun =  list(FUN = calculateCounts,
               parameters = 30,
@@ -121,6 +123,7 @@ Next, add a call to GGIR function GGIR with `myfun` provided as one of
 its arguments:
 
 ``` r
+
 library(GGIR)
 GGIR(datadir = "~/myaccelerometerdata",
              outputdir = "~/myresults",
@@ -191,6 +194,7 @@ sure that that this Python environment has all the required dependencies
 for the external function, here we will only need `numpy`.
 
 ``` r
+
   library("reticulate")
   use_virtualenv("~/myvenv", required = TRUE) # Local Python environment
   py_install("numpy", pip = TRUE)
@@ -220,6 +224,7 @@ package reticulate and multi-threading with R package foreach as used in
 GGIR do not combine well.
 
 ``` r
+
 library(GGIR)
 GGIR(datadir = "~/myaccelerometerdata",
              outputdir = "~/myresults",

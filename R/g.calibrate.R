@@ -176,8 +176,13 @@ g.calibrate = function(datafile, params_rawdata = c(),
           }
           #=============================================
           #expand 'out' if it is expected to be too short
-          if (count > (nrow(features) - (2.5 * (3600/calibEpochSize) * 24))) {
-            extension = matrix(99999, ((3600/calibEpochSize) * 24), ncol(features))
+          expected_EN2_length = use / (sf * calibEpochSize)
+          expected_endCount = count + expected_EN2_length - 1
+          if (expected_endCount > nrow(features)) {
+            # Calculate the number of rows to add (+ 1 day for safety)
+            rows_needed = expected_endCount - nrow(features)
+            rows_to_add = rows_needed + (3600/calibEpochSize) * 24 
+            extension = matrix(99999, rows_to_add, ncol(features))
             features = rbind(features, extension)
           }
           # mean acceleration for EN, x, y, and z
