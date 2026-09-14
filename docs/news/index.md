@@ -2,6 +2,8 @@
 
 ## CHANGES IN GGIR VERSION 3.3-9
 
+CRAN release: 2026-09-12
+
 - Tests: Made the Movisens test independent of internet access by
   including the test data in inst/testfiles
   ([\#1540](https://github.com/wadpac/GGIR/issues/1540))

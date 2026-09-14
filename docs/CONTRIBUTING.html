@@ -152,8 +152,8 @@
 <h4 id="package-vignettes">Package vignettes<a class="anchor" aria-label="anchor" href="#package-vignettes"></a></h4>
 <p>The folder vignettes in the GGIR repository contains the .Rmd files. The .Rmd files that do not start with the word ‘chapter’ are used for the traditional package vignettes as hosted by CRAN. Use these files to edit an existing vignette, or use the structure of any of the vignettes to build up a new one. All .Rmd files which name starts with the word ‘chapter’ are ignored. These chapter-vignettes are used only for the github.io website (see <a href="#github.io-website">next section</a>).</p>
 <p><strong>To create a new vignette for CRAN</strong></p>
-<p>To create a new package vignette for CRAN, please use <code><a href="https://usethis.r-lib.org/reference/use_vignette.html" class="external-link">usethis::use_vignette()</a></code> and make sure the name of the vignette file does not start by “chapter”. For example, if you want to create a new vignette on sleep for CRAN, you may do the following:</p>
-<pre><code><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_vignette.html" class="external-link">use_vignette</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"sleep"</span>,</span>
+<p>To create a new package vignette for CRAN, please use <code>usethis::use_vignette()</code> and make sure the name of the vignette file does not start by “chapter”. For example, if you want to create a new vignette on sleep for CRAN, you may do the following:</p>
+<pre><code><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_vignette</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"sleep"</span>,</span>
 <span>                      title <span class="op">=</span> <span class="st">"How to analyse your sleep data in GGIR"</span><span class="op">)</span></span></code></pre>
 <p>This would create a new “sleep.Rmd” file within the vignettes folder in the GGIR repository. Then you can edit this file to build up the vignette.</p>
 <p><strong>To remove a vignette from CRAN</strong></p>
@@ -172,8 +172,8 @@
 <li>Make your changes in the vignette.</li>
 </ol><p>As stated above <strong>DO NOT RUN</strong> <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code>.</p>
 <p><strong>To add a new chapter</strong></p>
-<ol style="list-style-type: decimal"><li>Create a Rmd file for the vignette via <code><a href="https://usethis.r-lib.org/reference/use_vignette.html" class="external-link">usethis::use_vignette()</a></code> and make sure the name of the vignette starts by “chapter”, for example:</li>
-</ol><pre><code><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_vignette.html" class="external-link">use_vignette</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"chapterSleep"</span>,</span>
+<ol style="list-style-type: decimal"><li>Create a Rmd file for the vignette via <code>usethis::use_vignette()</code> and make sure the name of the vignette starts by “chapter”, for example:</li>
+</ol><pre><code><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">use_vignette</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"chapterSleep"</span>,</span>
 <span>                      title <span class="op">=</span> <span class="st">"10. How to analyse your sleep data in GGIR"</span><span class="op">)</span></span></code></pre>
 <ol start="2" style="list-style-type: decimal"><li>Open the <a href="_pkgdown.yml">_pkgdown.yml</a> file and fill up the name and reference of the new chapter under menu. Make sure to follow the coding and structure of the rest of chapters.</li>
 </ol><p>As stated above <strong>DO NOT RUN</strong> <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code>.</p>

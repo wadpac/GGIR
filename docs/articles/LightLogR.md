@@ -5,7 +5,8 @@
 Personal light exposure, assessed with wearable dosimeters and light
 loggers, is gaining importance. Many accelerometers as used in research
 have a light sensor. In this vignette we discuss what GGIR complemented
-by LightLogR can do with these data.
+by [**LightLogR**](https://tscnlab.github.io/LightLogR/) can do with
+these data.
 
 ### Basic light exposure analysis with GGIR
 
