@@ -5,12 +5,23 @@ g.part5_analyseSegment_ExtFunType = function(ts, sse, TOLEVELS, TLEVELS,
   #===============================================
   # EXTERNAL FUNCTION TYPE METRICS
   
-  prefix = paste0("ExtFunType_", myfun$colnames[1], "_")
+  # Prefix to be appended to all columns generated here
+  # So that we can easily identify these columns in subsequent calculations
+  # and store reports with this output in separate files
+  prefix = paste0("ExtFunType_")
   type_levels = names(TLEVELS)
   
   #=================================================
-  # SPT
+  # BOUTED AND UNBOUTED TIME
+  # As type levels might be applicable either during
+  # spt or day, depending on the types being 
+  # identified by the external function. Here 
+  # we calculate durations in both spt and day
   #=================================================
+  
+
+  # -------------------------------
+  # SPT
   spt_sse = sse[ts$diur[sse] == 1]
   
   for (type_level in type_levels) {
@@ -31,7 +42,7 @@ g.part5_analyseSegment_ExtFunType = function(ts, sse, TOLEVELS, TLEVELS,
     
     dsummary[si, fi] = unbt_seconds / 60
     ds_names[fi] = paste0(
-      prefix, "spt_", type_level, "_unbt_min"
+      prefix, "dur_spt_", type_level, "_unbt_min"
     )
     fi = fi + 1
     
@@ -64,7 +75,7 @@ g.part5_analyseSegment_ExtFunType = function(ts, sse, TOLEVELS, TLEVELS,
       bout_name = Tnames[n_previous_bouts + bci]
       
       ds_names[fi] = paste0(
-        prefix, "spt_", bout_name, "_min"
+        prefix, "dur_spt_", bout_name, "_min"
       )
       
       fi = fi + 1
@@ -79,7 +90,7 @@ g.part5_analyseSegment_ExtFunType = function(ts, sse, TOLEVELS, TLEVELS,
     
     dsummary[si, fi] = total_seconds / 60
     ds_names[fi] = paste0(
-      prefix, "spt_total_", type_level, "_min"
+      prefix, "dur_spt_total_", type_level, "_min"
     )
     fi = fi + 1
     
@@ -132,10 +143,8 @@ g.part5_analyseSegment_ExtFunType = function(ts, sse, TOLEVELS, TLEVELS,
     }
   }
   
-  
-  #=================================================
+  # -------------------------------
   # DAY
-  #=================================================
   day_sse = sse[ts$diur[sse] == 0]
   
   for (type_level in type_levels) {
@@ -156,7 +165,7 @@ g.part5_analyseSegment_ExtFunType = function(ts, sse, TOLEVELS, TLEVELS,
     
     dsummary[si, fi] = unbt_seconds / 60
     ds_names[fi] = paste0(
-      prefix, "day_", type_level, "_unbt_min"
+      prefix, "dur_day_", type_level, "_unbt_min"
     )
     fi = fi + 1
     
@@ -189,7 +198,7 @@ g.part5_analyseSegment_ExtFunType = function(ts, sse, TOLEVELS, TLEVELS,
       bout_name = Tnames[n_previous_bouts + bci]
       
       ds_names[fi] = paste0(
-        prefix, "day_", bout_name, "_min"
+        prefix, "dur_day_", bout_name, "_min"
       )
       
       fi = fi + 1
@@ -204,7 +213,7 @@ g.part5_analyseSegment_ExtFunType = function(ts, sse, TOLEVELS, TLEVELS,
     
     dsummary[si, fi] = total_seconds / 60
     ds_names[fi] = paste0(
-      prefix, "day_total_", type_level, "_min"
+      prefix, "dur_day_total_", type_level, "_min"
     )
     fi = fi + 1
     
