@@ -227,6 +227,7 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                                    myfun = myfun)
         Nts = nrow(ts)
         lightpeak_available = "lightpeak" %in% names(ts)
+        typecolumns_available = any(grepl("^ExtFunType_", names(ts)))
         
         rm(IMP, M ,I)
         clock2numtime = function(x) { # function used for converting sleeplog times to hour times
@@ -335,7 +336,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
                 colnames(step_count_tmp)[2] = "step_count"
               }
               # aggregate type durations by taking the sum
-              typecolumns_available = any(grepl("^ExtFunType_", names(ts)))
               if (typecolumns_available) {
                 type_columns = grep("^ExtFunType_", names(ts))
                 types_tmp = aggregate(ts[,type_columns, drop = FALSE], 
