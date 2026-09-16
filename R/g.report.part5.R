@@ -308,6 +308,19 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 OF3 = outputfinal2[seluwi,]
                 OF3 = as.data.frame(OF3, stringsAsFactors = TRUE)
                 #-------------------------------------------------------------
+                # External function type report
+                extfuntype_cols = grep("^ExtFunType_", names(OF3), value = TRUE)
+                if (length(extfuntype_cols) > 0) {
+                  descriptor_cols = c("ID", "filename", "weekday", "calendar_date",
+                                      "window_number", "window", "start_end_window", "daytype")
+                  windowlength_cols = c("dur_day_min", "dur_spt_min", "dur_day_spt_min")
+                  extfuntype_report_cols = c(descriptor_cols, windowlength_cols,
+                                             extfuntype_cols)
+                  extfuntype_report_cols = extfuntype_report_cols[extfuntype_report_cols %in% names(OF3)]
+                  OF3_extfuntype = OF3[, extfuntype_report_cols]
+                  OF3 = OF3[, !(colnames(OF3) %in% extfuntype_cols)]
+                }
+                #-------------------------------------------------------------
                 # store all summaries in csv files without cleaning criteria
                 OF3_clean = tidyup_df(OF3)
                 OF3_clean = addSplitNames(OF3_clean) # If recording was split
@@ -335,6 +348,28 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                     sep = params_output[["sep_reports"]],
                     dec = params_output[["dec_reports"]])
                 }
+                #-------------------------------------------------------------
+                # store external function type summaries in csv files
+                # without cleaning criteria
+                colnames(OF3_extfuntype) = gsub("^ExtFunType_", "", colnames(OF3_extfuntype))
+                OF3_extfuntype_clean = tidyup_df(OF3_extfuntype)
+                extfuntype_filename = paste0(metadatadir,"/results/QC/part5_extfuntype_daysummary_full_",
+                                             uwi[j], "_", usleepparam[h4],".csv")
+                data.table::fwrite(OF3_extfuntype_clean, extfuntype_filename,
+                                   row.names = FALSE, na = "",
+                                   sep = params_output[["sep_reports"]],
+                                   dec = params_output[["dec_reports"]])
+                
+                # with cleaning criteria
+                if (length(validdaysi) > 0) {
+                  data.table::fwrite(
+                    OF3_extfuntype_clean[validdaysi, ],
+                    paste(metadatadir, "/results/part5_extfuntype_daysummary_",
+                          uwi[j], "_", usleepparam[h4], ".csv", sep = ""), row.names = FALSE, na = "",
+                    sep = params_output[["sep_reports"]],
+                    dec = params_output[["dec_reports"]])
+                }
+                
                 #------------------------------------------------------------------------------------
                 #also compute summary per person
                 agg_plainNweighted = function(df,
@@ -749,6 +784,70 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                                      row.names = FALSE, na = "",
                                      sep = params_output[["sep_reports"]],
                                      dec = params_output[["dec_reports"]])
+                }
+                
+                #-------------------------------------------------------------
+                # Calculate person-level summary for external function type
+                if (length(extfuntype_cols) > 0 && length(validdaysi) > 0) {
+                  OF4_extfuntype = agg_plainNweighted(
+                    df = OF3_extfuntype[validdaysi, ],
+                    filename = "filename",
+                    daytype = "daytype",
+                    window = uwi[j]
+                  )
+                  
+                  # Remove variables that are not relevant for the person-level
+                  # external function type report
+                  remove_ext_cols = grep(
+                    pattern = paste0(
+                      "^window_number$|^night_number$|^daysleeper$|^cleaningcode$|",
+                      "^sleeplog_used$|^guider$|^acc_available$|^daytype$|",
+                      "^lastHour$|^lastDate$"
+                    ),
+                    x = names(OF4_extfuntype)
+                  )
+                  
+                  if (length(remove_ext_cols) > 0) {
+                    OF4_extfuntype = OF4_extfuntype[, -remove_ext_cols, drop = FALSE]
+                  }
+                  
+                  # Rename external-function columns by removing the prefix
+                  ext_cols_person = grep(
+                    "^ExtFunType_",
+                    names(OF4_extfuntype),
+                    value = TRUE
+                  )
+                  
+                  if (length(ext_cols_person) > 0) {
+                    names(OF4_extfuntype)[
+                      match(ext_cols_person, names(OF4_extfuntype))
+                    ] = gsub(
+                      "^ExtFunType_",
+                      "",
+                      ext_cols_person
+                    )
+                  }
+                  
+                  OF4_extfuntype = tidyup_df(OF4_extfuntype)
+                  OF4_extfuntype = addSplitNames(OF4_extfuntype)
+                  
+                  data.table::fwrite(
+                    OF4_extfuntype,
+                    paste0(
+                      metadatadir,
+                      "/results/part5_extfuntype_personsummary_",
+                      uwi[j],
+                      "_L", uTRLi[h1],
+                      "M", uTRMi[h2],
+                      "V", uTRVi[h3],
+                      "_", usleepparam[h4],
+                      ".csv"
+                    ),
+                    row.names = FALSE,
+                    na = "",
+                    sep = params_output[["sep_reports"]],
+                    dec = params_output[["dec_reports"]]
+                  )
                 }
               }
             }
