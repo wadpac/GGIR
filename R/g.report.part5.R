@@ -351,23 +351,25 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 #-------------------------------------------------------------
                 # store external function type summaries in csv files
                 # without cleaning criteria
-                colnames(OF3_extfuntype) = gsub("^ExtFunType_", "", colnames(OF3_extfuntype))
-                OF3_extfuntype_clean = tidyup_df(OF3_extfuntype)
-                extfuntype_filename = paste0(metadatadir,"/results/QC/part5_extfuntype_daysummary_full_",
-                                             uwi[j], "_", usleepparam[h4],".csv")
-                data.table::fwrite(OF3_extfuntype_clean, extfuntype_filename,
-                                   row.names = FALSE, na = "",
-                                   sep = params_output[["sep_reports"]],
-                                   dec = params_output[["dec_reports"]])
-                
-                # with cleaning criteria
-                if (length(validdaysi) > 0) {
-                  data.table::fwrite(
-                    OF3_extfuntype_clean[validdaysi, ],
-                    paste(metadatadir, "/results/part5_extfuntype_daysummary_",
-                          uwi[j], "_", usleepparam[h4], ".csv", sep = ""), row.names = FALSE, na = "",
-                    sep = params_output[["sep_reports"]],
-                    dec = params_output[["dec_reports"]])
+                if (length(extfuntype_cols) > 0) {
+                  colnames(OF3_extfuntype) = gsub("^ExtFunType_", "", colnames(OF3_extfuntype))
+                  OF3_extfuntype_clean = tidyup_df(OF3_extfuntype)
+                  extfuntype_filename = paste0(metadatadir,"/results/QC/part5_extfuntype_daysummary_full_",
+                                               uwi[j], "_", usleepparam[h4],".csv")
+                  data.table::fwrite(OF3_extfuntype_clean, extfuntype_filename,
+                                     row.names = FALSE, na = "",
+                                     sep = params_output[["sep_reports"]],
+                                     dec = params_output[["dec_reports"]])
+                  
+                  # with cleaning criteria
+                  if (length(validdaysi) > 0) {
+                    data.table::fwrite(
+                      OF3_extfuntype_clean[validdaysi, ],
+                      paste(metadatadir, "/results/part5_extfuntype_daysummary_",
+                            uwi[j], "_", usleepparam[h4], ".csv", sep = ""), row.names = FALSE, na = "",
+                      sep = params_output[["sep_reports"]],
+                      dec = params_output[["dec_reports"]])
+                  }
                 }
                 
                 #------------------------------------------------------------------------------------
@@ -812,20 +814,11 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   }
                   
                   # Rename external-function columns by removing the prefix
-                  ext_cols_person = grep(
-                    "^ExtFunType_",
-                    names(OF4_extfuntype),
-                    value = TRUE
-                  )
+                  ext_cols_person = grep("^ExtFunType_", names(OF4_extfuntype), value = TRUE)
                   
                   if (length(ext_cols_person) > 0) {
-                    names(OF4_extfuntype)[
-                      match(ext_cols_person, names(OF4_extfuntype))
-                    ] = gsub(
-                      "^ExtFunType_",
-                      "",
-                      ext_cols_person
-                    )
+                    names(OF4_extfuntype)[match(ext_cols_person, names(OF4_extfuntype))] = gsub(
+                      "^ExtFunType_", "", ext_cols_person)
                   }
                   
                   OF4_extfuntype = tidyup_df(OF4_extfuntype)
