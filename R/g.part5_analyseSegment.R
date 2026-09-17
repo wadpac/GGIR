@@ -233,27 +233,6 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
     ds_names[fi] = "dur_spt_min";      fi = fi + 1
     dsummary[si, fi] = (length(c(sse)) * ws3new) / 60
     ds_names[fi] = "dur_day_spt_min";      fi = fi + 1
-    #===============================================
-    # EXTERNAL FUNCTION TYPES
-    if (!is.null(TOLEVELS) && length(TOLEVELS) > 0) {
-      extFunType = g.part5_analyseSegment_ExtFunType(
-        ts = ts,
-        sse = sse,
-        TOLEVELS = TOLEVELS,
-        TLEVELS = TLEVELS,
-        Tnames = Tnames,
-        myfun = myfun,
-        ws3new = ws3new,
-        dsummary = dsummary,
-        ds_names = ds_names,
-        si = si,
-        fi = fi
-      )
-      
-      dsummary = extFunType$dsummary
-      ds_names = extFunType$ds_names
-      fi = extFunType$fi
-    }
     #============================================
     # Number of long wake periods (defined as > 5 minutes) during the night
     Nawake = length(which(abs(diff(which(LEVELS[sse] == 0))) > (300 / ws3new))) - 2
@@ -490,6 +469,28 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
         }
         fi = fi + length(luxperseg$values)
       }
+    }
+    
+    #===============================================
+    # EXTERNAL FUNCTION TYPES
+    if (!is.null(TOLEVELS) && length(TOLEVELS) > 0) {
+      extFunType = g.part5_analyseSegment_ExtFunType(
+        ts = ts,
+        sse = sse,
+        TOLEVELS = TOLEVELS,
+        TLEVELS = TLEVELS,
+        Tnames = Tnames,
+        myfun = myfun,
+        ws3new = ws3new,
+        dsummary = dsummary,
+        ds_names = ds_names,
+        si = si,
+        fi = fi
+      )
+      
+      dsummary = extFunType$dsummary
+      ds_names = extFunType$ds_names
+      fi = extFunType$fi
     }
     
     #===============================================
