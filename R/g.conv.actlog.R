@@ -109,7 +109,7 @@ g.conv.actlog = function(qwindow, qwindow_dateformat = "%d-%m-%Y", epochSize = 5
   } else {
     qwindow$date =  as.Date(qwindow$date)
   }
-  if (is.na(qwindow$date[1]) == TRUE | !is(qwindow$date[1], "Date")) {
+  if (is.na(qwindow$date[1]) == TRUE | !method::is(qwindow$date[1], "Date")) {
     if (length(exampledates) > 0) {
       warning(paste0("\n Date not recognised in activity diary. We expect format ", 
                      qwindow_dateformat, " because that is what you specified in ",

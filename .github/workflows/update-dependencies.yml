@@ -34,7 +34,7 @@ jobs:
           renv::install(c("attachment", "actilifecounts", "testthat"), prompt = FALSE)
       
           # 3. Sync imported packages into DESCRIPTION
-          attachment::att_amend_desc(document = FALSE, depends = "methods")
+          attachment::att_amend_desc(document = FALSE)
       
           # 4. Set renv to explicit mode so it ONLY snapshots packages listed in DESCRIPTION
           renv::settings$snapshot.type("explicit")

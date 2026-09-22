@@ -6,7 +6,7 @@ g.dotorcomma = function(inputfile, dformat, mon, ...) {
   if (length(input) > 0) {
     for (i in 1:length(names(input))) {
       txt = paste0(names(input)[i], "=", input[i])
-      if (is(unlist(input[i]), "character")) {
+      if (methods::is(unlist(input[i]), "character")) {
         txt = paste0(names(input)[i], "='", unlist(input[i]), "'")
       }
       eval(parse(text = txt))
