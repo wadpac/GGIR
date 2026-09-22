@@ -29,12 +29,14 @@ jobs:
         run: |
           # 1. Update installed packages to their latest versions
           renv::update(prompt = FALSE)
-
-          # 2. Sync imported packages into DESCRIPTION
-          if (!requireNamespace("attachment", quietly = TRUE)) install.packages("attachment")
+      
+          # 2. Install missing packages required for attachment analysis
+          renv::install(c("attachment", "actilifecounts", "testthat"), prompt = FALSE)
+      
+          # 3. Sync imported packages into DESCRIPTION
           attachment::att_amend_desc()
-
-          # 3. Snapshot updated state into renv.lock
+      
+          # 4. Snapshot updated state into renv.lock
           renv::snapshot(prompt = FALSE)
 
       - name: Create Pull Request if files changed

@@ -44,3 +44,4 @@ Suggests: testthat, covr, knitr, rmarkdown, actilifecounts, readxl
 Imports: data.table, foreach, doParallel, signal, zoo, unisensR, ineq, methods, psych, irr, lubridate, GGIRread, ActCR, read.gt3x, arrow
 Depends: stats, utils, R (>= 3.5)
 VignetteBuilder: knitr
+Encoding: UTF-8
