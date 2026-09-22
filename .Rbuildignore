@@ -30,3 +30,4 @@ index.md
 .nojekyll
 ^\.positai$
 ^\.claude$
+^dev$
