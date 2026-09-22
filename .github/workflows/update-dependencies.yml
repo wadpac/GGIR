@@ -32,7 +32,7 @@ jobs:
 
           # 2. Sync imported packages into DESCRIPTION
           if (!requireNamespace("attachment", quietly = TRUE)) install.packages("attachment")
-          attachment::att_amend_desc(must_work = FALSE)
+          attachment::att_amend_desc()
 
           # 3. Snapshot updated state into renv.lock
           renv::snapshot(prompt = FALSE)
