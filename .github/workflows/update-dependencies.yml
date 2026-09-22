@@ -40,7 +40,7 @@ jobs:
           renv::snapshot(prompt = FALSE)
 
       - name: Create Pull Request if files changed
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           commit-message: "chore: update dependencies in DESCRIPTION and renv.lock"
           title: "Automated R Dependency Update"
