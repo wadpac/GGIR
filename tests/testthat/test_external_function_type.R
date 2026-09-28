@@ -25,10 +25,11 @@ test_that("Embedding external functions with reporttype = 'type'", {
   expect_equal(GGIR:::check_myfun(myfun, windowsizes = 5), 0)
 
   myfun_bad = myfun
-  myfun_bad$colnames = c("activity_type", "activity_type_2")
+  myfun_bad$colnames = c("activity_type", "activity_type2")
+  myfun_bad$reporttype = c("type", "type")
   expect_error(
     GGIR:::check_myfun(myfun_bad, windowsizes = 5),
-    regexp = "reporttype = 'type'.*only one output column"
+    regexp = "reporttype = 'type'.*only one type column in the output"
   )
   
   
