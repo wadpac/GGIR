@@ -101,10 +101,10 @@ check_myfun = function(myfun, windowsizes) { # Function to check myfun object
   }
   
   if ("reporttype" %in% names(myfun) && "type" %in% myfun$reporttype) {
-    if (length(myfun$colnames) != 1) {
+    if (length(myfun$reporttype == "type") > 1) {
       status = 1
       stop(
-        "Error in check_myfun.R: External functions with reporttype = 'type' currently support only one output column.",
+        "Error in check_myfun.R: External functions with reporttype = 'type' currently support only one type column in the output.",
         call. = FALSE
       )
     }
