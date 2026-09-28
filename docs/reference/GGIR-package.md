@@ -2,14 +2,14 @@
 
 Disclaimer: If you are a new GGIR user then please see [the GGIR
 github-pages](https://wadpac.github.io/GGIR/) for a narrative overview
-of GGIR.  
-  
+of GGIR.\
+\
 This document is primarily aimed at documenting the functions and their
-input arguments.  
-  
+input arguments.\
+\
 Please note that there is google discussion group for this package (link
-below).  
-  
+below).\
+\
 You can thank us for sharing the code in this package and for developing
 it as a generic purpose tool by citing the package name and by citing
 the supporting publications (e.g. Migueles et al. 2019) in your
@@ -21,8 +21,8 @@ publications.
 |-------------------|------------------------------------------------------|
 | Package:          | GGIR                                                 |
 | Type:             | Package                                              |
-| Version:          | 3.3-8                                                |
-| Date:             | 2026-07-24                                           |
+| Version:          | 3.3-9                                                |
+| Date:             | 2026-09-12                                           |
 | License:          | Apache License (== 2.0)                              |
 | Discussion group: | https://groups.google.com/forum/#!forum/rpackageggir |
 

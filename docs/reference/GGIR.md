@@ -902,7 +902,7 @@ extract in GGIR
   activityCounts. We called them BrondCounts because there are large
   number of activity counts in the physical activity and sleep research
   field. By calling them \_brondcounts\_ we clarify that these are the
-  counts proposed by Jan Br&#248;nd and implemented in R by Ruben
+  counts proposed by Jan Br\&#248;nd and implemented in R by Ruben
   Brondeel. The \_brondcounts\_ are intended to be an imitation of the
   counts produced by one of the closed source ActiLife software by
   ActiGraph.
@@ -1753,6 +1753,21 @@ and [g.part4](https://wadpac.github.io/GGIR/reference/g.part4.md).
   `guider_cor_meme_frac_in`, and `guider_cor_meme_min_hrs`. This
   parameter is set to 3 by default as a median becomes only meaningful
   with at least three values.
+
+- HDCZA_roll_windowsize:
+
+  Numeric (default = 5) Size in minutes of the rolling window used by
+  the HDCZA guider algorithm to calculate the median absolute difference
+  in angle for each window position.
+
+- LowAcc_threshold:
+
+  Numeric (default = 0.014) Acceleration threshold in \_g\_-units use by
+  the LowAcc guider applied to acceleration derived with metric as
+  specified by parameter `acc_metric`. The default is based on
+  `acc_metric = "MAD"`, which was consired most suitable for ActivPAL
+  data that come with timegaps that complicate auto-calibration of the
+  acceleration signals rendering default metric ENMO unsuitable.
 
 ### params_247
 

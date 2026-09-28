@@ -55,7 +55,7 @@ the following:
   [`sessionInfo()`](https://rdrr.io/r/utils/sessionInfo.html) in your R
   console.
 
-**Please be considerate of that fact that all public support is based on
+**Please be considerate of the fact that all public support is based on
 voluntary efforts.**
 
 ## Other documentation sources

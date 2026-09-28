@@ -22,7 +22,7 @@ three components that need to be separated:
 1.  The acceleration related to the gravitational acceleration. In the
     absence of movement the three acceleration signals inform us about
     the orientation of the accelerometer relative to gravity as a proxy
-    for posture.  
+    for posture.\
 2.  Accelerations and decelerations related to movement, which we can
     interpret as a proxy of muscle contractions and the energy
     expenditure needed for those contractions .
