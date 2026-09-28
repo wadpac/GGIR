@@ -708,8 +708,96 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           naval = which(is.na(dsummary[, kik]) == TRUE)
           if (length(naval) > 0) dsummary[naval, kik] = ""
         }
-        output = data.frame(dsummary,stringsAsFactors = FALSE)
+        output = data.frame(dsummary, stringsAsFactors = FALSE)
         names(output) = ds_names
+        
+        output = data.frame(dsummary, stringsAsFactors = FALSE)
+        names(output) = ds_names
+        
+        #======================================================================
+        # Order external-function type columns if available
+        #======================================================================
+        extfuntype_cols = grep("^ExtFunType_", names(output), value = TRUE)
+        
+        if (length(extfuntype_cols) > 0) {  
+          x = extfuntype_cols
+          
+          # Group order:
+          # spt > day
+          # unbouted > bouts > total
+          # duration > ACC > number of blocks/bouts
+          
+          group_order = rep(99L, length(x))
+          
+          group_order[grepl("^ExtFunType_dur_spt_.+_unbt_min$", x)] = 1
+          group_order[grepl("^ExtFunType_dur_spt_.+_bts_", x)]      = 2
+          group_order[grepl("^ExtFunType_dur_spt_total_", x)]       = 3
+          
+          group_order[grepl("^ExtFunType_ACC_spt_.+_unbt_mg$", x)] = 4
+          group_order[grepl("^ExtFunType_ACC_spt_.+_bts_", x)]     = 5
+          group_order[grepl("^ExtFunType_ACC_spt_total_", x)]      = 6
+          
+          group_order[grepl("^ExtFunType_Nblocks_spt_.+_unbt$", x)] = 7
+          group_order[grepl("^ExtFunType_Nbouts_spt_.+_bts_", x)]   = 8
+          group_order[grepl("^ExtFunType_Nblocks_spt_total_", x)]   = 9
+          
+          group_order[grepl("^ExtFunType_dur_day_.+_unbt_min$", x)] = 10
+          group_order[grepl("^ExtFunType_dur_day_.+_bts_", x)]      = 11
+          group_order[grepl("^ExtFunType_dur_day_total_", x)]       = 12
+          
+          group_order[grepl("^ExtFunType_ACC_day_.+_unbt_mg$", x)] = 13
+          group_order[grepl("^ExtFunType_ACC_day_.+_bts_", x)]     = 14
+          group_order[grepl("^ExtFunType_ACC_day_total_", x)]      = 15
+          
+          group_order[grepl("^ExtFunType_Nblocks_day_.+_unbt$", x)] = 16
+          group_order[grepl("^ExtFunType_Nbouts_day_.+_bts_", x)]   = 17
+          group_order[grepl("^ExtFunType_Nblocks_day_total_", x)]   = 18
+          
+          #--------------------------------------------------------------------
+          # Bout ordering:
+          # first by type, then by bout duration (longest to shortest)
+          #--------------------------------------------------------------------
+          
+          is_bout = grepl("_bts_", x)
+          
+          bout_type = rep("", length(x))
+          bout_duration = rep(0, length(x))
+          
+          if (any(is_bout)) {
+            
+            # types
+            bout_type[is_bout] = sub(
+              "^ExtFunType_[^_]+_(?:spt|day)_(.*)_bts_.*$",
+              "\\1",
+              x[is_bout]
+            )
+            
+            # longest to shortest duration
+            bout_duration[is_bout] = as.numeric(sub(".*_bts_([0-9]+).*", "\\1", x[is_bout]))
+          }
+          
+          #--------------------------------------------------------------------
+          # Final ordering
+          #--------------------------------------------------------------------
+          # Within each group:
+          #   1. bout type alphabetically
+          #   2. bout duration, longest to shortest
+          #   3. variable name as final tie-breaker
+          
+          ord = order(group_order, bout_type, -bout_duration, x)
+          
+          #--------------------------------------------------------------------
+          # Reorder output data frame
+          #--------------------------------------------------------------------
+          
+          ext_idx = which(grepl("^ExtFunType_", names(output)))
+          
+          new_order = seq_len(ncol(output))
+          new_order[ext_idx] = ext_idx[ord]
+          
+          output = output[, new_order, drop = FALSE]
+        }
+        #======================================================================
         
         # correct definition of sleep log availability for window = WW, because now it
         # also relies on sleep log from previous night
