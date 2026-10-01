@@ -621,8 +621,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     NfactorMetrics = 0
     if (length(myfun) != 0) {
       metricnames_short = c(metricnames_short, myfun$colnames)
-      if (myfun$outputtype == "numeric") NbasicMetrics = NbasicMetrics + length(myfun$colnames)
-      if (myfun$outputtype == "character") NfactorMetrics = length(myfun$colnames)
+      if ("numeric" %in% myfun$outputtype)   NbasicMetrics  = NbasicMetrics + sum(myfun$outputtype == "numeric")
+      if ("character" %in% myfun$outputtype) NfactorMetrics = sum(myfun$outputtype == "character")
     }
     metashort = data.frame(A = metashort, stringsAsFactors = FALSE)
     names(metashort) = metricnames_short
@@ -634,7 +634,8 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         if (is.null(LevelsExternalFunction)) {
           metashort[,ncolms] = as.factor(metashort[,ncolms])
         } else {
-          metashort[,ncolms] = factor(metashort[,ncolms], levels = LevelsExternalFunction)
+          this_column_levels = LevelsExternalFunction[[ncolms - NbasicMetrics + 1]]
+          metashort[,ncolms] = factor(metashort[,ncolms], levels = this_column_levels)
         }
       }
     }
