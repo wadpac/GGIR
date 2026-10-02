@@ -617,24 +617,31 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     
     # Following code is needed to make sure that algorithms that produce character value
     # output are not assumed to be numeric
-    NbasicMetrics = length(metricnames_short)
-    NfactorMetrics = 0
+    basicMetrics = metricnames_short[metricnames_short != "timestamp"]
+    factorMetrics = NULL
     if (length(myfun) != 0) {
       metricnames_short = c(metricnames_short, myfun$colnames)
-      if ("numeric" %in% myfun$outputtype)   NbasicMetrics  = NbasicMetrics + sum(myfun$outputtype == "numeric")
-      if ("character" %in% myfun$outputtype) NfactorMetrics = sum(myfun$outputtype == "character")
+      basicMetrics = c(basicMetrics, myfun$colnames[myfun$outputtype == "numeric"])
+      factorMetrics = c(factorMetrics, myfun$colnames[myfun$outputtype == "character"])
     }
+    NbasicMetrics = length(basicMetrics)
+    NfactorMetrics = length(factorMetrics)
     metashort = data.frame(A = metashort, stringsAsFactors = FALSE)
     names(metashort) = metricnames_short
-    for (ncolms in 2:NbasicMetrics) {
-      metashort[,ncolms] = as.numeric(metashort[,ncolms])
+    basicMetrics_idx = which(names(metashort) %in% basicMetrics)
+    if (NbasicMetrics > 0) {
+      for (ncolms in basicMetrics_idx) {
+        metashort[,ncolms] = as.numeric(metashort[,ncolms])
+      }
     }
     if (NfactorMetrics > 0) {
-      for (ncolms in (NbasicMetrics + 1):(NbasicMetrics + NfactorMetrics)) {
+      factorMetrics_idx = which(names(metashort) %in% factorMetrics)
+      for (ncolms in factorMetrics_idx) {
         if (is.null(LevelsExternalFunction)) {
           metashort[,ncolms] = as.factor(metashort[,ncolms])
         } else {
-          this_column_levels = LevelsExternalFunction[[ncolms - NbasicMetrics + 1]]
+          out_idx = which(myfun$colnames == names(metashort)[ncolms])
+          this_column_levels = LevelsExternalFunction[[out_idx]]
           metashort[,ncolms] = factor(metashort[,ncolms], levels = this_column_levels)
         }
       }
