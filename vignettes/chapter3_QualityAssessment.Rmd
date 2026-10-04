@@ -122,6 +122,16 @@ Finally, if the recording starts or ends with a period of less than three hours 
 
 GGIR part 1 also screens the acceleration signal for "clipping", i.e., sustained unusual high (raw) acceleration values non compatible with human movement. If more than 30% of the data points in a  15-minute window (same as used for non-wear) are close to the maximal values (technical term for this is dynamic range) of this sensor, the corresponding time period is considered as potentially unreliable, which may be explained by the sensor getting stuck at its extreme value or accelerometers being used inappropriately (attached to some heavily accelerating object). For example, for a dynamic range of 8*g*, accelerations over 7.5*g* would be marked as "clipping". The window is also classified as clipping if any value in the window is larger than 150% the dynamic range of the sensor. Given that clipping rarely happens it is reported by GGIR as part of non-wear time. Both clipping and non-wear are treated the same and by merging them we arrive at a single indicator for the amount of invalid data. However, to keep track of the occurrence of clipping time, GGIR does report the fraction of 15-minute windows in a recording during which clipping occurs, see section on output below.
 
+## Light sensor data calibration for GENEActiv
+
+GENEActiv light measurements are calibrated according to device model inside R package GGIRread, which GGIR uses for reading accelerometer data.
+
+For all GENEActiv device models light calibration entails multiplying the raw value by (Lux / Volts), which are two constants extracted from the data file header. This has been the case for many years.
+
+For GENEActiv 1.2 and above, this step is preceded by an additional correction to account for the light sensor's non-linear scaling with graded resolution. This provides greater accuracy at low light levels while supporting a higher range. This correction was provided by ActivInsights Ltd, the manufacturer of GENEActiv devices and is present in GGIRread since release 1.0.11 (2026). 
+
+Additionally, GGIR offers input parameters [LUX_cal_exponent](https://wadpac.github.io/GGIR/articles/GGIRParameters.html#lux_cal_exponent  ) and [LUX_cal_constant](https://wadpac.github.io/GGIR/articles/GGIRParameters.html#lux_cal_constant). These were added to correct data as collected in a specific study that used one of the first batches of GENEActiv devices in 2012/2013. Please do not use these parameters in new data unless you have been instructed by ActivInsights Ltd to do so.
+
 ## Key parameters
 
 ### Time gap imputation
