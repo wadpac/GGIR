@@ -395,7 +395,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                           "is_read.gt3x_installed", "is_ActCR_installed",
                           "is_actilifecounts_installed", "rawaccfiles", "is_readxl_installed",
                           "checkFormat", "getExt", "rawaccfiles_formats",
-                          "f1_orinally_null", "random_message") == FALSE)]
+                          "f1_orinally_null", "random_message", "pv") == FALSE)]
 
   config.parameters = mget(LS)
   config.matrix = as.data.frame(createConfigFile(config.parameters, GGIRversion))
