@@ -130,7 +130,7 @@ For all GENEActiv device models light calibration entails multiplying the raw va
 
 For GENEActiv 1.2 and above, this step is preceded by an additional correction to account for the light sensor's non-linear scaling with graded resolution. This provides greater accuracy at low light levels while supporting a higher range. This correction was provided by ActivInsights Ltd, the manufacturer of GENEActiv devices and is present in GGIRread since release 1.0.11 (2026). 
 
-Additionally, GGIR offers input parameters [LUX_cal_exponent](https://wadpac.github.io/GGIR/articles/GGIRParameters.html#lux_cal_exponent  ) and [LUX_cal_constant](https://wadpac.github.io/GGIR/articles/GGIRParameters.html#lux_cal_constant). These were added to correct data as collected in a specific study that used one of the first batches of GENEActiv devices in 2012/2013. Please do not use these parameters in new data unless you have been instructed by ActivInsights Ltd to do so.
+Additionally, GGIR offers input parameters [LUX_cal_exponent](https://wadpac.github.io/GGIR/articles/GGIRParameters.html#lux_cal_exponent) and [LUX_cal_constant](https://wadpac.github.io/GGIR/articles/GGIRParameters.html#lux_cal_constant). These were added to correct data as collected in a specific study that used one of the first batches of GENEActiv devices in 2012/2013. Please do not use these parameters in new data unless you have been instructed by ActivInsights Ltd to do so.
 
 ## Key parameters
 
