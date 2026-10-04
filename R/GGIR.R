@@ -3,12 +3,12 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                 do.report = c(2, 4, 5, 6), configfile = c(),
                 myfun = c(), verbose = TRUE,
                 ...) {
-  
+
   # Set language to English while using GGIR
   LC_TIME_backup = Sys.getlocale("LC_TIME")
   Sys.setlocale("LC_TIME", "C")
   on.exit({Sys.setlocale("LC_TIME", LC_TIME_backup)}, add = TRUE)
-  
+
   #get input variables
   input = list(...)
   # Check for duplicated arguments
@@ -42,21 +42,21 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     }
     rm(default_params, known_param_names)
   }
-  
+
   if (length(datadir) == 0) {
     stop('\nVariable datadir is not specified')
   }
-  
+
   if (length(outputdir) == 0) {
     stop('\nVariable outputdir is not specified')
   }
-  
+
   # Convert paths from Windows specific slashed to generic slashes
   outputdir = gsub(pattern = "\\\\", replacement = "/", x = outputdir)
   datadir = gsub(pattern = "\\\\", replacement = "/", x = datadir)
-  
-  
-  
+
+
+
   # Establish which parts need to be processed:
   dopart1 = dopart2 = dopart3 = dopart4 = dopart5 = dopart6 = FALSE
   if (length(which(mode == 0)) > 0) {
@@ -77,7 +77,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     outputfoldername = unlist(strsplit(datadir, "/"))[length(unlist(strsplit(datadir, "/")))]
     metadatadir = paste0(outputdir, "/output_", outputfoldername)
   }
-  
+
   # Configuration file - check whether it exists or auto-load
   configfile_csv = c()
   ex = "csv"
@@ -106,7 +106,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       }
     }
   }
-  
+
   #----------------------------------------------------------
   # Extract parameters from user input, configfile and/or defaults.
   params = extract_params(input = input, configfile_csv = configfile_csv) # load default parameters here in g.shell.GGIR
@@ -118,30 +118,31 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   params_cleaning = params$params_cleaning
   params_output = params$params_output
   params_general = params$params_general
-  
+
   if (params_general[["dataFormat"]] == "ukbiobank") {
     warning("\nRunnning part 3, 4, and 5 are disabled when dataFormat is ukbiobank epoch", call. = FALSE)
     dopart3 = dopart4 = dopart5 = FALSE
     mode = mode[which(mode <= 2)]
   }
-  
+
   if (dopart3 == TRUE & params_metrics[["do.anglez"]] == FALSE & params_general[["dataFormat"]] == "raw") {
     params_metrics[["do.anglez"]] = TRUE
   }
-  
+
   if (length(myfun) != 0) { # Run check on myfun object, if provided
     check_myfun(myfun, params_general[["windowsizes"]])
   }
-  
+
   if (params_output[["visualreport"]] == TRUE &
       params_output[["old_visualreport"]] == TRUE &
       params_general[["dataFormat"]] != "raw") {
     params_output[["visualreport"]] == FALSE
   }
-  
+
   # check package dependencies
   if (params_metrics$do.neishabouricounts == TRUE) {
-    is_actilifecounts_installed = is.element('actilifecounts', installed.packages()[,1])
+    pv = try({utils::packageVersion("actilifecounts")}, silent = TRUE)
+    is_actilifecounts_installed = !inherits(pv, "try-error")
     if (is_actilifecounts_installed == FALSE) {
       stop("If you want to derive Neishabouricounts, please install package: actilifecounts.", call. = FALSE)
     } else {
@@ -160,7 +161,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       checkFormat = FALSE
     }
     if (checkFormat == TRUE) {
-      is_readxl_installed = is.element('readxl', installed.packages()[,1])
+      pv = try({utils::packageVersion("readxl")}, silent = TRUE)
+      is_readxl_installed = !inherits(pv, "try-error")
       if (is_readxl_installed == FALSE) {
         getExt = function(x) {
           tmp = unlist(strsplit(x, "[.]"))
@@ -173,7 +175,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       }
     }
   }
-  
+
   # This check cannot be part of check_params because it needs to know mode:
   if (6 %in% mode && params_247[["part6CR"]] == FALSE && params_247[["part6HCA"]]) {
     warning(paste0("Both part6CR and part6HCA are set to FALSE by which there is ",
@@ -188,7 +190,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       # even if the actual path is no longer available, because GGIR uses the most
       # distal folder name to identify the output directory. For example,
       # if part 2-5 are processed on a different system then part 1.
-      
+
       stop("\nDirectory specified by argument datadir does not exist")
     }
     if (datadir == outputdir || grepl(paste(datadir, '/', sep = ''), outputdir)) {
@@ -207,7 +209,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       stop('\nError: studyname must be specified if datadir is a list of files')
     }
   }
-  # Correct f1 
+  # Correct f1
   if (is.null(f0) || f0 < 1) { # What file to start with?
     f0 = 1
   }
@@ -227,12 +229,13 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   if (is.null(f1)) {
     f1 = 0
   }
-  
+
   #-----------------------------------------------------------
   # Print GGIR header to console
   GGIRversion = "could not extract version"
-  if (is.element('GGIR', installed.packages()[,1])) {
-    GGIRversion = as.character(utils::packageVersion("GGIR"))
+  pv = try({utils::packageVersion("GGIR")}, silent = TRUE)
+  if (!inherits(pv, "try-error")) {
+    GGIRversion = as.character(pv)
     if (length(GGIRversion) != 1) GGIRversion = sessionInfo()$otherPkgs$GGIR$Version
   }
   if (verbose == TRUE) {
@@ -272,7 +275,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   }
   if (dopart1 == TRUE) {
     if (verbose == TRUE) print_console_header("Part 1")
-    
+
     if (!is.null(params_general[["maxRecordingInterval"]]) & params_general[["overwrite"]] == TRUE) {
       # When we want to overwrite previously processed data and append recordings
       # it is necessary to first empty folder meta/basic to avoid confusion with
@@ -371,7 +374,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
   if (dopart6 == TRUE) {
     if (verbose == TRUE) print_console_header("Part 6")
     if (f1 == 0) {
-      f1 = length(dir(paste0(metadatadir, "/meta/ms5.outraw/", 
+      f1 = length(dir(paste0(metadatadir, "/meta/ms5.outraw/",
                              params_phyact[["part6_threshold_combi"]])))
     }
     g.part6(datadir = datadir, metadatadir = metadatadir, f0 = f0, f1 = f1,
@@ -379,7 +382,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
             params_247 = params_247, params_cleaning = params_cleaning,
             verbose = verbose)
   }
-  
+
   #--------------------------------------------------
   # Store configuration parameters in config file
   LS = ls()
@@ -388,12 +391,12 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                           "configfile", "filelist", "outputfoldername", "numi", "logi",
                           "conv2logical", "conv2num", "SI", "params", "argNames", "dupArgNames",
                           "print_console_header", "configfile_csv", "myfun", "ex",
-                          "GGIRversion",  "dupArgValues", "verbose", "is_GGIRread_installed", 
-                          "is_read.gt3x_installed", "is_ActCR_installed", 
-                          "is_actilifecounts_installed", "rawaccfiles", "is_readxl_installed", 
+                          "GGIRversion",  "dupArgValues", "verbose", "is_GGIRread_installed",
+                          "is_read.gt3x_installed", "is_ActCR_installed",
+                          "is_actilifecounts_installed", "rawaccfiles", "is_readxl_installed",
                           "checkFormat", "getExt", "rawaccfiles_formats",
-                          "f1_orinally_null", "random_message") == FALSE)]
-  
+                          "f1_orinally_null", "random_message", "pv") == FALSE)]
+
   config.parameters = mget(LS)
   config.matrix = as.data.frame(createConfigFile(config.parameters, GGIRversion))
   config.matrix$context[which(config.matrix$context == "")] = "not applicable"
@@ -473,7 +476,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
     files.ms4.out = dir(paste0(metadatadir, "/meta/ms4.out"))
     # at least one metafile from the same recording in each folder
     files.available = Reduce(intersect, list(files.basic, files.ms3.out, files.ms4.out))
-    
+
     if (length(files.available) > 0) {
       if (verbose == TRUE) print_console_header("Generate visual reports")
       # The new visual report
