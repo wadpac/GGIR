@@ -1,6 +1,6 @@
 aggregateType = function(metric_name, epochsize,
                          daysummary,  ds_names, fi, di,
-                         vari, segmentInfo, myfun = NULL, r5long) {
+                         vari, segmentInfo, myfun = NULL, qcheck) {
   anwi_nameindices = segmentInfo$anwi_nameindices
   anwi_index = segmentInfo$anwi_index
   if ("ilevels" %in% names(myfun) == FALSE) myfun$ilevels = c(0, 80)
@@ -14,7 +14,7 @@ aggregateType = function(metric_name, epochsize,
   #   invalid (GGIR invalid epochs)
   #   unclassified (valid epochs without a classification -external function returns NA-)
   #   valid
-  invalid_idx = r5long != 0 & r5long != -1
+  invalid_idx = qcheck != 0 & qcheck != -1
   unclassified_idx = is.na(type_values) & !invalid_idx
   valid_idx = !invalid_idx & !is.na(type_values)
   

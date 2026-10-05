@@ -10,7 +10,7 @@ detectTypeBouts = function(myfun, varnum_type,
   classes = levels(varnum_type)
 
   # Loop over type classes
-  for (class in valid_classes) {
+  for (class in classes) {
     
     # Loop over bout durations
     for (boutdur in myfun$tbout.dur) {
