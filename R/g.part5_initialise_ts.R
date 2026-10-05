@@ -53,7 +53,7 @@ g.part5_initialise_ts = function(IMP, M, params_247, params_general,
     type_indices = which(myfun$reporttype == "type")
     
     if (length(type_indices) > 0) {
-      
+
       # Identify "type" column and its levels
       type_columns = myfun$colnames[type_indices]
       

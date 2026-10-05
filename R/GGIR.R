@@ -453,7 +453,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      loglocation = params_sleep[["loglocation"]],
                      params_cleaning = params_cleaning,
                      LUX_day_segments = params_247[["LUX_day_segments"]], params_output = params_output,
-                     verbose = verbose)
+                     myfun = myfun, verbose = verbose)
       g.report.part5_dictionary(metadatadir = metadatadir, params_output = params_output)
     }
   }

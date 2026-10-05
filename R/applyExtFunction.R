@@ -97,7 +97,7 @@ applyExtFunction = function(data, myfun, sf, ws3,interpolationType=1) {
       is_factor = c(is_factor, out_idx)
     } else if (is.character(output[, 1])) {
       output[, 1] = factor(output[, 1], 
-                           levels = sort(unique(tput[, 1])))
+                           levels = sort(unique(output[, 1])))
       is_factor = c(is_factor, out_idx)
     }
     LevelsExternalFunction[[out_idx]] = levels(output[, 1])
