@@ -457,7 +457,8 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   di = di,
                   vari = vari,
                   segmentInfo = segmentInfo,
-                  myfun = myfun
+                  myfun = myfun,
+                  r5long = r5long
                 )
                 
                 daysummary = typeAgg$daysummary

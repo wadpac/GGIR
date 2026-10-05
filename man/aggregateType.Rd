@@ -8,7 +8,7 @@
 }
 \usage{
    aggregateType(metric_name, epochsize, daysummary, ds_names,
-                          fi, di, vari, segmentInfo, myfun = NULL)
+                          fi, di, vari, segmentInfo, myfun = NULL, r5long)
 }
 \arguments{
   \item{metric_name}{
@@ -38,6 +38,9 @@
   }
   \item{myfun}{
     See \link{GGIR}
+  }
+  \item{r5long}{
+    Epoch validity indicator.
   }
 }
 \keyword{internal}
