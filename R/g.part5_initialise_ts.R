@@ -44,36 +44,46 @@ g.part5_initialise_ts = function(IMP, M, params_247, params_general,
     ts$step_count = 0
     ts$step_count = IMP$metashort$step_count
   }
-
+  
+  # External function with reporttype = "type"
   if (length(myfun) > 0 &&
       "reporttype" %in% names(myfun)) {
     
-    if (myfun$reporttype == "type") {
+    # identify type columns
+    type_indices = which(myfun$reporttype == "type")
+    
+    if (length(type_indices) > 0) {
       
       # Identify "type" column and its levels
-      type_col = myfun$colnames
-      type_levels = unique(IMP$metashort[,type_col])
-      type_levels = type_levels[!is.na(type_levels)]
-      type_levels = tolower(type_levels) # to lower to being case insensitive in subsequent calculations
+      type_columns = myfun$colnames[type_indices]
       
-      # seconds in each row
-      epoch_s = IMP$windowsizes[1]
-      
-      # identify the type of each epoch
-      type_index = match(IMP$metashort[, type_col], type_levels)
-      
-      # create output matrix: 
-      # each row represents seconds in epoch classified in each type_levels
-      type_mat = matrix(0,
-                        nrow = nrow(IMP$metashort),
-                        ncol = length(type_levels))
-      valid = !is.na(type_index) # safe-guard for implausible NA values
-      type_mat[cbind(which(valid), type_index[valid])] = epoch_s
-      
-      # add columns to ts 
-      type_colnames = paste0("ExtFunType_", type_col, "_", type_levels, "_s")
-      colnames(type_mat) = type_colnames
-      ts[type_colnames] = type_mat
+      for (type_col in type_columns) {
+        
+        # identify levels
+        type_levels = levels(IMP$metashort[,type_col])
+
+        # seconds in each row
+        epoch_s = IMP$windowsizes[1]
+        
+        # identify the type level of each epoch
+        type_index = match(IMP$metashort[, type_col], type_levels)
+        
+        # create output matrix: 
+        # each row represents seconds in epoch classified in each type_levels
+        type_mat = matrix(0,
+                          nrow = nrow(IMP$metashort),
+                          ncol = length(type_levels))
+        
+        # Only epochs with a classified type contribute to TOLEVELS.
+        # Invalid and unclassified epochs remain zero in all type columns.
+        classified = !is.na(type_index)
+        type_mat[cbind(which(classified), type_index[classified])] = epoch_s
+        
+        # add columns to ts 
+        type_colnames = paste0("ExtFunType_", type_col, "_", type_levels, "_s")
+        colnames(type_mat) = type_colnames
+        ts[type_colnames] = type_mat
+      }
     } 
   }
   
