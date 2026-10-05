@@ -334,6 +334,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
         }
         fi_remember = fi
         vari_bu = vari
+        val_bu = val
         for (anwi_index in 1:length(anwi_t0)) { # Loop over starts of the windows
           if (anwi_index != 1 & di == 1) {
             # increase value of fi to leave enough space for the variables to be calculated in second day of measurement
@@ -342,6 +343,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
             fi_remember = fi
           }
           vari = vari_bu
+          val_type = val_bu # validity vector for external function type variables
           new = check_daysummary_size(daysummary, ds_names, fi)
           daysummary = new$daysummary
           ds_names = new$ds_names
@@ -361,6 +363,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               if (di == 1) {
                 # On first day of recording append the average day to the start
                 vari = rbind(averageday[1:abs(deltaLength), ], vari)
+                val_type = c(rep(NA_real_, abs(deltaLength)), val_type)
                 # readjust anwi indices in case that varnum has been imputed
                 if (max(anwi_t1) < nrow(vari)) { # since GGIR always calculates full window, max(anwi_t1) should always equals length(varnum)
                   anwi_t0 = anwi_t0 + abs(deltaLength)
@@ -377,11 +380,18 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   enMissingHour = 3 * 60 * (60/ws3)
                   vari = rbind(vari[1:(startMissingHour - 1), , drop = FALSE], averageday[startMissingHour:enMissingHour, , drop = FALSE],
                                vari[startMissingHour:nrow(vari), , drop = FALSE])
+                  val_type = c(
+                    val_type[1:(startMissingHour - 1)],
+                    rep(NA_real_, enMissingHour - startMissingHour + 1),
+                    val_type[startMissingHour:length(val_type)]
+                  )
                 } else { # day has less than 24 hours for another reason
                   # Append the average day to the end
                   a56 = nrow(averageday) - abs(deltaLength) + 1
                   a57 = nrow(averageday)
                   vari = rbind(vari, averageday[a56:a57, , drop = FALSE])
+                  val_type = c(val_type, rep(NA_real_, abs(deltaLength))
+                  )
                 }
               }
             } else if (deltaLength > 0) { # 25 hour days, assuming DST
@@ -391,6 +401,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               endDoubleHour = 3 * 60 * (60/ws3)
               if (nrow(vari) > endDoubleHour) {
                 vari = vari[-c(startDoubleHour:endDoubleHour)]
+                val_type = val_type[-c(startDoubleHour:endDoubleHour)]
               }
             }
             if (anwi_index != 1) {
@@ -399,6 +410,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   anwindices = anwindices[which(anwindices <= nrow(vari))]
                 }
                 vari = vari[anwindices, ] #cut short varnum to match day segment of interest
+                val_type = val_type[anwindices]
               } else {
                 vari = c()
               }
@@ -458,7 +470,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   vari = vari,
                   segmentInfo = segmentInfo,
                   myfun = myfun,
-                  qcheck = qcheck
+                  qcheck = val_type
                 )
                 
                 daysummary = typeAgg$daysummary
