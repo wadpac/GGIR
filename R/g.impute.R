@@ -364,89 +364,69 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   averageday = matrix(0, wpd, ncol(metashort) - 1)
   
   for (mi in 2:ncol(metashort)) {
-    # If metric is non-numeric (e.g. external function metric of reporttype = "type")
-    # for now just add a prefix of "invalid_" preceeding the "type"
-    if (is.character(metashort[[mi]]) || is.factor(metashort[[mi]])) {
-      # ensure character class
-      metashort[[mi]] = as.character(metashort[[mi]])
-      # find invalid epochs (ignoring -1 which represents tail expansion)
-      invalid_idx = which(r5long != 0 & r5long != -1)
-      
-      if (length(invalid_idx) > 0) {
-        # avoid accidentally prefixing multiple times if rerun
-        needs_prefix = invalid_idx[!grepl("^invalid_", metashort[[mi]][invalid_idx])]
-        # add prefix
-        metashort[[mi]][needs_prefix] = paste0("invalid_", metashort[[mi]][needs_prefix])
+    # generate 'average' day for each numeric variable
+    # The average day is used for imputation and defined relative to the starttime of the measurement
+    # irrespective of dayborder as used in other parts of GGIR
+    metr = as.numeric(as.matrix(metashort[, mi]))
+    # turn all values of metr to NA if r5long is different to 0 (it now leaves the
+    # expanded time with expand_tail_max out of the averageday calculation)
+    is.na(metr[which(r5long != 0)]) = T 
+    imp = matrix(NA, wpd, ceiling(length(metr) / wpd)) #matrix used for imputation of seconds
+    ndays = ncol(imp) #number of days (rounded upwards)
+    nvalidsec = matrix(0, wpd, 1)
+    dcomplscore = length(which(r5 == 0)) / length(r5)
+    if (ndays > 1 ) { # only do imputation if there is more than 1 day of data
+      # all days except last one
+      for (j in 1:(ndays - 1)) {
+        imp[, j] = as.numeric(metr[(((j - 1) * wpd) + 1):(j * wpd)])
       }
-      
-      # Ensure 'averageday' numeric matrix structure isn't broken by characters
-      averageday[, (mi - 1)] = 0
-      dcomplscore = length(which(r5 == 0)) / length(r5)
-      
-    } else {
-      # generate 'average' day for each numeric variable
-      # The average day is used for imputation and defined relative to the starttime of the measurement
-      # irrespective of dayborder as used in other parts of GGIR
-      metr = as.numeric(as.matrix(metashort[, mi]))
-      # turn all values of metr to NA if r5long is different to 0 (it now leaves the
-      # expanded time with expand_tail_max out of the averageday calculation)
-      is.na(metr[which(r5long != 0)]) = T 
-      imp = matrix(NA, wpd, ceiling(length(metr) / wpd)) #matrix used for imputation of seconds
-      ndays = ncol(imp) #number of days (rounded upwards)
-      nvalidsec = matrix(0, wpd, 1)
-      dcomplscore = length(which(r5 == 0)) / length(r5)
-      if (ndays > 1 ) { # only do imputation if there is more than 1 day of data
-        # all days except last one
-        for (j in 1:(ndays - 1)) {
-          imp[, j] = as.numeric(metr[(((j - 1) * wpd) + 1):(j * wpd)])
-        }
-        # last day
-        lastday = metr[(((ndays - 1) * wpd) + 1):length(metr)]
-        imp[1:length(lastday),ndays] = as.numeric(lastday)
-        if (colnames(metashort)[mi] == "step_count") {
-          # Median per row, which equals to median for one time point in the 'average' day
-          # (median day would be a better term in this context)
-          # chances are high that this will often be zero, because a person
-          # would have to walk on a certain time point in the day for more than half of
-          # each day in the to get a median above zero
-          imp3 = apply(imp, 1, median, na.rm = TRUE)
-        } else if (colnames(metashort)[mi] == "marker") {
-          imp[is.na(imp)] <- 0 # to prevent imputation of marker data
-          imp3 = apply(imp, 1, min, na.rm = TRUE)
-        } else {
-          # mean per row, which equals to mean or one time point in the 'average' day
-          imp3 = rowMeans(imp, na.rm = TRUE)
-        }
-        dcomplscore = length(which(is.nan(imp3) == F | is.na(imp3) == F)) / length(imp3)
-        
-        if (length(imp3) < wpd)  {
-          dcomplscore = dcomplscore * (length(imp3)/wpd)
-        }
-        if (ENi == mi) { #replace missing values for EN by 1
-          imp3[which(is.nan(imp3) == T | is.na(imp3) == T)] = 1
-        } else { #replace missing values for other metrics by 0
-          # for those part of the data where there is no single data point for a 
-          # certain part of the day (this is CRITICAL)
-          imp3[which(is.nan(imp3) == T | is.na(imp3) == T)] = 0 
-        }
-        averageday[, (mi - 1)] = imp3
-        for (j in 1:ndays) {
-          missing = which(is.na(imp[,j]) == T)
-          if (length(missing) > 0) {
-            imp[missing,j] = imp3[missing]
-          }
-        }
-        # imp is now the imputed time series
-        dim(imp) = c(length(imp), 1)
-        # but do not use imp for expanded time
-        # do not impute the expanded time with expand_tail_max_hours
-        toimpute = which(r5long != -1)
-        #to cut off the latter part of the last day used as a dummy data
-        metashort[toimpute, mi] = as.numeric(imp[toimpute]) 
+      # last day
+      lastday = metr[(((ndays - 1) * wpd) + 1):length(metr)]
+      imp[1:length(lastday),ndays] = as.numeric(lastday)
+      if (colnames(metashort)[mi] == "step_count") {
+        # Median per row, which equals to median for one time point in the 'average' day
+        # (median day would be a better term in this context)
+        # chances are high that this will often be zero, because a person
+        # would have to walk on a certain time point in the day for more than half of
+        # each day in the to get a median above zero
+        imp3 = apply(imp, 1, median, na.rm = TRUE)
+      } else if (colnames(metashort)[mi] == "marker") {
+        imp[is.na(imp)] <- 0 # to prevent imputation of marker data
+        imp3 = apply(imp, 1, min, na.rm = TRUE)
       } else {
-        dcomplscore = length(which(r5long == 0)) / wpd
+        # mean per row, which equals to mean or one time point in the 'average' day
+        imp3 = rowMeans(imp, na.rm = TRUE)
       }
+      dcomplscore = length(which(is.nan(imp3) == F | is.na(imp3) == F)) / length(imp3)
+      
+      if (length(imp3) < wpd)  {
+        dcomplscore = dcomplscore * (length(imp3)/wpd)
+      }
+      if (ENi == mi) { #replace missing values for EN by 1
+        imp3[which(is.nan(imp3) == T | is.na(imp3) == T)] = 1
+      } else { #replace missing values for other metrics by 0
+        # for those part of the data where there is no single data point for a 
+        # certain part of the day (this is CRITICAL)
+        imp3[which(is.nan(imp3) == T | is.na(imp3) == T)] = 0 
+      }
+      averageday[, (mi - 1)] = imp3
+      for (j in 1:ndays) {
+        missing = which(is.na(imp[,j]) == T)
+        if (length(missing) > 0) {
+          imp[missing,j] = imp3[missing]
+        }
+      }
+      # imp is now the imputed time series
+      dim(imp) = c(length(imp), 1)
+      # but do not use imp for expanded time
+      # do not impute the expanded time with expand_tail_max_hours
+      toimpute = which(r5long != -1)
+      #to cut off the latter part of the last day used as a dummy data
+      metashort[toimpute, mi] = as.numeric(imp[toimpute]) 
+    } else {
+      dcomplscore = length(which(r5long == 0)) / wpd
     }
+    
   }
   
   # Ensure rounding only affect numeric columns

@@ -170,17 +170,16 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           }
         }
         if (length(myfun) > 0) {
-          for (mi in 1:length(myfun$outputtype)) {
-            if (myfun$outputtype[mi] == "character") {
-              # At the moment we do not have a strategy in place on how to impute categorical variables
-              # produced by external functions. 
-              # Therefore, temporarily not to impute and warn users that they are 
-              # responsible for data imputation at post-processing
-              type_columns = myfun$colnames[which(myfun$outputtype == "character")]
-              typeMetricIndex = which(names(M$metashort) %in% type_columns)
-              typeMetric = M$metashort[, typeMetricIndex, drop = FALSE]
+          if (any(myfun$outputtype == "character")) {
+            # At the moment we do not have a strategy in place on how to 
+            # impute categorical variables produced by external functions. 
+            # Therefore, temporarily not to impute and warn users that they are 
+            # responsible for data imputation at post-processing
+            type_columns = myfun$colnames[myfun$outputtype == "character"]
+            typeMetricIndex = which(names(M$metashort) %in% type_columns)
+            if (length(typeMetricIndex) > 0) {
               M_bu = M
-              M$metashort = M$metashort[, -typeMetricIndex]
+              M$metashort = M$metashort[, -typeMetricIndex, drop = FALSE]
             }
           }
         }
@@ -206,16 +205,18 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                        acc.metric = params_general[["acc.metric"]],
                        ID = ID, qwindowImp = qwindowImp)
         # restore type metric from external function in M and IMP
-        if (length(myfun) > 0) {
-          for (mi in 1:length(myfun$outputtype)) {
-            if (myfun$outputtype[mi] == "character") {
-              typeMetricIndex = which(names(M_bu$metashort) == myfun$colnames[mi])
-              IMP$metashort[, ncol(IMP$metashort) + 1] = M_bu$metashort[, typeMetricIndex]
-              colnames(IMP$metashort)[ncol(IMP$metashort)] = myfun$colnames[mi]
+        if (exists("M_bu")) {
+          typeMetricIndex = which(names(M_bu$metashort) %in%
+              myfun$colnames[myfun$outputtype == "character"])
+          
+          if (length(typeMetricIndex) > 0) {
+            type_columns = names(M_bu$metashort)[typeMetricIndex]
+            for (type_column in type_columns) {
+              IMP$metashort[[type_column]] = M_bu$metashort[[type_column]]
               IMP$averageday = cbind(IMP$averageday, NA)
-              M = M_bu
             }
           }
+          M = M_bu
         }
         
         if (params_output[["do.part2.png"]] == TRUE & length(IMP) > 0) {
