@@ -11,8 +11,8 @@
 }
 \usage{
    detectTypeBouts(myfun, varnum_type, 
-                           UnitReScale, daysummary, ds_names,
-                           di, fi, ws3, boutnameEnding)
+                   daysummary, ds_names,
+                   di, fi, ws3, boutnameEnding)
 }
 \arguments{
   \item{myfun}{
@@ -21,10 +21,6 @@
   \item{varnum_type}{
     Vector (usually of class factor) containing the type metric as produced by 
     the external function.
-  }
-  \item{UnitReScale}{
-    Numeric indicating the scaling factor to apply to the acceleration 
-    metric (varnum).
   }
   \item{daysummary}{
     Matrix with prelimenary day summary.

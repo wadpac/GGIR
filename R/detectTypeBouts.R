@@ -1,13 +1,14 @@
 detectTypeBouts = function(myfun, varnum_type, 
-                           UnitReScale, daysummary, ds_names,
+                           daysummary, ds_names,
                            di, fi, ws3, boutnameEnding) {
   if ("tbout.dur" %in% names(myfun) == FALSE) myfun$tbout.dur = c(1, 5, 10)
   if ("tbout.criter" %in% names(myfun) == FALSE) myfun$tbout.criter = 0.8
   
-  # Type bouts
+  # Type levels returned by the external function.
+  # Invalid and unclassified epochs are represented by NA
+  # and are therefore not included as type levels.
   classes = levels(varnum_type)
-  valid_classes = grep("invalid", classes, value = T, invert = T)
-  
+
   # Loop over type classes
   for (class in valid_classes) {
     
@@ -15,7 +16,7 @@ detectTypeBouts = function(myfun, varnum_type,
     for (boutdur in myfun$tbout.dur) {
       boutduration = boutdur * (60/ws3) # per minute
       
-      # 1. Create binary
+      # 1. Create binary indicator for current type
       rr1 = matrix(0, length(varnum_type), 1)
       p = which(varnum_type == class)
       rr1[p] = 1
@@ -30,7 +31,7 @@ detectTypeBouts = function(myfun, varnum_type,
       tboutname = paste0("ExtFunType_totdur_B", boutdur,
                          "M", (myfun$tbout.criter  * 100),
                          "%_", class)
-      tbout_varname = paste0(tboutname, "_", boutnameEnding)
+      tbout_varname = paste0(tboutname, boutnameEnding)
       
       daysummary[di, fi] = typebout # total time in bouts
       ds_names[fi] = tbout_varname
@@ -44,7 +45,7 @@ detectTypeBouts = function(myfun, varnum_type,
       tboutname = paste0("ExtFunType_number_B", boutdur,
                          "M", (myfun$tbout.criter  * 100),
                          "%_", class)
-      tbout_varname = paste0(tboutname, "_", boutnameEnding)
+      tbout_varname = paste0(tboutname, boutnameEnding)
       
       daysummary[di, fi] = number_of_bouts
       ds_names[fi] = tbout_varname
