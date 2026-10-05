@@ -1,12 +1,11 @@
-detectTypeBouts = function(myfun, varnum_type, varnum, 
+detectTypeBouts = function(myfun, varnum_type, 
                            UnitReScale, daysummary, ds_names,
                            di, fi, ws3, boutnameEnding) {
   if ("tbout.dur" %in% names(myfun) == FALSE) myfun$tbout.dur = c(1, 5, 10)
   if ("tbout.criter" %in% names(myfun) == FALSE) myfun$tbout.criter = 0.8
   
   # Type bouts
-  classes = names(table(varnum_type))
-  valid_classes = gsub("invalid_", "", classes)
+  classes = levels(varnum_type)
   valid_classes = grep("invalid", classes, value = T, invert = T)
   
   # Loop over type classes
@@ -17,7 +16,7 @@ detectTypeBouts = function(myfun, varnum_type, varnum,
       boutduration = boutdur * (60/ws3) # per minute
       
       # 1. Create binary
-      rr1 = matrix(0, length(varnum), 1)
+      rr1 = matrix(0, length(varnum_type), 1)
       p = which(varnum_type == class)
       rr1[p] = 1
       
@@ -57,11 +56,10 @@ detectTypeBouts = function(myfun, varnum_type, varnum,
       } else {
         mn_dur_bouts = 0
       }
-      
       tboutname = paste0("ExtFunType_meandur_B", boutdur,
                          "M", (myfun$tbout.criter  * 100),
                          "%_", class)
-      tbout_varname = paste0(tboutname, "_", boutnameEnding)
+      tbout_varname = paste0(tboutname, boutnameEnding)
       
       daysummary[di, fi] = mn_dur_bouts
       ds_names[fi] = tbout_varname

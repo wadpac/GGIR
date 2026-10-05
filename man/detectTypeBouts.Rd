@@ -10,7 +10,7 @@
   that may be specified by the user in the myfun list (see Details).
 }
 \usage{
-   detectTypeBouts(myfun, varnum_type, varnum, 
+   detectTypeBouts(myfun, varnum_type, 
                            UnitReScale, daysummary, ds_names,
                            di, fi, ws3, boutnameEnding)
 }
@@ -21,9 +21,6 @@
   \item{varnum_type}{
     Vector (usually of class factor) containing the type metric as produced by 
     the external function.
-  }
-  \item{varnum}{
-    Numeric vector containing the acceleration metric.
   }
   \item{UnitReScale}{
     Numeric indicating the scaling factor to apply to the acceleration 

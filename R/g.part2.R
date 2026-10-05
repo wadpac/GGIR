@@ -176,8 +176,9 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
               # produced by external functions. 
               # Therefore, temporarily not to impute and warn users that they are 
               # responsible for data imputation at post-processing
-              typeMetricIndex = which(names(M$metashort) %in% myfun$colnames == TRUE)
-              typeMetric = M$metashort[, typeMetricIndex]
+              type_columns = myfun$colnames[which(myfun$outputtype == "character")]
+              typeMetricIndex = which(names(M$metashort) %in% type_columns)
+              typeMetric = M$metashort[, typeMetricIndex, drop = FALSE]
               M_bu = M
               M$metashort = M$metashort[, -typeMetricIndex]
             }
@@ -208,7 +209,7 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
         if (length(myfun) > 0) {
           for (mi in 1:length(myfun$outputtype)) {
             if (myfun$outputtype[mi] == "character") {
-              typeMetricIndex = which(names(M_bu$metashort) %in% myfun$colnames == TRUE)
+              typeMetricIndex = which(names(M_bu$metashort) == myfun$colnames[mi])
               IMP$metashort[, ncol(IMP$metashort) + 1] = M_bu$metashort[, typeMetricIndex]
               colnames(IMP$metashort)[ncol(IMP$metashort)] = myfun$colnames[mi]
               IMP$averageday = cbind(IMP$averageday, NA)

@@ -6,17 +6,18 @@ aggregateType = function(metric_name, epochsize,
   if ("ilevels" %in% names(myfun) == FALSE) myfun$ilevels = c(0, 80)
   if (length(myfun$ilevels) == 0) myfun$ilevels = 0
   acc.thresholds = myfun$ilevels
-  # make type levels case insensitive (convert to lower)
-  type_values = tolower(as.character(vari[, metric_name]))
-  type_levels = unique(type_values)
+  # type levels
+  type_values = vari[, metric_name]
+  type_levels = levels(vari[, metric_name])
   type_levels = type_levels[!is.na(type_levels)]
   #========================================
   # aggregate per window total
   varnametype = paste0("ExtFunType_tot_", metric_name, "_", type_levels, anwi_nameindices[anwi_index])
   fi2 = fi + length(varnametype) - 1
-  type_table = table(factor(type_values, levels = type_levels))
+  type_table = table(type_values)
   daysummary[di, fi:fi2] = type_table * epochsize / 60
-  ds_names[fi:fi2] = varnametype; fi = fi2 + 1
+  ds_names[fi:fi2] = varnametype
+  fi = fi2 + 1
   
   #========================================
   # per acceleration level
@@ -43,8 +44,28 @@ aggregateType = function(metric_name, epochsize,
       } else {
         daysummary[di, fi:fi2] = 0
       }
-      ds_names[fi:fi2] = varnametype; fi = fi2 + 1
+      ds_names[fi:fi2] = varnametype
+      fi = fi2 + 1
     }
   }
+  
+  #========================================
+  # Type bouts
+
+  typeBouts = detectTypeBouts(
+    myfun = myfun,
+    varnum_type = type_values,
+    daysummary = daysummary,
+    ds_names = ds_names,
+    di = di,
+    fi = fi,
+    ws3 = epochsize,
+    boutnameEnding = anwi_nameindices[anwi_index]
+  )
+  
+  daysummary = typeBouts$daysummary
+  ds_names = typeBouts$ds_names
+  fi = typeBouts$fi
+  
   invisible(list(ds_names = ds_names, daysummary = daysummary, fi = fi))
 }
