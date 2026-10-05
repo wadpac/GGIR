@@ -92,10 +92,13 @@ check_myfun = function(myfun, windowsizes) { # Function to check myfun object
       stop(paste0("Error in check_myfun.R: Element outputtype is expected to be a",
                   " character specifying the ouput type"), call. = FALSE)
     }
-    if (length(myfun$outputtype) != length(myfun$colnames)) {
+    if (length(myfun$outputtype) != 1 &&
+        length(myfun$outputtype) != length(myfun$colnames)) {
       status = 1
-      stop("Error in check_myfun.R: Element outputtype should have one value for each output column.",
-           call. = FALSE)
+      stop(
+        "Error in check_myfun.R: Element outputtype should have either one value or one value for each output column.",
+        call. = FALSE
+      )
     }
     if (any(myfun$outputtype %in% c("numeric", "character") == FALSE)) {
       status = 1
@@ -113,11 +116,13 @@ check_myfun = function(myfun, windowsizes) { # Function to check myfun object
       call. = FALSE
     )
   }
-  # check that aggfunction is specified for each output when outputtypes differ
-  if ("aggfunction" %in% names(myfun) && "outputtype" %in% names(myfun)) { # if aggfunction is available
+  
+  # Check that aggfunction is either one function for all outputs
+  # or one function for each output column
+  if ("aggfunction" %in% names(myfun) && "outputtype" %in% names(myfun)) {
     if (is.function(myfun$aggfunction)) {
       # One function: applied to all output columns
-      # Check that the function provided can be applied to all outputtypes
+      # This is allowed when all output types are the same
       if (length(unique(myfun$outputtype)) > 1) {
         status = 1
         stop(
@@ -158,10 +163,13 @@ check_myfun = function(myfun, windowsizes) { # Function to check myfun object
       stop("Error in check_myfun.R: Element reporttype is expected to be a character.",
            call. = FALSE)
     }
-    if (length(myfun$reporttype) != length(myfun$colnames)) {
+    if (length(myfun$reporttype) != 1 &&
+        length(myfun$reporttype) != length(myfun$colnames)) {
       status = 1
-      stop("Error in check_myfun.R: Element reporttype should have one value for each output column.",
-           call. = FALSE)
+      stop(
+        "Error in check_myfun.R: Element reporttype should have either one value or one value for each output column.",
+        call. = FALSE
+      )
     }
     if (any(myfun$reporttype %in% c("scalar", "event", "type") == FALSE)) {
       status = 1
