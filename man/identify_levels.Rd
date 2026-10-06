@@ -10,7 +10,7 @@
 }
 \usage{
   identify_levels(ts, TRLi,TRMi,TRVi,
-                  ws3, params_phyact, myfun,...)
+                  ws3, params_phyact,...)
 }
 \arguments{
   \item{ts}{
@@ -30,10 +30,6 @@
   }
   \item{params_phyact}{
     See \link{g.part2}
-  }
-  \item{myfun}{
-    External function object to be applied to raw data.
-    See details \link{applyExtFunction}.
   }
   \item{...}{
      Any argument used in the previous version of identify_level, which will now
