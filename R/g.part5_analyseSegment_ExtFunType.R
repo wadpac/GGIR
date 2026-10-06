@@ -121,9 +121,9 @@ g.part5_analyseSegment_ExtFunType = function(ts, sse, TOLEVELS, TLEVELS,
         )
         dsummary[si, fi:(fi + 2)] = totals
         ds_names[fi:(fi + 2)] = c(
-          paste0(prefix, type_col, "dur_", window, "_total_", type_level, "_min"),
-          paste0(prefix, type_col, "ACC_", window, "_total_", type_level, "_mg"),
-          paste0(prefix, type_col, "Nblocks_", window, "_total_", type_level)
+          paste0(prefix, type_col, "_dur_", window, "_total_", type_level, "_min"),
+          paste0(prefix, type_col, "_ACC_", window, "_total_", type_level, "_mg"),
+          paste0(prefix, type_col, "_Nblocks_", window, "_total_", type_level)
         )
         fi = fi + 3
       }

@@ -364,6 +364,18 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 # On first day of recording append the average day to the start
                 vari = rbind(averageday[1:abs(deltaLength), ], vari)
                 val_type = c(rep(NA_real_, abs(deltaLength)), val_type)
+                # Restore external function type columns as factor:
+                if (length(myfun) > 0 && "reporttype" %in% names(myfun)) {
+                  reporttype = rep(myfun$reporttype, length.out = length(myfun$colnames))
+                  type_columns = myfun$colnames[reporttype == "type"]
+                  
+                  if (length(type_columns) > 0) {
+                    for (type_column in type_columns) {
+                      vari[, type_column] = factor(vari[, type_column],
+                                                   levels = levels(metashort[, type_column]))
+                    }
+                  }
+                }
                 # readjust anwi indices in case that varnum has been imputed
                 if (max(anwi_t1) < nrow(vari)) { # since GGIR always calculates full window, max(anwi_t1) should always equals length(varnum)
                   anwi_t0 = anwi_t0 + abs(deltaLength)

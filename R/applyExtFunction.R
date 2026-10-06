@@ -69,15 +69,50 @@ applyExtFunction = function(data, myfun, sf, ws3,interpolationType=1) {
     OutputExternalFunction = matrix(OutputExternalFunction, ncol = 1)
   }
   
-  # Check that the number of output columns agrees with myfun
-  if (ncol(OutputExternalFunction) != length(myfun$colnames)) {
+  # Validate number of output columns
+  has_timestamp = length(myfun$timestamp) == 1
+  n_output_columns = ncol(OutputExternalFunction)
+  n_expected_columns = length(myfun$colnames)
+  
+  if (n_output_columns == n_expected_columns) {
+    has_timestamp_output = FALSE
+  } else if (has_timestamp &&
+             n_output_columns == n_expected_columns + 1) {
+    has_timestamp_output = TRUE
+  } else {
     stop(
-      "The number of columns returned by myfun$FUN (",
-      ncol(OutputExternalFunction),
-      ") does not match the number of column names specified in myfun$colnames (",
-      length(myfun$colnames),
-      ")."
+      paste0(
+        "The number of columns returned by myfun$FUN (",
+        n_output_columns,
+        ") does not match the expected number of output columns (",
+        n_expected_columns,
+        if (has_timestamp) {
+          paste0(
+            " or ",
+            n_expected_columns + 1,
+            " when the timestamp is also returned"
+          )
+        } else {
+          ""
+        },
+        ")."
+      ),
+      call. = FALSE
     )
+  }
+  
+  # If timestamp is returned by FUN, temporarily separate it from
+  # the output matrix so that only external function outputs are processed
+  if (has_timestamp_output) {
+    timestamp = OutputExternalFunction[, 1, drop = FALSE]
+    OutputExternalFunction = OutputExternalFunction[, -1, drop = FALSE]
+  }
+  
+  # Recycle outputtype across all output columns when a single value is provided
+  if (length(myfun$outputtype) == 1) {
+    outputtype = rep(myfun$outputtype, ncol(OutputExternalFunction))
+  } else {
+    outputtype = myfun$outputtype
   }
   
   # Output resolution correction for each column
@@ -86,6 +121,7 @@ applyExtFunction = function(data, myfun, sf, ws3,interpolationType=1) {
   
   # Now process each column independently (aggregation function might be different for each column)
   is_factor = NULL
+  
   for (out_idx in 1:ncol(OutputExternalFunction)) {
     
     # focus on this column
@@ -110,7 +146,7 @@ applyExtFunction = function(data, myfun, sf, ws3,interpolationType=1) {
     }
     
     # Now correct output resolution
-    if (myfun$outputtype[out_idx] %in% c("numeric", "character")) {
+    if (outputtype[out_idx] %in% c("numeric", "character")) {
       
       # Function output has higher resolution than GGIR windowsize[1]
       if (myfun$outputres < ws3) { 
@@ -157,7 +193,6 @@ applyExtFunction = function(data, myfun, sf, ws3,interpolationType=1) {
   # ----------------------------------------------------------------------
   # Combine independently processed output columns
   # ----------------------------------------------------------------------
-  
   OutputExternalFunction = do.call(cbind, OutputExternalFunction_processed)
   
   # re-factorize if any of the output columns was a factor 
@@ -165,7 +200,15 @@ applyExtFunction = function(data, myfun, sf, ws3,interpolationType=1) {
     OutputExternalFunction[,is_factor] = factor(OutputExternalFunction[,is_factor],
                                                 levels = LevelsExternalFunction[[is_factor]])
   }
+  
+  
+  # Apply user provided colnames
   colnames(OutputExternalFunction) = myfun$colnames
+  
+  # Add timestamp back as first column
+  if (has_timestamp_output) {
+    OutputExternalFunction = cbind(timestamp = timestamp, OutputExternalFunction)
+  }
   
   return(list(OutputExternalFunction = OutputExternalFunction, 
               LevelsExternalFunction = LevelsExternalFunction))

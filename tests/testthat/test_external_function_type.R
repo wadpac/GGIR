@@ -5,11 +5,10 @@ test_that("Embedding external functions with reporttype = 'type'", {
   skip_on_cran()
   
   # reporttype = 'type' validates the myfun object
-
   type_fun = function(data, parameters) {
     rep(c("rest", "walk"), length.out = floor(nrow(data) / 15))
   }
-
+  
   myfun = list(FUN = type_fun,
                parameters = NULL,
                expected_sample_rate = 3,
@@ -21,18 +20,19 @@ test_that("Embedding external functions with reporttype = 'type'", {
                aggfunction = function(x) x[1],
                timestamp = FALSE,
                reporttype = "type")
-
-  expect_equal(GGIR:::check_myfun(myfun, windowsizes = 5), 0)
-
-  myfun_bad = myfun
-  myfun_bad$colnames = c("activity_type", "activity_type2")
-  myfun_bad$reporttype = c("type", "type")
-  expect_error(
-    GGIR:::check_myfun(myfun_bad, windowsizes = 5),
-    regexp = "reporttype = 'type'.*only one type column in the output"
+  
+  expect_equal(check_myfun(myfun, windowsizes = 5), 0)
+  
+  # It can handle multiple output columns of reporttype = "type" 
+  
+  myfun_multiple_type = myfun
+  myfun_multiple_type$colnames = c("activity_type", "posture")
+  myfun_multiple_type$reporttype = c("type", "type")
+  
+  expect_equal(
+    check_myfun(myfun_multiple_type, windowsizes = 5),
+    0
   )
-  
-  
   
   # reporttype = 'type' creates the expected character output
   
@@ -58,13 +58,17 @@ test_that("Embedding external functions with reporttype = 'type'", {
                reporttype = "type")
   
   out = expect_warning(
-    GGIR:::applyExtFunction(data, myfun, sf, ws3)$OutputExternalFunction,
+    applyExtFunction(data, myfun, sf, ws3)$OutputExternalFunction,
     regexp = "Note: If function applyExtFunction is used directly"
   )
   
   expect_equal(nrow(out), 3)
   expect_equal(ncol(out), 1)
   expect_equal(as.character(out[, 1]), c("rest", "walk", "rest"))
+  expect_equal(
+    as.character(out[, 1]),
+    c("rest", "walk", "rest")
+  )
   
   
   # reporttype = 'type' is converted to seconds per epoch in part 5
@@ -75,7 +79,8 @@ test_that("Embedding external functions with reporttype = 'type'", {
         tz = "Europe/London"
       ) + c(0, 5, 10, 15, 20),
       ENMO = c(0.01, 0.02, 0.03, 0.04, 0.05),
-      activity_type = c("rest", "walk", "walk", NA, "rest"),
+      activity_type = factor(c("rest", "walk", "walk", NA, "rest"),
+                             levels = c("rest", "walk")),
       stringsAsFactors = FALSE
     ),
     rout = matrix(0, nrow = 1, ncol = 5),
@@ -151,40 +156,25 @@ test_that("Embedding external functions with reporttype = 'type'", {
     tbout.order = "walk"
   )
   
-  type_levels = GGIR:::identify_levels_ExtFunType(
+  type_levels = identify_levels_ExtFunType(
     ts = type_ts,
     myfun = myfun,
     ws3 = ws3
   )
   
-  expect_equal(names(type_levels$TLEVELS), c("walk", "rest"))
-  expect_equal(
-    type_levels$Tnames,
-    c(
-      "walk_bts_5",
-      "walk_bts_1_5",
-      "rest_bts_5",
-      "rest_bts_1_5"
-    )
-  )
-  expect_equal(
-    dim(type_levels$TOLEVELS),
-    c(12, 2)
-  )
-  expect_equal(
-    colnames(type_levels$TOLEVELS),
-    c("rest", "walk")
-  )
+  expect_equal(names(type_levels$TLEVELS$activity_type), c("walk", "rest"))
+  expect_equal(type_levels$Tnames, c("walk_bts_5", "walk_bts_1_5", "rest_bts_5", "rest_bts_1_5"))
+  expect_equal(dim(type_levels$TOLEVELS$activity_type), c(12, 2))
+  expect_equal(colnames(type_levels$TOLEVELS$activity_type), c("rest", "walk"))
   
   
   # aggregateType reports total type time and acceleration strata
   vari = data.frame(
     timestamp = seq_len(8),
     ENMO = c(0.05, 0.05, 0.10, 0.10, 0.20, 0.20, 0.20, 0.05),
-    activity_type = c(
-      "rest", "rest", "walk", "walk",
-      "walk", "rest", "rest", "rest"
-    ),
+    activity_type = factor(c("rest", "rest", "walk", "walk",
+                             "walk", "rest", "rest", "rest"),
+                           levels = c("rest", "walk")),
     stringsAsFactors = FALSE
   )
   
@@ -202,7 +192,7 @@ test_that("Embedding external functions with reporttype = 'type'", {
     anwi_index = 1
   )
   
-  out = GGIR:::aggregateType(
+  out = aggregateType(
     metric_name = "activity_type",
     epochsize = 5,
     daysummary = daysummary,
@@ -211,7 +201,8 @@ test_that("Embedding external functions with reporttype = 'type'", {
     di = 1,
     vari = vari,
     segmentInfo = segmentInfo,
-    myfun = myfun
+    myfun = myfun,
+    qcheck = rep(0, nrow(vari))
   )
   
   expect_equal(
@@ -311,7 +302,7 @@ test_that("Embedding external functions with reporttype = 'type'", {
   dsummary = matrix("", nrow = 1, ncol = 100)
   ds_names = rep("", 100)
   
-  out = GGIR:::g.part5_analyseSegment_ExtFunType(
+  out = g.part5_analyseSegment_ExtFunType(
     ts = ts,
     sse = 1:nrow(ts),
     TOLEVELS = TOLEVELS,
@@ -327,22 +318,32 @@ test_that("Embedding external functions with reporttype = 'type'", {
   
   # build-up expected names generated
   prefix = "ExtFunType"
+  type_col = "activity_type"
   outcomes = c("dur", "ACC", "Nblocks", "Nbouts")
   windows = c("spt", "day")
   levels = c("walk", "rest")
   boutdurs = c("10", "5_10", "2_5", "1_2")
-  periods = c(paste0(levels, "_unbt"),
-              paste0(levels, "_bts_", rep(boutdurs, each = length(levels))),
-              paste0("total_", levels))
+  
+  periods = c(
+    paste0(levels, "_unbt"),
+    paste0(levels, "_bts_", rep(boutdurs, each = length(levels))),
+    paste0("total_", levels)
+  )
+  
   vars = expand.grid(outcome = outcomes,
                      window = windows,
                      period = periods)
-  vars = with(vars, paste(prefix, outcome, window, period, sep = "_"))
-  expected_names = ifelse(grepl("^ExtFunType_dur_", vars),
-                          paste0(vars, "_min"),
-                          ifelse(grepl("^ExtFunType_ACC_", vars),
-                                 paste0(vars, "_mg"),
-                                 vars))
+  vars = with(vars, paste(prefix, type_col, outcome, window, period, sep = "_"))
+  
+  expected_names = ifelse(
+    grepl(paste0("^", prefix, "_", type_col, "_dur_"), vars),
+    paste0(vars, "_min"),
+    ifelse(
+      grepl(paste0("^", prefix, "_", type_col, "_ACC_"), vars),
+      paste0(vars, "_mg"),
+      vars
+    )
+  )
   
   expect_all_true(out$ds_names[out$ds_names != ""] %in% expected_names)
   
@@ -355,8 +356,8 @@ test_that("Embedding external functions with reporttype = 'type'", {
   expected_walk = sum(ts$ExtFunType_activity_type_walk_s[which(ts$diur == 0)]) / 60
   
   expect_equal(
-    as.numeric(values[c("ExtFunType_dur_day_total_rest_min",
-                        "ExtFunType_dur_day_total_walk_min")]),
+    as.numeric(values[c("ExtFunType_activity_type_dur_day_total_rest_min",
+                        "ExtFunType_activity_type_dur_day_total_walk_min")]),
     c(expected_rest, expected_walk),
     tolerance = 1e-10
   )
@@ -366,8 +367,8 @@ test_that("Embedding external functions with reporttype = 'type'", {
   expected_walk = mean(ts$ACC[which(ts$ExtFunType_activity_type_walk_s > 0 & ts$diur == 0)])
   
   expect_equal(
-    as.numeric(values[c("ExtFunType_ACC_day_total_rest_mg",
-                        "ExtFunType_ACC_day_total_walk_mg")]),
+    as.numeric(values[c("ExtFunType_activity_type_ACC_day_total_rest_mg",
+                        "ExtFunType_activity_type_ACC_day_total_walk_mg")]),
     c(expected_rest, expected_walk),
     tolerance = 1e-10
   )
@@ -381,22 +382,24 @@ test_that("Embedding external functions with reporttype = 'type'", {
     tbout.criter = 1
   )
   
-  varnum_type = c(rep("rest", 3), rep("walk", 2), rep("rest", 2), rep("walk", 3))
+  varnum_type = factor(c(rep("rest", 3), 
+                         rep("walk", 2), 
+                         rep("rest", 2), 
+                         rep("walk", 3)),
+                       levels = c("rest", "walk"))
   varnum = seq_along(varnum_type)
   
   daysummary = matrix(NA_real_, nrow = 1, ncol = 50)
   ds_names = rep("", 50)
   
-  out = GGIR:::detectTypeBouts(myfun = myfun,
-                               varnum_type = varnum_type,
-                               varnum = varnum,
-                               UnitReScale = 1,
-                               daysummary = daysummary,
-                               ds_names = ds_names,
-                               di = 1,
-                               fi = 1,
-                               ws3 = 60,
-                               boutnameEnding = "0-24hr")
+  out = detectTypeBouts(myfun = myfun,
+                        varnum_type = varnum_type,
+                        daysummary = daysummary,
+                        ds_names = ds_names,
+                        di = 1,
+                        fi = 1,
+                        ws3 = 60,
+                        boutnameEnding = "_0-24hr")
   
   expect_equal(out$ds_names[1:6],
                c("ExtFunType_totdur_B1M100%_rest_0-24hr",
@@ -489,10 +492,10 @@ test_that("Embedding external functions with reporttype = 'type'", {
        verbose = FALSE)
   
   p5_files = list.files(file.path(dn, "results"), 
-                        pattern = "^part5_extfuntype_daysummary_.*\\.csv$",
+                        pattern = "^part5_extfuntype_activity_type_daysummary_.*\\.csv$",
                         full.names = TRUE, recursive = T)
   p5_files_person = list.files(file.path(dn, "results"),
-                               pattern = "^part5_extfuntype_personsummary_.*\\.csv$",
+                               pattern = "^part5_extfuntype_activity_type_personsummary_.*\\.csv$",
                                full.names = TRUE, recursive = T)
   
   expect_true(length(p5_files) > 0)
@@ -501,13 +504,45 @@ test_that("Embedding external functions with reporttype = 'type'", {
   p5_report = read.csv(p5_files[1])
   p5_person = read.csv(p5_files_person[1])
   
-  expect_true(any(grepl("^dur_day_", names(p5_report))))
-  expect_true(any(grepl("^ACC_day_", names(p5_report))))
-  expect_true(any(grepl("^Nblocks_day_", names(p5_report))))
-  expect_true(any(grepl("^Nbouts_day_", names(p5_report))))
+  expect_true(any(grepl("^activity_type_dur_day_", names(p5_report))))
+  expect_true(any(grepl("^activity_type_ACC_day_", names(p5_report))))
+  expect_true(any(grepl("^activity_type_Nblocks_day_", names(p5_report))))
+  expect_true(any(grepl("^activity_type_Nbouts_day_", names(p5_report))))
   
-  expect_true(any(grepl("^dur_day_", names(p5_person))))
-  expect_true(any(grepl("^Nblocks_day_", names(p5_person))))
+  expect_true(any(grepl("^activity_type_dur_day_", names(p5_person))))
+  expect_true(any(grepl("^activity_type_Nblocks_day_", names(p5_person))))
+  
+  # Test handling of multiple type columns (activity, posture)
+  
+  type_ts_multiple = data.frame(
+    time = seq_len(6),
+    ACC = rep(0.05, 6),
+    diur = rep(0, 6),
+    nonwear = rep(0, 6),
+    ExtFunType_activity_type_rest_s = c(5, 0, 5, 0, 0, 5),
+    ExtFunType_activity_type_walk_s = c(0, 5, 0, 5, 5, 0),
+    ExtFunType_posture_sitting_s = c(5, 5, 0, 0, 0, 0),
+    ExtFunType_posture_standing_s = c(0, 0, 5, 5, 5, 5)
+  )
+  
+  myfun = list(
+    colnames = c("activity_type", "posture"),
+    reporttype = c("type", "type"),
+    tbout.dur = c(1, 5),
+    tbout.criter = 1,
+    tbout.order = "walk"
+  )
+  
+  type_levels = identify_levels_ExtFunType(
+    ts = type_ts_multiple,
+    myfun = myfun,
+    ws3 = 5
+  )
+  
+  expect_equal(names(type_levels$TOLEVELS), c("activity_type", "posture"))
+  expect_equal(names(type_levels$TLEVELS), c("activity_type", "posture"))
+  expect_equal(colnames(type_levels$TOLEVELS$activity_type), c("rest", "walk"))
+  expect_equal(colnames(type_levels$TOLEVELS$posture), c("sitting", "standing"))
   
   if (file.exists(fn)) file.remove(fn)
   if (dir.exists(dn)) unlink(dn, recursive = TRUE)
