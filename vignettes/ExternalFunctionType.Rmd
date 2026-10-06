@@ -8,9 +8,9 @@ output:
     toc_float: true
 urlcolor: blue
 vignette: >
-  %\\VignetteIndexEntry{External functions with categorical output}
-  \\usepackage[utf8]{inputenc}
-  %\\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{External functions with categorical output}
+  \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
 header-includes:
   - \usepackage{titling}
   - \pretitle{\begin{center}
