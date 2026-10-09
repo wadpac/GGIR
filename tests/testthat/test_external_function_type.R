@@ -27,7 +27,7 @@ test_that("Embedding external functions with reporttype = 'type'", {
   
   myfun_multiple_type = myfun
   myfun_multiple_type$colnames = c("activity_type", "posture")
-  myfun_multiple_type$reporttype = c("type", "type")
+  myfun_multiple_type$reporttype = "type"
   
   expect_equal(
     check_myfun(myfun_multiple_type, windowsizes = 5),
@@ -153,6 +153,8 @@ test_that("Embedding external functions with reporttype = 'type'", {
       ENMO = c(0.01, 0.02, 0.03, 0.04, 0.05),
       activity_type = factor(c("rest", "walk", "walk", NA, "rest"),
                              levels = c("rest", "walk")),
+      posture = factor(c("sitting", "standing", "standing", NA, "sitting"),
+                       levels = c("sitting", "standing")),
       stringsAsFactors = FALSE
     ),
     rout = matrix(0, nrow = 1, ncol = 5),
@@ -176,7 +178,7 @@ test_that("Embedding external functions with reporttype = 'type'", {
     parameters = NULL,
     expected_sample_rate = 3,
     expected_unit = "g",
-    colnames = "activity_type",
+    colnames = c("activity_type", "posture"),
     minlength = 1,
     outputres = 5,
     outputtype = "character",
@@ -198,11 +200,15 @@ test_that("Embedding external functions with reporttype = 'type'", {
     type_cols,
     c(
       "ExtFunType_activity_type_rest_s",
-      "ExtFunType_activity_type_walk_s"
+      "ExtFunType_activity_type_walk_s",
+      "ExtFunType_posture_sitting_s",
+      "ExtFunType_posture_standing_s"
     )
   )
   expect_equal(ts$ExtFunType_activity_type_rest_s, c(5, 0, 0, 0, 5))
   expect_equal(ts$ExtFunType_activity_type_walk_s, c(0, 5, 5, 0, 0))
+  expect_equal(ts$ExtFunType_posture_sitting_s, c(5, 0, 0, 0, 5))
+  expect_equal(ts$ExtFunType_posture_standing_s, c(0, 5, 5, 0, 0))
   
   
   # reporttype = 'type' identifies bout levels in the requested order
@@ -599,7 +605,7 @@ test_that("Embedding external functions with reporttype = 'type'", {
   
   myfun = list(
     colnames = c("activity_type", "posture"),
-    reporttype = c("type", "type"),
+    reporttype = "type",
     tbout.dur = c(1, 5),
     tbout.criter = 1,
     tbout.order = "walk"
