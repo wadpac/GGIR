@@ -84,6 +84,63 @@ test_that("Function is applied to acceleration data results in expected output",
   expect_that(nrow(output),equals(8))
   expect_that(output[, 2],
               equals(rep(c(9.81, 49.05, 68.67, 88.29), each = 2)))
+
+  # Returned timestamps follow the same resolution correction as output values
+  timestampExtFunction = function(data = c(), parameters = c()) {
+    data.frame(
+      timestamp = parameters$timestamps,
+      value = parameters$values
+    )
+  }
+
+  timestamp_data = matrix(
+    1,
+    nrow = 8,
+    ncol = 3,
+    dimnames = list(NULL, c("x", "y", "z"))
+  )
+
+  timestamp_myfun = list(
+    FUN = timestampExtFunction,
+    parameters = list(
+      timestamps = 100:103,
+      values = 1:4
+    ),
+    expected_sample_rate = 1,
+    expected_unit = "g",
+    minlength = 1,
+    outputres = 1,
+    colnames = "value",
+    outputtype = "numeric",
+    aggfunction = mean,
+    timestamp = 100
+  )
+
+  timestamp_output = applyExtFunction(
+    timestamp_data,
+    timestamp_myfun,
+    sf = 1,
+    ws3 = 2
+  )$OutputExternalFunction
+
+  expect_equal(timestamp_output$timestamp, c(100, 102))
+  expect_equal(timestamp_output$value, c(1.5, 3.5))
+
+  timestamp_myfun$parameters = list(
+    timestamps = c(100, 104),
+    values = c(1, 2)
+  )
+  timestamp_myfun$outputres = 4
+
+  timestamp_output = applyExtFunction(
+    timestamp_data,
+    timestamp_myfun,
+    sf = 1,
+    ws3 = 2
+  )$OutputExternalFunction
+
+  expect_equal(timestamp_output$timestamp, c(100, 102, 104, 106))
+  expect_equal(timestamp_output$value, c(1, 1, 2, 2))
   
   # test check_myfun warnings and errors
   expect_error(check_myfun(myfun = 4, ws3),

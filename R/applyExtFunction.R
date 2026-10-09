@@ -104,8 +104,20 @@ applyExtFunction = function(data, myfun, sf, ws3,interpolationType=1) {
   # If timestamp is returned by FUN, temporarily separate it from
   # the output matrix so that only external function outputs are processed
   if (has_timestamp_output) {
-    timestamp = OutputExternalFunction[, 1, drop = FALSE]
+    timestamp = OutputExternalFunction[, 1]
     OutputExternalFunction = OutputExternalFunction[, -1, drop = FALSE]
+
+    if (myfun$outputres < ws3) {
+      # Retain the start timestamp of each aggregated GGIR epoch.
+      n_per_epoch = ws3 / myfun$outputres
+      timestamp = timestamp[seq(1, length(timestamp), by = n_per_epoch)]
+    } else if (myfun$outputres > ws3) {
+      # Generate a timestamp for every repeated GGIR epoch.
+      n_repeat = myfun$outputres / ws3
+      timestamp = rep(timestamp, each = n_repeat) +
+        rep(seq(0, myfun$outputres - ws3, by = ws3),
+            times = length(timestamp))
+    }
   }
   
   # Recycle outputtype across all output columns when a single value is provided
