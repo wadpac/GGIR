@@ -74,6 +74,37 @@ test_that("Embedding external functions with reporttype = 'type'", {
     multiple_type_out$LevelsExternalFunction,
     list(c("rest", "walk"), c("sitting", "standing"))
   )
+
+  # Levels observed in successive raw-data blocks are retained
+
+  accumulated_levels = mergeExternalFunctionLevels(
+    existing_levels = list(
+      c("rest", "walk"),
+      c("sitting", "standing"),
+      NULL
+    ),
+    new_levels = list(
+      c("walk", "cycling"),
+      c("lying", "sitting"),
+      NULL
+    )
+  )
+
+  expect_equal(
+    accumulated_levels,
+    list(
+      c("rest", "walk", "cycling"),
+      c("sitting", "standing", "lying"),
+      NULL
+    )
+  )
+  expect_equal(
+    mergeExternalFunctionLevels(
+      existing_levels = NULL,
+      new_levels = accumulated_levels
+    ),
+    accumulated_levels
+  )
   
   # reporttype = 'type' creates the expected character output
   

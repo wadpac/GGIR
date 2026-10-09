@@ -217,3 +217,13 @@ applyExtFunction = function(data, myfun, sf, ws3,interpolationType=1) {
   return(list(OutputExternalFunction = OutputExternalFunction, 
               LevelsExternalFunction = LevelsExternalFunction))
 }
+
+mergeExternalFunctionLevels = function(existing_levels, new_levels) {
+  if (is.null(existing_levels)) {
+    return(new_levels)
+  }
+
+  lapply(seq_along(new_levels), function(level_idx) {
+    union(existing_levels[[level_idx]], new_levels[[level_idx]])
+  })
+}
