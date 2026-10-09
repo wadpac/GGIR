@@ -191,23 +191,27 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(),
     rm(M); rm(I)
 
     #--------------------------------------
-    # Store Event reports
-    # split daySUMMARY in two files and reoder EventVariable names if they exist
-    ds_names = names(daySUMMARY)
-    EventVars = grep(pattern = "ExtFunEvent_", x = ds_names, value = FALSE)
-    NotEventVars = grep(pattern = "ExtFunEvent_", x = ds_names, value = FALSE, invert = TRUE)
+    # Store Event/Type reports
+    
+    # Extract event name for legacy backwards compatibility (if user explicitly named their event)
     eventName = "event"
     if (length(myfun) > 0) {
       if ("name" %in% names(myfun)) {
         eventName =  myfun$name
       }
     }
-    if (length(EventVars) > 0) {
+    
+    # Store Event and/or Type reports
+    # split daySUMMARY into event, type and standard output
+    ds_names = names(daySUMMARY)
+    EventVars_day = grep(pattern = "ExtFunEvent_", x = ds_names, value = TRUE)
+    TypeVars_day = grep(pattern = "ExtFunType_", x = ds_names, value = TRUE)
+    
+    if (length(EventVars_day) > 0) {
       dayEVENTSUMMARY = daySUMMARY[ , c("ID", "filename", "calendar_date",
                                         "N valid hours", "N hours", "weekday",
-                                        sort(names(daySUMMARY[, EventVars])))]
+                                        sort(EventVars_day))]
       names(dayEVENTSUMMARY) = gsub(pattern = "ExtFunEvent_", replacement = "", x = names(dayEVENTSUMMARY))
-      daySUMMARY = daySUMMARY[,NotEventVars]
       dayEVENTSUMMARY_clean = tidyup_df(dayEVENTSUMMARY)
       dayEVENTSUMMARY_clean = addSplitNames(dayEVENTSUMMARY_clean)  # If recording was split
       data.table::fwrite(x = dayEVENTSUMMARY_clean,
@@ -215,22 +219,60 @@ g.report.part2 = function(metadatadir = c(), f0 = c(), f1 = c(),
                          row.names = F, na = "", sep = params_output[["sep_reports"]],
                          dec = params_output[["dec_reports"]])
     }
-    # split SUMMARY in two files and reoder EventVariable names if they exist
+    
+    if (length(TypeVars_day) > 0) {
+      dayTYPESUMMARY = daySUMMARY[ , c("ID", "filename", "calendar_date",
+                                       "N valid hours", "N hours", "weekday",
+                                       sort(TypeVars_day))]
+      names(dayTYPESUMMARY) = gsub(pattern = "ExtFunType_", replacement = "", x = names(dayTYPESUMMARY))
+      dayTYPESUMMARY_clean = tidyup_df(dayTYPESUMMARY)
+      dayTYPESUMMARY_clean = addSplitNames(dayTYPESUMMARY_clean)  # If recording was split
+      data.table::fwrite(x = dayTYPESUMMARY_clean,
+                         file = paste0(metadatadir, "/results/part2_daytypesummary.csv"),
+                         row.names = F, na = "", sep = params_output[["sep_reports"]],
+                         dec = params_output[["dec_reports"]])
+    }
+    
+    # Strip both variable families out of daySUMMARY
+    VarsToRemove_day = c(EventVars_day, TypeVars_day)
+    if (length(VarsToRemove_day) > 0) {
+      daySUMMARY = daySUMMARY[, !names(daySUMMARY) %in% VarsToRemove_day]
+    }
+    
+    # split SUMMARY into event, type and standard output
     s_names = names(SUMMARY)
-    EventVars = grep(pattern = "ExtFunEvent_", x = s_names, value = FALSE)
-    NotEventVars = grep(pattern = "ExtFunEvent_", x = s_names, value = FALSE, invert = TRUE)
-    if (length(EventVars) > 0) {
+    EventVars_S = grep(pattern = "ExtFunEvent_", x = s_names, value = TRUE)
+    TypeVars_S = grep(pattern = "ExtFunType_", x = s_names, value = TRUE)
+    
+    if (length(EventVars_S) > 0) {
       EVENTSUMMARY = SUMMARY[ , c("ID", "filename", "start_time",
                                   "wear_dur_def_proto_day",
-                                  sort(names(SUMMARY[, EventVars])))]
+                                  sort(EventVars_S))]
       names(EVENTSUMMARY) = gsub(pattern = "ExtFunEvent_", replacement = "", x = names(EVENTSUMMARY))
-      SUMMARY = SUMMARY[,NotEventVars]
       EVENTSUMMARY_clean = tidyup_df(EVENTSUMMARY)
       EVENTSUMMARY_clean = addSplitNames(EVENTSUMMARY_clean)  # If recording was split
       data.table::fwrite(x = EVENTSUMMARY_clean,
                          file =  paste0(metadatadir, "/results/part2_", eventName, "summary.csv"),
                          row.names = F, na = "", sep = params_output[["sep_reports"]],
                          dec = params_output[["dec_reports"]])
+    }
+    if (length(TypeVars_S) > 0) {
+      TYPESUMMARY = SUMMARY[ , c("ID", "filename", "start_time",
+                                 "wear_dur_def_proto_day",
+                                 sort(TypeVars_S))]
+      names(TYPESUMMARY) = gsub(pattern = "ExtFunType_", replacement = "", x = names(TYPESUMMARY))
+      TYPESUMMARY_clean = tidyup_df(TYPESUMMARY)
+      TYPESUMMARY_clean = addSplitNames(TYPESUMMARY_clean)  # If recording was split
+      data.table::fwrite(x = TYPESUMMARY_clean,
+                         file =  paste0(metadatadir, "/results/part2_typesummary.csv"),
+                         row.names = F, na = "", sep = params_output[["sep_reports"]],
+                         dec = params_output[["dec_reports"]])
+    }
+    
+    # Strip both variable families out of the parent SUMMARY
+    VarsToRemove_S = c(EventVars_S, TypeVars_S)
+    if (length(VarsToRemove_S) > 0) {
+      SUMMARY = SUMMARY[, !names(SUMMARY) %in% VarsToRemove_S]
     }
     #-----------------------------
     # tidy up data.frames

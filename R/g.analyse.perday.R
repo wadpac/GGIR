@@ -14,7 +14,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
       length(params_247) == 0 || length(params_phyact) == 0) {
     # Extract and check parameters if user provides more arguments than just the parameter arguments,
     # or if params_[...] aren't specified (so need to be filled with defaults).
-
+    
     # So, inside GGIR this will not be used, but it is used when g.analyse is used on its own
     # as if it was still the old g.analyse function
     params = extract_params(params_247 = params_247,
@@ -62,7 +62,6 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                                                                        length(time))], tz = params_general[["desiredtz"]]),
                                           tz = params_general[["desiredtz"]]))
   ExtFunColsi = ExtFunColsi - 1 # subtract 1 because code ignores timestamp
-  ExtFunColsi_backup = ExtFunColsi
   for (di in 1:ndays) { #run through days
     params_247[["qwindow"]] = qwindowbackup
     if (is.data.frame(params_247[["qwindow"]]) == TRUE) {
@@ -335,6 +334,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
         }
         fi_remember = fi
         vari_bu = vari
+        val_bu = val
         for (anwi_index in 1:length(anwi_t0)) { # Loop over starts of the windows
           if (anwi_index != 1 & di == 1) {
             # increase value of fi to leave enough space for the variables to be calculated in second day of measurement
@@ -343,6 +343,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
             fi_remember = fi
           }
           vari = vari_bu
+          val_type = val_bu # validity vector for external function type variables
           new = check_daysummary_size(daysummary, ds_names, fi)
           daysummary = new$daysummary
           ds_names = new$ds_names
@@ -362,6 +363,19 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               if (di == 1) {
                 # On first day of recording append the average day to the start
                 vari = rbind(averageday[1:abs(deltaLength), ], vari)
+                val_type = c(rep(NA_real_, abs(deltaLength)), val_type)
+                # Restore external function type columns as factor:
+                if (length(myfun) > 0 && "reporttype" %in% names(myfun)) {
+                  reporttype = rep(myfun$reporttype, length.out = length(myfun$colnames))
+                  type_columns = myfun$colnames[reporttype == "type"]
+                  
+                  if (length(type_columns) > 0) {
+                    for (type_column in type_columns) {
+                      vari[, type_column] = factor(vari[, type_column],
+                                                   levels = levels(metashort[, type_column]))
+                    }
+                  }
+                }
                 # readjust anwi indices in case that varnum has been imputed
                 if (max(anwi_t1) < nrow(vari)) { # since GGIR always calculates full window, max(anwi_t1) should always equals length(varnum)
                   anwi_t0 = anwi_t0 + abs(deltaLength)
@@ -378,11 +392,18 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   enMissingHour = 3 * 60 * (60/ws3)
                   vari = rbind(vari[1:(startMissingHour - 1), , drop = FALSE], averageday[startMissingHour:enMissingHour, , drop = FALSE],
                                vari[startMissingHour:nrow(vari), , drop = FALSE])
+                  val_type = c(
+                    val_type[1:(startMissingHour - 1)],
+                    rep(NA_real_, enMissingHour - startMissingHour + 1),
+                    val_type[startMissingHour:length(val_type)]
+                  )
                 } else { # day has less than 24 hours for another reason
                   # Append the average day to the end
                   a56 = nrow(averageday) - abs(deltaLength) + 1
                   a57 = nrow(averageday)
                   vari = rbind(vari, averageday[a56:a57, , drop = FALSE])
+                  val_type = c(val_type, rep(NA_real_, abs(deltaLength))
+                  )
                 }
               }
             } else if (deltaLength > 0) { # 25 hour days, assuming DST
@@ -392,6 +413,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               endDoubleHour = 3 * 60 * (60/ws3)
               if (nrow(vari) > endDoubleHour) {
                 vari = vari[-c(startDoubleHour:endDoubleHour)]
+                val_type = val_type[-c(startDoubleHour:endDoubleHour)]
               }
             }
             if (anwi_index != 1) {
@@ -400,12 +422,13 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   anwindices = anwindices[which(anwindices <= nrow(vari))]
                 }
                 vari = vari[anwindices, ] #cut short varnum to match day segment of interest
+                val_type = val_type[anwindices]
               } else {
                 vari = c()
               }
             }
             #===
-
+            
             for (mi in 1:ncol(vari)) { #run through metrics (for features based on single metrics)
               #=======================================
               # Motivation on the code below:
@@ -425,42 +448,120 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               # In part 5, however, GGIR forces the user to only work with complete
               # days and by that the day length is less of a problem and not accounted for.
               
+              # chech if is external output to later make sure we can convert
+              # this column to numeric
+              
+              isExternal = mi %in% ExtFunColsi
+              if (isExternal) {
+                rti = which(ExtFunColsi == mi)
+                reporttype = myfun$reporttype[rti]
+                outputtype = myfun$outputtype[rti]
+              } else {
+                reporttype = NULL
+                outputtype = NULL
+              }
+              
+              # Specific aggregation methods for external metrics
+              if (isExternal && reporttype == "type") {
+                
+                segmentInfo = list(
+                  anwi_nameindices = anwi_nameindices,
+                  anwi_index = anwi_index,
+                  anwi_t0 = anwi_t0,
+                  anwi_t1 = anwi_t1
+                )
+                
+                # Specific aggregation for type columns
+                typeAgg = aggregateType(
+                  metric_name = minames[mi],
+                  epochsize = ws3,
+                  daysummary = daysummary,
+                  ds_names = ds_names,
+                  fi = fi,
+                  di = di,
+                  vari = vari,
+                  segmentInfo = segmentInfo,
+                  myfun = myfun,
+                  qcheck = val_type
+                )
+                
+                daysummary = typeAgg$daysummary
+                ds_names = typeAgg$ds_names
+                fi = typeAgg$fi
+                
+                
+                
+                # Type output is not processed as a numeric metric
+                next
+                
+              } else if (isExternal && reporttype == "event") {
+                
+                segmentInfo = list(anwi_nameindices = anwi_nameindices,
+                                   anwi_index = anwi_index,
+                                   anwi_t0 = anwi_t0,
+                                   anwi_t1 = anwi_t1)
+                
+                eventAgg = aggregateEvent(metric_name = cn_metashort[mi],
+                                          epochsize = ws3, 
+                                          daysummary = daysummary,
+                                          ds_names = ds_names,
+                                          fi = fi, di = di,
+                                          vari = vari,
+                                          segmentInfo, myfun, params_247)
+                
+                daysummary = eventAgg$daysummary
+                ds_names = eventAgg$ds_names
+                fi = eventAgg$fi
+                
+                # Event output is not processed as a numeric metric
+                next
+                
+              } else if (isExternal && reporttype == "scalar") { # For the scalar report type we take the mean
+                # Scalars are already summarised as mean
+                # Specific summary statistics for non-acceleration scalar
+                # such as heart rate have not been implemented yet
+              } 
+              
               NRV = length(which(is.na(as.numeric(as.matrix(vari[,mi]))) == FALSE))
               # Note: vari equals the imputed time series (metashort) data from one day
               varnum = as.numeric(as.matrix(vari[,mi])) # Note: varnum is one column of vari
-              if (length(ExtFunColsi_backup) > 0) { # If an external function was used
-                if (mi %in% ExtFunColsi_backup == TRUE) {
-                  rti = which(ExtFunColsi_backup == mi)
-                  ExtFunColsi = ExtFunColsi_backup[rti] # column index where to find the corresponding info
-                }
-              }
+              
               #==============================
               # varnum_step
               isAccMetric = minames[mi] %in% c("ENMO","LFENMO", "BFEN", "EN", "HFEN", "HFENplus", "MAD", "ENMOa",
-                                 "ZCX", "ZCY", "ZCZ", "BrondCount_x", "BrondCount_y",
-                                 "BrondCount_z", "NeishabouriCount_x", "NeishabouriCount_y",
-                                 "NeishabouriCount_z", "NeishabouriCount_vm", "ExtAct",
-                                 "ExtHeartRate", myfun$colnames)
-              
-              if (isAccMetric == TRUE & length(ExtFunColsi) > 0) {
-                # Then also extract count metric
-                
-                varnum_event = as.numeric(as.matrix(vari[,ExtFunColsi]))
-                Ndatapoints = nrow(averageday)
-                if (NRV < Ndatapoints) {
-                  if (di == 1) {
-                    varnum_event = c(averageday[1:abs(deltaLength), ExtFunColsi], varnum_event)
-                  } else {
-                    a56 = Ndatapoints - abs(deltaLength)
-                    a57 = Ndatapoints
-                    varnum_event = c(varnum_event, averageday[a56:a57, ExtFunColsi])
-                  }
-                }
-                if (anwi_index != 1) {
-                  if (length(anwindices) > 0) {
-                    varnum_event = as.numeric(varnum_event[anwindices]) #cut short varnum_event to match day segment of interest
-                  } else {
-                    varnum_event = c()
+                                               "ZCX", "ZCY", "ZCZ", "BrondCount_x", "BrondCount_y",
+                                               "BrondCount_z", "NeishabouriCount_x", "NeishabouriCount_y",
+                                               "NeishabouriCount_z", "NeishabouriCount_vm", "ExtAct",
+                                               "ExtHeartRate")
+              # Also extract event metric for later detection of event bouts
+              # in combination with this accMetric
+              varnum_event = list()
+              if (isAccMetric && length(ExtFunColsi) > 0) {
+                if ("event" %in% myfun$reporttype) {
+                  # there might be more than 1 event metric
+                  eventMetrics = which(myfun$reporttype == "event")
+                  for (eventMetric in eventMetrics) {
+                    column_event = which(colnames(vari) == myfun$colnames[eventMetric])
+                    this_varnum_event = as.numeric(as.matrix(vari[,column_event]))
+                    Ndatapoints = nrow(averageday)
+                    if (NRV < Ndatapoints) {
+                      if (di == 1) {
+                        this_varnum_event = c(averageday[1:abs(deltaLength), column_event], 
+                                              this_varnum_event)
+                      } else {
+                        a56 = Ndatapoints - abs(deltaLength)
+                        a57 = Ndatapoints
+                        this_varnum_event = c(this_varnum_event, averageday[a56:a57, column_event])
+                      }
+                    }
+                    if (anwi_index != 1) {
+                      if (length(anwindices) > 0) {
+                        this_varnum_event = as.numeric(this_varnum_event[anwindices]) #cut short varnum_event to match day segment of interest
+                      } else {
+                        this_varnum_event = c()
+                      }
+                    }
+                    varnum_event[[length(varnum_event) + 1]] = this_varnum_event
                   }
                 }
               }
@@ -684,53 +785,32 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   }
                 }
                 
-                if (length(ExtFunColsi_backup) > 0) { # If events are detected with external function
+                if (length(ExtFunColsi) > 0) { # If events are detected with external function
                   # bout detection depends on access to non-wear bout variables
                   # so, skip detection of event bouts when working with external function output
                   if (mi %in% ExtFunColsi == FALSE) { # INSERT HERE VARIABLES DERIVED WITH EXTERNAL FUNCTION
                     # if (length(rti) == 1 && myfun$reporttype[rti] == "event") {
                     if (length(varnum_event) > 0) {
-                      # Step bout detection
-                      eventBouts = detectEventBouts(myfun, varnum_event = varnum_event,
-                                                    varnum = varnum,
-                                                    UnitReScale = UnitReScale,
-                                                    daysummary = daysummary,
-                                                    ds_names = ds_names,
-                                                    di = di, fi = fi,
-                                                    ws3 = ws3,
-                                                    boutnameEnding = paste0(cn_metashort[mi],
-                                                                            anwi_nameindices[anwi_index]))
-                      
-                      daysummary = eventBouts$daysummary
-                      ds_names = eventBouts$ds_names
-                      di = eventBouts$di
-                      fi = eventBouts$fi
+                      for (this_varnum_event in 1:length(varnum_event)) {
+                        # Step bout detection
+                        eventBouts = detectEventBouts(
+                          myfun, 
+                          varnum_event = varnum_event[[this_varnum_event]],
+                          varnum = varnum,
+                          UnitReScale = UnitReScale,
+                          daysummary = daysummary,
+                          ds_names = ds_names,
+                          di = di, fi = fi,
+                          ws3 = ws3,
+                          boutnameEnding = paste0(cn_metashort[mi], anwi_nameindices[anwi_index]))
+                        
+                        daysummary = eventBouts$daysummary
+                        ds_names = eventBouts$ds_names
+                        di = eventBouts$di
+                        fi = eventBouts$fi
+                      }
                     }
                   }
-                }
-              }
-              if (mi %in% ExtFunColsi == TRUE) { # INSERT HERE VARIABLES DERIVED WITH EXTERNAL FUNCTION
-                if (myfun$reporttype[rti] == "event") { # For the event report type we take the sum
-                  segmentInfo = list(anwi_nameindices = anwi_nameindices,
-                                     anwi_index = anwi_index,
-                                     anwi_t0 = anwi_t0,
-                                     anwi_t1 = anwi_t1)
-                  eventAgg = aggregateEvent(metric_name = cn_metashort[mi],
-                                            epochsize = ws3, 
-                                            daysummary = daysummary,
-                                            ds_names = ds_names,
-                                            fi = fi, di = di,
-                                            vari = vari,
-                                            segmentInfo, myfun, params_247)
-                  daysummary = eventAgg$daysummary
-                  ds_names = eventAgg$ds_names
-                  fi = eventAgg$fi
-                } else if (myfun$reporttype[rti] == "scalar") { # For the scalar report type we take the mean
-                  # Scalars are already summarised as mean
-                  # Specific summary statistics for non-acceleration scalar
-                  # such as heart rate have not been implemented yet
-                } else if (myfun$reporttype[rti] == "type") { # For type we calculate time spent in each class
-                  # Not implemented yet
                 }
               }
             }

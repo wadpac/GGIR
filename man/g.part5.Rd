@@ -13,7 +13,7 @@ g.part5(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                    params_sleep = c(), params_metrics = c(),
                    params_247 = c(), params_phyact = c(), 
                    params_cleaning = c(), params_output = c(),
-                   params_general = c(), verbose = TRUE, ...)
+                   params_general = c(), myfun = c(), verbose = TRUE, ...)
 }
 \arguments{
   \item{datadir}{
@@ -54,6 +54,10 @@ g.part5(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
   }
   \item{params_general}{
    See details in \link{GGIR}.
+  }
+  \item{myfun}{
+    External function object to be applied to raw data.
+    See details \link{applyExtFunction}.
   }
   \item{verbose}{
     See details in \link{GGIR}.

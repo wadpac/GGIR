@@ -13,7 +13,8 @@ check_myfun = function(myfun, windowsizes) { # Function to check myfun object
                                               "timestamp","reporttype",
                                               "clevels", "ilevels", "qlevels",
                                               "ebout.dur", "ebout.th.cad", "ebout.th.acc",
-                                              "ebout.criter", "ebout.condition", "name") == FALSE)
+                                              "ebout.criter", "ebout.condition", "name",
+                                              "tbout.dur", "tbout.criter", "tbout.order") == FALSE)
   if (length(foreignElements) != 0) {
     status = 1
     stop("Object myfun has unexpected elements.", call. = FALSE)
@@ -85,17 +86,95 @@ check_myfun = function(myfun, windowsizes) { # Function to check myfun object
                 " (first element of windowsizes) are not a multitude",
                 " of each other.", call. = FALSE))
   }
-  if ("outputtype" %in% names(myfun)) { # If outputtype is available:
+  if ("outputtype" %in% names(myfun)) {
     if (is.character(myfun$outputtype) == F) {
       status = 1
       stop(paste0("Error in check_myfun.R: Element outputtype is expected to be a",
                   " character specifying the ouput type"), call. = FALSE)
     }
-  }
-  if ("aggfunction" %in% names(myfun)) { # If aggfunction is available:
-    if (is.function(myfun$aggfunction) == F) {
+    if (length(myfun$outputtype) != 1 &&
+        length(myfun$outputtype) != length(myfun$colnames)) {
       status = 1
-      stop("Error in check_myfun.R: Element aggfunction is not a function object.", call. = FALSE)
+      stop(
+        "Error in check_myfun.R: Element outputtype should have either one value or one value for each output column.",
+        call. = FALSE
+      )
+    }
+    if (any(myfun$outputtype %in% c("numeric", "character") == FALSE)) {
+      status = 1
+      stop("Error in check_myfun.R: Element outputtype contains an unsupported output type.",
+           call. = FALSE)
+    }
+  }
+  
+  # aggfunction
+  # if aggregation is needed, then aggfunction must be provided:
+  if (myfun$outputres != windowsizes[1] && "aggfunction" %in% names(myfun) == FALSE) {
+    status = 1
+    stop(
+      "Error in check_myfun.R: Element aggfunction must be provided when outputres differs from the epoch size used in GGIR.",
+      call. = FALSE
+    )
+  }
+  
+  # Check that aggfunction is either one function for all outputs
+  # or one function for each output column
+  if ("aggfunction" %in% names(myfun) && "outputtype" %in% names(myfun)) {
+    if (is.function(myfun$aggfunction)) {
+      # One function: applied to all output columns
+      # This is allowed when all output types are the same
+      if (length(unique(myfun$outputtype)) > 1) {
+        status = 1
+        stop(
+          "Error in check_myfun.R: When outputtype contains both numeric and character outputs, aggfunction should be provided as a list with one function for each output column.",
+          call. = FALSE
+        )
+      }
+    } else if (is.list(myfun$aggfunction)) {
+      if (length(myfun$aggfunction) != length(myfun$colnames)) {
+        status = 1
+        stop(
+          "Error in check_myfun.R: When aggfunction is provided as a list, it should contain one function for each output column.",
+          call. = FALSE
+        )
+      }
+      
+      for (fi in seq_along(myfun$aggfunction)) {
+        if (is.function(myfun$aggfunction[[fi]]) == FALSE) {
+          status = 1
+          stop(
+            "Error in check_myfun.R: Each element of aggfunction should be a function object.",
+            call. = FALSE
+          )
+        }
+      }
+    } else {
+      status = 1
+      stop(
+        "Error in check_myfun.R: Element aggfunction should be a function or a list of functions.",
+        call. = FALSE
+      )
+    }
+  }
+  
+  if ("reporttype" %in% names(myfun)) {
+    if (is.character(myfun$reporttype) == F) {
+      status = 1
+      stop("Error in check_myfun.R: Element reporttype is expected to be a character.",
+           call. = FALSE)
+    }
+    if (length(myfun$reporttype) != 1 &&
+        length(myfun$reporttype) != length(myfun$colnames)) {
+      status = 1
+      stop(
+        "Error in check_myfun.R: Element reporttype should have either one value or one value for each output column.",
+        call. = FALSE
+      )
+    }
+    if (any(myfun$reporttype %in% c("scalar", "event", "type") == FALSE)) {
+      status = 1
+      stop("Error in check_myfun.R: Element reporttype contains an unsupported report type.",
+           call. = FALSE)
     }
   }
 

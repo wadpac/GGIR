@@ -363,7 +363,8 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
   wpd = 1440 * n_shortEpoch_permin #windows per day
   averageday = matrix(0, wpd, ncol(metashort) - 1)
   
-  for (mi in 2:ncol(metashort)) {# generate 'average' day for each variable
+  for (mi in 2:ncol(metashort)) {
+    # generate 'average' day for each numeric variable
     # The average day is used for imputation and defined relative to the starttime of the measurement
     # irrespective of dayborder as used in other parts of GGIR
     metr = as.numeric(as.matrix(metashort[, mi]))
@@ -425,10 +426,16 @@ g.impute = function(M, I, params_cleaning = c(), desiredtz = "",
     } else {
       dcomplscore = length(which(r5long == 0)) / wpd
     }
+    
   }
-  n_decimal_places = 4
   
-  metashort[,2:ncol(metashort)] = round(metashort[,2:ncol(metashort)], digits = n_decimal_places)
+  # Ensure rounding only affect numeric columns
+  n_decimal_places = 4
+  for (col_idx in 2:ncol(metashort)) {
+    if (is.numeric(metashort[[col_idx]])) {
+      metashort[[col_idx]] = round(metashort[[col_idx]], digits = n_decimal_places)
+    }
+  }
   rout = data.frame(r1 = r1, r2 = r2, r3 = r3, r4 = r4, r5 = r5, stringsAsFactors = TRUE)
   invisible(list(metashort = metashort, rout = rout, r5long = r5long, dcomplscore = dcomplscore,
                  averageday = averageday, windowsizes = windowsizes, 

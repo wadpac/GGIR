@@ -378,6 +378,10 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             }
           }
           OutputExternalFunction = applyExtFunction(data, myfun, sf, ws3, interpolationType = params_rawdata[["interpolationType"]])
+          LevelsExternalFunction = OutputExternalFunction$LevelsExternalFunction
+          OutputExternalFunction = OutputExternalFunction$OutputExternalFunction
+        } else {
+          LevelsExternalFunction = NULL
         }
       }
       if (LD >= (ws*sf)) { #LD != 0
@@ -551,6 +555,16 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     } else {
       LD = 0 #once LD < 1 the analysis stops, so this is a trick to stop it
       # stop reading because there is not enough data in this block
+      if (verbose) {
+        # user has tried to use an external function and at least 1 block
+        # of data has been read and processed. Then inform that the external
+        # function and/or package should also be cited
+        if (length(myfun) != 0 & i > 1) {
+          cat(paste0("\n\nYou have used an external function in GGIR",
+                     "\nDo not forget to cite the source function/package in your publications.\n"))
+        }
+      }
+      
     }
     if (isLastBlock) LD = 0
     if (ceiling(daylimit) != FALSE) {
@@ -603,17 +617,35 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
     
     # Following code is needed to make sure that algorithms that produce character value
     # output are not assumed to be numeric
-    NbasicMetrics = length(metricnames_short)
+    basicMetrics = metricnames_short[metricnames_short != "timestamp"]
+    factorMetrics = NULL
     if (length(myfun) != 0) {
       metricnames_short = c(metricnames_short, myfun$colnames)
-      if (myfun$outputtype == "numeric") NbasicMetrics = NbasicMetrics + length(myfun$colnames)
+      basicMetrics = c(basicMetrics, myfun$colnames[myfun$outputtype == "numeric"])
+      factorMetrics = c(factorMetrics, myfun$colnames[myfun$outputtype == "character"])
     }
+    NbasicMetrics = length(basicMetrics)
+    NfactorMetrics = length(factorMetrics)
     metashort = data.frame(A = metashort, stringsAsFactors = FALSE)
     names(metashort) = metricnames_short
-    for (ncolms in 2:NbasicMetrics) {
-      metashort[,ncolms] = as.numeric(metashort[,ncolms])
+    basicMetrics_idx = which(names(metashort) %in% basicMetrics)
+    if (NbasicMetrics > 0) {
+      for (ncolms in basicMetrics_idx) {
+        metashort[,ncolms] = as.numeric(metashort[,ncolms])
+      }
     }
-    
+    if (NfactorMetrics > 0) {
+      factorMetrics_idx = which(names(metashort) %in% factorMetrics)
+      for (ncolms in factorMetrics_idx) {
+        if (is.null(LevelsExternalFunction)) {
+          metashort[,ncolms] = as.factor(metashort[,ncolms])
+        } else {
+          out_idx = which(myfun$colnames == names(metashort)[ncolms])
+          this_column_levels = LevelsExternalFunction[[out_idx]]
+          metashort[,ncolms] = factor(metashort[,ncolms], levels = this_column_levels)
+        }
+      }
+    }
     metalong = data.frame(A = metalong, stringsAsFactors = FALSE)
     names(metalong) = metricnames_long
     for (ncolml in 2:ncol(metalong)) {

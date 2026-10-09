@@ -1,4 +1,5 @@
-g.part5_initialise_ts = function(IMP, M, params_247, params_general, longitudinal_axis = c()) {
+g.part5_initialise_ts = function(IMP, M, params_247, params_general, 
+                                 longitudinal_axis = c(), myfun = c()) {
   # extract key variables from the mile-stone data: time, acceleration and elevation angle
   # note that this is imputed ACCELERATION because we use this for describing behaviour:
   scale = ifelse(test = grepl("^Brond|^Neishabouri|^ZC|^ExtAct|^ExtHeartRate", params_general[["acc.metric"]]), yes = 1, no = 1000)
@@ -42,6 +43,48 @@ g.part5_initialise_ts = function(IMP, M, params_247, params_general, longitudina
   if ("step_count" %in% colnames(IMP$metashort)) {
     ts$step_count = 0
     ts$step_count = IMP$metashort$step_count
+  }
+  
+  # External function with reporttype = "type"
+  if (length(myfun) > 0 &&
+      "reporttype" %in% names(myfun)) {
+    
+    # identify type columns
+    type_indices = which(myfun$reporttype == "type")
+    
+    if (length(type_indices) > 0) {
+
+      # Identify "type" column and its levels
+      type_columns = myfun$colnames[type_indices]
+      
+      for (type_col in type_columns) {
+        
+        # identify levels
+        type_levels = levels(IMP$metashort[,type_col])
+
+        # seconds in each row
+        epoch_s = IMP$windowsizes[1]
+        
+        # identify the type level of each epoch
+        type_index = match(IMP$metashort[, type_col], type_levels)
+        
+        # create output matrix: 
+        # each row represents seconds in epoch classified in each type_levels
+        type_mat = matrix(0,
+                          nrow = nrow(IMP$metashort),
+                          ncol = length(type_levels))
+        
+        # Only epochs with a classified type contribute to TOLEVELS.
+        # Invalid and unclassified epochs remain zero in all type columns.
+        classified = !is.na(type_index)
+        type_mat[cbind(which(classified), type_index[classified])] = epoch_s
+        
+        # add columns to ts 
+        type_colnames = paste0("ExtFunType_", type_col, "_", type_levels, "_s")
+        colnames(type_mat) = type_colnames
+        ts[type_colnames] = type_mat
+      }
+    } 
   }
   
   Nts = nrow(ts)

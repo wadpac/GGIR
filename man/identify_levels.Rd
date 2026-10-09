@@ -10,7 +10,7 @@
 }
 \usage{
   identify_levels(ts, TRLi,TRMi,TRVi,
-                  ws3, params_phyact, ...)
+                  ws3, params_phyact,...)
 }
 \arguments{
   \item{ts}{
@@ -42,6 +42,7 @@
     \item LEVELS
     \item OLEVELS
     \item Lnames
+    \item Tnames
     \item bc.mvpa
     \item bc.lig
     \item bc.in

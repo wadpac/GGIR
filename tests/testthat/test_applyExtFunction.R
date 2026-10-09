@@ -34,6 +34,7 @@ test_that("Function is applied to acceleration data results in expected output",
   # then applyExtFunction overwrites this.
   
   output = applyExtFunction(data, myfun, sf, ws3)
+  output = output$OutputExternalFunction
   
   expect_that(ncol(output),equals(4))
   expect_that(nrow(output),equals(4))
@@ -56,6 +57,7 @@ test_that("Function is applied to acceleration data results in expected output",
   expect_warning({ # warning from setting timestamp = TRUE
     output = applyExtFunction(data, myfun, sf, ws3)
   })
+  output = output$OutputExternalFunction
   
   expect_that(ncol(output),equals(3))
   expect_that(nrow(output),equals(2)) # 2 rows because they were aggregated to match ws3
@@ -69,17 +71,19 @@ test_that("Function is applied to acceleration data results in expected output",
                 minlength = 1,
                 outputres = 4,
                 colnames = c("A","B","C"),
-                outputtype = "category", #"numeric" (averaging is possible), "category" (majority vote)
+                outputtype = "numeric", 
                 aggfunction = mean,
                 timestamp = TRUE) # for unit test only
   
   expect_warning({ # warning from setting timestamp = TRUE
     output = applyExtFunction(data, myfun, sf, ws3)
   })
+  output = output$OutputExternalFunction
   
   expect_that(ncol(output),equals(3))
-  expect_that(nrow(output),equals(4))
-  expect_that(sum(output[,2:3]),equals(431.64))
+  expect_that(nrow(output),equals(8))
+  expect_that(output[, 2],
+              equals(rep(c(9.81, 49.05, 68.67, 88.29), each = 2)))
   
   # test check_myfun warnings and errors
   expect_error(check_myfun(myfun = 4, ws3),
@@ -232,7 +236,7 @@ test_that("Function is applied to acceleration data results in expected output",
                                         outputtype = "numeric", #"numeric" (averaging is possible), "category" (majority vote)
                                         aggfunction = "mean",
                                         timestamp = Sys.time()), ws3),
-               regexp = "Element aggfunction is not a function object")
+               regexp = "Element aggfunction should be a function or a list of functions.")
   
   
 })
