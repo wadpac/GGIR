@@ -34,6 +34,16 @@ test_that("Embedding external functions with reporttype = 'type'", {
     0
   )
 
+  # It also preserves a separate report type for each output column
+
+  myfun_mixed_reporttype = myfun_multiple_type
+  myfun_mixed_reporttype$reporttype = c("type", "scalar")
+
+  expect_equal(
+    check_myfun(myfun_mixed_reporttype, windowsizes = 5),
+    0
+  )
+
   # Multiple categorical outputs retain their values and distinct levels
 
   multiple_type_fun = function(data, parameters) {
@@ -621,6 +631,20 @@ test_that("Embedding external functions with reporttype = 'type'", {
   expect_equal(names(type_levels$TLEVELS), c("activity_type", "posture"))
   expect_equal(colnames(type_levels$TOLEVELS$activity_type), c("rest", "walk"))
   expect_equal(colnames(type_levels$TOLEVELS$posture), c("sitting", "standing"))
+
+  # A reporttype vector is applied column by column without recycling over it
+
+  myfun_mixed_reporttype = myfun
+  myfun_mixed_reporttype$reporttype = c("type", "scalar")
+
+  mixed_type_levels = identify_levels_ExtFunType(
+    ts = type_ts_multiple,
+    myfun = myfun_mixed_reporttype,
+    ws3 = 5
+  )
+
+  expect_equal(names(mixed_type_levels$TOLEVELS), "activity_type")
+  expect_equal(names(mixed_type_levels$TLEVELS), "activity_type")
   
   if (file.exists(fn)) file.remove(fn)
   if (dir.exists(dn)) unlink(dn, recursive = TRUE)
