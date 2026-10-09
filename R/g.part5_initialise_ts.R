@@ -50,7 +50,8 @@ g.part5_initialise_ts = function(IMP, M, params_247, params_general,
       "reporttype" %in% names(myfun)) {
     
     # identify type columns
-    type_indices = which(myfun$reporttype == "type")
+    reporttypes = rep(myfun$reporttype, length.out = length(myfun$colnames))
+    type_indices = which(reporttypes == "type")
     
     if (length(type_indices) > 0) {
 

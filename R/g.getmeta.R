@@ -150,6 +150,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
   PreviousLastValue = c(0, 0, 1)
   PreviousLastTime = NULL
   header = NULL
+  LevelsExternalFunction = NULL
 
   while (LD > 1) {
     if (verbose == TRUE) {
@@ -378,10 +379,11 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             }
           }
           OutputExternalFunction = applyExtFunction(data, myfun, sf, ws3, interpolationType = params_rawdata[["interpolationType"]])
-          LevelsExternalFunction = OutputExternalFunction$LevelsExternalFunction
+          LevelsExternalFunction = mergeExternalFunctionLevels(
+            existing_levels = LevelsExternalFunction,
+            new_levels = OutputExternalFunction$LevelsExternalFunction
+          )
           OutputExternalFunction = OutputExternalFunction$OutputExternalFunction
-        } else {
-          LevelsExternalFunction = NULL
         }
       }
       if (LD >= (ws*sf)) { #LD != 0

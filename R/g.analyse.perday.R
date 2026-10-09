@@ -62,6 +62,12 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                                                                        length(time))], tz = params_general[["desiredtz"]]),
                                           tz = params_general[["desiredtz"]]))
   ExtFunColsi = ExtFunColsi - 1 # subtract 1 because code ignores timestamp
+  if (length(myfun) > 0) {
+    reporttypes = rep(myfun$reporttype, length.out = length(myfun$colnames))
+    outputtypes = rep(myfun$outputtype, length.out = length(myfun$colnames))
+  } else {
+    reporttypes = outputtypes = NULL
+  }
   for (di in 1:ndays) { #run through days
     params_247[["qwindow"]] = qwindowbackup
     if (is.data.frame(params_247[["qwindow"]]) == TRUE) {
@@ -366,8 +372,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 val_type = c(rep(NA_real_, abs(deltaLength)), val_type)
                 # Restore external function type columns as factor:
                 if (length(myfun) > 0 && "reporttype" %in% names(myfun)) {
-                  reporttype = rep(myfun$reporttype, length.out = length(myfun$colnames))
-                  type_columns = myfun$colnames[reporttype == "type"]
+                  type_columns = myfun$colnames[reporttypes == "type"]
                   
                   if (length(type_columns) > 0) {
                     for (type_column in type_columns) {
@@ -454,8 +459,8 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               isExternal = mi %in% ExtFunColsi
               if (isExternal) {
                 rti = which(ExtFunColsi == mi)
-                reporttype = myfun$reporttype[rti]
-                outputtype = myfun$outputtype[rti]
+                reporttype = reporttypes[rti]
+                outputtype = outputtypes[rti]
               } else {
                 reporttype = NULL
                 outputtype = NULL
@@ -537,9 +542,9 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               # in combination with this accMetric
               varnum_event = list()
               if (isAccMetric && length(ExtFunColsi) > 0) {
-                if ("event" %in% myfun$reporttype) {
+                if ("event" %in% reporttypes) {
                   # there might be more than 1 event metric
-                  eventMetrics = which(myfun$reporttype == "event")
+                  eventMetrics = which(reporttypes == "event")
                   for (eventMetric in eventMetrics) {
                     column_event = which(colnames(vari) == myfun$colnames[eventMetric])
                     this_varnum_event = as.numeric(as.matrix(vari[,column_event]))
