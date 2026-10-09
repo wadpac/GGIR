@@ -197,8 +197,12 @@ applyExtFunction = function(data, myfun, sf, ws3,interpolationType=1) {
   
   # re-factorize if any of the output columns was a factor 
   if (length(is_factor) > 0) {
-    OutputExternalFunction[,is_factor] = factor(OutputExternalFunction[,is_factor],
-                                                levels = LevelsExternalFunction[[is_factor]])
+    for (factor_idx in is_factor) {
+      OutputExternalFunction[, factor_idx] = factor(
+        OutputExternalFunction[, factor_idx],
+        levels = LevelsExternalFunction[[factor_idx]]
+      )
+    }
   }
   
   

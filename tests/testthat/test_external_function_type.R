@@ -33,6 +33,47 @@ test_that("Embedding external functions with reporttype = 'type'", {
     check_myfun(myfun_multiple_type, windowsizes = 5),
     0
   )
+
+  # Multiple categorical outputs retain their values and distinct levels
+
+  multiple_type_fun = function(data, parameters) {
+    data.frame(
+      activity_type = factor(
+        c("rest", "walk", "rest"),
+        levels = c("rest", "walk")
+      ),
+      posture = factor(
+        c("sitting", "standing", "sitting"),
+        levels = c("sitting", "standing")
+      )
+    )
+  }
+
+  myfun_multiple_type$FUN = multiple_type_fun
+  myfun_multiple_type$outputtype = c("character", "character")
+
+  multiple_type_out = expect_warning(
+    applyExtFunction(data = matrix(
+      1,
+      nrow = 45,
+      ncol = 3,
+      dimnames = list(NULL, c("x", "y", "z"))
+    ), myfun = myfun_multiple_type, sf = 3, ws3 = 5),
+    regexp = "Note: If function applyExtFunction is used directly"
+  )
+
+  expect_equal(
+    as.character(multiple_type_out$OutputExternalFunction$activity_type),
+    c("rest", "walk", "rest")
+  )
+  expect_equal(
+    as.character(multiple_type_out$OutputExternalFunction$posture),
+    c("sitting", "standing", "sitting")
+  )
+  expect_equal(
+    multiple_type_out$LevelsExternalFunction,
+    list(c("rest", "walk"), c("sitting", "standing"))
+  )
   
   # reporttype = 'type' creates the expected character output
   
