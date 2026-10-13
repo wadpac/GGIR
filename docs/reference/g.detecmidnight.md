@@ -24,7 +24,7 @@ g.detecmidnight(time,desiredtz, dayborder)
 
 ## Value
 
-Output of the function is list containing the following objects:  
+Output of the function is list containing the following objects:\
 
 - firstmidnight = timestamp of first midnight
 

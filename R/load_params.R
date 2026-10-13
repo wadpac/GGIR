@@ -50,7 +50,9 @@ load_params = function(topic = c("sleep", "metrics", "rawdata",
                         guider_cor_meme_min_hrs = 1,
                         guider_cor_do = FALSE,
                         guider_cor_meme_min_dys = 3,
-                        threshold.nap = 20)
+                        threshold.nap = 20,
+                        HDCZA_roll_windowsize = 5,
+                        LowAcc_threshold = 0.014)
   }
   if ("metrics" %in% topic) {
     params_metrics = list(do.anglex = FALSE, do.angley = FALSE, do.anglez = TRUE,

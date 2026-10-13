@@ -1,3 +1,5 @@
+^renv$
+^renv\.lock$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 prepareNewRelease.R
@@ -24,7 +26,9 @@ index.md
 ^vignettes/Cookbook.Rmd
 ^vignettes/SleepRegularityIndex.Rmd
 ^vignettes/DateTimeFormatsInR.Rmd
+^vignettes/LightLogR.Rmd
 .nojekyll
 docs/.nojekyll
 ^\.positai$
 ^\.claude$
+^dev$

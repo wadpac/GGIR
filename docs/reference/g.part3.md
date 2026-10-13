@@ -91,7 +91,7 @@ elaborate overview of parameter objects and their usage across GGIR.
 ## Value
 
 The function provides no values, it only ensures that other functions
-are called and that their output is stored in .RData files.  
+are called and that their output is stored in .RData files.\
 
 - `night` nightnumber
 

@@ -185,6 +185,8 @@ will find a description and default value for all the arguments.
 | guider_cor_meme_min_hrs | 3 | params_sleep |
 | guider_cor_do | 3 | params_sleep |
 | guider_cor_meme_min_dys | 3 | params_sleep |
+| HDCZA_roll_windowsize | 3 | params_sleep |
+| LowAcc_threshold | 3 | params_sleep |
 | loglocation | 4, 5 | params_sleep |
 | colid | 4 | params_sleep |
 | coln1 | 4 | params_sleep |
@@ -1657,6 +1659,21 @@ controlled by parameter guider_cor_meme_frac_out,
 guider_cor_meme_frac_in, and guider_cor_meme_min_hrs. This parameter is
 set to 3 by default as a median becomes only meaningful with at least
 three values.
+
+#### HDCZA_roll_windowsize
+
+Numeric (default = 5) Size in minutes of the rolling window used by the
+HDCZA guider algorithm to calculate the median absolute difference in
+angle for each window position.
+
+#### LowAcc_threshold
+
+Numeric (default = 0.014) Acceleration threshold in *g*-units use by the
+LowAcc guider applied to acceleration derived with metric as specified
+by parameter acc_metric. The default is based on acc_metric = “MAD”,
+which was consired most suitable for ActivPAL data that come with
+timegaps that complicate auto-calibration of the acceleration signals
+rendering default metric ENMO unsuitable.
 
 ### Physical activity Parameters
 

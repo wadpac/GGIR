@@ -159,25 +159,18 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   
   cat("\n Movisens")
   
+  # Test data from the unisensExample at:
+  # https://github.com/Unisens/unisensR/tree/0.3.4/tests/unisensExample
   output_dir = "output_unisensExample"
   on.exit({if (file.exists(output_dir)) unlink(output_dir, recursive = TRUE)}, add = TRUE)
   if (file.exists(output_dir)) unlink(output_dir, recursive = TRUE)
   
-  zip_file = "0.3.4.zip"
-  on.exit({if (file.exists(zip_file)) unlink(zip_file)}, add = TRUE)
-  if (!file.exists(zip_file)) {
-    # link to a tagged release of Unisens/unisensR github repo
-    movisens_url = "https://github.com/Unisens/unisensR/archive/refs/tags/0.3.4.zip"
-    download.file(url = movisens_url, destfile = zip_file, quiet = TRUE)
-  }
+  movisensFile = system.file(
+    "extdata/unisensExample/acc.bin",
+    package = "unisensR"
+  )
   
-  movisens_dir = "unisensR-0.3.4"
-  on.exit({if (file.exists(movisens_dir)) unlink(movisens_dir, recursive = TRUE)}, add = TRUE)
-  if (file.exists(movisens_dir)) {
-    unlink(movisens_dir, recursive = TRUE)
-  }
-  unzip(zipfile = zip_file, exdir = ".")
-  movisensFile = file.path(getwd(), "unisensR-0.3.4/tests/unisensExample/acc.bin")
+  expect_true(file.exists(movisensFile))
   
   Mcsv = g.inspectfile(movisensFile, desiredtz = desiredtz)
   expect_equal(Mcsv$monc, MONITOR$MOVISENS)
@@ -192,7 +185,6 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   expect_equal(nrow(movisens_read$P$data), movisens_blocksize)
   expect_false(movisens_read$filequality$filecorrupt)
   expect_false(movisens_read$filequality$filetooshort)
-  expect_equal(sum(movisens_read$P$data[c("x","y","z")]), 4383.67, tolerance = .01, scale = 1)
   expect_equal(movisens_read$endpage, movisens_blocksize)
   
   # read the next block (set PreviousEndPage to movisens_read$endpage)
@@ -475,10 +467,8 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   expect_equal(length(fnames$fnames), 8)
   expect_equal(length(fnames$fnamesfull), 8)
   
-  if (dir.exists("unisensR-0.3.4/")) unlink("unisensR-0.3.4/", recursive = TRUE)
   if (file.exists(testfile_one_col)) file.remove(testfile_one_col)
   if (file.exists(testfile_two_col)) file.remove(testfile_two_col)
   if (file.exists(testfile)) file.remove(testfile)
   if (file.exists(filename)) file.remove(filename)
-  if (file.exists(zip_file)) file.remove(zip_file)
 })

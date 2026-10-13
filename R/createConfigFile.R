@@ -81,8 +81,10 @@ createConfigFile = function(config.parameters = c(), GGIRversion = "") {
   }
   SI = sessionInfo()
   GGIRread_version = "could not extract version"
-  if (is.element('GGIRread', installed.packages()[,1])) {
-    GGIRread_version = as.character(utils::packageVersion("GGIRread"))
+
+  pv = try({utils::packageVersion("GGIRread")}, silent = TRUE)
+  if (!inherits(pv, "try-error")) {
+    GGIRread_version = as.character(pv)
     if (length(GGIRread_version) != 1) GGIRread_version = sessionInfo()$otherPkgs$GGIRread$Version
   }
   out = rbind(out, matrix(c("GGIRread_version", GGIRread_version, "not applicable"), nrow = 1))

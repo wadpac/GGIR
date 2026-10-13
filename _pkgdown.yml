@@ -88,6 +88,8 @@ navbar:
           href: articles/NapDetection.html
         - text: Step and Cadence Analysis
           href: articles/StepCadenceAnalysis.html
+        - text: Personal light exposure analysis
+          href: articles/LightLogR.html
           
   structure:
     left:  [chapters, annexes, installation, intro, news, contributing, help]

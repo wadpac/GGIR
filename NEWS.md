@@ -22,7 +22,17 @@
 
 - Part 2: Parameter nonwearFilterWindow can now also use diary path directly, which now allows for filtering based on a one or specific diary while qwindow can be used for day segment analysis #1373
 
-# CHANGES IN GGIR VERSION 3.3-
+# CHANGES IN GGIR VERSION 3.3-9
+
+- Tests: Made the Movisens test independent of internet access by including the test data in inst/testfiles (#1540)
+
+- Part 3: Add new guider named LowAcc, with new parameter LowAcc_threshold. Further, parameter HDCZA_roll_windowsize was added related to guider HDCZA. #1287
+
+- Part 3: Added new parameter HDCZA_roll_windowsize to control the size of the rolling window used by the HDCZA guider algorithm.
+
+- Part 5: Allow for day segment analysis for the WW and OO window definition. #1407
+
+# CHANGES IN GGIR VERSION 3.3-8
 
 - Updated documentation to point to the new web dashboard URL (#1509)
 
@@ -34,7 +44,7 @@
 
 - Fixed check_log() to coerce study dates log columns to character, so that dates auto-parsed as IDate by data.table::fread() are handled correctly. #1521
 
-- Part 5: Allow for day segment analysis for the WW and OO window definition. #1407
+- Add vignette on Personal light exposure analysis. #1516
 
 # CHANGES IN GGIR VERSION 3.3-7
 

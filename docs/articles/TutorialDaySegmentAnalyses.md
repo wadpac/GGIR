@@ -114,10 +114,7 @@ not facilitate overlapping time segments.
 Both approaches are implemented in GGIR part 2 and part 5. Therefore the
 specific output variables that are calculated both in part 2 and 5 are
 available per day, per person, and per segment of the day based on the
-argument `qwindow` Note that `qwindow` is only used in **part 5** when
-`timewindow` includes `"MM"` (see specific documentation for
-`timewindow`} in the [parameters
-vignette](https://CRAN.R-project.org/package=GGIR/vignettes/GGIRParameters.html))
+argument `qwindow`.
 
 At the moment, specifying the argument `qwindow` triggers the
 calculation of the `qwindow` segments both in part 2 and part 5, which
@@ -200,6 +197,30 @@ in the long format and aggregated per day and per person:
   long format, such that each row represents the average for each
   outcome in one specific segments across all days in which that segment
   is available per participant.
+
+If you use an activity diary to segment the day then column `window`
+clarifies the name of the day segment. For example, when the behaviour
+is defined as “work” in the activity diary then you will see
+`WWsegment-workstart-workend` in column `window` to clarify that the row
+reflects the timewindow corresponding to being at or doing work.
+
+When performing day segment analysis with the parameters
+`timewindow="WW"` or `timewindow="OO"`, be aware that time segments are
+still defined based on a 24-hour clock and never cross midnight, which
+is necessary to allow for standardised comparisons between days.
+However, the data is extracted from only one sleep-wake cycle at a time.
+For example, when `timewindow="WW"` and `qwindow=c(0, 8, 24)` for a
+person who sleeps from 1:00 to 7:00, this means that behaviour between
+midnight and 1:00 is counted towards the 0:00-8:00 segment in the
+present WW cycle, while behaviour between 7:00 and 8:00 is counted
+towards the 0:00-8:00 segment in the next WW cycle. The advantage of
+this approach is that you can study the relation between behaviour per
+day segment during the waking hours of a day on sleep the following
+night, or vice versa. However, be aware that a segment such as 0:00-8:00
+can reflect time points from both the beginning and the end of the WW
+window. For example, if a person wakes up on day 1 at 7:00 and goes to
+bed at 1:00, then the 0:00-8:00 segment reflects the combination of
+7:00-8:00 and 0:00-1:00 at the end of the waking hours that day.
 
 ## Cleaning parameters for day segments (in part 5):
 

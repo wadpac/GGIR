@@ -160,4 +160,31 @@ test_that("HASPT generate correct output", {
   expect_equal(test$SPTE_start, 0) # note: times 3 because these are indices in the downsampled data
   expect_equal(test$SPTE_end, 5761)
   expect_equal(test$part3_guider, "MotionWare")
+  
+  # LowACC
+  params_sleep = load_params()$params_sleep
+  
+  params_sleep[["LowAcc_threshold"]] = 0.014
+  test = HASPT(angle = NULL, params_sleep = params_sleep,
+               ws3 = epochSize,
+               HASPT.algo = "LowAcc", invalid = invalid,
+               activity = activity / 1000,
+               sibs = sibs)
+  expect_equal(test$SPTE_start, 5015) # note: times 3 because these are indices in the downsampled data
+  expect_equal(test$SPTE_end, 7989)
+  expect_equal(test$part3_guider, "LowAcc")
+  
+  params_sleep = load_params()$params_sleep
+  
+  # LowAcc with a higher threshold
+  params_sleep[["LowAcc_threshold"]] = 0.05
+  test = HASPT(angle = NULL, params_sleep = params_sleep,
+               ws3 = epochSize,
+               HASPT.algo = "LowAcc", invalid = invalid,
+               activity = activity / 1000,
+               sibs = sibs)
+  expect_equal(test$SPTE_start, 4903) # note: times 3 because these are indices in the downsampled data
+  expect_equal(test$SPTE_end, 8078)
+  expect_equal(test$part3_guider, "LowAcc")
+  
 })

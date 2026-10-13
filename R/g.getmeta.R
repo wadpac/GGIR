@@ -249,7 +249,7 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
             }
           } else if ("remaining_epochs" %in% colnames(S)) {
             if ((ncol(S) - 1) == ncol(data)) {
-              # this block does not have time gaps while the previous blog did
+              # this block does not have time gaps while the previous block did
               data = cbind(data, 1)
               colnames(data)[ncol(S)] = "remaining_epochs"
             }
@@ -259,9 +259,10 @@ g.getmeta = function(datafile, params_metrics = c(), params_rawdata = c(),
         # but timegaps in between data chunks are not dealt with there,
         # which could in theory be an issue for csv format data with known time gaps,
         # such as ActivPAL and ActiGraph.
-        # The time gaps needs to coincide exactly with
-        # edges of a data chunk, by which probability of this occurring is low.
-        # The code blow aims to detect and handle this scenario.
+        # The time gaps needs to coincide exactly with the
+        # edge of a data chunk, by which the probability of this occurring is low.
+        # The code below aims to detect and handle this scenario.
+        # 12/8/2025: Note that these gaps between chunks are currently not logged
         if ("time" %in% colnames(data) && "time" %in% colnames(S)) {
           timegap_between_chunks = as.numeric(data[1, "time"] - S[nrow(S), "time"])
           if (timegap_between_chunks > 3600 * sf) {

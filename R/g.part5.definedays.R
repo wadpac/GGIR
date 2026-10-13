@@ -39,7 +39,6 @@ g.part5.definedays = function(nightsi, wi, indjump, epochSize, qqq_backup = c(),
   qqq = rep(0,2); segments = segments_names = c()
   # Check that it is possible to find both windows (WW and MM)
   # in the data for this day.
-  
   if (timewindowi == "MM") {
     # include first and last partial days in MM
     if (nightsi[1] > 1 && nightsi[1] < 25 * 3600 / epochSize) {
@@ -125,7 +124,8 @@ g.part5.definedays = function(nightsi, wi, indjump, epochSize, qqq_backup = c(),
       segments_names = paste0(paste0(timewindowi, "segment"), 0:(length(segments_timing) - 1))
       segments_names = gsub(paste0(timewindowi, "segment0"), timewindowi, segments_names)
     } else {
-      segments_names = c(timewindowi, paste(qnames[-length(qnames)], qnames[-1], sep = "-"))
+      segments_names = c(timewindowi, paste(paste0(timewindowi, "segment"), 
+                                            qnames[-length(qnames)], qnames[-1], sep = "-"))
     }
     # Get indices in ts for segments start and end limits
     hms = format(ts$time[fullQqq], format = "%H:%M:%S")

@@ -137,10 +137,9 @@ github.io website (see [next section](#github.io-website)).
 **To create a new vignette for CRAN**
 
 To create a new package vignette for CRAN, please use
-[`usethis::use_vignette()`](https://usethis.r-lib.org/reference/use_vignette.html)
-and make sure the name of the vignette file does not start by “chapter”.
-For example, if you want to create a new vignette on sleep for CRAN, you
-may do the following:
+`usethis::use_vignette()` and make sure the name of the vignette file
+does not start by “chapter”. For example, if you want to create a new
+vignette on sleep for CRAN, you may do the following:
 
     usethis::use_vignette(name = "sleep",
                           title = "How to analyse your sleep data in GGIR")
@@ -191,10 +190,8 @@ As stated above **DO NOT RUN**
 
 **To add a new chapter**
 
-1.  Create a Rmd file for the vignette via
-    [`usethis::use_vignette()`](https://usethis.r-lib.org/reference/use_vignette.html)
-    and make sure the name of the vignette starts by “chapter”, for
-    example:
+1.  Create a Rmd file for the vignette via `usethis::use_vignette()` and
+    make sure the name of the vignette starts by “chapter”, for example:
 
 &nbsp;
 
