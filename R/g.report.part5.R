@@ -313,8 +313,10 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                 extfuntype_cols = character(0)
                 if (!is.null(myfun) &&
                     "reporttype" %in% names(myfun)) {
-                  
-                  type_indices = which(myfun$reporttype == "type")
+
+                  reporttypes = rep(myfun$reporttype,
+                                    length.out = length(myfun$colnames))
+                  type_indices = which(reporttypes == "type")
                   
                   if (length(type_indices) > 0) {
                     type_columns = myfun$colnames[type_indices]

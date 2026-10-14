@@ -42,11 +42,11 @@
     \item LEVELS
     \item OLEVELS
     \item Lnames
-    \item Tnames
     \item bc.mvpa
     \item bc.lig
     \item bc.in
     \item ts
+    \item threshold
   }
 }
 \examples{

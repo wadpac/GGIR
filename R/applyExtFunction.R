@@ -104,8 +104,20 @@ applyExtFunction = function(data, myfun, sf, ws3,interpolationType=1) {
   # If timestamp is returned by FUN, temporarily separate it from
   # the output matrix so that only external function outputs are processed
   if (has_timestamp_output) {
-    timestamp = OutputExternalFunction[, 1, drop = FALSE]
+    timestamp = OutputExternalFunction[, 1]
     OutputExternalFunction = OutputExternalFunction[, -1, drop = FALSE]
+
+    if (myfun$outputres < ws3) {
+      # Retain the start timestamp of each aggregated GGIR epoch.
+      n_per_epoch = ws3 / myfun$outputres
+      timestamp = timestamp[seq(1, length(timestamp), by = n_per_epoch)]
+    } else if (myfun$outputres > ws3) {
+      # Generate a timestamp for every repeated GGIR epoch.
+      n_repeat = myfun$outputres / ws3
+      timestamp = rep(timestamp, each = n_repeat) +
+        rep(seq(0, myfun$outputres - ws3, by = ws3),
+            times = length(timestamp))
+    }
   }
   
   # Recycle outputtype across all output columns when a single value is provided
@@ -197,8 +209,12 @@ applyExtFunction = function(data, myfun, sf, ws3,interpolationType=1) {
   
   # re-factorize if any of the output columns was a factor 
   if (length(is_factor) > 0) {
-    OutputExternalFunction[,is_factor] = factor(OutputExternalFunction[,is_factor],
-                                                levels = LevelsExternalFunction[[is_factor]])
+    for (factor_idx in is_factor) {
+      OutputExternalFunction[, factor_idx] = factor(
+        OutputExternalFunction[, factor_idx],
+        levels = LevelsExternalFunction[[factor_idx]]
+      )
+    }
   }
   
   
@@ -212,4 +228,14 @@ applyExtFunction = function(data, myfun, sf, ws3,interpolationType=1) {
   
   return(list(OutputExternalFunction = OutputExternalFunction, 
               LevelsExternalFunction = LevelsExternalFunction))
+}
+
+mergeExternalFunctionLevels = function(existing_levels, new_levels) {
+  if (is.null(existing_levels)) {
+    return(new_levels)
+  }
+
+  lapply(seq_along(new_levels), function(level_idx) {
+    union(existing_levels[[level_idx]], new_levels[[level_idx]])
+  })
 }

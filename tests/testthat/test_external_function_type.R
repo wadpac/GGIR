@@ -27,11 +27,93 @@ test_that("Embedding external functions with reporttype = 'type'", {
   
   myfun_multiple_type = myfun
   myfun_multiple_type$colnames = c("activity_type", "posture")
-  myfun_multiple_type$reporttype = c("type", "type")
+  myfun_multiple_type$reporttype = "type"
   
   expect_equal(
     check_myfun(myfun_multiple_type, windowsizes = 5),
     0
+  )
+
+  # It also preserves a separate report type for each output column
+
+  myfun_mixed_reporttype = myfun_multiple_type
+  myfun_mixed_reporttype$reporttype = c("type", "scalar")
+
+  expect_equal(
+    check_myfun(myfun_mixed_reporttype, windowsizes = 5),
+    0
+  )
+
+  # Multiple categorical outputs retain their values and distinct levels
+
+  multiple_type_fun = function(data, parameters) {
+    data.frame(
+      activity_type = factor(
+        c("rest", "walk", "rest"),
+        levels = c("rest", "walk")
+      ),
+      posture = factor(
+        c("sitting", "standing", "sitting"),
+        levels = c("sitting", "standing")
+      )
+    )
+  }
+
+  myfun_multiple_type$FUN = multiple_type_fun
+  myfun_multiple_type$outputtype = c("character", "character")
+
+  multiple_type_out = expect_warning(
+    applyExtFunction(data = matrix(
+      1,
+      nrow = 45,
+      ncol = 3,
+      dimnames = list(NULL, c("x", "y", "z"))
+    ), myfun = myfun_multiple_type, sf = 3, ws3 = 5),
+    regexp = "Note: If function applyExtFunction is used directly"
+  )
+
+  expect_equal(
+    as.character(multiple_type_out$OutputExternalFunction$activity_type),
+    c("rest", "walk", "rest")
+  )
+  expect_equal(
+    as.character(multiple_type_out$OutputExternalFunction$posture),
+    c("sitting", "standing", "sitting")
+  )
+  expect_equal(
+    multiple_type_out$LevelsExternalFunction,
+    list(c("rest", "walk"), c("sitting", "standing"))
+  )
+
+  # Levels observed in successive raw-data blocks are retained
+
+  accumulated_levels = mergeExternalFunctionLevels(
+    existing_levels = list(
+      c("rest", "walk"),
+      c("sitting", "standing"),
+      NULL
+    ),
+    new_levels = list(
+      c("walk", "cycling"),
+      c("lying", "sitting"),
+      NULL
+    )
+  )
+
+  expect_equal(
+    accumulated_levels,
+    list(
+      c("rest", "walk", "cycling"),
+      c("sitting", "standing", "lying"),
+      NULL
+    )
+  )
+  expect_equal(
+    mergeExternalFunctionLevels(
+      existing_levels = NULL,
+      new_levels = accumulated_levels
+    ),
+    accumulated_levels
   )
   
   # reporttype = 'type' creates the expected character output
@@ -81,6 +163,8 @@ test_that("Embedding external functions with reporttype = 'type'", {
       ENMO = c(0.01, 0.02, 0.03, 0.04, 0.05),
       activity_type = factor(c("rest", "walk", "walk", NA, "rest"),
                              levels = c("rest", "walk")),
+      posture = factor(c("sitting", "standing", "standing", NA, "sitting"),
+                       levels = c("sitting", "standing")),
       stringsAsFactors = FALSE
     ),
     rout = matrix(0, nrow = 1, ncol = 5),
@@ -104,7 +188,7 @@ test_that("Embedding external functions with reporttype = 'type'", {
     parameters = NULL,
     expected_sample_rate = 3,
     expected_unit = "g",
-    colnames = "activity_type",
+    colnames = c("activity_type", "posture"),
     minlength = 1,
     outputres = 5,
     outputtype = "character",
@@ -126,11 +210,15 @@ test_that("Embedding external functions with reporttype = 'type'", {
     type_cols,
     c(
       "ExtFunType_activity_type_rest_s",
-      "ExtFunType_activity_type_walk_s"
+      "ExtFunType_activity_type_walk_s",
+      "ExtFunType_posture_sitting_s",
+      "ExtFunType_posture_standing_s"
     )
   )
   expect_equal(ts$ExtFunType_activity_type_rest_s, c(5, 0, 0, 0, 5))
   expect_equal(ts$ExtFunType_activity_type_walk_s, c(0, 5, 5, 0, 0))
+  expect_equal(ts$ExtFunType_posture_sitting_s, c(5, 0, 0, 0, 5))
+  expect_equal(ts$ExtFunType_posture_standing_s, c(0, 5, 5, 0, 0))
   
   
   # reporttype = 'type' identifies bout levels in the requested order
@@ -527,7 +615,7 @@ test_that("Embedding external functions with reporttype = 'type'", {
   
   myfun = list(
     colnames = c("activity_type", "posture"),
-    reporttype = c("type", "type"),
+    reporttype = "type",
     tbout.dur = c(1, 5),
     tbout.criter = 1,
     tbout.order = "walk"
@@ -543,6 +631,20 @@ test_that("Embedding external functions with reporttype = 'type'", {
   expect_equal(names(type_levels$TLEVELS), c("activity_type", "posture"))
   expect_equal(colnames(type_levels$TOLEVELS$activity_type), c("rest", "walk"))
   expect_equal(colnames(type_levels$TOLEVELS$posture), c("sitting", "standing"))
+
+  # A reporttype vector is applied column by column without recycling over it
+
+  myfun_mixed_reporttype = myfun
+  myfun_mixed_reporttype$reporttype = c("type", "scalar")
+
+  mixed_type_levels = identify_levels_ExtFunType(
+    ts = type_ts_multiple,
+    myfun = myfun_mixed_reporttype,
+    ws3 = 5
+  )
+
+  expect_equal(names(mixed_type_levels$TOLEVELS), "activity_type")
+  expect_equal(names(mixed_type_levels$TLEVELS), "activity_type")
   
   if (file.exists(fn)) file.remove(fn)
   if (dir.exists(dn)) unlink(dn, recursive = TRUE)

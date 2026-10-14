@@ -10,7 +10,8 @@ identify_levels_ExtFunType = function(ts, myfun, ws3) {
   if (!is.null(myfun) && length(myfun) > 0 &&
       "reporttype" %in% names(myfun)) {
     
-    type_indices = which(myfun$reporttype == "type")
+    reporttypes = rep(myfun$reporttype, length.out = length(myfun$colnames))
+    type_indices = which(reporttypes == "type")
     
     if (length(type_indices) > 0) {
       

@@ -138,8 +138,10 @@ g.sib.det = function(M, IMP, I, twd = c(-12, 12),
     # to emphasize that we know that this is not actually neurological sleep
     getSleepFromExternalFunction = FALSE
     if (length(myfun) != 0) {
+      outputtypes = rep(myfun$outputtype,
+                        length.out = length(myfun$colnames))
       if ("wake_sleep" %in% myfun$colnames) {
-        if (myfun$outputtype[which(myfun$colnames == "wake_sleep")] == "character") {
+        if (outputtypes[which(myfun$colnames == "wake_sleep")] == "character") {
           getSleepFromExternalFunction = TRUE
           sleepColName = "wake_sleep"
           sleepColType = "character"
