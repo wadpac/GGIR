@@ -142,6 +142,33 @@ test_that("Function is applied to acceleration data results in expected output",
   expect_equal(timestamp_output$timestamp, c(100, 102, 104, 106))
   expect_equal(timestamp_output$value, c(1, 1, 2, 2))
   
+  # Character vector output keeps its labels and levels
+  data3 = matrix(1, nrow = 8, ncol = 3, dimnames = list(NULL, c("x", "y", "z")))
+  chr_myfun = list(FUN = function(data, parameters) c("sit", "walk", "sit", "run"),
+                   parameters = NULL, expected_sample_rate = 1, expected_unit = "g",
+                   minlength = 1, outputres = 2, colnames = "activity",
+                   outputtype = "character", aggfunction = function(x) x[1],
+                   reporttype = "type")
+  chr_output = applyExtFunction(data3, chr_myfun, sf = 1, ws3 = 2)
+  expect_equal(as.character(chr_output$OutputExternalFunction$activity),
+               c("sit", "walk", "sit", "run"))
+  expect_equal(chr_output$LevelsExternalFunction[[1]], c("run", "sit", "walk"))
+  
+  # Mixed numeric and character matrix output, aggregated to ws3
+  mixed_myfun = chr_myfun
+  mixed_myfun$FUN = function(data, parameters) {
+    cbind(num = c(1.5, 2.5, 3.5, 4.5), cat = c("sit", "walk", "sit", "run"))
+  }
+  mixed_myfun$colnames = c("num", "cat")
+  mixed_myfun$outputtype = c("numeric", "character")
+  mixed_myfun$aggfunction = list(mean, function(x) x[1])
+  mixed_myfun$reporttype = c("scalar", "type")
+  mixed_output = applyExtFunction(data3, mixed_myfun, sf = 1, ws3 = 4)
+  expect_equal(mixed_output$OutputExternalFunction$num, c(2, 4))
+  expect_equal(as.character(mixed_output$OutputExternalFunction$cat), c("sit", "sit"))
+  expect_length(mixed_output$LevelsExternalFunction, 2)
+  expect_null(mixed_output$LevelsExternalFunction[[1]])
+  
   # test check_myfun warnings and errors
   expect_error(check_myfun(myfun = 4, ws3),
                regexp = "not a list")

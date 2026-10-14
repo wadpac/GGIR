@@ -1,4 +1,4 @@
-applyExtFunction = function(data, myfun, sf, ws3,interpolationType=1) {
+applyExtFunction = function(data, myfun, sf, ws3, interpolationType = 1) {
   data = data[, c("x", "y", "z")] # Needed because code below is not able to handle time column yet
   # check myfun object
   check_myfun(myfun, windowsizes=ws3) 
@@ -68,6 +68,9 @@ applyExtFunction = function(data, myfun, sf, ws3,interpolationType=1) {
   if (is.null(dim(OutputExternalFunction))) { 
     OutputExternalFunction = matrix(OutputExternalFunction, ncol = 1)
   }
+  # Work with a data.frame so that factor columns keep their labels
+  # (assigning a factor into a matrix stores its integer codes)
+  OutputExternalFunction = as.data.frame(OutputExternalFunction, stringsAsFactors = FALSE)
   
   # Validate number of output columns
   has_timestamp = length(myfun$timestamp) == 1
@@ -141,14 +144,18 @@ applyExtFunction = function(data, myfun, sf, ws3,interpolationType=1) {
     
     # if this column is a factor, store levels
     #               if character, then turn into factor and levels = alphabetical order
-    if (is.factor(output[, 1])) {
+    if (outputtype[out_idx] == "numeric") {
+      # numeric columns may arrive as character when FUN returns a mixed matrix
+      output[, 1] = as.numeric(output[, 1])
+    } else if (is.factor(output[, 1])) {
       is_factor = c(is_factor, out_idx)
     } else if (is.character(output[, 1])) {
       output[, 1] = factor(output[, 1], 
                            levels = sort(unique(output[, 1])))
       is_factor = c(is_factor, out_idx)
     }
-    LevelsExternalFunction[[out_idx]] = levels(output[, 1])
+    # use [ ] with list() so that NULL levels do not drop the list element
+    LevelsExternalFunction[out_idx] = list(levels(output[, 1]))
     
     # Determine aggfunction for this column
     if (is.list(myfun$aggfunction)) {
@@ -165,8 +172,8 @@ applyExtFunction = function(data, myfun, sf, ws3,interpolationType=1) {
         
         if (ws3 %% myfun$outputres != 0) {
           stop(paste0("Output resolution (", myfun$outputres,
-                      " s) for column ", myfun$colnames[out_idx],
-                      "does not divide the GGIR epoch length (",
+                      " s) for column '", myfun$colnames[out_idx],
+                      "' does not divide the GGIR epoch length (",
                       ws3, " s)."))
         }
         
@@ -185,7 +192,7 @@ applyExtFunction = function(data, myfun, sf, ws3,interpolationType=1) {
       } else if (myfun$outputres > ws3) { 
         
         if (myfun$outputres %% ws3 != 0) {
-          stop(paste0("Output resolution (", myfun$outputres[out_idx],
+          stop(paste0("Output resolution (", myfun$outputres,
                       " s) for column '", myfun$colnames[out_idx],
                       "' is not a multiple of the GGIR epoch length (",
                       ws3, " s)."))

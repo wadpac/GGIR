@@ -107,12 +107,12 @@ check_myfun = function(myfun, windowsizes) { # Function to check myfun object
     }
   }
   
-  # aggfunction
-  # if aggregation is needed, then aggfunction must be provided:
-  if (myfun$outputres != windowsizes[1] && "aggfunction" %in% names(myfun) == FALSE) {
+  # aggfunction is only needed when output is aggregated, i.e. when outputres
+  # is shorter than the GGIR epoch (longer outputres is repeated, not aggregated)
+  if (myfun$outputres < windowsizes[1] && "aggfunction" %in% names(myfun) == FALSE) {
     status = 1
     stop(
-      "Error in check_myfun.R: Element aggfunction must be provided when outputres differs from the epoch size used in GGIR.",
+      "Error in check_myfun.R: Element aggfunction must be provided when outputres is shorter than the epoch size used in GGIR.",
       call. = FALSE
     )
   }
