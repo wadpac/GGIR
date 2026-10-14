@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.3-10
+
+- Part 5: Nap time (dur_day_nap_min) is now mutually exclusive with the rest of total outputs. #1558
+
 # CHANGES IN GGIR VERSION 3.3-9
 
 - Tests: Made the Movisens test independent of internet access by including the test data in inst/testfiles (#1540)
