@@ -200,6 +200,7 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
         } else {
           LEVELS[sse[detectedNaps]] = length(Lnames)
         }
+        # temporary fix, to be revisited when nap functionality is expanded
         OLEVELS[sse[detectedNaps]] = 5
       }
       if ("day_nap" %in% Lnames == FALSE) {
