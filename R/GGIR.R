@@ -487,7 +487,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                    GGIRversion = GGIRversion,
                    params_sleep = params_sleep,
                    params_output = params_output,
-                   params_general = params_general)
+                   params_general = params_general,
+                   myfun = myfun)
       if (params_output[["old_visualreport"]] == TRUE) {
         g.plot5(metadatadir = metadatadir,
                 dofirstpage = params_output[["dofirstpage"]],

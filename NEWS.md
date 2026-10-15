@@ -4,6 +4,8 @@
 
 - Part 2 + 5: Added support for external functions that classify epochs into categorical types (`reporttype = "type"`), including type-specific duration, acceleration, and bout summaries. #1126
 
+- Visual report: Show external function types (`reporttype = "type"`) as coloured strips and step counts as a cadence bar row in the per-file PDF. #1126
+
 # CHANGES IN GGIR VERSION 3.3-9
 
 - Tests: Made the Movisens test independent of internet access by including the test data in inst/testfiles (#1540)
