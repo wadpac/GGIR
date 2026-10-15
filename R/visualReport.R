@@ -51,7 +51,8 @@ visualReport = function(metadatadir = c(),
                          hrsPerRow = NULL, plotid = 0, 
                          legend_items = NULL, lux_available = FALSE,
                          step_count_available = FALSE, epochSize = 60, focus = "day",
-                         temperature_available = FALSE, type_info = NULL) {
+                         temperature_available = FALSE, type_info = NULL,
+                         event_info = NULL) {
       window_duration = mdat$timenum[nrow(mdat)] - mdat$timenum[1]
       signalcolor = "black"
       
@@ -70,11 +71,6 @@ visualReport = function(metadatadir = c(),
       }
       XLIM[2] = XLIM[1] + hrsPerRow * 3600
       
-      if (step_count_available == TRUE) {
-        steps_per_hour = round(zoo::rollsum(x = mdat$step_count, k = epochSize, fill = NA) / 100)
-        steps_per_hour = as.character(steps_per_hour)
-        steps_per_hour = gsub(pattern = "0", replacement = "", x = steps_per_hour)
-      }
       if (lux_available == TRUE) {
         lux_per_hour = round(zoo::rollmax(x = mdat$lightpeak, k = epochSize, fill = NA) / 1000)
         lux_per_hour = as.character(lux_per_hour)
@@ -178,13 +174,7 @@ visualReport = function(metadatadir = c(),
               at = atTime[length(atTime)] + 5000, adj = 0)
         line = line + line_delta
       }
-      if (step_count_available == TRUE) {
-        mtext(text = steps_per_hour[ticks], side = 1, line = line, cex = cex_mtext,
-              at = atTime)
-        mtext(text = "steps x100", side = 1, line = line, cex = cex_mtext,
-              at = atTime[length(atTime)] + 5000, adj = 0)
-      }
-      
+
       #============================================
       # add rectangular blocks to reflect classes
       Nlevels = max(legend_items$level, na.rm = TRUE) #sum(Nlevels) - 1 # -1 because invalidepoch will not be a rectangle
@@ -285,16 +275,16 @@ visualReport = function(metadatadir = c(),
         text(x = mdat$timestamp[which(temperaturey == 1)], y = -9, labels = "+", cex = 0.5)
       }
       if (step_count_available == TRUE) {
-        # Add events (steps) as vertical bars, full height = 120 steps per minute
-        cadence = pmin(mdat$step_count * (60 / epochSize), 120)
-        has_events = which(cadence > 0)
+        # Add events as vertical bars, full height = event_info$ref events per minute
+        event_rate = pmin(mdat[, event_info$column] * (60 / epochSize), event_info$ref)
+        has_events = which(event_rate > 0)
         segments(x0 = mdat$timestamp[has_events], y0 = events_y[1],
-                 y1 = events_y[1] + (cadence[has_events] / 120) * diff(events_y),
+                 y1 = events_y[1] + (event_rate[has_events] / event_info$ref) * diff(events_y),
                  col = "grey30", lwd = 0.3)
-        abline(h = events_y[2], lty = 3, lwd = 0.3) # reference line at 120 steps per minute
-        text(x = XLIM[2], y = events_y[2], labels = "120", pos = 4, cex = 0.4,
+        abline(h = events_y[2], lty = 3, lwd = 0.3) # reference line at full height
+        text(x = XLIM[2], y = events_y[2], labels = event_info$ref, pos = 4, cex = 0.4,
              col = signalcolor, xpd = NA)
-        text(x = XLIM[2], y = mean(events_y), labels = "steps/min",
+        text(x = XLIM[2], y = mean(events_y), labels = event_info$label,
              pos = 4, cex = 0.5, col = signalcolor, xpd = NA)
       }
       if (length(type_info) > 0) {
@@ -481,11 +471,26 @@ visualReport = function(metadatadir = c(),
       } else {
         temperature_available = FALSE
       }
-      if ("step_count" %in% colnames(mdat)) {
-        step_count_available = TRUE
-      } else {
-        step_count_available = FALSE
+      # Events: plot only the first external function output with reporttype = "event".
+      # Note that part 5 only keeps the event column named step_count in the time series
+      event_info = NULL
+      event_col = "step_count"
+      if (!is.null(myfun) && "reporttype" %in% names(myfun)) {
+        reporttypes = rep(myfun$reporttype, length.out = length(myfun$colnames))
+        event_col = myfun$colnames[which(reporttypes == "event")][1]
       }
+      if (!is.na(event_col) && event_col %in% colnames(mdat)) {
+        # bars are scaled to 120 per minute for steps, otherwise to the maximum rate in the recording
+        if (event_col == "step_count") {
+          event_ref = 120
+        } else {
+          max_rate = max(mdat[, event_col], na.rm = TRUE) * (60 / diff(mdat$timenum[1:2]))
+          event_ref = max(1, ceiling(max_rate))
+        }
+        event_info = list(column = event_col, label = paste0(event_col, "/min"), ref = event_ref)
+      }
+      step_count_available = !is.null(event_info)
+      
       # External function types: one entry per type output column, with its levels
       type_info = list()
       typecols = grep("^ExtFunType_.*_s$", colnames(mdat), value = TRUE)
@@ -497,6 +502,8 @@ visualReport = function(metadatadir = c(),
           # without myfun assume that level names do not contain underscores
           type_names = unique(sub("^ExtFunType_(.*)_[^_]*_s$", "\\1", typecols))
         }
+        # for now, plot only the first type output
+        type_names = type_names[1]
         type_palette = c("#E69F00", "#56B4E9", "#009E73", "#F0E442",
                          "#0072B2", "#D55E00", "#CC79A7", "#999999")
         for (type_name in type_names) {
@@ -732,7 +739,7 @@ visualReport = function(metadatadir = c(),
                         legend_items = legend_items, lux_available = lux_available,
                         step_count_available = step_count_available, epochSize = epochSize,
                         focus = focus, temperature_available = temperature_available,
-                        type_info = type_info)
+                        type_info = type_info, event_info = event_info)
               cntplot = cntplot + 1
             }
           }
