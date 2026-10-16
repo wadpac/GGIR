@@ -1,3 +1,7 @@
+# CHANGES IN GGIR VERSION 3.3-?
+
+- Documentation: clarified how bout tolerance for gaps works, added Crotti cutpoint, and clarified GENEActiv light sensor calibration. #1531, #1536, #1544
+
 # CHANGES IN GGIR VERSION 3.3-9
 
 - Tests: Made the Movisens test independent of internet access by including the test data in inst/testfiles (#1540)
