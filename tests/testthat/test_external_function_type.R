@@ -168,6 +168,7 @@ test_that("Embedding external functions with reporttype = 'type'", {
       stringsAsFactors = FALSE
     ),
     rout = matrix(0, nrow = 1, ncol = 5),
+    r5long = c(0, 1, 0, 0, 0),
     windowsizes = c(5, 60, 60)
   )
   
@@ -216,9 +217,9 @@ test_that("Embedding external functions with reporttype = 'type'", {
     )
   )
   expect_equal(ts$ExtFunType_activity_type_rest_s, c(5, 0, 0, 0, 5))
-  expect_equal(ts$ExtFunType_activity_type_walk_s, c(0, 5, 5, 0, 0))
+  expect_equal(ts$ExtFunType_activity_type_walk_s, c(0, 0, 5, 0, 0))
   expect_equal(ts$ExtFunType_posture_sitting_s, c(5, 0, 0, 0, 5))
-  expect_equal(ts$ExtFunType_posture_standing_s, c(0, 5, 5, 0, 0))
+  expect_equal(ts$ExtFunType_posture_standing_s, c(0, 0, 5, 0, 0))
   
   
   # reporttype = 'type' identifies bout levels in the requested order
@@ -260,7 +261,7 @@ test_that("Embedding external functions with reporttype = 'type'", {
   vari = data.frame(
     timestamp = seq_len(8),
     ENMO = c(0.05, 0.05, 0.10, 0.10, 0.20, 0.20, 0.20, 0.05),
-    activity_type = factor(c("rest", "rest", "walk", "walk",
+    activity_type = factor(c(NA, "rest", "walk", "walk",
                              "walk", "rest", "rest", "rest"),
                            levels = c("rest", "walk")),
     stringsAsFactors = FALSE
@@ -290,7 +291,7 @@ test_that("Embedding external functions with reporttype = 'type'", {
     vari = vari,
     segmentInfo = segmentInfo,
     myfun = myfun,
-    qcheck = rep(0, nrow(vari))
+    qcheck = c(NA_real_, rep(0, nrow(vari) - 1))
   )
   
   expect_equal(
@@ -302,9 +303,10 @@ test_that("Embedding external functions with reporttype = 'type'", {
   )
   expect_equal(
     out$daysummary[1, 1:2],
-    c(25 / 60, 15 / 60),
+    c(20 / 60, 15 / 60),
     tolerance = 1e-10
   )
+  expect_equal(out$daysummary[1, 3:4], c(0, 0))
   
   expected_strata = c(
     "0-80mg_ENMO",
@@ -354,7 +356,7 @@ test_that("Embedding external functions with reporttype = 'type'", {
   
   expect_equal(
     out$daysummary[1, rest_cols],
-    c(15 / 60, 0, 10 / 60),
+    c(10 / 60, 0, 10 / 60),
     tolerance = 1e-10
   )
   expect_equal(
@@ -515,20 +517,22 @@ test_that("Embedding external functions with reporttype = 'type'", {
   type_fun = function(data, parameters) {
     n = floor(nrow(data) / 15)
     out = rep(c("rest", "walk", "rest", "walk"), length.out = n)
-    data.frame(activity_type = out, stringsAsFactors = FALSE)
+    data.frame(activity_type = out,
+               activity_score = rep(1, n),
+               stringsAsFactors = FALSE)
   }
   
   myfun = list(FUN = type_fun,
                parameters = NULL,
                expected_sample_rate = 3,
                expected_unit = "g",
-               colnames = "activity_type",
+               colnames = c("activity_type", "activity_score"),
                minlength = 1,
                outputres = 5,
-               outputtype = "character",
-               aggfunction = function(x) x[1],
+               outputtype = c("character", "numeric"),
+               aggfunction = list(function(x) x[1], mean),
                timestamp = FALSE,
-               reporttype = "type",
+               reporttype = c("type", "scalar"),
                ilevels = c(0, 80, 200),
                tbout.dur = c(1, 5),
                tbout.criter = 0.8,
@@ -548,12 +552,15 @@ test_that("Embedding external functions with reporttype = 'type'", {
   
   part2_daytype = file.path(dn, "results", "part2_daytypesummary.csv")
   part2_type = file.path(dn, "results", "part2_typesummary.csv")
+  part2_summary = file.path(dn, "results", "part2_summary.csv")
   
   expect_true(file.exists(part2_daytype))
   expect_true(file.exists(part2_type))
+  expect_true(file.exists(part2_summary))
   
   daytype_report = read.csv(part2_daytype)
   type_report = read.csv(part2_type)
+  standard_report = read.csv(part2_summary)
   
   expect_true(any(grepl("^tot_activity_type", names(daytype_report))))
   expect_true(any(grepl("^meandur_B1M80", names(daytype_report))))
@@ -564,6 +571,8 @@ test_that("Embedding external functions with reporttype = 'type'", {
   expect_true(any(grepl("^WE_meandur_B1M80", names(type_report))))
   expect_true(any(grepl("^WWD_number_B5M80", names(type_report))))
   expect_true(any(grepl("^WWE_totdur_B5M80", names(type_report))))
+  expect_true("activity_score_fullRecordingMean" %in% names(standard_report))
+  expect_true(is.finite(standard_report$activity_score_fullRecordingMean))
   
   
   GGIR(mode = 5,

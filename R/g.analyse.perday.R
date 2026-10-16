@@ -376,17 +376,6 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 # On first day of recording append the average day to the start
                 vari = rbind(averageday[1:abs(deltaLength), ], vari)
                 val_type = c(rep(NA_real_, abs(deltaLength)), val_type)
-                # Restore external function type columns as factor:
-                if (length(myfun) > 0 && "reporttype" %in% names(myfun)) {
-                  type_columns = myfun$colnames[reporttypes == "type"]
-                  
-                  if (length(type_columns) > 0) {
-                    for (type_column in type_columns) {
-                      vari[, type_column] = factor(vari[, type_column],
-                                                   levels = levels(metashort[, type_column]))
-                    }
-                  }
-                }
                 # readjust anwi indices in case that varnum has been imputed
                 if (max(anwi_t1) < nrow(vari)) { # since GGIR always calculates full window, max(anwi_t1) should always equals length(varnum)
                   anwi_t0 = anwi_t0 + abs(deltaLength)
@@ -427,6 +416,17 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 val_type = val_type[-c(startDoubleHour:endDoubleHour)]
               }
             }
+            # Padding with averageday can coerce categorical columns away from
+            # factors. Restore their original levels for every padding path.
+            if (length(myfun) > 0 && "reporttype" %in% names(myfun)) {
+              type_columns = myfun$colnames[reporttypes == "type"]
+              for (type_column in type_columns) {
+                vari[, type_column] = factor(
+                  vari[, type_column],
+                  levels = levels(metashort[, type_column])
+                )
+              }
+            }
             if (anwi_index != 1) {
               if (length(anwindices) > 0) {
                 if (max(anwindices) > length(vari)) {
@@ -462,9 +462,12 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
               # chech if is external output to later make sure we can convert
               # this column to numeric
               
-              isExternal = mi %in% ExtFunColsi
+              # Character outputs are removed during imputation and appended
+              # afterwards, so their column positions can differ from M. Match
+              # external metadata by column name rather than by stale indices.
+              isExternal = minames[mi] %in% myfun$colnames
               if (isExternal) {
-                rti = which(ExtFunColsi == mi)
+                rti = match(minames[mi], myfun$colnames)
                 reporttype = reporttypes[rti]
                 outputtype = outputtypes[rti]
               } else {
@@ -799,7 +802,9 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                 if (length(ExtFunColsi) > 0) { # If events are detected with external function
                   # bout detection depends on access to non-wear bout variables
                   # so, skip detection of event bouts when working with external function output
-                  if (mi %in% ExtFunColsi == FALSE) { # INSERT HERE VARIABLES DERIVED WITH EXTERNAL FUNCTION
+                  # Compare external events against regular acceleration metrics,
+                  # not against the external output columns themselves.
+                  if (!isExternal) {
                     # if (length(rti) == 1 && myfun$reporttype[rti] == "event") {
                     if (length(varnum_event) > 0) {
                       for (this_varnum_event in 1:length(varnum_event)) {

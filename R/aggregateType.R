@@ -14,9 +14,10 @@ aggregateType = function(metric_name, epochsize,
   #   invalid (GGIR invalid epochs)
   #   unclassified (valid epochs without a classification -external function returns NA-)
   #   valid
-  invalid_idx = qcheck != 0 & qcheck != -1
-  unclassified_idx = is.na(type_values) & !invalid_idx
-  valid_idx = !invalid_idx & !is.na(type_values)
+  known_idx = !is.na(qcheck)
+  invalid_idx = known_idx & qcheck != 0 & qcheck != -1
+  unclassified_idx = known_idx & is.na(type_values) & !invalid_idx
+  valid_idx = known_idx & !invalid_idx & !is.na(type_values)
   
   # Exclude invalid from classified epochs
   type_values[invalid_idx] = NA
