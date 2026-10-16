@@ -184,7 +184,11 @@ applyExtFunction = function(data, myfun, sf, ws3, interpolationType = 1) {
         agglevel = agglevel[seq_len(nrow(output))]
         
         OEF = data.frame(value = output[, 1], agglevel = agglevel)
-        OEFA = aggregate(value ~ agglevel, data = OEF, FUN = aggfunction)
+        # Use the data-frame interface so groups containing only missing values
+        # are retained. The formula interface applies na.omit before grouping,
+        # which shortens the output and shifts all subsequent epochs.
+        OEFA = aggregate(OEF["value"], by = OEF["agglevel"],
+                         FUN = aggfunction)
         
         output = OEFA["value"]
         

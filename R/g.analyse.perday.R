@@ -63,7 +63,13 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                                           tz = params_general[["desiredtz"]]))
   ExtFunColsi = ExtFunColsi - 1 # subtract 1 because code ignores timestamp
   if (length(myfun) > 0) {
-    reporttypes = rep(myfun$reporttype, length.out = length(myfun$colnames))
+    if ("reporttype" %in% names(myfun)) {
+      reporttypes = rep(myfun$reporttype, length.out = length(myfun$colnames))
+    } else {
+      # reporttype was added after external functions were introduced. Keep
+      # older myfun objects compatible by treating their outputs as scalars.
+      reporttypes = rep("scalar", length(myfun$colnames))
+    }
     outputtypes = rep(myfun$outputtype, length.out = length(myfun$colnames))
   } else {
     reporttypes = outputtypes = NULL

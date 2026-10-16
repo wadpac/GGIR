@@ -168,6 +168,18 @@ test_that("Function is applied to acceleration data results in expected output",
   expect_equal(as.character(mixed_output$OutputExternalFunction$cat), c("sit", "sit"))
   expect_length(mixed_output$LevelsExternalFunction, 2)
   expect_null(mixed_output$LevelsExternalFunction[[1]])
+
+  # Aggregation retains epochs whose external output is entirely missing
+  missing_myfun = chr_myfun
+  missing_myfun$FUN = function(data, parameters) c(NA_real_, NA_real_, 3, 4)
+  missing_myfun$colnames = "value"
+  missing_myfun$outputtype = "numeric"
+  missing_myfun$aggfunction = mean
+  missing_myfun$reporttype = NULL
+  missing_myfun$outputres = 1
+  missing_output = applyExtFunction(data3, missing_myfun, sf = 1, ws3 = 2)
+  expect_equal(nrow(missing_output$OutputExternalFunction), 2)
+  expect_equal(missing_output$OutputExternalFunction$value, c(NA_real_, 3.5))
   
   # test check_myfun warnings and errors
   expect_error(check_myfun(myfun = 4, ws3),
