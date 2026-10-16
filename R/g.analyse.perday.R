@@ -799,13 +799,10 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   }
                 }
                 
-                if (length(ExtFunColsi) > 0) { # If events are detected with external function
-                  # bout detection depends on access to non-wear bout variables
-                  # so, skip detection of event bouts when working with external function output
-                  # Compare external events against regular acceleration metrics,
-                  # not against the external output columns themselves.
+                if (length(ExtFunColsi) > 0) {
+                  # Summarise external event bouts against each regular
+                  # acceleration metric, not against another external output.
                   if (!isExternal) {
-                    # if (length(rti) == 1 && myfun$reporttype[rti] == "event") {
                     if (length(varnum_event) > 0) {
                       for (this_varnum_event in 1:length(varnum_event)) {
                         # Step bout detection

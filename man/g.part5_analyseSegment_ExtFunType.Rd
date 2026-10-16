@@ -35,14 +35,14 @@
   current segment.
   }
   \item{TOLEVELS}{
-  Matrix containing the number of seconds in each epoch assigned to each
-  external function type. Columns represent classification types and rows
-  represent epochs.
+  Named list with one matrix per external-function output column. Each matrix
+  contains the seconds assigned to each classification level, with epochs in
+  rows and levels in columns.
   }
   \item{TLEVELS}{
-  List containing the binary bout masks for each external function type.
-  Each element contains one row per bout-duration definition and one column
-  per epoch.
+  Nested list keyed by external-function output column and classification
+  level. Each leaf is a binary matrix containing one row per bout-duration
+  definition and one column per epoch.
   }
   \item{Tnames}{
   Character vector containing the names corresponding to the type bout

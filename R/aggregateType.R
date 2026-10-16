@@ -12,7 +12,7 @@ aggregateType = function(metric_name, epochsize,
   
   # Detect: 
   #   invalid (GGIR invalid epochs)
-  #   unclassified (valid epochs without a classification -external function returns NA-)
+  #   unclassified (valid epochs for which the external function returns NA)
   #   valid
   known_idx = !is.na(qcheck)
   invalid_idx = known_idx & qcheck != 0 & qcheck != -1
@@ -24,7 +24,7 @@ aggregateType = function(metric_name, epochsize,
   
   #========================================
   # aggregate per window total
-  type_table = type_table = table(factor(type_values[valid_idx], levels = type_levels))
+  type_table = table(factor(type_values[valid_idx], levels = type_levels))
   varnametype = paste0("ExtFunType_tot_", metric_name, "_", type_levels, anwi_nameindices[anwi_index])
   fi2 = fi + length(varnametype) - 1
   daysummary[di, fi:fi2] = type_table * epochsize / 60

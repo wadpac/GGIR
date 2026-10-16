@@ -605,6 +605,23 @@ test_that("Embedding external functions with reporttype = 'type'", {
   expect_true(any(grepl("^activity_type_ACC_day_", names(p5_report))))
   expect_true(any(grepl("^activity_type_Nblocks_day_", names(p5_report))))
   expect_true(any(grepl("^activity_type_Nbouts_day_", names(p5_report))))
+
+  # Part 5 keeps type metrics in their documented semantic order. In
+  # particular, the output-column prefix must not prevent pattern matching.
+  type_names = names(p5_report)[grepl("^activity_type_", names(p5_report))]
+  first_position = function(pattern) min(grep(pattern, type_names))
+  expect_true(
+    first_position("^activity_type_dur_day_.+_unbt_min$") <
+      first_position("^activity_type_dur_day_.+_bts_")
+  )
+  expect_true(
+    first_position("^activity_type_dur_day_.+_bts_") <
+      first_position("^activity_type_dur_day_total_")
+  )
+  expect_true(
+    first_position("^activity_type_dur_day_total_") <
+      first_position("^activity_type_ACC_day_.+_unbt_mg$")
+  )
   
   expect_true(any(grepl("^activity_type_dur_day_", names(p5_person))))
   expect_true(any(grepl("^activity_type_Nblocks_day_", names(p5_person))))
