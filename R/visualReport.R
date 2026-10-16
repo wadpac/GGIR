@@ -493,7 +493,10 @@ visualReport = function(metadatadir = c(),
       
       # External function types: one entry per type output column, with its levels
       type_info = list()
-      typecols = grep("^ExtFunType_.*_s$", colnames(mdat), value = TRUE)
+      typecols = colnames(mdat)[
+        startsWith(colnames(mdat), "ExtFunType_") &
+          endsWith(colnames(mdat), "_s")
+      ]
       if (length(typecols) > 0) {
         if (!is.null(myfun) && "reporttype" %in% names(myfun)) {
           reporttypes = rep(myfun$reporttype, length.out = length(myfun$colnames))
@@ -507,9 +510,14 @@ visualReport = function(metadatadir = c(),
         type_palette = c("#E69F00", "#56B4E9", "#009E73", "#F0E442",
                          "#0072B2", "#D55E00", "#CC79A7", "#999999")
         for (type_name in type_names) {
-          columns = grep(paste0("^ExtFunType_", type_name, "_.*_s$"), typecols, value = TRUE)
+          type_prefix = paste0("ExtFunType_", type_name, "_")
+          columns = typecols[startsWith(typecols, type_prefix)]
           if (length(columns) == 0) next
-          type_levels = sub("_s$", "", sub(paste0("^ExtFunType_", type_name, "_"), "", columns))
+          type_levels = substring(
+            columns,
+            nchar(type_prefix) + 1,
+            nchar(columns) - 2
+          )
           # continue the palette across type outputs so that colours are not reused
           Ncol_used = length(unlist(lapply(type_info, function(x) x$levels)))
           type_cols = rep(type_palette, length.out = Ncol_used + length(type_levels))

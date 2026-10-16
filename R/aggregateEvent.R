@@ -14,6 +14,13 @@ aggregateEvent = function(metric_name, epochsize,
   acc.thresholds = myfun$ilevels
   cadence.thresholds = myfun$clevels
   qlevels = myfun$qlevels
+  event_suffix = ""
+  if (all(c("colnames", "reporttype") %in% names(myfun))) {
+    reporttypes = rep(myfun$reporttype, length.out = length(myfun$colnames))
+    if (sum(reporttypes == "event") > 1) {
+      event_suffix = paste0("_", metric_name)
+    }
+  }
   fi_start = fi
   cadence = vari[, metric_name] * (60/epochsize) # assumption now that cadence is also relevant if the event detected is not steps
   # aggregate per window total
@@ -22,13 +29,15 @@ aggregateEvent = function(metric_name, epochsize,
   ds_names[fi] = varnameevent; fi = fi + 1
   
   # cadence
-  varnameevent = paste0("ExtFunEvent_mn_cad", anwi_nameindices[anwi_index])
+  varnameevent = paste0("ExtFunEvent_mn_cad", event_suffix,
+                        anwi_nameindices[anwi_index])
   daysummary[di, fi] = mean(cadence, na.rm = TRUE)
   ds_names[fi] = varnameevent; fi = fi + 1
   
   # cadence percentiles
   cadence_quantiles = quantile(cadence, probs = qlevels)
-  varnameevent = paste0("ExtFunEvent_cad_p", qlevels * 100, anwi_nameindices[anwi_index])
+  varnameevent = paste0("ExtFunEvent_cad_p", qlevels * 100, event_suffix,
+                        anwi_nameindices[anwi_index])
   daysummary[di, fi:(fi + length(qlevels) - 1)] = as.numeric(cadence_quantiles)
   ds_names[fi:(fi + length(qlevels) - 1)] = varnameevent; fi = fi + length(qlevels)
   
@@ -73,8 +82,8 @@ aggregateEvent = function(metric_name, epochsize,
       ds_names[fi] = varnameevent; fi = fi + 1
       
       # cadence per acceleration level
-      varnameevent = paste0("ExtFunEvent_mn_cad_acc", 
-                            acc_level_name, anwi_nameindices[anwi_index])
+      varnameevent = paste0("ExtFunEvent_mn_cad_acc", acc_level_name,
+                            event_suffix, anwi_nameindices[anwi_index])
       if (length(whereAccLevel) > 0)  {
         daysummary[di, fi] = mean(cadence[whereAccLevel], na.rm = TRUE)
       } else {
@@ -97,7 +106,8 @@ aggregateEvent = function(metric_name, epochsize,
       whereCadenceLevel = which(cadence >= cadence.thresholds[ti])
     }
     # cadence per cadence level
-    varnameevent = paste0("ExtFunEvent_mn_cad_cad", cadence_level_name, anwi_nameindices[anwi_index])
+    varnameevent = paste0("ExtFunEvent_mn_cad_cad", cadence_level_name,
+                          event_suffix, anwi_nameindices[anwi_index])
     if (length(whereCadenceLevel) > 0)  {
       daysummary[di, fi] = mean(cadence[whereCadenceLevel], na.rm = TRUE)
     } else {
@@ -116,14 +126,16 @@ aggregateEvent = function(metric_name, epochsize,
     ds_names[fi] = varnameevent; fi = fi + 1
     
     # time per cadence level
-    varnameevent = paste0("ExtFunEvent_dur_cad", cadence_level_name, anwi_nameindices[anwi_index])
+    varnameevent = paste0("ExtFunEvent_dur_cad", cadence_level_name,
+                          event_suffix, anwi_nameindices[anwi_index])
     daysummary[di, fi] = length(whereCadenceLevel) / (60/epochsize)
     ds_names[fi] = varnameevent; fi = fi + 1
     
     for (ami in 1:length(acc.metrics)) {
       # acceleration per cadence level
-      varnameevent = paste0("ExtFunEvent_mn_",  acc.metrics[ami],"_cad",
-                            cadence_level_name, anwi_nameindices[anwi_index])
+      varnameevent = paste0("ExtFunEvent_mn_", acc.metrics[ami], "_cad",
+                            cadence_level_name, event_suffix,
+                            anwi_nameindices[anwi_index])
       if (length(whereCadenceLevel) > 0)  {
         daysummary[di,fi] = mean(vari[whereCadenceLevel, acc.metrics[ami]], na.rm = TRUE) * 1000
       } else {
@@ -153,24 +165,32 @@ aggregateEvent = function(metric_name, epochsize,
           
           # Timing
           daysummary[di, fi] = MXLXout[, which(names(MXLXout) == paste0(WX, winhr_value, "hr"))]
-          ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value,  "hr_cad", LXMXwindow_name); fi = fi + 1
+          ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "hr_cad",
+                                event_suffix, LXMXwindow_name); fi = fi + 1
           # cadence in the form of mean, percentiles.
           daysummary[di, fi] = mean(cadence[WXi])
-          ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_meancad", LXMXwindow_name); fi = fi + 1
+          ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_meancad",
+                                event_suffix, LXMXwindow_name); fi = fi + 1
           if (length(params_247[["qM5L5"]]) > 0) {
             for (qle in params_247[["qM5L5"]]) {
               daysummary[di, fi] = quantile(x = cadence[WXi], probs = qle)
-              ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_q", qle*100, "cad", LXMXwindow_name); fi = fi + 1
+              ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_q",
+                                    qle * 100, "cad", event_suffix,
+                                    LXMXwindow_name); fi = fi + 1
             }
           }
           for (ami in 1:length(acc.metrics)) {
             # Acceleration in the form of mean, percentiles.
             daysummary[di, fi] = mean(vari[WXi, acc.metrics[ami]]) * 1000
-            ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_mean_",  acc.metrics[ami], "_mg", LXMXwindow_name); fi = fi + 1
+            ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_mean_",
+                                  acc.metrics[ami], "_mg", event_suffix,
+                                  LXMXwindow_name); fi = fi + 1
             if (length(params_247[["qM5L5"]]) > 0) {
               for (qle in params_247[["qM5L5"]]) {
                 daysummary[di, fi] = quantile(x = vari[WXi, acc.metrics[ami]], probs = qle)
-                ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_q", qle*100, "acc", LXMXwindow_name); fi = fi + 1
+                ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_q",
+                                      qle * 100, "acc", event_suffix,
+                                      LXMXwindow_name); fi = fi + 1
               }
             }
           }

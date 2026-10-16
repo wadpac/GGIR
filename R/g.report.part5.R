@@ -371,11 +371,10 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   for (type_col in type_columns) {
                     
                     # Select external-function type columns belonging to this output
-                    extfuntype_cols_this = grep(
-                      paste0("^ExtFunType_", type_col, "_"),
-                      names(OF3_extfuntype),
-                      value = TRUE
-                    )
+                    type_prefix = paste0("ExtFunType_", type_col, "_")
+                    extfuntype_cols_this = names(OF3_extfuntype)[
+                      startsWith(names(OF3_extfuntype), type_prefix)
+                    ]
                     
                     if (length(extfuntype_cols_this) > 0) {
                       
@@ -862,11 +861,10 @@ g.report.part5 = function(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c
                   for (type_col in type_columns) {
                     
                     # Select external-function type columns belonging to this output
-                    extfuntype_cols_this = grep(
-                      paste0("^ExtFunType_", type_col, "_"),
-                      names(OF3_extfuntype),
-                      value = TRUE
-                    )
+                    type_prefix = paste0("ExtFunType_", type_col, "_")
+                    extfuntype_cols_this = names(OF3_extfuntype)[
+                      startsWith(names(OF3_extfuntype), type_prefix)
+                    ]
                     
                     if (length(extfuntype_cols_this) > 0) {
                       

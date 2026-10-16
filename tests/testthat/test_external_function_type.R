@@ -658,6 +658,60 @@ test_that("Embedding external functions with reporttype = 'type'", {
   expect_equal(colnames(type_levels$TOLEVELS$activity_type), c("rest", "walk"))
   expect_equal(colnames(type_levels$TOLEVELS$posture), c("sitting", "standing"))
 
+  # Case-distinct labels remain distinct; only tbout.order matching ignores case.
+  case_ts = data.frame(
+    time = 1:4,
+    ACC = 0.01,
+    diur = 0,
+    ExtFunType_activity_Walk_s = c(60, 0, 60, 0),
+    ExtFunType_activity_walk_s = c(0, 60, 0, 60),
+    check.names = FALSE
+  )
+  case_myfun = list(
+    colnames = "activity",
+    reporttype = "type",
+    tbout.dur = 1,
+    tbout.criter = 1,
+    tbout.order = "walk"
+  )
+  case_levels = identify_levels_ExtFunType(case_ts, case_myfun, ws3 = 60)
+  expect_equal(colnames(case_levels$TOLEVELS$activity), c("Walk", "walk"))
+  expect_setequal(names(case_levels$TLEVELS$activity), c("Walk", "walk"))
+  expect_true(all(vapply(case_levels$TLEVELS$activity, sum, numeric(1)) > 0))
+
+  # Previously assigned bouts are hard boundaries for lower-priority types.
+  competing_types = strsplit("abababaa", "", fixed = TRUE)[[1]]
+  competing_ts = data.frame(
+    time = seq_along(competing_types),
+    ACC = 0.01,
+    diur = 0,
+    ExtFunType_kind_a_s = as.numeric(competing_types == "a") * 60,
+    ExtFunType_kind_b_s = as.numeric(competing_types == "b") * 60
+  )
+  competing_myfun = list(
+    colnames = "kind",
+    reporttype = "type",
+    tbout.dur = 3,
+    tbout.criter = 2 / 3,
+    tbout.order = c("a", "b")
+  )
+  competing_levels = identify_levels_ExtFunType(
+    competing_ts, competing_myfun, ws3 = 60
+  )
+  competing_masks = do.call(rbind, competing_levels$TLEVELS$kind)
+  expect_true(all(colSums(competing_masks) <= 1))
+
+  # Output-column and level names are matched literally, not as regex syntax.
+  literal_ts = data.frame(time = 1:2, ACC = 0.01, diur = 0, check.names = FALSE)
+  literal_ts[["ExtFunType_activity(1)_walk+fast_s"]] = c(60, 60)
+  literal_myfun = list(
+    colnames = "activity(1)", reporttype = "type",
+    tbout.dur = 1, tbout.criter = 1
+  )
+  literal_levels = identify_levels_ExtFunType(literal_ts, literal_myfun, ws3 = 60)
+  expect_equal(names(literal_levels$TOLEVELS), "activity(1)")
+  expect_equal(colnames(literal_levels$TOLEVELS[[1]]), "walk+fast")
+
   # A reporttype vector is applied column by column without recycling over it
 
   myfun_mixed_reporttype = myfun

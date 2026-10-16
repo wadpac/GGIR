@@ -575,7 +575,7 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                         this_varnum_event = c()
                       }
                     }
-                    varnum_event[[length(varnum_event) + 1]] = this_varnum_event
+                    varnum_event[[myfun$colnames[eventMetric]]] = this_varnum_event
                   }
                 }
               }
@@ -804,7 +804,8 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                   # acceleration metric, not against another external output.
                   if (!isExternal) {
                     if (length(varnum_event) > 0) {
-                      for (this_varnum_event in 1:length(varnum_event)) {
+                      for (this_varnum_event in seq_along(varnum_event)) {
+                        event_metric_name = names(varnum_event)[this_varnum_event]
                         # Step bout detection
                         eventBouts = detectEventBouts(
                           myfun, 
@@ -815,7 +816,8 @@ g.analyse.perday = function(ndays, firstmidnighti, time, nfeatures,
                           ds_names = ds_names,
                           di = di, fi = fi,
                           ws3 = ws3,
-                          boutnameEnding = paste0(cn_metashort[mi], anwi_nameindices[anwi_index]))
+                          boutnameEnding = paste0(cn_metashort[mi], anwi_nameindices[anwi_index]),
+                          metric_name = if (length(varnum_event) > 1) event_metric_name else NULL)
                         
                         daysummary = eventBouts$daysummary
                         ds_names = eventBouts$ds_names

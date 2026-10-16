@@ -245,6 +245,12 @@ test_that("Function is applied to acceleration data results in expected output",
                                         aggfunction = mean,
                                         timestamp = Sys.time()), ws3),
                regexp = "colnames in myfun does not hold a character value")
+  duplicate_names_myfun = chr_myfun
+  duplicate_names_myfun$colnames = c("value", "value")
+  expect_error(
+    check_myfun(duplicate_names_myfun, windowsizes = 2),
+    regexp = "colnames in myfun must contain unique values"
+  )
   expect_error(check_myfun(myfun = list(FUN = exampleExtFunction,
                                         parameters = 1.1,
                                         expected_sample_rate = 30, # resample data to 30 Hertz before applying function

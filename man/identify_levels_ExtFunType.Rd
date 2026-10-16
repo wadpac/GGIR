@@ -61,7 +61,9 @@
   function has \code{reporttype = "type"}.
   
   Type classifications are represented using the \code{ExtFunType_*_s}
-  columns in \code{ts}. Classification names are treated case-insensitively.
+  columns in \code{ts}. Original classification labels, including case, are
+  preserved. Values supplied through \code{tbout.order} are matched to those
+  labels case-insensitively.
   
   If \code{tbout.dur} is not specified, the default bout durations are
   \code{c(1, 5, 10)} minutes. If \code{tbout.criter} is not specified, the

@@ -333,6 +333,10 @@ assigned.
 Within each type, bout durations are considered from longest to
 shortest.
 
+The spelling and case of classification labels are preserved in the
+output. Values in `tbout.order` are matched to those labels
+case-insensitively.
+
 The priority is applied independently to each categorical output
 column. For example, the bout assignment of an `activity` output does
 not prevent the same epoch from being classified into a bout in an
@@ -450,6 +454,11 @@ returned by the external function and the bout definitions specified in
 When multiple categorical output columns are provided, Part 5 generates
 the corresponding type-specific metrics separately for each output
 column.
+
+The CSV summaries include every categorical output column. The visual
+PDF report currently displays only the first output column whose
+`reporttype` is `"type"`; additional categorical outputs are not shown
+in that plot.
 
 For each categorical output column, Part 5 writes cleaned daily and
 person-level reports named

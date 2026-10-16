@@ -53,6 +53,10 @@ check_myfun = function(myfun, windowsizes) { # Function to check myfun object
     status = 1
     stop("Element colnames in myfun does not hold a character value.", call. = FALSE)
   }
+  if (anyDuplicated(myfun$colnames)) {
+    status = 1
+    stop("Element colnames in myfun must contain unique values.", call. = FALSE)
+  }
   # check that minlegnth has one value:
   if (length(myfun$minlength) != 1) {
     status = 1
