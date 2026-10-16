@@ -35,8 +35,6 @@ categorical information rather than as a numeric signal.
 
 For example:
 
-For example:
-
 ```r
 classify_activity <- function(data, parameters) {
   acc = data[, 1]
@@ -205,9 +203,10 @@ from the same external function.
 
 ## `aggfunction`: aggregating external-function outputs
 
-When the resolution of the external function output differs from the
+When the resolution of the external function output is shorter than the
 GGIR epoch size, `aggfunction` specifies how the output values should
-be aggregated.
+be aggregated. When `outputres` is longer than the GGIR epoch size,
+GGIR repeats each output value and no aggregation function is needed.
 
 For example:
 
@@ -238,8 +237,9 @@ When multiple output types are present, such as numeric and character
 outputs, `aggfunction` should be supplied as a list with one function
 for each output column.
 
-If `outputres` differs from the GGIR epoch size, `aggfunction` must be
-provided.
+If `outputres` is shorter than the GGIR epoch size, `aggfunction` must
+be provided. It is optional when the resolutions are equal or when
+`outputres` is longer.
 
 ## Additional parameters for `reporttype = "type"`
 
@@ -333,6 +333,10 @@ assigned.
 Within each type, bout durations are considered from longest to
 shortest.
 
+The spelling and case of classification labels are preserved in the
+output. Values in `tbout.order` are matched to those labels
+case-insensitively.
+
 The priority is applied independently to each categorical output
 column. For example, the bout assignment of an `activity` output does
 not prevent the same epoch from being classified into a bout in an
@@ -389,6 +393,12 @@ For each categorical type, the output includes the total time assigned
 to the type and summaries of that time according to the acceleration
 intensity levels defined by `ilevels`.
 
+GGIR also reports two categories for epochs that are not assigned to a
+type: `unclassified` is valid time for which the external function
+returned `NA`, while `invalid` is time marked invalid by GGIR's data
+quality checks. Padding added only to construct complete analysis
+windows is excluded from both categories.
+
 Part 2 also provides bout summaries for each type and bout definition
 specified by `tbout.dur`. These include:
 
@@ -403,6 +413,9 @@ definition.
 
 When multiple `type` output columns are provided, these summaries are
 generated independently for each output column.
+
+The daily and person-level results are written to
+`part2_daytypesummary.csv` and `part2_typesummary.csv`, respectively.
 
 ### Part 5
 
@@ -420,13 +433,13 @@ The corresponding metrics include duration (`dur`), mean acceleration
 (`ACC`), and the number of contiguous blocks or bouts
 (`Nblocks`/`Nbouts`).
 
-For example, variables for a type called `walking` can follow the
-structure:
+For example, for an output column called `activity` with a level called
+`walking`, variables in the dedicated report follow this structure:
 
 ```r
-dur_spt_walking_unbt_min
-ACC_spt_walking_unbt_mg
-Nblocks_spt_walking_unbt
+activity_dur_spt_walking_unbt_min
+activity_ACC_spt_walking_unbt_mg
+activity_Nblocks_spt_walking_unbt
 ```
 
 Bout-specific variables use the bout categories defined by `tbout.dur`,
@@ -441,6 +454,19 @@ returned by the external function and the bout definitions specified in
 When multiple categorical output columns are provided, Part 5 generates
 the corresponding type-specific metrics separately for each output
 column.
+
+The CSV summaries include every categorical output column. The visual
+PDF report currently displays only the first output column whose
+`reporttype` is `"type"`; additional categorical outputs are not shown
+in that plot.
+
+For each categorical output column, Part 5 writes cleaned daily and
+person-level reports named
+`part5_extfuntype_<column>_daysummary_<window>_<sleep-definition>.csv`
+and
+`part5_extfuntype_<column>_personsummary_<window>_<sleep-definition>.csv`.
+The corresponding unfiltered daily report is stored under `results/QC`
+with `daysummary_full` in its filename.
 
 ## Part 2 versus part 5
 

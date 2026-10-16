@@ -18,7 +18,7 @@
     Numeric epochsize in seconds of the timeseries
   }
   \item{daysummary}{
-    Matrix with prelimenary day summary
+    Matrix with preliminary day summary
   }
   \item{ds_names}{
     Daysummary column names

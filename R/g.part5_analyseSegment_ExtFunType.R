@@ -102,7 +102,12 @@ g.part5_analyseSegment_ExtFunType = function(ts, sse, TOLEVELS, TLEVELS,
             bci = bci
           )
           dsummary[si, fi:(fi + 2)] = bts
-          bout_name = grep(paste0("^", type_level, "_bts_"), Tnames, value = TRUE)[bci]
+          bout_name = rownames(TLEVELS[[type_col]][[type_level]])[bci]
+          if (is.null(bout_name) || is.na(bout_name)) {
+            bout_name = Tnames[
+              startsWith(Tnames, paste0(type_level, "_bts_"))
+            ][bci]
+          }
           ds_names[fi:(fi + 2)] = c(
             paste0(prefix, type_col, "_dur_", window, "_", bout_name, "_min"),
             paste0(prefix, type_col, "_ACC_", window, "_", bout_name, "_mg"),

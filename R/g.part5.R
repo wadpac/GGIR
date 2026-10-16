@@ -711,9 +711,6 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
         output = data.frame(dsummary, stringsAsFactors = FALSE)
         names(output) = ds_names
         
-        output = data.frame(dsummary, stringsAsFactors = FALSE)
-        names(output) = ds_names
-        
         #======================================================================
         # Order external-function type columns if available
         #======================================================================
@@ -729,29 +726,29 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
           
           group_order = rep(99L, length(x))
           
-          group_order[grepl("^ExtFunType_dur_spt_.+_unbt_min$", x)] = 1
-          group_order[grepl("^ExtFunType_dur_spt_.+_bts_", x)]      = 2
-          group_order[grepl("^ExtFunType_dur_spt_total_", x)]       = 3
+          group_order[grepl("^ExtFunType_.*_dur_spt_.+_unbt_min$", x)] = 1
+          group_order[grepl("^ExtFunType_.*_dur_spt_.+_bts_", x)]      = 2
+          group_order[grepl("^ExtFunType_.*_dur_spt_total_", x)]       = 3
           
-          group_order[grepl("^ExtFunType_ACC_spt_.+_unbt_mg$", x)] = 4
-          group_order[grepl("^ExtFunType_ACC_spt_.+_bts_", x)]     = 5
-          group_order[grepl("^ExtFunType_ACC_spt_total_", x)]      = 6
+          group_order[grepl("^ExtFunType_.*_ACC_spt_.+_unbt_mg$", x)] = 4
+          group_order[grepl("^ExtFunType_.*_ACC_spt_.+_bts_", x)]     = 5
+          group_order[grepl("^ExtFunType_.*_ACC_spt_total_", x)]      = 6
           
-          group_order[grepl("^ExtFunType_Nblocks_spt_.+_unbt$", x)] = 7
-          group_order[grepl("^ExtFunType_Nbouts_spt_.+_bts_", x)]   = 8
-          group_order[grepl("^ExtFunType_Nblocks_spt_total_", x)]   = 9
+          group_order[grepl("^ExtFunType_.*_Nblocks_spt_.+_unbt$", x)] = 7
+          group_order[grepl("^ExtFunType_.*_Nbouts_spt_.+_bts_", x)]   = 8
+          group_order[grepl("^ExtFunType_.*_Nblocks_spt_total_", x)]   = 9
           
-          group_order[grepl("^ExtFunType_dur_day_.+_unbt_min$", x)] = 10
-          group_order[grepl("^ExtFunType_dur_day_.+_bts_", x)]      = 11
-          group_order[grepl("^ExtFunType_dur_day_total_", x)]       = 12
+          group_order[grepl("^ExtFunType_.*_dur_day_.+_unbt_min$", x)] = 10
+          group_order[grepl("^ExtFunType_.*_dur_day_.+_bts_", x)]      = 11
+          group_order[grepl("^ExtFunType_.*_dur_day_total_", x)]       = 12
           
-          group_order[grepl("^ExtFunType_ACC_day_.+_unbt_mg$", x)] = 13
-          group_order[grepl("^ExtFunType_ACC_day_.+_bts_", x)]     = 14
-          group_order[grepl("^ExtFunType_ACC_day_total_", x)]      = 15
+          group_order[grepl("^ExtFunType_.*_ACC_day_.+_unbt_mg$", x)] = 13
+          group_order[grepl("^ExtFunType_.*_ACC_day_.+_bts_", x)]     = 14
+          group_order[grepl("^ExtFunType_.*_ACC_day_total_", x)]      = 15
           
-          group_order[grepl("^ExtFunType_Nblocks_day_.+_unbt$", x)] = 16
-          group_order[grepl("^ExtFunType_Nbouts_day_.+_bts_", x)]   = 17
-          group_order[grepl("^ExtFunType_Nblocks_day_total_", x)]   = 18
+          group_order[grepl("^ExtFunType_.*_Nblocks_day_.+_unbt$", x)] = 16
+          group_order[grepl("^ExtFunType_.*_Nbouts_day_.+_bts_", x)]   = 17
+          group_order[grepl("^ExtFunType_.*_Nblocks_day_total_", x)]   = 18
           
           #--------------------------------------------------------------------
           # Bout ordering:
@@ -767,9 +764,10 @@ g.part5 = function(datadir = c(), metadatadir = c(), f0=c(), f1=c(),
             
             # types
             bout_type[is_bout] = sub(
-              "^ExtFunType_[^_]+_(?:spt|day)_(.*)_bts_.*$",
+              "^.*_(?:spt|day)_(.*)_bts_.*$",
               "\\1",
-              x[is_bout]
+              x[is_bout],
+              perl = TRUE
             )
             
             # longest to shortest duration

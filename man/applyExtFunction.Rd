@@ -13,7 +13,7 @@
   is a list as detailed below.
 }
 \usage{
-  applyExtFunction(data, myfun, sf, ws3, interpolationType=1)
+  applyExtFunction(data, myfun, sf, ws3, interpolationType = 1)
   
 }
 \arguments{
@@ -37,17 +37,15 @@
   }
 }
 \value{
-  The output of the external algorithm aggregated or repeated to fit the
-  short epoch length of GGIR. Therefore, the short epoch length of GGIR
-  should be a multitude of the resolution of the external function output,
-  or visa versa.
+  A list with components \code{OutputExternalFunction}, containing the external
+  algorithm output aggregated or repeated to the GGIR short epoch length, and
+  \code{LevelsExternalFunction}, containing the levels of categorical output
+  columns (and \code{NULL} entries for non-categorical columns).
 }
 \details{
-    See package vignette for detailed tutorial with examples
-    on how to use the function embedding:
-    https://cran.r-project.org/web/package=GGIR/vignettes/applyExtFunction.pdf
-    Function applyExtFunction
-    is typically not used by the GGIR user directly.
+    See the package vignette ``Embedding external functions in GGIR'' for a
+    detailed tutorial with examples. Function \code{applyExtFunction} is
+    typically not used by the GGIR user directly.
 }
 \keyword{internal}
 \author{

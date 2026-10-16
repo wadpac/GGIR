@@ -133,4 +133,64 @@ test_that("Events from external function are correctly aggregated", {
   # same variables as without the type column
   expect_equal(length(eventAgg$ds_names), 23)
   expect_true("ExtFunEvent_tot_step_count_acc50-100mg_ENMO_1234hrs" %in% eventAgg$ds_names)
+
+  # Multiple event outputs receive distinct names for every summary metric.
+  multi_vari = data.frame(
+    ENMO = c(0.01, 0.02, 0.03, 0.04),
+    event_a = c(1, 0, 2, 0),
+    event_b = c(0, 3, 0, 4)
+  )
+  multi_myfun = list(
+    colnames = c("event_a", "event_b"),
+    reporttype = c("event", "event"),
+    ilevels = 0,
+    clevels = 0,
+    qlevels = 0.5
+  )
+  multi_params = load_params("247")$params_247
+  multi_params[["winhr"]] = numeric()
+  multi_summary = matrix(NA_real_, nrow = 1, ncol = 100)
+  multi_names = rep("", 100)
+  multi_segment = list(anwi_nameindices = "_0-24hr", anwi_index = 1)
+
+  event_a = aggregateEvent(
+    metric_name = "event_a", epochsize = 5,
+    daysummary = multi_summary, ds_names = multi_names,
+    fi = 1, di = 1, vari = multi_vari, segmentInfo = multi_segment,
+    myfun = multi_myfun, params_247 = multi_params
+  )
+  event_b = aggregateEvent(
+    metric_name = "event_b", epochsize = 5,
+    daysummary = event_a$daysummary, ds_names = event_a$ds_names,
+    fi = event_a$fi, di = 1, vari = multi_vari, segmentInfo = multi_segment,
+    myfun = multi_myfun, params_247 = multi_params
+  )
+  used_names = event_b$ds_names[nzchar(event_b$ds_names)]
+  expect_false(anyDuplicated(used_names) > 0)
+  expect_true(any(grepl("event_a", used_names)))
+  expect_true(any(grepl("event_b", used_names)))
+
+  bout_myfun = c(multi_myfun, list(
+    ebout.dur = 1,
+    ebout.th.cad = 0,
+    ebout.th.acc = 0,
+    ebout.criter = 1,
+    ebout.condition = "AND"
+  ))
+  bout_a = detectEventBouts(
+    myfun = bout_myfun, varnum_event = multi_vari$event_a,
+    varnum = multi_vari$ENMO, UnitReScale = 1000,
+    daysummary = matrix(NA_real_, 1, 20), ds_names = rep("", 20),
+    di = 1, fi = 1, ws3 = 5, boutnameEnding = "ENMO_0-24hr",
+    metric_name = "event_a"
+  )
+  bout_b = detectEventBouts(
+    myfun = bout_myfun, varnum_event = multi_vari$event_b,
+    varnum = multi_vari$ENMO, UnitReScale = 1000,
+    daysummary = bout_a$daysummary, ds_names = bout_a$ds_names,
+    di = 1, fi = bout_a$fi, ws3 = 5, boutnameEnding = "ENMO_0-24hr",
+    metric_name = "event_b"
+  )
+  bout_names = bout_b$ds_names[nzchar(bout_b$ds_names)]
+  expect_false(anyDuplicated(bout_names) > 0)
 })

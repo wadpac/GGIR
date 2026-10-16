@@ -75,9 +75,16 @@ g.part5_initialise_ts = function(IMP, M, params_247, params_general,
                           nrow = nrow(IMP$metashort),
                           ncol = length(type_levels))
         
-        # Only epochs with a classified type contribute to TOLEVELS.
+        # Only valid epochs with a classified type contribute to TOLEVELS.
         # Invalid and unclassified epochs remain zero in all type columns.
-        classified = !is.na(type_index)
+        valid_epoch = rep(TRUE, nrow(IMP$metashort))
+        if (!is.null(IMP$r5long)) {
+          valid_epoch = rep(FALSE, nrow(IMP$metashort))
+          validity_length = min(length(IMP$r5long), nrow(IMP$metashort))
+          valid_epoch[seq_len(validity_length)] =
+            as.numeric(IMP$r5long[seq_len(validity_length)]) == 0
+        }
+        classified = !is.na(type_index) & valid_epoch
         type_mat[cbind(which(classified), type_index[classified])] = epoch_s
         
         # add columns to ts 

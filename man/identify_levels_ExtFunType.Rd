@@ -39,15 +39,15 @@
   A list containing:
   \describe{
     \item{\code{TLEVELS}}{
-      A list containing the bout masks for each external function type.
-      Each element is a matrix with one row for each bout-duration definition
-      and one column for each epoch. Values of 1 indicate epochs included in
-      the corresponding bout.
+      A nested list keyed first by external-function output column and then by
+      classification level. Each leaf is a matrix with one row for each
+      bout-duration definition and one column for each epoch. Values of 1
+      indicate epochs included in the corresponding bout.
     }
     \item{\code{TOLEVELS}}{
-      A matrix containing the number of seconds in each epoch assigned to each
-      external function type. Columns represent classification types and rows
-      represent epochs.
+      A named list with one matrix per external-function output column. Each
+      matrix contains the number of seconds in each epoch assigned to each
+      classification level; rows represent epochs and columns represent levels.
     }
     \item{\code{Tnames}}{
       A character vector containing the names corresponding to the bout
@@ -61,7 +61,9 @@
   function has \code{reporttype = "type"}.
   
   Type classifications are represented using the \code{ExtFunType_*_s}
-  columns in \code{ts}. Classification names are treated case-insensitively.
+  columns in \code{ts}. Original classification labels, including case, are
+  preserved. Values supplied through \code{tbout.order} are matched to those
+  labels case-insensitively.
   
   If \code{tbout.dur} is not specified, the default bout durations are
   \code{c(1, 5, 10)} minutes. If \code{tbout.criter} is not specified, the
