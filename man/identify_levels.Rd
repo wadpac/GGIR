@@ -10,7 +10,7 @@
 }
 \usage{
   identify_levels(ts, TRLi,TRMi,TRVi,
-                  ws3, params_phyact, ...)
+                  ws3, params_phyact,...)
 }
 \arguments{
   \item{ts}{
@@ -46,6 +46,7 @@
     \item bc.lig
     \item bc.in
     \item ts
+    \item threshold
   }
 }
 \examples{

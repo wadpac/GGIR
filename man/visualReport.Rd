@@ -14,7 +14,8 @@
               part6_threshold_combi = NULL, GGIRversion = NULL,
               params_sleep = NULL,
               params_output = NULL,
-              params_general = NULL)
+              params_general = NULL,
+              myfun = NULL)
 }
 \arguments{
   \item{metadatadir}{
@@ -47,6 +48,11 @@
   }
   \item{params_general}{
     See \link{GGIR}
+  }
+  \item{myfun}{
+    External function object to be applied to raw data, see \link{GGIR}.
+    Used to identify the output columns with \code{reporttype = "type"},
+    which are shown as coloured strips below the acceleration signal.
   }
 }
 \value{

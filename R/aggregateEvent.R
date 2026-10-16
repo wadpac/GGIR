@@ -34,8 +34,23 @@ aggregateEvent = function(metric_name, epochsize,
   
   #========================================
   # per acceleration level
+  
+  # Acceleration metrics: GGIR metrics (definition copied from g.analyse.perday)
+  # plus external function columns with reporttype "scalar". External "type"
+  # and "event" columns are not acceleration metrics and are excluded.
   cn_vari = colnames(vari)
-  acc.metrics = cn_vari[cn_vari %in% c("timestamp", "anglex", "angley", "anglez", metric_name) == FALSE]
+  ggir_acc_metrics = c("ENMO","LFENMO", "BFEN", "EN", "HFEN", "HFENplus", "MAD", "ENMOa",
+                       "ZCX", "ZCY", "ZCZ", "BrondCount_x", "BrondCount_y",
+                       "BrondCount_z", "NeishabouriCount_x", "NeishabouriCount_y",
+                       "NeishabouriCount_z", "NeishabouriCount_vm", "ExtAct",
+                       "ExtHeartRate")
+  ext_scalar_metrics = NULL
+  if (all(c("colnames", "reporttype") %in% names(myfun))) {
+    ext_reporttypes = rep(myfun$reporttype, length.out = length(myfun$colnames))
+    ext_scalar_metrics = myfun$colnames[ext_reporttypes == "scalar"]
+  }
+  acc.metrics = cn_vari[cn_vari %in% c(ggir_acc_metrics, ext_scalar_metrics) &
+                          cn_vari != metric_name]
   
   for (ami in 1:length(acc.metrics)) {
     vari[, acc.metrics[ami]] = as.numeric(vari[, acc.metrics[ami]])
