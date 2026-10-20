@@ -72,6 +72,8 @@ navbar:
           href: articles/readmyacccsv.html
         - text: Embedding external functions in GGIR
           href: articles/ExternalFunction.html
+        - text: External functions with categorical output
+          href: articles/ExternalFunctionType.html
         - text: Published cut-points and how to use them
           href: articles/CutPoints.html
         - text: Day-segment analyses

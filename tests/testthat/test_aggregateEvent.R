@@ -114,4 +114,23 @@ test_that("Events from external function are correctly aggregated", {
   expect_equal(daysummary$ExtFunEvent_M2hr_cad_1234hrs, 0)
   expect_equal(daysummary$ExtFunEvent_M2_cad_meancad_1234hrs, 36.26251, tolerance = 0.05)
   expect_equal(daysummary$ExtFunEvent_M2_cad_mean_ENMO_mg_1234hrs, 60041.67, tolerance = 0.01)
+  
+  # Event aggregation per acceleration level ignores non-acceleration columns
+  ws3 = 5
+  metashort = data.frame(ENMO = c(rep(0, 24), rep(0.08, 12), rep(0.12, 12), rep(1, 12)),
+                         step_count = c(rep(0, 24), rep(5, 36)),
+                         activity = factor(rep(c("sit", "walk"), each = 30)))
+  myfun = list(ilevels = c(0, 50, 100), clevels = c(0, 30, 50),
+               qlevels = c(0.25, 0.5, 0.75))
+  segmentInfo = list(anwi_nameindices = "_1234hrs", anwi_index = 1)
+  params_247 = load_params("247")$params_247
+  eventAgg = aggregateEvent(metric_name = "step_count", epochsize = ws3,
+                            daysummary = matrix("", 1, 23), ds_names = "",
+                            fi = 1, di = 1, vari = metashort,
+                            segmentInfo = segmentInfo, myfun, params_247)
+  # no variable is derived from the type column "activity"
+  expect_false(any(grepl("activity", eventAgg$ds_names)))
+  # same variables as without the type column
+  expect_equal(length(eventAgg$ds_names), 23)
+  expect_true("ExtFunEvent_tot_step_count_acc50-100mg_ENMO_1234hrs" %in% eventAgg$ds_names)
 })

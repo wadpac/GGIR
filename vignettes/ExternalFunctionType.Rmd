@@ -1,0 +1,473 @@
+---
+title: "External functions with categorical output"
+output:
+   html_document:
+    toc : true
+    number_sections: true
+    toc_depth: 3
+    toc_float: true
+urlcolor: blue
+vignette: >
+  %\VignetteIndexEntry{External functions with categorical output}
+  \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+header-includes:
+  - \usepackage{titling}
+  - \pretitle{\begin{center}
+    \includegraphics[]{GGIR-MASTERLOGO-RGB.png}\LARGE\\}
+  - \posttitle{\end{center}}
+---
+
+GGIR allows users to [embed external functions](https://wadpac.github.io/GGIR/articles/ExternalFunction.html)
+for processing raw accelerometer data. This functionality can be used
+when an algorithm that is not part of GGIR needs to be applied to the
+raw data before summarising the results.
+
+Here we describe a specific use case: external functions that classify
+each epoch into one of a set of categorical types. This functionality is
+activated by setting `reporttype = "type"` in the `myfun` object.
+
+## Defining an external function
+
+An external function used with GGIR is supplied through a `myfun` list.
+For `reporttype = "type"`, the output of the function is interpreted as
+categorical information rather than as a numeric signal.
+
+For example:
+
+For example:
+
+```r
+classify_activity <- function(data, parameters) {
+  acc = data[, 1]
+
+  result = ifelse(
+    acc < parameters[1],
+    "rest",
+    ifelse(acc < parameters[2], "walking", "running")
+  )
+
+  return(result)
+}
+```
+
+The corresponding `myfun` object can be defined as:
+
+```r
+myfun = list(
+  FUN = classify_activity,
+  parameters = c(0.05, 0.20),
+  expected_sample_rate = 100,
+  expected_unit = "g",
+  colnames = "activity",
+  minlength = 1,
+  outputres = 5,
+  outputtype = "character",
+  timestamp = FALSE,
+  reporttype = "type"
+)
+```
+
+For `reporttype = "type"`, the external function returns categorical
+information rather than a numeric measure that GGIR should average or
+sum. In this example, it could return values such as:
+
+```text
+c("rest", "rest", "walking", "walking", "running", "running", "rest")
+```
+
+The values returned in the output column become the categorical levels
+used by GGIR.
+
+## Requirements for `myfun`
+
+For `reporttype = "type"`, the `myfun` object should contain the
+following elements:
+
+```r
+myfun = list(
+  FUN = ...,
+  parameters = ...,
+  expected_sample_rate = ...,
+  expected_unit = ...,
+  colnames = ...,
+  minlength = ...,
+  outputres = ...,
+  outputtype = ...,
+  timestamp = ...,
+  reporttype = "type"
+)
+```
+
+The elements have the following roles:
+
+- `FUN`: a function object containing the external function to be
+  applied.
+
+- `parameters`: contains the parameters required by the external
+  function.
+
+- `expected_sample_rate`: specifies the sampling frequency expected by
+  the external function. If different from the sampling frequency at
+  which the signal was collected, GGIR resamples the acceleration data
+  to the expected frequency before applying the function.
+
+- `expected_unit`: specifies the acceleration unit expected by the
+  external function. Supported values include `"g"`, `"mg"`, and
+  `"ms2"`.
+
+- `colnames`: specifies the names of the output columns returned by the
+  external function. Multiple output columns are supported.
+
+- `minlength`: specifies the minimum amount of data, in seconds,
+  required by the external function.
+
+- `outputres`: specifies the temporal resolution, in seconds, of the
+  output produced by the external function.
+
+- `outputtype`: specifies the type of each output column. Supported
+  values are `"numeric"` and `"character"`. A single value can be
+  supplied and will be applied to all output columns, or one value can
+  be supplied for each output column.
+
+- `timestamp`: specifies whether a timestamp is provided to the
+  external function. When a timestamp is provided, it is added to the
+  input data passed to `FUN`. The external function may either return
+  only its output columns or return the timestamp as an additional
+  first column.
+
+- `reporttype`: specifies how the output is subsequently summarised by
+  GGIR. Supported values are `"scalar"`, `"event"`, and `"type"`. A
+  single value can be supplied and will be applied to all output
+  columns, or one value can be supplied for each output column.
+
+For a categorical output, `outputtype` should normally be
+`"character"` and `reporttype` should be `"type"`.
+
+## Multiple categorical outputs
+
+Multiple categorical output columns are supported. Each output column
+is treated as an independent categorical variable.
+
+For example, an external function could classify both activity and
+posture:
+
+```r
+classify_activity_and_posture <- function(data, parameters) {
+
+  activity = ifelse(
+    data[, 1] < parameters[1],
+    "rest",
+    ifelse(data[, 1] < parameters[2], "walking", "running")
+  )
+
+  posture = ifelse(
+    data[, 2] < parameters[3],
+    "sitting",
+    "standing"
+  )
+
+  return(data.frame(
+    activity = activity,
+    posture = posture
+  ))
+}
+```
+
+The corresponding `myfun` object could be defined as:
+
+```r
+myfun = list(
+  FUN = classify_activity_and_posture,
+  parameters = c(0.05, 0.20, 0.10),
+  expected_sample_rate = 100,
+  expected_unit = "g",
+  colnames = c("activity", "posture"),
+  minlength = 1,
+  outputres = 5,
+  outputtype = c("character", "character"),
+  timestamp = FALSE,
+  reporttype = c("type", "type")
+)
+```
+
+The two categorical outputs are processed independently. The
+categorical levels within `activity` are mutually exclusive with each
+other, and the levels within `posture` are mutually exclusive with each
+other. However, an epoch can contribute simultaneously to one
+`activity` level and one `posture` level.
+
+For example, an epoch can be classified as `"walking"` for `activity`
+and `"standing"` for `posture`.
+
+This allows several independent categorical dimensions to be obtained
+from the same external function.
+
+## `aggfunction`: aggregating external-function outputs
+
+When the resolution of the external function output differs from the
+GGIR epoch size, `aggfunction` specifies how the output values should
+be aggregated.
+
+For example:
+
+```r
+myfun$aggfunction = mean
+```
+
+applies `mean` to the output when values need to be aggregated.
+
+A single aggregation function can be supplied when all output columns
+use the same aggregation function.
+
+Alternatively, a list can be supplied to specify one aggregation
+function for each output column:
+
+```r
+myfun$aggfunction = list(
+  mean,
+  function(x) names(sort(table(x), decreasing = TRUE))[1]
+)
+```
+
+For categorical outputs, the aggregation function should be appropriate
+for categorical values, for example a function that selects the most
+frequent category.
+
+When multiple output types are present, such as numeric and character
+outputs, `aggfunction` should be supplied as a list with one function
+for each output column.
+
+If `outputres` differs from the GGIR epoch size, `aggfunction` must be
+provided.
+
+## Additional parameters for `reporttype = "type"`
+
+In addition to the elements required to define the external function,
+several optional parameters can be added to `myfun` to control how the
+categorical output is summarised. These parameters are `ilevels`,
+`tbout.dur`, `tbout.criter`, and `tbout.order`.
+
+### `ilevels`: acceleration intensity levels
+
+The `ilevels` parameter defines acceleration intensity thresholds used
+when summarising the categorical output in part 2.
+
+For example:
+
+```r
+myfun$ilevels = c(0, 80, 200)
+```
+
+defines three acceleration ranges:
+
+```text
+0-80 mg
+80-200 mg
+200 mg or more
+```
+
+These levels are used to obtain type-specific summaries of the time
+spent at different acceleration intensities.
+
+### `tbout.dur`: bout duration thresholds
+
+The `tbout.dur` parameter defines the duration thresholds used to
+identify bouts within each categorical type.
+
+For example:
+
+```r
+myfun$tbout.dur = c(1, 3, 5, 10)
+```
+
+defines the following bout categories:
+
+```text
+1-3 minutes
+3-5 minutes
+5-10 minutes
+10 minutes or longer
+```
+
+These thresholds determine the bout categories for which type-specific
+bout summaries are generated.
+
+### `tbout.criter`: bout criterion
+
+The `tbout.criter` parameter specifies the criterion used to determine
+whether a sequence of epochs qualifies as a bout.
+
+For example:
+
+```r
+myfun$tbout.criter = 0.8
+```
+
+can be used to require that at least 80% of the epochs within the bout
+meet the criterion for the corresponding type. This allows the bout
+definition to tolerate some epochs that do not belong to the target
+type while still classifying the surrounding sequence as a bout.
+
+### `tbout.order`: type priority for bout assignment
+
+The `tbout.order` parameter specifies the order in which categorical
+levels are considered when identifying bouts in part 5.
+
+This is relevant when more than one categorical level is present within
+the same output column. Part 5 assigns bouts within a categorical
+output mutually exclusively, so the order determines which type is
+considered first when bout periods overlap.
+
+For example:
+
+```r
+myfun$tbout.order = c("running", "walking", "rest")
+```
+
+means that GGIR first identifies `running` bouts, then identifies
+`walking` bouts using the remaining time, and finally identifies `rest`
+bouts using the time remaining after the previous types have been
+assigned.
+
+Within each type, bout durations are considered from longest to
+shortest.
+
+The priority is applied independently to each categorical output
+column. For example, the bout assignment of an `activity` output does
+not prevent the same epoch from being classified into a bout in an
+independent `posture` output.
+
+## Running GGIR
+
+The parameters can be combined in the same `myfun` object. For example:
+
+```r
+myfun = list(
+  FUN = classify_activity,
+  parameters = c(0.05, 0.20),
+  expected_sample_rate = 100,
+  expected_unit = "g",
+  colnames = "activity",
+  minlength = 1,
+  outputres = 5,
+  outputtype = "character",
+  timestamp = FALSE,
+  reporttype = "type",
+  ilevels = c(0, 80, 200),
+  tbout.dur = c(1, 3, 5, 10),
+  tbout.criter = 0.8,
+  tbout.order = c("running", "walking", "rest")
+)
+```
+
+Once `myfun` has been defined, it is supplied to `GGIR()` in the same
+way as other external functions:
+
+```r
+library(GGIR)
+
+GGIR(
+  datadir = "~/mydata",
+  outputdir = "~/myresults",
+  mode = 1:5,
+  myfun = myfun
+)
+```
+
+## Type-specific summaries
+
+When `reporttype = "type"`, GGIR uses the categorical levels returned by
+the external function to generate type-specific summaries. The
+summaries generated by part 2 and part 5 differ because the two parts
+process the categorical output in different ways.
+
+### Part 2
+
+Part 2 calculates type-specific summaries within each calendar day.
+For each categorical type, the output includes the total time assigned
+to the type and summaries of that time according to the acceleration
+intensity levels defined by `ilevels`.
+
+Part 2 also provides bout summaries for each type and bout definition
+specified by `tbout.dur`. These include:
+
+- `totdur`: total duration of the bouts;
+
+- `meandur`: mean bout duration; and
+
+- `Nbouts`: number of bouts.
+
+Bout summaries are calculated independently for each type and bout
+definition.
+
+When multiple `type` output columns are provided, these summaries are
+generated independently for each output column.
+
+### Part 5
+
+Part 5 summarises the categorical output separately for the sustained
+sleep period (`spt`) and the rest of the day (`day`). For each type,
+the output distinguishes between:
+
+- unbouted time;
+
+- time occurring within each defined bout category; and
+
+- total time assigned to the type.
+
+The corresponding metrics include duration (`dur`), mean acceleration
+(`ACC`), and the number of contiguous blocks or bouts
+(`Nblocks`/`Nbouts`).
+
+For example, variables for a type called `walking` can follow the
+structure:
+
+```r
+dur_spt_walking_unbt_min
+ACC_spt_walking_unbt_mg
+Nblocks_spt_walking_unbt
+```
+
+Bout-specific variables use the bout categories defined by `tbout.dur`,
+while total variables describe all time assigned to the type regardless
+of whether it belongs to a defined bout.
+
+The same type-specific metrics are generated for both the `spt` and
+`day` windows. The exact variables depend on the categorical levels
+returned by the external function and the bout definitions specified in
+`myfun`.
+
+When multiple categorical output columns are provided, Part 5 generates
+the corresponding type-specific metrics separately for each output
+column.
+
+## Part 2 versus part 5
+
+Part 2 and part 5 use different processing strategies for the
+categorical output.
+
+In **part 2**, the recording is divided into calendar days before the
+type-specific summaries are calculated. In **part 5**, the categorical
+classification is first obtained over the continuous analysis segment
+and is then summarised within the relevant day, `spt`, and `day`
+windows.
+
+This difference is particularly relevant for bouts. In part 2, bout
+summaries are calculated independently within each calendar day,
+whereas part 5 can identify a bout across a calendar-day boundary when
+the classification is continuous.
+
+In addition, part 5 uses mutually exclusive type assignment for bouts
+within each categorical output column, with the priority between types
+determined by `tbout.order`.
+
+Therefore, type-specific results from part 2 and part 5 are not expected
+to be identical; they represent summaries obtained through different
+processing strategies.
+
+## Related documentation
+
+For the general external-function framework, including numeric and
+event-based outputs, see
+[Embedding external functions in GGIR](https://wadpac.github.io/GGIR/articles/ExternalFunction.html).
