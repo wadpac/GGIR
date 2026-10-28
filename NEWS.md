@@ -1,6 +1,6 @@
 # CHANGES IN GGIR VERSION 3.3-?
 
-- Part 1: Reduced overhead in `g.calibrate()` epoch standard deviations by iterating over columns with `vapply()` instead of `apply()`, retaining the same `sd()` calculation and calibration thresholds.
+- Part 1: Reduced time and allocation overhead in `g.calibrate()` by avoiding full raw-block matrix copies, reducing epoch-mean temporaries, preparing only populated feature rows, and reusing matrix inputs with per-axis transforms in the calibration fit. Feature buffers now start with one day of epochs and grow as needed. Epoch SDs use `vapply()` with the same `sd()` calculation; calibration thresholds, cumulative-sum arithmetic and fitting/stopping rules are retained.
 
 - Part 1: Faster rolling-median metric extraction using R's existing `runmed()` directly for complete data. Fixed loss of smoothing when block length is not divisible by the downsampling step (including typical 75 Hz blocks), corrected trailing padding to use the final window median, and preserved valid zero medians at block edges. Angle and rolling-median metrics can change as a result of these fixes.
 
