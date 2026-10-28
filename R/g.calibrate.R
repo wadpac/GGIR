@@ -32,7 +32,8 @@ g.calibrate = function(datafile, params_rawdata = c(),
   }
   rollSD = function(x, sf, epochSize) {
     dim(x) = c(sf * epochSize, ceiling(length(x) / (sf * epochSize)))
-    y = apply(x, 2, sd)
+    # Avoid apply's matrix permutation/copy while retaining sd's calculation.
+    y = vapply(seq_len(ncol(x)), function(i) sd(x[, i]), numeric(1))
     return(y)
   }
   #-----------------

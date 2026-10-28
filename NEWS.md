@@ -1,5 +1,9 @@
 # CHANGES IN GGIR VERSION 3.3-?
 
+- Part 1: Reduced overhead in `g.calibrate()` epoch standard deviations by iterating over columns with `vapply()` instead of `apply()`, retaining the same `sd()` calculation and calibration thresholds.
+
+- Part 1: Faster rolling-median metric extraction using R's existing `runmed()` directly for complete data. Fixed loss of smoothing when block length is not divisible by the downsampling step (including typical 75 Hz blocks), corrected trailing padding to use the final window median, and preserved valid zero medians at block edges. Angle and rolling-median metrics can change as a result of these fixes.
+
 - Part 5: Nap time (dur_day_nap_min) is now mutually exclusive with the rest of total outputs. #1558
 
 - Documentation: clarified how bout tolerance for gaps works, added Crotti cutpoint, and clarified GENEActiv light sensor calibration. #1531, #1536, #1544
