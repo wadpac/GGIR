@@ -191,8 +191,9 @@ test_that("chainof5parts", {
          # study dates file
          study_dates_file = "study_dates_file.csv",
          study_dates_dateformat = "%d/%m/%Y",
-         # strategy
-         data_masking_strategy = 1, hrs.del.start = 0, hrs.del.end = 0),
+         # Reset ndayswindow saved by the preceding strategy 5 cases.
+         data_masking_strategy = 1, ndayswindow = 7,
+         hrs.del.start = 0, hrs.del.end = 0),
     regexp = NA)
   # load data
   load(dir("output_test/meta/basic/", full.names = TRUE)[1])
