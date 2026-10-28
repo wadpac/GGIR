@@ -1,5 +1,7 @@
 # CHANGES IN GGIR VERSION 3.3-?
 
+- Part 5: Nap time (dur_day_nap_min) is now mutually exclusive with the rest of total outputs. #1558
+
 - Documentation: clarified how bout tolerance for gaps works, added Crotti cutpoint, and clarified GENEActiv light sensor calibration. #1531, #1536, #1544
 
 # CHANGES IN GGIR VERSION 3.3-9
