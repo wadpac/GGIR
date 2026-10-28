@@ -25,15 +25,26 @@ g.calibrate = function(datafile, params_rawdata = c(),
   #-----------------
   # Define local functions:
   rollMean = function(x, fs, epochSize) {
-    x = cumsum(c(0, x))
-    select = seq(1, length(x), by = fs * epochSize)
-    y = diff(x[round(select)]) / abs(diff(round(select)))
+    # Keep the cumulative-sum arithmetic, but prepend zero only after
+    # selecting epoch boundaries instead of copying the full input vector.
+    select = round(seq(1, length(x) + 1, by = fs * epochSize))
+    y = diff(c(0, cumsum(as.numeric(x))[select[-1] - 1])) / abs(diff(select))
     return(y)
   }
   rollSD = function(x, sf, epochSize) {
     dim(x) = c(sf * epochSize, ceiling(length(x) / (sf * epochSize)))
-    y = apply(x, 2, sd)
+    # Avoid apply's matrix permutation/copy while retaining sd's calculation.
+    y = vapply(seq_len(ncol(x)), function(i) sd(x[, i]), numeric(1))
     return(y)
+  }
+  transformAxes = function(x, offset, scale, temperature, tempoffset) {
+    # Match scale()'s order of operations without its sweep()/aperm() arrays.
+    out = x
+    for (axis in seq_len(ncol(x))) {
+      out[, axis] = (x[, axis] + offset[axis]) / (1 / scale[axis]) +
+        temperature[, axis] / (1 / tempoffset[axis])
+    }
+    return(out)
   }
   #-----------------
   use.temp = temp.available = TRUE
@@ -72,7 +83,9 @@ g.calibrate = function(datafile, params_rawdata = c(),
   
   #creating matrices for storing output
   S = matrix(0,0,4) #dummy variable needed to cope with head-tailing succeeding blocks of data
-  NR = ceiling((90*10^6) / (sf*calibEpochSize)) + 1000 #NR = number of rows to initialise features matrix with
+  # Features are 10-second epochs, independent of the raw sampling rate.
+  # Start with one day and expand below for larger chunks/longer recordings.
+  NR = 24 * 3600 / calibEpochSize
 
   # setting size of blocks that are loaded (too low slows down the process)
   # the setting below loads blocks size of 12 hours (modify if causing memory problems)
@@ -127,23 +140,26 @@ g.calibrate = function(datafile, params_rawdata = c(),
     options(warn = 0) #turn on warnings
     #process data as read from binary file
     if (length(accread$P) > 0) { # would have been set to zero if file was corrupt or empty
-      data = as.matrix(accread$P$data[,which(colnames(accread$P$data) %in% c("x", "y", "z", "time", "temperature"))]) # convert to matrix b/c rbind is much faster on matrices
+      # Keep columns separate: converting an entire raw block to a matrix
+      # copies time and temperature along with all three acceleration axes.
+      data = as.data.frame(accread$P$data[, which(colnames(accread$P$data) %in%
+                             c("x", "y", "z", "time", "temperature")), drop = FALSE])
       if (exists("accread")) {
         rm(accread)
       }
       # add leftover data from last time
       if (min(dim(S)) > 1) {
-        data = rbind(S,data)
+        data = as.data.frame(Map(c, S, data))
       }
       # remove 0s if ActiGraph csv (idle sleep mode) OR if similar imputation done in ad-hoc csv
       # current ActiGraph csv's are not with zeros but with last observation carried forward
       zeros = c()
       if (!(mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV)) {
-        zeros = which(data[, "x"] == 0 & data[, "y"] == 0 & data[, "z"] == 0)
+        zeros = which(data$x == 0 & data$y == 0 & data$z == 0)
       }
       if ((mon == MONITOR$ACTIGRAPH && dformat == FORMAT$CSV) || length(zeros) > 0) {
         data = g.imputeTimegaps(x = as.data.frame(data), sf = sf, impute = FALSE)
-        data = as.matrix(data$x)
+        data = data$x
       }
       LD = nrow(data)
       #store data that could not be used for this block, but will be added to next block
@@ -151,25 +167,30 @@ g.calibrate = function(datafile, params_rawdata = c(),
       if (length(use) > 0) {
         if (use > 0) {
           if (use != LD) {
-            S = data[(use + 1):LD,] # store leftover data
-
-            # if S is only one row, it gets coersed to a vector, and what we need is a 1-row matrix
-            if (is.vector(S)) {
-              S = t(S)
-            }
+            S = data[(use + 1):LD, , drop = FALSE] # store leftover data
           }
-          data = data[1:use,]
-          LD = nrow(data) #redefine LD because there is less data
-
-          Gx = data[, "x"]
-          Gy = data[, "y"]
-          Gz = data[, "z"]
+          # Subset only columns needed for feature extraction. If the block
+          # already contains complete hours, reuse the column vectors.
+          rows = seq_len(use)
+          if (use == LD) {
+            Gx = data$x
+            Gy = data$y
+            Gz = data$z
+            if (use.temp) temperature = data$temperature
+          } else {
+            Gx = data$x[rows]
+            Gy = data$y[rows]
+            Gz = data$z[rows]
+            if (use.temp) temperature = data$temperature[rows]
+          }
+          LD = use
+          rm(data)
 
           if (use.temp) {
-            if (mean(data[1:10, "temperature"], na.rm = TRUE) > 120) {
+            if (mean(temperature[1:10], na.rm = TRUE) > 120) {
               warning("\ntemperature ignored for auto-calibration because values are too high\n")
               use.temp = FALSE
-            } else if (sd(data[, "temperature"], na.rm = TRUE) < 0.01) {
+            } else if (sd(temperature, na.rm = TRUE) < 0.01) {
               warning("\ntemperature ignored for auto-calibration because no variance in values\n")
               use.temp = FALSE
             }
@@ -198,10 +219,11 @@ g.calibrate = function(datafile, params_rawdata = c(),
           features[count:endCount, 6] = rollSD(Gy, sf, calibEpochSize)
           features[count:endCount, 7] = rollSD(Gz, sf, calibEpochSize)
           if (use.temp == TRUE) {
-            features[count:endCount, 8] = rollMean(data[, "temperature"], sf, calibEpochSize)
+            features[count:endCount, 8] = rollMean(temperature, sf, calibEpochSize)
           }
           count = endCount + 1 # increasing count, the indicator of how many timesteps (calibEpochSize) have been read
-          rm(Gx); rm(Gy); rm(Gz)
+          rm(Gx, Gy, Gz, EN, EN2)
+          if (exists("temperature", inherits = FALSE)) rm(temperature)
           # Update blocksize depending on available memory:
           BlocksizeNew = updateBlocksize(blocksize = blocksize, bsc_qc = bsc_qc)
           bsc_qc = BlocksizeNew$bsc_qc
@@ -216,7 +238,9 @@ g.calibrate = function(datafile, params_rawdata = c(),
     if (isLastBlock) {
       LD = 0
     }
-    features_temp = data.frame(V = features, stringsAsFactors = FALSE)
+    # Only prepare epochs collected so far, not the unused buffer capacity.
+    features_temp = data.frame(V = features[seq_len(count - 1), , drop = FALSE],
+                               stringsAsFactors = FALSE)
     # remove 999999, missing values
     cut = which(features_temp[,1] == 99999 |
                   is.na(features_temp[,4]) == TRUE | is.na(features_temp[,1]) == TRUE)
@@ -287,7 +311,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
       # START of Zhou Fang's code (slightly edited by vtv21 to use matrix features_temp from above
       # instead the similar matrix generated by Zhou Fang's original code. This to allow for
       # more data to be used as features_temp can now be based on 10 or more days of raw data
-      input = features_temp[,2:4]
+      input = as.matrix(features_temp[,2:4])
       if (use.temp == TRUE) {
         inputtemp = cbind(as.numeric(features_temp[,8]),as.numeric(features_temp[,8]),as.numeric(features_temp[,8])) #temperature
       } else {
@@ -304,8 +328,7 @@ g.calibrate = function(datafile, params_rawdata = c(),
       tol = 1e-10
       for (iter in 1:maxiter) {
         curr = c()
-        try(expr = {curr = scale(input, center = -offset, scale = 1/scale) +
-          scale(inputtemp, center = F, scale = 1/tempoffset)}, silent = TRUE)
+        try(expr = {curr = transformAxes(input, offset, scale, inputtemp, tempoffset)}, silent = TRUE)
         if (length(curr) == 0) {
           # set coefficients to default, because it did not work.
           break

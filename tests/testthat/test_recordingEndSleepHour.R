@@ -102,8 +102,12 @@ test_that("recordingEndSleepHour works as expected", {
   expect_equal(sum(p4$longitudinal_axis), 9)
   
   p5 = read.csv("output_test/results/part5_daysummary_MM_L40M100V400_T5A5.csv")
-  expect_equal(nrow(p5), 3) # expanded day appears in MM report
-  expect_true(p5$dur_day_spt_min[nrow(p5)] < 23*60) # but expanded time is not accounted for in estimates
+  # Correct median tail padding removes the former 15-second SPT fragment on
+  # the final partial day. Part 5 excludes days without SPT, so only the two
+  # complete days remain. The wrist case above checks partial-day expansion.
+  expect_equal(nrow(p5), 2)
+  expect_equal(p5$calendar_date, c("2016-06-24", "2016-06-25"))
+  expect_equal(p5$dur_day_spt_min, rep(24 * 60, 2))
   
   # test that time series output has all expected columns including the multiple angle columns
   # this does not align with the focus on sleep in this unit test, but if we have to 
