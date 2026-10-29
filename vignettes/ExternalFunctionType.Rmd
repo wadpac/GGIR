@@ -225,7 +225,10 @@ function for each output column:
 ```r
 myfun$aggfunction = list(
   mean,
-  function(x) names(sort(table(x), decreasing = TRUE))[1]
+  function(x) {
+    counts = table(as.character(x))
+    if (length(counts) == 0) NA_character_ else names(which.max(counts))
+  }
 )
 ```
 
@@ -240,6 +243,29 @@ for each output column.
 If `outputres` is shorter than the GGIR epoch size, `aggfunction` must
 be provided. It is optional when the resolutions are equal or when
 `outputres` is longer.
+
+### Missing values
+
+GGIR passes all values of each GGIR epoch to `aggfunction`, including
+missing values (`NA`). Epochs in which all values are missing are kept
+as missing, so the aggregated output stays aligned with the GGIR time
+series. How partially missing epochs are handled depends on
+`aggfunction`:
+
+- `mean`, `sum` and similar functions return `NA` if any value in the
+  epoch is missing. Use `function(x) mean(x, na.rm = TRUE)` to
+  summarise the available values instead.
+- `function(x) x[1]` returns `NA` when the first value is missing, even
+  if later values in the epoch are classified.
+- For the most frequent category, convert to character before
+  tabulating and return `NA` when nothing is classified, as in the
+  example above. Categorical outputs reach `aggfunction` as factors,
+  and `table()` on a factor also counts levels that do not occur, so a
+  plain `names(sort(table(x), decreasing = TRUE))[1]` would assign the
+  first level to epochs in which all values are missing.
+
+Epochs that remain `NA` after aggregation are reported as
+unclassified.
 
 ## Additional parameters for `reporttype = "type"`
 
