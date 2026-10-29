@@ -4,10 +4,9 @@
   Detect bouts for each type as produced by external function
 }
 \description{
-  Detect bouts for each tye as produced by external function.
-  Bout detection is done with the g.getbout function, and using the 
-  parameters tbout.dur, tbout.th.acc, tbout.criter, and tbout.condition
-  that may be specified by the user in the myfun list (see Details).
+  Detect bouts for each type produced by an external function.
+  Bout detection is done with \code{g.getbout} using the \code{tbout.dur}
+  and \code{tbout.criter} parameters that may be specified in \code{myfun}.
 }
 \usage{
    detectTypeBouts(myfun, varnum_type, 
@@ -23,7 +22,7 @@
     the external function.
   }
   \item{daysummary}{
-    Matrix with prelimenary day summary.
+    Matrix with preliminary day summary.
   }
   \item{ds_names}{
     Daysummary column names
@@ -41,6 +40,10 @@
     Character with ending suffix to be pasted to the bout variable names, 
     indicating the segment of the day over which the bouts have been calculated.
   }
+}
+\value{
+  A list containing the updated \code{daysummary}, \code{ds_names}, \code{fi},
+  and \code{di} objects.
 }
 \keyword{internal}
 \author{

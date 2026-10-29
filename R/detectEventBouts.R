@@ -1,11 +1,13 @@
 detectEventBouts = function(myfun, varnum_event, varnum, 
                             UnitReScale, daysummary, ds_names,
-                            di, fi, ws3, boutnameEnding) {
+                            di, fi, ws3, boutnameEnding,
+                            metric_name = NULL) {
   if ("ebout.dur" %in% names(myfun) == FALSE) myfun$ebout.dur = c(1, 5, 10)
   if ("ebout.th.cad" %in% names(myfun) == FALSE) myfun$ebout.th.cad = 30
   if ("ebout.th.acc" %in% names(myfun) == FALSE) myfun$ebout.th.acc = 50
   if ("ebout.criter" %in% names(myfun) == FALSE) myfun$ebout.criter = 0.8
   if ("ebout.condition" %in% names(myfun) == FALSE) myfun$ebout.condition = "AND"
+  event_suffix = if (is.null(metric_name)) "" else paste0("_", metric_name)
   
   # varnum = metashort[anwindices, mi]
   cadence = varnum_event * (60/ws3)
@@ -36,7 +38,7 @@ detectEventBouts = function(myfun, varnum_event, varnum,
                            "M", (myfun$ebout.criter  * 100),
                            "%_cad",cad_th, myfun$ebout.condition,
                            "acc", acc_th)
-        ebout_varname = paste0(eboutname, "_", boutnameEnding)
+        ebout_varname = paste0(eboutname, event_suffix, "_", boutnameEnding)
         # fi = correct_fi(di, ds_names, fi, varname = ebout_varname)
         daysummary[di,fi] = eventbout # total time in ebouts
         ds_names[fi] = ebout_varname;
@@ -50,7 +52,7 @@ detectEventBouts = function(myfun, varnum_event, varnum,
                            "M", (myfun$ebout.criter  * 100),
                            "%_cad",cad_th, myfun$ebout.condition,
                            "acc", acc_th)
-        ebout_varname = paste0(eboutname, "_", boutnameEnding)
+        ebout_varname = paste0(eboutname, event_suffix, "_", boutnameEnding)
         daysummary[di,fi] = number_of_bouts
         ds_names[fi] = ebout_varname;
         fi = fi + 1
@@ -64,7 +66,7 @@ detectEventBouts = function(myfun, varnum_event, varnum,
                            "M", (myfun$ebout.criter  * 100),
                            "%_cad",cad_th, myfun$ebout.condition,
                            "acc", acc_th)
-        ebout_varname = paste0(eboutname, "_", boutnameEnding)
+        ebout_varname = paste0(eboutname, event_suffix, "_", boutnameEnding)
         daysummary[di,fi] = mn_dur_bouts
         ds_names[fi] = ebout_varname;
         fi = fi + 1

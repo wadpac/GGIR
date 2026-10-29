@@ -1,4 +1,8 @@
 identify_levels_ExtFunType = function(ts, myfun, ws3) {
+  get_type_levels = function(column_names, type_col) {
+    prefix = paste0("ExtFunType_", type_col, "_")
+    substring(column_names, nchar(prefix) + 1, nchar(column_names) - 2)
+  }
   
   #===============================================
   # EXTERNAL FUNCTION TYPES
@@ -22,11 +26,10 @@ identify_levels_ExtFunType = function(ts, myfun, ws3) {
       type_columns = list()
       
       for (type_col in type_columns_myfun) {
-        this_type_columns = grep(
-          paste0("^ExtFunType_", type_col, "_.*_s$"),
-          names(ts),
-          value = TRUE
-        )
+        prefix = paste0("ExtFunType_", type_col, "_")
+        this_type_columns = names(ts)[
+          startsWith(names(ts), prefix) & endsWith(names(ts), "_s")
+        ]
         
         if (length(this_type_columns) > 0) {
           type_columns[[type_col]] = this_type_columns
@@ -41,13 +44,7 @@ identify_levels_ExtFunType = function(ts, myfun, ws3) {
           
           this_type_columns = type_columns[[type_col]]
           
-          this_type_levels = sub(
-            pattern = paste0("^ExtFunType_", type_col, "_"),
-            replacement = "",
-            x = this_type_columns
-          )
-          this_type_levels = sub("_s$", "", this_type_levels)
-          this_type_levels = tolower(this_type_levels)
+          this_type_levels = get_type_levels(this_type_columns, type_col)
           
           this_TOLEVELS = as.matrix(
             ts[, this_type_columns, drop = FALSE]
@@ -77,22 +74,19 @@ identify_levels_ExtFunType = function(ts, myfun, ws3) {
           this_type_columns = type_columns[[type_col]]
           
           # Extract levels for this type output
-          this_type_levels = sub(
-            pattern = paste0("^ExtFunType_", type_col, "_"),
-            replacement = "",
-            x = this_type_columns
-          )
-          this_type_levels = sub("_s$", "", this_type_levels)
-          this_type_levels = tolower(this_type_levels)
+          this_type_levels = get_type_levels(this_type_columns, type_col)
           
           # Default order
           if (!"tbout.order" %in% names(myfun)) {
             type_order = sort(this_type_levels)
           } else {
-            type_order = tolower(myfun[["tbout.order"]])
-            
-            # Keep only levels belonging to this type output
-            type_order = type_order[type_order %in% this_type_levels]
+            # Match the requested order without changing the original labels.
+            order_indices = match(
+              tolower(myfun[["tbout.order"]]),
+              tolower(this_type_levels)
+            )
+            order_indices = unique(order_indices[!is.na(order_indices)])
+            type_order = this_type_levels[order_indices]
             
             # Add levels not explicitly included in tbout.order
             type_order = c(
@@ -112,8 +106,8 @@ identify_levels_ExtFunType = function(ts, myfun, ws3) {
           
           NBL = length(boutduration)
           
-          # refe is used to ensure that bout classification
-          # is mutually exclusive across bout durations
+          # Track assigned epochs so bouts are mutually exclusive across both
+          # type levels and bout durations within this output column.
           refe.type = rep(0, nrow(ts))
           
           #---------------------------------------------
@@ -139,6 +133,9 @@ identify_levels_ExtFunType = function(ts, myfun, ws3) {
                   refe.type == 0
               )
               rr1[p] = 1
+              # Previously assigned epochs are hard boundaries, rather than
+              # tolerated gaps that g.getbout may absorb into another bout.
+              rr1[refe.type > 0] = -boutduration[BL]
               
               # Identify bouts
               out1 = g.getbout(
@@ -147,6 +144,8 @@ identify_levels_ExtFunType = function(ts, myfun, ws3) {
                 boutcriter = myfun[["tbout.criter"]],
                 ws3 = ws3
               )
+              # Retain an explicit safeguard against overlapping assignments.
+              out1[refe.type > 0] = 0
               
               TLEVELS[[type_col]][[type_level]] =
                 rbind(
@@ -172,6 +171,9 @@ identify_levels_ExtFunType = function(ts, myfun, ws3) {
               }
               
               Tnames = c(Tnames, bout_name)
+              rownames(TLEVELS[[type_col]][[type_level]])[
+                nrow(TLEVELS[[type_col]][[type_level]])
+              ] = bout_name
             }
           }
         }

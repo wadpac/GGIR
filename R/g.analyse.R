@@ -251,7 +251,8 @@ g.analyse =  function(I, C, M, IMP, params_247 = c(), params_phyact = c(),
   exclude_cols = c("angle","anglex", "angley", "anglez", "ExtSleep", "marker")
   if (length(myfun) > 0) {
     if ("reporttype" %in% names(myfun) && any(myfun$reporttype == "type")) {
-      exclude_cols = c(exclude_cols, myfun$colnames)
+      reporttypes = rep(myfun$reporttype, length.out = length(myfun$colnames))
+      exclude_cols = c(exclude_cols, myfun$colnames[reporttypes == "type"])
     }
   }
   # Extract the average 24 hr 
