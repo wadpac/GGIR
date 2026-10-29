@@ -457,6 +457,15 @@ test_that("All GGIR parts work together (integration test)", {
   expect_equal(mean(M$metashort$roll_med_acc_z, na.rm = T), 0.007, tolerance = 3)
   expect_equal(mean(M$metashort$dev_roll_med_acc_x, na.rm = T), 0.007, tolerance = 3)
   expect_equal(mean(M$metashort$ENMOa, na.rm = T), 0.03, tolerance = 3)
+
+  # Legacy external-function configurations without reporttype are scalars
+  expect_error(
+    g.part2(datadir = fn, metadatadir = metadatadir, f0 = 1, f1 = 1,
+            idloc = 2, desiredtz = desiredtz, overwrite = TRUE,
+            maxdur = Ndays, includedaycrit = 0,
+            do.parallel = do.parallel, myfun = myfun, verbose = FALSE),
+    NA
+  )
   
   if (dir.exists(dn))  unlink(dn, recursive = TRUE)
   if (file.exists(fn)) unlink(fn)

@@ -4,7 +4,8 @@ visualReport = function(metadatadir = c(),
                         part6_threshold_combi = NULL,
                         GGIRversion = NULL,
                         params_sleep = NULL, params_output = NULL,
-                        params_general = NULL) {
+                        params_general = NULL,
+                        myfun = NULL) {
   if (!file.exists(paste0(metadatadir, "/results/file summary reports"))) {
     dir.create(file.path(paste0(metadatadir, "/results"), "file summary reports"))
   }
@@ -17,7 +18,7 @@ visualReport = function(metadatadir = c(),
   main_visualreport = function(i, f0, f1, metadatadir, part6_threshold_combi,
                                fnames.ms5raw, ylabels_plot2, GGIRversion, desiredtz,
                                behavioral_code_names, behavioral_codes,
-                               binary_vars) {
+                               binary_vars, myfun = NULL) {
     # Declare local functions (internal, because this eases passing the function on to parallel process:
     correctRect = function(starti, endi, NR, epochSize) {
       if (endi[length(endi)] > NR) {
@@ -50,7 +51,8 @@ visualReport = function(metadatadir = c(),
                          hrsPerRow = NULL, plotid = 0, 
                          legend_items = NULL, lux_available = FALSE,
                          step_count_available = FALSE, epochSize = 60, focus = "day",
-                         temperature_available = FALSE) {
+                         temperature_available = FALSE, type_info = NULL,
+                         event_info = NULL) {
       window_duration = mdat$timenum[nrow(mdat)] - mdat$timenum[1]
       signalcolor = "black"
       
@@ -69,11 +71,6 @@ visualReport = function(metadatadir = c(),
       }
       XLIM[2] = XLIM[1] + hrsPerRow * 3600
       
-      if (step_count_available == TRUE) {
-        steps_per_hour = round(zoo::rollsum(x = mdat$step_count, k = epochSize, fill = NA) / 100)
-        steps_per_hour = as.character(steps_per_hour)
-        steps_per_hour = gsub(pattern = "0", replacement = "", x = steps_per_hour)
-      }
       if (lux_available == TRUE) {
         lux_per_hour = round(zoo::rollmax(x = mdat$lightpeak, k = epochSize, fill = NA) / 1000)
         lux_per_hour = as.character(lux_per_hour)
@@ -94,6 +91,19 @@ visualReport = function(metadatadir = c(),
       } else {
         Ymin = 0
       }
+      # Make room for events (steps) at the bottom of the angle area by compressing
+      # everything that is plotted between y = 0 and y = 50 into y = steps_height - 50
+      steps_height = ifelse(step_count_available == TRUE, yes = 25, no = 0)
+      ya = function(y) steps_height + y * (50 - steps_height) / 50  # ya() rescales y-values of the lower half 
+      events_y = c(1, steps_height - 2)
+      
+      # Reserve rows at the bottom for external function types
+      if (length(type_info) > 0) {
+        for (ti in seq_along(type_info)) {
+          type_info[[ti]]$y = c(Ymin - 6, Ymin - 1)
+          Ymin = Ymin - 7
+        }
+      }
       accy = (mdat$ACC / 10) + 50
       
       # identify angle columns
@@ -109,6 +119,9 @@ visualReport = function(metadatadir = c(),
         ang2 = (((mdat[, anglecols[2]] + 90) * 40) / 180) #+ 13
         ang3 = (((mdat[, anglecols[3]] + 90) * 40) / 180) #+ 26
       }
+      if (Nangles > 0) ang1 = ya(ang1)
+      if (Nangles > 1) ang2 = ya(ang2)
+      if (Nangles > 2) ang3 = ya(ang3)
       
       if (lux_available == TRUE) {
         # luxy = ceiling(pmin(mdat$lightpeak + 1, 20000) / 2000) + 100
@@ -161,13 +174,7 @@ visualReport = function(metadatadir = c(),
               at = atTime[length(atTime)] + 5000, adj = 0)
         line = line + line_delta
       }
-      if (step_count_available == TRUE) {
-        mtext(text = steps_per_hour[ticks], side = 1, line = line, cex = cex_mtext,
-              at = atTime)
-        mtext(text = "steps x100", side = 1, line = line, cex = cex_mtext,
-              at = atTime[length(atTime)] + 5000, adj = 0)
-      }
-      
+
       #============================================
       # add rectangular blocks to reflect classes
       Nlevels = max(legend_items$level, na.rm = TRUE) #sum(Nlevels) - 1 # -1 because invalidepoch will not be a rectangle
@@ -189,7 +196,7 @@ visualReport = function(metadatadir = c(),
             newi = correctRect(starti, endi, NR = nrow(mdat), epochSize)
             t0 = mdat$timestamp[starti = newi$starti]
             t1 = mdat$timestamp[endi = newi$endi]
-            y0 = 25
+            y0 = ya(25)
             y1 = 50
             if (legend_items$name[labi] == "nap") {
               y1 = 100
@@ -218,6 +225,8 @@ visualReport = function(metadatadir = c(),
               y0 = 12.5
               y1 = 25
             }
+            y0 = ya(y0)
+            y1 = ya(y1)
           } else {
             # Accelerometer- based classes
             tempi = which(mdat$class_id == legend_items$code[labi])
@@ -245,9 +254,9 @@ visualReport = function(metadatadir = c(),
       }
       
       # Add angle grid lines
-      abline(h = c(10, 30), lty = 2, lwd = 0.3)
+      abline(h = ya(c(10, 30)), lty = 2, lwd = 0.3)
       if (Nangles > 1) {
-        abline(h = c(0, 20, 40), lty = 3, lwd = 0.3)
+        abline(h = ya(c(0, 20, 40)), lty = 3, lwd = 0.3)
       }
       # Add acc line
       lines(mdat$timestamp, accy, type = "l",
@@ -265,6 +274,41 @@ visualReport = function(metadatadir = c(),
         text(x = mdat$timestamp[which(temperaturey == -1)], y = -9, labels = "-", cex = 0.5)
         text(x = mdat$timestamp[which(temperaturey == 1)], y = -9, labels = "+", cex = 0.5)
       }
+      if (step_count_available == TRUE) {
+        # Add events as vertical bars, full height = event_info$ref events per minute
+        event_rate = pmin(mdat[, event_info$column] * (60 / epochSize), event_info$ref)
+        has_events = which(event_rate > 0)
+        segments(x0 = mdat$timestamp[has_events], y0 = events_y[1],
+                 y1 = events_y[1] + (event_rate[has_events] / event_info$ref) * diff(events_y),
+                 col = "grey30", lwd = 0.3)
+        abline(h = events_y[2], lty = 3, lwd = 0.3) # reference line at full height
+        text(x = XLIM[2], y = events_y[2], labels = event_info$ref, pos = 4, cex = 0.4,
+             col = signalcolor, xpd = NA)
+        text(x = XLIM[2], y = mean(events_y), labels = event_info$label,
+             pos = 4, cex = 0.5, col = signalcolor, xpd = NA)
+      }
+      if (length(type_info) > 0) {
+        # Add external function types as coloured strips, one strip per type output
+        for (ti in seq_along(type_info)) {
+          typemat = as.matrix(mdat[, type_info[[ti]]$columns, drop = FALSE])
+          dominant = max.col(typemat, ties.method = "first")
+          dominant[rowSums(typemat, na.rm = TRUE) == 0] = 0 # unclassified
+          for (li in seq_along(type_info[[ti]]$levels)) {
+            A = as.numeric(dominant == li)
+            if (sum(A) > 0) {
+              starti = which(diff(c(0, A)) == 1)
+              endi = which(diff(c(A, 0)) == -1) + 1
+              newi = correctRect(starti, endi, NR = nrow(mdat), epochSize)
+              rect(xleft = mdat$timestamp[newi$starti], xright = mdat$timestamp[newi$endi],
+                   ybottom = type_info[[ti]]$y[1], ytop = type_info[[ti]]$y[2],
+                   col = type_info[[ti]]$col[li], border = FALSE)
+            }
+          }
+          text(x = XLIM[2], y = mean(type_info[[ti]]$y),
+               labels = substr(type_info[[ti]]$name, 1, 10), pos = 4, cex = 0.5,
+               col = signalcolor, xpd = NA)
+        }
+      }
       angleColor = ifelse(Nangles > 1, yes = "orange", no = signalcolor)
       # Add angle lines on top
       if (Nangles > 0) {
@@ -279,7 +323,7 @@ visualReport = function(metadatadir = c(),
       text(x = mdat$timestamp[1], y = 60, labels = "Acceleration",
            pos = 4, cex = 0.7, col = signalcolor, font = 2)
       textAngle = ifelse(Nangles > 1, yes = "Angles", no = "Angle")
-      text(x = mdat$timestamp[1], y = 40, labels = textAngle,
+      text(x = mdat$timestamp[1], y = ya(40), labels = textAngle,
            pos = 4, cex = 0.7, col = signalcolor, font = 2)
       
       if (lux_available == TRUE) {
@@ -322,8 +366,8 @@ visualReport = function(metadatadir = c(),
         if (length(marker_moments) > 0) {
           arrows(x0 = mdat$timestamp[marker_moments],
                  x1 = mdat$timestamp[marker_moments],
-                 y0 = 30, y1 = 0, col = "purple", lwd = 1, length = 0.06)
-          text(x = mdat$timestamp[marker_moments],y = 30, labels = "M", font = 2, col = "purple", cex = 1.2)
+                 y0 = ya(30), y1 = ya(0), col = "purple", lwd = 1, length = 0.06)
+          text(x = mdat$timestamp[marker_moments],y = ya(30), labels = "M", font = 2, col = "purple", cex = 1.2)
         }
       }
       
@@ -348,7 +392,7 @@ visualReport = function(metadatadir = c(),
                  offset = 0.4, adj = 0, cex = 0.6)
           } else {
             toptext = "onset"  
-            text(x = mdat$timestamp[window_edges[wei]], y = 2,
+            text(x = mdat$timestamp[window_edges[wei]], y = ya(2),
                  labels = guider_name, las = 2, srt = 90, pos = 4,
                  offset = 0.4, adj = 0, cex = 0.6)
           }
@@ -427,10 +471,60 @@ visualReport = function(metadatadir = c(),
       } else {
         temperature_available = FALSE
       }
-      if ("step_count" %in% colnames(mdat)) {
-        step_count_available = TRUE
-      } else {
-        step_count_available = FALSE
+      # Events: plot only the first external function output with reporttype = "event".
+      # Note that part 5 only keeps the event column named step_count in the time series
+      event_info = NULL
+      event_col = "step_count"
+      if (!is.null(myfun) && "reporttype" %in% names(myfun)) {
+        reporttypes = rep(myfun$reporttype, length.out = length(myfun$colnames))
+        event_col = myfun$colnames[which(reporttypes == "event")][1]
+      }
+      if (!is.na(event_col) && event_col %in% colnames(mdat)) {
+        # bars are scaled to 120 per minute for steps, otherwise to the maximum rate in the recording
+        if (event_col == "step_count") {
+          event_ref = 120
+        } else {
+          max_rate = max(mdat[, event_col], na.rm = TRUE) * (60 / diff(mdat$timenum[1:2]))
+          event_ref = max(1, ceiling(max_rate))
+        }
+        event_info = list(column = event_col, label = paste0(event_col, "/min"), ref = event_ref)
+      }
+      step_count_available = !is.null(event_info)
+      
+      # External function types: one entry per type output column, with its levels
+      type_info = list()
+      typecols = colnames(mdat)[
+        startsWith(colnames(mdat), "ExtFunType_") &
+          endsWith(colnames(mdat), "_s")
+      ]
+      if (length(typecols) > 0) {
+        if (!is.null(myfun) && "reporttype" %in% names(myfun)) {
+          reporttypes = rep(myfun$reporttype, length.out = length(myfun$colnames))
+          type_names = myfun$colnames[which(reporttypes == "type")]
+        } else {
+          # without myfun assume that level names do not contain underscores
+          type_names = unique(sub("^ExtFunType_(.*)_[^_]*_s$", "\\1", typecols))
+        }
+        # for now, plot only the first type output
+        type_names = type_names[1]
+        type_palette = c("#E69F00", "#56B4E9", "#009E73", "#F0E442",
+                         "#0072B2", "#D55E00", "#CC79A7", "#999999")
+        for (type_name in type_names) {
+          type_prefix = paste0("ExtFunType_", type_name, "_")
+          columns = typecols[startsWith(typecols, type_prefix)]
+          if (length(columns) == 0) next
+          type_levels = substring(
+            columns,
+            nchar(type_prefix) + 1,
+            nchar(columns) - 2
+          )
+          # continue the palette across type outputs so that colours are not reused
+          Ncol_used = length(unlist(lapply(type_info, function(x) x$levels)))
+          type_cols = rep(type_palette, length.out = Ncol_used + length(type_levels))
+          type_info[[length(type_info) + 1]] = list(name = type_name, columns = columns,
+                                                    levels = type_levels,
+                                                    col = type_cols[Ncol_used + seq_along(type_levels)])
+        }
       }
       epochSize = diff(mdat$timenum[1:2])
       # Define legend
@@ -577,11 +671,11 @@ visualReport = function(metadatadir = c(),
               legendpch[which(legendnames == "invalid")] = 0
               legendcolors[which(legendnames == "invalid")] = "grey" #"white"
               legendnames[which(legendnames == "invalid")] = "ignored/imputed"
-              legend("topright", legend = legendnames,
-                     col = legendcolors,
-                     ncol = length(legend_items$name) %/% 6 + 1, cex = 0.8,
-                     pch = legendpch, pt.cex = 2, bty = "n", title = "Legend:",
-                     title.font = 2, title.adj = 0)
+              legend_rect = legend("topright", legend = legendnames,
+                                   col = legendcolors,
+                                   ncol = length(legend_items$name) %/% 6 + 1, cex = 0.8,
+                                   pch = legendpch, pt.cex = 2, bty = "n", title = "Legend:",
+                                   title.font = 2, title.adj = 0)
               if (is.null(GGIRversion)) GGIRversion = "Not identified"
               
               RecDuration = round((nrow(mdat) * epochSize) / (24 * 3600), digits = 1)
@@ -599,16 +693,46 @@ visualReport = function(metadatadir = c(),
                 added_text2 = ""
                 
               }
-              legend("topleft", legend = c(paste0(added_text1,
-                                                  substr(x = simple_filename, start = 1, stop = 10),
-                                                  added_text2),
-                                           paste0("Start date: ", as.Date(mdat$timestamp[1])),
-                                           paste0("Duration: ", RecDuration, " ", RecDurUnit),
-                                           paste0("GGIR version: " , GGIRversion),
-                                           paste0("Timezone: ", desiredtz)),
-                     cex = 0.9,
-                     bty = "n", title = "Info:",
-                     title.font = 2, title.adj = 0)
+              info_rect = legend("topleft", legend = c(paste0(added_text1,
+                                                              substr(x = simple_filename, start = 1, stop = 10),
+                                                              added_text2),
+                                                       paste0("Start date: ", as.Date(mdat$timestamp[1])),
+                                                       paste0("Duration: ", RecDuration, " ", RecDurUnit),
+                                                       paste0("GGIR version: " , GGIRversion),
+                                                       paste0("Timezone: ", desiredtz)),
+                                 cex = 0.9,
+                                 bty = "n", title = "Info:",
+                                 title.font = 2, title.adj = 0)
+              # Legend for external function types, with the name of each type output as sub-header
+              if (length(type_info) > 0) {
+                typenames = typecolors = NULL
+                typepch = typefont = c()
+                for (ti in seq_along(type_info)) {
+                  typenames = c(typenames, paste0(type_info[[ti]]$name, ":"), type_info[[ti]]$levels)
+                  typecolors = c(typecolors, NA, type_info[[ti]]$col)
+                  typepch = c(typepch, NA, rep(15, length(type_info[[ti]]$levels)))
+                  typefont = c(typefont, 3, rep(1, length(type_info[[ti]]$levels)))
+                }
+                # truncate long names and fit the legend in the gap between Info and Legend
+                long_names = which(nchar(typenames) > 15)
+                typenames[long_names] = paste0(substr(typenames[long_names], 1, 12), "...")
+                gap_left = info_rect$rect$left + info_rect$rect$w
+                gap_width = legend_rect$rect$left - gap_left
+                types_ncol = (length(typenames) - 1) %/% 6 + 1
+                types_cex = 0.8
+                types_width = legend(x = 0, y = 1.04, legend = typenames, pch = typepch,
+                                     pt.cex = 2, cex = types_cex, ncol = types_ncol,
+                                     title = "Types:", plot = FALSE)$rect$w
+                if (types_width > gap_width) {
+                  types_cex = max(0.5, types_cex * gap_width / types_width)
+                  types_width = types_width * types_cex / 0.8
+                }
+                legend(x = gap_left + max(0, (gap_width - types_width) / 2), y = 1.04,
+                       legend = typenames, col = typecolors,
+                       pch = typepch, text.font = typefont, pt.cex = 2, cex = types_cex,
+                       ncol = types_ncol, bty = "n",
+                       title = "Types:", title.font = 2, title.adj = 0)
+              }
               
               mtext(text = "Accelerometer time series report generated by R package GGIR",
                     side = 3, line = 0.2, cex = 1.2, font = 2)
@@ -622,7 +746,8 @@ visualReport = function(metadatadir = c(),
                         hrsPerRow = hrsPerRow, plotid = ani,
                         legend_items = legend_items, lux_available = lux_available,
                         step_count_available = step_count_available, epochSize = epochSize,
-                        focus = focus, temperature_available = temperature_available)
+                        focus = focus, temperature_available = temperature_available,
+                        type_info = type_info, event_info = event_info)
               cntplot = cntplot + 1
             }
           }
@@ -760,7 +885,7 @@ visualReport = function(metadatadir = c(),
                                                              fnames.ms5raw, ylabels_plot2,
                                                              GGIRversion, desiredtz,
                                                              behavioral_code_names, behavioral_codes,
-                                                             binary_vars)
+                                                             binary_vars, myfun)
                                          })
                                          return(tryCatchResult)
                                        }
@@ -778,7 +903,7 @@ visualReport = function(metadatadir = c(),
           main_visualreport(i, f0, f1, metadatadir, part6_threshold_combi,
                             fnames.ms5raw, ylabels_plot2, GGIRversion, desiredtz,
                             behavioral_code_names, behavioral_codes,
-                            binary_vars)
+                            binary_vars, myfun)
         }
       }
     }

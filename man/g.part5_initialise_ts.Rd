@@ -7,7 +7,8 @@
   Initialise time series dataframe ts, part of \link{g.part5}.
 }
 \usage{
-  g.part5_initialise_ts(IMP, M, params_247, params_general, longitudinal_axis = c())
+  g.part5_initialise_ts(IMP, M, params_247, params_general, 
+                        longitudinal_axis = c(), myfun = c())
 }
 \arguments{
   \item{IMP}{
@@ -25,6 +26,10 @@
   \item{longitudinal_axis}{
     As passed on from g.part5, which could be specified by user or estimated
     from hip data in part 2. 
+  }
+  \item{myfun}{
+    External function object to be applied to raw data.
+    See details \link{applyExtFunction}.
   }
 }
 \value{
