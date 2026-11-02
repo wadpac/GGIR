@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.6.1",
+    "Version": "4.6.2",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -66,11 +66,11 @@
     },
     "GGIRread": {
       "Package": "GGIRread",
-      "Version": "1.0.11",
+      "Version": "1.2.0",
       "Source": "Repository",
       "Type": "Package",
       "Title": "Wearable Accelerometer Data File Readers",
-      "Date": "2026-09-18",
+      "Date": "2026-10-28",
       "Authors@R": "c(person(\"Vincent T\",\"van Hees\",role=c(\"aut\",\"cre\"), email=\"v.vanhees@accelting.com\"), person(given = \"Patrick\",family = \"Bos\", role = c(\"aut\"), email = \"egpbos@gmail.com\", comment = c(ORCID = \"0000-0002-6033-960X\")), person(\"Lena\",\"Kushleyeva\",role=\"ctb\"), person(\"Jing Hua\",\"Zhao\",role=\"ctb\"), person(\"Evgeny\",\"Mirkes\",role=\"ctb\"), person(\"Dan\",\"Jackson\",role=\"ctb\"), person(\"Jairo H\",\"Migueles\",role=\"ctb\"), person(\"John\",\"Muschelli\",role=\"ctb\"), person(\"Jia Ying\",\"Chua\",role=\"ctb\"), person(\"Medical Research Council UK\",  role = c(\"cph\", \"fnd\")), person(\"Accelting\",  role = c(\"cph\", \"fnd\")))",
       "Maintainer": "Vincent T van Hees <v.vanhees@accelting.com>",
       "Description": "Reads data collected from wearable acceleratometers as used in sleep and physical activity research. Currently supports file formats: binary data from 'GENEActiv' <https://activinsights.com/>, .bin-format from GENEA devices (not for sale), and .cwa-format from 'Axivity' <https://axivity.com>. Further, it has functions for reading text files with epoch level aggregates from 'Actical', 'Fitbit', 'Actiwatch', 'ActiGraph', and 'PhilipsHealthBand'. Primarily designed to complement R package GGIR <https://CRAN.R-project.org/package=GGIR>.",
@@ -83,7 +83,7 @@
       "Imports": [
         "matlab",
         "bitops",
-        "Rcpp (>= 0.12.10)",
+        "Rcpp (>= 1.0.10)",
         "data.table",
         "readxl",
         "jsonlite",
@@ -96,7 +96,7 @@
       ],
       "NeedsCompilation": "yes",
       "LinkingTo": [
-        "Rcpp"
+        "Rcpp (>= 1.0.10)"
       ],
       "ByteCompile": "yes",
       "Author": "Vincent T van Hees [aut, cre], Patrick Bos [aut] (ORCID: <https://orcid.org/0000-0002-6033-960X>), Lena Kushleyeva [ctb], Jing Hua Zhao [ctb], Evgeny Mirkes [ctb], Dan Jackson [ctb], Jairo H Migueles [ctb], John Muschelli [ctb], Jia Ying Chua [ctb], Medical Research Council UK [cph, fnd], Accelting [cph, fnd]",
@@ -237,8 +237,7 @@
       "NeedsCompilation": "yes",
       "Author": "Brian Ripley [aut, cre, cph], Bill Venables [aut, cph], Douglas M. Bates [ctb], Kurt Hornik [trl] (partial port ca 1998), Albrecht Gebhardt [trl] (partial port ca 1998), David Firth [ctb] (support functions for polr)",
       "Maintainer": "Brian Ripley <Brian.Ripley@R-project.org>",
-      "Repository": "CRAN",
-      "Encoding": "UTF-8"
+      "Repository": "CRAN"
     },
     "R.methodsS3": {
       "Package": "R.methodsS3",
@@ -967,8 +966,7 @@
       "URL": "https://svn.r-project.org/R-packages/trunk/cluster/",
       "NeedsCompilation": "yes",
       "Author": "Martin Maechler [aut, cre] (ORCID: <https://orcid.org/0000-0002-8685-9910>), Peter Rousseeuw [aut] (Fortran original, ORCID: <https://orcid.org/0000-0002-3807-5353>), Anja Struyf [aut] (S original), Mia Hubert [aut] (S original, ORCID: <https://orcid.org/0000-0001-6398-4850>), Kurt Hornik [trl, ctb] (port to R; maintenance(1999-2000), ORCID: <https://orcid.org/0000-0003-4198-9911>), Matthias Studer [ctb], Pierre Roudier [ctb], Juan Gonzalez [ctb], Kamil Kozlowski [ctb], Erich Schubert [ctb] (fastpam options for pam(), ORCID: <https://orcid.org/0000-0001-9143-4880>), Keefe Murphy [ctb] (volume.ellipsoid({d >= 3}))",
-      "Repository": "CRAN",
-      "Encoding": "UTF-8"
+      "Repository": "CRAN"
     },
     "codetools": {
       "Package": "codetools",
@@ -1565,10 +1563,10 @@
     },
     "foreign": {
       "Package": "foreign",
-      "Version": "0.8-91",
+      "Version": "0.8-92",
       "Source": "Repository",
       "Priority": "recommended",
-      "Date": "2026-01-29",
+      "Date": "2026-10-17",
       "Title": "Read Data Stored by 'Minitab', 'S', 'SAS', 'SPSS', 'Stata', 'Systat', 'Weka', 'dBase', ...",
       "Depends": [
         "R (>= 4.0.0)"
@@ -1591,7 +1589,8 @@
       "NeedsCompilation": "yes",
       "Author": "R Core Team [aut, cph, cre] (ROR: <https://ror.org/02zz1nj61>), Roger Bivand [ctb, cph], Vincent J. Carey [ctb, cph], Saikat DebRoy [ctb, cph], Stephen Eglen [ctb, cph], Rajarshi Guha [ctb, cph], Swetlana Herbrandt [ctb], Nicholas Lewin-Koh [ctb, cph], Mark Myatt [ctb, cph], Michael Nelson [ctb], Ben Pfaff [ctb], Brian Quistorff [ctb], Frank Warmerdam [ctb, cph], Stephen Weigand [ctb, cph], Free Software Foundation, Inc. [cph]",
       "Maintainer": "R Core Team <R-core@R-project.org>",
-      "Repository": "CRAN"
+      "Repository": "CRAN",
+      "Encoding": "UTF-8"
     },
     "fs": {
       "Package": "fs",
@@ -2430,9 +2429,9 @@
     },
     "lattice": {
       "Package": "lattice",
-      "Version": "0.22-9",
+      "Version": "0.23-1",
       "Source": "Repository",
-      "Date": "2026-02-03",
+      "Date": "2026-08-08",
       "Priority": "recommended",
       "Title": "Trellis Graphics for R",
       "Authors@R": "c(person(\"Deepayan\", \"Sarkar\", role = c(\"aut\", \"cre\"), email = \"deepayan.sarkar@r-project.org\", comment = c(ORCID = \"0000-0003-4107-1553\")), person(\"Felix\", \"Andrews\", role = \"ctb\"), person(\"Kevin\", \"Wright\", role = \"ctb\", comment = \"documentation\"), person(\"Neil\", \"Klepeis\", role = \"ctb\"), person(\"Johan\", \"Larsson\", role = \"ctb\", comment = \"miscellaneous improvements\"), person(\"Zhijian (Jason)\", \"Wen\", role = \"cph\", comment = \"filled contour code\"), person(\"Paul\", \"Murrell\", role = \"ctb\", email = \"paul@stat.auckland.ac.nz\"), person(\"Stefan\", \"Eng\", role = \"ctb\", comment = \"violin plot improvements\"), person(\"Achim\", \"Zeileis\", role = \"ctb\", comment = \"modern colors\"), person(\"Alexandre\", \"Courtiol\", role = \"ctb\", comment = \"generics for larrows, lpolygon, lrect and lsegments\") )",
@@ -2465,7 +2464,8 @@
       "NeedsCompilation": "yes",
       "Author": "Deepayan Sarkar [aut, cre] (ORCID: <https://orcid.org/0000-0003-4107-1553>), Felix Andrews [ctb], Kevin Wright [ctb] (documentation), Neil Klepeis [ctb], Johan Larsson [ctb] (miscellaneous improvements), Zhijian (Jason) Wen [cph] (filled contour code), Paul Murrell [ctb], Stefan Eng [ctb] (violin plot improvements), Achim Zeileis [ctb] (modern colors), Alexandre Courtiol [ctb] (generics for larrows, lpolygon, lrect and lsegments)",
       "Maintainer": "Deepayan Sarkar <deepayan.sarkar@r-project.org>",
-      "Repository": "CRAN"
+      "Repository": "CRAN",
+      "Encoding": "UTF-8"
     },
     "lifecycle": {
       "Package": "lifecycle",
@@ -2781,10 +2781,10 @@
     },
     "nnet": {
       "Package": "nnet",
-      "Version": "7.3-20",
+      "Version": "7.3-21",
       "Source": "Repository",
       "Priority": "recommended",
-      "Date": "2025-01-01",
+      "Date": "2026-08-01",
       "Depends": [
         "R (>= 3.0.0)",
         "stats",
@@ -2802,7 +2802,8 @@
       "NeedsCompilation": "yes",
       "Author": "Brian Ripley [aut, cre, cph], William Venables [cph]",
       "Maintainer": "Brian Ripley <Brian.Ripley@R-project.org>",
-      "Repository": "CRAN"
+      "Repository": "CRAN",
+      "Encoding": "UTF-8"
     },
     "otel": {
       "Package": "otel",
