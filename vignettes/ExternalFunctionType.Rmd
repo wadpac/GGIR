@@ -24,8 +24,15 @@ when an algorithm that is not part of GGIR needs to be applied to the
 raw data before summarising the results.
 
 Here we describe a specific use case: external functions that classify
-each epoch into one of a set of categorical types. This functionality is
-activated by setting `reporttype = "type"` in the `myfun` object.
+each epoch into one of a set of categorical types, such as activity
+types or postures, and the output GGIR generates for them. This
+functionality is activated by setting `reporttype = "type"` in the
+`myfun` object.
+
+This vignette complements [Embedding external functions in GGIR](https://wadpac.github.io/GGIR/articles/ExternalFunction.html),
+which describes all elements of `myfun`, how output columns are
+aggregated to the GGIR epoch size, and how missing values are handled.
+Those topics are not repeated here.
 
 ## Defining an external function
 
@@ -77,75 +84,16 @@ c("rest", "rest", "walking", "walking", "running", "running", "rest")
 The values returned in the output column become the categorical levels
 used by GGIR.
 
-## Requirements for `myfun`
-
-For `reporttype = "type"`, the `myfun` object should contain the
-following elements:
-
-```r
-myfun = list(
-  FUN = ...,
-  parameters = ...,
-  expected_sample_rate = ...,
-  expected_unit = ...,
-  colnames = ...,
-  minlength = ...,
-  outputres = ...,
-  outputtype = ...,
-  timestamp = ...,
-  reporttype = "type"
-)
-```
-
-The elements have the following roles:
-
-- `FUN`: a function object containing the external function to be
-  applied.
-
-- `parameters`: contains the parameters required by the external
-  function.
-
-- `expected_sample_rate`: specifies the sampling frequency expected by
-  the external function. If different from the sampling frequency at
-  which the signal was collected, GGIR resamples the acceleration data
-  to the expected frequency before applying the function.
-
-- `expected_unit`: specifies the acceleration unit expected by the
-  external function. Supported values include `"g"`, `"mg"`, and
-  `"ms2"`.
-
-- `colnames`: specifies the names of the output columns returned by the
-  external function. Multiple output columns are supported.
-
-- `minlength`: specifies the minimum amount of data, in seconds,
-  required by the external function.
-
-- `outputres`: specifies the temporal resolution, in seconds, of the
-  output produced by the external function.
-
-- `outputtype`: specifies the type of each output column. Supported
-  values are `"numeric"` and `"character"`. A single value can be
-  supplied and will be applied to all output columns, or one value can
-  be supplied for each output column.
-
-- `timestamp`: specifies whether a timestamp is provided to the
-  external function. When a timestamp is provided, it is added to the
-  input data passed to `FUN`. The external function may either return
-  only its output columns or return the timestamp as an additional
-  first column.
-
-- `reporttype`: specifies how the output is subsequently summarised by
-  GGIR. Supported values are `"scalar"`, `"event"`, and `"type"`. A
-  single value can be supplied and will be applied to all output
-  columns, or one value can be supplied for each output column.
-
-For a categorical output, `outputtype` should normally be
-`"character"` and `reporttype` should be `"type"`.
+The elements of `myfun` are described in
+[Embedding external functions in GGIR](https://wadpac.github.io/GGIR/articles/ExternalFunction.html).
+For a categorical output, `outputtype` should be `"character"` and
+`reporttype` should be `"type"`.
 
 ## Multiple categorical outputs
 
-Multiple categorical output columns are supported. Each output column
-is treated as an independent categorical variable.
+Multiple categorical output columns are supported, specified as
+described in [Multiple output columns](https://wadpac.github.io/GGIR/articles/ExternalFunction.html#multiple-output-columns).
+Each output column is treated as an independent categorical variable.
 
 For example, an external function could classify both activity and
 posture:
@@ -201,71 +149,15 @@ and `"standing"` for `posture`.
 This allows several independent categorical dimensions to be obtained
 from the same external function.
 
-## `aggfunction`: aggregating external-function outputs
+## Classifiers with a higher output resolution
 
-When the resolution of the external function output is shorter than the
-GGIR epoch size, `aggfunction` specifies how the output values should
-be aggregated. When `outputres` is longer than the GGIR epoch size,
-GGIR repeats each output value and no aggregation function is needed.
-
-For example:
-
-```r
-myfun$aggfunction = mean
-```
-
-applies `mean` to the output when values need to be aggregated.
-
-A single aggregation function can be supplied when all output columns
-use the same aggregation function.
-
-Alternatively, a list can be supplied to specify one aggregation
-function for each output column:
-
-```r
-myfun$aggfunction = list(
-  mean,
-  function(x) {
-    counts = table(as.character(x))
-    if (length(counts) == 0) NA_character_ else names(which.max(counts))
-  }
-)
-```
-
-For categorical outputs, the aggregation function should be appropriate
-for categorical values, for example a function that selects the most
-frequent category.
-
-When multiple output types are present, such as numeric and character
-outputs, `aggfunction` should be supplied as a list with one function
-for each output column.
-
-If `outputres` is shorter than the GGIR epoch size, `aggfunction` must
-be provided. It is optional when the resolutions are equal or when
-`outputres` is longer.
-
-### Missing values
-
-GGIR passes all values of each GGIR epoch to `aggfunction`, including
-missing values (`NA`). Epochs in which all values are missing are kept
-as missing, so the aggregated output stays aligned with the GGIR time
-series. How partially missing epochs are handled depends on
-`aggfunction`:
-
-- `mean`, `sum` and similar functions return `NA` if any value in the
-  epoch is missing. Use `function(x) mean(x, na.rm = TRUE)` to
-  summarise the available values instead.
-- `function(x) x[1]` returns `NA` when the first value is missing, even
-  if later values in the epoch are classified.
-- For the most frequent category, convert to character before
-  tabulating and return `NA` when nothing is classified, as in the
-  example above. Categorical outputs reach `aggfunction` as factors,
-  and `table()` on a factor also counts levels that do not occur, so a
-  plain `names(sort(table(x), decreasing = TRUE))[1]` would assign the
-  first level to epochs in which all values are missing.
-
-Epochs that remain `NA` after aggregation are reported as
-unclassified.
+If the classifier produces output at a shorter resolution than the GGIR
+epoch size, the classes need to be aggregated to one class per epoch
+with `aggfunction`, for example by selecting the most frequent class.
+See [Aggregation and missing values](https://wadpac.github.io/GGIR/articles/ExternalFunction.html#aggregation-and-missing-values)
+for a suitable function and for how missing values are handled. Epochs
+that remain `NA` after aggregation are reported as unclassified, see
+[Part 2](#part-2) below.
 
 ## Additional parameters for `reporttype = "type"`
 
