@@ -170,12 +170,16 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
           }
         }
         if (length(myfun) > 0) {
-          for (mi in 1:length(myfun$outputtype)) {
-            if (myfun$outputtype[mi] == "character") {
-              # At the moment we do not have a strategy in place on how to impute categorical variables
-              # produced by external functions. Therefore, for the moment ignore these variables until
-              # there is a plan.
-              M$metashort = M$metashort[,-which(names(M$metashort) %in% myfun$colnames == TRUE)]
+          if (any(myfun$outputtype == "character")) {
+            # At the moment we do not have a strategy in place on how to 
+            # impute categorical variables produced by external functions. 
+            # Therefore, temporarily not to impute and warn users that they are 
+            # responsible for data imputation at post-processing
+            type_columns = myfun$colnames[myfun$outputtype == "character"]
+            typeMetricIndex = which(names(M$metashort) %in% type_columns)
+            if (length(typeMetricIndex) > 0) {
+              M_bu = M
+              M$metashort = M$metashort[, -typeMetricIndex, drop = FALSE]
             }
           }
         }
@@ -200,6 +204,20 @@ g.part2 = function(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                        TimeSegments2Zero = TimeSegments2Zero,
                        acc.metric = params_general[["acc.metric"]],
                        ID = ID, qwindowImp = qwindowImp)
+        # restore type metric from external function in M and IMP
+        if (exists("M_bu")) {
+          typeMetricIndex = which(names(M_bu$metashort) %in%
+              myfun$colnames[myfun$outputtype == "character"])
+          
+          if (length(typeMetricIndex) > 0) {
+            type_columns = names(M_bu$metashort)[typeMetricIndex]
+            for (type_column in type_columns) {
+              IMP$metashort[[type_column]] = M_bu$metashort[[type_column]]
+              IMP$averageday = cbind(IMP$averageday, NA)
+            }
+          }
+          M = M_bu
+        }
         
         if (params_output[["do.part2.png"]] == TRUE & length(IMP) > 0) {
           Ndays = (nrow(M$metalong) * M$windowsizes[2]) / (3600 * 24)

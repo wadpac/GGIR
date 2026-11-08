@@ -8,6 +8,7 @@
 }
 \usage{
   g.part5_analyseSegment(indexlog, timeList, levelList,
+                                  typeLevelList,
                                   segments,
                                   segments_names,
                                   dsummary, ds_names,
@@ -19,7 +20,8 @@
                                   add_one_day_to_next_date,
                                   lightpeak_available,
                                   tail_expansion_log,
-                                  foldernamei, sibreport = NULL)
+                                  foldernamei, sibreport = NULL,
+                                  myfun = c())
 }
 \arguments{
   \item{indexlog}{
@@ -32,6 +34,9 @@
   }
   \item{levelList}{
     List of objects related to intensity levels passed on from \link{g.part5}. 
+  }
+  \item{typeLevelList}{
+    List of objects related to external function type levels passed on from \link{g.part5}. 
   }
   \item{segments}{
     List produced by \link{g.part5}
@@ -85,6 +90,10 @@
   }
   \item{sibreport}{
     Sibreport object as passed on from \link{g.part5}
+  }
+  \item{myfun}{
+    External function object to be applied to raw data.
+    See details \link{applyExtFunction}.
   }
 }
 \value{
