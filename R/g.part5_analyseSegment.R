@@ -1,4 +1,5 @@
 g.part5_analyseSegment = function(indexlog, timeList, levelList,
+                                  typeLevelList,
                                   segments,
                                   segments_names,
                                   dsummary, ds_names,
@@ -11,7 +12,8 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
                                   lightpeak_available,
                                   tail_expansion_log,
                                   foldernamei, sibreport = NULL,
-                                  long_nap_boutsi = NULL) {
+                                  long_nap_boutsi = NULL,
+                                  myfun = c()) {
   # unpack list objects:
   # indexlog
   fileIndex = indexlog$fileIndex
@@ -49,6 +51,11 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
   bc.mvpa = levelList$bc.mvpa
   bc.in = levelList$bc.in
   bc.lig = levelList$bc.lig
+  
+  # typeLevelList
+  TLEVELS = typeLevelList$TLEVELS
+  TOLEVELS = typeLevelList$TOLEVELS
+  Tnames = typeLevelList$Tnames
   
   skiponset = skipwake = TRUE
   nap_overwrite_bc = params_sleep[["nap_overwrite_behaviourclass"]]
@@ -218,6 +225,8 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
           }
         }
         sleep_LEVELS = rep(rle_SL$values, rle_SL$lengths)
+        # temporary fix, to be revisited when nap functionality is expanded
+        OLEVELS[sse[detectedNaps]] = 5
       }
       
       N_nap_dur_classes = length(params_sleep[["possible_nap_dur"]])
@@ -653,6 +662,29 @@ g.part5_analyseSegment = function(indexlog, timeList, levelList,
         fi = fi + length(luxperseg$values)
       }
     }
+
+    #===============================================
+    # EXTERNAL FUNCTION TYPES
+    if (!is.null(TOLEVELS) && length(TOLEVELS) > 0) {
+      extFunType = g.part5_analyseSegment_ExtFunType(
+        ts = ts,
+        sse = sse,
+        TOLEVELS = TOLEVELS,
+        TLEVELS = TLEVELS,
+        Tnames = Tnames,
+        myfun = myfun,
+        ws3new = ws3new,
+        dsummary = dsummary,
+        ds_names = ds_names,
+        si = si,
+        fi = fi
+      )
+      
+      dsummary = extFunType$dsummary
+      ds_names = extFunType$ds_names
+      fi = extFunType$fi
+    }
+    
     #===============================================
     # FOLDER STRUCTURE
     if (params_output[["storefolderstructure"]] == TRUE) {

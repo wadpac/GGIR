@@ -22,6 +22,18 @@
 
 - Part 2: Parameter nonwearFilterWindow can now also use diary path directly, which now allows for filtering based on a one or specific diary while qwindow can be used for day segment analysis #1373
 
+# CHANGES IN GGIR VERSION 3.3-10
+
+- Part 1 + 2 + 5: Expanded external function embedding to support multiple output columns with independent output and report types. #1550
+
+- Part 2 + 5: Added support for external functions that classify epochs into categorical types (`reporttype = "type"`), including type-specific duration, acceleration, and bout summaries. #1126
+
+- Visual report: Show external function types (`reporttype = "type"`) as coloured strips and step counts as a cadence bar row in the per-file PDF. #1126
+
+- Part 5: Nap time (dur_day_nap_min) is now mutually exclusive with the rest of total outputs. #1558
+
+- Documentation: clarified how bout tolerance for gaps works, added Crotti cutpoint, and clarified GENEActiv light sensor calibration. #1531, #1536, #1544
+
 # CHANGES IN GGIR VERSION 3.3-9
 
 - Tests: Made the Movisens test independent of internet access by including the test data in inst/testfiles (#1540)
