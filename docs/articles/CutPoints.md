@@ -192,6 +192,7 @@ motivation why cut-points still have value in GGIR see:
 
 - Aittasalo 2015: <https://doi.org/10.1186/s13102-015-0010-0>
 - Bammann 2021: <https://doi.org/10.1371/journal.pone.0252615>
+- Crotti 2020: <https://doi.org/10.1080/02640414.2020.1740469>
 - Dibben 2020: <https://doi.org/10.1186/s13102-020-00196-7>
 - Dillon 2016: <https://doi.org/10.1371%2Fjournal.pone.0109913>
 - Esliger 2011: <https://doi.org/10.1249/mss.0b013e31820513be>

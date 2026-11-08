@@ -7,6 +7,7 @@ Not intended for direct use by GGIR users, part of
 
 ``` r
 g.part5_analyseSegment(indexlog, timeList, levelList,
+                                  typeLevelList,
                                   segments,
                                   segments_names,
                                   dsummary, ds_names,
@@ -18,7 +19,8 @@ g.part5_analyseSegment(indexlog, timeList, levelList,
                                   add_one_day_to_next_date,
                                   lightpeak_available,
                                   tail_expansion_log,
-                                  foldernamei, sibreport = NULL)
+                                  foldernamei, sibreport = NULL,
+                                  myfun = c())
 ```
 
 ## Arguments
@@ -39,6 +41,11 @@ g.part5_analyseSegment(indexlog, timeList, levelList,
 
   List of objects related to intensity levels passed on from
   [g.part5](https://wadpac.github.io/GGIR/reference/g.part5.md).
+
+- typeLevelList:
+
+  List of objects related to external function type levels passed on
+  from [g.part5](https://wadpac.github.io/GGIR/reference/g.part5.md).
 
 - segments:
 
@@ -117,6 +124,11 @@ g.part5_analyseSegment(indexlog, timeList, levelList,
 
   Sibreport object as passed on from
   [g.part5](https://wadpac.github.io/GGIR/reference/g.part5.md)
+
+- myfun:
+
+  External function object to be applied to raw data. See details
+  [applyExtFunction](https://wadpac.github.io/GGIR/reference/applyExtFunction.md).
 
 ## Value
 

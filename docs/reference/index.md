@@ -49,6 +49,8 @@
   of the Sleep Period Time window or not
 - [`g.part5()`](https://wadpac.github.io/GGIR/reference/g.part5.md) :
   Merge output from physical activity and sleep analysis into one report
+- [`g.part5_analyseSegment_ExtFunType()`](https://wadpac.github.io/GGIR/reference/g.part5_analyseSegment_ExtFunType.md)
+  : Analyse External Function Type Classifications in GGIR Part 5
 - [`g.part6()`](https://wadpac.github.io/GGIR/reference/g.part6.md) :
   Perform temporal pattern analyses
 - [`g.plot5()`](https://wadpac.github.io/GGIR/reference/g.plot5.md) :
@@ -79,6 +81,8 @@
   : A package to process multi-day raw accelerometer data
 - [`GGIR()`](https://wadpac.github.io/GGIR/reference/GGIR.md) : Shell
   function for analysing an accelerometer dataset.
+- [`identify_levels_ExtFunType()`](https://wadpac.github.io/GGIR/reference/identify_levels_ExtFunType.md)
+  : Identify Bouts for External Function Type Classifications
 - [`inspect_binFile_brand()`](https://wadpac.github.io/GGIR/reference/inspect_binFile_brand.md)
   : Identify the Device Brand from a Binary File
 - [`is.ISO8601()`](https://wadpac.github.io/GGIR/reference/is.ISO8601.md)

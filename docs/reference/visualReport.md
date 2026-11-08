@@ -13,7 +13,8 @@ visualReport(metadatadir = c(),
               part6_threshold_combi = NULL, GGIRversion = NULL,
               params_sleep = NULL,
               params_output = NULL,
-              params_general = NULL)
+              params_general = NULL,
+              myfun = NULL)
 ```
 
 ## Arguments
@@ -61,6 +62,13 @@ visualReport(metadatadir = c(),
 - params_general:
 
   See [GGIR](https://wadpac.github.io/GGIR/reference/GGIR.md)
+
+- myfun:
+
+  External function object to be applied to raw data, see
+  [GGIR](https://wadpac.github.io/GGIR/reference/GGIR.md). Used to
+  identify the output columns with `reporttype = "type"`, which are
+  shown as coloured strips below the acceleration signal.
 
 ## Value
 

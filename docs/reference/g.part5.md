@@ -14,7 +14,7 @@ g.part5(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
                    params_sleep = c(), params_metrics = c(),
                    params_247 = c(), params_phyact = c(), 
                    params_cleaning = c(), params_output = c(),
-                   params_general = c(), verbose = TRUE, ...)
+                   params_general = c(), myfun = c(), verbose = TRUE, ...)
 ```
 
 ## Arguments
@@ -79,6 +79,11 @@ g.part5(datadir = c(), metadatadir = c(), f0 = c(), f1 = c(),
 
   See details in
   [GGIR](https://wadpac.github.io/GGIR/reference/GGIR.md).
+
+- myfun:
+
+  External function object to be applied to raw data. See details
+  [applyExtFunction](https://wadpac.github.io/GGIR/reference/applyExtFunction.md).
 
 - verbose:
 

@@ -1,5 +1,49 @@
 # Changelog
 
+## CHANGES IN GGIR VERSION 3.4-0
+
+- Part 1 + 2 + 5: Expanded external function embedding to support
+  multiple output columns with independent output and report types.
+  [\#1550](https://github.com/wadpac/GGIR/issues/1550)
+
+- Part 2 + 5: Added support for external functions that classify epochs
+  into categorical types (`reporttype = "type"`), including
+  type-specific duration, acceleration, and bout summaries.
+  [\#1126](https://github.com/wadpac/GGIR/issues/1126)
+
+- Visual report: Show external function types (`reporttype = "type"`) as
+  coloured strips and step counts as a cadence bar row in the per-file
+  PDF. [\#1126](https://github.com/wadpac/GGIR/issues/1126)
+
+- Part 1: Reduced time and allocation overhead in
+  [`g.calibrate()`](https://wadpac.github.io/GGIR/reference/g.calibrate.md)
+  by avoiding full raw-block matrix copies, reducing epoch-mean
+  temporaries, preparing only populated feature rows, and reusing matrix
+  inputs with per-axis transforms in the calibration fit. Feature
+  buffers now start with one day of epochs and grow as needed. Epoch SDs
+  use [`vapply()`](https://rdrr.io/r/base/lapply.html) with the same
+  [`sd()`](https://rdrr.io/r/stats/sd.html) calculation; calibration
+  thresholds, cumulative-sum arithmetic and fitting/stopping rules are
+  retained.
+
+- Part 1: Faster rolling-median metric extraction using R’s existing
+  [`runmed()`](https://rdrr.io/r/stats/runmed.html) directly for
+  complete data. Fixed loss of smoothing when block length is not
+  divisible by the downsampling step (including typical 75 Hz blocks),
+  corrected trailing padding to use the final window median, and
+  preserved valid zero medians at block edges. Angle and rolling-median
+  metrics can change as a result of these fixes.
+
+- Part 5: Nap time (dur_day_nap_min) is now mutually exclusive with the
+  rest of total outputs.
+  [\#1558](https://github.com/wadpac/GGIR/issues/1558)
+
+- Documentation: clarified bout tolerance for gaps works, added Crotti
+  cutpoint, and clarified GENEActiv light sensor calibration.
+  [\#1531](https://github.com/wadpac/GGIR/issues/1531),
+  [\#1536](https://github.com/wadpac/GGIR/issues/1536),
+  [\#1544](https://github.com/wadpac/GGIR/issues/1544)
+
 ## CHANGES IN GGIR VERSION 3.3-9
 
 CRAN release: 2026-09-12
