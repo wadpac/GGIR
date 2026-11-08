@@ -368,7 +368,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
             params_sleep = params_sleep, params_metrics = params_metrics,
             params_general = params_general, params_output = params_output,
             params_cleaning = params_cleaning, params_247 = params_247,
-            params_phyact = params_phyact,
+            params_phyact = params_phyact, myfun = myfun,
             verbose = verbose)
   }
   if (dopart6 == TRUE) {
@@ -453,7 +453,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      loglocation = params_sleep[["loglocation"]],
                      params_cleaning = params_cleaning,
                      LUX_day_segments = params_247[["LUX_day_segments"]], params_output = params_output,
-                     verbose = verbose)
+                     myfun = myfun, verbose = verbose)
       g.report.part5_dictionary(metadatadir = metadatadir, params_output = params_output)
     }
   }
@@ -487,7 +487,8 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                    GGIRversion = GGIRversion,
                    params_sleep = params_sleep,
                    params_output = params_output,
-                   params_general = params_general)
+                   params_general = params_general,
+                   myfun = myfun)
       if (params_output[["old_visualreport"]] == TRUE) {
         g.plot5(metadatadir = metadatadir,
                 dofirstpage = params_output[["dofirstpage"]],

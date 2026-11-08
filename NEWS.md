@@ -1,3 +1,11 @@
+# CHANGES IN GGIR VERSION 3.3-??
+
+- Part 1 + 2 + 5: Expanded external function embedding to support multiple output columns with independent output and report types. #1550
+
+- Part 2 + 5: Added support for external functions that classify epochs into categorical types (`reporttype = "type"`), including type-specific duration, acceleration, and bout summaries. #1126
+
+- Visual report: Show external function types (`reporttype = "type"`) as coloured strips and step counts as a cadence bar row in the per-file PDF. #1126
+
 # CHANGES IN GGIR VERSION 3.3-?
 
 - Part 1: Reduced time and allocation overhead in `g.calibrate()` by avoiding full raw-block matrix copies, reducing epoch-mean temporaries, preparing only populated feature rows, and reusing matrix inputs with per-axis transforms in the calibration fit. Feature buffers now start with one day of epochs and grow as needed. Epoch SDs use `vapply()` with the same `sd()` calculation; calibration thresholds, cumulative-sum arithmetic and fitting/stopping rules are retained.

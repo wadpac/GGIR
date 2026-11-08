@@ -11,7 +11,7 @@
   g.report.part5(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c(),
                           params_cleaning = NULL,
                           LUX_day_segments = c(), params_output,
-                          verbose = TRUE)
+                          myfun = NULL, verbose = TRUE)
 }
 \arguments{
   \item{metadatadir}{
@@ -38,6 +38,9 @@
   }
   \item{params_output}{
     Parameters object, see \link{GGIR}
+  }
+  \item{myfun}{
+    See details in \link{GGIR}.
   }
   \item{verbose}{
     See details in \link{GGIR}.

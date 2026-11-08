@@ -36,7 +36,7 @@ identify_levels = function(ts, TRLi, TRMi, TRVi, ws3, params_phyact = c(), ...) 
   OLEVELS[LEVELS == 7] = 3 #MOD
   OLEVELS[LEVELS == 8] = 4 #VIG
   
-
+  
   #-------------------------------------
   # MVPA BOUTS
   LN = length(ts$time)
