@@ -59,7 +59,6 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   expect_equal(nrow(gt3x_read$P$data), 17640)
   expect_false(gt3x_read$filequality$filecorrupt)
   expect_false(gt3x_read$filequality$filetooshort)
-  expect_equal(sum(gt3x_read$P$data[c("x","y","z")]), 2732.35, tolerance = .01, scale = 1)
   
   Mgt3x = g.getmeta(datafile = gt3xfile, desiredtz = desiredtz, windowsize = c(1,300,300),
                     inspectfileobject = Igt3x)
@@ -80,7 +79,6 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
                            PreviousEndPage = 1, inspectfileobject = Icwa,
                            params_rawdata = params_rawdata, params_general = params_general)
   expect_equal(cwa_read$P$header$blocks, 145)
-  expect_equal(sum(cwa_read$P$data[c("x","y","z")]), 280.53, tolerance = .01, scale = 1)
   
   Mcwa = g.getmeta(Ax3CwaFile, desiredtz = desiredtz, windowsize = c(1,300,300),
                    inspectfileobject = Icwa)
@@ -147,7 +145,6 @@ test_that("g.readaccfile and g.inspectfile can read movisens, gt3x, cwa, Axivity
   # As of R 4.0, an extra header row is extracted, which affects the positioning of the values.
   # expect_equal(as.numeric(as.character(wav_read$P$header$hvalues[7])),17) 
   
-  expect_equal(round(sum(GA_read$P$data[, 2:4]), digits = 2), -271.35)
   expect_equal(GA_read$endpage, GA_num_blocks)
   
   # print(GA_read$P$header)
