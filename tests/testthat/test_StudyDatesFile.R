@@ -191,7 +191,7 @@ test_that("StudyDatesFile", {
          # study dates file
          study_dates_file = "study_dates_file.csv",
          study_dates_dateformat = "%d/%m/%Y",
-         # strategy
+         # Reset ndayswindow saved by the preceding strategy 5 cases.
          data_masking_strategy = 1, ndayswindow = 7,
          hrs.del.start = 0, hrs.del.end = 0),
     regexp = NA)
