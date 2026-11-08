@@ -213,7 +213,7 @@ When `outputres` is shorter than the short epoch size of GGIR (first value of ar
 
 When the output columns need different aggregation, for example when numeric and character outputs are combined, provide `aggfunction` as a list with one function per output column.
 
-GGIR passes all values of each epoch to `aggfunction`, including missing values (`NA`) produced by the external function. Epochs in which all values are missing are kept as missing, so the aggregated output stays aligned with the GGIR time series. How partially missing epochs are handled depends on `aggfunction`:
+GGIR passes all values of each epoch to `aggfunction`, including missing values (`NA`) produced by the external function. Epochs containing only missing values are retained, preserving time alignment; their aggregated value depends on `aggfunction`. For example, `function(x) sum(x, na.rm = TRUE)` returns `0` for an all-missing epoch. Missing values are handled as follows:
 
 - `mean`, `sum` and similar functions return `NA` if any value in the epoch is missing. Use `function(x) mean(x, na.rm = TRUE)` to summarise the available values instead.
 - `function(x) x[1]` returns `NA` when the first value is missing, even if later values in the epoch are not missing.
@@ -239,7 +239,7 @@ If the output of the external function is less then this resolution it will be a
 Next, in part2 GGIR aims to detect non-wear periods and imputes those. The impute time series can be found in the part 2 milestone data in folder: `/output_nameofstudy/meta/ms2.out`. If you want these to be directly stored in a csv file then set argument `epochvalues2csv = TRUE`.
 
 ## Part 5
-Part 5 summarises the time series per day, separately for the sustained sleep period (`spt`) and the time awake (`day`). At the moment only outputs with `reporttype = "type"` are summarised in part 5. GGIR writes them to dedicated reports per output column, named part5_extfuntype_<column>_daysummary_<window>_<sleep-definition>.csv and part5_extfuntype_<column>_personsummary_<window>_<sleep-definition>.csv. These contain the time, mean acceleration, and number of blocks and bouts per category, separately for `spt` and `day`. See [External functions with categorical output](https://wadpac.github.io/GGIR/articles/ExternalFunctionType.html#part-5) for a description of these variables.
+Part 5 summarises the time series per day, separately for the sustained sleep period (`spt`) and the time outside the sustained sleep period (`day`). At the moment only outputs with `reporttype = "type"` are summarised in part 5. GGIR writes them to dedicated reports per output column, named `part5_extfuntype_<column>_daysummary_<window>_<sleep-definition>.csv` and `part5_extfuntype_<column>_personsummary_<window>_<sleep-definition>.csv`. These contain the time, mean acceleration, and number of blocks and bouts per category, separately for `spt` and `day`. See [External functions with categorical output](https://wadpac.github.io/GGIR/articles/ExternalFunctionType.html#part-5) for a description of these variables.
  
 Outputs with `reporttype = "scalar"` or `"event"` are not summarised in part 5. The only exception is an event output named `step_count`, which part 5 keeps in its time series (folder `/output_nameofstudy/meta/ms5.outraw`, saved by default via `save_ms5rawlevels = TRUE`) and in the visual report, but not in the part 5 summary reports.
 
