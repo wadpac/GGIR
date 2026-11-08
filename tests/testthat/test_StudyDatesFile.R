@@ -1,6 +1,6 @@
 library(GGIR)
-context("Chainof5parts")
-test_that("chainof5parts", {
+context("StudyDatesFile")
+test_that("StudyDatesFile", {
   skip_on_cran()
   
   Ndays = 3
@@ -192,7 +192,8 @@ test_that("chainof5parts", {
          study_dates_file = "study_dates_file.csv",
          study_dates_dateformat = "%d/%m/%Y",
          # strategy
-         data_masking_strategy = 1, hrs.del.start = 0, hrs.del.end = 0),
+         data_masking_strategy = 1, ndayswindow = 7,
+         hrs.del.start = 0, hrs.del.end = 0),
     regexp = NA)
   # load data
   load(dir("output_test/meta/basic/", full.names = TRUE)[1])
