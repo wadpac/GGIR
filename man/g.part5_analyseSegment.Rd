@@ -94,6 +94,7 @@
   }
   \item{long_nap_boutsi}{
     Vector with row indiceses of sibreport that meet the nap criteria.
+  }
   \item{myfun}{
     External function object to be applied to raw data.
     See details \link{applyExtFunction}.
