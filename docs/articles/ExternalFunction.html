@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.4-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,6 +56,7 @@
     <li><a class="dropdown-item" href="../articles/GGIRoutput.html">GGIR Output</a></li>
     <li><a class="dropdown-item" href="../articles/readmyacccsv.html">Reading csv files with raw data</a></li>
     <li><a class="dropdown-item" href="../articles/ExternalFunction.html">Embedding external functions in GGIR</a></li>
+    <li><a class="dropdown-item" href="../articles/ExternalFunctionType.html">External functions with categorical output</a></li>
     <li><a class="dropdown-item" href="../articles/CutPoints.html">Published cut-points and how to use them</a></li>
     <li><a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a></li>
     <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
@@ -216,31 +217,45 @@ produced by the external function. Note, that this needs to be equal to
 or a multitude of the short epoch size of the g.part1 output (5 seconds)
 or the short epoch size should be a multitude of this resolution. In
 this way GGIR can aggregate or repeat the external function output to be
-used inside GGIR.</li>
+used inside GGIR, see <a href="#aggregation-and-missing-values">Aggregation and missing
+values</a>.</li>
 <li>
 <code>minlength</code> The minimum length (seconds) of input data
 needed, typically the window per which output is provided.</li>
 <li>
 <code>outputtype</code> Character to indicate the type of external
 function output. Set to “numeric” if data is stored in numbers (any
-numeric format), or “character” if it is a character string.</li>
+numeric format), or “character” if it is a character string. Provide
+either one value for all output columns or one value per column,
+e.g. <code>c("numeric", "character")</code>.</li>
 <li>
 <code>aggfunction</code> If the data needs to be aggregated to match
 the short epoch size of the g.part1 output (5 seconds) then this element
 specifies what function should be used for the aggregation, e.g. mean,
-sum, median.</li>
+sum, median. Provide either one function for all output columns or a
+list with one function per column. See <a href="#aggregation-and-missing-values">Aggregation and missing
+values</a> for when it is required and how missing values are
+handled.</li>
 <li>
-<code>timestamp</code> Boolean to indicated whether timestamps
-(seconds since 1-1-1970) should be passed on to the external function as
-first columm of the data matrix..</li>
+<code>timestamp</code> Boolean to indicate whether timestamps
+(seconds since 1-1-1970) should be passed to the external function as
+the first column of the data matrix. The external function may then
+return either only its output columns, or the timestamp as an additional
+first column.</li>
 <li>
 <code>reporttype</code> Character to indicate the type of reporting
 by GGIR: “scalar” if it should be averaged per day, “event” if it should
-be summed per day, or “type” if it is categorical variable that can only
-be aggregated per day by tabulating it. For <code>reporttype</code>
-“event” GGIR will as of release 3.2-0 not summarise the events in
-part2_summary.csv and part2_daysummary.csv but in part2_eventsummary.csv
-and part2_dayeventsummary.csv.</li>
+be summed per day, or “type” if it is a categorical variable that should
+be tabulated (see <a href="https://wadpac.github.io/GGIR/articles/ExternalFunctionType.html">External
+functions with categorical output</a> for an example). Provide either
+one value for all output columns or one value per column. For backward
+compatibility, GGIR treats outputs as <code>"scalar"</code> when
+<code>reporttype</code> is omitted. For
+<code>reporttype = "event"</code>, GGIR stores the summaries in
+part2_eventsummary.csv and part2_dayeventsummary.csv rather than
+part2_summary.csv and part2_daysummary.csv. When several event columns
+are returned, their column names are included in event summary variable
+names to keep the results distinct.</li>
 <li>
 <code>name</code> Character to indicate the name of the entity being
 detected in the cases of event detection, this name is used in the
@@ -347,6 +362,74 @@ foreach as used in GGIR do not combine well.</p>
 </div>
 </div>
 <div class="section level2">
+<h2 id="multiple-output-columns">Multiple output columns<a class="anchor" aria-label="anchor" href="#multiple-output-columns"></a>
+</h2>
+<p>An external function can return more than one output column, for
+example as a <code>data.frame</code> or a matrix. Each column is
+described by the corresponding value in <code>colnames</code>, which
+must be unique. Elements <code>outputtype</code>,
+<code>reporttype</code> and <code>aggfunction</code> can be given either
+as a single value that applies to all columns, or as one value per
+column in the same order as <code>colnames</code>. This makes it
+possible to combine different kinds of output in one function, for
+example a categorical activity type together with a numeric
+intensity:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">myfun</span><span class="op">$</span><span class="va">colnames</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"activity"</span>, <span class="st">"intensity"</span><span class="op">)</span></span>
+<span><span class="va">myfun</span><span class="op">$</span><span class="va">outputtype</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"character"</span>, <span class="st">"numeric"</span><span class="op">)</span></span>
+<span><span class="va">myfun</span><span class="op">$</span><span class="va">reporttype</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"type"</span>, <span class="st">"scalar"</span><span class="op">)</span></span>
+<span><span class="va">myfun</span><span class="op">$</span><span class="va">aggfunction</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">mean</span><span class="op">)</span></span></code></pre></div>
+<p>Each output column is processed and reported independently according
+to its own <code>outputtype</code> and <code>reporttype</code>.</p>
+</div>
+<div class="section level2">
+<h2 id="aggregation-and-missing-values">Aggregation and missing values<a class="anchor" aria-label="anchor" href="#aggregation-and-missing-values"></a>
+</h2>
+<p>When <code>outputres</code> is shorter than the short epoch size of
+GGIR (first value of argument <code>windowsizes</code>), GGIR aggregates
+the values of each epoch with <code>aggfunction</code>, and
+<code>aggfunction</code> must be provided. When <code>outputres</code>
+equals the epoch size the output is used as is, and when
+<code>outputres</code> is longer GGIR repeats each value to fill the
+epochs it covers; in both cases <code>aggfunction</code> is not
+needed.</p>
+<p>When the output columns need different aggregation, for example when
+numeric and character outputs are combined, provide
+<code>aggfunction</code> as a list with one function per output
+column.</p>
+<p>GGIR passes all values of each epoch to <code>aggfunction</code>,
+including missing values (<code>NA</code>) produced by the external
+function. Epochs containing only missing values are retained, preserving
+time alignment; their aggregated value depends on
+<code>aggfunction</code>. For example,
+<code>function(x) sum(x, na.rm = TRUE)</code> returns <code>0</code> for
+an all-missing epoch. Missing values are handled as follows:</p>
+<ul>
+<li>
+<code>mean</code>, <code>sum</code> and similar functions return
+<code>NA</code> if any value in the epoch is missing. Use
+<code>function(x) mean(x, na.rm = TRUE)</code> to summarise the
+available values instead.</li>
+<li>
+<code>function(x) x[1]</code> returns <code>NA</code> when the first
+value is missing, even if later values in the epoch are not
+missing.</li>
+<li>For character outputs, a function that selects the most frequent
+value should convert to character before tabulating and return
+<code>NA</code> when all values are missing:</li>
+</ul>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">counts</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">counts</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="cn">NA_character_</span> <span class="kw">else</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">counts</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>Character outputs reach <code>aggfunction</code> as factors, and
+<code><a href="https://rdrr.io/r/base/table.html" class="external-link">table()</a></code> on a factor also counts levels that do not occur,
+so a plain <code>names(sort(table(x), decreasing = TRUE))[1]</code>
+would assign the first level to epochs in which all values are
+missing.</p>
+</div>
+<div class="section level2">
 <h2 id="integration-in-ggir-output">Integration in GGIR output<a class="anchor" aria-label="anchor" href="#integration-in-ggir-output"></a>
 </h2>
 <div class="section level3">
@@ -360,8 +443,9 @@ is <code>c(5,900,3600)</code> by default. Here, the first element
 <code>5</code> specifies the short epoch size in seconds. If the output
 of the external function is less then this resolution it will be
 aggregated with the function as specificied by aggfunction in the
-<code>myfun</code> object. In the count example we used the sum for this
-and for the dominant frequency example we used the median.</p>
+<code>myfun</code> object (see <a href="#aggregation-and-missing-values">Aggregation and missing
+values</a>). In the count example we used the sum for this and for the
+dominant frequency example we used the median.</p>
 </div>
 <div class="section level3">
 <h3 id="part-2">Part 2<a class="anchor" aria-label="anchor" href="#part-2"></a>
@@ -371,6 +455,59 @@ those. The impute time series can be found in the part 2 milestone data
 in folder: <code>/output_nameofstudy/meta/ms2.out</code>. If you want
 these to be directly stored in a csv file then set argument
 <code>epochvalues2csv = TRUE</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="part-5">Part 5<a class="anchor" aria-label="anchor" href="#part-5"></a>
+</h3>
+<p>Part 5 summarises the time series per day, separately for the
+sustained sleep period (<code>spt</code>) and the time outside the
+sustained sleep period (<code>day</code>). At the moment only outputs
+with <code>reporttype = "type"</code> are summarised in part 5. GGIR
+writes them to dedicated reports per output column, named
+<code>part5_extfuntype_&lt;column&gt;_daysummary_&lt;window&gt;_&lt;sleep-definition&gt;.csv</code>
+and
+<code>part5_extfuntype_&lt;column&gt;_personsummary_&lt;window&gt;_&lt;sleep-definition&gt;.csv</code>.
+These contain the time, mean acceleration, and number of blocks and
+bouts per category, separately for <code>spt</code> and
+<code>day</code>. See <a href="https://wadpac.github.io/GGIR/articles/ExternalFunctionType.html#part-5">External
+functions with categorical output</a> for a description of these
+variables.</p>
+<p>Outputs with <code>reporttype = "scalar"</code> or
+<code>"event"</code> are not summarised in part 5. The only exception is
+an event output named <code>step_count</code>, which part 5 keeps in its
+time series (folder <code>/output_nameofstudy/meta/ms5.outraw</code>,
+saved by default via <code>save_ms5rawlevels = TRUE</code>) and in the
+visual report, but not in the part 5 summary reports.</p>
+</div>
+<div class="section level3">
+<h3 id="visual-report">Visual report<a class="anchor" aria-label="anchor" href="#visual-report"></a>
+</h3>
+<p>When <code>visualreport = TRUE</code>, the visual report that GGIR
+generates after part 5 also shows external function output:</p>
+<ul>
+<li>
+<code>reporttype = "type"</code>: the output column is drawn as a
+coloured strip below the main plot, with one colour per category and the
+categories listed in the legend. When the time series is aggregated to a
+longer epoch (for example with
+<code>part5_agg2_60seconds = TRUE</code>), each epoch shows the category
+that took up most of its time. Epochs without a category (unclassified
+or invalid) are left blank.</li>
+<li>
+<code>reporttype = "event"</code>: the output column is drawn as
+vertical bars at the bottom of the plot, showing the number of events
+per minute. The bars are scaled to 120 per minute for an output named
+<code>step_count</code>, and to the highest rate in the recording
+otherwise. Note that part 5 currently only keeps an event output named
+<code>step_count</code> in its time series, so event outputs with other
+names are not shown.</li>
+<li>
+<code>reporttype = "scalar"</code>: these outputs are not shown in
+the visual report.</li>
+</ul>
+<p>If several output columns have the same <code>reporttype</code>, only
+the first of them (in the order of <code>colnames</code>) is plotted.
+All output columns are still included in the CSV reports.</p>
 </div>
 </div>
 <div class="section level2">

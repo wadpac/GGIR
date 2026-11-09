@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.4-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,6 +56,7 @@
     <li><a class="dropdown-item" href="../articles/GGIRoutput.html">GGIR Output</a></li>
     <li><a class="dropdown-item" href="../articles/readmyacccsv.html">Reading csv files with raw data</a></li>
     <li><a class="dropdown-item" href="../articles/ExternalFunction.html">Embedding external functions in GGIR</a></li>
+    <li><a class="dropdown-item" href="../articles/ExternalFunctionType.html">External functions with categorical output</a></li>
     <li><a class="dropdown-item" href="../articles/CutPoints.html">Published cut-points and how to use them</a></li>
     <li><a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a></li>
     <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
@@ -465,6 +466,28 @@ at a single indicator for the amount of invalid data. However, to keep
 track of the occurrence of clipping time, GGIR does report the fraction
 of 15-minute windows in a recording during which clipping occurs, see
 section on output below.</p>
+</div>
+<div class="section level2">
+<h2 id="light-sensor-data-calibration-for-geneactiv">Light sensor data calibration for GENEActiv<a class="anchor" aria-label="anchor" href="#light-sensor-data-calibration-for-geneactiv"></a>
+</h2>
+<p>GENEActiv light measurements are calibrated according to device model
+inside R package GGIRread, which GGIR uses for reading accelerometer
+data.</p>
+<p>For all GENEActiv device models light calibration entails multiplying
+the raw value by (Lux / Volts), which are two constants extracted from
+the data file header. This has been the case for many years.</p>
+<p>For GENEActiv 1.2 and above, this step is preceded by an additional
+correction to account for the light sensor’s non-linear scaling with
+graded resolution. This provides greater accuracy at low light levels
+while supporting a higher range. This correction was provided by
+ActivInsights Ltd, the manufacturer of GENEActiv devices and is present
+in GGIRread since release 1.0.11 (2026).</p>
+<p>Additionally, GGIR offers input parameters <a href="https://wadpac.github.io/GGIR/articles/GGIRParameters.html#lux_cal_exponent">LUX_cal_exponent</a>
+and <a href="https://wadpac.github.io/GGIR/articles/GGIRParameters.html#lux_cal_constant">LUX_cal_constant</a>.
+These were added to correct data as collected in a specific study that
+used one of the first batches of GENEActiv devices in 2012/2013. Please
+do not use these parameters in new data unless you have been instructed
+by ActivInsights Ltd to do so.</p>
 </div>
 <div class="section level2">
 <h2 id="key-parameters">Key parameters<a class="anchor" aria-label="anchor" href="#key-parameters"></a>

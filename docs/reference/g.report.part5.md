@@ -10,7 +10,7 @@ intended for direct use by package user
 g.report.part5(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c(),
                           params_cleaning = NULL,
                           LUX_day_segments = c(), params_output,
-                          verbose = TRUE)
+                          myfun = NULL, verbose = TRUE)
 ```
 
 ## Arguments
@@ -52,6 +52,11 @@ g.report.part5(metadatadir = c(), f0 = c(), f1 = c(), loglocation = c(),
 
   Parameters object, see
   [GGIR](https://wadpac.github.io/GGIR/reference/GGIR.md)
+
+- myfun:
+
+  See details in
+  [GGIR](https://wadpac.github.io/GGIR/reference/GGIR.md).
 
 - verbose:
 

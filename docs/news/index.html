@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.4-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,7 @@
     <li><a class="dropdown-item" href="../articles/GGIRoutput.html">GGIR Output</a></li>
     <li><a class="dropdown-item" href="../articles/readmyacccsv.html">Reading csv files with raw data</a></li>
     <li><a class="dropdown-item" href="../articles/ExternalFunction.html">Embedding external functions in GGIR</a></li>
+    <li><a class="dropdown-item" href="../articles/ExternalFunctionType.html">External functions with categorical output</a></li>
     <li><a class="dropdown-item" href="../articles/CutPoints.html">Published cut-points and how to use them</a></li>
     <li><a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a></li>
     <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
@@ -85,6 +86,16 @@
       <small>Source: <a href="https://github.com/wadpac/GGIR/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.4-0" id="changes-in-ggir-version-34-0">CHANGES IN GGIR VERSION 3.4-0<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-34-0"></a></h2>
+<ul><li><p>Part 1 + 2 + 5: Expanded external function embedding to support multiple output columns with independent output and report types. <a href="https://github.com/wadpac/GGIR/issues/1550" class="external-link">#1550</a></p></li>
+<li><p>Part 2 + 5: Added support for external functions that classify epochs into categorical types (<code>reporttype = "type"</code>), including type-specific duration, acceleration, and bout summaries. <a href="https://github.com/wadpac/GGIR/issues/1126" class="external-link">#1126</a></p></li>
+<li><p>Visual report: Show external function types (<code>reporttype = "type"</code>) as coloured strips and step counts as a cadence bar row in the per-file PDF. <a href="https://github.com/wadpac/GGIR/issues/1126" class="external-link">#1126</a></p></li>
+<li><p>Part 1: Reduced time and allocation overhead in <code><a href="../reference/g.calibrate.html">g.calibrate()</a></code> by avoiding full raw-block matrix copies, reducing epoch-mean temporaries, preparing only populated feature rows, and reusing matrix inputs with per-axis transforms in the calibration fit. Feature buffers now start with one day of epochs and grow as needed. Epoch SDs use <code><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply()</a></code> with the same <code><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd()</a></code> calculation; calibration thresholds, cumulative-sum arithmetic and fitting/stopping rules are retained.</p></li>
+<li><p>Part 1: Faster rolling-median metric extraction using R’s existing <code><a href="https://rdrr.io/r/stats/runmed.html" class="external-link">runmed()</a></code> directly for complete data. Fixed loss of smoothing when block length is not divisible by the downsampling step (including typical 75 Hz blocks), corrected trailing padding to use the final window median, and preserved valid zero medians at block edges. Angle and rolling-median metrics can change as a result of these fixes.</p></li>
+<li><p>Part 5: Nap time (dur_day_nap_min) is now mutually exclusive with the rest of total outputs. <a href="https://github.com/wadpac/GGIR/issues/1558" class="external-link">#1558</a></p></li>
+<li><p>Documentation: clarified bout tolerance for gaps works, added Crotti cutpoint, and clarified GENEActiv light sensor calibration. <a href="https://github.com/wadpac/GGIR/issues/1531" class="external-link">#1531</a>, <a href="https://github.com/wadpac/GGIR/issues/1536" class="external-link">#1536</a>, <a href="https://github.com/wadpac/GGIR/issues/1544" class="external-link">#1544</a></p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.3-9" id="changes-in-ggir-version-33-9">CHANGES IN GGIR VERSION 3.3-9<a class="anchor" aria-label="anchor" href="#changes-in-ggir-version-33-9"></a></h2><p class="text-muted">CRAN release: 2026-09-12</p>
 <ul><li><p>Tests: Made the Movisens test independent of internet access by including the test data in inst/testfiles (<a href="https://github.com/wadpac/GGIR/issues/1540" class="external-link">#1540</a>)</p></li>

@@ -8,7 +8,7 @@ use by package user.
 
 ``` r
 identify_levels(ts, TRLi,TRMi,TRVi,
-                  ws3, params_phyact, ...)
+                  ws3, params_phyact,...)
 ```
 
 ## Arguments
@@ -60,6 +60,8 @@ List with items:
 - bc.in
 
 - ts
+
+- threshold
 
 ## Author
 

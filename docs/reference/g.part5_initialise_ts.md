@@ -6,7 +6,8 @@ Initialise time series dataframe ts, part of
 ## Usage
 
 ``` r
-g.part5_initialise_ts(IMP, M, params_247, params_general, longitudinal_axis = c())
+g.part5_initialise_ts(IMP, M, params_247, params_general, 
+                        longitudinal_axis = c(), myfun = c())
 ```
 
 ## Arguments
@@ -33,6 +34,11 @@ g.part5_initialise_ts(IMP, M, params_247, params_general, longitudinal_axis = c(
 
   As passed on from g.part5, which could be specified by user or
   estimated from hip data in part 2.
+
+- myfun:
+
+  External function object to be applied to raw data. See details
+  [applyExtFunction](https://wadpac.github.io/GGIR/reference/applyExtFunction.md).
 
 ## Value
 

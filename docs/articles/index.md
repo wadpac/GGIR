@@ -46,6 +46,8 @@
   R](https://wadpac.github.io/GGIR/articles/DateTimeFormatsInR.md):
 - [Embedding external functions in
   GGIR](https://wadpac.github.io/GGIR/articles/ExternalFunction.md):
+- [External functions with categorical
+  output](https://wadpac.github.io/GGIR/articles/ExternalFunctionType.md):
 - [Accelerometer data processing with
   GGIR](https://wadpac.github.io/GGIR/articles/GGIR.md):
 - [GGIR output](https://wadpac.github.io/GGIR/articles/GGIRoutput.md):

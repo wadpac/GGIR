@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">GGIR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3-9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.4-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,6 +56,7 @@
     <li><a class="dropdown-item" href="../articles/GGIRoutput.html">GGIR Output</a></li>
     <li><a class="dropdown-item" href="../articles/readmyacccsv.html">Reading csv files with raw data</a></li>
     <li><a class="dropdown-item" href="../articles/ExternalFunction.html">Embedding external functions in GGIR</a></li>
+    <li><a class="dropdown-item" href="../articles/ExternalFunctionType.html">External functions with categorical output</a></li>
     <li><a class="dropdown-item" href="../articles/CutPoints.html">Published cut-points and how to use them</a></li>
     <li><a class="dropdown-item" href="../articles/TutorialDaySegmentAnalyses.html">Day-segment analyses</a></li>
     <li><a class="dropdown-item" href="../articles/HouseHoldCoanalysis.html">Household co-analysis</a></li>
@@ -250,10 +251,28 @@ bout is part of a longer Inactivity bout which of the two prevails?</li>
 intensity with <code>mvpathreshold</code> for part 2,
 <code>threshold.lig</code>, <code>threshold.mod</code>, and
 <code>threshold.vig</code> for part 5.</p></li>
-<li><p>Fraction of time for which cut-point criteria need to be met
-(light, inactive, MVPA) with <code>boutcriter</code> for part 2 and
-<code>boutcriter.lig</code>, <code>boutcriter.mod</code>, and
-<code>boutcriter.vig</code> for part 5.</p></li>
+<li><p>Fraction of time for which the cut-point criteria must be met
+(i.e., light, inactive, or MVPA), specified by <code>boutcriter</code>
+in Part 2 and by <code>boutcriter.in</code>,
+<code>boutcriter.lig</code>, and <code>boutcriter.mvpa</code> in Part 5.
+If the fraction is less than 1, a rolling window equal to the expected
+bout duration is used to determine whether the required fraction of time
+is met. For example, with a criterion of 0.8 and a minimum bout duration
+of 10 minutes, the sequence “4 minutes of movement, 1 minute of rest,
+and 4 minutes of movement” is tolerated because, within a 10-minute
+window, there is no more than 1 minute of rest and at least 80% of the
+time is spent being active. In this context gaps are part of the bout
+behavior and the just mentioned behaviour and a sequence containing 9
+minutes of movement must therefore represent the same physiological
+burden. Consequently, we will classify it as 9 minutes spent in the bout
+category of 10 minutes or longer. This is intentional and follows
+directly from allowing a bout criterion of less than 100%. Some more
+examples: “5 minutes of movement, 1 minute of rest, and 4 minutes of
+movement” is counted as 10 minutes spent in a bout lasting 10 minutes or
+longer. However, “5 minutes of movement, 2 minute of rest, and 4 minutes
+of movement” is NOT counted as part of a bout lasting 10 minutes or
+longer because of the 2 minute time gap, but counted as two bouts
+lasting 5 minutes or longer each.</p></li>
 <li><p>Bout duration range. In part 2 with <code>mvpadur</code> and in
 part 5 with <code>boutdur.lig</code>, <code>boutdur.mod</code>, and
 <code>boutdur.mvpa</code>. This functionality is slightly different

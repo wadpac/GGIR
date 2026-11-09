@@ -1,14 +1,12 @@
 Type: Package
 Package: GGIR
 Title: Raw Accelerometer Data Analysis
-Version: 3.3-9
-Date: 2026-09-12
+Version: 3.4-0
+Date: 2026-11-08
 Authors@R: c(
     person("Vincent T", "van Hees", , "v.vanhees@accelting.com", role = c("aut", "cre")),
     person("Jairo H", "Migueles", , "jairo@jhmigueles.com", role = "aut",
            comment = c(ORCID = "0000-0003-0366-6935")),
-    person("Samuel T", "Afolabi", , "samuelafolabimails@gmail.com", role = "ctb",
-           comment = c(ORCID = "0009-0002-7325-6405")),
     person("Severine", "Sabia", role = "ctb"),
     person("Matthew R", "Patterson", role = "ctb"),
     person("Zhou", "Fang", role = "ctb"),
@@ -19,6 +17,8 @@ Authors@R: c(
     person("Manasa", "Yerramalla", role = "ctb"),
     person("Patrick", "Bos", , "egpbos@gmail.com", role = "ctb",
            comment = c(ORCID = "0000-0002-6033-960X")),
+    person("Samuel T", "Afolabi", , "samuelafolabimails@gmail.com", role = "ctb",
+           comment = c(ORCID = "0009-0002-7325-6405")),
     person("Taren", "Sanders", role = "ctb"),
     person("Chenxuan", "Zhao", role = "ctb"),
     person("Ian", "Meneghel Danilevicz", , "ian.meneghel-danilevicz @ inserm.fr", role = "ctb",
