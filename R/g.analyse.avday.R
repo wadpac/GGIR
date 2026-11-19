@@ -57,6 +57,7 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
         #--------------------------------------
         #M5L5 - (Note: averageday is relative to starttime of measurement, but so is firstmidnighti (index of midnights), so M5L5 are correct)
         #loop through winhr
+        ML5N = c() # names of the M5L5 variables of the current metric
         for (winhr_value in params_247[["winhr"]]) {
           # Time window for L5 & M5 analysis
           t0_LFMF = params_247[["L5M5window"]][1] #start in 24 hour clock hours
@@ -69,15 +70,11 @@ g.analyse.avday = function(doquan, averageday, M, IMP, t_TWDI, quantiletype,
                                winhr_value, qM5L5 = params_247[["qM5L5"]],
                                MX.ig.min.dur = params_247[["MX.ig.min.dur"]],
                                UnitReScale = UnitReScale)
+          ML5N = c(ML5N, names(ML5ADtmp))
           ML5AD = as.data.frame(c(ML5AD, ML5ADtmp), stringsAsFactors = TRUE)
         }
-        ML5N = names(ML5AD)
-        for (ML5ADi in 1:length(ML5N)) {
-          if (length(grep(pattern = "1to6", ML5N[ML5ADi])) == 0) {
-            ML5AD_names[ML5ADi] = paste0(ML5N[ML5ADi], "_", colnames(M$metashort)[(quani + 1)],"_mg_",
-                                         params_247[["L5M5window"]][1], "-", params_247[["L5M5window"]][2], "h")
-          }
-        }
+        ML5AD_names = c(ML5AD_names, paste0(ML5N, "_", colnames(M$metashort)[(quani + 1)], "_mg_",
+                                            params_247[["L5M5window"]][1], "-", params_247[["L5M5window"]][2], "h"))
         # Acceleration 1-6am
         one2sixname = paste0("1to6am_", colnames(M$metashort)[(quani + 1)], "_mg")
         ML5AD_names = c(ML5AD_names, one2sixname)
