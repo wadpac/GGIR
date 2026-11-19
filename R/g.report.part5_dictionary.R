@@ -350,7 +350,7 @@ g.report.part5_dictionary = function(metadatadir, params_output) {
     data.table::fwrite(dictionary, file = file.path(directory, fn), 
                        row.names = FALSE, na = "", sep = params_output[["sep_reports"]],
                        dec = params_output[["dec_reports"]])
-    generic_defs = c(generic_defs, setNames(dictionary$Definition, dictionary$Variable))
+    generic_defs = c(generic_defs, structure(dictionary$Definition, names = dictionary$Variable))
   }
   # -------------------------------------------------------------------------
   # reports of external function outputs with reporttype "type":
