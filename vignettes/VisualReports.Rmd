@@ -1,0 +1,126 @@
+---
+title: "GGIR visual reports"
+output:
+   html_document:
+    toc: true
+    number_sections: true
+    toc_depth: 3
+    toc_float: true
+urlcolor: blue
+vignette: >
+  %\VignetteIndexEntry{GGIR visual reports}
+  \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+**NOTE: If you are viewing this page via CRAN note that the main GGIR documentation has been migrated to the [GGIR GitHub pages](https://wadpac.github.io/GGIR/).**
+
+# Introduction
+
+Next to the csv reports, GGIR produces visual reports that help to check the quality of the data and of the classifications made by GGIR. This vignette explains what is shown in each of them.
+
+| Part | Visual report | Location | Parameter (default) |
+|------|---------------|----------|---------------------|
+| 2 | Data quality plot per recording | results/QC/plots\_part2/plot\_\<ID\>.png | `do.part2.png` (TRUE) |
+| 3 | Sustained inactivity bouts per night | meta/sleep.qc/graphperday\_id\_\<ID\>\_\<filename\>.pdf | `do.part3.pdf` (FALSE) |
+| 4 | Sleep per night for all recordings | results/visualisation\_sleep.pdf | `do.visual` (TRUE) |
+| 5 | Visual report per recording | results/file summary reports/report\_\<filename\>\_\<sleepparam\>.pdf | `visualreport` (TRUE) |
+| 5 | Old visual report per recording | results/file summary reports/old\_report\_\<filename\>.pdf | `old_visualreport` (FALSE) |
+
+All parameters are described in the [GGIR parameters](https://wadpac.github.io/GGIR/articles/GGIRParameters.html) annex.
+
+# Part 2: data quality plot
+
+When `do.part2.png = TRUE`, `g.report.part2` stores one png file per recording in `results/QC/plots_part2/`. The plot gives a quick overview of the data quality of the full recording and is useful to spot recordings with long non-wear periods, signal clipping or problems with the device.
+
+The x-axis shows the time from the start to the end of the recording. The vertical lines mark the days:
+
+- Dotted black lines mark midnight, and the day number of the recording is printed below the x-axis (`Recording day`).
+- Grey dashed lines mark noon.
+- A blue vertical line marks the end of the recording.
+
+The coloured rectangles show the classification of the data in part 2 (see the `rout` object in the [milestone data](https://wadpac.github.io/GGIR/articles/MilestoneData.html) annex):
+
+- **Not worn**: non-wear time detected by the non-wear algorithm (r1).
+- **Signal clipping**: periods in which the signal is close to the dynamic range of the sensor (r2).
+- **Also not worn**: additional non-wear time, i.e., short wear periods surrounded by non-wear (r3).
+- **Study protocol masked** (hatched): data ignored because of the data masking strategy (`data_masking_strategy`, `hrs.del.start`, `hrs.del.end`, `maxdur`) (r4).
+
+The plot has the following panels:
+
+1. **Non-wear score**: the number of axes (0 to 3) that met the non-wear criteria per long epoch (`windowsizes[2]`, 15 minutes by default).
+2. **Acceleration**: the first acceleration metric (by default ENMO) per long epoch. Large blocks with values close to zero during the day can indicate that the device was not worn.
+3. **Temperature** (only for GENEActiv and Axivity cwa data): the temperature in degrees Celsius per long epoch. A drop in temperature to room temperature is a strong indication of non-wear.
+
+The legend at the top lists the classification colours. The plot title gives the file name.
+
+# Part 3: sustained inactivity bouts per night
+
+When `do.part3.pdf = TRUE`, part 3 stores one pdf per recording in `meta/sleep.qc/`. This report is mainly intended to check the detection of the sustained inactivity bouts (SIB). Each panel shows one night, from noon to noon, and each page has up to seven panels:
+
+- **Black line**: the angle of the z-axis (`anglez`) in degrees.
+- **Grey line**: the acceleration (ENMO), scaled to fit the y-axis.
+- **Coloured horizontal lines**: the SIB detected with each SIB definition (`timethreshold` and `anglethreshold`), one colour per definition.
+- **Yellow line**: light (when available in the data).
+- **Light blue line**: temperature (only for GENEActiv data).
+
+The panel title gives the night number and the file identifier (`Night: <number> <ID>`).
+
+# Part 4: visualisation\_sleep.pdf
+
+When `do.visual = TRUE`, `g.part4` stores `results/visualisation_sleep.pdf`, which shows the sleep classification for every night of every recording in the dataset. The `page` column in the part 4 night summary refers to the page of this pdf on which the night is shown. The pdf is intended to check, for many recordings at once, whether the SIB detected with the accelerometer agree with the guider (sleep diary or algorithm).
+
+Each row of a page shows one night, labelled with the ID and night number (`ID ... night ...`). The x-axis shows the time from noon to noon, labelled from 12 to 36 hours (36 = noon of the next day). Dashed vertical lines mark 18, 24 (midnight) and 30 hours. A thicker line at 18 hours indicates that the night was classified as a daysleeper night.
+
+- **Hatched black box**: the sleep period time window according to the guider (sleep diary, or an algorithm such as HDCZA when no diary is available).
+- **Coloured boxes**: the SIB of each SIB definition (one row per definition). SIB that overlap with the guider window, and are therefore counted as sleep, are drawn in blue to purple colours (`sib<definition>_spt` in the legend). SIB outside the guider window are drawn in green to yellow colours (`sib<definition>_day`).
+
+Two parameters control which nights are shown:
+
+- `outliers.only = TRUE` shows only the nights with a large difference between the accelerometer estimate and the guider (larger than `criterror` hours).
+- Only nights that pass the cleaning of part 4 are shown, i.e., nights with `cleaningcode` 0 (when a sleep diary is used) or 0 and 1 (without a sleep diary).
+
+# Part 5: visual report
+
+When `visualreport = TRUE`, `visualReport` stores one pdf per recording and SIB definition in `results/file summary reports/`. This report requires the time series from part 5, so `save_ms5rawlevels` must be TRUE (this is set automatically when `visualreport = TRUE`). The report shows the time series of the full recording and the classifications made by GGIR in parts 2 to 5.
+
+## Layout
+
+The first page starts with a header that gives information on the recording (file name, start date, duration, GGIR version, and time zone) and a legend of the colours used. The time series is shown in rows of `visualreport_hrsPerRow` hours (default 36). Each page shows up to 8 rows.
+
+- `visualreport_focus = "day"` starts each row at midnight, so that each row shows a full day and part of the next. `visualreport_focus = "night"` starts each row at noon, so that the night is in the centre of the row.
+- Below each row, the x-axis gives the clock time, and below that the window number (as in the part 5 reports) and the date.
+- `visualreport_validcrit` defines the minimum fraction of valid data a row needs to be shown. If no row meets this criterion, no report is generated for the recording.
+
+## What is shown in each row
+
+The y-axis of each row has a fixed scale. From bottom to top:
+
+- **0 to 25: sleep diary**. The entries of the sleep diary (sleep, in bed, naps, non-wear) as horizontal bars, when a diary was provided.
+- **0 to 40: angle**. The angle of the z-axis, mapped from -90 to 90 degrees onto 0 to 40. The dashed horizontal lines at 10 and 30 correspond to -45 and 45 degrees. If several angles were derived (`do.anglex`, `do.angley`, `do.anglez`), each angle is drawn in its own colour.
+- **25 to 50: sustained inactivity bouts** (dark blue), and **naps** (light blue, from 25 to 100) when nap detection is used.
+- **50 to 100: behavioural classes**. The behavioural classes of part 5, as coloured blocks:
+  - inactivity in pink,
+  - light physical activity (LIPA) in green,
+  - moderate-to-vigorous physical activity (MVPA) in orange,
+  - sleep in white,
+  - wakefulness during the sleep period time in olive yellow.
+
+  Bouted classes are drawn up to 100, unbouted classes only up to 90, so that bouts stand out.
+- **Acceleration**: the acceleration (in mg) as a black line, drawn as acceleration / 10 + 50, so that 0 mg is at 50 and 500 mg at 100.
+- **100 to 110: light** (when available). The peak light per epoch. The peak light per hour (in kLux) is also printed below the x-axis.
+- **Temperature change** (when available): a "+" or "-" marks an increase or decrease in temperature.
+- **Steps** (when step counts are available): the number of steps per hour, divided by 100 (`steps x100`), is printed below the x-axis.
+
+Other markers:
+
+- **Sleep onset and wake up**: vertical lines mark the start ("onset") and end ("wake-up" plus the day of the week) of the sleep period time window, with a label that says which guider was used (e.g., "guided by: sleeplog" or "guided by: HDCZA").
+- **Invalid data**: translucent white boxes with a grey border mark the epochs that were invalid and therefore imputed or ignored.
+- **Marker button**: a purple "M" marks the times the marker button of the device was pressed (when available).
+- **Diary imputation**: when a sleep diary is used, the imputation code of the diary entries of that night, as provided in the sleep diary, is printed on the right side of the row ("diary imputation: ...").
+
+## Old visual report
+
+When `old_visualreport = TRUE`, `g.plot5` stores the visual report of earlier GGIR versions as `old_report_<filename>.pdf`. The first page shows bar charts with one bar per day for: MVPA, total physical activity, hours the device was worn, the sleep period time window including wakefulness, and sleep efficiency. Weekend days are hatched and a dashed horizontal line shows the average across days. With `dofirstpage = FALSE` this page is omitted. With `visualreport_without_invalid = TRUE` (default) the days that do not meet the `includedaycrit` and `includenightcrit` criteria are left out of this report.
+
+The following pages show one day per panel, with the angle of the z-axis and the arm movement (acceleration). The background colours show the classification: sleep and wakefulness within the sleep period time window, inactivity, light, moderate and vigorous physical activity, and non-wear. The parameter `viewingwindow` sets whether each panel runs from midnight to midnight (1) or from noon to noon (2).
