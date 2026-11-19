@@ -15,7 +15,7 @@ test_that("Events from external function are correctly aggregated", {
   # varnum = metashort$step_count[anwindices]
   ws3 = 5
   anwi_nameindices = "_1234hrs"
-  daysummary = matrix("", 1, 23)
+  daysummary = matrix("", 1, 29)
   fi = 1
   di = 1
   ds_names = ""
@@ -42,7 +42,11 @@ test_that("Events from external function are correctly aggregated", {
   names(daysummary)[1:length(eventAgg$ds_names)] = eventAgg$ds_names
   
   # Dimensions
-  expect_equal(ncol(daysummary), 23)
+  expect_equal(ncol(daysummary), 29)
+  # LX/MX cannot be calculated on 5 minutes of data (winhr = 5), but the
+  # variables are still stored as NA to keep the columns aligned across days
+  expect_true(is.na(daysummary$ExtFunEvent_L5_cad_meancad_1234hrs))
+  expect_true(is.na(daysummary$ExtFunEvent_M5_cad_mean_ENMO_mg_1234hrs))
   
   # total steps
   expect_equal(daysummary$ExtFunEvent_tot_step_count_1234hrs, "180")
@@ -108,12 +112,12 @@ test_that("Events from external function are correctly aggregated", {
                             segmentInfo = segmentInfo, myfun, params_247)
   daysummary = as.data.frame(eventAgg$daysummary)
   names(daysummary)[1:length(eventAgg$ds_names)] = eventAgg$ds_names
-  expect_equal(daysummary$ExtFunEvent_L2hr_cad_1234hrs, 2.5, tolerance = 0.01)
-  expect_equal(daysummary$ExtFunEvent_L2_cad_meancad_1234hrs, 24.17291, tolerance = 0.001)
-  expect_equal(daysummary$ExtFunEvent_L2_cad_mean_ENMO_mg_1234hrs, 210041.7, tolerance = 0.05)
-  expect_equal(daysummary$ExtFunEvent_M2hr_cad_1234hrs, 0)
-  expect_equal(daysummary$ExtFunEvent_M2_cad_meancad_1234hrs, 36.26251, tolerance = 0.05)
-  expect_equal(daysummary$ExtFunEvent_M2_cad_mean_ENMO_mg_1234hrs, 60041.67, tolerance = 0.01)
+  expect_equal(as.numeric(daysummary$ExtFunEvent_L2hr_cad_1234hrs), 2.5, tolerance = 0.01)
+  expect_equal(as.numeric(daysummary$ExtFunEvent_L2_cad_meancad_1234hrs), 24.17291, tolerance = 0.001)
+  expect_equal(as.numeric(daysummary$ExtFunEvent_L2_cad_mean_ENMO_mg_1234hrs), 210041.7, tolerance = 0.05)
+  expect_equal(as.numeric(daysummary$ExtFunEvent_M2hr_cad_1234hrs), 0)
+  expect_equal(as.numeric(daysummary$ExtFunEvent_M2_cad_meancad_1234hrs), 36.26251, tolerance = 0.05)
+  expect_equal(as.numeric(daysummary$ExtFunEvent_M2_cad_mean_ENMO_mg_1234hrs), 60041.67, tolerance = 0.01)
   
   # Event aggregation per acceleration level ignores non-acceleration columns
   ws3 = 5
@@ -125,13 +129,13 @@ test_that("Events from external function are correctly aggregated", {
   segmentInfo = list(anwi_nameindices = "_1234hrs", anwi_index = 1)
   params_247 = load_params("247")$params_247
   eventAgg = aggregateEvent(metric_name = "step_count", epochsize = ws3,
-                            daysummary = matrix("", 1, 23), ds_names = "",
+                            daysummary = matrix("", 1, 29), ds_names = "",
                             fi = 1, di = 1, vari = metashort,
                             segmentInfo = segmentInfo, myfun, params_247)
   # no variable is derived from the type column "activity"
   expect_false(any(grepl("activity", eventAgg$ds_names)))
   # same variables as without the type column
-  expect_equal(length(eventAgg$ds_names), 23)
+  expect_equal(length(eventAgg$ds_names), 29)
   expect_true("ExtFunEvent_tot_step_count_acc50-100mg_ENMO_1234hrs" %in% eventAgg$ds_names)
 
   # Multiple event outputs receive distinct names for every summary metric.

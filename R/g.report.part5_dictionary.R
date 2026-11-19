@@ -14,12 +14,58 @@ g.report.part5_dictionary = function(metadatadir, params_output) {
       if (x[i] == "sleep") class[i] = "sleep"
       if (x[i] == "wake") class[i] = "awake"
       if (x[i] == "nonwear") class[i] = "non-wear time"
+      if (x[i] == "nap") class[i] = "naps (detected with the possible_nap_* criteria)"
       if (x[i] == "mostactive60min") class = "the most active 60 minutes of the day are accumulated"
       if (x[i] == "mostactive30min") class = "the most active 30 minutes of the day are accumulated"
     }
     if (length(class) == 2) class = paste(class[1], "to", class[2])
     return(class)
   }
+  # definitions for variables not covered by baseDictionary -----------------
+  # naps and rest periods (g.part5.analyseRest), denap = accelerometer-detected
+  # nap (sustained inactivity bout meeting the possible_nap_* criteria),
+  # srnap = self-reported nap, srnonw = self-reported non-wear
+  extraDictionary = list(
+    sibreport_n_items = "Number of items in the rest report (detected naps meeting the possible_nap_* criteria and self-reported naps and non-wear periods) in the full recording",
+    sibreport_n_items_day = "Number of items in the rest report (detected naps meeting the possible_nap_* criteria and self-reported naps and non-wear periods) in the window",
+    nbouts_day_denap = "Number of accelerometer-detected naps (sustained inactivity bouts meeting the possible_nap_* criteria) in the window",
+    nbouts_day_srnap = "Number of self-reported naps in the window",
+    nbouts_day_srnonw = "Number of self-reported non-wear periods in the window",
+    noverl_denap_srnap = "Number of accelerometer-detected naps that overlap with a self-reported nap",
+    noverl_denap_srnonw = "Number of accelerometer-detected naps that overlap with a self-reported non-wear period",
+    noverl_srnap_denap = "Number of self-reported naps that overlap with an accelerometer-detected nap",
+    noverl_srnonw_denap = "Number of self-reported non-wear periods that overlap with an accelerometer-detected nap",
+    frag_mean_dur_denap_day = "Mean duration of the accelerometer-detected naps in the window (minutes)",
+    dur_day_denap_min = "Total duration of the accelerometer-detected naps in the window (minutes)",
+    frag_mean_dur_srnap_day = "Mean duration of the self-reported naps in the window (minutes)",
+    dur_day_srnap_min = "Total duration of the self-reported naps in the window (minutes)",
+    frag_mean_dur_srnonw_day = "Mean duration of the self-reported non-wear periods in the window (minutes)",
+    dur_day_srnonw_min = "Total duration of the self-reported non-wear periods in the window (minutes)",
+    mdur_denap_overl_srnap = "Mean duration of the accelerometer-detected naps that overlap with a self-reported nap (minutes)",
+    tdur_denap_overl_srnap = "Total duration of the accelerometer-detected naps that overlap with a self-reported nap (minutes)",
+    perc_denap_overl_srnap = "Percentage of the duration of the accelerometer-detected naps that overlaps with self-reported naps (%)",
+    mdur_srnap_overl_denap = "Mean duration of the self-reported naps that overlap with an accelerometer-detected nap (minutes)",
+    tdur_srnap_overl_denap = "Total duration of the self-reported naps that overlap with an accelerometer-detected nap (minutes)",
+    perc_srnap_overl_denap = "Percentage of the duration of the self-reported naps that overlaps with accelerometer-detected naps (%)",
+    mdur_denap_overl_srnonw = "Mean duration of the accelerometer-detected naps that overlap with a self-reported non-wear period (minutes)",
+    tdur_denap_overl_srnonw = "Total duration of the accelerometer-detected naps that overlap with a self-reported non-wear period (minutes)",
+    perc_denap_overl_srnonw = "Percentage of the duration of the accelerometer-detected naps that overlaps with self-reported non-wear periods (%)",
+    mdur_srnonw_overl_denap = "Mean duration of the self-reported non-wear periods that overlap with an accelerometer-detected nap (minutes)",
+    tdur_srnonw_overl_denap = "Total duration of the self-reported non-wear periods that overlap with an accelerometer-detected nap (minutes)",
+    perc_srnonw_overl_denap = "Percentage of the duration of the self-reported non-wear periods that overlaps with accelerometer-detected naps (%)",
+    nap_count = "Number of naps classified with nap_model during the waking time",
+    nap_totalduration = "Total duration of the naps classified with nap_model during the waking time (minutes)",
+    # other variables
+    sleepparam = "Definition of sustained inactivity bouts used (T = time threshold in minutes, A = angle threshold in degrees)",
+    filename_dir = "Full path of the file (only if storefolderstructure = TRUE)",
+    foldername = "Name of the folder containing the file (only if storefolderstructure = TRUE)",
+    GGIRversion = "GGIR version used to process this recording in part 5 (stored in the milestone data), which may differ from the version used to generate the report",
+    Nmarkerbutton_used = "Number of valid windows in which the marker button was used to estimate the sleep period time",
+    Nvaliddays_AL10F = "Number of valid days with at least 10 fragments (fragmentation analysis)",
+    Nvalidsegments_AL10F = "Number of valid segments with at least 10 fragments (fragmentation analysis)",
+    Nvalidsegments_AL10F_WD = "Number of valid weekday segments with at least 10 fragments (fragmentation analysis)",
+    Nvalidsegments_AL10F_WE = "Number of valid weekend day segments with at least 10 fragments (fragmentation analysis)"
+  )
   # -------------------------------------------------------------------------
   # main script -------------------------------------------------------------
   # -------------------------------------------------------------------------
@@ -38,6 +84,7 @@ g.report.part5_dictionary = function(metadatadir, params_output) {
   }
   reports = reports[!is.na(reports)]
   if (!exists("baseDictionary")) return()
+  generic_defs = c() # definitions of the main reports, reused for the type reports
   # read col names of each report and derive definitions
   for (ri in 1:length(reports)) {
     # read report
@@ -50,11 +97,15 @@ g.report.part5_dictionary = function(metadatadir, params_output) {
     for (coli in 1:length(cnames)) {
       # definitions will be a combination of what, window, when (only for LUX segments), class, unit
       what = window = class = unit = NULL
+      # split up variable name
+      elements = unlist(strsplit(cnames[coli], "[.]|_"))
       # get variable names from baseDictionary
-      nam = gsub("_pla|_wei|_WD|_WE", "", cnames[coli])
+      nam = gsub("_pla$|_wei$|_WD$|_WE$", "", cnames[coli])
       if (grepl("Nvalid", cnames[coli])) nam = cnames[coli]
       if (nam %in% names(baseDictionary)) {
         what = baseDictionary[[nam]]
+      } else if (nam %in% names(extraDictionary)) {
+        what = extraDictionary[[nam]]
       }
       # if the variable is not in baseDictionary, extract definition:
       if (is.null(what)) {
@@ -116,7 +167,7 @@ g.report.part5_dictionary = function(metadatadir, params_output) {
           if (any(grepl("hr", elements))) {
             t1 = elements[grep("hr", elements)]; t1 = gsub("hr", ":00", t1)
             t0 = elements[grep("hr", elements) - 1]
-            if (nchar(t0) == 1) t0 = paste0(t0, ":00")
+            if (nchar(t0) <= 2) t0 = paste0(t0, ":00")
             what = paste(what, "in the segment from", t0, "to", t1)
           }
         }
@@ -157,7 +208,7 @@ g.report.part5_dictionary = function(metadatadir, params_output) {
         }
         # CLASS ------------------------------------------------------------
         classes = c("IN", "LIG", "LIPA", "MOD", "VIG", "MVPA", "PA", 
-                    "sleep", "nonwear", "mostactive60min", "mostactive30min",
+                    "sleep", "nonwear", "nap", "mostactive60min", "mostactive30min",
                     "IN2PA", "PA2IN", "IN2LIPA", "IN2MVPA", "sleep2wake", "wake2sleep")
         x = elements[which(elements %in% classes)]
         class = getclass(x)
@@ -169,10 +220,21 @@ g.report.part5_dictionary = function(metadatadir, params_output) {
         # wakefulness after sleep onset (overwrite prev classification of intensity)
         if ("wake" %in% elements) class = paste("awake", class)
         # bouts
-        if ("bts" %in% elements & !("Nbouts" %in% elements)) {
+        if ("bts" %in% elements) {
           numbers = suppressWarnings(as.numeric(elements))
           boutdur = numbers[!is.na(numbers)]
-          class = paste("bouts of", paste(boutdur, collapse = "-"), "min", class)
+          # the longest bout category has no upper limit, e.g. bts_10 = 10 min or longer
+          if (length(boutdur) == 1) {
+            boutdur_text = paste("at least", boutdur, "min")
+          } else {
+            boutdur_text = paste(paste(boutdur, collapse = "-"), "min")
+          }
+          if ("Nbouts" %in% elements) {
+            what = paste("Number of bouts of", boutdur_text, class)
+            class = NULL
+          } else {
+            class = paste("bouts of", boutdur_text, class)
+          }
         }
         # unbouted time
         if ("unbt" %in% elements & !("Nbouts" %in% elements)) {
@@ -288,5 +350,82 @@ g.report.part5_dictionary = function(metadatadir, params_output) {
     data.table::fwrite(dictionary, file = file.path(directory, fn), 
                        row.names = FALSE, na = "", sep = params_output[["sep_reports"]],
                        dec = params_output[["dec_reports"]])
+    generic_defs = c(generic_defs, setNames(dictionary$Definition, dictionary$Variable))
+  }
+  # -------------------------------------------------------------------------
+  # reports of external function outputs with reporttype "type":
+  # part5_extfuntype_<output>_daysummary_* and part5_extfuntype_<output>_personsummary_*
+  typereports = dir(file.path(metadatadir, "results"), full.names = TRUE,
+                    pattern = "^part5_extfuntype_.*_(daysummary|personsummary)_.*\\.csv$")
+  if (length(typereports) == 0) return()
+  typeoutputs = unique(sub("^part5_extfuntype_(.+)_(daysummary|personsummary)_.*$", "\\1",
+                           basename(typereports)))
+  for (tm in typeoutputs) {
+    for (rtype in c("daysummary", "personsummary")) {
+      # one dictionary per output and report type, as variables are the same across configurations
+      report = grep(paste0("^part5_extfuntype_", tm, "_", rtype, "_"), basename(typereports))[1]
+      if (is.na(report)) next
+      R = data.table::fread(typereports[report], verbose = FALSE, nrows = 2)
+      cnames = colnames(R)
+      dictionary = data.frame(Variable = cnames, Definition = NA)
+      for (coli in 1:length(cnames)) {
+        x = cnames[coli]
+        agg = ""
+        if (rtype == "personsummary") {
+          suffix = regmatches(x, regexpr("_(pla|wei|WD|WE)$", x))
+          if (length(suffix) == 1) {
+            agg = switch(suffix, "_pla" = " - plain average", "_wei" = " - weighted average",
+                         "_WD" = " - weekdays average", "_WE" = " - weekend days average")
+            x = sub("_(pla|wei|WD|WE)$", "", x)
+          }
+        }
+        def = NA
+        typepattern = paste0("^", tm, "_(dur|ACC|Nblocks|Nbouts)_(day|spt)_(.+)$")
+        if (grepl(typepattern, x)) {
+          what = sub(typepattern, "\\1", x)
+          window = sub(typepattern, "\\2", x)
+          r = sub("_(min|mg)$", "", sub(typepattern, "\\3", x))
+          if (grepl("^total_", r)) {
+            category = sub("^total_", "", r)
+            boutText = "in all time"
+          } else if (grepl("_unbt$", r)) {
+            category = sub("_unbt$", "", r)
+            boutText = "outside bouts (unbouted time)"
+          } else if (grepl("_bts_[0-9.]+(_[0-9.]+)?$", r)) {
+            category = sub("_bts_[0-9.]+(_[0-9.]+)?$", "", r)
+            bts = unlist(strsplit(sub("^.*_bts_", "", r), "_"))
+            boutText = ifelse(length(bts) == 1,
+                              paste0("in bouts of at least ", bts[1], " min"),
+                              paste0("in bouts of ", bts[1], " to ", bts[2], " min"))
+          } else {
+            category = r
+            boutText = ""
+          }
+          if (what == "Nbouts") {
+            boutText = sub("^in bouts of ", "", boutText)
+            start = paste0("Number of bouts of ", boutText, " of time")
+            boutText = ""
+          } else {
+            start = switch(what, dur = "Time (minutes)",
+                           ACC = "Mean acceleration (mg) during the time",
+                           Nblocks = "Number of uninterrupted blocks of time")
+          }
+          def = paste0(start, " classified as '", category, "' by external function output ", tm, " ",
+                       boutText, ", ",
+                       ifelse(window == "day", "during the waking hours (outside the sleep period time)",
+                              "during the sleep period time"), agg)
+          def = gsub("\\s+", " ", gsub(" ,", ",", def))
+        } else if (cnames[coli] %in% names(generic_defs)) {
+          def = generic_defs[[cnames[coli]]]
+        } else if (x %in% names(generic_defs)) {
+          def = paste0(generic_defs[[x]], agg)
+        }
+        dictionary[coli, "Definition"] = def
+      }
+      fn = paste0("part5_dictionary_extfuntype_", tm, "_", rtype, ".csv")
+      data.table::fwrite(dictionary, file = file.path(directory, fn),
+                         row.names = FALSE, na = "", sep = params_output[["sep_reports"]],
+                         dec = params_output[["dec_reports"]])
+    }
   }
 }

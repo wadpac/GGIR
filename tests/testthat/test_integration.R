@@ -256,6 +256,19 @@ test_that("All GGIR parts work together (integration test)", {
   expect_true(file.exists("output_test/results/part5_daysummary_MM_L40M100V400_T5A5.csv"))
   expect_true(file.exists("output_test/results/part5_daysummary_WW_L40M100V400_T5A5.csv"))
   expect_true(file.exists("output_test/results/part5_daysummary_OO_L40M100V400_T5A5.csv"))
+  # data dictionaries: one per report and a definition for every variable
+  dictdir = "output_test/results/variableDictionary"
+  dictionaries = dir(dictdir, full.names = TRUE)
+  expect_true(all(c("part2_dictionary_summary.csv", "part2_dictionary_daysummary.csv",
+                    "part2_dictionary_data_quality_report.csv",
+                    "part4_dictionary_nightsummary.csv", "part4_dictionary_summary.csv",
+                    "part5_dictionary_daysummary.csv",
+                    "part5_dictionary_personsummary.csv") %in% basename(dictionaries)))
+  for (dict in dictionaries) {
+    D = read.csv(dict, check.names = FALSE)
+    expect_equal(D$Variable[is.na(D$Definition) | D$Definition == ""], character(0),
+                 info = basename(dict))
+  }
   dn = "output_test"
   
   # Expect warning when unknown parameters are provided
