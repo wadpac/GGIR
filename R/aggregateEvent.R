@@ -187,9 +187,9 @@ aggregateEvent = function(metric_name, epochsize,
                                   LXMXwindow_name); fi = fi + 1
             if (length(params_247[["qM5L5"]]) > 0) {
               for (qle in params_247[["qM5L5"]]) {
-                daysummary[di, fi] = quantile(x = vari[WXi, acc.metrics[ami]], probs = qle)
+                daysummary[di, fi] = quantile(x = vari[WXi, acc.metrics[ami]], probs = qle) * 1000
                 ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_q",
-                                      qle * 100, "acc", event_suffix,
+                                      qle * 100, "_", acc.metrics[ami], "_mg", event_suffix,
                                       LXMXwindow_name); fi = fi + 1
               }
             }
