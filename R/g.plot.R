@@ -187,9 +187,11 @@ g.plot = function(IMP, M, I, durplot) {
         YTICKS = round(c(0, YLIM[2] * 1/4, YLIM[2] * 2/4, YLIM[2] * 3/4, YLIM[2]))
       }
     } else {
+      # Metric is on a g scale, convert to mg
+      Acceleration = Acceleration * 1000
       ylabel = expression(paste("Acceleration (m", italic("g"), ")"))
-      YLIM = c(0, 0.6)
-      YTICKS = c(0, 0.2, 0.4, 0.6)
+      YLIM = c(0, 600)
+      YTICKS = c(0, 200, 400, 600)
     }
     plot(timeline, Acceleration, type = "l", bty = "l",
          lwd = 0.1, axes = FALSE, cex.lab = 0.8,
