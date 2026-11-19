@@ -157,7 +157,7 @@ g.analyse.perfile = function(I, C, metrics_nav,
                                   "filehealth_ExtSleep_y_ExtAct_missing")
     filesummary[vi:(vi + 9)] = file_summary[, Fitbit_filehealth_columns]
     s_names[vi:(vi + 9)] = Fitbit_filehealth_columns
-    vi = vi = 10
+    vi = vi + 10
   }
   #quantile, ML5, and intensity gradient variables
   if (doquan == TRUE) {
