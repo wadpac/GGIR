@@ -10,8 +10,9 @@
   - [ ] Function documentation
   - [ ] Chapter vignettes for GitHub IO
   - [ ] Vignettes for CRAN
+  - [ ] Data dictionaries: if columns were added to or renamed in the output reports, their definitions are included in the corresponding `g.report.part*_dictionary` function (check with `dev-functions/reviewDictionaries.R`)
 - [ ] Corresponding issue tagged in PR message. If no issue exist, please create an issue and tag it.
-- [ ] Updated release notes in `inst/NEWS.Rd` with a user-readable summary. Please, include references to relevant issues or PR discussions.
+- [ ] Updated release notes in `NEWS.md` with a user-readable summary. Please, include references to relevant issues or PR discussions.
 - [ ] If you think you made a significant contribution, add your name to the contributors lists in the `DESCRIPTION`, `zenodo.json`, and `inst/CITATION` files.
 - [ ] GGIR parameters were added/removed. If yes, please also complete checklist below.
 
@@ -20,12 +21,12 @@
 - [ ] included with a default in `R/load_params.R`
 - [ ] included with value class check in `R/check_params.R`
 - [ ] included in table of `vignettes/GGIRParameters.Rmd` with references to the GGIR parts the parameter is used in.
-- [ ] mentioned in NEWS.Rd as NEW parameter
+- [ ] mentioned in NEWS.md as NEW parameter
 
 **If GGIR parameter(s) were deprecated these parameter(s) are:**
 - [ ] documented as deprecated in `man/GGIR.Rd`
 - [ ] removed from `R/load_params.R`
 - [ ] removed from `R/check_params.R`
 - [ ] removed from table in `vignettes/GGIRParameters.Rmd`
-- [ ] mentioned as deprecated parameter in NEWS.Rd
+- [ ] mentioned as deprecated parameter in NEWS.md
 - [ ] added to the list in `R/extract_params.R` with deprecated parameters such that these do not produce warnings when found in old config.csv files.

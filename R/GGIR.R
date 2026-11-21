@@ -427,6 +427,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       g.report.part2(metadatadir = metadatadir, f0 = f0, f1 = f1,
                      store.long = store.long, params_output,
                      verbose = verbose, desiredtz = params_general[["desiredtz"]])
+      g.report.part2_dictionary(metadatadir = metadatadir, params_output = params_output)
     }
   }
   if (length(which(do.report == 4)) > 0) {
@@ -440,6 +441,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
                      data_cleaning_file = params_cleaning[["data_cleaning_file"]],
                      params_sleep = params_sleep, params_output = params_output,
                      verbose = verbose)
+      g.report.part4_dictionary(metadatadir = metadatadir, params_output = params_output)
     }
   }
   if (length(which(do.report == 5)) > 0) {
@@ -467,6 +469,7 @@ GGIR = function(mode = 1:5, datadir = c(), outputdir = c(),
       g.report.part6(metadatadir = metadatadir, f0 = f0, f1 = f1,
                      params_cleaning = params_cleaning, params_output = params_output,
                      verbose = verbose)
+      g.report.part6_dictionary(metadatadir = metadatadir, params_output = params_output)
     }
   }
   if (params_output[["visualreport"]] == TRUE) {

@@ -157,7 +157,7 @@ g.analyse.perfile = function(I, C, metrics_nav,
                                   "filehealth_ExtSleep_y_ExtAct_missing")
     filesummary[vi:(vi + 9)] = file_summary[, Fitbit_filehealth_columns]
     s_names[vi:(vi + 9)] = Fitbit_filehealth_columns
-    vi = vi = 10
+    vi = vi + 10
   }
   #quantile, ML5, and intensity gradient variables
   if (doquan == TRUE) {
@@ -175,7 +175,7 @@ g.analyse.perfile = function(I, C, metrics_nav,
     # applied to the averageday per metric (except from angle metrics)
     q1 = length(output_avday$igfullr)
     filesummary[vi:((vi - 1) + q1)] = output_avday$igfullr
-    s_names[vi:((vi - 1) + q1)] = paste0(output_avday$output_avday$igfullr_names, "_fullRecording")
+    s_names[vi:((vi - 1) + q1)] = paste0(output_avday$igfullr_names, "_fullRecording")
     vi = vi + q1
   }
   if (tooshort == 0) {

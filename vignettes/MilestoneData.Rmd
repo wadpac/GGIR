@@ -1,0 +1,246 @@
+---
+title: "GGIR milestone data"
+output:
+   html_document:
+    toc: true
+    number_sections: true
+    toc_depth: 3
+    toc_float: true
+urlcolor: blue
+vignette: >
+  %\VignetteIndexEntry{GGIR milestone data}
+  \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+**NOTE: If you are viewing this page via CRAN note that the main GGIR documentation has been migrated to the [GGIR GitHub pages](https://wadpac.github.io/GGIR/).**
+
+# Introduction
+
+Each GGIR part stores its intermediate results as milestone data in the `meta` subfolder of the output directory (`output_<datadir>/meta/`). The milestone data are RData files, one per recording and part. GGIR uses them to:
+
+- continue the analysis in a later part without repeating the earlier parts,
+- skip recordings that were already processed when `overwrite = FALSE`,
+- generate the csv reports and the visual reports,
+- keep track of the GGIR version used to process each recording in each part (see [GGIR version](#ggir-version) below).
+
+The milestone data are also useful when you want to work with the epoch level time series or with intermediate results that are not stored in the csv reports. This vignette describes the content of the milestone data for each part. The csv reports themselves are described in the [GGIR output](https://wadpac.github.io/GGIR/articles/GGIRoutput.html) annex.
+
+The table below shows where each part stores its milestone data.
+
+| Part | Folder                                   | File name                               | Main objects                          |
+|------|------------------------------------------|-----------------------------------------|---------------------------------------|
+| 1    | meta/basic/                              | meta\_\<filename\>.RData                | M, I, C                               |
+| 2    | meta/ms2.out/                            | \<filename\>.RData                      | SUM, IMP                              |
+| 3    | meta/ms3.out/                            | \<filename\>.RData                      | sib.cla.sum, L5list, SPTE\_start, ... |
+| 4    | meta/ms4.out/                            | \<filename\>.RData                      | nightsummary                          |
+| 5    | meta/ms5.out/                            | \<filename\>.RData                      | output                                |
+| 5    | meta/ms5.outraw/\<thresholds\>/          | \<filename\>\_\<sleepparam\>.RData (or .csv) | mdat, Lnames                     |
+| 6    | meta/ms6.out/                            | \<filename\>.RData                      | output\_part6, cosinor\_ts            |
+
+In addition, if a sleep diary is provided with `loglocation`, GGIR stores the parsed diary as `meta/sleeplog_<name>.RData`, which contains the object `logs_diaries`. This occurs in part 4, when `g.loadlog` reads and parses the sleep diary.
+
+Milestone data can be loaded in R with `load()`. All objects stored in the file appear in your working environment, for example:
+
+```{r, eval=FALSE}
+load("output_mystudy/meta/ms2.out/mydata.bin.RData")
+ls()
+```
+
+**Note:** The structure of the milestone data is meant for internal use by GGIR. We try to keep it as stable as possible across versions, but it may slightly change. We ensure GGIR functionality with older and newer versions and document changes in the new releases. Please, check your own scripts after updating GGIR if they read the milestone data.
+
+# Part 1: meta/basic
+
+Part 1 reads the raw data, applies the auto-calibration, and derives the epoch level time series. The milestone file is called `meta_<filename>.RData` and contains the following objects.
+
+## M: metrics and non-wear scores
+
+`M` is a list. Its main elements are:
+
+| Element       | Description |
+|---------------|-------------|
+| metashort     | Data frame with the short epoch (`windowsizes[1]`, by default 5 seconds) time series. The first column is `timestamp` (character, ISO 8601 format), the other columns are the acceleration metrics requested with the `do.<metric>` parameters (e.g., `ENMO`, `anglez`). Acceleration metrics are expressed in *g*, angles in degrees. If an external function was embedded with `myfun`, its output columns are added here as well. |
+| metalong      | Data frame with the long epoch (`windowsizes[2]`, by default 900 seconds) time series. Columns: `timestamp`, `nonwearscore` (0 to 3, the number of axes that met the non-wear criteria), `clippingscore` (fraction of the samples close to the dynamic range of the sensor), `EN` (mean Euclidean norm), and, when available in the data, `lightmean`, `lightpeak`, and `temperaturemean`. |
+| QClog         | Data frame with information on the data blocks read, e.g., whether a block was corrupt or whether data was imputed (used for the data\_quality\_report). |
+| windowsizes   | Vector with the three window sizes in seconds (short epoch, long epoch, non-wear window). |
+| bsc_qc        | Data frame with the timestamps and the result of the battery and data checks (when available). |
+| wday, wdayname | Day of the week (numeric and name) of the start of the recording. |
+| NFilePagesSkipped | Number of data pages that were skipped while reading the data. |
+| filecorrupt, filetooshort | TRUE when the file is corrupt or too short to be analysed. |
+
+## I: file inspection
+
+`I` is a list with the result of the file inspection done by `g.inspectfile`:
+
+| Element    | Description |
+|------------|-------------|
+| header     | Data frame with the file header information as extracted from the file (device-specific). |
+| monc, monn | Numeric code and name of the device brand (0 = ad-hoc, 2 = GENEActiv, 3 = ActiGraph, 4 = Axivity, 5 = Movisens, 6 = Verisense, 7 = Parmay Matrix). |
+| dformc, dformn | Numeric code and name of the data format (1 = bin, 2 = csv, 4 = cwa, 5 = ad-hoc csv, 6 = gt3x). |
+| sf         | Sample frequency in Hertz. |
+| decn       | Decimal separator (only for csv files). |
+| filename   | Name of the file. |
+
+## C: calibration
+
+`C` is a list with the result of the auto-calibration done by `g.calibrate`:
+
+| Element  | Description |
+|----------|-------------|
+| scale, offset | Scale and offset correction factors per axis. These are applied to the raw data before deriving the metrics. |
+| tempoffset | Temperature offset correction factors per axis (only when temperature is available). |
+| cal.error.start, cal.error.end | Calibration error (in *g*) before and after the auto-calibration. |
+| spheredata | Data frame with the non-movement periods used to fit the calibration sphere. |
+| npoints  | Number of non-movement periods used. |
+| nhoursused | Number of hours of data used for the auto-calibration. |
+| QCmessage | Message describing the result of the auto-calibration. |
+| use.temp | Whether temperature was used in the auto-calibration. |
+| meantempcal | Mean temperature during the calibration periods (only when temperature is used). |
+| bsc_qc | Data frame with the timestamps and the result of the battery and data checks (when available). |
+
+## Other objects
+
+| Object | Description |
+|--------|-------------|
+| filename_dir | Full path of the file. |
+| filefoldername | Name of the folder in which the file is stored. |
+| tail_expansion_log | When the end of the recording was expanded with `recording_end_expansion`, information on the epochs added to the end of the recording; NULL otherwise. Parts 2 to 5 store this object as well. |
+| GGIRversion | GGIR version used to run part 1 for this recording (see [GGIR version](#ggir-version)). |
+| desiredtz_part1 | Time zone (`desiredtz`) used in part 1. Later parts check that the same time zone is used. |
+
+# Part 2: meta/ms2.out
+
+Part 2 does the data quality assessment, the imputation of the non-wear time, and the description of the data per day and per recording. The milestone file contains two objects: `SUM` and `IMP`.
+
+## SUM: summaries
+
+| Element    | Description |
+|------------|-------------|
+| summary    | Data frame with one row with the person level summary. It is the basis of `part2_summary.csv` (see `results/variableDictionary/part2_dictionary_summary.csv` for the definition of each column). |
+| daysummary | Data frame with one row per day. It is the basis of `part2_daysummary.csv` (see `results/variableDictionary/part2_dictionary_daysummary.csv` for the definition of each column). |
+| cosinor_ts | Data frame with the time series of the cosinor analysis over the full recording (only when `cosinor = TRUE`). Columns: `time` (clock time in hours), `time_across_days` (hours since the start of the time series), `original` (acceleration averaged per minute, in m*g* if the metric is in *g*, log transformed as `log(acceleration + 1)`, with invalid data set to `NA`), `fittedY` (fitted cosinor model), and `fittedYext` (fitted extended cosinor model). These time series are not used by GGIR but can be used to plot the fitted models, see the [Circadian Rhythm chapter](https://wadpac.github.io/GGIR/articles/chapter13_CircadianRhythm.html). |
+
+## IMP: imputed time series
+
+| Element    | Description |
+|------------|-------------|
+| metashort  | Data frame with the short epoch time series after imputation. Same columns as `M$metashort` from part 1. Non-wear and clipping periods, and the periods masked by the study protocol, are imputed by the average of the same time of day on the other days of the recording. |
+| rout       | Data frame with the long epoch classification of the data, with columns r1 to r5: `r1` = non-wear (1) or wear (0); `r2` = clipping, i.e., `clippingscore` above 0.3; `r3` = additional non-wear (wear periods shorter than 3 hours surrounded by non-wear); `r4` = data masked by the study protocol (`data_masking_strategy`); `r5` = invalid data, the combination of r1 to r4 used for the imputation. In r5, a value of -1 marks the epochs added with `recording_end_expansion`. |
+| r5long     | Vector with r5 expanded to the resolution of the short epoch. |
+| dcomplscore | Fraction of the 24 hours of the day covered by valid data (completeness score). |
+| averageday | Matrix with the average day (one row per short epoch in 24 hours, one column per metric) used for the imputation. |
+| windowsizes | Window sizes used (see part 1). |
+| data_masking_strategy, hrs.del.start, hrs.del.end, maxdur | The data masking settings that were applied. |
+| LC  | Number of long epochs with a `clippingscore` above 0.05. |
+| LC2 | Number of long epochs with a `clippingscore` above 0.3 (classified as clipping in r2). |
+| nonwearHoursFiltered, nonwearEventsFiltered | Hours and number of non-wear events that were removed by the `nonwear_range_threshold` filter. |
+
+**Tip:** The column `IMP$metashort` is the time series that is used by parts 3, 5, and 6. If you want to reproduce your own analyses on the same data that GGIR used, start from this object.
+
+# Part 3: meta/ms3.out
+
+Part 3 detects the sustained inactivity bouts (SIB) and estimates the sleep period time window (SPT) per night with the guider. The milestone file contains:
+
+| Object | Description |
+|--------|-------------|
+| sib.cla.sum | Data frame with one row per SIB, with columns `night`, `definition` (SIB definition, e.g., T5A5), `start.time.day` (start of the noon-to-noon window), `nsib.periods` (number of SIB in the night), `tot.sib.dur.hrs` (total SIB duration in the night, hours), `fraction.night.invalid`, `sib.period` (SIB number in the night), and `sib.onset.time` and `sib.end.time` (start and end of the SIB). Part 4 uses this object to derive the sleep estimates. |
+| L5list | Vector with the midpoint of the least active 5 hours per day (hours since the previous midnight). Used as fall-back guider. |
+| SPTE_start, SPTE_end | Vectors with the start and end of the SPT per night as estimated with the guider (hours since the previous midnight). |
+| tib.threshold | Threshold used by the guider per night (e.g., the HDCZA angle threshold). |
+| desiredtz_part1 | Time zone used in part 1. |
+| part3_guider | Guider used per night (e.g., HDCZA, HorAngle, NotWorn, L512). |
+| SPTE_corrected | Whether the SPT was corrected with `guider_cor_do` per night (0 = not corrected; 1 = window expanded with neighbouring windows; 2 = main guider window changed; 3 = both). |
+| rec_starttime | Start time of the recording. |
+| ID | File/participant identifier. |
+| longitudinal_axis | Longitudinal axis of the accelerometer detected by the HorAngle guider (only for hip-worn data, NULL otherwise). |
+| SleepRegularityIndex | Data frame with the Sleep Regularity Index based on the SIB (SRI1) per day pair, with columns `day`, `SleepRegularityIndex`, `weekday`, `frac_valid`, and `date`. It is reported per night in part 4 as `SleepRegularityIndex1`. The SleepRegularityIndex2 is not stored here: it is calculated in part 6 from the part 5 time series (see `output_part6`). |
+
+When `do.part3.pdf = TRUE`, part 3 also stores a pdf per recording in `meta/sleep.qc/`; this is described in the [Visual reports](https://wadpac.github.io/GGIR/articles/VisualReports.html) annex.
+
+# Part 4: meta/ms4.out
+
+Part 4 combines the SIB from part 3 with the guider and, if available, the sleep diary, to estimate sleep per night. The milestone file contains:
+
+| Object | Description |
+|--------|-------------|
+| nightsummary | Data frame with one row per night and SIB definition, before the cleaning done in `g.report.part4`. The columns are the same as in `part4_nightsummary_sleep_full.csv` (see `results/variableDictionary/part4_dictionary_nightsummary.csv` for their definitions). Part 5 uses this object to align the waking and sleep windows. |
+
+The sleep diary as read by GGIR is stored in `meta/sleeplog_<name>.RData`, in the object `logs_diaries`. It is a list with the elements `sleeplog` (sleep onset and wake up per night and ID), `nonwearlog` (non-wear periods in the diary), `naplog` (naps in the diary), `bedlog` (in bed periods when available), `imputecodelog` (whether the diary entries of a night were imputed), and `dateformat`.
+
+# Part 5: meta/ms5.out and meta/ms5.outraw
+
+## ms5.out
+
+| Object | Description |
+|--------|-------------|
+| output | Data frame with one row per window (day or waking-waking window, as defined with `timewindow`) and per combination of SIB definition and intensity thresholds. It is the basis of `part5_daysummary_*.csv`, and the person level aggregates in `part5_personsummary_*.csv` are derived from it (see `results/variableDictionary/part5_dictionary_daysummary.csv` for the definition of each column). |
+| last_timestamp | Last timestamp of the recording (used to check the windows at the end of the recording). |
+
+## ms5.outraw
+
+If `save_ms5rawlevels = TRUE`, part 5 also stores the epoch level time series with the behavioural classes in `meta/ms5.outraw/<thresholds>/`, where `<thresholds>` is the combination of the light, moderate and vigorous thresholds (e.g., `40_100_400`). The format is defined with `save_ms5raw_format` (`"csv"` and/or `"RData"`); the RData format is always stored when `part6CR` or `part6HCA` is TRUE, because part 6 reads it. The csv files contain `mdat` only. The visual report (`visualreport = TRUE`) requires these files.
+
+The ms5.outraw files are named `<filename>_<sleepparam>.RData` or `<filename>_<sleepparam>.csv`, where `<sleepparam>` is the SIB definition (e.g., T5A5).
+
+| Object | Description |
+|--------|-------------|
+| mdat | Data frame with one row per short epoch. The columns are described in the [Time-Use Analysis chapter](https://wadpac.github.io/GGIR/articles/chapter12_TimeUseAnalysis.html#time-series-output-files). The main columns are `timenum` (Unix time), `ACC` (acceleration in mg), `SleepPeriodTime` (1 = inside the SPT), `invalidepoch` (1 = invalid epoch), `guider` (numeric code of the guider), `window` (window number), `angle`, `class_id` (behavioural class, see `Lnames`), `invalid_fullwindow`, `invalid_sleepperiod`, `invalid_wakinghours` (percentage of invalid epochs in the window, its sleep period, and its waking hours), `sibdetection` (0 = no SIB, 1 = SIB, 2 = nap), and, when available, `lightpeak`, `temperature`, `marker`, and `step_count`. |
+| Lnames | Names of the behavioural classes corresponding to `class_id`. The same information is stored in the file `behavioralcodes<date>.csv` in the same folder. |
+| filename | Name of the file. |
+| desiredtz_part1 | Time zone used to derive the timestamps. |
+
+## sib.reports (do.sibreport)
+
+With `do.sibreport = TRUE` (default), part 5 writes one csv file per recording and SIB definition to `meta/ms5.outraw/sib.reports/sib_report_<filename>_<sleepparam>.csv`. This report brings together, in one table, the SIB that the accelerometer detected outside the sleep period time window and the entries of the sleep diary, so that they can be compared. Each row is one event:
+
+| Column | Description |
+|--------|-------------|
+| ID | File/participant identifier. |
+| type | Type of event: `sib` (SIB detected by the accelerometer during the waking hours), or, when a sleep diary is provided with `loglocation`, `nap` (self-reported nap), `nonwear` (self-reported non-wear), `sleeplog` (self-reported sleep period) or `bedlog` (self-reported time in bed). |
+| start, end | Start and end of the event (date and time in `desiredtz`). |
+| duration | Duration of the event (minutes). |
+| mean_acc_1min_before, mean_acc_1min_after | Mean acceleration (mg) in the minute before and after the SIB (only for `type = sib`; 0 when the minute falls outside the recording). |
+| imputecode | Imputation code of the diary entry as provided in the sleep diary (only for `sleeplog` and `bedlog`, and only when the diary contains imputation codes). |
+
+Note that SIB within the sleep period time window are not included; these are summarised per night in part 4.
+
+Next to this csv file, `do.sibreport = TRUE` has the following effects in part 5:
+
+- The diary entries are added to the time series as the column `selfreported` (with the values `sleeplog`, `bedlog`, `nap`, `nonwear`, or combinations such as `nap+nonwear` when entries overlap), which is stored in the ms5.outraw files.
+- When `possible_nap_window` and `possible_nap_dur` are specified, part 5 calculates the overlap between the SIB and the self-reported naps and non-wear (the `sibreport_n_items`, `nbouts_day_*`, `noverl_*`, `mdur_*`, `tdur_*`, and `perc_*` columns in the part 5 reports, see `results/variableDictionary/part5_dictionary_daysummary.csv`). Setting these parameters switches `do.sibreport` on automatically.
+- The visual report uses the diary entries to draw the diary bar in each row.
+
+See the [Nap Detection](https://wadpac.github.io/GGIR/articles/NapDetection.html) annex for how these outputs are used in nap research.
+
+# Part 6: meta/ms6.out
+
+Part 6 does the circadian rhythm and fragmentation analyses on the full recording. The milestone file contains:
+
+| Object | Description |
+|--------|-------------|
+| output_part6 | Data frame with one row per recording. It is the basis of `part6_summary.csv`. See `results/variableDictionary/part6_dictionary_summary.csv` for the definition of each column. |
+| cosinor_ts | Data frame with the time series of the cosinor analysis, with the same columns as `SUM$cosinor_ts` in part 2, but restricted to the valid data within `part6Window` (only when `part6CR = TRUE` and the recording has more than 2 valid days). |
+
+# GGIR version
+
+The processing of a large study can take weeks, and in the meantime GGIR may be updated. As a result, different parts, or even different recordings within the same part, may have been processed with different GGIR versions. To make this traceable, the milestone file of every part stores the object `GGIRversion` with the version of GGIR that was used to generate that specific file:
+
+| Milestone data | `GGIRversion` object | Also stored as column |
+|----------------|----------------------|-----------------------|
+| meta/basic (part 1) | `package_version` object, e.g. `3.4.1` | - |
+| meta/ms2.out (part 2) | `package_version` object | - |
+| meta/ms3.out (part 3) | `package_version` object | - |
+| meta/ms4.out (part 4) | character | `nightsummary$GGIRversion` |
+| meta/ms5.out (part 5) | character | `output$GGIRversion` |
+| meta/ms6.out (part 6) | character | `output_part6$GGIRversion` |
+
+Use `as.character(GGIRversion)` to compare the versions across parts. The time series in `meta/ms5.outraw` and the sleep diary file (`meta/sleeplog_<name>.RData`) do not store the GGIR version (yet they are produced with their corresponding part 4 and part 5 milestone data, thus you can check versions in `meta/ms4.out` and `meta/ms5.out`).
+
+The `GGIR version` column in `part2_summary.csv` and the `GGIRversion` columns in the part 4, 5, and 6 reports are taken from the milestone data, so they show the version used to process that recording in that part (which is not necessarily the version used to generate the report). If you update GGIR in the middle of a study and want all recordings to be processed with the same version, you can rerun the affected parts with `overwrite = TRUE`.
+
+To check which version was used for a recording in, for example, part 3:
+
+```{r, eval=FALSE}
+load("output_mystudy/meta/ms3.out/mydata.bin.RData")
+as.character(GGIRversion)
+```

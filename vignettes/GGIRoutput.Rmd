@@ -19,8 +19,31 @@ GGIR generates the following types of output:
 
 -   csv-spreadsheets with all the variables you need for physical activity, sleep and circadian rhythm research
 -   .png images with on each image a low time resolution plot of the data per file and quality indicators
--   .RData files with milestone data
--   Pdfs with a visual summary of the physical activity and sleep patterns as identified (see example below)
+-   .RData files with milestone data, described in the [GGIR milestone data](https://wadpac.github.io/GGIR/articles/MilestoneData.html) annex
+-   Pdfs with a visual summary of the physical activity and sleep patterns as identified (see example below), described in the [GGIR visual reports](https://wadpac.github.io/GGIR/articles/VisualReports.html) annex
+-   csv files with a data dictionary for each report, stored in `results/variableDictionary` (see [Data dictionaries](#data-dictionaries))
+
+# Data dictionaries
+
+For each csv report in the `results` folder, GGIR writes a data dictionary to `results/variableDictionary/`. A data dictionary is a csv file with two columns: `Variable`, with the column names of the report, and `Definition`, with the definition of each column. Because many column names are built from the parameters used (e.g., day segments, intensity thresholds, bout durations), the definitions are derived from the column names of your own reports, so they always match the variables in your output. Variables for which no definition could be derived have an empty definition.
+
+| Part | Function | Report | Dictionary |
+|------|----------|--------|------------|
+| 2 | `g.report.part2_dictionary` | part2\_summary.csv | part2\_dictionary\_summary.csv |
+| 2 | | part2\_daysummary.csv | part2\_dictionary\_daysummary.csv |
+| 2 | | part2\_daysummary\_longformat.csv | part2\_dictionary\_daysummary\_longformat.csv |
+| 2 | | part2\_\*eventsummary.csv | part2\_dictionary\_\*eventsummary.csv |
+| 2 | | part2\_\*typesummary.csv | part2\_dictionary\_\*typesummary.csv |
+| 2 | | QC/data\_quality\_report.csv | part2\_dictionary\_data\_quality\_report.csv |
+| 4 | `g.report.part4_dictionary` | part4\_nightsummary\_sleep\_cleaned.csv | part4\_dictionary\_nightsummary.csv |
+| 4 | | part4\_summary\_sleep\_cleaned.csv | part4\_dictionary\_summary.csv |
+| 5 | `g.report.part5_dictionary` | part5\_daysummary\_\*.csv | part5\_dictionary\_daysummary.csv |
+| 5 | | part5\_personsummary\_\*.csv | part5\_dictionary\_personsummary.csv |
+| 5 | | part5\_extfuntype\_\<output\>\_daysummary\_\*.csv | part5\_dictionary\_extfuntype\_\<output\>\_daysummary.csv |
+| 5 | | part5\_extfuntype\_\<output\>\_personsummary\_\*.csv | part5\_dictionary\_extfuntype\_\<output\>\_personsummary.csv |
+| 6 | `g.report.part6_dictionary` | part6\_summary.csv | part6\_dictionary\_summary.csv |
+
+The dictionaries are generated automatically together with the reports (`do.report`). For part 4, the dictionaries are based on the cleaned reports, or on the full reports in `results/QC` when no cleaned reports are available. For part 5, one dictionary is written per report type, because the column names are the same across the combinations of thresholds and SIB definitions. You can also generate them for an existing output folder, for example: `g.report.part2_dictionary(metadatadir = "output_mystudy", params_output = list(sep_reports = ",", dec_reports = "."))`.
 
 # GGIR Part 1
 
@@ -33,7 +56,7 @@ Part 2 generates the following output:
 -   part2_summary.csv: Person level summary (see below)
 -   part2_daysummary.csv: Day level summary (see below)
 -   QC/data_quality_report.csv: Overview of calibration results and whether or not a file was corrupt or too short to be processed,
--   QC/plots_part2: A folder with .png files holding a visualisation of the acceleration time series in 15 minute resolution and with invalid data segments highlighted in colours (yellow: non-wear based on standard deviation threshold, brown: non-wear after extra filtering step (introduced in 2013), and purple: clipping)
+-   QC/plots_part2: A folder with .png files holding a visualisation of the acceleration time series in 15 minute resolution and with invalid data segments (non-wear, signal clipping, and data masked by the study protocol) highlighted, see the [GGIR visual reports](https://wadpac.github.io/GGIR/articles/VisualReports.html) annex for a detailed description
 
 ## Person level summary (csv)
 

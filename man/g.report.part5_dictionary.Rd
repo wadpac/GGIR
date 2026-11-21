@@ -27,9 +27,12 @@ g.report.part5_dictionary(metadatadir, params_output)
   Function does not produce data, but only writes data dictionaries for the
   reports in csv format
   
-  The following files are stored in the root of the results folder:
-  part5_dictionary_daysummary_*
-  part5_dictionary_personsummary_*
+  The following files are stored in the folder results/variableDictionary:\cr
+  part5_dictionary_daysummary.csv\cr
+  part5_dictionary_personsummary.csv\cr
+  part5_dictionary_extfuntype_<output>_daysummary.csv and
+  part5_dictionary_extfuntype_<output>_personsummary.csv
+  (only if an external function with reporttype "type" is used)
 }
 
 \author{

@@ -154,44 +154,48 @@ aggregateEvent = function(metric_name, epochsize,
       # Describe for MX and LX:
       LXMXwindow_name = anwi_nameindices[anwi_index]
       for (WX in c("L", "M")) {
-        if (!all(is.na(MXLXout[, grep("M", names(MXLXout))]))) {
+        # When LX/MX cannot be calculated (e.g., segment shorter than winhr),
+        # the variables are still stored (as NA) to keep the columns aligned
+        # across days
+        LXMXavailable = !all(is.na(MXLXout[, grep("M", names(MXLXout))]))
+        if (LXMXavailable) {
           i0 = MXLXout[, grep(paste0("start_", WX, winhr_value), names(MXLXout))]
           i1 = MXLXout[, grep(paste0("end_", WX, winhr_value), names(MXLXout))]
           WXi = i0:i1
-          # # Code used to help check that MXLX makes sense with real study data
-          # x11()
-          # plot(cadence, type = "l")
-          # lines(WXi, cadence[WXi], type = "l", col = "red")
-          
-          # Timing
-          daysummary[di, fi] = MXLXout[, which(names(MXLXout) == paste0(WX, winhr_value, "hr"))]
-          ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "hr_cad",
-                                event_suffix, LXMXwindow_name); fi = fi + 1
-          # cadence in the form of mean, percentiles.
-          daysummary[di, fi] = mean(cadence[WXi])
-          ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_meancad",
-                                event_suffix, LXMXwindow_name); fi = fi + 1
+        }
+        # # Code used to help check that MXLX makes sense with real study data
+        # x11()
+        # plot(cadence, type = "l")
+        # lines(WXi, cadence[WXi], type = "l", col = "red")
+        
+        # Timing
+        daysummary[di, fi] = MXLXout[, which(names(MXLXout) == paste0(WX, winhr_value, "hr"))]
+        ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "hr_cad",
+                              event_suffix, LXMXwindow_name); fi = fi + 1
+        # cadence in the form of mean, percentiles.
+        daysummary[di, fi] = ifelse(LXMXavailable, mean(cadence[WXi]), NA)
+        ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_meancad",
+                              event_suffix, LXMXwindow_name); fi = fi + 1
+        if (length(params_247[["qM5L5"]]) > 0) {
+          for (qle in params_247[["qM5L5"]]) {
+            daysummary[di, fi] = ifelse(LXMXavailable, quantile(x = cadence[WXi], probs = qle), NA)
+            ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_q",
+                                  qle * 100, "cad", event_suffix,
+                                  LXMXwindow_name); fi = fi + 1
+          }
+        }
+        for (ami in 1:length(acc.metrics)) {
+          # Acceleration in the form of mean, percentiles.
+          daysummary[di, fi] = ifelse(LXMXavailable, mean(vari[WXi, acc.metrics[ami]]) * 1000, NA)
+          ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_mean_",
+                                acc.metrics[ami], "_mg", event_suffix,
+                                LXMXwindow_name); fi = fi + 1
           if (length(params_247[["qM5L5"]]) > 0) {
             for (qle in params_247[["qM5L5"]]) {
-              daysummary[di, fi] = quantile(x = cadence[WXi], probs = qle)
+              daysummary[di, fi] = ifelse(LXMXavailable, quantile(x = vari[WXi, acc.metrics[ami]], probs = qle) * 1000, NA)
               ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_q",
-                                    qle * 100, "cad", event_suffix,
+                                    qle * 100, "_", acc.metrics[ami], "_mg", event_suffix,
                                     LXMXwindow_name); fi = fi + 1
-            }
-          }
-          for (ami in 1:length(acc.metrics)) {
-            # Acceleration in the form of mean, percentiles.
-            daysummary[di, fi] = mean(vari[WXi, acc.metrics[ami]]) * 1000
-            ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_mean_",
-                                  acc.metrics[ami], "_mg", event_suffix,
-                                  LXMXwindow_name); fi = fi + 1
-            if (length(params_247[["qM5L5"]]) > 0) {
-              for (qle in params_247[["qM5L5"]]) {
-                daysummary[di, fi] = quantile(x = vari[WXi, acc.metrics[ami]], probs = qle)
-                ds_names[fi] = paste0("ExtFunEvent_", WX, winhr_value, "_cad_q",
-                                      qle * 100, "acc", event_suffix,
-                                      LXMXwindow_name); fi = fi + 1
-              }
             }
           }
         }
