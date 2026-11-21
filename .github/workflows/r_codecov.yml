@@ -26,6 +26,8 @@ jobs:
           needs: coverage
 
       - name: Test coverage
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: |
           covr::codecov(
             quiet = FALSE,
