@@ -131,9 +131,9 @@
     },
     "Hmisc": {
       "Package": "Hmisc",
-      "Version": "5.3-0",
+      "Version": "5.3-1",
       "Source": "Repository",
-      "Date": "2026-09-05",
+      "Date": "2026-11-14",
       "Title": "Harrell Miscellaneous",
       "Authors@R": "c(person(given   = \"Frank E\", family  = \"Harrell Jr\", role    = c(\"aut\", \"cre\"), email   = \"fh@fharrell.com\", comment = c(ORCID = \"0000-0002-8271-5493\")), person(given   = \"Cole\", family  = \"Beck\", role    = c(\"ctb\"), email   = \"cole.beck@vumc.org\" ), person(given   = \"Charles\", family  = \"Dupont\", role    = \"ctb\") )",
       "Depends": [
@@ -197,7 +197,7 @@
       "LazyLoad": "Yes",
       "URL": "https://hbiostat.org/R/Hmisc/",
       "Encoding": "UTF-8",
-      "Config/roxygen2/version": "8.1.0",
+      "Config/roxygen2/version": "8.1.1",
       "NeedsCompilation": "yes",
       "Author": "Frank E Harrell Jr [aut, cre] (ORCID: <https://orcid.org/0000-0002-8271-5493>), Cole Beck [ctb], Charles Dupont [ctb]",
       "Maintainer": "Frank E Harrell Jr <fh@fharrell.com>",
@@ -402,7 +402,7 @@
     },
     "S7": {
       "Package": "S7",
-      "Version": "0.2.2",
+      "Version": "1.0.0",
       "Source": "Repository",
       "Title": "An Object Oriented System Meant to Become a Successor to S3 and S4",
       "Authors@R": "c( person(\"Object-Oriented Programming Working Group\", role = \"cph\"), person(\"Davis\", \"Vaughan\", role = \"aut\"), person(\"Jim\", \"Hester\", role = \"aut\", comment = c(ORCID = \"0000-0002-2739-7082\")), person(\"Tomasz\", \"Kalinowski\", role = \"aut\"), person(\"Will\", \"Landau\", role = \"aut\"), person(\"Michael\", \"Lawrence\", role = \"aut\"), person(\"Martin\", \"Maechler\", role = \"aut\", comment = c(ORCID = \"0000-0002-8685-9910\")), person(\"Luke\", \"Tierney\", role = \"aut\"), person(\"Hadley\", \"Wickham\", , \"hadley@posit.co\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0003-4757-117X\")) )",
@@ -411,9 +411,10 @@
       "URL": "https://rconsortium.github.io/S7/, https://github.com/RConsortium/S7",
       "BugReports": "https://github.com/RConsortium/S7/issues",
       "Depends": [
-        "R (>= 3.5.0)"
+        "R (>= 4.2.0)"
       ],
       "Imports": [
+        "methods",
         "utils"
       ],
       "Suggests": [
@@ -421,10 +422,11 @@
         "callr",
         "covr",
         "knitr",
-        "methods",
+        "lifecycle",
         "rmarkdown",
-        "testthat (>= 3.2.0)",
-        "tibble"
+        "testthat (>= 3.3.0)",
+        "tibble",
+        "withr"
       ],
       "VignetteBuilder": "knitr",
       "Config/build/compilation-database": "true",
@@ -433,7 +435,7 @@
       "Config/testthat/parallel": "TRUE",
       "Config/testthat/start-first": "external-generic",
       "Encoding": "UTF-8",
-      "RoxygenNote": "7.3.3",
+      "Config/roxygen2/version": "8.1.1",
       "NeedsCompilation": "yes",
       "Author": "Object-Oriented Programming Working Group [cph], Davis Vaughan [aut], Jim Hester [aut] (ORCID: <https://orcid.org/0000-0002-2739-7082>), Tomasz Kalinowski [aut], Will Landau [aut], Michael Lawrence [aut], Martin Maechler [aut] (ORCID: <https://orcid.org/0000-0002-8685-9910>), Luke Tierney [aut], Hadley Wickham [aut, cre] (ORCID: <https://orcid.org/0000-0003-4757-117X>)",
       "Maintainer": "Hadley Wickham <hadley@posit.co>",
@@ -496,7 +498,7 @@
     },
     "arrow": {
       "Package": "arrow",
-      "Version": "26.0.1",
+      "Version": "26.0.1.1",
       "Source": "Repository",
       "Title": "Integration to 'Apache' 'Arrow'",
       "Authors@R": "c( person(\"Neal\", \"Richardson\", email = \"neal.p.richardson@gmail.com\", role = c(\"aut\")), person(\"Ian\", \"Cook\", email = \"ianmcook@gmail.com\", role = c(\"aut\")), person(\"Nic\", \"Crane\", email = \"thisisnic@gmail.com\", role = c(\"aut\")), person(\"Dewey\", \"Dunnington\", role = c(\"aut\"), email = \"dewey@fishandwhistle.net\", comment = c(ORCID = \"0000-0002-9415-4582\")), person(\"Romain\", \"Fran\\u00e7ois\", role = c(\"aut\"), comment = c(ORCID = \"0000-0002-2444-4226\")), person(\"Jonathan\", \"Keane\", email = \"jkeane@gmail.com\", role = c(\"aut\", \"cre\")), person(\"Bryce\", \"Mecum\", email = \"brycemecum@gmail.com\", role = c(\"aut\")), person(\"Drago\\u0219\", \"Moldovan-Gr\\u00fcnfeld\", email = \"dragos.mold@gmail.com\", role = c(\"aut\")), person(\"Jeroen\", \"Ooms\", email = \"jeroen@berkeley.edu\", role = c(\"aut\")), person(\"Jacob\", \"Wujciak-Jens\", email = \"jacob@wujciak.de\", role = c(\"aut\")), person(\"Javier\", \"Luraschi\", email = \"javier@rstudio.com\", role = c(\"ctb\")), person(\"Karl\", \"Dunkle Werner\", email = \"karldw@users.noreply.github.com\", role = c(\"ctb\"), comment = c(ORCID = \"0000-0003-0523-7309\")), person(\"Jeffrey\", \"Wong\", email = \"jeffreyw@netflix.com\", role = c(\"ctb\")), person(\"Apache Arrow\", email = \"dev@arrow.apache.org\", role = c(\"aut\", \"cph\")) )",
@@ -505,6 +507,7 @@
         "R (>= 4.2)"
       ],
       "License": "Apache License (>= 2.0)",
+      "Copyright": "See file inst/COPYRIGHTS",
       "URL": "https://github.com/apache/arrow/, https://arrow.apache.org/docs/r/",
       "BugReports": "https://github.com/apache/arrow/issues",
       "Encoding": "UTF-8",
@@ -556,7 +559,7 @@
         "cpp11 (>= 0.4.2)"
       ],
       "Collate": "'arrowExports.R' 'enums.R' 'arrow-object.R' 'type.R' 'array-data.R' 'arrow-datum.R' 'array.R' 'arrow-info.R' 'arrow-package.R' 'arrow-tabular.R' 'buffer.R' 'chunked-array.R' 'io.R' 'compression.R' 'scalar.R' 'compute.R' 'config.R' 'csv.R' 'dataset.R' 'dataset-factory.R' 'dataset-format.R' 'dataset-partition.R' 'dataset-scan.R' 'dataset-write.R' 'dictionary.R' 'dplyr-across.R' 'dplyr-arrange.R' 'dplyr-by.R' 'dplyr-collect.R' 'dplyr-count.R' 'dplyr-datetime-helpers.R' 'dplyr-distinct.R' 'dplyr-eval.R' 'dplyr-filter.R' 'dplyr-funcs-agg.R' 'dplyr-funcs-augmented.R' 'dplyr-funcs-conditional.R' 'dplyr-funcs-datetime.R' 'dplyr-funcs-doc.R' 'dplyr-funcs-math.R' 'dplyr-funcs-simple.R' 'dplyr-funcs-string.R' 'dplyr-funcs-type.R' 'expression.R' 'dplyr-funcs.R' 'dplyr-glimpse.R' 'dplyr-group-by.R' 'dplyr-join.R' 'dplyr-mutate.R' 'dplyr-select.R' 'dplyr-slice.R' 'dplyr-summarize.R' 'dplyr-union.R' 'record-batch.R' 'table.R' 'dplyr.R' 'duckdb.R' 'extension.R' 'feather.R' 'field.R' 'filesystem.R' 'flight.R' 'install-arrow.R' 'ipc-stream.R' 'json.R' 'memory-pool.R' 'message.R' 'metadata.R' 'parquet.R' 'python.R' 'query-engine.R' 'record-batch-reader.R' 'record-batch-writer.R' 'reexports-tidyselect.R' 'schema.R' 'udf.R' 'util.R'",
-      "Config/roxygen2/version": "8.1.1",
+      "Config/roxygen2/version": "8.1.0",
       "NeedsCompilation": "yes",
       "Author": "Neal Richardson [aut], Ian Cook [aut], Nic Crane [aut], Dewey Dunnington [aut] (ORCID: <https://orcid.org/0000-0002-9415-4582>), Romain François [aut] (ORCID: <https://orcid.org/0000-0002-2444-4226>), Jonathan Keane [aut, cre], Bryce Mecum [aut], Dragoș Moldovan-Grünfeld [aut], Jeroen Ooms [aut], Jacob Wujciak-Jens [aut], Javier Luraschi [ctb], Karl Dunkle Werner [ctb] (ORCID: <https://orcid.org/0000-0003-0523-7309>), Jeffrey Wong [ctb], Apache Arrow [aut, cph]",
       "Maintainer": "Jonathan Keane <jkeane@gmail.com>",
@@ -1667,7 +1670,7 @@
     },
     "ggplot2": {
       "Package": "ggplot2",
-      "Version": "4.0.3",
+      "Version": "4.0.4",
       "Source": "Repository",
       "Title": "Create Elegant Data Visualisations Using the Grammar of Graphics",
       "Authors@R": "c( person(\"Hadley\", \"Wickham\", , \"hadley@posit.co\", role = \"aut\", comment = c(ORCID = \"0000-0003-4757-117X\")), person(\"Winston\", \"Chang\", role = \"aut\", comment = c(ORCID = \"0000-0002-1576-2126\")), person(\"Lionel\", \"Henry\", role = \"aut\"), person(\"Thomas Lin\", \"Pedersen\", , \"thomas.pedersen@posit.co\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0002-5147-4711\")), person(\"Kohske\", \"Takahashi\", role = \"aut\"), person(\"Claus\", \"Wilke\", role = \"aut\", comment = c(ORCID = \"0000-0002-7470-9261\")), person(\"Kara\", \"Woo\", role = \"aut\", comment = c(ORCID = \"0000-0002-5125-4188\")), person(\"Hiroaki\", \"Yutani\", role = \"aut\", comment = c(ORCID = \"0000-0002-3385-7233\")), person(\"Dewey\", \"Dunnington\", role = \"aut\", comment = c(ORCID = \"0000-0002-9415-4582\")), person(\"Teun\", \"van den Brand\", role = \"aut\", comment = c(ORCID = \"0000-0002-9335-7468\")), person(\"Posit, PBC\", role = c(\"cph\", \"fnd\"), comment = c(ROR = \"03wc8by49\")) )",
@@ -3495,38 +3498,38 @@
     },
     "sass": {
       "Package": "sass",
-      "Version": "0.4.10",
+      "Version": "0.5.0",
       "Source": "Repository",
       "Type": "Package",
       "Title": "Syntactically Awesome Style Sheets ('Sass')",
+      "Authors@R": "c( person(\"Joe\", \"Cheng\", , \"joe@posit.co\", role = \"aut\"), person(\"Timothy\", \"Mastny\", , \"tim.mastny@gmail.com\", role = \"aut\"), person(\"Richard\", \"Iannone\", , \"rich@posit.co\", role = \"aut\", comment = c(ORCID = \"0000-0003-3925-190X\")), person(\"Barret\", \"Schloerke\", , \"barret@posit.co\", role = \"aut\", comment = c(ORCID = \"0000-0001-9986-114X\")), person(\"Carson\", \"Sievert\", , \"carson@posit.co\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0002-4958-2844\")), person(\"Christophe\", \"Dervieux\", , \"cderv@posit.co\", role = \"ctb\", comment = c(ORCID = \"0000-0003-4474-2498\")), person(, \"RStudio\", role = c(\"cph\", \"fnd\")), person(, \"Sass Open Source Foundation\", role = c(\"ctb\", \"cph\"), comment = \"LibSass library\"), person(\"Greter\", \"Marcel\", role = c(\"ctb\", \"cph\"), comment = \"LibSass library\"), person(\"Mifsud\", \"Michael\", role = c(\"ctb\", \"cph\"), comment = \"LibSass library\"), person(\"Hampton\", \"Catlin\", role = c(\"ctb\", \"cph\"), comment = \"LibSass library\"), person(\"Natalie\", \"Weizenbaum\", role = c(\"ctb\", \"cph\"), comment = \"LibSass library\"), person(\"Chris\", \"Eppstein\", role = c(\"ctb\", \"cph\"), comment = \"LibSass library\"), person(\"Adams\", \"Joseph\", role = c(\"ctb\", \"cph\"), comment = \"json.cpp\"), person(\"Trifunovic\", \"Nemanja\", role = c(\"ctb\", \"cph\"), comment = \"utf8.h\") )",
       "Description": "An 'SCSS' compiler, powered by the 'LibSass' library. With this, R developers can use variables, inheritance, and functions to generate dynamic style sheets. The package uses the 'Sass CSS' extension language, which is stable, powerful, and CSS compatible.",
-      "Authors@R": "c( person(\"Joe\", \"Cheng\", , \"joe@rstudio.com\", \"aut\"), person(\"Timothy\", \"Mastny\", , \"tim.mastny@gmail.com\", \"aut\"), person(\"Richard\", \"Iannone\", , \"rich@rstudio.com\", \"aut\", comment = c(ORCID = \"0000-0003-3925-190X\")), person(\"Barret\", \"Schloerke\", , \"barret@rstudio.com\", \"aut\", comment = c(ORCID = \"0000-0001-9986-114X\")), person(\"Carson\", \"Sievert\", , \"carson@rstudio.com\", c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0002-4958-2844\")), person(\"Christophe\", \"Dervieux\", , \"cderv@rstudio.com\", c(\"ctb\"), comment = c(ORCID = \"0000-0003-4474-2498\")), person(family = \"RStudio\", role = c(\"cph\", \"fnd\")), person(family = \"Sass Open Source Foundation\", role = c(\"ctb\", \"cph\"), comment = \"LibSass library\"), person(\"Greter\", \"Marcel\", role = c(\"ctb\", \"cph\"), comment = \"LibSass library\"), person(\"Mifsud\", \"Michael\", role = c(\"ctb\", \"cph\"), comment = \"LibSass library\"), person(\"Hampton\", \"Catlin\", role = c(\"ctb\", \"cph\"), comment = \"LibSass library\"), person(\"Natalie\", \"Weizenbaum\", role = c(\"ctb\", \"cph\"), comment = \"LibSass library\"), person(\"Chris\", \"Eppstein\", role = c(\"ctb\", \"cph\"), comment = \"LibSass library\"), person(\"Adams\", \"Joseph\", role = c(\"ctb\", \"cph\"), comment = \"json.cpp\"), person(\"Trifunovic\", \"Nemanja\", role = c(\"ctb\", \"cph\"), comment = \"utf8.h\") )",
       "License": "MIT + file LICENSE",
       "URL": "https://rstudio.github.io/sass/, https://github.com/rstudio/sass",
       "BugReports": "https://github.com/rstudio/sass/issues",
-      "Encoding": "UTF-8",
-      "RoxygenNote": "7.3.2",
-      "SystemRequirements": "GNU make",
       "Imports": [
         "fs (>= 1.2.4)",
-        "rlang (>= 0.4.10)",
         "htmltools (>= 0.5.1)",
         "R6",
-        "rappdirs"
+        "rappdirs",
+        "rlang (>= 0.4.10)"
       ],
       "Suggests": [
-        "testthat",
+        "curl",
         "knitr",
         "rmarkdown",
-        "withr",
         "shiny",
-        "curl"
+        "testthat",
+        "withr"
       ],
       "VignetteBuilder": "knitr",
+      "Config/roxygen2/version": "8.1.1",
       "Config/testthat/edition": "3",
+      "Encoding": "UTF-8",
+      "SystemRequirements": "GNU make",
       "NeedsCompilation": "yes",
-      "Author": "Joe Cheng [aut], Timothy Mastny [aut], Richard Iannone [aut] (<https://orcid.org/0000-0003-3925-190X>), Barret Schloerke [aut] (<https://orcid.org/0000-0001-9986-114X>), Carson Sievert [aut, cre] (<https://orcid.org/0000-0002-4958-2844>), Christophe Dervieux [ctb] (<https://orcid.org/0000-0003-4474-2498>), RStudio [cph, fnd], Sass Open Source Foundation [ctb, cph] (LibSass library), Greter Marcel [ctb, cph] (LibSass library), Mifsud Michael [ctb, cph] (LibSass library), Hampton Catlin [ctb, cph] (LibSass library), Natalie Weizenbaum [ctb, cph] (LibSass library), Chris Eppstein [ctb, cph] (LibSass library), Adams Joseph [ctb, cph] (json.cpp), Trifunovic Nemanja [ctb, cph] (utf8.h)",
-      "Maintainer": "Carson Sievert <carson@rstudio.com>",
+      "Author": "Joe Cheng [aut], Timothy Mastny [aut], Richard Iannone [aut] (ORCID: <https://orcid.org/0000-0003-3925-190X>), Barret Schloerke [aut] (ORCID: <https://orcid.org/0000-0001-9986-114X>), Carson Sievert [aut, cre] (ORCID: <https://orcid.org/0000-0002-4958-2844>), Christophe Dervieux [ctb] (ORCID: <https://orcid.org/0000-0003-4474-2498>), RStudio [cph, fnd], Sass Open Source Foundation [ctb, cph] (LibSass library), Greter Marcel [ctb, cph] (LibSass library), Mifsud Michael [ctb, cph] (LibSass library), Hampton Catlin [ctb, cph] (LibSass library), Natalie Weizenbaum [ctb, cph] (LibSass library), Chris Eppstein [ctb, cph] (LibSass library), Adams Joseph [ctb, cph] (json.cpp), Trifunovic Nemanja [ctb, cph] (utf8.h)",
+      "Maintainer": "Carson Sievert <carson@posit.co>",
       "Repository": "CRAN"
     },
     "scales": {
@@ -3575,7 +3578,7 @@
     },
     "shiny": {
       "Package": "shiny",
-      "Version": "1.14.0",
+      "Version": "1.15.0",
       "Source": "Repository",
       "Type": "Package",
       "Title": "Web Application Framework for R",
@@ -3610,6 +3613,7 @@
         "sourcetools",
         "tools",
         "utils",
+        "watcher (>= 0.2.0)",
         "withr",
         "xtable"
       ],
@@ -3633,11 +3637,10 @@
         "shinytest2",
         "showtext",
         "testthat (>= 3.2.1)",
-        "watcher",
         "yaml"
       ],
       "Config/Needs/check": "shinyjs",
-      "Config/roxygen2/version": "8.0.0",
+      "Config/roxygen2/version": "8.1.1",
       "Config/testthat/edition": "3",
       "Encoding": "UTF-8",
       "Collate": "'app-handle.R' 'globals.R' 'app-state.R' 'app_template.R' 'bind-cache.R' 'bind-event.R' 'bookmark-state-local.R' 'bookmark-state.R' 'bootstrap-deprecated.R' 'bootstrap-layout.R' 'conditions.R' 'map.R' 'utils.R' 'bootstrap.R' 'busy-indicators-spinners.R' 'busy-indicators.R' 'cache-utils.R' 'deprecated.R' 'devmode.R' 'diagnose.R' 'extended-task.R' 'fileupload.R' 'graph.R' 'reactives.R' 'reactive-domains.R' 'history.R' 'hooks.R' 'html-deps.R' 'image-interact-opts.R' 'image-interact.R' 'imageutils.R' 'input-action.R' 'input-checkbox.R' 'input-checkboxgroup.R' 'input-date.R' 'input-daterange.R' 'input-file.R' 'input-numeric.R' 'input-password.R' 'input-radiobuttons.R' 'input-select.R' 'input-slider.R' 'input-submit.R' 'input-text.R' 'input-textarea.R' 'input-utils.R' 'insert-tab.R' 'insert-ui.R' 'jqueryui.R' 'knitr.R' 'middleware-shiny.R' 'middleware.R' 'timer.R' 'shiny.R' 'mock-session.R' 'modal.R' 'modules.R' 'notifications.R' 'otel-attr-srcref.R' 'otel-collect.R' 'otel-enable.R' 'otel-error.R' 'otel-label.R' 'otel-reactive-update.R' 'otel-session.R' 'otel-shiny.R' 'otel-with.R' 'priorityqueue.R' 'progress.R' 'react.R' 'reexports.R' 'render-cached-plot.R' 'render-plot.R' 'render-table.R' 'run-url.R' 'runapp.R' 'serializers.R' 'server-input-handlers.R' 'server-resource-paths.R' 'server.R' 'shiny-options.R' 'shiny-package.R' 'shinyapp.R' 'shinyui.R' 'shinywrappers.R' 'showcase.R' 'snapshot.R' 'staticimports.R' 'tar.R' 'test-export.R' 'test-server.R' 'test.R' 'update-input.R' 'utils-lang.R' 'utils-tags.R' 'version_bs_date_picker.R' 'version_ion_range_slider.R' 'version_jquery.R' 'version_jqueryui.R' 'version_selectize.R' 'version_strftime.R' 'viewer.R'",
@@ -4176,6 +4179,41 @@
       "NeedsCompilation": "yes",
       "Author": "Jim Hester [aut] (ORCID: <https://orcid.org/0000-0002-2739-7082>), Hadley Wickham [aut] (ORCID: <https://orcid.org/0000-0003-4757-117X>), Jennifer Bryan [aut, cre] (ORCID: <https://orcid.org/0000-0002-6983-2759>), Shelby Bearrows [ctb], https://github.com/mandreyel/ [cph] (mio library), Jukka Jylänki [cph] (grisu3 implementation), Mikkel Jørgensen [cph] (grisu3 implementation), Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)",
       "Maintainer": "Jennifer Bryan <jenny@posit.co>",
+      "Repository": "CRAN"
+    },
+    "watcher": {
+      "Package": "watcher",
+      "Version": "0.2.2",
+      "Source": "Repository",
+      "Type": "Package",
+      "Title": "Watch the File System for Changes",
+      "Authors@R": "c( person(\"Charlie\", \"Gao\", , \"charlie.gao@posit.co\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0002-0750-061X\")), person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\"), comment = c(ROR = \"03wc8by49\")), person(\"Enrico M.\", \"Crisostomo\", role = \"cph\", comment = \"libfswatch library\"), person(\"Alan\", \"Dipert\", role = \"cph\", comment = \"libfswatch library\") )",
+      "Description": "R binding for 'libfswatch', a file system monitoring library. Watch files, or directories recursively, for changes in the background.  Log activity, or call an R function, upon every change event.",
+      "License": "MIT + file LICENSE",
+      "URL": "https://watcher.r-lib.org, https://github.com/r-lib/watcher",
+      "BugReports": "https://github.com/r-lib/watcher/issues",
+      "Depends": [
+        "R (>= 3.5)"
+      ],
+      "Imports": [
+        "later",
+        "R6",
+        "rlang"
+      ],
+      "Suggests": [
+        "testthat (>= 3.0.0)"
+      ],
+      "Biarch": "true",
+      "Config/Needs/website": "tidyverse/tidytemplate",
+      "Config/roxygen2/markdown": "TRUE",
+      "Config/roxygen2/version": "8.0.0",
+      "Config/testthat/edition": "3",
+      "Config/usethis/last-upkeep": "2025-04-23",
+      "Encoding": "UTF-8",
+      "SystemRequirements": "'libfswatch' (optional, bundled copy compiled otherwise)",
+      "NeedsCompilation": "yes",
+      "Author": "Charlie Gao [aut, cre] (ORCID: <https://orcid.org/0000-0002-0750-061X>), Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>), Enrico M. Crisostomo [cph] (libfswatch library), Alan Dipert [cph] (libfswatch library)",
+      "Maintainer": "Charlie Gao <charlie.gao@posit.co>",
       "Repository": "CRAN"
     },
     "withr": {
